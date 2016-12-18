@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 namespace NINA.Utility {
     static class Logger {
 
-
+        static string LOGFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA\\tracelog.txt";
 
         
         private static void append(string msg) {
             try {
-                using (StreamWriter writer = new StreamWriter("tracelog.txt", true)) {
+                using (StreamWriter writer = new StreamWriter(LOGFILEPATH, true)) {
                     writer.WriteLine(msg);
                     writer.Close();
                 }
             }
             catch (Exception ex) {
-                System.Windows.MessageBox.Show(ex.Message, "Error writing log file", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                Notification.ShowError(ex.Message);
             }
 
 

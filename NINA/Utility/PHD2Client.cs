@@ -290,7 +290,7 @@ namespace NINA.Utility {
                                             IsDithering = false;
                                             SettleDone = o.ToObject<PhdEventSettleDone>();
                                             if(SettleDone.Error != null) {
-                                                System.Windows.MessageBox.Show(SettleDone.Error, "PHD2 Dither Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                                                Notification.ShowError("PHD2 Error: " + SettleDone.Error);
                                             }
                                             break;
                                         }

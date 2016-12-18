@@ -702,7 +702,7 @@ namespace NINA.Model {
                     Notification.ShowError("Unable to connect to telescope");
                     Logger.error("Unable to connect to telescope");
                     Logger.trace(ex.Message);
-                    System.Windows.MessageBox.Show("Unable to connect to telescope", "Connection Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    Notification.ShowError("Unable to connect to telescope");
                     Connected = false;
                 }
                 catch (Exception ex) {

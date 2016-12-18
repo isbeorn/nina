@@ -260,7 +260,7 @@ namespace NINA.Utility {
 
             }
             catch (Exception ex) {
-                System.Windows.MessageBox.Show(ex.Message, "Error while writing image file!", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                Notification.ShowError("Image file error: " + ex.Message);
                 Logger.error(ex.Message);
 
             }
@@ -280,7 +280,7 @@ namespace NINA.Utility {
                     encoder.Save(fs);
                 }
             } catch(Exception ex) {
-                System.Windows.MessageBox.Show(ex.Message, "Error while writing image file!", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                Notification.ShowError("Image file error: " + ex.Message);
                 Logger.error(ex.Message);
 
             }
@@ -372,7 +372,7 @@ namespace NINA.Utility {
                         throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
                     }
                     Logger.error(ex.Message);
-                    System.Windows.MessageBox.Show(string.Format("Unable to connect to {0}", url), "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (response != null) {
                         response.Close();
                         response = null;
@@ -421,7 +421,7 @@ namespace NINA.Utility {
                         throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
                     }
                     Logger.error(ex.Message);
-                    System.Windows.MessageBox.Show(string.Format("Unable to connect to {0}", url), "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (response != null) {
                         response.Close();
                         response = null;
@@ -461,7 +461,7 @@ namespace NINA.Utility {
                         throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
                     }
                     Logger.error(ex.Message);
-                    System.Windows.MessageBox.Show(string.Format("Unable to connect to {0}", url), "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (response != null) {
                         response.Close();
                         response = null;
@@ -529,7 +529,7 @@ namespace NINA.Utility {
                         throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
                     }
                     Logger.error(ex.Message);
-                    System.Windows.MessageBox.Show(string.Format("Unable to connect to {0}", url), "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (wresp != null) {
                         wresp.Close();
                         wresp = null;
