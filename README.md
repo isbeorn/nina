@@ -39,4 +39,4 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 ** Feedback**
 
-Mail to: isbeorn86+astrophotographybuddy@googlemail.com
+Mail to: isbeorn86+NINA@googlemail.com
