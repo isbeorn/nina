@@ -1352,7 +1352,7 @@ namespace NINA
             string oldProgId = this.ProgId;
             string cameraId = Settings.CameraId;
             ProgId = Camera.Choose(cameraId);
-            if(!Connected || oldProgId != ProgId) {
+            if((!Connected || oldProgId != ProgId) && ProgId != "") {
 
                 init();
                 try {

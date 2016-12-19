@@ -1445,7 +1445,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_DC837EBAA3BA4A2F8C08E0959E93004D"
             {
-            "Name" = "8:NINA"
+            "Name" = "8:N.I.N.A. - Nighttime Imaging 'N' Astronomy"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -1459,7 +1459,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E9D17695AB78409AA5029FD85814C34D"
             {
-            "Name" = "8:NINA"
+            "Name" = "8:N.I.N.A. - Nighttime Imaging 'N' Astronomy"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -2022,7 +2022,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FF25606544D448558FB12DA74BACB4E5"
             {
-            "SourcePath" = "8:..\\NINA\\obj\\x64\\Release\\NINA.exe"
+            "SourcePath" = "8:..\\NINA\\obj\\x64\\Debug\\NINA.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"

@@ -188,7 +188,7 @@ namespace NINA.Model {
             string oldProgId = this.ProgId;
             string filterwheelid = Settings.FilterWheelId;
             ProgId = FilterWheel.Choose(filterwheelid);
-            if (!Connected || oldProgId != ProgId) {
+            if ((!Connected || oldProgId != ProgId) && ProgId != "") {
 
                 init();
                 try {

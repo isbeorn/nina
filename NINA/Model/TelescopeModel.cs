@@ -687,7 +687,7 @@ namespace NINA.Model {
             string oldProgId = this.ProgId;
             string telescopeId = Settings.TelescopeId;
             ProgId = ASCOM.DriverAccess.Telescope.Choose(telescopeId);
-            if (!Connected || oldProgId != ProgId) {
+            if ((!Connected || oldProgId != ProgId) && ProgId != "") {
 
                 init();
                 try {                    
@@ -699,7 +699,6 @@ namespace NINA.Model {
                     con = true;
                 }
                 catch (ASCOM.DriverAccessCOMException ex) {
-                    Notification.ShowError("Unable to connect to telescope");
                     Logger.error("Unable to connect to telescope");
                     Logger.trace(ex.Message);
                     Notification.ShowError("Unable to connect to telescope");
