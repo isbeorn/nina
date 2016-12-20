@@ -235,6 +235,7 @@
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\PHD2VM.cs" />
     <Compile Include="ViewModel\PlatesolveVM.cs" />
+    <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
     <Compile Include="ViewModel\TelescopeVM.cs" />
     <Compile Include="View\ApplicationMenu.xaml.cs">
@@ -272,6 +273,9 @@
     </Compile>
     <Compile Include="View\PlateSolveView.xaml.cs">
       <DependentUpon>PlateSolveView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PolarAlignmentView.xaml.cs">
+      <DependentUpon>PolarAlignmentView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SequenceView.xaml.cs">
       <DependentUpon>SequenceView.xaml</DependentUpon>
@@ -343,6 +347,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PlateSolveView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PolarAlignmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

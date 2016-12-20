@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace NINA
+namespace NINA.Model
 {
     public class CameraModel : BaseINPC {
 

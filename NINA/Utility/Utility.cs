@@ -208,7 +208,7 @@ namespace NINA.Utility {
             });
         }
 
-        public static void saveFits(ImageArray iarr, string path, string imagetype, double duration, string filter, CameraModel.BinningMode binning, double temp) {
+        public static void saveFits(ImageArray iarr, string path, string imagetype, double duration, string filter, Model.CameraModel.BinningMode binning, double temp) {
             try {
                 Header h = new Header();
                 h.AddValue("SIMPLE", "T", "C# FITS");

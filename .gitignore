@@ -1,1 +1,8 @@
-/AstrophotographyBuddy/bin/
+*.suo
+bin/
+NINA/bin/
+NINA/obj/
+NINASetup/Debug/
+NINASetup/Release/
+NINATest/bin/
+NINATest/obj/

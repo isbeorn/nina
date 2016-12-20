@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace NINA {
+namespace NINA.ViewModel {
     class CameraVM : BaseVM {
 
         public CameraVM() {
@@ -21,7 +21,7 @@ namespace NINA {
             DisconnectCommand = new RelayCommand(disconnectCamera);
             CoolCamCommand = new RelayCommand(coolCamera);
             CancelCoolCamCommand = new RelayCommand(cancelCoolCamera);
-            Cam = new CameraModel();
+            Cam = new Model.CameraModel();
             updateCamera = new DispatcherTimer();
             updateCamera.Interval = TimeSpan.FromMilliseconds(1000);
             updateCamera.Tick += updateCamera_Tick;
@@ -191,8 +191,8 @@ namespace NINA {
         }
 
 
-        private CameraModel _cam;
-        public CameraModel Cam {
+        private Model.CameraModel _cam;
+        public Model.CameraModel Cam {
             get {
                 return _cam;
             }

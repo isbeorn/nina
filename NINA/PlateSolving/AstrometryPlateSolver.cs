@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace NINA.Model {
+namespace NINA.PlateSolving {
     class AstrometryPlateSolver : IPlateSolver {
 
         const string AUTHURL = "/api/login/";
