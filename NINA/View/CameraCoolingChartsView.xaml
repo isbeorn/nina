@@ -13,17 +13,110 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <chartingToolkit:Chart   DataContext="{Binding Cam.CoolerPowerHistory}"  Title="Cooler Power" Style="{StaticResource ChartStyle}" Margin="0,0,1,0">
+
+        <Viewbox Grid.Column="0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}">
+            <TextBlock  Text="{Binding Cam.CoolerPower, StringFormat=\{0:#.00\}%}" >
+                <!--<TextBlock.Style>
+                    <Style TargetType="TextBlock">                        
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cam.CoolerPowerChange}" Value="-1">
+                                <Setter Property="Foreground" Value="Green" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Cam.CoolerPowerChange}" Value="1">
+                                <Setter Property="Foreground" Value="Red" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Cam.CoolerPowerChange}" Value="0">
+                                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>                   
+                </TextBlock.Style>-->
+                
+            </TextBlock>
+        </Viewbox>
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"  />
+        <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="4*" />                
+            </Grid.ColumnDefinitions>
+
+            <Path Fill="Red" Data="{StaticResource ArrowUpSVG}" Stretch="Uniform" Margin="10">
+                <Path.Style>
+                    <Style TargetType="Path">
+                        <Setter Property="Visibility" Value="Hidden" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="1">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+
+            <Path Fill="Blue" Data="{StaticResource ArrowDownSVG}" Stretch="Uniform" Margin="10">
+                <Path.Style>
+                    <Style TargetType="Path">
+                        <Setter Property="Visibility" Value="Hidden" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="-1">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+            
+            <Path Fill="{StaticResource PrimaryBrush}"  Stretch="Uniform" Margin="10" Data="{StaticResource EqualSignSVG}">                
+                <Path.Style>
+                    <Style TargetType="Path">
+                        <Setter Property="Visibility" Value="Hidden" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="0">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+            
+            <Viewbox Grid.Column="1" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}">
+                <TextBlock  Text="{Binding Cam.CCDTemperature, StringFormat=\{0:#.00\}°C}" >
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="-1">
+                                    <Setter Property="Foreground" Value="Blue" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="1">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="0">
+                                    <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Viewbox>
+        </Grid>
+        
+         
+
+        
+
+        <!--<chartingToolkit:Chart   DataContext="{Binding Cam.CoolerPowerHistory}"  Title="Cooler Power" Style="{StaticResource ChartStyle}" Margin="0,0,1,0">
             <chartingToolkit:LineSeries  DependentValuePath="Value" 
 				    IndependentValuePath="Key" ItemsSource="{Binding}" 
 				    IsSelectionEnabled="True" Style="{StaticResource LineSeriesStyle}">
             </chartingToolkit:LineSeries>
         </chartingToolkit:Chart>
+        
         <GridSplitter HorizontalAlignment="Stretch" Grid.Column="1" />
         <chartingToolkit:Chart Grid.Column="2" DataContext="{Binding Cam.CCDTemperatureHistory}"  Title="Camera Temperature" Style="{StaticResource ChartStyle}" Margin="0,0,0,0">
             <chartingToolkit:LineSeries  DependentValuePath="Value" 
 				    IndependentValuePath="Key" ItemsSource="{Binding}" 
 				    IsSelectionEnabled="True" Style="{StaticResource LineSeriesStyle}"/>
-        </chartingToolkit:Chart>
+        </chartingToolkit:Chart>-->
     </Grid>
 </UserControl>

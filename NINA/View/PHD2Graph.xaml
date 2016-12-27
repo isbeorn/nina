@@ -8,16 +8,73 @@
              xmlns:chartingToolkit=	"clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"          
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid >
-        <Grid.ColumnDefinitions>
+    <UniformGrid DataContext="{Binding PHD2Client.GuideStep}" Columns="3">
+        <GroupBox Header="General">
+            <UniformGrid Columns="2">
+                <TextBlock>Dx</TextBlock>
+                <TextBlock Text="{Binding Dx}">
+                </TextBlock>
+
+                <TextBlock>Dy</TextBlock>
+                <TextBlock Text="{Binding Dy}">
+                </TextBlock>
+
+                <TextBlock>SNR</TextBlock>
+                <TextBlock Text="{Binding SNR}">
+                </TextBlock>
+            </UniformGrid>
+        </GroupBox>
+        <GroupBox Header="RA">
+            <UniformGrid Columns="2">
+                <TextBlock>RADistanceRaw</TextBlock>
+                <TextBlock Text="{Binding RADistanceRaw}">
+                </TextBlock>
+            
+                <TextBlock>RADistanceGuide</TextBlock>
+                <TextBlock Text="{Binding RADistanceGuide}">
+                </TextBlock>
+
+                <TextBlock>RADuration</TextBlock>
+                <TextBlock Text="{Binding RADuration}">
+                </TextBlock>
+
+                <TextBlock>RADirection</TextBlock>
+                <TextBlock Text="{Binding RADirection}">
+                </TextBlock>
+
+            </UniformGrid>
+        </GroupBox>
+        <GroupBox Header="Dec">
+            <UniformGrid Columns="2">
+                <TextBlock>DecDistanceRaw</TextBlock>
+                <TextBlock Text="{Binding DecDistanceRaw}">
+                </TextBlock>
+
+                <TextBlock>DecDistanceGuide</TextBlock>
+                <TextBlock Text="{Binding DecDistanceGuide}">
+                </TextBlock>
+
+                <TextBlock>DECDuration</TextBlock>
+                <TextBlock Text="{Binding DECDuration}">
+                </TextBlock>
+
+                <TextBlock>DecDirection</TextBlock>
+                <TextBlock Text="{Binding DecDirection}">
+                </TextBlock>
+            </UniformGrid>
+        </GroupBox>
+        
+
+
+        <!--<Grid.ColumnDefinitions>
 
             <ColumnDefinition Width="200" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <!--<Border Grid.Column="0" BorderBrush="{StaticResource PrimaryBrush}" BorderThickness="0.5" Margin="0,1,0,0" >
+        <Border Grid.Column="0" BorderBrush="{StaticResource PrimaryBrush}" BorderThickness="0.5" Margin="0,1,0,0" >
             <Image Source="{Binding PHD2Client.Image}" />
         </Border>-->
-
+<!--
         <StackPanel>
             <TextBlock Text="Y-Axis-Scale"></TextBlock>
             <ComboBox             
@@ -69,20 +126,7 @@
                                         <Setter Property="Width" Value="5"></Setter>
                                         <Setter Property="Height" Value="5"></Setter>
                                         <Setter Property="Template" Value="{x:Null}">
-                                            <!-- <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type chartingToolkit:LineDataPoint}">
-                                                    <Ellipse>
-                                                        <Ellipse.Style>
-                                                            <Style TargetType="{x:Type Ellipse}">
-                                                                <Setter Property="Fill" Value="{StaticResource PrimaryBrush}"></Setter>
-                                                                <Setter Property="Stroke" Value="{StaticResource PrimaryBrush}"></Setter>
-                                                                <Setter Property="Height" Value="5"></Setter>
-                                                                <Setter Property="Width" Value="5"></Setter>
-                                                            </Style>
-                                                        </Ellipse.Style>
-                                                    </Ellipse>
-                                                </ControlTemplate>
-                                            </Setter.Value>-->
+                                           
                                         </Setter>
                                     </Style>
                                 </Setter.Value>
@@ -123,20 +167,7 @@
                                         <Setter Property="Width" Value="5"></Setter>
                                         <Setter Property="Height" Value="5"></Setter>
                                         <Setter Property="Template" Value="{x:Null}">
-                                            <!--<Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type chartingToolkit:LineDataPoint}">
-                                                    <Ellipse>
-                                                        <Ellipse.Style>
-                                                            <Style TargetType="{x:Type Ellipse}">
-                                                                <Setter Property="Fill" Value="{StaticResource PrimaryBrush}"></Setter>
-                                                                <Setter Property="Stroke" Value="{StaticResource PrimaryBrush}"></Setter>
-                                                                <Setter Property="Height" Value="5"></Setter>
-                                                                <Setter Property="Width" Value="5"></Setter>
-                                                            </Style>
-                                                        </Ellipse.Style>
-                                                    </Ellipse>
-                                                </ControlTemplate>
-                                            </Setter.Value>-->
+                                          
                                         </Setter>
                                     </Style>
                                 </Setter.Value>
@@ -213,7 +244,7 @@
 
 
         </chartingToolkit:Chart>
-       
+       -->
 
-    </Grid>
+    </UniformGrid>
 </UserControl>

@@ -102,7 +102,7 @@
                         <view:PHD2View DataContext="{Binding PHD2VM}" ></view:PHD2View>
                     </TabItem.Content>
                 </TabItem>
-                    <TabItem>
+                    <!--<TabItem>
                         <TabItem.Header>
                             <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PHD2SVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
                             </Path>
@@ -119,7 +119,7 @@
                     <TabItem.Content>
                         <view:OverView DataContext="{Binding}"></view:OverView>
                     </TabItem.Content>
-                </TabItem>
+                </TabItem>-->
                 <TabItem>
                     <TabItem.Header>
                         <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >

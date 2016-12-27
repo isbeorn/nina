@@ -87,7 +87,29 @@ namespace NINA.Utility {
             }
         }
 
-        private AsyncObservableCollection<PhdEventGuideStep> _guideSteps;
+        private PhdEventGuideStep _prevGuideStep;
+        public PhdEventGuideStep PrevGuideStep {
+            get {
+                return _prevGuideStep;
+            }
+            set {
+                _prevGuideStep = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private PhdEventGuideStep _guideStep;
+        public PhdEventGuideStep GuideStep {
+            get {
+                return _guideStep;
+            }
+            set {
+                _guideStep = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        /*private AsyncObservableCollection<PhdEventGuideStep> _guideSteps;
         public AsyncObservableCollection<PhdEventGuideStep> GuideSteps {
             get {
                 if (_guideSteps == null) {
@@ -99,9 +121,9 @@ namespace NINA.Utility {
                 _guideSteps = value;
                 RaisePropertyChanged();
             }
-        }
+        }*/
 
-        
+
 
         private TcpClient _client;
         private NetworkStream _stream;
@@ -183,7 +205,6 @@ namespace NINA.Utility {
                 _stream.Close();
                 _client.Close();
                 IsDithering = false;
-                GuideSteps.Clear();
                 RaisePropertyChanged("Connected");
             }
             return !Connected;
@@ -267,11 +288,8 @@ namespace NINA.Utility {
                                             break;
                                         }
                                     case "GuideStep": {
-                                            if (GuideSteps.Count > 100) {
-                                                GuideSteps.RemoveAt(0);
-                                            }
-                                            PhdEventGuideStep step = o.ToObject<PhdEventGuideStep>();
-                                            GuideSteps.Add(step);
+                                            PrevGuideStep = GuideStep;
+                                            GuideStep = o.ToObject<PhdEventGuideStep>();
                                             break;
                                         }
                                     case "GuidingDithered": {
@@ -310,7 +328,6 @@ namespace NINA.Utility {
                                             break;
                                         }
                                     case "LockPositionLost": {
-                                            GuideSteps.Clear();
                                             break;
                                         }
                                     default: {
@@ -335,13 +352,11 @@ namespace NINA.Utility {
                     _stream.Close();
                     _client.Close();
                     IsDithering = false;
-                    GuideSteps.Clear();
                     Notification.ShowError("PHD2 Error: " + ex.Message);
                     RaisePropertyChanged("Connected");
                 }
                 catch (Exception ex) {
                     Logger.error(ex.Message);
-                    GuideSteps.Clear();
                     Notification.ShowError("PHD2 Error: " + ex.Message);
                 }
                 

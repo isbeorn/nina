@@ -41,11 +41,13 @@ namespace NINA.Model
             CameraXSize = -1;
             CameraYSize = -1;
             CCDTemperature = double.MinValue;
-            
+            _prevcCDTemperature = double.MinValue;
+
             HasShutter = false;
             
 
             CoolerPower = -1;
+            _prevCoolerPower = -1;
             Description = string.Empty;
             DriverInfo = string.Empty;
             DriverVersion = string.Empty;
@@ -80,9 +82,9 @@ namespace NINA.Model
             BinY = -1;
 
             BinningModes = new ObservableCollection<BinningMode>();
-            CCDTemperatureHistory.Clear();
-            CoolerPowerHistory.Clear();
-
+            //CCDTemperatureHistory.Clear();
+            //CoolerPowerHistory.Clear();
+            
            CoolerOn = false;
             FastReadout = false;
             Gain = -1;
@@ -95,6 +97,9 @@ namespace NINA.Model
             HasCCDTemperature = false;
             HasFullWellCapacity = false;
             HasHeatSinkTemperature = false;
+
+            CoolerPowerChange = int.MinValue;
+            CCDTemperatureChange = int.MinValue;
         }
 
 
@@ -192,12 +197,32 @@ namespace NINA.Model
             }
         }
 
+        double _prevcCDTemperature;
         double _cCDTemperature;
         public double CCDTemperature {
             get {
                 return _cCDTemperature;
             } set {
+                if(_prevcCDTemperature < value) {
+                    CCDTemperatureChange = 1;
+                } else if(_prevcCDTemperature > value) {
+                    CCDTemperatureChange = -1;
+                } else {
+                    CCDTemperatureChange = 0;
+                }
+
                 _cCDTemperature = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _cCDTemperatureChange;
+        public int CCDTemperatureChange {
+            get {
+                return _cCDTemperatureChange;
+            }
+            set {
+                _cCDTemperatureChange = value;
                 RaisePropertyChanged();
             }
         }
@@ -282,14 +307,26 @@ namespace NINA.Model
                 RaisePropertyChanged();
             }
         }
-        
+
+        double _prevCoolerPower;        
+
         double _coolerPower;
         public double CoolerPower {
             get {
                 return _coolerPower;
             }
             set {
-                if(CanGetCoolerPower) { 
+                if(CanGetCoolerPower) {
+                    if (_prevCoolerPower < value) {
+                        CoolerPowerChange = 1;
+                    }
+                    else if (_prevCoolerPower > value) {
+                        CoolerPowerChange = -1;
+                    }
+                    else {
+                        CoolerPowerChange = 0;
+                    }
+
                     _coolerPower = value;
                     
                     RaisePropertyChanged();
@@ -298,7 +335,18 @@ namespace NINA.Model
             }
         }
 
-        ObservableCollection<KeyValuePair<DateTime, double>> _cCDTemperatureHistory;
+        private int _coolerPowerChange;
+        public int CoolerPowerChange {
+            get {
+                return _coolerPowerChange;
+            }
+            set {
+                _coolerPowerChange = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        /*ObservableCollection<KeyValuePair<DateTime, double>> _cCDTemperatureHistory;
         public ObservableCollection<KeyValuePair<DateTime, double>> CCDTemperatureHistory {
             get {
                 if (_cCDTemperatureHistory == null) {
@@ -324,7 +372,7 @@ namespace NINA.Model
                 _coolerPowerHistory = value;
                 RaisePropertyChanged();
             }
-        }
+        }*/
 
         string _description;
         public string Description {
@@ -1300,13 +1348,9 @@ namespace NINA.Model
             
                 CameraState = AscomCamera.CameraState;
                 if( HasCCDTemperature) {
-                    CCDTemperature = AscomCamera.CCDTemperature;
-
-                    if (CCDTemperatureHistory.Count > 100) {
-                        CCDTemperatureHistory.RemoveAt(0);                    
-                    }
-                    CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(DateTime.Now, CCDTemperature));               
-
+                    _prevcCDTemperature = CCDTemperature;
+                    CCDTemperature = AscomCamera.CCDTemperature;                    
+                    
                 }
             
                 if( HasFullWellCapacity) {
@@ -1319,13 +1363,10 @@ namespace NINA.Model
             
             
 
-                if ( CanGetCoolerPower) { 
+                if ( CanGetCoolerPower) {
+                    _prevCoolerPower = CoolerPower;
                      CoolerPower = AscomCamera.CoolerPower;
-                    if(CoolerPowerHistory.Count > 100) {
-                        CoolerPowerHistory.RemoveAt(0);                    
-                    }
-                    CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(DateTime.Now, CoolerPower));
-                
+                    
                 }
 
                 if (CanPulseGuide) {
