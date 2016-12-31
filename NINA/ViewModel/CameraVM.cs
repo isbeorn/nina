@@ -219,6 +219,7 @@ namespace NINA.ViewModel {
             if(result == System.Windows.MessageBoxResult.OK) {
                 updateCamera.Stop();
                 CoolCameraTimer.Stop();
+                CoolingRunning = false;
                 Cam.disconnect();
             }
         }
