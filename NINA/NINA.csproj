@@ -277,6 +277,9 @@
     <Compile Include="View\PolarAlignmentView.xaml.cs">
       <DependentUpon>PolarAlignmentView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\PolarScopeView.xaml.cs">
+      <DependentUpon>PolarScopeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SequenceView.xaml.cs">
       <DependentUpon>SequenceView.xaml</DependentUpon>
     </Compile>
@@ -351,6 +354,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PolarAlignmentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PolarScopeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

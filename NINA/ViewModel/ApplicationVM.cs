@@ -15,7 +15,8 @@ namespace NINA.ViewModel {
     class ApplicationVM : BaseVM {
 
         public ApplicationVM() {
-            
+
+
 
             ExitCommand = new RelayCommand(exitApplication);
             MinimizeWindowCommand = new RelayCommand(minimizeWindow);
@@ -37,6 +38,9 @@ namespace NINA.ViewModel {
             var tele = this.TelescopeVM;
             ps.Telescope = tele.Telescope;
             var phd2 = this.PHD2VM;
+
+            var polarVM = this.PolarAlignVM;
+            polarVM.Telescope = tele.Telescope;
             //this.FrameFocusVM.Cam = cam.Cam;
             //this.FrameFocusVM.FW = cam.FilterWheelVM.FW;
             // var a = this.TelescopeVM;
@@ -165,6 +169,20 @@ namespace NINA.ViewModel {
             }
             set {
                 _imagingVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private PolarAlignmentVM _polarAlignVM;
+        public PolarAlignmentVM PolarAlignVM {
+            get {
+                if (_polarAlignVM == null) {
+                    _polarAlignVM = new PolarAlignmentVM();
+                    Views.Add(_polarAlignVM);
+                }
+                return _polarAlignVM;
+            } set {
+                _polarAlignVM = value;
                 RaisePropertyChanged();
             }
         }

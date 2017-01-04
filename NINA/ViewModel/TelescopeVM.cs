@@ -61,7 +61,7 @@ namespace NINA.ViewModel {
         private void chooseTelescope(object obj) {
             _updateTelescope.Stop();
             if (Telescope.connect()) {
-                _updateTelescope.Start();
+                _updateTelescope.Start();                
             }
         }
 
