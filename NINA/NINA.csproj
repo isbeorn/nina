@@ -203,7 +203,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="PlateSolving\AnsvrPlateSolver.cs" />
+    <Compile Include="PlateSolving\LocalPlateSolver.cs" />
     <Compile Include="PlateSolving\AstrometryPlateSolver.cs" />
     <Compile Include="Model\FilterWheelModel.cs" />
     <Compile Include="PlateSolving\IPlateSolver.cs" />

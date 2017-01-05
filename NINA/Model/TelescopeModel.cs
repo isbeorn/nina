@@ -1171,7 +1171,7 @@ namespace NINA.Model {
             }
         }
 
-        public void slewToCoordinates(double ra, double dec) {
+        public void slewToCoordinatesAsync(double ra, double dec) {
             if(Connected && CanSlew && !AtPark) {
                 try { 
                     if(!Telescope.Tracking) {
@@ -1181,11 +1181,23 @@ namespace NINA.Model {
                 } catch(Exception e) {
                     Notification.ShowError(e.Message);
                 }
-
-
-
             }
             
+        }
+
+        public void slewToCoordinates(double ra, double dec) {
+            if (Connected && CanSlew && !AtPark) {
+                try {
+                    if (!Telescope.Tracking) {
+                        Telescope.Tracking = true;
+                    }
+                    Telescope.SlewToCoordinates(ra, dec);
+                }
+                catch (Exception e) {
+                    Notification.ShowError(e.Message);
+                }
+            }
+
         }
 
         public void disconnect() {

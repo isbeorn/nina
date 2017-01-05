@@ -143,7 +143,7 @@ namespace NINA.ViewModel {
         }
 
         private void slewToCoordinates(object obj) {
-            Telescope.slewToCoordinates(TargetRightAscencion, TargetDeclination);
+            Telescope.slewToCoordinatesAsync(TargetRightAscencion, TargetDeclination);
         }
 
         private ICommand _slewToCoordinatesCommand;

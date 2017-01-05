@@ -32,7 +32,7 @@
 
                 <TextBlock Grid.Row="1" VerticalAlignment="Center" Grid.Column="0">Image File Path:</TextBlock>
                 <TextBox Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Text="{Binding ImageFilePath}"></TextBox>
-                <Button Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="40" Width="40" Grid.Column="2" Command="{Binding OpenFileDiagCommand}">
+                <Button Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="40" Width="40" Grid.Column="2" Command="{Binding OpenImageFileDiagCommand}">
                     <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
                 </Button>
 
@@ -107,10 +107,11 @@
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock   VerticalAlignment="Center" Width="100">API Key:</TextBlock>
+                        <TextBlock   VerticalAlignment="Center" Width="130">API Key:</TextBlock>
                         <TextBox  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AstrometryAPIKey}" />
                         <StackPanel.Style>
                             <Style TargetType="{x:Type StackPanel}">
@@ -123,8 +124,11 @@
                         </StackPanel.Style>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock   VerticalAlignment="Center" Width="100">Focal Length:</TextBlock>
-                        <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrFocalLength}" />
+                        <TextBlock   VerticalAlignment="Center" Width="130">cygwin bash location:</TextBlock>
+                        <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding CygwinBashLocation}" />
+                        <Button Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="40" Width="40" Grid.Column="2" Command="{Binding OpenCygwinFileDiagCommand}">
+                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
+                        </Button>
                         <StackPanel.Style>
                             <Style TargetType="{x:Type StackPanel}">
                                 <Style.Triggers>
@@ -136,7 +140,20 @@
                         </StackPanel.Style>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Orientation="Horizontal">
-                        <TextBlock   VerticalAlignment="Center" Width="100">Pixel Size:</TextBlock>
+                        <TextBlock   VerticalAlignment="Center" Width="130">Focal Length:</TextBlock>
+                        <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrFocalLength}" />
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Style.Triggers>
+                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <TextBlock   VerticalAlignment="Center" Width="130">Pixel Size:</TextBlock>
                         <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrPixelSize}" />
                         <StackPanel.Style>
                             <Style TargetType="{x:Type StackPanel}">
@@ -149,7 +166,7 @@
                         </StackPanel.Style>
                     </StackPanel>
                     <StackPanel  Grid.Row="1" Orientation="Horizontal">
-                        <TextBlock Grid.Row="1"  VerticalAlignment="Center" Width="100">Use full resolution:</TextBlock>
+                        <TextBlock Grid.Row="1"  VerticalAlignment="Center" Width="130">Use full resolution:</TextBlock>
                         <CheckBox  HorizontalAlignment="Stretch" VerticalAlignment="Center" IsChecked="{Binding UseFullResolutionPlateSolve}" />
                         <StackPanel.Style>
                             <Style TargetType="{x:Type StackPanel}">

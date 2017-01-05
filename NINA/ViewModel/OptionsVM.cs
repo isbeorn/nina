@@ -15,7 +15,8 @@ namespace NINA.ViewModel {
             Name = "Options";            
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
             PreviewFileCommand = new RelayCommand(previewFile);
-            OpenFileDiagCommand = new RelayCommand(openFileDiag);
+            OpenImageFileDiagCommand = new RelayCommand(openImageFileDiag);
+            OpenCygwinFileDiagCommand = new RelayCommand(openCygwinFileDiag);
             ToggleColorsCommand = new RelayCommand(toggleColors);
 
             ImageFilePath = Settings.ImageFilePath;
@@ -35,7 +36,7 @@ namespace NINA.ViewModel {
             ImagePatterns = p;
         }
 
-        private void openFileDiag(object o) {
+        private void openImageFileDiag(object o) {
             var diag = new System.Windows.Forms.FolderBrowserDialog();
             System.Windows.Forms.DialogResult result = diag.ShowDialog();
             if(result == System.Windows.Forms.DialogResult.OK) {
@@ -43,8 +44,27 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void openCygwinFileDiag(object o) {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.FileName = "bash.exe";
+            if (openFileDialog.ShowDialog() == true) {
+                CygwinBashLocation = openFileDialog.FileName;
+            }            
+        }
+
+        private ICommand _openCygwinFileDiagCommand;
+        public ICommand OpenCygwinFileDiagCommand {
+            get {
+                return _openCygwinFileDiagCommand;
+            }
+            set {
+                _openCygwinFileDiagCommand = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private ICommand _openFileDiagCommand;
-        public ICommand OpenFileDiagCommand {
+        public ICommand OpenImageFileDiagCommand {
             get {
                 return _openFileDiagCommand;
             }
@@ -116,6 +136,16 @@ namespace NINA.ViewModel {
             }
             set {
                 Settings.AnsvrFocalLength = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string CygwinBashLocation {
+            get {
+                return Settings.CygwinBashLocation;
+            }
+            set {
+                Settings.CygwinBashLocation = value;
                 RaisePropertyChanged();
             }
         }

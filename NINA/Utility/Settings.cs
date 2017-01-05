@@ -1,4 +1,6 @@
 ﻿using NINA.Model;
+using System;
+using System.Collections.Generic;
 using System.Windows.Media;
 
 namespace NINA.Utility {
@@ -21,6 +23,17 @@ namespace NINA.Utility {
             }
             set {
                 Properties.Settings.Default.AstrometryAPIKey = value;
+                Properties.Settings.Default.Save();
+            }
+
+        }
+
+        public static string CygwinBashLocation {
+            get {
+                return Properties.Settings.Default.CygwinBashLocation;
+            }
+            set {
+                Properties.Settings.Default.CygwinBashLocation = value;
                 Properties.Settings.Default.Save();
             }
 

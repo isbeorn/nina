@@ -22,7 +22,7 @@ namespace NINA.ViewModel {
             Progress = "Idle...";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
             
-            BlindSolveCommand = new AsyncCommand<bool>(() => blindSolve());
+            BlindSolveCommand = new AsyncCommand<bool>(() => blindSolve(new Progress<string>(p => Progress = p)));
             CancelBlindSolveCommand = new RelayCommand(cancelBlindSolve);
             SyncCommand = new RelayCommand(syncTelescope);
 
@@ -39,7 +39,10 @@ namespace NINA.ViewModel {
         private void syncTelescope(object obj) {
             if(PlateSolveResult != null) {
 
-                if(Telescope.sync(PlateSolveResult.RaString, PlateSolveResult.DecString)) {
+                PolarAlignmentVM.Coordinates solved = new PolarAlignmentVM.Coordinates(PlateSolveResult.Ra, PlateSolveResult.Dec);
+                solved = solved.transformToJNOW();
+
+                if (Telescope.sync(solved.RAString, solved.DecString)) {
                     Notification.ShowSuccess("Telescope synced to coordinates");
                 } else {
                     Notification.ShowWarning("Telescope sync failed!");
@@ -61,21 +64,21 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<bool> blindSolveWithCapture() {            
+        public async Task<bool> blindSolveWithCapture(IProgress<string> progress) {            
             await ImagingVM.captureImage();
-            await blindSolve();
+            await blindSolve(progress);
             return true;
         }
         
 
-        public async Task<bool> blindSolve() {
+        public async Task<bool> blindSolve(IProgress<string> progress) {
             bool fullresolution = true;
             if(Settings.PlateSolverType == PlateSolverEnum.ASTROMETRY_NET) {
                 fullresolution = Settings.UseFullResolutionPlateSolve;
                 Platesolver = new AstrometryPlateSolver("http://nova.astrometry.net", Settings.AstrometryAPIKey);
-            } else if (Settings.PlateSolverType == PlateSolverEnum.ANSVR) {
+            } else if (Settings.PlateSolverType == PlateSolverEnum.LOCAL) {
                
-                Platesolver = new AnsvrPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * ImagingVM.Cam.BinX);
+                Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * ImagingVM.Cam.BinX);
             }
             
 
@@ -122,7 +125,7 @@ namespace NINA.ViewModel {
             return await Task<bool>.Run(async () => {
 
                 _blindeSolveCancelToken = new CancellationTokenSource();
-                PlateSolveResult = await Platesolver.blindSolve(ms, new Progress<string>(p => Progress = p), _blindeSolveCancelToken);
+                PlateSolveResult = await Platesolver.blindSolve(ms, progress, _blindeSolveCancelToken);
                 return PlateSolveResult.Success;
             });           
             

@@ -116,9 +116,24 @@ namespace NINA.ViewModel {
             }
         }
 
+
+        private string deg2str(double deg, int precision) {
+            if (Math.Abs(deg) > 1) {
+                return deg.ToString("N" + precision) + "°";
+            }
+            var amin = deg * 60;
+            if(Math.Abs(amin) > 1) {
+                return amin.ToString("N" + precision) + "'";
+            }
+            var asec = deg * 3600;
+            return asec.ToString("N" + precision) + "''";
+        }
+
         private async Task<bool> measurePolarError(Direction direction, Hemisphere hem = Hemisphere.North) {
 
             double poleErr = await calculatePoleError();
+
+            string poleErrString = deg2str(Math.Abs(poleErr), 4);
 
             if(double.IsNaN(poleErr)) {
                 /* something went wrong */
@@ -132,16 +147,16 @@ namespace NINA.ViewModel {
                 if(hem == Hemisphere.North) {
                     //if east
                     if (poleErr < 0) {
-                        msg = poleErr + "° too low";
+                        msg = poleErrString + " too low";
                     } else {
-                        msg = poleErr + "° too high";
+                        msg = poleErrString + " too high";
                     }
                 } else {
                     //if east
                     if (poleErr < 0) {
-                        msg = poleErr + "° too high";
+                        msg = poleErrString + " too high";
                     } else {
-                        msg = poleErr + "° too low";
+                        msg = poleErrString + " too low";
                     }
                 }
                 
@@ -149,15 +164,15 @@ namespace NINA.ViewModel {
                 //if northern
                 if(hem == Hemisphere.North) {
                     if (poleErr < 0) {
-                        msg = poleErr + "° too east";
+                        msg = poleErrString + " too east";
                     } else {
-                        msg = poleErr + "° too west";
+                        msg = poleErrString + " too west";
                     }
                 } else {
                     if (poleErr < 0) {
-                        msg = poleErr + "° too west";
+                        msg = poleErrString + " too west";
                     } else {
-                        msg = poleErr + "° too east";
+                        msg = poleErrString + " too east";
                     }
                 }
                 
@@ -181,11 +196,14 @@ namespace NINA.ViewModel {
         }
 
         private async Task<double> calculatePoleError() {
+            
+            var prg = new Progress<string>(p => PolarErrorStatus = p);
+
             double movement = 0.5d;
 
             PolarErrorStatus = "Solving image...";
 
-            await PlatesolveVM.blindSolveWithCapture();
+            await PlatesolveVM.blindSolveWithCapture(prg);
 
             PlateSolving.PlateSolveResult startSolveResult = PlatesolveVM.PlateSolveResult;
             if(!startSolveResult.Success) {
@@ -207,7 +225,7 @@ namespace NINA.ViewModel {
 
             PolarErrorStatus = "Solving image...";
 
-            await PlatesolveVM.blindSolveWithCapture();
+            await PlatesolveVM.blindSolveWithCapture(prg);
             PlateSolving.PlateSolveResult targetSolveResult = PlatesolveVM.PlateSolveResult;
             if (!targetSolveResult.Success) {
                 return double.NaN;
@@ -217,7 +235,7 @@ namespace NINA.ViewModel {
             targetSolve = targetSolve.transformToJNOW();
 
             PolarErrorStatus = "Slewing back to origin...";
-            Telescope.Telescope.SlewToCoordinates(startPosition.RA, startPosition.Dec);
+            Telescope.slewToCoordinates(startPosition.RA, startPosition.Dec);
 
 
             var decError = startSolve.Dec - targetSolve.Dec;
@@ -236,6 +254,16 @@ namespace NINA.ViewModel {
         public class Coordinates {
             public double RA;
             public double Dec;
+            public string RAString {
+                get {
+                    return Utility.Utility.AscomUtil.DegreesToHMS(RA);
+                }
+            }
+            public string DecString {
+                get {
+                    return Utility.Utility.AscomUtil.DegreesToDMS(Dec);
+                }
+            }
             public Epoch Epoch;
 
             public Coordinates(double ra, double dec, Epoch epoch = Epoch.J2000) {
@@ -244,20 +272,14 @@ namespace NINA.ViewModel {
                 this.Epoch = epoch;
             }
 
-            public Coordinates transformToJNOW() {                
-                var NOVAS31 = Utility.Utility.NOVAS31;
-                double[] vector = new double[4];
-                NOVAS31.RaDec2Vector(RA, Dec, 1000, ref vector);
-                double[] translatedvector = new double [4];
+            public Coordinates transformToJNOW() {
+                if(Epoch == Epoch.JNOW) {
+                    return this;
+                }
+                var transform = new ASCOM.Astrometry.Transform.Transform();
+                transform.SetJ2000(RA, Dec);
 
-                var util = Utility.Utility.AstroUtils;
-                var jd = util.JulianDateUtc;
-
-                NOVAS31.Precession(2451545.0, vector, jd, ref translatedvector);
-                double newRA = 0.0, newDec = 0.0;
-                NOVAS31.Vector2RaDec(translatedvector, ref newRA, ref newDec);
-
-                return new Coordinates(newRA, newDec, Epoch.JNOW);
+                return new Coordinates((transform.RAApparent / 24) * 360, transform.DECApparent, Epoch.JNOW);
             }
 
         }
@@ -277,26 +299,25 @@ namespace NINA.ViewModel {
 
                 var polaris = new Coordinates(ascomutil.HMSToHours("02:31:49.09"), ascomutil.DMSToDegrees("89:15:50.8"));
 
-                var polarisnow = polaris.transformToJNOW();
-
-                /*var util = Utility.Utility.AstroUtils;
-                var jd = util.JulianDateUtc;
-
-                //J2000 Coordinates
-                var polarisRA = ascomutil.HMSToHours("02:31:49.09");
-                var polarisDec = ascomutil.DMSToDegrees("89:15:50.8");
+                
 
                 var NOVAS31 = Utility.Utility.NOVAS31;
+                double[] vector = new double[4];
+                NOVAS31.RaDec2Vector(polaris.RA, polaris.Dec, 1000, ref vector);
+                double[] translatedvector = new double [4];
 
-                double[] coords = new double[4];
-                double[] translatedcoords = new double[4];
-                NOVAS31.RaDec2Vector(polarisRA, polarisDec, 2.738e+7, ref coords);
-                //Convert J2000 to current coordinates
-                NOVAS31.Precession(2451545.0, coords, jd, ref translatedcoords);
-                NOVAS31.Vector2RaDec(translatedcoords, ref polarisRA, ref polarisDec);*/
+                var util = Utility.Utility.AstroUtils;
+                var jd = util.JulianDateUtc;
 
-                var hour_angle = Telescope.SiderealTime - polarisnow.RA;
+                NOVAS31.Precession(2451545.0, vector, jd, ref translatedvector);
+                double newRA = 0.0, newDec = 0.0;
+                NOVAS31.Vector2RaDec(translatedvector, ref newRA, ref newDec);
+                polaris = new Coordinates(newRA, newDec, Epoch.JNOW);
 
+                var hour_angle = Math.Abs(Telescope.SiderealTime - polaris.RA);
+                if (hour_angle < 0) {
+                    hour_angle += 24;
+                }
                 Rotation = -(hour_angle / 24) * 360;
                 HourAngleTime = ascomutil.HoursToHMS(hour_angle);            
             }

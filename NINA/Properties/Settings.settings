@@ -98,5 +98,8 @@
     <Setting Name="AnsvrPixelSize" Type="System.Double" Scope="User">
       <Value Profile="(Default)">3.8</Value>
     </Setting>
+    <Setting Name="CygwinBashLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

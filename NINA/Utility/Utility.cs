@@ -574,8 +574,8 @@ namespace NINA.Utility {
     public enum PlateSolverEnum {
         [Description("Astrometry.net")]
         ASTROMETRY_NET,
-        [Description("Ansvr")]
-        ANSVR
+        [Description("Local")]
+        LOCAL
     }
 
 

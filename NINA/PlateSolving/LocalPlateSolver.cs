@@ -7,15 +7,18 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 using nom.tam.fits;
+using NINA.Utility;
 
 namespace NINA.PlateSolving {
-    class AnsvrPlateSolver : IPlateSolver {
+    class LocalPlateSolver : IPlateSolver {
         
 
         double _lowarcsecperpixel;
         double _higharcsecperpixel;
 
-        public AnsvrPlateSolver(int focallength, double pixelsize) {
+        static string TMPIMGFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA";
+
+        public LocalPlateSolver(int focallength, double pixelsize) {
             double arcsecperpixel = (pixelsize / focallength) * 206.3;
             _lowarcsecperpixel = arcsecperpixel - 0.2;
             _higharcsecperpixel = arcsecperpixel + 0.2;
@@ -24,19 +27,17 @@ namespace NINA.PlateSolving {
         private PlateSolveResult solve(MemoryStream image, double low, double high, IProgress<string> progress, CancellationTokenSource canceltoken) {
                      
             PlateSolveResult result = new PlateSolveResult();
-            try {
-                string path = Directory.GetCurrentDirectory() + @"\tmp";
-                string filepath = path + "\\tmp.jpeg";
-                /*write image to temporary dir */
-                Directory.CreateDirectory(path);
+            try {                
+                string filepath = TMPIMGFILEPATH + "\\tmp.jpeg";
+                
                 using (FileStream fs = new FileStream(filepath, FileMode.Create)) {
                     image.CopyTo(fs);
                 }
 
-                var ansvrpath = "%localappdata%\\cygwin_ansvr\\bin\\bash.exe";
+                var cygwinbashpath = Path.GetFullPath(Settings.CygwinBashLocation);                
 
-                if (!File.Exists(ansvrpath)) {
-                    Utility.Notification.ShowError(string.Format("ansvr cygwin bash not found at {0}", ansvrpath));
+                if (!File.Exists(cygwinbashpath)) {
+                    Utility.Notification.ShowError(string.Format("ansvr cygwin bash not found at {0}", cygwinbashpath));
                     result.Success = false;
                     return result;
                 }
@@ -48,7 +49,7 @@ namespace NINA.PlateSolving {
                 startInfo.UseShellExecute = false;
                 startInfo.RedirectStandardOutput = true;
                 startInfo.CreateNoWindow = true;
-                startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field -p -O -U none -B none -R none -M none -N none -C cancel--crpix -center -z 2 --objs 100 -u arcsecperpix -L {1} -H {2} {3}'", ansvrpath, low.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), high.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), filepath.Replace("\\", "/"));
+                startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field -p -O -U none -B none -R none -M none -N none -C cancel--crpix -center -z 2 --objs 100 -u arcsecperpix -L {1} -H {2} {3}'", cygwinbashpath, low.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), high.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), filepath.Replace("\\", "/"));
                 process.StartInfo = startInfo;
                 process.Start();
 
@@ -58,9 +59,9 @@ namespace NINA.PlateSolving {
                 }
 
 
-                if (File.Exists(path + "\\tmp.wcs")) {
+                if (File.Exists(TMPIMGFILEPATH + "\\tmp.wcs")) {
                     progress.Report("Solved");
-                    Fits solvedFits = new Fits(path + "\\tmp.wcs");
+                    Fits solvedFits = new Fits(TMPIMGFILEPATH + "\\tmp.wcs");
                     BasicHDU solvedHDU = solvedFits.GetHDU(0);
                     result.Ra = double.Parse(solvedHDU.Header.FindCard("CRVAL1").Value, System.Globalization.CultureInfo.InvariantCulture);
                     result.Dec = double.Parse(solvedHDU.Header.FindCard("CRVAL2").Value, System.Globalization.CultureInfo.InvariantCulture);

@@ -407,5 +407,17 @@ namespace NINA.Properties {
                 this["AnsvrPixelSize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CygwinBashLocation {
+            get {
+                return ((string)(this["CygwinBashLocation"]));
+            }
+            set {
+                this["CygwinBashLocation"] = value;
+            }
+        }
     }
 }
