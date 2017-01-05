@@ -22,44 +22,54 @@ namespace NINA.PlateSolving {
         }
 
         private PlateSolveResult solve(MemoryStream image, double low, double high, IProgress<string> progress, CancellationTokenSource canceltoken) {
+                     
             PlateSolveResult result = new PlateSolveResult();
-            string path = Directory.GetCurrentDirectory() + @"\tmp";
-            string filepath = path + "\\tmp.jpeg";
-            /*write image to temporary dir */
-            Directory.CreateDirectory(path);
-            using (FileStream fs = new FileStream(filepath, FileMode.Create)) {
-                image.CopyTo(fs);
+            try {
+                string path = Directory.GetCurrentDirectory() + @"\tmp";
+                string filepath = path + "\\tmp.jpeg";
+                /*write image to temporary dir */
+                Directory.CreateDirectory(path);
+                using (FileStream fs = new FileStream(filepath, FileMode.Create)) {
+                    image.CopyTo(fs);
+                }
+
+                var ansvrpath = "%localappdata%\\cygwin_ansvr\\bin\\bash.exe";
+
+                if (!File.Exists(ansvrpath)) {
+                    Utility.Notification.ShowError(string.Format("ansvr cygwin bash not found at {0}", ansvrpath));
+                    result.Success = false;
+                    return result;
+                }
+
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                startInfo.FileName = "cmd.exe";
+                startInfo.UseShellExecute = false;
+                startInfo.RedirectStandardOutput = true;
+                startInfo.CreateNoWindow = true;
+                startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field -p -O -U none -B none -R none -M none -N none -C cancel--crpix -center -z 2 --objs 100 -u arcsecperpix -L {1} -H {2} {3}'", ansvrpath, low.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), high.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), filepath.Replace("\\", "/"));
+                process.StartInfo = startInfo;
+                process.Start();
+
+                while (!process.StandardOutput.EndOfStream) {
+                    progress.Report(process.StandardOutput.ReadLine());
+                    canceltoken.Token.ThrowIfCancellationRequested();
+                }
+
+
+                if (File.Exists(path + "\\tmp.wcs")) {
+                    progress.Report("Solved");
+                    Fits solvedFits = new Fits(path + "\\tmp.wcs");
+                    BasicHDU solvedHDU = solvedFits.GetHDU(0);
+                    result.Ra = double.Parse(solvedHDU.Header.FindCard("CRVAL1").Value, System.Globalization.CultureInfo.InvariantCulture);
+                    result.Dec = double.Parse(solvedHDU.Header.FindCard("CRVAL2").Value, System.Globalization.CultureInfo.InvariantCulture);
+                } else {
+                    result.Success = false;
+                }
+            } catch (OperationCanceledException ex) {
+                result.Success = false;
             }
-
-
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-            startInfo.FileName = "cmd.exe";
-            startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.CreateNoWindow = true;
-            startInfo.Arguments = string.Format("/C %localappdata%\\cygwin_ansvr\\bin\\bash.exe --login -c '/usr/bin/solve-field -p -O -U none -B none -R none -M none -N none -C cancel--crpix -center -z 2 --objs 100 -u arcsecperpix -L {0} -H {1} {2}'", low.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), high.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), filepath.Replace("\\", "/"));            
-            process.StartInfo = startInfo;
-            process.Start();            
-
-            while(!process.StandardOutput.EndOfStream) {
-                progress.Report(process.StandardOutput.ReadLine());
-                canceltoken.Token.ThrowIfCancellationRequested();
-            }
-
-            
-            if(File.Exists(path+ "\\tmp.wcs")) {
-                progress.Report("Solved");
-                Fits solvedFits = new Fits(path + "\\tmp.wcs");
-                BasicHDU solvedHDU = solvedFits.GetHDU(0);
-                result.Ra = double.Parse(solvedHDU.Header.FindCard("CRVAL1").Value, System.Globalization.CultureInfo.InvariantCulture);
-                result.Dec = double.Parse(solvedHDU.Header.FindCard("CRVAL2").Value, System.Globalization.CultureInfo.InvariantCulture);
-            }
-
-
-
-
 
             return result;
         }

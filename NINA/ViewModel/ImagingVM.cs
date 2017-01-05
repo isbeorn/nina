@@ -491,7 +491,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> captureImage() {
+        public async Task<bool> captureImage() {
             _captureImageToken = new CancellationTokenSource();
             List<SequenceModel> seq = new List<SequenceModel>();
             seq.Add(new SequenceModel(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));

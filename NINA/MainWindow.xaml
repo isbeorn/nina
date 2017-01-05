@@ -5,7 +5,7 @@
         xmlns:util="clr-namespace:NINA.Utility"
         xmlns:local="clr-namespace:NINA.View"   
         xmlns:toast="clr-namespace:ToastNotifications;assembly=ToastNotifications"
-    Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Height="720" Width="1280" Background="{StaticResource BackgroundBrush}" Icon="/NINA;component/Resources/observatory.png" WindowStyle="None" MouseDown="Window_MouseDown"  AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
+    Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy" MinHeight="720" MinWidth="1280" Background="{StaticResource BackgroundBrush}" Icon="/NINA;component/Resources/observatory.png" WindowStyle="None" MouseDown="Window_MouseDown"  AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
     <Grid DataContext="{StaticResource AppVM}">
         <Grid>
@@ -93,15 +93,6 @@
                         <view:TelescopeView DataContext="{Binding TelescopeVM}" ></view:TelescopeView>
                     </TabItem.Content>
                 </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PHD2SVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
-                        </Path>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:PHD2View DataContext="{Binding PHD2VM}" ></view:PHD2View>
-                    </TabItem.Content>
-                </TabItem>
                     <TabItem>
                         <TabItem.Header>
                             <local:PolarScopeView Margin="5" Height="50" Width="50"/>
@@ -112,6 +103,16 @@
                             <view:PolarAlignmentView DataContext="{Binding PolarAlignVM}" ></view:PolarAlignmentView>
                         </TabItem.Content>
                     </TabItem>
+                    <TabItem>
+                    <TabItem.Header>
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PHD2SVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
+                        </Path>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <view:PHD2View DataContext="{Binding PHD2VM}" ></view:PHD2View>
+                    </TabItem.Content>
+                </TabItem>
+                    
                     <TabItem>
                     <TabItem.Header>
                         <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MinimizeSVG}" Stretch="Uniform"  Margin="5" Height="50" Width="50" >

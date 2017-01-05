@@ -7,16 +7,48 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="400">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <GroupBox Header="Polar Scope">            
-                <local:PolarScopeView />
-        </GroupBox>
+        <TextBlock Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">
+            Please connect Telescope
+        </TextBlock>
+        <Grid IsEnabled="{Binding Telescope.Connected}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <GroupBox Header="Polar Scope">            
+                    <local:PolarScopeView />
+            </GroupBox>
+
+            <UniformGrid  Grid.Column="1" Rows="2">
+                <StackPanel Orientation="Horizontal">
+                    <Button  Width="50" Height="50" Command="{Binding MeasureAltitudeErrorCommand}" Margin="5,0,5,0">
+                        |
+                        <!--<Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PlatesolveSVG}" Stretch="Uniform" Margin="5">
+                    </Path>-->
+                    </Button>
+                    <Button  Width="50" Height="50" Command="{Binding MeasureAzimuthErrorCommand}" Margin="5,0,5,0">
+                        ----
+                        <!--<Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PlatesolveSVG}" Stretch="Uniform" Margin="5">
+                    </Path>-->
+                    </Button>
+                </StackPanel>
+                <TextBlock Text="{Binding PolarErrorStatus}" />
+            </UniformGrid>
+            
+
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Opacity" Value="0.6" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
     </Grid>
 </UserControl>

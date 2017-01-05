@@ -149,18 +149,22 @@ namespace NINA.PlateSolving {
                                 progress.Report("Solved");
                             }
                             else {
+                                result.Success = false;
                                 progress.Report("Plate solve failed");
                             }
                         }
                         else {
+                            result.Success = false;
                             progress.Report("Failed to get job result");
                         }
                     }
                     else {
+                        result.Success = false;
                         progress.Report("Failed to get submission");
                     }
                 }
                 else {
+                    result.Success = false;
                     progress.Report("Authorization failed ...");
                 }
 
@@ -168,6 +172,7 @@ namespace NINA.PlateSolving {
 
             catch (System.OperationCanceledException ex) {
                 Logger.trace(ex.Message);
+                result.Success = false;
                 progress.Report("Cancelled");
             }
             finally {

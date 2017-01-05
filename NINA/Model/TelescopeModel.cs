@@ -1174,6 +1174,9 @@ namespace NINA.Model {
         public void slewToCoordinates(double ra, double dec) {
             if(Connected && CanSlew && !AtPark) {
                 try { 
+                    if(!Telescope.Tracking) {
+                        Telescope.Tracking = true;
+                    }
                     Telescope.SlewToCoordinatesAsync(ra, dec);
                 } catch(Exception e) {
                     Notification.ShowError(e.Message);

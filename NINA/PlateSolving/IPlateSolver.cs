@@ -15,12 +15,17 @@ namespace NINA.PlateSolving {
     
 
     public class PlateSolveResult {
+        public PlateSolveResult() {
+            Success = true;
+        }
+
         BitmapSource _solvedImage;
         double _orientation;
         double _pixscale;
         double _radius;
         double _ra;
         double _dec;
+        bool _success;
 
         public double Orientation {
             get {
@@ -91,6 +96,16 @@ namespace NINA.PlateSolving {
 
             set {
                 _solvedImage = value;
+            }
+        }
+
+        public bool Success {
+            get {
+                return _success;
+            }
+
+            set {
+                _success = value;
             }
         }
     }

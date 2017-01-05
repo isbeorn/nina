@@ -61,9 +61,14 @@ namespace NINA.ViewModel {
             }
         }
 
+        public async Task<bool> blindSolveWithCapture() {            
+            await ImagingVM.captureImage();
+            await blindSolve();
+            return true;
+        }
         
 
-        private async Task<bool> blindSolve() {
+        public async Task<bool> blindSolve() {
             bool fullresolution = true;
             if(Settings.PlateSolverType == PlateSolverEnum.ASTROMETRY_NET) {
                 fullresolution = Settings.UseFullResolutionPlateSolve;
@@ -118,7 +123,7 @@ namespace NINA.ViewModel {
 
                 _blindeSolveCancelToken = new CancellationTokenSource();
                 PlateSolveResult = await Platesolver.blindSolve(ms, new Progress<string>(p => Progress = p), _blindeSolveCancelToken);
-                return true;
+                return PlateSolveResult.Success;
             });           
             
         }
