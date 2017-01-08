@@ -226,23 +226,11 @@
                         <Slider  Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="30" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Duration}" IsEnabled="{Binding CoolingRunning , Converter={StaticResource InverseBooleanConverter}}"></Slider>
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Duration, StringFormat=\{0:#.0\}}"/>
 
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="3" Grid.ColumnSpan="3" >
-                            <Button Width="50" Height="50" IsEnabled="{Binding CoolingRunning}"  Command="{Binding CancelCoolCamCommand}" Visibility="{Binding CoolingRunning, Converter={StaticResource VisibilityConverter}}">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="5">
-                                </Path>
-                            </Button>
-                            <Button Width="50" Height="50" IsEnabled="{Binding CoolingRunning , Converter={StaticResource InverseBooleanConverter}}" Command="{Binding CoolCamCommand}" >
-                                <Grid>
-                                    <TextBlock Visibility="{Binding CoolingRunning, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                     <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CheckedSVG}" Stretch="Uniform" Margin="5">
-                                    </Path>
-                                    </TextBlock>
-                                    <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoolingRunning, Converter={StaticResource VisibilityConverter}}" Text="{Binding CoolingProgress , StringFormat=\{0:#%\}}" />
-                                </Grid>
-                            </Button>
-
+                        <StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}"  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" Visibility="{Binding CoolingRunning, Converter={StaticResource VisibilityConverter}}"/>
+                            <local:CancellableButtonView MyCommand="{Binding CoolCamCommand}" MyCancelCommand="{Binding CancelCoolCamCommand}" MyButtonImage="{StaticResource CheckedSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" HorizontalAlignment="Right" Width="50" Height="50" />
                         </StackPanel>
-
+                        
                     </Grid>
                     <local:CameraCoolingChartsView DataContext="{Binding}" Grid.Row="1" Grid.ColumnSpan="2"></local:CameraCoolingChartsView>
                     <!--<chartingToolkit:Chart Grid.Row="2" Grid.Column="0" DataContext="{Binding Cam.CoolerPowerHistory}"  Title="Cooler Power" Style="{StaticResource ChartStyle}">

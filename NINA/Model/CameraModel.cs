@@ -1448,22 +1448,29 @@ namespace NINA.Model
 
         public async Task<Array> downloadExposure(CancellationTokenSource tokenSource) {
             return await Task<Array>.Run(() => {
-                ASCOM.Utilities.Util U = new ASCOM.Utilities.Util();
-                while (!ImageReady && Connected) {
-                    //Console.Write(".");
-                    U.WaitForMilliseconds(10);
-                    tokenSource.Token.ThrowIfCancellationRequested();
-                }
+                try {
+                    ASCOM.Utilities.Util U = new ASCOM.Utilities.Util();
+                    while (!ImageReady && Connected) {
+                        //Console.Write(".");
+                        U.WaitForMilliseconds(10);
+                        tokenSource.Token.ThrowIfCancellationRequested();
+                    }
 
-                Array arr;
+                    Array arr;
 
-                if (AscomCamera.ImageArray.GetType() == typeof(Int32[,])) {
-                    arr = (Int32[,])AscomCamera.ImageArray;
-                    return arr;
-                } else {
-                    arr = (Int32[,,])AscomCamera.ImageArray;
-                    return (Int32[,,])AscomCamera.ImageArray;
+                    if (AscomCamera.ImageArray.GetType() == typeof(Int32[,])) {
+                        arr = (Int32[,])AscomCamera.ImageArray;
+                        return arr;
+                    }
+                    else {
+                        arr = (Int32[,,])AscomCamera.ImageArray;
+                        return (Int32[,,])AscomCamera.ImageArray;
+                    }
+                } catch (OperationCanceledException ex) {
+                    Logger.trace(ex.Message);
                 }
+                return null;
+                
             });            
         }
 

@@ -248,6 +248,9 @@
     <Compile Include="View\CameraView.xaml.cs">
       <DependentUpon>CameraView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\CancellableButtonView.xaml.cs">
+      <DependentUpon>CancellableButtonView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
     </Compile>
@@ -315,6 +318,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\CameraView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CancellableButtonView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -69,18 +69,8 @@
 
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" >
             <TextBlock Text="{Binding Progress}" VerticalAlignment="Center" />
-            <Grid>
-                <Button  Width="50" Height="50" Command="{Binding BlindSolveCommand}" Margin="5,0,5,0">
-                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PlatesolveSVG}" Stretch="Uniform" Margin="5">
-                    </Path>
-                </Button>
-                <Grid Visibility="{Binding BlindSolveCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}"  Margin="5,0,5,0">
-                    <Button Width="50" Height="50" Command="{Binding CancelBlindSolveCommand}" Visibility="{Binding BlindSolveCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" >
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="5">
-                        </Path>
-                    </Button>
-                </Grid>
-            </Grid>
+
+            <local:CancellableButtonView  Width="50" Height="50" Margin="5,0,5,0" MyCommand="{Binding BlindSolveCommand}" MyCancelCommand="{Binding CancelBlindSolveCommand}" MyButtonImage="{StaticResource PlatesolveSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" />
            
             <Button  Width="50" Height="50" Command="{Binding SyncCommand}" Margin="5,0,5,0">
                 <Grid>
@@ -89,9 +79,6 @@
                     <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
                     </Path>
                 </Grid>
-                
-                <!--<Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="5">
-                </Path>-->
             </Button>
         </StackPanel>
     </Grid>

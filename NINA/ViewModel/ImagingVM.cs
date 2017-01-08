@@ -323,6 +323,9 @@ namespace NINA.ViewModel {
 
                             /*Download Image */
                             Array arr = await download(tokenSource, progress);
+                            if (arr == null) {
+                                throw new OperationCanceledException();
+                            }
 
                             await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                                 /* Free Memory for new Image */
@@ -499,16 +502,27 @@ namespace NINA.ViewModel {
 
         public async Task<bool> captureImage(IProgress<string> progress) {
             _captureImageToken = new CancellationTokenSource();
-            List<SequenceModel> seq = new List<SequenceModel>();
-            seq.Add(new SequenceModel(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-            return await startSequence(seq, true, _captureImageToken, progress);     
+            if (IsExposing) {
+                Notification.ShowWarning("Camera is busy");
+                return true;
+            } else { 
+            
+                List<SequenceModel> seq = new List<SequenceModel>();
+                seq.Add(new SequenceModel(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
+                return await startSequence(seq, true, _captureImageToken, progress);
+            }
         }
 
-        public async Task<bool> captureImage(double duration, IProgress<string> progress) {
-            _captureImageToken = new CancellationTokenSource();
-            List<SequenceModel> seq = new List<SequenceModel>();
-            seq.Add(new SequenceModel(duration, ImageTypes.SNAP, null, null, 1));
-            return await startSequence(seq, true, _captureImageToken, progress);
+        public async Task<bool> captureImage(double duration, bool bsave, IProgress<string> progress, CancellationTokenSource token) {
+            if (IsExposing) {
+                Notification.ShowWarning("Camera is busy");
+                return true;
+            }
+            else {
+                List<SequenceModel> seq = new List<SequenceModel>();
+                seq.Add(new SequenceModel(duration, ImageTypes.SNAP, null, null, 1));
+                return await startSequence(seq, bsave, token, progress);
+            }
         }
 
         public static class ExposureStatus {

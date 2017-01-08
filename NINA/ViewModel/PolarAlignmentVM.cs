@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -76,6 +77,19 @@ namespace NINA.ViewModel {
             }
         }
 
+        private ICommand _cancelMeasureAzimuthErrorCommand;
+        public ICommand CancelMeasureAzimuthErrorCommand {
+            get {
+                return _cancelMeasureAzimuthErrorCommand;
+            }
+            private set {
+                _cancelMeasureAzimuthErrorCommand = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private CancellationTokenSource _cancelMeasureErrorToken;
         private IAsyncCommand _measureAltitudeErrorCommand;
         public IAsyncCommand MeasureAltitudeErrorCommand {
             get {
@@ -87,6 +101,17 @@ namespace NINA.ViewModel {
             }
         }
 
+        private ICommand _cancelMeasureAltitudeErrorCommand;
+        public ICommand CancelMeasureAltitudeErrorCommand {
+            get {
+                return _cancelMeasureAltitudeErrorCommand;
+            }
+            private set {
+                _cancelMeasureAltitudeErrorCommand = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private IAsyncCommand _dARVSlewCommand;
         public IAsyncCommand DARVSlewCommand {
             get {
@@ -94,6 +119,18 @@ namespace NINA.ViewModel {
             }
             private set {
                 _dARVSlewCommand = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private CancellationTokenSource _cancelDARVSlewToken;
+        private ICommand _cancelDARVSlewCommand;
+        public ICommand CancelDARVSlewCommand {
+            get {
+                return _cancelDARVSlewCommand;
+            }
+            private set {
+                _cancelDARVSlewCommand = value;
                 RaisePropertyChanged();
             }
         }
@@ -185,6 +222,9 @@ namespace NINA.ViewModel {
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(() => measurePolarError(new Progress<string>(p => PolarErrorStatus = p), Direction.Altitude));
             SlewToMeridianOffsetCommand = new RelayCommand(slewToMeridianOffset);
             DARVSlewCommand = new AsyncCommand<bool>(() => darvslew(new Progress<string>(p => ImagingVM.ExpStatus = p), new Progress<string>(p => DarvStatus = p)));
+            CancelDARVSlewCommand = new RelayCommand(canceldarvslew);
+            CancelMeasureAltitudeErrorCommand = new RelayCommand(cancelMeasurePolarError);
+            CancelMeasureAzimuthErrorCommand = new RelayCommand(cancelMeasurePolarError);
 
             Zoom = 1;
             MeridianOffset = 0;
@@ -240,42 +280,55 @@ namespace NINA.ViewModel {
 
         }
 
-        private async Task<bool> darvTelescopeSlew(IProgress<string> progress) {
+        private async Task<bool> darvTelescopeSlew(IProgress<string> progress, CancellationTokenSource canceltoken) {
             return await Task.Run<bool>(async () => {
-
-                //wait 5 seconds for camera to have a starting indicator
-                await Task.Delay(TimeSpan.FromSeconds(5));
-
                 Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination);
+                try {
+                    //wait 5 seconds for camera to have a starting indicator
+                    await Task.Delay(TimeSpan.FromSeconds(5), canceltoken.Token);
+                    
+                    double rate = DARVSlewRate;
+                    canceltoken.Token.ThrowIfCancellationRequested();
+                    progress.Report("Slewing...");
 
-                double rate = DARVSlewRate;
+                    //duration = half of user input minus 2 seconds for settle time
+                    TimeSpan duration = TimeSpan.FromSeconds((int)(DARVSlewDuration / 2) - 2);
 
-                progress.Report("Slewing...");
+                    Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, rate);
 
-                //duration = half of user input minus 2 seconds for settle time
-                TimeSpan duration = TimeSpan.FromSeconds((int)(DARVSlewDuration / 2) - 2);
+                    canceltoken.Token.ThrowIfCancellationRequested();
+                    await Task.Delay(duration, canceltoken.Token);
+                    canceltoken.Token.ThrowIfCancellationRequested();
 
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, rate);
+                    Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
 
-                await Task.Delay(duration);
+                    canceltoken.Token.ThrowIfCancellationRequested();
+                    await Task.Delay(TimeSpan.FromSeconds(1), canceltoken.Token);
+                    canceltoken.Token.ThrowIfCancellationRequested();
 
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                    progress.Report("Slewing back...");
 
-                await Task.Delay(TimeSpan.FromSeconds(1));
+                    Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -rate);
 
-                progress.Report("Slewing back...");
+                    canceltoken.Token.ThrowIfCancellationRequested();
+                    await Task.Delay(duration, canceltoken.Token);
+                    canceltoken.Token.ThrowIfCancellationRequested();
 
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -rate);
+                    Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
 
-                await Task.Delay(duration);
+                    canceltoken.Token.ThrowIfCancellationRequested();
+                    await Task.Delay(TimeSpan.FromSeconds(1), canceltoken.Token);
+                    canceltoken.Token.ThrowIfCancellationRequested();
 
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                } catch(OperationCanceledException ex) {
+                    Logger.trace(ex.Message);
+                } finally {
+                    progress.Report("Restoring start position...");
+                    Telescope.slewToCoordinates(startPosition.RA, startPosition.Dec);
+                }
 
-                await Task.Delay(TimeSpan.FromSeconds(1));
 
-                progress.Report("Restoring start position...");
-
-                Telescope.slewToCoordinates(startPosition.RA, startPosition.Dec);
+                
 
                 progress.Report("");
                 /*double movement = DARVSlewDuration / 60;
@@ -303,13 +356,19 @@ namespace NINA.ViewModel {
         private async Task<bool> darvslew(IProgress<string> cameraprogress, IProgress<string> slewprogress) {
             if(ImagingVM.Cam.Connected) {
                 if (!ImagingVM.IsExposing) {
-                    var oldAutoStretch = ImagingVM.AutoStretch;
-                    ImagingVM.AutoStretch = true;
-                    var capture = ImagingVM.captureImage(DARVSlewDuration + 5, cameraprogress);
-                    var slew = darvTelescopeSlew(slewprogress);
+                    _cancelDARVSlewToken = new CancellationTokenSource();
+                    try { 
+                        var oldAutoStretch = ImagingVM.AutoStretch;
+                        ImagingVM.AutoStretch = true;
+                        var capture = ImagingVM.captureImage(DARVSlewDuration + 5, false, cameraprogress, _cancelDARVSlewToken);
+                        var slew = darvTelescopeSlew(slewprogress, _cancelDARVSlewToken);
 
-                    await Task.WhenAll(capture, slew);
-                    ImagingVM.AutoStretch = oldAutoStretch;
+                        await Task.WhenAll(capture, slew);
+                        ImagingVM.AutoStretch = oldAutoStretch;
+                    } catch(OperationCanceledException ex) {
+                        Logger.trace(ex.Message);
+                    }
+
                 } else {
                     Notification.ShowWarning("Camera is busy - Cannot start DARV alignment!");
                 }
@@ -319,13 +378,27 @@ namespace NINA.ViewModel {
             return true;         
         }
 
+        private void canceldarvslew(object o) {
+            if (_cancelDARVSlewToken != null) {
+                _cancelDARVSlewToken.Cancel();
+            }
+        }
+
+        private void cancelMeasurePolarError(object o ) {
+            if(_cancelMeasureErrorToken != null) {
+                _cancelMeasureErrorToken.Cancel();
+            }
+        }
+
         private async Task<bool> measurePolarError(IProgress<string> progress, Direction direction, Hemisphere hem = Hemisphere.North ) {
             if (ImagingVM.Cam.Connected) {
 
-                if(!ImagingVM.IsExposing) { 
+                if(!ImagingVM.IsExposing) {
 
-                    double poleErr = await calculatePoleError(progress);
-
+                    _cancelMeasureErrorToken = new CancellationTokenSource();
+                    try {
+                                            
+                    double poleErr = await calculatePoleError(progress, _cancelMeasureErrorToken);
                     string poleErrString = deg2str(Math.Abs(poleErr), 4);
 
                     if (double.IsNaN(poleErr)) {
@@ -380,6 +453,11 @@ namespace NINA.ViewModel {
 
                     progress.Report(msg);
 
+                    } catch(OperationCanceledException ex) {
+                        Logger.trace(ex.Message);
+                        progress.Report("Canceled");
+                    }
+
                         /*  Altitude
                          *      Northern
                          *          East side
@@ -403,54 +481,77 @@ namespace NINA.ViewModel {
                 return true;
         }
 
-        private async Task<double> calculatePoleError(IProgress<string> progress) {
+        private async Task<double> calculatePoleError(IProgress<string> progress, CancellationTokenSource canceltoken) {
             
-            var prg = new Progress<string>(p => PolarErrorStatus = p);
-
-            double movement = 0.5d;
-
-            progress.Report("Solving image...");
-
-            await PlatesolveVM.blindSolveWithCapture(prg);
-
-            PlateSolving.PlateSolveResult startSolveResult = PlatesolveVM.PlateSolveResult;
-            if(!startSolveResult.Success) {
-                return double.NaN;
-            }
-
-            Coordinates startSolve = new Coordinates(startSolveResult.Ra, startSolveResult.Dec);
-            startSolve = startSolve.transformToJNOW();
-
+            
             Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination);
+            double poleError = double.NaN;
+            try {
+
+            
+                double movement = 0.5d;
+
+                progress.Report("Solving image...");
+
+                await PlatesolveVM.blindSolveWithCapture(progress, canceltoken);
+                
+                canceltoken.Token.ThrowIfCancellationRequested();
+                
+
+                PlateSolving.PlateSolveResult startSolveResult = PlatesolveVM.PlateSolveResult;
+                if(!startSolveResult.Success) {
+                    return double.NaN;
+                }
+
+                Coordinates startSolve = new Coordinates(startSolveResult.Ra, startSolveResult.Dec);
+                startSolve = startSolve.transformToJNOW();
+
+            
 
 
-            Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec);
-            progress.Report("Slewing...");
-            Telescope.slewToCoordinates(targetPosition.RA, targetPosition.Dec);
+                Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec);
+                progress.Report("Slewing...");
+                Telescope.slewToCoordinates(targetPosition.RA, targetPosition.Dec);
 
-            progress.Report("Settling...");
-            await Task.Delay(3000);
+                
+                canceltoken.Token.ThrowIfCancellationRequested();
+                
 
-            progress.Report("Solving image...");
+                progress.Report("Settling...");
+                await Task.Delay(3000);
 
-            await PlatesolveVM.blindSolveWithCapture(prg);
-            PlateSolving.PlateSolveResult targetSolveResult = PlatesolveVM.PlateSolveResult;
-            if (!targetSolveResult.Success) {
-                return double.NaN;
+                progress.Report("Solving image...");
+              
+                canceltoken.Token.ThrowIfCancellationRequested();
+                
+
+                await PlatesolveVM.blindSolveWithCapture(progress, canceltoken);
+                
+                    canceltoken.Token.ThrowIfCancellationRequested();
+                
+
+                PlateSolving.PlateSolveResult targetSolveResult = PlatesolveVM.PlateSolveResult;
+                if (!targetSolveResult.Success) {
+                    return double.NaN;
+                }
+
+                Coordinates targetSolve = new Coordinates(targetSolveResult.Ra, targetSolveResult.Dec);
+                targetSolve = targetSolve.transformToJNOW();
+
+                var decError = startSolve.Dec - targetSolve.Dec;
+                // Calculate pole error
+                poleError = 3.81 * 3600.0 * decError / (4 * movement * Math.Cos(ToRadians(startPosition.Dec)));
+                // Convert pole error from arcminutes to degrees
+                poleError = poleError / 60.0;
             }
-
-            Coordinates targetSolve = new Coordinates(targetSolveResult.Ra, targetSolveResult.Dec);
-            targetSolve = targetSolve.transformToJNOW();
-
-            progress.Report("Slewing back to origin...");
-            Telescope.slewToCoordinates(startPosition.RA, startPosition.Dec);
-
-
-            var decError = startSolve.Dec - targetSolve.Dec;
-            // Calculate pole error
-            var poleError = 3.81 * 3600.0 * decError / (4 * movement * Math.Cos(ToRadians(startPosition.Dec)));
-            // Convert pole error from arcminutes to degrees
-            poleError = poleError / 60.0;
+            catch (OperationCanceledException ex) {
+                Logger.trace(ex.Message);
+            } finally {
+                progress.Report("Slewing back to origin...");
+                Telescope.slewToCoordinates(startPosition.RA, startPosition.Dec);
+                progress.Report("Done");
+            }
+            
             return poleError;
         }
 

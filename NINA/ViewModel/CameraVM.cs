@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -19,20 +20,17 @@ namespace NINA.ViewModel {
             //ConnectCameraCommand = new RelayCommand(connectCamera);
             ChooseCameraCommand = new RelayCommand(chooseCamera);
             DisconnectCommand = new RelayCommand(disconnectCamera);
-            CoolCamCommand = new RelayCommand(coolCamera);
+            CoolCamCommand = new AsyncCommand<bool>(() => coolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(cancelCoolCamera);
             Cam = new Model.CameraModel();
             updateCamera = new DispatcherTimer();
             updateCamera.Interval = TimeSpan.FromMilliseconds(1000);
             updateCamera.Tick += updateCamera_Tick;
-
-            CoolCameraTimer = new DispatcherTimer();
-            CoolCameraTimer.Tick += coolCamera_Tick;
-            CoolCameraTimer.Interval = TimeSpan.FromMilliseconds(300);
+            
             CoolingRunning = false;
         }
 
-        private void coolCamera_Tick(object sender, EventArgs e) {           
+        private void coolCamera_Tick(IProgress<double> progress) {           
 
             double currentTemp = Cam.CCDTemperature;
             double deltaTemp = currentTemp - TargetTemp;
@@ -47,17 +45,11 @@ namespace NINA.ViewModel {
             double newTemp = GetY(_startPoint, _endPoint, new Vector2(-_startPoint.X, _startPoint.Y), Duration);
             Cam.SetCCDTemperature = newTemp;
            
-            CoolingProgress = 1 - (Duration / _initalDuration);
+            progress.Report(1 - (Duration / _initalDuration));
 
             deltaT = DateTime.Now;
 
-            if (Duration <= 0) {
-                Duration = 0;
-                Cam.SetCCDTemperature = TargetTemp;
-                CoolingRunning = false;
-                CoolCameraTimer.Stop();
-                
-            }
+            
         }
 
         private class Vector2 {
@@ -129,43 +121,57 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void coolCamera(object o) {
+        private CancellationTokenSource _cancelCoolCameraSource;
+
+        private async Task<bool> coolCamera(IProgress<double> progress) {
+            _cancelCoolCameraSource = new CancellationTokenSource();
             Cam.CoolerOn = true;
             if (Duration == 0) {                            
                 Cam.SetCCDTemperature = TargetTemp;
+                progress.Report(1);
             } else {
-                deltaT = DateTime.Now;
-                double currentTemp = Cam.CCDTemperature;
-                _startPoint = new Vector2(Duration, currentTemp);
-                _endPoint = new Vector2(0, TargetTemp);
-                Cam.SetCCDTemperature = currentTemp;
-                _initalDuration = Duration;
-                CoolCameraTimer.Start();
-                CoolingRunning = true;
+                try {
+
+                
+                    deltaT = DateTime.Now;
+                    double currentTemp = Cam.CCDTemperature;
+                    _startPoint = new Vector2(Duration, currentTemp);
+                    _endPoint = new Vector2(0, TargetTemp);
+                    Cam.SetCCDTemperature = currentTemp;
+                    _initalDuration = Duration;
+
+                    //CoolCameraTimer.Start();
+
+                    CoolingRunning = true;
+                    do {
+                        coolCamera_Tick(progress);
+                        await Task.Delay(TimeSpan.FromMilliseconds(300));
+                        _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
+                    } while (Duration >= 0);
+                                                
+                    
+                } catch(OperationCanceledException ex) {
+                    Logger.trace(ex.Message);
+                    
+                } finally {
+                    progress.Report(1);
+                    Duration = 0;
+                    Cam.SetCCDTemperature = Cam.CCDTemperature;
+                    CoolingRunning = false;
+                }
             }
+            return true;
 
         }
 
         private void cancelCoolCamera(object o) {
-            CoolCameraTimer.Stop();
-            CoolingRunning = false;
-            Cam.SetCCDTemperature = Cam.CCDTemperature;
+            if(_cancelCoolCameraSource != null) {
+                _cancelCoolCameraSource.Cancel();
+            }
         }
             
 
         DispatcherTimer updateCamera;
-
-        private DispatcherTimer _coolCameraTimer;
-        public DispatcherTimer CoolCameraTimer {
-            get {
-                return _coolCameraTimer;
-            }
-            private set {
-                _coolCameraTimer = value;
-                RaisePropertyChanged();
-            }
-        }
-
 
 
         private double _targetTemp;
@@ -218,7 +224,9 @@ namespace NINA.ViewModel {
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxImage.Question, System.Windows.MessageBoxResult.Cancel);
             if(result == System.Windows.MessageBoxResult.OK) {
                 updateCamera.Stop();
-                CoolCameraTimer.Stop();
+                if(_cancelCoolCameraSource != null) {
+                    _cancelCoolCameraSource.Cancel();
+                }                
                 CoolingRunning = false;
                 Cam.disconnect();
             }

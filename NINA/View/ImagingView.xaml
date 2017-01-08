@@ -53,23 +53,9 @@
                 <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource AddSVG}" Stretch="Uniform" Margin="5">
                 </Path>
             </Button>
-            <Grid  IsEnabled="{Binding Cam.Connected}"  Margin="5,0,5,0">
-                <Button Width="50" Height="50" Command="{Binding StartSequenceCommand}" IsEnabled="{Binding IsExposing, Converter={StaticResource InverseBooleanConverter}}" >
-                    <Grid>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PlaySVG}" Stretch="Uniform" Margin="5" Visibility="{Binding StartSequenceCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                        </Path>                        
-                        <Grid Visibility="{Binding StartSequenceCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}" >
-                            <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding StartSequenceCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" Text="{Binding ExposureSeconds}" />
-                        </Grid>
-                    </Grid>
-                </Button>
-            </Grid>
-            <Grid IsEnabled="{Binding Cam.Connected}" Visibility="{Binding StartSequenceCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}"  Margin="5,0,5,0">
-                <Button Width="50" Height="50" Command="{Binding CancelSequenceCommand}" Visibility="{Binding StartSequenceCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" >
-                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="5">
-                    </Path>
-                </Button>
-            </Grid>
+
+            <local:CancellableButtonView MyCommand="{Binding StartSequenceCommand}" MyCancelCommand="{Binding CancelSequenceCommand}" MyButtonImage="{StaticResource PlaySVG}" MyCancelButtonImage="{StaticResource CancelSVG}" />
+
         </StackPanel>
         
 
@@ -129,28 +115,9 @@
                     </ToggleButton.Style>
                 </ToggleButton>
             </StackPanel>
-            <Grid Visibility="{Binding SnapCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}"  Margin="5,0,5,0">
-                <Button Command="{Binding CancelSnapCommand}" Visibility="{Binding SnapCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}">
-                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="5">
-                    </Path>
-                </Button>
-            </Grid>
-
-
-
-
-
-            <Button Width="50" Height="50" Grid.Column="1" Command="{Binding SnapCommand}" IsEnabled="{Binding IsExposing, Converter={StaticResource InverseBooleanConverter}}"  Margin="5,0,5,0">
-                <Grid>
-
-                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" Visibility="{Binding SnapCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                    </Path>                    
-                    <Grid Visibility="{Binding SnapCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}" >
-                        <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SnapCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" Text="{Binding ExposureSeconds}" />
-                    </Grid>
-                </Grid>
-            </Button>
-            <!--<Button Width="50" Height="50" Grid.Column="1" Visibility="{Binding SnapCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">Cancel</Button>-->
+            
+            <local:CancellableButtonView Width="50" Height="50" Grid.Column="1" MyCommand="{Binding SnapCommand}" MyCancelCommand="{Binding CancelSnapCommand}" MyButtonImage="{StaticResource PictureSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" />
+            
         </Grid>
     </Grid>
 </UserControl>

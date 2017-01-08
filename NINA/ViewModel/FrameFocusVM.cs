@@ -137,14 +137,20 @@ namespace NINA.ViewModel {
 
 
         private async Task<bool> snap(IProgress<string> progress) {
-            do {
-                _captureImageToken = new CancellationTokenSource();
-                List<SequenceModel> seq = new List<SequenceModel>();
-                seq.Add(new SequenceModel(SnapExposureDuration, SequenceModel.ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                await ImagingVM.startSequence(seq, false, _captureImageToken, progress);
-                _captureImageToken.Token.ThrowIfCancellationRequested();
-            } while (Loop);
-            return await Task.Run<bool>(() => { return true; });
+            if (ImagingVM.IsExposing) {
+                Notification.ShowWarning("Camera is busy");
+                return false;
+            } else {
+                do {
+                    _captureImageToken = new CancellationTokenSource();
+                    List<SequenceModel> seq = new List<SequenceModel>();
+                    seq.Add(new SequenceModel(SnapExposureDuration, SequenceModel.ImageTypes.SNAP, SnapFilter, SnapBin, 1));
+                    await ImagingVM.startSequence(seq, false, _captureImageToken, progress);
+                    _captureImageToken.Token.ThrowIfCancellationRequested();
+                } while (Loop);
+                return true;
+            }
+            
         }
 
 

@@ -117,12 +117,7 @@
                     <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}" DisplayMemberPath="Name" SelectedItem="{Binding SnapBin}" SelectedValuePath="Name"></ComboBox>
                 </StackPanel>
             </StackPanel>
-            <Grid Visibility="{Binding SnapCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}">
-                <Button Command="{Binding CancelSnapCommand}" Visibility="{Binding SnapCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}">
-                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="5">
-                    </Path>
-                </Button>
-            </Grid>
+            
 
             <UniformGrid Columns="3" Grid.Column="1">
                 
@@ -183,15 +178,9 @@
                         </Style>
                     </ToggleButton.Style>
                 </ToggleButton>
-                <Button Width="50" Height="50"  Command="{Binding SnapCommand}" HorizontalAlignment="Left" IsEnabled="{Binding ImagingVM.IsExposing, Converter={StaticResource InverseBooleanConverter}}"  Margin="5,0,5,0">
-                    <Grid>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" Visibility="{Binding SnapCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                        </Path>
-                        <Grid Visibility="{Binding SnapCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}" >
-                            <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SnapCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" Text="{Binding ImagingVM.ExposureSeconds}" />
-                        </Grid>
-                    </Grid>
-                </Button>
+
+                <local:CancellableButtonView  Width="50" Height="50" MyCommand="{Binding SnapCommand}" MyCancelCommand="{Binding CancelSnapCommand}" MyButtonImage="{StaticResource PictureSVG}" MyCancelButtonImage="{StaticResource CancelSVG}"  Margin="5,0,5,0" HorizontalAlignment="Left"/>
+                
             </UniformGrid>
         </Grid>
         <Expander ExpandDirection="Right"  Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" IsExpanded="False">

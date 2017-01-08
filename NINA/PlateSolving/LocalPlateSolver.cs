@@ -69,6 +69,7 @@ namespace NINA.PlateSolving {
                     result.Success = false;
                 }
             } catch (OperationCanceledException ex) {
+                progress.Report("Cancelled");
                 Logger.trace(ex.Message);
                 result.Success = false;
             }
