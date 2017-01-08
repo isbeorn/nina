@@ -1160,14 +1160,23 @@ namespace NINA.Model {
 
         
         public void moveAxis(TelescopeAxes axis, double rate) {
-            if(Connected && CanSlew && !AtPark ) {
-                try {
-                    Telescope.MoveAxis(axis, rate);
+            if(Connected) {
+                if(CanSlew) {
+                    if(!AtPark) {
+                        try {
+                            Telescope.MoveAxis(axis, rate);
+                        }
+                        catch (Exception e) {
+                            Notification.ShowError(e.Message);
+                        }
+                    } else {
+                        Notification.ShowWarning("Telescope is parked. Cannot slew while parked");
+                    }
+                } else {
+                    Notification.ShowWarning("Telescope cannot slew");
                 }
-                catch (Exception e) {
-                    Notification.ShowError(e.Message);
-                }
-
+            } else {
+                Notification.ShowWarning("Telescope not connected");
             }
         }
 
@@ -1198,6 +1207,28 @@ namespace NINA.Model {
                 }
             }
 
+        }
+
+        public void slewToAltAz(double az, double alt) {
+            if (Connected && CanSlew && !AtPark) {
+                try {
+                    Telescope.SlewToAltAz(az, alt);
+                }
+                catch (Exception e) {
+                    Notification.ShowError(e.Message);
+                }
+            }
+        }
+
+        public void slewToAltAzAsync(double az, double alt) {
+            if (Connected && CanSlew && !AtPark) {
+                try {
+                    Telescope.SlewToAltAzAsync(az, alt);
+                }
+                catch (Exception e) {
+                    Notification.ShowError(e.Message);
+                }
+            }
         }
 
         public void disconnect() {

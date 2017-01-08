@@ -64,8 +64,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<bool> blindSolveWithCapture(IProgress<string> progress) {            
-            await ImagingVM.captureImage();
+        public async Task<bool> blindSolveWithCapture(IProgress<string> progress) {                 
+            await ImagingVM.captureImage(progress);
             await blindSolve(progress);
             return true;
         }

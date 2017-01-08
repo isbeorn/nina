@@ -228,6 +228,7 @@
     <Compile Include="Utility\RelayCommand.cs" />
     <Compile Include="Utility\Settings.cs" />
     <Compile Include="Utility\Utility.cs" />
+    <Compile Include="Utility\ValidationRules.cs" />
     <Compile Include="ViewModel\BaseVM.cs" />
     <Compile Include="ViewModel\FilterWheelVM.cs" />
     <Compile Include="ViewModel\FrameFocusVM.cs" />

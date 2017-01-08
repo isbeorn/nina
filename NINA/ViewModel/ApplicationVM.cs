@@ -42,6 +42,7 @@ namespace NINA.ViewModel {
             var polarVM = this.PolarAlignVM;
             polarVM.Telescope = tele.Telescope;
             polarVM.PlatesolveVM = ps;
+            polarVM.ImagingVM = ImagingVM;
             //this.FrameFocusVM.Cam = cam.Cam;
             //this.FrameFocusVM.FW = cam.FilterWheelVM.FW;
             // var a = this.TelescopeVM;

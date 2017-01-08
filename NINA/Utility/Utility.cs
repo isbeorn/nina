@@ -109,8 +109,10 @@ namespace NINA.Utility {
             }
         }
 
-        public static async Task<ImageArray> convert2DArray(Int32[,] arr) {
+        public static async Task<ImageArray> convert2DArray(Array input) {
+           
             return await Task<ImageArray>.Run(() => {
+                Int32[,] arr = (Int32[,])input;
                 ImageArray iarr = new ImageArray();
                 iarr.SourceArray = arr;
                 int width = arr.GetLength(0);
@@ -245,11 +247,12 @@ namespace NINA.Utility {
                     h.AddValue("FILTER", filter, "");
                 }
 
-                h.AddValue("CCDXBIN", binning.X, "");
-                h.AddValue("CCDYBIN", binning.Y, "");
-                h.AddValue("XBINNING", binning.X, "");
-                h.AddValue("YBINNING", binning.Y, "");
-
+                if(binning != null) { 
+                    h.AddValue("CCDXBIN", binning.X, "");
+                    h.AddValue("CCDYBIN", binning.Y, "");
+                    h.AddValue("XBINNING", binning.X, "");
+                    h.AddValue("YBINNING", binning.Y, "");
+                }
                 h.AddValue("TEMPERAT", temp, "");
 
                 h.AddValue("IMAGETYP", imagetype, "");

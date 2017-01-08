@@ -23,6 +23,7 @@
             <util:InverseNullToVisibilityConverter x:Key="InverseNullToVisibilityConverter"/>
             <util:DatabindingDebugConverter x:Key="DebugConverter" />
             <util:InverseNullToBooleanConverter x:Key="InverseNullToBooleanConverter" />
+            <util:GreaterZeroRule x:Key="GreaterZeroRule" />
             
 
             <SolidColorBrush x:Key="PrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.PrimaryColor}"/>

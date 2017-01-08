@@ -7,9 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="400">
     <Grid>
-        <TextBlock Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">
-            Please connect Telescope
-        </TextBlock>
+        <Border HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" Background="{StaticResource BackgroundBrush}" Panel.ZIndex="99">
+            <TextBlock   FontSize="40" >
+                Please connect Telescope
+            </TextBlock>
+        </Border>
         <Grid IsEnabled="{Binding Telescope.Connected}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -17,29 +19,177 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition />
+                <RowDefinition Height="5" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <GroupBox Header="Polar Scope">            
                     <local:PolarScopeView />
             </GroupBox>
 
-            <UniformGrid  Grid.Column="1" Rows="2">
-                <StackPanel Orientation="Horizontal">
-                    <Button  Width="50" Height="50" Command="{Binding MeasureAltitudeErrorCommand}" Margin="5,0,5,0">
-                        |
-                        <!--<Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PlatesolveSVG}" Stretch="Uniform" Margin="5">
-                    </Path>-->
-                    </Button>
-                    <Button  Width="50" Height="50" Command="{Binding MeasureAzimuthErrorCommand}" Margin="5,0,5,0">
-                        ----
-                        <!--<Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PlatesolveSVG}" Stretch="Uniform" Margin="5">
-                    </Path>-->
-                    </Button>
-                </StackPanel>
-                <TextBlock Text="{Binding PolarErrorStatus}" />
-            </UniformGrid>
-            
+            <GroupBox Grid.Column="1" Header="Plate Solved PA">
+                <UniformGrid  Rows="5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="50" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock>Meridian Offset:</TextBlock>
+                            <TextBox Margin="0,0,10,0" Text="{Binding MeridianOffset}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock>Declination:</TextBlock>
+                            <TextBox Margin="0,0,10,0" Text="{Binding Declination}"></TextBox>
+                        </StackPanel>
 
+                        <Button Command="{Binding SlewToMeridianOffsetCommand}" Height="30" HorizontalAlignment="Stretch" Grid.Column="2" VerticalAlignment="Top" Margin="0,10,0,0">
+                            <TextBlock Text ="Slew" Foreground="{StaticResource ButtonForegroundBrush}" VerticalAlignment="Center"></TextBlock>
+                        </Button>
+                    </Grid>
+
+
+                    <StackPanel Orientation="Horizontal">
+
+                        <Grid Width="50" Height="50" Margin="5,0,5,0" >
+                            <Grid Visibility="{Binding MeasureAltitudeErrorCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}"  >
+                                <Button Command="{Binding CancelMeasureAltitudeErrorCommand}" Visibility="{Binding MeasureAltitudeErrorCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}">
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="5">
+                                    </Path>
+                                </Button>
+                            </Grid>
+
+                            <Button  Command="{Binding MeasureAltitudeErrorCommand}" Visibility="{Binding MeasureAltitudeErrorCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource ArrowTwoSides}" Stretch="Uniform" Margin="5" RenderTransformOrigin="0.5,0.5">
+                                    <Path.RenderTransform>
+                                        <RotateTransform Angle="90"/>
+                                    </Path.RenderTransform>
+                                </Path>
+                            </Button>
+                        </Grid>
+                       
+                        <Button  Width="50" Height="50" Command="{Binding MeasureAzimuthErrorCommand}" Margin="5,0,5,0">                           
+                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource ArrowTwoSides}" Stretch="Uniform" Margin="5">
+                            </Path>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock Text="{Binding PolarErrorStatus}" />
+                </UniformGrid>
+            </GroupBox>
+            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Grid.ColumnSpan="2"></GridSplitter>
+            <GroupBox Header="D.A.R.V. Alignment" Grid.Row="2" Grid.ColumnSpan="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="140" />
+                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40" />
+
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Zoom" VerticalAlignment="Center" />
+                            <Slider Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Value="{Binding Zoom}" TickPlacement="BottomRight" TickFrequency="0.1" IsSnapToTickEnabled="True"  Maximum="10" Minimum="0.1" SmallChange="0.1"></Slider>
+                            <TextBlock Grid.Column="2" Text="{Binding Zoom}" VerticalAlignment="Center"></TextBlock>
+                        </Grid>
+                        <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <ScrollViewer  PanningMode="Both">
+                                <ScrollViewer.Style>
+                                    <Style TargetType="{x:Type ScrollViewer}">
+                                        <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+                                        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                                                    <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="*"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        <Rectangle x:Name="Corner" Grid.Column="1" Fill="{StaticResource BackgroundBrush}" Grid.Row="1"/>
+                                                        <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="0" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
+                                                        <ScrollBar x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}"/>
+                                                        <ScrollBar x:Name="PART_HorizontalScrollBar" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}"/>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+
+                                        <!--<Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=chkActualSize}" Value="True">
+                                    <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+                                    <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                                </DataTrigger>
+                            </Style.Triggers>-->
+                                    </Style>
+                                </ScrollViewer.Style>
+                                <Grid>
+                                    <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Opacity="0.2" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="100">
+                                    </Path>
+                                    <Image Grid.Column="0" Grid.Row="0" Source="{Binding ImagingVM.Image}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Image.LayoutTransform>
+                                            <ScaleTransform ScaleX="{Binding Zoom}" ScaleY="{Binding Zoom}" />
+                                        </Image.LayoutTransform>
+                                    </Image>
+                                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="150" Background="{StaticResource BorderBrush}" Visibility="{Binding ImagingVM.IsExposing, Converter={StaticResource VisibilityConverter}}">
+                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{Binding ImagingVM.ExpStatus}"></TextBlock>
+                                    </Border>
+                                </Grid>
+                            </ScrollViewer>
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Column="1"  Margin="5,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="30" />
+                        </Grid.RowDefinitions>
+                        <TextBlock TextWrapping="Wrap">Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back.</TextBlock>                        
+                        <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+                            
+                            <TextBlock>Slew Rate (deg/sec)</TextBlock>
+                            <TextBox >
+                                <TextBox.Text>
+                                    <Binding Path="DARVSlewRate" UpdateSourceTrigger="PropertyChanged" >
+                                        <Binding.ValidationRules>
+                                            <StaticResource ResourceKey="GreaterZeroRule" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+
+                            </TextBox>
+                            <TextBlock>Slew Duration:</TextBlock>
+                            <TextBox >
+                                <TextBox.Text>
+                                    <Binding Path="DARVSlewDuration" UpdateSourceTrigger="PropertyChanged" >
+                                        <Binding.ValidationRules>
+                                            <StaticResource ResourceKey="GreaterZeroRule" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                                
+                            </TextBox>
+                            <TextBlock Text="{Binding DarvStatus}"></TextBlock>
+                        </StackPanel>
+
+                        <Button VerticalAlignment="Bottom" Command="{Binding DARVSlewCommand}" Height="30" HorizontalAlignment="Stretch" Grid.Row="1" Margin="0,10,0,0">
+                            <TextBlock Text ="Slew" Foreground="{StaticResource ButtonForegroundBrush}" VerticalAlignment="Center"></TextBlock>
+                        </Button>
+                    </Grid>
+                </Grid>
+                
+            </GroupBox>
             <Grid.Style>
                 <Style TargetType="{x:Type Grid}">
                     <Style.Triggers>
@@ -48,7 +198,7 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </Grid.Style>
+            </Grid.Style>          
         </Grid>
     </Grid>
 </UserControl>

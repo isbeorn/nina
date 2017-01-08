@@ -11,8 +11,8 @@ namespace NINA.Utility {
     public abstract class AsyncCommandBase : BaseINPC, IAsyncCommand {
         public abstract bool CanExecute(object parameter);
         public abstract Task ExecuteAsync(object parameter);
-        public async void Execute(object parameter) {
-            await ExecuteAsync(parameter);
+        public async void Execute(object parameter) {        
+                await ExecuteAsync(parameter);
         }
         public event EventHandler CanExecuteChanged {
             add { CommandManager.RequerySuggested += value; }
@@ -40,7 +40,9 @@ namespace NINA.Utility {
         public override async Task ExecuteAsync(object parameter) {
             Execution = new NotifyTaskCompletion<TResult>(_command());
             RaiseCanExecuteChanged();
-            await Execution.TaskCompletion;
+            if(!Execution.IsCompleted) { 
+                await Execution.TaskCompletion;
+            }
             RaiseCanExecuteChanged();
         }
         // Raises PropertyChanged        

@@ -15,7 +15,7 @@ namespace NINA.Utility {
             try {
                 using (StreamWriter writer = new StreamWriter(LOGFILEPATH, true)) {
                     writer.WriteLine(msg);
-                    writer.Close();
+                    //writer.Close();
                 }
             }
             catch (Exception ex) {

@@ -1446,20 +1446,28 @@ namespace NINA.Model
             }
         }
 
-        public async Task<Int32[,]> downloadExposure(CancellationTokenSource tokenSource) {
-            return await Task<Int32[,]>.Run(() => {
+        public async Task<Array> downloadExposure(CancellationTokenSource tokenSource) {
+            return await Task<Array>.Run(() => {
                 ASCOM.Utilities.Util U = new ASCOM.Utilities.Util();
                 while (!ImageReady && Connected) {
                     //Console.Write(".");
                     U.WaitForMilliseconds(10);
                     tokenSource.Token.ThrowIfCancellationRequested();
                 }
-                Int32[,] camArray = (Int32[,])AscomCamera.ImageArray;
 
-                return camArray;
+                Array arr;
+
+                if (AscomCamera.ImageArray.GetType() == typeof(Int32[,])) {
+                    arr = (Int32[,])AscomCamera.ImageArray;
+                    return arr;
+                } else {
+                    arr = (Int32[,,])AscomCamera.ImageArray;
+                    return (Int32[,,])AscomCamera.ImageArray;
+                }
             });            
         }
 
+/*
         public Int32[,] snap(double exposureTime, bool isLightFrame) {
             ASCOM.Utilities.Util U = new ASCOM.Utilities.Util();
             AscomCamera.StartExposure(exposureTime, isLightFrame);
@@ -1475,7 +1483,7 @@ namespace NINA.Model
             return camArray;
         }
 
-        
+        */
 
 
         //public BitmapSource NormalizeTiffTo8BitImage(BitmapSource source) {

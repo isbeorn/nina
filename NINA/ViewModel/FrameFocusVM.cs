@@ -18,7 +18,7 @@ namespace NINA.ViewModel {
             Name = "Frame & Focus";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
             CancelSnapCommand = new RelayCommand(cancelCaptureImage);
-            SnapCommand = new AsyncCommand<bool>(() => snap());
+            SnapCommand = new AsyncCommand<bool>(() => snap(new Progress<string>(p => ImagingVM.ExpStatus = p)));
             ApplyImageParamsCommand = new AsyncCommand<bool>(() => applyImageParams());            
             Gamma = 1;
             Contrast = 1;
@@ -136,12 +136,12 @@ namespace NINA.ViewModel {
         
 
 
-        private async Task<bool> snap() {
+        private async Task<bool> snap(IProgress<string> progress) {
             do {
                 _captureImageToken = new CancellationTokenSource();
                 List<SequenceModel> seq = new List<SequenceModel>();
                 seq.Add(new SequenceModel(SnapExposureDuration, SequenceModel.ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                await ImagingVM.startSequence(seq, false, _captureImageToken);
+                await ImagingVM.startSequence(seq, false, _captureImageToken, progress);
                 _captureImageToken.Token.ThrowIfCancellationRequested();
             } while (Loop);
             return await Task.Run<bool>(() => { return true; });
