@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:NINA.View"
              xmlns:model="clr-namespace:NINA.Model"
              xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:astrometry="clr-namespace:NINA.Utility.Astrometry"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Background="{StaticResource BackgroundBrush}">
     <UniformGrid Columns="2" Rows="3"> 
@@ -13,6 +14,9 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>-->
+        <GroupBox Header="General">
+            <ComboBox Name="epochcombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Epoch} }}" SelectedItem="{Binding EpochType}" Grid.ColumnSpan="2"/>
+        </GroupBox>
         <GroupBox Header="File Settings">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -52,7 +56,7 @@
                 </ListView>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="1" Header="UI Colors Current">
+        <GroupBox Header="UI Colors Current">
             <UniformGrid Columns="2">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Width="155">Primary: </TextBlock>
@@ -95,6 +99,53 @@
                     <TextBlock VerticalAlignment="Center" Width="155">Button Foreground Disabled:</TextBlock>
                     <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding ButtonForegroundDisabledColor}" />
                     <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonForegroundDisabledBrush}"></Button>
+                </StackPanel>
+            </UniformGrid>
+
+        </GroupBox>
+        <GroupBox Header="UI Colors Alternative">
+            <UniformGrid Columns="2">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Width="155">Primary:</TextBlock>
+                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltPrimaryColor}" />
+                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltPrimaryBrush}"></Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock VerticalAlignment="Center" Width="155">Secondary:</TextBlock>
+                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltSecondaryColor}" />
+                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltSecondaryBrush}"></Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Width="155">Border:</TextBlock>
+                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltBorderColor}" />
+                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltBorderBrush}"></Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Width="155">Background:</TextBlock>
+                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltBackgroundColor}" />
+                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltBackgroundBrush}"></Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Width="155">Button Background:</TextBlock>
+                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonBackgroundColor}" />
+                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonBackgroundBrush}"></Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Width="155">Button Background Selected:</TextBlock>
+                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonBackgroundSelectedColor}" />
+                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonBackgroundSelectedBrush}"></Button>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Width="155">Button Foreground:</TextBlock>
+                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonForegroundColor}" />
+                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonForegroundBrush}"></Button>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Width="155">Button Foreground Disabled:</TextBlock>
+                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonForegroundDisabledColor}" />
+                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonForegroundDisabledBrush}"></Button>
                 </StackPanel>
             </UniformGrid>
 
@@ -213,52 +264,6 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="UI Colors Alternative">
-            <UniformGrid Columns="2">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="155">Primary:</TextBlock>
-                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltPrimaryColor}" />
-                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltPrimaryBrush}"></Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock VerticalAlignment="Center" Width="155">Secondary:</TextBlock>
-                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltSecondaryColor}" />
-                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltSecondaryBrush}"></Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="155">Border:</TextBlock>
-                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltBorderColor}" />
-                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltBorderBrush}"></Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="155">Background:</TextBlock>
-                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltBackgroundColor}" />
-                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltBackgroundBrush}"></Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="155">Button Background:</TextBlock>
-                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonBackgroundColor}" />
-                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonBackgroundBrush}"></Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="155">Button Background Selected:</TextBlock>
-                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonBackgroundSelectedColor}" />
-                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonBackgroundSelectedBrush}"></Button>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="155">Button Foreground:</TextBlock>
-                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonForegroundColor}" />
-                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonForegroundBrush}"></Button>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="155">Button Foreground Disabled:</TextBlock>
-                    <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonForegroundDisabledColor}" />
-                    <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonForegroundDisabledBrush}"></Button>
-                </StackPanel>
-            </UniformGrid>
-
-        </GroupBox>
+        
     </UniformGrid>
 </UserControl>

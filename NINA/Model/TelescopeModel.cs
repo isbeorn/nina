@@ -1112,20 +1112,26 @@ namespace NINA.Model {
         }
 
         public bool sync(string ra, string dec) {
+            return sync(Utility.Utility.AscomUtil.HMSToHours(ra), Utility.Utility.AscomUtil.DMSToDegrees(dec));            
+        }
+
+        public bool sync(double ra, double dec) {
             bool success = false;
             if (Connected && CanSync) {
                 if (Tracking) {
 
                     try {
-                        Telescope.SyncToCoordinates(Utility.Utility.AscomUtil.HMSToHours(ra), Utility.Utility.AscomUtil.DMSToDegrees(dec));
+                        Telescope.SyncToCoordinates(ra, dec);
                         success = true;
-                    } catch(Exception ex) {
+                    }
+                    catch (Exception ex) {
                         Notification.ShowError(ex.Message);
                     }
-                } else {
+                }
+                else {
                     Notification.ShowError("Telescope is not tracking. Sync is only available when tracking!");
                 }
-                
+
             }
             return success;
         }

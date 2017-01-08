@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.PlateSolving;
 using NINA.Utility;
+using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,11 +39,11 @@ namespace NINA.ViewModel {
 
         private void syncTelescope(object obj) {
             if(PlateSolveResult != null) {
+                
+                Coordinates solved = new Coordinates(PlateSolveResult.Ra, PlateSolveResult.Dec, PlateSolveResult.Epoch, Coordinates.RAType.Degrees);
+                solved = solved.transform(Settings.EpochType);
 
-                PolarAlignmentVM.Coordinates solved = new PolarAlignmentVM.Coordinates(PlateSolveResult.Ra, PlateSolveResult.Dec);
-                solved = solved.transformToJNOW();
-
-                if (Telescope.sync(solved.RAString, solved.DecString)) {
+                if (Telescope.sync(solved.RA, solved.Dec)) {
                     Notification.ShowSuccess("Telescope synced to coordinates");
                 } else {
                     Notification.ShowWarning("Telescope sync failed!");

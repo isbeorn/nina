@@ -419,5 +419,17 @@ namespace NINA.Properties {
                 this["CygwinBashLocation"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int EpochType {
+            get {
+                return ((int)(this["EpochType"]));
+            }
+            set {
+                this["EpochType"] = value;
+            }
+        }
     }
 }

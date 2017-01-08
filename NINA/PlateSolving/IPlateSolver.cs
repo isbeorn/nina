@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Astrometry;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace NINA.PlateSolving {
     public class PlateSolveResult {
         public PlateSolveResult() {
             Success = true;
+            Epoch = Epoch.J2000;
         }
 
         BitmapSource _solvedImage;
@@ -26,6 +28,7 @@ namespace NINA.PlateSolving {
         double _ra;
         double _dec;
         bool _success;
+        Epoch _epoch;
 
         public double Orientation {
             get {
@@ -106,6 +109,15 @@ namespace NINA.PlateSolving {
 
             set {
                 _success = value;
+            }
+        }
+
+        public Epoch Epoch {
+            get {
+                return _epoch;
+            }
+            set {
+                _epoch = value;
             }
         }
     }

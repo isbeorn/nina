@@ -32,27 +32,7 @@ namespace NINA.Utility {
             }
         }
 
-        private static ASCOM.Astrometry.AstroUtils.AstroUtils _astroUtils; 
-        public static ASCOM.Astrometry.AstroUtils.AstroUtils AstroUtils {
-            get {
-                if (_astroUtils == null) {
-                    _astroUtils = new ASCOM.Astrometry.AstroUtils.AstroUtils();
-                }
-                return _astroUtils;
-
-            }
-        }
-
-        private static ASCOM.Astrometry.NOVAS.NOVAS31 _nOVAS31;
-        public static ASCOM.Astrometry.NOVAS.NOVAS31 NOVAS31 {
-            get {
-                if (_nOVAS31 == null) {
-                    _nOVAS31 = new ASCOM.Astrometry.NOVAS.NOVAS31(); ;
-                }
-                return _nOVAS31;
-
-            }
-        }
+        
 
         public class ImageArray {
             public const ushort HistogramResolution = 200;

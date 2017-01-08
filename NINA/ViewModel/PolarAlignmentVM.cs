@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using NINA.Utility.Astrometry;
 
 namespace NINA.ViewModel {
     class PolarAlignmentVM : BaseVM {
@@ -282,7 +283,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> darvTelescopeSlew(IProgress<string> progress, CancellationTokenSource canceltoken) {
             return await Task.Run<bool>(async () => {
-                Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination);
+                Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType);
                 try {
                     //wait 5 seconds for camera to have a starting indicator
                     await Task.Delay(TimeSpan.FromSeconds(5), canceltoken.Token);
@@ -484,7 +485,7 @@ namespace NINA.ViewModel {
         private async Task<double> calculatePoleError(IProgress<string> progress, CancellationTokenSource canceltoken) {
             
             
-            Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination);
+            Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType);
             double poleError = double.NaN;
             try {
 
@@ -503,13 +504,13 @@ namespace NINA.ViewModel {
                     return double.NaN;
                 }
 
-                Coordinates startSolve = new Coordinates(startSolveResult.Ra, startSolveResult.Dec);
-                startSolve = startSolve.transformToJNOW();
+                Coordinates startSolve = new Coordinates(startSolveResult.Ra, startSolveResult.Dec, startSolveResult.Epoch, Coordinates.RAType.Degrees);
+                startSolve = startSolve.transform(Settings.EpochType);
 
             
 
 
-                Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec);
+                Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, Settings.EpochType);
                 progress.Report("Slewing...");
                 Telescope.slewToCoordinates(targetPosition.RA, targetPosition.Dec);
 
@@ -535,8 +536,8 @@ namespace NINA.ViewModel {
                     return double.NaN;
                 }
 
-                Coordinates targetSolve = new Coordinates(targetSolveResult.Ra, targetSolveResult.Dec);
-                targetSolve = targetSolve.transformToJNOW();
+                Coordinates targetSolve = new Coordinates(targetSolveResult.Ra, targetSolveResult.Dec, targetSolveResult.Epoch, Coordinates.RAType.Degrees);
+                targetSolve = targetSolve.transform(Settings.EpochType);
 
                 var decError = startSolve.Dec - targetSolve.Dec;
                 // Calculate pole error
@@ -560,43 +561,7 @@ namespace NINA.ViewModel {
             return (Math.PI / 180) * val;
         }
 
-        public class Coordinates {
-            public double RA;
-            public double Dec;
-            public string RAString {
-                get {
-                    return Utility.Utility.AscomUtil.DegreesToHMS(RA);
-                }
-            }
-            public string DecString {
-                get {
-                    return Utility.Utility.AscomUtil.DegreesToDMS(Dec);
-                }
-            }
-            public Epoch Epoch;
-
-            public Coordinates(double ra, double dec, Epoch epoch = Epoch.J2000) {
-                this.RA = ra;
-                this.Dec = dec;
-                this.Epoch = epoch;
-            }
-
-            public Coordinates transformToJNOW() {
-                if(Epoch == Epoch.JNOW) {
-                    return this;
-                }
-                var transform = new ASCOM.Astrometry.Transform.Transform();
-                transform.SetJ2000(RA, Dec);
-
-                return new Coordinates((transform.RAApparent / 24) * 360, transform.DECApparent, Epoch.JNOW);
-            }
-
-        }
-
-        public enum Epoch {
-            J2000,
-            JNOW
-        }
+        
 
 
         public void slewToMeridianOffset (object o) {
@@ -623,16 +588,16 @@ namespace NINA.ViewModel {
                 var ascomutil = Utility.Utility.AscomUtil;
 
 
-                var polaris = new Coordinates(ascomutil.HMSToHours("02:31:49.09"), ascomutil.DMSToDegrees("89:15:50.8"));
+                var polaris = new Coordinates(ascomutil.HMSToHours("02:31:49.09"), ascomutil.DMSToDegrees("89:15:50.8"), Epoch.J2000, Coordinates.RAType.Hours);
 
                 
 
-                var NOVAS31 = Utility.Utility.NOVAS31;
+                var NOVAS31 = Astrometry.NOVAS31;
                 double[] vector = new double[4];
                 NOVAS31.RaDec2Vector(polaris.RA, polaris.Dec, 1000, ref vector);
                 double[] translatedvector = new double [4];
 
-                var util = Utility.Utility.AstroUtils;
+                var util = Astrometry.AstroUtils;
                 var jd = util.JulianDateUtc;
 
                 NOVAS31.Precession(2451545.0, vector, jd, ref translatedvector);

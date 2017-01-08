@@ -1,5 +1,6 @@
 ﻿using NINA.Model;
 using NINA.Utility;
+using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -126,6 +127,16 @@ namespace NINA.ViewModel {
             }
             set {
                 Settings.PlateSolverType = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Epoch EpochType {
+            get {
+                return Settings.EpochType;
+            }
+            set {
+                Settings.EpochType = value;
                 RaisePropertyChanged();
             }
         }

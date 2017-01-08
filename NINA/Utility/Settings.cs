@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Windows.Media;
@@ -45,6 +46,16 @@ namespace NINA.Utility {
             }
             set {
                 Properties.Settings.Default.PlateSolverType = (int)value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static Epoch EpochType {
+            get {
+                return (Epoch)Properties.Settings.Default.EpochType;
+            }
+            set {
+                Properties.Settings.Default.EpochType = (int)value;
                 Properties.Settings.Default.Save();
             }
         }
