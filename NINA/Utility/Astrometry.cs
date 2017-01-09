@@ -52,7 +52,7 @@ namespace NINA.Utility.Astrometry {
         }
         public Epoch Epoch;
 
-        public Coordinates(double ra, double dec, Epoch epoch, RAType ratype = RAType.Degrees) {
+        public Coordinates(double ra, double dec, Epoch epoch, RAType ratype) {
             this.RA = ra;
             this.Dec = dec;
             this.Epoch = epoch;
@@ -74,7 +74,7 @@ namespace NINA.Utility.Astrometry {
             var transform = new ASCOM.Astrometry.Transform.Transform();
             transform.SetJ2000(RA, Dec);
 
-            return new Coordinates((transform.RAApparent / 24) * 360, transform.DECApparent, Epoch.JNOW);
+            return new Coordinates(transform.RAApparent, transform.DECApparent, Epoch.JNOW, RAType.Hours);
         }
 
     }
