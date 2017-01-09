@@ -14,9 +14,9 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.Model
 {
-    public class CameraModel : BaseINPC {
+    public class AscomCameraModel :  BaseINPC, ICamera {
 
-        public CameraModel() {
+        public AscomCameraModel() {
             init();
         }
 

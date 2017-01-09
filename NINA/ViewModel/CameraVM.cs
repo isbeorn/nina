@@ -22,7 +22,7 @@ namespace NINA.ViewModel {
             DisconnectCommand = new RelayCommand(disconnectCamera);
             CoolCamCommand = new AsyncCommand<bool>(() => coolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(cancelCoolCamera);
-            Cam = new Model.CameraModel();
+            
             updateCamera = new DispatcherTimer();
             updateCamera.Interval = TimeSpan.FromMilliseconds(1000);
             updateCamera.Tick += updateCamera_Tick;
@@ -197,8 +197,8 @@ namespace NINA.ViewModel {
         }
 
 
-        private Model.CameraModel _cam;
-        public Model.CameraModel Cam {
+        private Model.AscomCameraModel _cam;
+        public Model.AscomCameraModel Cam {
             get {
                 return _cam;
             }
@@ -214,6 +214,7 @@ namespace NINA.ViewModel {
 
         private void chooseCamera(object obj) {
             updateCamera.Stop();
+            Cam = new Model.AscomCameraModel();
             if (Cam.connect()) {                
                 updateCamera.Start();
             }

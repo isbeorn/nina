@@ -203,6 +203,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Camera\ICamera.cs" />
     <Compile Include="PlateSolving\LocalPlateSolver.cs" />
     <Compile Include="PlateSolving\AstrometryPlateSolver.cs" />
     <Compile Include="Model\FilterWheelModel.cs" />
@@ -301,7 +302,7 @@
     </Compile>
     <Compile Include="ViewModel\ApplicationVM.cs" />
     <Compile Include="ViewModel\CameraVM.cs" />
-    <Compile Include="Model\CameraModel.cs" />
+    <Compile Include="Model\Camera\AscomCameraModel.cs" />
     <Compile Include="CameraPOC.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

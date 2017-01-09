@@ -53,8 +53,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        private CameraModel _cam;
-        public CameraModel Cam {
+        private ICamera _cam;
+        public ICamera Cam {
             get {
                 return _cam;
             }
@@ -486,11 +486,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        private CameraModel.BinningMode _snapBin;
-        public CameraModel.BinningMode SnapBin {
+        private AscomCameraModel.BinningMode _snapBin;
+        public AscomCameraModel.BinningMode SnapBin {
             get {
                 if(_snapBin == null) {
-                    _snapBin = new CameraModel.BinningMode(1, 1);
+                    _snapBin = new AscomCameraModel.BinningMode(1, 1);
                 }
                 return _snapBin;
             }

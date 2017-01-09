@@ -46,18 +46,20 @@
                             </Image>-->
                                 </Grid>
                             </Button>
-                            <Button Command="{Binding DisconnectCommand}" IsEnabled="{Binding Cam.Connected}"
-                            Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}">
-                                <Grid>
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5">
-                                    </Path>
-                                    <!--<Image Source="/AstrophotographyBuddy;component/Resources/plugged.png">
-                                        <Image.RenderTransform>
-                                            <ScaleTransform CenterX="45" CenterY="45" ScaleX="0.3" ScaleY="0.3"/>
-                                        </Image.RenderTransform>
-                                    </Image>-->
-                                </Grid>
-                            </Button>
+                            <Grid Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
+                                <Button Command="{Binding DisconnectCommand}" IsEnabled="{Binding Cam.Connected}"
+                                Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}">
+                                    <Grid>
+                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5">
+                                        </Path>
+                                        <!--<Image Source="/AstrophotographyBuddy;component/Resources/plugged.png">
+                                            <Image.RenderTransform>
+                                                <ScaleTransform CenterX="45" CenterY="45" ScaleX="0.3" ScaleY="0.3"/>
+                                            </Image.RenderTransform>
+                                        </Image>-->
+                                    </Grid>
+                                </Button>
+                            </Grid>
                         </Grid>
                         <Grid Height="50" Width="50" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Button Command="{Binding FilterWheelVM.ChooseFWCommand}"  IsEnabled="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
