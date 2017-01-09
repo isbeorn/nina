@@ -13,13 +13,21 @@ using NINA.Utility.Astrometry;
 namespace NINA.ViewModel {
     class PolarAlignmentVM : BaseVM {
         TelescopeModel _telescope;
-        public TelescopeModel Telescope {
+
+        private TelescopeVM _telescopeVM;
+        public TelescopeVM TelescopeVM {
             get {
-                return _telescope;
+                return _telescopeVM;
             }
             set {
-                _telescope = value;
+                _telescopeVM = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public TelescopeModel Telescope {
+            get {
+                return TelescopeVM.Telescope;
             }
         }
 

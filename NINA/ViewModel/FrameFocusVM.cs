@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyCamera;
 using NINA.Utility;
 using System;
 using System.Collections.Generic;
@@ -120,11 +121,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        private AscomCameraModel.BinningMode _snapBin;
-        public AscomCameraModel.BinningMode SnapBin {
+        private BinningMode _snapBin;
+        public BinningMode SnapBin {
             get {
                 if (_snapBin == null) {
-                    _snapBin = new AscomCameraModel.BinningMode(1, 1);
+                    _snapBin = new BinningMode(1, 1);
                 }
                 return _snapBin;
             }

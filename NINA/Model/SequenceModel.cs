@@ -27,7 +27,7 @@ namespace NINA.Model {
             return "Model";
         }
 
-        public SequenceModel(double exposureTime, string imageType, FilterWheelModel.FilterInfo filterType, AscomCameraModel.BinningMode binning, int exposureCount) {
+        public SequenceModel(double exposureTime, string imageType, FilterWheelModel.FilterInfo filterType, MyCamera.BinningMode binning, int exposureCount) {
             ExposureTime = exposureTime;
             ImageType = imageType;
             FilterType = filterType;
@@ -38,7 +38,7 @@ namespace NINA.Model {
         private double _exposureTime;
         private string _imageType;
         private FilterWheelModel.FilterInfo _filterType;
-        private AscomCameraModel.BinningMode _binning;
+        private MyCamera.BinningMode _binning;
         private int _exposureCount;
         private bool _active;
 
@@ -85,7 +85,7 @@ namespace NINA.Model {
             }
         }
 
-        public AscomCameraModel.BinningMode Binning {
+        public MyCamera.BinningMode Binning {
             get {
                 return _binning;
             }

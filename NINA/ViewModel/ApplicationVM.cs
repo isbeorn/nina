@@ -30,17 +30,16 @@ namespace NINA.ViewModel {
 
             var cam = this.CameraVM;
             
-            this.ImagingVM.Cam = cam.Cam;
-            this.ImagingVM.FW = cam.FilterWheelVM.FW;
+            this.ImagingVM.CameraVM = cam;            
             this.FrameFocusVM.ImagingVM = this.ImagingVM;
             var ps = this.PlatesolveVM;
             ps.ImagingVM = this.ImagingVM;            
             var tele = this.TelescopeVM;
-            ps.Telescope = tele.Telescope;
+            ps.TelescopeVM = tele;
             var phd2 = this.PHD2VM;
 
             var polarVM = this.PolarAlignVM;
-            polarVM.Telescope = tele.Telescope;
+            polarVM.TelescopeVM = tele;
             polarVM.PlatesolveVM = ps;
             polarVM.ImagingVM = ImagingVM;
             //this.FrameFocusVM.Cam = cam.Cam;

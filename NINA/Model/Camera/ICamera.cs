@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NINA.Model {
+namespace NINA.Model.MyCamera {
     interface ICamera {
 
         bool HasShutter { get; set; }
         bool Connected { get; set; }
-        double CCDTemperature { get; set; }
+        double CCDTemperature { get; }
+        double SetCCDTemperature { get; set; }
         short BinX { get; set; }
         short BinY { get; set; }
         string CameraStateString { get; }
@@ -29,10 +30,13 @@ namespace NINA.Model {
         double PixelSizeX { get; }
         double PixelSizeY { get; }
         bool CanSetCCDTemperature { get; }
-        bool CoolerOn { get; }
+        bool CoolerOn { get; set; }
         double CoolerPower { get; }
-        
 
+
+        bool connect();
+        void disconnect();
+        void updateValues();
         void setBinning(short x, short y);
         void startExposure(double exposureTime, bool isLightFrame);
         void stopExposure();

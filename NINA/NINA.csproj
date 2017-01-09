@@ -203,6 +203,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Camera\BinningMode.cs" />
     <Compile Include="Model\Camera\ICamera.cs" />
     <Compile Include="PlateSolving\LocalPlateSolver.cs" />
     <Compile Include="PlateSolving\AstrometryPlateSolver.cs" />

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace NINA.Model
+namespace NINA.Model.MyCamera
 {
     public class AscomCameraModel :  BaseINPC, ICamera {
 
@@ -528,41 +528,6 @@ namespace NINA.Model
             set {
                 _maxADU = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        public class BinningMode :BaseINPC {
-            public BinningMode(short x, short y) {
-                X = x;
-                Y = y;
-            }
-            private short _x;
-            private short _y;
-            public string Name {
-                get {
-                    return string.Join("x", X, Y);
-                }
-            }
-            public short X {
-                get {
-                    return _x;                    
-                }
-
-                set {
-                    _x = value;
-                    RaisePropertyChanged();
-                }
-            }
-
-            public short Y {
-                get {
-                    return _y;
-                }
-
-                set {
-                    _y = value;
-                    RaisePropertyChanged();
-                }
             }
         }
 

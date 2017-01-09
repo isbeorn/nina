@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyCamera;
 using NINA.Utility;
 using nom.tam.fits;
 using nom.tam.util;
@@ -53,25 +54,27 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ICamera _cam;
-        public ICamera Cam {
+        private CameraVM _cameraVM;
+        public CameraVM CameraVM {
             get {
-                return _cam;
-            }
-            set {
-                _cam = value;
+                return _cameraVM;
+            } set {
+                _cameraVM = value;
                 RaisePropertyChanged();
             }
         }
 
-        private FilterWheelModel _fW;
+        
+        public ICamera Cam {
+            get {
+                return CameraVM.Cam;
+            }
+        }
+
+        
         public FilterWheelModel FW {
             get {
-                return _fW;
-            }
-            set {
-                _fW = value;
-                RaisePropertyChanged();
+                return CameraVM.FilterWheelVM.FW;
             }
         }
 
@@ -486,11 +489,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        private AscomCameraModel.BinningMode _snapBin;
-        public AscomCameraModel.BinningMode SnapBin {
+        private BinningMode _snapBin;
+        public BinningMode SnapBin {
             get {
                 if(_snapBin == null) {
-                    _snapBin = new AscomCameraModel.BinningMode(1, 1);
+                    _snapBin = new BinningMode(1, 1);
                 }
                 return _snapBin;
             }

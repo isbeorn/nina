@@ -176,14 +176,19 @@ namespace NINA.ViewModel {
             }
         }
 
-        private TelescopeModel _telescope;
+        private TelescopeVM _telescopeVM;
+        public TelescopeVM TelescopeVM {
+            get {
+                return _telescopeVM;
+            } set {
+                _telescopeVM = value;
+                RaisePropertyChanged();
+            }
+        }
+                
         public TelescopeModel Telescope {
             get {
-                return _telescope;
-            }
-            set {
-                _telescope = value;
-                RaisePropertyChanged();
+                return TelescopeVM.Telescope;
             }
         }
 

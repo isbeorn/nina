@@ -197,8 +197,8 @@ namespace NINA.ViewModel {
         }
 
 
-        private Model.AscomCameraModel _cam;
-        public Model.AscomCameraModel Cam {
+        private Model.MyCamera.ICamera _cam;
+        public Model.MyCamera.ICamera Cam {
             get {
                 return _cam;
             }
@@ -214,7 +214,7 @@ namespace NINA.ViewModel {
 
         private void chooseCamera(object obj) {
             updateCamera.Stop();
-            Cam = new Model.AscomCameraModel();
+            Cam = new Model.MyCamera.AscomCameraModel();
             if (Cam.connect()) {                
                 updateCamera.Start();
             }
