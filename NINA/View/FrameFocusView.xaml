@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
-             xmlns:util="clr-namespace:NINA.Utility"
-              xmlns:chartingToolkit=	"clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"             
+             xmlns:util="clr-namespace:NINA.Utility"              
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -31,8 +30,9 @@
             <Slider Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Value="{Binding Zoom}" TickPlacement="BottomRight" TickFrequency="0.1" IsSnapToTickEnabled="True"  Maximum="10" Minimum="0.1" SmallChange="0.1"></Slider>
             <TextBlock Grid.Column="2" Text="{Binding Zoom}" VerticalAlignment="Center"></TextBlock>
         </Grid>
-        <Expander Grid.Row="2" IsExpanded="True" Header="Histogram">
-            <chartingToolkit:Chart DataContext="{Binding ImagingVM}" Grid.Row="2"  Title="" Margin="0,0,1,0" Style="{StaticResource ChartStyle}">
+        <Expander Grid.Row="2" IsExpanded="True" Header="Histogram" DataContext="{Binding ImagingVM}">
+            <local:HistogramView Grid.Row="1" DataContext="{Binding SourceArray}" MinHeight="150" />
+            <!--<chartingToolkit:Chart DataContext="{Binding ImagingVM}" Grid.Row="2"  Title="" Margin="0,0,1,0" Style="{StaticResource ChartStyle}">
                 <chartingToolkit:Chart.Axes>
                     <chartingToolkit:LinearAxis Visibility="Hidden"
                             Orientation="X"                            
@@ -49,7 +49,7 @@
                     </chartingToolkit:LineSeries.DataPointStyle>
                 </chartingToolkit:LineSeries>
 
-            </chartingToolkit:Chart>
+            </chartingToolkit:Chart>-->
         </Expander>
         <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
             <ScrollViewer  PanningMode="Both">

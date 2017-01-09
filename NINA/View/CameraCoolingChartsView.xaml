@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
-             xmlns:chartingToolkit=	"clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"             
+             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"           
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -14,109 +14,72 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <Viewbox Grid.Column="0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}">
-            <TextBlock  Text="{Binding Cam.CoolerPower, StringFormat=\{0:#.00\}%}" >
-                <!--<TextBlock.Style>
-                    <Style TargetType="TextBlock">                        
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Cam.CoolerPowerChange}" Value="-1">
-                                <Setter Property="Foreground" Value="Green" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Cam.CoolerPowerChange}" Value="1">
-                                <Setter Property="Foreground" Value="Red" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Cam.CoolerPowerChange}" Value="0">
-                                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>                   
-                </TextBlock.Style>-->
-                
-            </TextBlock>
-        </Viewbox>
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"  />
-        <Grid Grid.Column="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="4*" />                
-            </Grid.ColumnDefinitions>
-
-            <Path Fill="Red" Data="{StaticResource ArrowUpSVG}" Stretch="Uniform" Margin="10">
-                <Path.Style>
-                    <Style TargetType="Path">
-                        <Setter Property="Visibility" Value="Hidden" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="1">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Path.Style>
-            </Path>
-
-            <Path Fill="Blue" Data="{StaticResource ArrowDownSVG}" Stretch="Uniform" Margin="10">
-                <Path.Style>
-                    <Style TargetType="Path">
-                        <Setter Property="Visibility" Value="Hidden" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="-1">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Path.Style>
-            </Path>
-            
-            <Path Fill="{StaticResource PrimaryBrush}"  Stretch="Uniform" Margin="10" Data="{StaticResource EqualSignSVG}">                
-                <Path.Style>
-                    <Style TargetType="Path">
-                        <Setter Property="Visibility" Value="Hidden" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="0">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Path.Style>
-            </Path>
-            
-            <Viewbox Grid.Column="1" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}">
-                <TextBlock  Text="{Binding Cam.CCDTemperature, StringFormat=\{0:#.00\}°C}" >
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="-1">
-                                    <Setter Property="Foreground" Value="Blue" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="1">
-                                    <Setter Property="Foreground" Value="Red" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Cam.CCDTemperatureChange}" Value="0">
-                                    <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-            </Viewbox>
-        </Grid>
+        <oxy:Plot 
+                  Background="{StaticResource BackgroundBrush}"
+                  PlotAreaBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}" 
+                  PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
+                  LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
+                  LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
+                  LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                  LegendOrientation="Vertical"
+                  LegendPosition="BottomLeft"
+                  >
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis  Position="Left" 
+                                 Maximum="100" 
+                                 Minimum="0"   
+                                 IntervalLength = "50"
+                                 TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                 
+                                 MajorGridlineStyle="LongDash"
+                                 MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                                 MinorGridlineStyle="Dash"
+                                 MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
+                                 />
+                <oxy:DateTimeAxis Position="Bottom" />
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries ItemsSource="{Binding CoolerPowerHistory}" 
+                                DataFieldX="Key" 
+                                DataFieldY="Value" 
+                                Title="Cooler Power"/>                
+            </oxy:Plot.Series>
+        </oxy:Plot>
         
-         
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"  />        
 
-        
-
-        <!--<chartingToolkit:Chart   DataContext="{Binding Cam.CoolerPowerHistory}"  Title="Cooler Power" Style="{StaticResource ChartStyle}" Margin="0,0,1,0">
-            <chartingToolkit:LineSeries  DependentValuePath="Value" 
-				    IndependentValuePath="Key" ItemsSource="{Binding}" 
-				    IsSelectionEnabled="True" Style="{StaticResource LineSeriesStyle}">
-            </chartingToolkit:LineSeries>
-        </chartingToolkit:Chart>
-        
-        <GridSplitter HorizontalAlignment="Stretch" Grid.Column="1" />
-        <chartingToolkit:Chart Grid.Column="2" DataContext="{Binding Cam.CCDTemperatureHistory}"  Title="Camera Temperature" Style="{StaticResource ChartStyle}" Margin="0,0,0,0">
-            <chartingToolkit:LineSeries  DependentValuePath="Value" 
-				    IndependentValuePath="Key" ItemsSource="{Binding}" 
-				    IsSelectionEnabled="True" Style="{StaticResource LineSeriesStyle}"/>
-        </chartingToolkit:Chart>-->
+        <oxy:Plot Grid.Column="2" 
+                  Background="{StaticResource BackgroundBrush}"
+                  PlotAreaBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}" 
+                  PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
+                  LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
+                  LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
+                  LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                  LegendOrientation="Vertical"
+                  LegendPosition="BottomLeft"
+                  >
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis  Position="Left" 
+                                 Maximum="50" 
+                                 Minimum="-50"   
+                                 IntervalLength = "50"
+                                 TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                 
+                                 MajorGridlineStyle="LongDash"
+                                 MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                                 MinorGridlineStyle="Dash"
+                                 MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
+                                 />
+                <oxy:DateTimeAxis Position="Bottom" />
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries ItemsSource="{Binding CCDTemperatureHistory}" 
+                                DataFieldX="Key" 
+                                DataFieldY="Value"                                  
+                                Title="Chip Temperature"/>
+            </oxy:Plot.Series>
+        </oxy:Plot>
     </Grid>
 </UserControl>

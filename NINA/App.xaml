@@ -3,10 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:NINA.ViewModel"
              xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" 
-             xmlns:util ="clr-namespace:NINA.Utility"
-              xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
-             xmlns:chartingToolkit=	"clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"   
-             xmlns:Primitives="clr-namespace:System.Windows.Controls.DataVisualization.Charting.Primitives;assembly=System.Windows.Controls.DataVisualization.Toolkit"                         
+             xmlns:util ="clr-namespace:NINA.Utility"                                  
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -24,7 +21,8 @@
             <util:DatabindingDebugConverter x:Key="DebugConverter" />
             <util:InverseNullToBooleanConverter x:Key="InverseNullToBooleanConverter" />
             <util:GreaterZeroRule x:Key="GreaterZeroRule" />
-            
+            <util:SetAlphaToColorConverter x:Key="SetAlphaToColorConverter" />
+
 
             <SolidColorBrush x:Key="PrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.PrimaryColor}"/>
             <SolidColorBrush x:Key="SecondaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.SecondaryColor}"/>
@@ -578,107 +576,6 @@
                 </Style.Triggers>
             </Style>
 
-            <!-- Chart Styles -->
-            <Style x:Key="ChartStyle" TargetType="{x:Type chartingToolkit:Chart}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type chartingToolkit:Chart}">
-                            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0.5" Background="{TemplateBinding Background}" Padding="1">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <datavis:Title Content="{TemplateBinding Title}">
-                                        <datavis:Title.Style>
-                                            <Style TargetType="{x:Type datavis:Title}">
-                                                <Setter Property="FontSize" Value="12"/>
-                                                <Setter Property="HorizontalAlignment" Value="Left"/>
-                                                <Setter Property="Margin" Value="0"/>
-                                                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
-                                                <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-                                            </Style>
-                                        </datavis:Title.Style>
-                                    </datavis:Title>
-                                    <Grid Margin="0,15" Grid.Row="1">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Primitives:EdgePanel x:Name="ChartArea" Style="{TemplateBinding ChartAreaStyle}">
-                                            <Grid Panel.ZIndex="-1">
-                                                <Grid.Style>
-                                                    <Style TargetType="{x:Type Grid}">
-                                                        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-                                                    </Style>
-                                                </Grid.Style>
-                                            </Grid>
-                                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Panel.ZIndex="10"/>
-                                        </Primitives:EdgePanel>
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="LegendStyle" Value="{StaticResource ChartLegendStyle}"></Setter>
-
-            </Style>
-
-            <Style x:Key="LineSeriesStyle" TargetType="{x:Type chartingToolkit:LineSeries}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type chartingToolkit:LineSeries}" >
-                            <Canvas x:Name="PlotArea" >
-                                <Polyline Points="{TemplateBinding Points}">
-                                    <Polyline.Style>
-                                        <Style TargetType="{x:Type Polyline}">
-                                            <Setter Property="Stroke" Value="{StaticResource SecondaryBrush}" />
-                                            <Setter Property="StrokeThickness" Value="2"/>
-                                            <Setter Property="StrokeMiterLimit" Value="1"/>
-                                        </Style>
-                                    </Polyline.Style>
-                                </Polyline>
-                            </Canvas>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-
-                <Setter Property="DataPointStyle">
-                    <Setter.Value>
-                        <Style TargetType="{x:Type chartingToolkit:LineDataPoint}">
-                            <Setter Property="Background" Value="Yellow"></Setter>
-                            <Setter Property="Width" Value="5"></Setter>
-                            <Setter Property="Height" Value="5"></Setter>
-                            <Setter Property="Template" Value="{x:Null}">
-                                <!--<Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type chartingToolkit:LineDataPoint}">
-                                        <Ellipse>
-                                            <Ellipse.Style>
-                                                <Style TargetType="{x:Type Ellipse}">
-                                                    <Setter Property="Fill" Value="{StaticResource PrimaryBrush}"></Setter>
-                                                    <Setter Property="Stroke" Value="{StaticResource PrimaryBrush}"></Setter>
-                                                    <Setter Property="Height" Value="5"></Setter>
-                                                    <Setter Property="Width" Value="5"></Setter>
-                                                </Style>
-                                            </Ellipse.Style>
-                                        </Ellipse>
-                                    </ControlTemplate>
-                                </Setter.Value>-->
-                            </Setter>
-                        </Style>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-
-
-            <Style x:Key="ChartLegendStyle" TargetType="{x:Type datavis:Legend}">
-                <Setter Property="Margin" Value="15,0"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-                <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-            </Style>
 
             <Style x:Key="SliderRepeatButtonStyle" TargetType="{x:Type RepeatButton}">
                 <Setter Property="OverridesDefaultStyle" Value="true"/>

@@ -532,6 +532,18 @@ namespace NINA.Utility {
             }
         }
 
+        public double TimeRA {
+            get {
+                return Time - 0.15;
+            }
+        }
+
+        public double TimeDec {
+            get {
+                return Time + 0.15;
+            }
+        }
+
         public string Mount {
             get {
                 return mount;
@@ -574,7 +586,7 @@ namespace NINA.Utility {
 
         public double DecDistanceRaw {
             get {
-                return -decDistanceRaw;
+                return decDistanceRaw;
             }
 
             set {
@@ -594,7 +606,7 @@ namespace NINA.Utility {
 
         public double DecDistanceGuide {
             get {
-                return decDistanceGuide;
+                return -decDistanceGuide;
             }
 
             set {

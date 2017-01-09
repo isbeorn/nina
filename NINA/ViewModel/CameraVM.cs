@@ -1,8 +1,12 @@
 ﻿using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.ViewModel;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -28,8 +32,11 @@ namespace NINA.ViewModel {
             updateCamera.Tick += updateCamera_Tick;
             
             CoolingRunning = false;
+            CoolerPowerHistory = new ObservableCollection<KeyValuePair<DateTime, double>>();
+            CCDTemperatureHistory = new ObservableCollection<KeyValuePair<DateTime, double>>();
         }
 
+        private static Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         private void coolCamera_Tick(IProgress<double> progress) {           
 
             double currentTemp = Cam.CCDTemperature;
@@ -215,7 +222,8 @@ namespace NINA.ViewModel {
         private void chooseCamera(object obj) {
             updateCamera.Stop();
             Cam = new Model.MyCamera.AscomCameraModel();
-            if (Cam.connect()) {                
+            if (Cam.connect()) {
+                SetUpPlotModels();
                 updateCamera.Start();
             }
             
@@ -236,20 +244,62 @@ namespace NINA.ViewModel {
         void updateCamera_Tick(object sender, EventArgs e) {
            if(Cam.Connected) {
                 Cam.updateValues();
+
+                //var s = (LineSeries)CoolerPowerHistory.Series[0];
+
+                
+                /*if (s.Points.Count >= 200)
+                    s.Points.RemoveAt(0);*/
+                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                    DateTime x = DateTime.Now;
+                    if (CoolerPowerHistory.Count > 100) {
+                        CoolerPowerHistory.RemoveAt(0);
+                    }
+                    CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, Cam.CoolerPower));
+
+                    if (CCDTemperatureHistory.Count > 100) {
+                        CCDTemperatureHistory.RemoveAt(0);
+                    }
+                    CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, Cam.CCDTemperature));
+                }));
+
+                /*s = (LineSeries)CCDTemperatureHistory.Series[0];
+
+                x = s.Points.Count > 0 ? s.Points[s.Points.Count - 1].X + 1 : 0;
+                if (s.Points.Count >= 200)
+                    s.Points.RemoveAt(0);
+
+                s.Points.Add(new DataPoint(x, Cam.CCDTemperature));
+
+
+
+                CoolerPowerHistory.InvalidatePlot(true);
+                CCDTemperatureHistory.InvalidatePlot(true);*/
             }
             
         }
-        
-        /*private ICommand _connectCameraCommand;
-        public ICommand ConnectCameraCommand {
-            get {
-                return _connectCameraCommand;
-            }
-            set {
-                _connectCameraCommand = value;
-                RaisePropertyChanged();
-            }
-        } */
+
+
+        public ObservableCollection<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }
+        public ObservableCollection<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
+
+        private void SetUpPlotModels() {
+           /* CoolerPowerHistory = new PlotModel();
+            CoolerPowerHistory.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Minimum = 0, Maximum = 100 });
+            CoolerPowerHistory.Series.Add(new LineSeries { LineStyle = LineStyle.Solid });
+
+            CCDTemperatureHistory = new PlotModel();
+            CCDTemperatureHistory.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Minimum = -30, Maximum = 30 });
+            CCDTemperatureHistory.Series.Add(new LineSeries { LineStyle = LineStyle.Solid });
+
+            RaisePropertyChanged("CoolerPowerHistory");
+            RaisePropertyChanged("CCDTemperatureHistory");*/
+        }
+
+
+
+       
+
 
         private ICommand _coolCamCommand;
         public ICommand CoolCamCommand {

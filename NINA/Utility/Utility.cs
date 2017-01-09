@@ -35,7 +35,7 @@ namespace NINA.Utility {
         
 
         public class ImageArray {
-            public const ushort HistogramResolution = 200;
+            public const ushort HistogramResolution = 1000;
 
             public Array SourceArray;
             public ushort[] FlatArray;
@@ -43,9 +43,9 @@ namespace NINA.Utility {
             public int Y;
             public ushort minStDev;
             public ushort maxStDev;
-            private Dictionary<ushort, int> _histogram;
+            private SortedDictionary<ushort, int> _histogram;
 
-            public Dictionary<ushort, int> Histogram {
+            public SortedDictionary<ushort, int> Histogram {
                 get {
                     return _histogram;
                 }
@@ -103,7 +103,7 @@ namespace NINA.Utility {
                 iarr.Y = height;
                 ushort[] flatArray = new ushort[arr.Length];
                 ushort value, histogramkey;
-                Dictionary<ushort, int> histogram = new Dictionary<ushort, int>();
+                SortedDictionary<ushort, int> histogram = new SortedDictionary<ushort, int>();
                 unsafe
                 {
                     fixed (Int32* ptr = arr)

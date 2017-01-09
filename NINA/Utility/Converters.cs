@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace NINA.Utility {
     class BoolToVisibilityConverter : IValueConverter {
@@ -78,6 +79,29 @@ namespace NINA.Utility {
     public class InverseNullToVisibilityConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             return value == null ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class SetAlphaToColorConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+
+            if (value != null) {
+                Color c = (Color)value;
+                string s = (string)parameter;
+                byte p;
+                byte.TryParse(s, out p);
+                c = Color.FromArgb(p, c.R, c.G, c.B);
+                return c;
+            }
+            else { 
+                return null;
+            }
+
+
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

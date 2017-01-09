@@ -1,5 +1,4 @@
-﻿using OxyPlot;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,12 +15,11 @@ using System.Windows.Shapes;
 
 namespace NINA.View {
     /// <summary>
-    /// Interaction logic for CameraCoolingChartsView.xaml
+    /// Interaction logic for HistogramView.xaml
     /// </summary>
-    public partial class CameraCoolingChartsView : UserControl {
-        public CameraCoolingChartsView() {
-            InitializeComponent();         
-        }        
+    public partial class HistogramView : UserControl {
+        public HistogramView() {
+            InitializeComponent();
+        }
     }
-   
 }

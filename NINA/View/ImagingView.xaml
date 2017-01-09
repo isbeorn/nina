@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:NINA.View"
              xmlns:view="clr-namespace:NINA.View"
              xmlns:util="clr-namespace:NINA.Utility"
-              xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"  
+              
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid >
@@ -26,26 +26,11 @@
             <Grid IsEnabled="{Binding IsExposing, Converter={StaticResource InverseBooleanConverter}}" >
                 <view:SequenceView DataContext="{Binding SeqVM}" />
             </Grid>
-            <Expander Grid.Row="1" IsExpanded="True" Header="Histogram">
-                <chartingToolkit:Chart   Title="" Margin="0,0,1,0" Style="{StaticResource ChartStyle}">
-                    <chartingToolkit:Chart.Axes>
-                        <chartingToolkit:LinearAxis Visibility="Hidden"
-                            Orientation="X"                            
-                            Minimum="0"
-                            Maximum="200" FontSize="6"/>
-                    </chartingToolkit:Chart.Axes>
-                    <chartingToolkit:LineSeries  DependentValuePath="Value" 
-				    IndependentValuePath="Key" ItemsSource="{Binding SourceArray.Histogram}" 
-				    IsSelectionEnabled="True" Style="{StaticResource LineSeriesStyle}">
-                        <chartingToolkit:LineSeries.DataPointStyle>
-                            <Style TargetType="chartingToolkit:LineDataPoint">
-                                <Setter Property="Template" Value="{x:Null}" />
-                            </Style>
-                        </chartingToolkit:LineSeries.DataPointStyle>
-                    </chartingToolkit:LineSeries>
-                </chartingToolkit:Chart>
-            </Expander>
-
+            <!--<Expander Grid.Row="1" IsExpanded="True" Header="Histogram">
+                <local:HistogramView DataContext="{Binding SourceArray}" />
+                
+            </Expander>-->
+            
         </Grid>
         
         <StackPanel Grid.Row="1"  Orientation="Horizontal">
