@@ -15,7 +15,19 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>-->
         <GroupBox Header="General">
-            <ComboBox Name="epochcombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Epoch} }}" SelectedItem="{Binding EpochType}" Grid.ColumnSpan="2"/>
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Width="100">Epoch: </TextBlock>
+                    <ComboBox Name="epochcombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Epoch} }}" SelectedItem="{Binding EpochType}" Margin="10,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Width="100">Hemisphere:</TextBlock>
+                    <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Hemisphere} }}" SelectedItem="{Binding HemisphereType}" Margin="10,0,0,0"/>
+                </StackPanel>
+
+                
+            </StackPanel>
         </GroupBox>
         <GroupBox Header="File Settings">
             <Grid>
@@ -163,7 +175,7 @@
 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock   VerticalAlignment="Center" Width="130">API Key:</TextBlock>
-                        <TextBox  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AstrometryAPIKey}" />
+                        <TextBox  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AstrometryAPIKey}" MinWidth="130"/>
                         <StackPanel.Style>
                             <Style TargetType="{x:Type StackPanel}">
                                 <Style.Triggers>
@@ -176,7 +188,7 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock   VerticalAlignment="Center" Width="130">cygwin bash location:</TextBlock>
-                        <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding CygwinBashLocation}" />
+                        <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding CygwinBashLocation}" MinWidth="130" />
                         <Button Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="40" Width="40" Grid.Column="2" Command="{Binding OpenCygwinFileDiagCommand}">
                             <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
                         </Button>

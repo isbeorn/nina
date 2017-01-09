@@ -4,6 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:astrometry="clr-namespace:NINA.Utility.Astrometry"
+             
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="400">
     <Grid>
@@ -27,8 +30,14 @@
             </GroupBox>
 
             <GroupBox Grid.Column="1" Header="Plate Solved PA">
-                <UniformGrid  Rows="5">
-                    <Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="80"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -47,16 +56,27 @@
                             <TextBlock Text ="Slew" Foreground="{StaticResource ButtonForegroundBrush}" VerticalAlignment="Center"></TextBlock>
                         </Button>
                     </Grid>
-
-
-                    <StackPanel Orientation="Horizontal">
-                        <local:CancellableButtonView Width="50" Height="50" MyCommand="{Binding MeasureAltitudeErrorCommand}" MyCancelCommand="{Binding CancelMeasureAltitudeErrorCommand}" MyButtonImage="{StaticResource ArrowTwoSidesRotated}" MyCancelButtonImage="{StaticResource CancelSVG}" />
+                    <GroupBox Header="Altitude Measurement" Grid.Row="1">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock>Point telescope east or west. Adjust combobox value accordingly</TextBlock>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,10,0,0">
+                                <TextBlock VerticalAlignment="Center">Altitude measurement side:</TextBlock>
+                                <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:AltitudeSite} }}" SelectedItem="{Binding AltitudeSiteType}" Margin="10,0,0,0"/>
+                                <local:CancellableButtonView Width="50" Height="50" MyCommand="{Binding MeasureAltitudeErrorCommand}" MyCancelCommand="{Binding CancelMeasureAltitudeErrorCommand}" MyButtonImage="{StaticResource ArrowTwoSidesRotated}" MyCancelButtonImage="{StaticResource CancelSVG}" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
                         
-                        <local:CancellableButtonView Width="50" Height="50" MyCommand="{Binding MeasureAzimuthErrorCommand}" MyCancelCommand="{Binding CancelMeasureAzimuthErrorCommand}" MyButtonImage="{StaticResource ArrowTwoSides}" MyCancelButtonImage="{StaticResource CancelSVG}" />
-                        
-                    </StackPanel>
-                    <TextBlock Text="{Binding PolarErrorStatus}" />
-                </UniformGrid>
+                    </GroupBox>
+                    <GroupBox Header="Azimuth Measurement" Grid.Row="2">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock>Point telescope near meridian.</TextBlock>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,10,0,0">
+                                <local:CancellableButtonView Width="50" Height="50" MyCommand="{Binding MeasureAzimuthErrorCommand}" MyCancelCommand="{Binding CancelMeasureAzimuthErrorCommand}" MyButtonImage="{StaticResource ArrowTwoSides}" MyCancelButtonImage="{StaticResource CancelSVG}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    <TextBlock Text="{Binding PolarErrorStatus}" Grid.Row="3" />
+                </Grid>
             </GroupBox>
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Grid.ColumnSpan="2"></GridSplitter>
             <GroupBox Header="D.A.R.V. Alignment" Grid.Row="2" Grid.ColumnSpan="2">

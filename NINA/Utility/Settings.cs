@@ -60,6 +60,16 @@ namespace NINA.Utility {
             }
         }
 
+        public static Hemisphere HemisphereType {
+            get {
+                return (Hemisphere)Properties.Settings.Default.HemisphereType;
+            }
+            set {
+                Properties.Settings.Default.HemisphereType = (int)value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         public static int AnsvrFocalLength {
             get {
                 return Properties.Settings.Default.AnsvrFocalLength;

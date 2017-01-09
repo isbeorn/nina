@@ -431,5 +431,17 @@ namespace NINA.Properties {
                 this["EpochType"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int HemisphereType {
+            get {
+                return ((int)(this["HemisphereType"]));
+            }
+            set {
+                this["HemisphereType"] = value;
+            }
+        }
     }
 }

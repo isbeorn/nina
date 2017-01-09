@@ -141,6 +141,17 @@ namespace NINA.ViewModel {
             }
         }
 
+
+        public Hemisphere HemisphereType {
+            get {
+                return Settings.HemisphereType;
+            }
+            set {
+                Settings.HemisphereType = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public int AnsvrFocalLength {
             get {
                 return Settings.AnsvrFocalLength;

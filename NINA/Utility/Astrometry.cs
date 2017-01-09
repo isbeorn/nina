@@ -87,4 +87,28 @@ namespace NINA.Utility.Astrometry {
         JNOW
     }
 
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum Hemisphere {
+        [Description("Northern")]
+        NORTHERN,
+        [Description("Southern")]
+        SOUTHERN
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum Direction {
+        [Description("Altitude")]
+        ALTITUDE,
+        [Description("Azimuth")]
+        AZIMUTH
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum AltitudeSite {
+        [Description("East")]
+        EAST,
+        [Description("West")]
+        WEST
+    }
+
 }
