@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Model {
-    class FilterWheelModel :BaseINPC {
+    public class FilterWheelModel :BaseINPC {
         public FilterWheelModel() {
 
         }

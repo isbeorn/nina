@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
 using NINA.Utility.Astrometry;
+using NINA.Model.MyCamera;
 
 namespace NINA.ViewModel {
     class PolarAlignmentVM : BaseVM {
@@ -228,8 +229,8 @@ namespace NINA.ViewModel {
             _updateValues.Tick += _updateValues_Tick;
             _updateValues.Start();
 
-            MeasureAzimuthErrorCommand = new AsyncCommand<bool>(() => measurePolarError(new Progress<string>(p => PolarErrorStatus = p), Direction.AZIMUTH));
-            MeasureAltitudeErrorCommand = new AsyncCommand<bool>(() => measurePolarError(new Progress<string>(p => PolarErrorStatus = p), Direction.ALTITUDE));
+            MeasureAzimuthErrorCommand = new AsyncCommand<bool>(() => measurePolarError(new Progress<string>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH));
+            MeasureAltitudeErrorCommand = new AsyncCommand<bool>(() => measurePolarError(new Progress<string>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE));
             SlewToMeridianOffsetCommand = new RelayCommand(slewToMeridianOffset);
             DARVSlewCommand = new AsyncCommand<bool>(() => darvslew(new Progress<string>(p => ImagingVM.ExpStatus = p), new Progress<string>(p => DarvStatus = p)));
             CancelDARVSlewCommand = new RelayCommand(canceldarvslew);
@@ -241,22 +242,71 @@ namespace NINA.ViewModel {
             Declination = 0;
             DARVSlewDuration = 60;
             DARVSlewRate = 0.1;
+            SnapExposureDuration = 2;
         }
 
+        private BinningMode _snapBin;
+        private FilterWheelModel.FilterInfo _snapFilter;
+        private double _snapExposureDuration;
 
-
-        private string _polarErrorStatus;
-        public string PolarErrorStatus {
+        public BinningMode SnapBin {
             get {
-                return _polarErrorStatus;
+                return _snapBin;
             }
 
             set {
-                _polarErrorStatus = value;
+                _snapBin = value;
                 RaisePropertyChanged();
             }
         }
 
+        public FilterWheelModel.FilterInfo SnapFilter {
+            get {
+                return _snapFilter;
+            }
+
+            set {
+                _snapFilter = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double SnapExposureDuration {
+            get {
+                return _snapExposureDuration;
+            }
+
+            set {
+                _snapExposureDuration = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+        private string _altitudepolarErrorStatus;
+        public string AltitudePolarErrorStatus {
+            get {
+                return _altitudepolarErrorStatus;
+            }
+
+            set {
+                _altitudepolarErrorStatus = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _azimuthpolarErrorStatus;
+        public string AzimuthPolarErrorStatus {
+            get {
+                return _azimuthpolarErrorStatus;
+            }
+
+            set {
+                _azimuthpolarErrorStatus = value;
+                RaisePropertyChanged();
+            }
+        }
 
 
         private string deg2str(double deg, int precision) {
@@ -409,6 +459,8 @@ namespace NINA.ViewModel {
             }
         }
 
+        
+
         private async Task<bool> measurePolarError(IProgress<string> progress, Direction direction) {
             if (ImagingVM.Cam != null && ImagingVM.Cam.Connected) {
 
@@ -419,7 +471,7 @@ namespace NINA.ViewModel {
 
                         double poleErr = await calculatePoleError(progress, _cancelMeasureErrorToken);
                         string poleErrString = deg2str(Math.Abs(poleErr), 4);
-
+                        _cancelMeasureErrorToken.Token.ThrowIfCancellationRequested();
                         if (double.IsNaN(poleErr)) {
                             /* something went wrong */
                             progress.Report("Something went wrong.");
@@ -534,7 +586,7 @@ namespace NINA.ViewModel {
 
                 progress.Report("Solving image...");
 
-                await PlatesolveVM.blindSolveWithCapture(progress, canceltoken);
+                await PlatesolveVM.blindSolveWithCapture(SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin);
 
                 canceltoken.Token.ThrowIfCancellationRequested();
 
@@ -566,7 +618,7 @@ namespace NINA.ViewModel {
                 canceltoken.Token.ThrowIfCancellationRequested();
 
 
-                await PlatesolveVM.blindSolveWithCapture(progress, canceltoken);
+                await PlatesolveVM.blindSolveWithCapture(SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin);
 
                 canceltoken.Token.ThrowIfCancellationRequested();
 

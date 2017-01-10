@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static NINA.Model.SequenceModel;
+using System.ComponentModel;
 
 namespace NINA.ViewModel {
     class ImagingVM : BaseVM{
@@ -30,7 +31,15 @@ namespace NINA.ViewModel {
             CancelSnapCommand = new RelayCommand(cancelCaptureImage);
             StartSequenceCommand = new AsyncCommand<bool>(() => startSequence(new Progress<string>(p => ExpStatus = p)));
             CancelSequenceCommand = new RelayCommand(cancelSequence);
-    }
+
+           
+        }
+
+        private void CameraVM_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == "Cam") {
+                RaisePropertyChanged(e.PropertyName);
+            }
+        }
 
         public PHD2Client PHD2Client {
             get {
@@ -60,11 +69,23 @@ namespace NINA.ViewModel {
                 return _cameraVM;
             } set {
                 _cameraVM = value;
+                CameraVM.PropertyChanged += CameraVM_PropertyChanged;
                 RaisePropertyChanged();
             }
         }
 
-        
+        private bool _loop;
+        public bool Loop {
+            get {
+                return _loop;
+            }
+            set {
+                _loop = value;
+                RaisePropertyChanged();
+            }
+
+        }
+
         public ICamera Cam {
             get {
                 return CameraVM.Cam;
@@ -190,7 +211,7 @@ namespace NINA.ViewModel {
             if (duration >= 1) {
                 await Task.Run(async () => {
                     do {
-                        await Task.Delay(1000);
+                        await Task.Delay(1000, tokenSource.Token);
                         tokenSource.Token.ThrowIfCancellationRequested();
                         ExposureSeconds += 1;
                         progress.Report(string.Format(ExposureStatus.EXPOSING, ExposureSeconds, duration));
@@ -508,22 +529,25 @@ namespace NINA.ViewModel {
             if (IsExposing) {
                 Notification.ShowWarning("Camera is busy");
                 return true;
-            } else { 
-            
-                List<SequenceModel> seq = new List<SequenceModel>();
-                seq.Add(new SequenceModel(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                return await startSequence(seq, true, _captureImageToken, progress);
+            } else {
+                do {
+                    List<SequenceModel> seq = new List<SequenceModel>();
+                    seq.Add(new SequenceModel(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
+                    await startSequence(seq, true, _captureImageToken, progress);
+                    _captureImageToken.Token.ThrowIfCancellationRequested();
+                } while (Loop);
+                return true;
             }
         }
 
-        public async Task<bool> captureImage(double duration, bool bsave, IProgress<string> progress, CancellationTokenSource token) {
+        public async Task<bool> captureImage(double duration, bool bsave, IProgress<string> progress, CancellationTokenSource token, FilterWheelModel.FilterInfo filter = null, BinningMode binning = null) {
             if (IsExposing) {
                 Notification.ShowWarning("Camera is busy");
                 return true;
             }
             else {
                 List<SequenceModel> seq = new List<SequenceModel>();
-                seq.Add(new SequenceModel(duration, ImageTypes.SNAP, null, null, 1));
+                seq.Add(new SequenceModel(duration, ImageTypes.SNAP, filter, binning, 1));
                 return await startSequence(seq, bsave, token, progress);
             }
         }

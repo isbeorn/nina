@@ -100,89 +100,22 @@
                 </Grid>                
             </ScrollViewer>
         </Border>
-        <Grid Grid.Column="0" Grid.Row="3" IsEnabled="{Binding ImagingVM.Cam.Connected}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />                               
-                <ColumnDefinition Width="180" />
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">Snap Exposure Time in seconds:</TextBlock>
-                <TextBox Margin="5" MinWidth="50" Height="30" Text="{Binding SnapExposureDuration}" IsEnabled="{Binding SnapCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}}"></TextBox>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Filter:</TextBlock>
-                    <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters}" DisplayMemberPath="Name" SelectedItem="{Binding SnapFilter, Mode=TwoWay}" SelectedValuePath="Name"></ComboBox>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Binning:</TextBlock>
-                    <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}" DisplayMemberPath="Name" SelectedItem="{Binding SnapBin}" SelectedValuePath="Name"></ComboBox>
-                </StackPanel>
-            </StackPanel>
-            
 
-            <UniformGrid Columns="3" Grid.Column="1">
-                
-                <ToggleButton IsChecked="{Binding Loop}"  Margin="5,0,5,0">
-                    <!--<Grid>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
-                        </Path>
-                        
-                        
-                        <Image Margin="5" Source="/AstrophotographyBuddy;component/Resources/loop_active.png" Visibility="{Binding Loop, Converter={StaticResource VisibilityConverter}}" ></Image>
-                        <Image Margin="5" Source="/AstrophotographyBuddy;component/Resources/loop_inactive.png" Visibility="{Binding Loop, Converter={StaticResource InverseBoolToVisibilityConverter}}"></Image>
-                    </Grid>-->
-                    <ToggleButton.Style>
-                        <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
-                            <Style.Triggers>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
-                                            </Path>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                                <Trigger Property="IsChecked" Value="False">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
-                                            </Path>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ToggleButton.Style>
-
-                </ToggleButton>
-                <ToggleButton IsChecked="{Binding ImagingVM.AutoStretch}"  Margin="5,0,5,0">
-                    <ToggleButton.Style>
-                        <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
-                            <Style.Triggers>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource WandSVG}" Stretch="Uniform" Margin="5">
-                                            </Path>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                                <Trigger Property="IsChecked" Value="False">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource WandSVG}" Stretch="Uniform" Margin="5">
-                                            </Path>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ToggleButton.Style>
-                </ToggleButton>
-
-                <local:CancellableButtonView  Width="50" Height="50" MyCommand="{Binding SnapCommand}" MyCancelCommand="{Binding CancelSnapCommand}" MyButtonImage="{StaticResource PictureSVG}" MyCancelButtonImage="{StaticResource CancelSVG}"  Margin="5,0,5,0" HorizontalAlignment="Left"/>
-                
-            </UniformGrid>
+        <Grid Grid.Column="0" Grid.Row="3" IsEnabled="{Binding ImagingVM.Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <local:CameraControlView  IsEnabled="{Binding ImagingVM.Cam.Connected}"
+                    MyAutoStretch="{Binding ImagingVM.AutoStretch, Mode=TwoWay}"
+                    MyLoop="{Binding Loop, Mode=TwoWay}"
+                    MyCommand="{Binding SnapCommand}" 
+                    MyCancelCommand="{Binding CancelSnapCommand}" 
+                    MyButtonImage="{StaticResource PictureSVG}" 
+                    MyCancelButtonImage="{StaticResource CancelSVG}"
+                    MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes, Mode=TwoWay}"
+                    MyFilters="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters, Mode=TwoWay}"
+                    MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
+                    MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
+                    MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />
         </Grid>
+       
         <Expander ExpandDirection="Right"  Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" IsExpanded="False">
             <Expander.Header>
                 <TextBlock Text="Image Manipulation" TextOptions.TextFormattingMode="Display"

@@ -237,6 +237,9 @@
     <Compile Include="View\ApplicationMenu.xaml.cs">
       <DependentUpon>ApplicationMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\CameraControlView.xaml.cs">
+      <DependentUpon>CameraControlView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\CameraCoolingChartsView.xaml.cs">
       <DependentUpon>CameraCoolingChartsView.xaml</DependentUpon>
     </Compile>
@@ -308,6 +311,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\ApplicationMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CameraControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

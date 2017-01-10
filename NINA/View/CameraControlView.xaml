@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="NINA.View.CameraControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NINA.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid x:Name="LayoutRoot">        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="180" />
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding MyCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}}">
+            <TextBlock VerticalAlignment="Center">Exposure Time:</TextBlock>
+            <TextBox Margin="5" MinWidth="50" Height="30" Text="{Binding MyExposureDuration}" ></TextBox>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Filter:</TextBlock>
+                <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding MyFilters}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedFilter}" SelectedValuePath="Name"></ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Binning:</TextBlock>
+                <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding MyBinningModes}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedBinningMode}" SelectedValuePath="Name"></ComboBox>
+            </StackPanel>
+        </StackPanel>
+
+        <UniformGrid Columns="3" Grid.Column="1" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityConverter}}">
+
+            <ToggleButton IsChecked="{Binding MyLoop}"  Margin="5,0,5,0">
+                 <ToggleButton.Style>
+                    <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
+                                        </Path>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
+                                        </Path>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+
+            </ToggleButton>
+            <ToggleButton IsChecked="{Binding MyAutoStretch}"  Margin="5,0,5,0">
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource WandSVG}" Stretch="Uniform" Margin="5">
+                                        </Path>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource WandSVG}" Stretch="Uniform" Margin="5">
+                                        </Path>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+            </ToggleButton>
+
+            <local:CancellableButtonView  Width="50" Height="50" MyCommand="{Binding MyCommand}" MyCancelCommand="{Binding MyCancelCommand}" MyButtonImage="{Binding MyButtonImage}" MyCancelButtonImage="{Binding MyCancelButtonImage}"  Margin="5,0,5,0" HorizontalAlignment="Left"/>
+        </UniformGrid>
+    </Grid>
+</UserControl>

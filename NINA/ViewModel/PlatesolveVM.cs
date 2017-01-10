@@ -65,10 +65,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<bool> blindSolveWithCapture(IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public async Task<bool> blindSolveWithCapture(double duration, IProgress<string> progress, CancellationTokenSource canceltoken, FilterWheelModel.FilterInfo filter = null, Model.MyCamera.BinningMode binning = null) {
             var oldAutoStretch = ImagingVM.AutoStretch;
             ImagingVM.AutoStretch = true;          
-            await ImagingVM.captureImage(2, false, progress, canceltoken);
+            await ImagingVM.captureImage(duration, false, progress, canceltoken, filter, binning);
             ImagingVM.AutoStretch = oldAutoStretch;
 
             canceltoken.Token.ThrowIfCancellationRequested();
