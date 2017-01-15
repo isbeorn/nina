@@ -14,7 +14,7 @@
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding MyCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}}">
             <TextBlock VerticalAlignment="Center">Exposure Time:</TextBlock>
-            <TextBox Margin="5" MinWidth="50" Height="30" Text="{Binding MyExposureDuration}" ></TextBox>
+            <TextBox Margin="5" MinWidth="50"  Text="{Binding MyExposureDuration}" VerticalAlignment="Center" ></TextBox>
             <StackPanel Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Filter:</TextBlock>
                 <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding MyFilters}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedFilter}" SelectedValuePath="Name"></ComboBox>
