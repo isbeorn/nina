@@ -43,7 +43,7 @@
             </Grid>
 
 
-            <util:TabControlEx Grid.Row="1" TabStripPlacement="Left">
+            <TabControl Grid.Row="1" TabStripPlacement="Left">
 
                
                 <TabItem >
@@ -185,7 +185,7 @@
                         <view:OptionsView DataContext="{Binding OptionsVM}" ></view:OptionsView>
                     </TabItem.Content>
                 </TabItem>
-            </util:TabControlEx>
+            </TabControl>
 
             <toast:NotificationTray Grid.Row="1" NotificationsSource="{Binding Source={x:Static util:Notification.NotificationSource}}"
                         PopupFlowDirection="RightUp"
