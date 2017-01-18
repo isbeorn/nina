@@ -60,6 +60,7 @@
         <Grid Grid.Column="1" Grid.Row="1" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
             <local:CameraControlView  IsEnabled="{Binding Cam.Connected}"
                     MyAutoStretch="{Binding AutoStretch, Mode=TwoWay}"
+                    MyHFR="{Binding CalcHFR, Mode=TwoWay}"
                     MyLoop="{Binding Loop, Mode=TwoWay}"
                     MyCommand="{Binding SnapCommand}" 
                     MyCancelCommand="{Binding CancelSnapCommand}" 

@@ -105,6 +105,7 @@
             <local:CameraControlView  IsEnabled="{Binding ImagingVM.Cam.Connected}"
                     MyAutoStretch="{Binding ImagingVM.AutoStretch, Mode=TwoWay}"
                     MyLoop="{Binding Loop, Mode=TwoWay}"
+                    MyHFR="{Binding CalcHFR, Mode=TwoWay}"
                     MyCommand="{Binding SnapCommand}" 
                     MyCancelCommand="{Binding CancelSnapCommand}" 
                     MyButtonImage="{StaticResource PictureSVG}" 

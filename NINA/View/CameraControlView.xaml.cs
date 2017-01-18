@@ -158,6 +158,18 @@ namespace NINA.View {
             }
         }
 
+        public static readonly DependencyProperty MyHFRProperty =
+   DependencyProperty.Register("MyHFR", typeof(bool), typeof(CameraControlView), new UIPropertyMetadata(null));
+
+        public bool MyHFR {
+            get {
+                return (bool)GetValue(MyHFRProperty);
+            }
+            set {
+                SetValue(MyHFRProperty, value);
+            }
+        }
+
         public static readonly DependencyProperty MyAutoStretchProperty =
            DependencyProperty.Register("MyAutoStretch", typeof(bool), typeof(CameraControlView), new UIPropertyMetadata(null));
 

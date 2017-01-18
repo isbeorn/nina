@@ -52,6 +52,18 @@ namespace NINA.ViewModel {
 
         }
 
+        private bool _calcHFR;
+        public bool CalcHFR {
+            get {
+                return _calcHFR;
+            }
+            set {
+                _calcHFR = value;
+                RaisePropertyChanged();
+            }
+
+        }
+
         private double _zoom;
         public double Zoom {
             get {
@@ -146,7 +158,7 @@ namespace NINA.ViewModel {
                     _captureImageToken = new CancellationTokenSource();
                     List<SequenceModel> seq = new List<SequenceModel>();
                     seq.Add(new SequenceModel(SnapExposureDuration, SequenceModel.ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                    await ImagingVM.startSequence(seq, false, _captureImageToken, progress);
+                    await ImagingVM.startSequence(seq, CalcHFR, false, _captureImageToken, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop);
                 return true;
@@ -162,7 +174,7 @@ namespace NINA.ViewModel {
 
                 Bitmap bmp = await Task.Run<Bitmap>(async () => {
                         BitmapSource bs = await ImagingVM.prepare(ImagingVM.SourceArray.FlatArray, ImagingVM.SourceArray.X, ImagingVM.SourceArray.Y);
-                        Bitmap b = BitmapFromSource(bs);
+                        Bitmap b = ImageAnalysis.BitmapFromSource(bs);
                         b = adjustImage(b);
                         return b;
                     });
@@ -267,16 +279,6 @@ namespace NINA.ViewModel {
                           BitmapSizeOptions.FromEmptyOptions());
         }
 
-        public static Bitmap BitmapFromSource(BitmapSource bitmapsource) {
-            Bitmap bitmap;
-            using (var outStream = new MemoryStream()) {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bitmapsource));
-                enc.Save(outStream);
-                bitmap = new Bitmap(outStream);
-            }
-            return bitmap;
-        }
 
         //    public static bool adjustGamma(Bitmap b, double red, double green, double blue) {
         //        if (red < .2 || red > 5) return false;

@@ -86,6 +86,18 @@ namespace NINA.ViewModel {
 
         }
 
+        private bool _calcHFR;
+        public bool CalcHFR {
+            get {
+                return _calcHFR;
+            }
+            set {
+                _calcHFR = value;
+                RaisePropertyChanged();
+            }
+
+        }
+
         public ICamera Cam {
             get {
                 return CameraVM.Cam;
@@ -312,7 +324,7 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        public  async Task<bool> startSequence(ICollection<SequenceModel> sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        public  async Task<bool> startSequence(ICollection<SequenceModel> sequence, bool bCalcHFR,  bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
             return await Task.Run<bool>(async () => {
                 try {
                     IsExposing = true;
@@ -370,19 +382,24 @@ namespace NINA.ViewModel {
                             /*Prepare Image for UI*/
                             progress.Report(ImagingVM.ExposureStatus.PREPARING);
                             BitmapSource tmp;
-                            if (AutoStretch) {
+                            if (AutoStretch && !bCalcHFR) {
                                 tmp = await stretch(iarr);
+                            }
+                            else if (bCalcHFR) {
+                                progress.Report(ImagingVM.ExposureStatus.CALCHFR);
+                                var analysis = new ImageAnalysis();
+                                tmp = await analysis.detectStarsAsync(iarr);
                             }
                             else {
                                 tmp = await prepare(iarr.FlatArray, iarr.X, iarr.Y);
                             }
+
                             await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                                 /* Free Memory for new Image */
                                 Image = null;
                                 System.GC.Collect();
                                 Image = tmp;
                             }));
-
 
                             /*Save to disk*/
                             if (bSave) {
@@ -414,7 +431,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> startSequence(IProgress<string> progress, CancellationToken token = new CancellationToken()) {
             _cancelSequenceToken = new CancellationTokenSource();
-            return await startSequence(SeqVM.Sequence, true, _cancelSequenceToken, progress);           
+            return await startSequence(SeqVM.Sequence, CalcHFR, true, _cancelSequenceToken, progress);           
         }
 
 
@@ -533,14 +550,14 @@ namespace NINA.ViewModel {
                 do {
                     List<SequenceModel> seq = new List<SequenceModel>();
                     seq.Add(new SequenceModel(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                    await startSequence(seq, true, _captureImageToken, progress);
+                    await startSequence(seq, CalcHFR, true, _captureImageToken, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop);
                 return true;
             }
         }
 
-        public async Task<bool> captureImage(double duration, bool bsave, IProgress<string> progress, CancellationTokenSource token, FilterWheelModel.FilterInfo filter = null, BinningMode binning = null) {
+        public async Task<bool> captureImage(double duration, bool bCalcHFR, bool bsave, IProgress<string> progress, CancellationTokenSource token, FilterWheelModel.FilterInfo filter = null, BinningMode binning = null) {
             if (IsExposing) {
                 Notification.ShowWarning("Camera is busy");
                 return true;
@@ -548,7 +565,7 @@ namespace NINA.ViewModel {
             else {
                 List<SequenceModel> seq = new List<SequenceModel>();
                 seq.Add(new SequenceModel(duration, ImageTypes.SNAP, filter, binning, 1));
-                return await startSequence(seq, bsave, token, progress);
+                return await startSequence(seq, bCalcHFR, bsave, token, progress);
             }
         }
 
@@ -557,6 +574,7 @@ namespace NINA.ViewModel {
             public const string DOWNLOADING = "Downloading...";
             public const string FILTERCHANGE = "Switching Filter...";
             public const string PREPARING = "Preparing...";
+            public const string CALCHFR = "Calculating HFR...";
             public const string SAVING = "Saving...";
             public const string IDLE = "Idle";
             public const string DITHERING = "Dithering...";

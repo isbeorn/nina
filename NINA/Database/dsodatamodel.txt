@@ -1,0 +1,65 @@
+ PRAGMA foreign_keys = ON;
+
+CREATE TABLE catalogue (	
+	key			TEXT PRIMARY KEY,
+	name		TEXT
+);
+
+CREATE TABLE cataloguenr (
+	id			INTEGER PRIMARY KEY AUTOINCREMENT,
+	catalogueid INTEGER,
+	nr 			INTEGER,
+	FOREIGN KEY(catalogueid) REFERENCES catalogue(id)
+);
+
+CREATE TABLE dsotype (	
+	key			TEXT PRIMARY KEY,
+	name		TEXT
+);
+
+CREATE TABLE dsoclass (	
+	key			TEXT PRIMARY KEY,
+	name		TEXT
+);
+
+CREATE TABLE constellation (	
+	key			TEXT PRIMARY KEY,
+	name		TEXT
+);
+
+CREATE TABLE visualdescription (	
+	key			TEXT PRIMARY KEY,
+	name		TEXT
+);
+
+
+CREATE TABLE dsodetail (
+	id						INTEGER PRIMARY KEY AUTOINCREMENT,
+	ra						REAL,
+	dec						REAL,
+	magnitude				REAL,
+	surfacebrightness 		REAL,
+	sizemin					REAL,
+	sizemax					REAL,
+	positionangle			REAL,
+	nrofstars				INTEGER,
+	brighteststar			REAL,
+	notes					TEXT,
+	constellationkey		TEXT,
+	dsotypekey				TEXT,
+	dsoclasskey				TEXT,
+	visualdescriptionkey	TEXT,	
+	FOREIGN KEY(dsotypekey) REFERENCES dsotype(key),
+	FOREIGN KEY(dsoclasskey) REFERENCES dsoclass(key),
+	FOREIGN KEY(visualdescriptionkey) REFERENCES visualdescription(key),
+	FOREIGN KEY(constellationkey) REFERENCES constellation(key)
+);
+
+
+CREATE TABLE cataloguenrdsodetail (
+	id				INTEGER PRIMARY KEY AUTOINCREMENT,
+	cataloguenrid	INTEGER,
+	dsodetailid		INTEGER,
+	FOREIGN KEY(cataloguenrid) REFERENCES cataloguenr(id),
+	FOREIGN KEY(dsodetailid) REFERENCES dsodetail(id)
+);

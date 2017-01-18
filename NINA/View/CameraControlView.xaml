@@ -9,7 +9,7 @@
     <Grid x:Name="LayoutRoot">        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="180" />
+            <ColumnDefinition Width="240" />
         </Grid.ColumnDefinitions>
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding MyCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}}">
@@ -25,8 +25,32 @@
             </StackPanel>
         </StackPanel>
 
-        <UniformGrid Columns="3" Grid.Column="1" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityConverter}}">
+        <UniformGrid Columns="4" Grid.Column="1" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityConverter}}">
+            <ToggleButton IsChecked="{Binding MyHFR}"  Margin="5,0,5,0">
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource StarSVG}" Stretch="Uniform" Margin="5">
+                                        </Path>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource StarSVG}" Stretch="Uniform" Margin="5">
+                                        </Path>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
 
+            </ToggleButton>
             <ToggleButton IsChecked="{Binding MyLoop}"  Margin="5,0,5,0">
                  <ToggleButton.Style>
                     <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >

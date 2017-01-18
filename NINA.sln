@@ -9,6 +9,8 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "NINASetup", "NINASetup\NINA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NINATest", "NINATest\NINATest.csproj", "{102E88D0-82E9-4DA5-919A-94FC68E32F3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarDataImport", "StarDataImport\StarDataImport.csproj", "{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,18 @@ Global
 		{102E88D0-82E9-4DA5-919A-94FC68E32F3E}.Release|x64.Build.0 = Release|Any CPU
 		{102E88D0-82E9-4DA5-919A-94FC68E32F3E}.Release|x86.ActiveCfg = Release|Any CPU
 		{102E88D0-82E9-4DA5-919A-94FC68E32F3E}.Release|x86.Build.0 = Release|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Debug|x64.Build.0 = Debug|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Release|x64.ActiveCfg = Release|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Release|x64.Build.0 = Release|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

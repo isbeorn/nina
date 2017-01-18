@@ -415,7 +415,7 @@ namespace NINA.ViewModel {
                     try {
                         var oldAutoStretch = ImagingVM.AutoStretch;
                         ImagingVM.AutoStretch = true;
-                        var capture = ImagingVM.captureImage(DARVSlewDuration + 5, false, cameraprogress, _cancelDARVSlewToken);
+                        var capture = ImagingVM.captureImage(DARVSlewDuration + 5, false, false, cameraprogress, _cancelDARVSlewToken);
                         var slew = darvTelescopeSlew(slewprogress, _cancelDARVSlewToken);
 
                         await Task.WhenAll(capture, slew);
