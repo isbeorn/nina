@@ -388,7 +388,11 @@ namespace NINA.ViewModel {
                             else if (bCalcHFR) {
                                 progress.Report(ImagingVM.ExposureStatus.CALCHFR);
                                 var analysis = new ImageAnalysis();
-                                tmp = await analysis.detectStarsAsync(iarr);
+                                if(AutoStretch) {
+                                    tmp = await analysis.detectStarsAsync(iarr, progress, tokenSource, await stretch(iarr));
+                                } else {
+                                    tmp = await analysis.detectStarsAsync(iarr, progress, tokenSource);
+                                }                                
                             }
                             else {
                                 tmp = await prepare(iarr.FlatArray, iarr.X, iarr.Y);

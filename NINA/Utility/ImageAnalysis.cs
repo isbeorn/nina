@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -109,137 +110,156 @@ namespace NINA.Utility {
             }
             */
 
-    public async Task<BitmapSource> detectStarsAsync(Utility.ImageArray iarr) {
-            return await Task.Run<BitmapSource>(() => detectStars(iarr));
+    public async Task<BitmapSource> detectStarsAsync(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken, BitmapSource baseImageOverride = null) {
+            return await Task.Run<BitmapSource>(() => detectStars(iarr, progress, canceltoken, baseImageOverride));
         }
-    public BitmapSource detectStars(Utility.ImageArray iarr) {
-            /*return detectStars(NormalizeTiffTo8BitImage(Utility.createSourceFromArray(iarr.FlatArray, iarr.X, iarr.Y, System.Windows.Media.PixelFormats.Gray16)));
-         }
+    public BitmapSource detectStars(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken, BitmapSource baseImageOverride = null) {
+            BitmapSource result = null;
+            try {
 
-         public BitmapSource detectStars(BitmapSource bmpsource) {*/
-            var bmpsource = NormalizeTiffTo8BitImage(Utility.createSourceFromArray(iarr.FlatArray, iarr.X, iarr.Y, System.Windows.Media.PixelFormats.Gray16));
+                progress.Report("Preparing image for star detection");
+                var bmpsource = NormalizeTiffTo8BitImage(Utility.createSourceFromArray(iarr.FlatArray, iarr.X, iarr.Y, System.Windows.Media.PixelFormats.Gray16));
 
-            Stopwatch sw = Stopwatch.StartNew();
-            Bitmap orig = BitmapFromSource(bmpsource);
-            Bitmap bmp = BitmapFromSource(bmpsource);
-            var a = new AForge.Imaging.ImageStatistics(bmp);
-
-            Debug.Print("Time to convert Image: " + sw.Elapsed);
-            sw.Restart();
-
-            /* stretch image*/
-            /*IntRange inputRange = new IntRange(a.GrayWithoutBlack.Median - (int)(a.GrayWithoutBlack.StdDev * 1.5), a.GrayWithoutBlack.Median + (int)(a.GrayWithoutBlack.StdDev * 1.5));
-            IntRange outputRange = new IntRange(0, byte.MaxValue);
-            new LevelsLinear { InGray = inputRange, OutGray = outputRange }.ApplyInPlace(bmp);*/
-
-            Debug.Print("Time for stretch: " + sw.Elapsed);
-            sw.Restart();
-
-            /* prepare image for structure detection */
-            var edgedetector = new CannyEdgeDetector();
-            edgedetector.ApplyInPlace(bmp);
-
-            new SISThreshold().ApplyInPlace(bmp);
-
-            new BinaryDilatation3x3().ApplyInPlace(bmp);
-
-            Debug.Print("Time for image preparation: " + sw.Elapsed);
-            sw.Restart();
-
-            /* detect structures */
-            int minStarSize = 5;
-            int maxStarSize = minStarSize * 5;
-            BlobCounter blobCounter = new BlobCounter{ MinWidth = minStarSize, MinHeight = maxStarSize, MaxWidth = maxStarSize, MaxHeight = maxStarSize };
-            blobCounter.ProcessImage(bmp);
-
-            Debug.Print("Time for structure detection: " + sw.Elapsed);
-            sw.Restart();
-
-            /* get structure info */
-            Blob[] blobs = blobCounter.GetObjectsInformation();
-            
-            // create convex hull searching algorithm
-            GrahamConvexHull hullFinder = new GrahamConvexHull();
-
-            // lock image to draw on it
-            
-            // process each blob
-
-            SimpleShapeChecker checker = new SimpleShapeChecker();
-            Star s;
-            List<Star> starlist = new List<Star>();
-
-            
-            
-
-            foreach (Blob blob in blobs) {
-                if(blob.Rectangle.Width > maxStarSize || blob.Rectangle.Height > maxStarSize || blob.Rectangle.Width < minStarSize || blob.Rectangle.Height < minStarSize) {
-                    continue;
+                Stopwatch sw = Stopwatch.StartNew();
+                Bitmap orig;
+                if (baseImageOverride != null) {
+                    orig = BitmapFromSource(NormalizeTiffTo8BitImage(baseImageOverride));
                 }
-                var points = blobCounter.GetBlobsEdgePoints(blob);
-                AForge.Point centerpoint; float radius;
-                //Star is circle
-                 if(checker.IsCircle(points, out centerpoint, out radius)) {
-                    s = new Star { Position = centerpoint, radius = radius, Rectangle = blob.Rectangle };
-                } else { //Star is elongated
-                    s = new Star { Position = centerpoint, radius = Math.Max(blob.Rectangle.Width, blob.Rectangle.Height) / 2, Rectangle = blob.Rectangle };
+                else {
+                    orig = BitmapFromSource(bmpsource);
                 }
-                 /* get pixeldata */
-                 for(int x = s.Rectangle.X; x < s.Rectangle.X + s.Rectangle.Width; x++) {
-                    for(int y = s.Rectangle.Y; y < s.Rectangle.Y  + s.Rectangle.Height; y++) {
+                Bitmap bmp = BitmapFromSource(bmpsource);
+                var a = new AForge.Imaging.ImageStatistics(bmp);
 
-                        PixelData pd = new PixelData { PosX = x, PosY = y, value = iarr.FlatArray[x + (iarr.X * y)] } ;
-                        s.Pixeldata.Add(pd);
+                Debug.Print("Time to convert Image: " + sw.Elapsed);
+                sw.Restart();
+                canceltoken.Token.ThrowIfCancellationRequested();
+                /* stretch image*/
+                /*IntRange inputRange = new IntRange(a.GrayWithoutBlack.Median - (int)(a.GrayWithoutBlack.StdDev * 1.5), a.GrayWithoutBlack.Median + (int)(a.GrayWithoutBlack.StdDev * 1.5));
+                IntRange outputRange = new IntRange(0, byte.MaxValue);
+                new LevelsLinear { InGray = inputRange, OutGray = outputRange }.ApplyInPlace(bmp);*/
+
+                Debug.Print("Time for stretch: " + sw.Elapsed);
+                sw.Restart();
+
+                /* prepare image for structure detection */
+                var edgedetector = new CannyEdgeDetector();
+                edgedetector.ApplyInPlace(bmp);
+                canceltoken.Token.ThrowIfCancellationRequested();
+                new SISThreshold().ApplyInPlace(bmp);
+                canceltoken.Token.ThrowIfCancellationRequested();
+                new BinaryDilatation3x3().ApplyInPlace(bmp);
+                canceltoken.Token.ThrowIfCancellationRequested();
+
+                Debug.Print("Time for image preparation: " + sw.Elapsed);
+                sw.Restart();
+
+                progress.Report("Detecting structures");
+
+                /* detect structures */
+                int minStarSize = 5;
+                int maxStarSize = minStarSize * 5;
+                BlobCounter blobCounter = new BlobCounter{ MinWidth = minStarSize, MinHeight = maxStarSize, MaxWidth = maxStarSize, MaxHeight = maxStarSize };
+                blobCounter.ProcessImage(bmp);
+
+                canceltoken.Token.ThrowIfCancellationRequested();
+                Debug.Print("Time for structure detection: " + sw.Elapsed);
+                sw.Restart();
+
+                /* get structure info */
+                Blob[] blobs = blobCounter.GetObjectsInformation();
+            
+                // create convex hull searching algorithm
+                GrahamConvexHull hullFinder = new GrahamConvexHull();
+
+                // lock image to draw on it
+            
+                // process each blob
+
+                SimpleShapeChecker checker = new SimpleShapeChecker();
+                Star s;
+                List<Star> starlist = new List<Star>();
+
+
+                progress.Report("Analyzing stars");
+
+                foreach (Blob blob in blobs) {
+                    canceltoken.Token.ThrowIfCancellationRequested();
+
+                    if (blob.Rectangle.Width > maxStarSize || blob.Rectangle.Height > maxStarSize || blob.Rectangle.Width < minStarSize || blob.Rectangle.Height < minStarSize) {
+                        continue;
                     }
-                }
-                s.HFR = calculateHfr(s);
-                starlist.Add(s);
+                    var points = blobCounter.GetBlobsEdgePoints(blob);
+                    AForge.Point centerpoint; float radius;
+                    //Star is circle
+                     if(checker.IsCircle(points, out centerpoint, out radius)) {
+                        s = new Star { Position = centerpoint, radius = radius, Rectangle = blob.Rectangle };
+                    } else { //Star is elongated
+                        s = new Star { Position = centerpoint, radius = Math.Max(blob.Rectangle.Width, blob.Rectangle.Height) / 2, Rectangle = blob.Rectangle };
+                    }
+                     /* get pixeldata */
+                     for(int x = s.Rectangle.X; x < s.Rectangle.X + s.Rectangle.Width; x++) {
+                        for(int y = s.Rectangle.Y; y < s.Rectangle.Y  + s.Rectangle.Height; y++) {
+
+                            PixelData pd = new PixelData { PosX = x, PosY = y, value = iarr.FlatArray[x + (iarr.X * y)] } ;
+                            s.Pixeldata.Add(pd);
+                        }
+                    }
+                    s.HFR = calculateHfr(s);
+                    starlist.Add(s);
                 
-            }
+                }
+                canceltoken.Token.ThrowIfCancellationRequested();
+                progress.Report("Annotating image");
+                Bitmap newBitmap = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+                Graphics graphics = Graphics.FromImage(newBitmap);
+                
+                graphics.DrawImage(orig, 0, 0);
+
+                var fontFamily = new System.Drawing.FontFamily("Times New Roman");
+                var font = new Font(fontFamily, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
+                var solidBrush = new SolidBrush(System.Drawing.Color.Yellow);
+
+                /*BitmapData data = newBitmap.LockBits(
+                    new Rectangle(0, 0, newBitmap.Width, newBitmap.Height),
+                        ImageLockMode.ReadWrite, newBitmap.PixelFormat);*/
+                int r, posx, posy, offset = 10;
+
+                var threshhold = 100;
+                if(starlist.Count > threshhold) {
+                    starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
+                    starlist = starlist.GetRange(0, threshhold);
+                }
+
+                foreach (Star star in starlist) {
+                    canceltoken.Token.ThrowIfCancellationRequested();
+                    r = (int)Math.Ceiling(star.radius);
+                    posx = star.Rectangle.X - offset;
+                    posy = star.Rectangle.Y - offset;
+                    graphics.DrawEllipse(Pens.Pink, star.Rectangle);
+                    graphics.DrawString(star.HFR.ToString("##.##"), font, solidBrush, new PointF(Convert.ToSingle(posx - offset), Convert.ToSingle(posy + offset)));
+                }
             
+                //newBitmap.UnlockBits(data);
 
-            Bitmap newBitmap = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-            Graphics graphics = Graphics.FromImage(newBitmap);
-            graphics.DrawImage(orig, 0, 0);
+                Debug.Print("Time for retrieving star data: " + sw.Elapsed);
+                sw.Restart();
 
-            var fontFamily = new System.Drawing.FontFamily("Times New Roman");
-            var font = new Font(fontFamily, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
-            var solidBrush = new SolidBrush(System.Drawing.Color.Yellow);
-
-            /*BitmapData data = newBitmap.LockBits(
-                new Rectangle(0, 0, newBitmap.Width, newBitmap.Height),
-                    ImageLockMode.ReadWrite, newBitmap.PixelFormat);*/
-            int r, posx, posy, offset = 10;
-
-            var threshhold = 100;
-            if(starlist.Count > threshhold) {
-                starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
-                starlist = starlist.GetRange(0, threshhold);
-            }
-
-            foreach (Star star in starlist) {
-                r = (int)Math.Ceiling(star.radius);
-                posx = star.Rectangle.X - offset;
-                posy = star.Rectangle.Y - offset;
-                graphics.DrawEllipse(Pens.Pink, star.Rectangle);
-                graphics.DrawString(star.HFR.ToString("##.##"), font, solidBrush, new PointF(Convert.ToSingle(posx - offset), Convert.ToSingle(posy + offset)));
-            }
+                result = ConvertBitmap(newBitmap);
+                //BitmapSource result = ConvertBitmap(bmp);
             
-            //newBitmap.UnlockBits(data);
+                result.Freeze();
 
+                orig.Dispose();
+                bmp.Dispose();
+                newBitmap.Dispose();
 
-            Debug.Print("Time for retrieving star data: " + sw.Elapsed);
-            sw.Restart();
-
-            BitmapSource result = ConvertBitmap(newBitmap);
-            //BitmapSource result = ConvertBitmap(bmp);
-            
-            result.Freeze();
-
-            orig.Dispose();
-            bmp.Dispose();
-            newBitmap.Dispose();
+            }
+            catch (OperationCanceledException ex) {
+                progress.Report("Operation cancelled");
+            }
 
             return result;
             //Bitmap bmp = BitmapFromSource(bmpsource);

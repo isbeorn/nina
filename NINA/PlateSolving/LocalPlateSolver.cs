@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading;
 using nom.tam.fits;
 using NINA.Utility;
+using System.Globalization;
 
 namespace NINA.PlateSolving {
     class LocalPlateSolver : IPlateSolver {
@@ -59,14 +60,33 @@ namespace NINA.PlateSolving {
                     canceltoken.Token.ThrowIfCancellationRequested();
                 }
 
+                filepath = TMPIMGFILEPATH + "\\tmp.wcs";
+                if (File.Exists(filepath)) {
+                    startInfo.Arguments = string.Format("/C {0} --login -c 'wcsinfo {1}'", cygwinbashpath, filepath.Replace("\\", "/"));
+                    process.Start();
+                    Dictionary<string, string> wcsinfo = new Dictionary<string, string>();
+                    while (!process.StandardOutput.EndOfStream) {                        
+                        var valuepair = process.StandardOutput.ReadLine().Split(' ');
+                        wcsinfo.Add(valuepair[0], valuepair[1]);                        
+                        canceltoken.Token.ThrowIfCancellationRequested();
+                    }
+                    
+                    result.Ra = double.Parse(wcsinfo["ra_center"], CultureInfo.InvariantCulture);
+                    result.Dec = double.Parse(wcsinfo["dec_center"], CultureInfo.InvariantCulture);
+                    result.Orientation = double.Parse(wcsinfo["orientation_center"], CultureInfo.InvariantCulture);
+                    result.Pixscale = double.Parse(wcsinfo["pixscale"], CultureInfo.InvariantCulture);
 
-                if (File.Exists(TMPIMGFILEPATH + "\\tmp.wcs")) {
+                    result.Epoch = Utility.Astrometry.Epoch.J2000;
                     progress.Report("Solved");
-                    Fits solvedFits = new Fits(TMPIMGFILEPATH + "\\tmp.wcs");
-                    BasicHDU solvedHDU = solvedFits.GetHDU(0);
-                    result.Ra = double.Parse(solvedHDU.Header.FindCard("CRVAL1").Value, System.Globalization.CultureInfo.InvariantCulture);
-                    result.Dec = double.Parse(solvedHDU.Header.FindCard("CRVAL2").Value, System.Globalization.CultureInfo.InvariantCulture);
-                } else {
+
+                    /* This info does not get the center info. - removed
+                        Fits solvedFits = new Fits(TMPIMGFILEPATH + "\\tmp.wcs");
+                        BasicHDU solvedHDU = solvedFits.GetHDU(0);
+                        result.Ra = double.Parse(solvedHDU.Header.FindCard("CRVAL1").Value, System.Globalization.CultureInfo.InvariantCulture);
+                        result.Dec = double.Parse(solvedHDU.Header.FindCard("CRVAL2").Value, System.Globalization.CultureInfo.InvariantCulture);
+                    */
+                }
+                else {
                     result.Success = false;
                 }
             } catch (OperationCanceledException ex) {
