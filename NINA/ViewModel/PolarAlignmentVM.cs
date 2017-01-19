@@ -581,8 +581,8 @@ namespace NINA.ViewModel {
             double poleError = double.NaN;
             try {
 
-
-                double movement = 0.5d;
+                double movementdeg = 0.5d;
+                double movement = (movementdeg / 360) * 24;
 
                 progress.Report("Solving image...");
 
@@ -633,7 +633,7 @@ namespace NINA.ViewModel {
 
                 var decError = startSolve.Dec - targetSolve.Dec;
                 // Calculate pole error
-                poleError = 3.81 * 3600.0 * decError / (4 * movement * Math.Cos(ToRadians(startPosition.Dec)));
+                poleError = 3.81 * 3600.0 * decError / (4 * movementdeg * Math.Cos(ToRadians(startPosition.Dec)));
                 // Convert pole error from arcminutes to degrees
                 poleError = poleError / 60.0;
             }

@@ -29,7 +29,7 @@ namespace NINA.Utility {
             public double FWHM;
             public AForge.Point Position;
             public List<PixelData> Pixeldata;
-            public double MaxData {
+            public double Average {
                 get {
                     return Pixeldata.Average((x) => x.value);
                 }
@@ -128,9 +128,9 @@ namespace NINA.Utility {
             sw.Restart();
 
             /* stretch image*/
-            IntRange inputRange = new IntRange(a.GrayWithoutBlack.Median - (int)(a.GrayWithoutBlack.StdDev * 1.5), a.GrayWithoutBlack.Median + (int)(a.GrayWithoutBlack.StdDev * 1.5));
+            /*IntRange inputRange = new IntRange(a.GrayWithoutBlack.Median - (int)(a.GrayWithoutBlack.StdDev * 1.5), a.GrayWithoutBlack.Median + (int)(a.GrayWithoutBlack.StdDev * 1.5));
             IntRange outputRange = new IntRange(0, byte.MaxValue);
-            new LevelsLinear { InGray = inputRange, OutGray = outputRange }.ApplyInPlace(bmp);
+            new LevelsLinear { InGray = inputRange, OutGray = outputRange }.ApplyInPlace(bmp);*/
 
             Debug.Print("Time for stretch: " + sw.Elapsed);
             sw.Restart();
@@ -148,7 +148,7 @@ namespace NINA.Utility {
 
             /* detect structures */
             int minStarSize = 5;
-            int maxStarSize = minStarSize * 25;
+            int maxStarSize = minStarSize * 5;
             BlobCounter blobCounter = new BlobCounter{ MinWidth = minStarSize, MinHeight = maxStarSize, MaxWidth = maxStarSize, MaxHeight = maxStarSize };
             blobCounter.ProcessImage(bmp);
 
@@ -173,7 +173,9 @@ namespace NINA.Utility {
             
 
             foreach (Blob blob in blobs) {
-
+                if(blob.Rectangle.Width > maxStarSize || blob.Rectangle.Height > maxStarSize || blob.Rectangle.Width < minStarSize || blob.Rectangle.Height < minStarSize) {
+                    continue;
+                }
                 var points = blobCounter.GetBlobsEdgePoints(blob);
                 AForge.Point centerpoint; float radius;
                 //Star is circle
@@ -209,8 +211,13 @@ namespace NINA.Utility {
                 new Rectangle(0, 0, newBitmap.Width, newBitmap.Height),
                     ImageLockMode.ReadWrite, newBitmap.PixelFormat);*/
             int r, posx, posy, offset = 10;
-            
-            
+
+            var threshhold = 100;
+            if(starlist.Count > threshhold) {
+                starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
+                starlist = starlist.GetRange(0, threshhold);
+            }
+
             foreach (Star star in starlist) {
                 r = (int)Math.Ceiling(star.radius);
                 posx = star.Rectangle.X - offset;
@@ -226,6 +233,8 @@ namespace NINA.Utility {
             sw.Restart();
 
             BitmapSource result = ConvertBitmap(newBitmap);
+            //BitmapSource result = ConvertBitmap(bmp);
+            
             result.Freeze();
 
             orig.Dispose();

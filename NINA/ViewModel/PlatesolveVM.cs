@@ -128,9 +128,9 @@ namespace NINA.ViewModel {
 
             /* Read image into memorystream */
             var ms = new MemoryStream();
-            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(image);
-            encoder.QualityLevel = 100;
+            
             encoder.Save(ms);
             ms.Seek(0, SeekOrigin.Begin);
 

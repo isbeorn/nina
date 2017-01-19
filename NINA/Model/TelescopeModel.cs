@@ -462,7 +462,7 @@ namespace NINA.Model {
         }
         public string RightAscensionString {
             get {
-                return Utility.Utility.AscomUtil.DegreesToHMS(RightAscension);
+                return Utility.Utility.AscomUtil.HoursToHMS(RightAscension);
             }
         }
 
