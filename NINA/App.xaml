@@ -22,7 +22,7 @@
             <util:InverseNullToBooleanConverter x:Key="InverseNullToBooleanConverter" />
             <util:GreaterZeroRule x:Key="GreaterZeroRule" />
             <util:SetAlphaToColorConverter x:Key="SetAlphaToColorConverter" />
-
+            <util:NullToVisibilityCollapsedConverter x:Key="NullToVisibilityCollapsedConverter" />
 
             <SolidColorBrush x:Key="PrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.PrimaryColor}"/>
             <SolidColorBrush x:Key="SecondaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.SecondaryColor}"/>

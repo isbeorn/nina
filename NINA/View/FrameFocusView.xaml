@@ -10,7 +10,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
+            <!--<ColumnDefinition Width="Auto"/>-->
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
@@ -116,7 +116,7 @@
                     MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
                     MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />
         </Grid>
-       
+       <!--
         <Expander ExpandDirection="Right"  Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" IsExpanded="False">
             <Expander.Header>
                 <TextBlock Text="Image Manipulation" TextOptions.TextFormattingMode="Display"
@@ -166,6 +166,6 @@ UseLayoutRounding="true">
 
             
         </Expander>
-        
+        -->
     </Grid>
 </UserControl>

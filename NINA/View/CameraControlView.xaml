@@ -9,7 +9,7 @@
     <Grid x:Name="LayoutRoot">        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="240" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding MyCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}}">
@@ -25,7 +25,7 @@
             </StackPanel>
         </StackPanel>
 
-        <UniformGrid Columns="4" Grid.Column="1" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityConverter}}">
+        <UniformGrid Columns="4" Grid.Column="1" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
             <ToggleButton IsChecked="{Binding MyHFR}"  Margin="5,0,5,0">
                 <ToggleButton.Style>
                     <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
