@@ -175,11 +175,6 @@ namespace NINA.Utility {
                 /* get structure info */
                 Blob[] blobs = blobCounter.GetObjectsInformation();
             
-                // create convex hull searching algorithm
-                GrahamConvexHull hullFinder = new GrahamConvexHull();
-
-                // lock image to draw on it
-            
                 // process each blob
 
                 SimpleShapeChecker checker = new SimpleShapeChecker();
