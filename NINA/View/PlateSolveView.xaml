@@ -25,7 +25,7 @@
                 </Grid>
                 <Image Source="{Binding PlateSolveResult.SolvedImage}" Visibility="{Binding PlateSolveResult, Converter={StaticResource NullToVisibilityConverter}}" />
                 <Image Source="{Binding ImagingVM.Image}" Visibility="{Binding PlateSolveResult, Converter={StaticResource InverseNullToVisibilityConverter}}" />
-                <Border HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="150" Background="{StaticResource BorderBrush}" Visibility="{Binding ImagingVM.IsExposing, Converter={StaticResource VisibilityConverter}}">
+                <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="50" Background="{StaticResource BorderBrush}" Visibility="{Binding ImagingVM.IsExposing, Converter={StaticResource VisibilityConverter}}">
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{Binding ImagingVM.ExpStatus}"></TextBlock>
                 </Border>
             </Grid>

@@ -251,7 +251,7 @@ namespace NINA.ViewModel {
             return iarr;
         }
 
-        public async Task<BitmapSource> prepare(ushort[] arr, int x, int y) {
+        public static async Task<BitmapSource> prepare(ushort[] arr, int x, int y) {
             return await Task.Run<BitmapSource>(() => {
                 BitmapSource src = Utility.Utility.createSourceFromArray(arr, x, y, System.Windows.Media.PixelFormats.Gray16);
                 src.Freeze();
@@ -387,12 +387,9 @@ namespace NINA.ViewModel {
                             }
                             else if (bCalcHFR) {
                                 progress.Report(ImagingVM.ExposureStatus.CALCHFR);
-                                var analysis = new ImageAnalysis();
-                                if(AutoStretch) {
-                                    tmp = await analysis.detectStarsAsync(iarr, progress, tokenSource, await stretch(iarr));
-                                } else {
-                                    tmp = await analysis.detectStarsAsync(iarr, progress, tokenSource);
-                                }                                
+                                var analysis = new ImageAnalysis();                                
+                                tmp = await analysis.detectStarsAsync(iarr, progress, tokenSource);
+                                                           
                             }
                             else {
                                 tmp = await prepare(iarr.FlatArray, iarr.X, iarr.Y);
@@ -451,7 +448,7 @@ namespace NINA.ViewModel {
 
         }
 
-        public async Task<BitmapSource> stretch(Utility.Utility.ImageArray sourceArray) {
+        public static async Task<BitmapSource> stretch(Utility.Utility.ImageArray sourceArray) {
             
             ushort[] arr = await Utility.Utility.stretchArray(sourceArray);
             BitmapSource bs = await prepare(arr, sourceArray.X, sourceArray.Y);

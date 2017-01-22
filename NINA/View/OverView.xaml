@@ -21,19 +21,12 @@
         </Grid.RowDefinitions>
         <Border BorderThickness="0.5" BorderBrush="Black" Margin="0,0,1,1">
             <Grid>
-                <Grid.RowDefinitions>                   
-                    <RowDefinition />
-                    <RowDefinition Height="30" />
-                </Grid.RowDefinitions>
-                <Grid>
-                    <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Opacity="0.2" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="100">
-                    </Path>
-                    <Image Source="{Binding ImagingVM.Image}" />
-                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="150" Background="{StaticResource BorderBrush}" Visibility="{Binding ImagingVM.IsExposing, Converter={StaticResource VisibilityConverter}}">
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{Binding ImagingVM.ExpStatus}"></TextBlock>
-                    </Border>
-                </Grid>
-                <TextBlock Text="{Binding ImagingVM.ExpStatus}" HorizontalAlignment="Center" Grid.Row="1"/>
+                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Opacity="0.2" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="100">
+                </Path>
+                <Image Source="{Binding ImagingVM.Image}" />
+                <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="50" Background="{StaticResource BorderBrush}" Visibility="{Binding ImagingVM.IsExposing, Converter={StaticResource VisibilityConverter}}">
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{Binding ImagingVM.ExpStatus}"></TextBlock>
+                </Border>                
             </Grid>
         </Border>
         <GridSplitter Grid.Column="1"  HorizontalAlignment="Stretch" />

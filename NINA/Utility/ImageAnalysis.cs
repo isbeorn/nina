@@ -20,6 +20,12 @@ using System.Windows.Media.Imaging;
 namespace NINA.Utility {
     class ImageAnalysis {
 
+        private static System.Drawing.Pen ELLIPSEPEN = new System.Drawing.Pen(System.Drawing.Brushes.LightYellow, 3);
+        private static SolidBrush TEXTBRUSH = new SolidBrush(System.Drawing.Color.Yellow);
+        private static System.Drawing.FontFamily FONTFAMILY = new System.Drawing.FontFamily("Times New Roman");
+        private static Font FONT = new Font(FONTFAMILY, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
+
+
         public ImageAnalysis() {
 
         }
@@ -110,34 +116,34 @@ namespace NINA.Utility {
             }
             */
 
-    public async Task<BitmapSource> detectStarsAsync(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken, BitmapSource baseImageOverride = null) {
-            return await Task.Run<BitmapSource>(() => detectStars(iarr, progress, canceltoken, baseImageOverride));
+    public async Task<BitmapSource> detectStarsAsync(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
+            return await Task.Run<BitmapSource>(() => detectStars(iarr, progress, canceltoken));
         }
-    public BitmapSource detectStars(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken, BitmapSource baseImageOverride = null) {
+    public BitmapSource detectStars(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
             BitmapSource result = null;
             try {
-
+                
                 progress.Report("Preparing image for star detection");
-                var bmpsource = NormalizeTiffTo8BitImage(Utility.createSourceFromArray(iarr.FlatArray, iarr.X, iarr.Y, System.Windows.Media.PixelFormats.Gray16));
+                var bmpsource = NormalizeTiffTo8BitImage(ViewModel.ImagingVM.stretch(iarr).Result);
 
                 Stopwatch sw = Stopwatch.StartNew();
-                Bitmap orig;
-                if (baseImageOverride != null) {
-                    orig = BitmapFromSource(NormalizeTiffTo8BitImage(baseImageOverride));
-                }
-                else {
-                    orig = BitmapFromSource(bmpsource);
-                }
+                Bitmap orig = BitmapFromSource(bmpsource);
                 Bitmap bmp = BitmapFromSource(bmpsource);
                 var a = new AForge.Imaging.ImageStatistics(bmp);
 
                 Debug.Print("Time to convert Image: " + sw.Elapsed);
                 sw.Restart();
                 canceltoken.Token.ThrowIfCancellationRequested();
+
+                
+
                 /* stretch image*/
-                /*IntRange inputRange = new IntRange(a.GrayWithoutBlack.Median - (int)(a.GrayWithoutBlack.StdDev * 1.5), a.GrayWithoutBlack.Median + (int)(a.GrayWithoutBlack.StdDev * 1.5));
+                /*IntRange inputRange = new IntRange(a.GrayWithoutBlack.Median - (int)(a.GrayWithoutBlack.StdDev * 0.5), a.GrayWithoutBlack.Median + (int)(a.GrayWithoutBlack.StdDev * 1.5));
                 IntRange outputRange = new IntRange(0, byte.MaxValue);
                 new LevelsLinear { InGray = inputRange, OutGray = outputRange }.ApplyInPlace(bmp);*/
+
+                new BinaryErosion3x3().ApplyInPlace(bmp);
+                new Mean().ApplyInPlace(bmp);
 
                 Debug.Print("Time for stretch: " + sw.Elapsed);
                 sw.Restart();
@@ -217,9 +223,8 @@ namespace NINA.Utility {
                 
                 graphics.DrawImage(orig, 0, 0);
 
-                var fontFamily = new System.Drawing.FontFamily("Times New Roman");
-                var font = new Font(fontFamily, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
-                var solidBrush = new SolidBrush(System.Drawing.Color.Yellow);
+                
+                
 
                 /*BitmapData data = newBitmap.LockBits(
                     new Rectangle(0, 0, newBitmap.Width, newBitmap.Height),
@@ -237,8 +242,8 @@ namespace NINA.Utility {
                     r = (int)Math.Ceiling(star.radius);
                     posx = star.Rectangle.X - offset;
                     posy = star.Rectangle.Y - offset;
-                    graphics.DrawEllipse(Pens.Pink, star.Rectangle);
-                    graphics.DrawString(star.HFR.ToString("##.##"), font, solidBrush, new PointF(Convert.ToSingle(posx - offset), Convert.ToSingle(posy + offset)));
+                    graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X - offset, star.Rectangle.Y - offset, star.Rectangle.Width + 2*offset, star.Rectangle.Height + 2*offset));
+                    graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(posx - 1.5*offset), Convert.ToSingle(posy + 2.5*offset)));
                 }
             
                 //newBitmap.UnlockBits(data);

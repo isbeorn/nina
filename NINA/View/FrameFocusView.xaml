@@ -52,53 +52,55 @@
             </chartingToolkit:Chart>-->
         </Expander>
         <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-            <ScrollViewer  PanningMode="Both">
-                <ScrollViewer.Style>
-                    <Style TargetType="{x:Type ScrollViewer}">
-                        <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
-                        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ScrollViewer}">
-                                    <Grid x:Name="Grid" Background="{TemplateBinding Background}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Rectangle x:Name="Corner" Grid.Column="1" Fill="{StaticResource BackgroundBrush}" Grid.Row="1"/>
-                                        <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="0" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
-                                        <ScrollBar x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}"/>
-                                        <ScrollBar x:Name="PART_HorizontalScrollBar" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}"/>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
+            <Grid>
+                <ScrollViewer  PanningMode="Both">
+                    <ScrollViewer.Style>
+                        <Style TargetType="{x:Type ScrollViewer}">
+                            <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+                            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                                        <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Rectangle x:Name="Corner" Grid.Column="1" Fill="{StaticResource BackgroundBrush}" Grid.Row="1"/>
+                                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="0" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
+                                            <ScrollBar x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}"/>
+                                            <ScrollBar x:Name="PART_HorizontalScrollBar" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}"/>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
 
-                        <!--<Style.Triggers>
-                            <DataTrigger Binding="{Binding IsChecked, ElementName=chkActualSize}" Value="True">
-                                <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
-                                <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-                            </DataTrigger>
-                        </Style.Triggers>-->
-                    </Style>
-                </ScrollViewer.Style>
-                <Grid>
-                    <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Opacity="0.2" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="100">
-                    </Path>
-                    <Image Grid.Column="0" Grid.Row="0" Source="{Binding ImagingVM.Image}" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Image.LayoutTransform>
-                            <ScaleTransform ScaleX="{Binding Zoom}" ScaleY="{Binding Zoom}" />
-                        </Image.LayoutTransform>
-                    </Image>
-                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="150" Background="{StaticResource BorderBrush}" Visibility="{Binding ImagingVM.IsExposing, Converter={StaticResource VisibilityConverter}}">
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{Binding ImagingVM.ExpStatus}"></TextBlock>
-                    </Border>
-                </Grid>                
-            </ScrollViewer>
+                            <!--<Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=chkActualSize}" Value="True">
+                                    <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+                                    <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                                </DataTrigger>
+                            </Style.Triggers>-->
+                        </Style>
+                    </ScrollViewer.Style>
+                    <Grid>
+                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Opacity="0.2" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="100">
+                        </Path>
+                        <Image Grid.Column="0" Grid.Row="0" Source="{Binding ImagingVM.Image}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Image.LayoutTransform>
+                                <ScaleTransform ScaleX="{Binding Zoom}" ScaleY="{Binding Zoom}" />
+                            </Image.LayoutTransform>
+                        </Image>                    
+                    </Grid>                
+                </ScrollViewer>
+                <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="50" Background="{StaticResource BorderBrush}" Visibility="{Binding ImagingVM.IsExposing, Converter={StaticResource VisibilityConverter}}">
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{Binding ImagingVM.ExpStatus}"></TextBlock>
+                </Border>
+            </Grid>
         </Border>
 
         <Grid Grid.Column="0" Grid.Row="3" IsEnabled="{Binding ImagingVM.Cam, Converter={StaticResource InverseNullToBooleanConverter}}">

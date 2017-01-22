@@ -51,7 +51,7 @@
                 <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Opacity="0.2" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="100">
                 </Path>
                 <Image Source="{Binding Image}" />
-                <Border HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="150" Background="{StaticResource BorderBrush}" Visibility="{Binding IsExposing, Converter={StaticResource VisibilityConverter}}">
+                <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="50" Background="{StaticResource BorderBrush}" Visibility="{Binding IsExposing, Converter={StaticResource VisibilityConverter}}">
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{Binding ExpStatus}"></TextBlock>
                 </Border>                
             </Grid>
