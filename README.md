@@ -26,8 +26,6 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 * Auto-Stretch image
 
-* Image manipulation with gamma, brightness & contrast sliders 
-
 * Filter wheel control (either manually or automatically during imaging)
 
 * Basic control of telescope movements
