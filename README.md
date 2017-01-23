@@ -14,7 +14,7 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 * All Equipment connected via ASCOM
 
-* Monochrome camera control
+* ASCOM camera control
 
 * Temperature control (including a cool down routine for a set amount of time)
 
