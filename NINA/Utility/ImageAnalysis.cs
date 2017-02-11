@@ -61,7 +61,7 @@ namespace NINA.Utility {
 
 
 
-        double calculateHfr(Star s) {
+        double calculateHfr(Star s, double mean) {
             double hfr = 0.0d;
             double outerRadius = s.radius;
             double sum = 0, sumDist = 0;
@@ -71,6 +71,9 @@ namespace NINA.Utility {
 
             foreach(PixelData data in s.Pixeldata) {
                 if (insideCircle(data.PosX, data.PosY, s.Position.X, s.Position.Y, s.radius)) {
+                    data.value = (ushort) (data.value - mean);
+                    if (data.value < 0) data.value = 0;
+
                     sum += data.value;
                     sumDist += data.value * Math.Sqrt(Math.Pow((double)data.PosX - (double)centerX, 2.0d) + Math.Pow((double)data.PosY - (double)centerY, 2.0d));
                 }
@@ -148,9 +151,8 @@ namespace NINA.Utility {
                 Debug.Print("Time for stretch: " + sw.Elapsed);
                 sw.Restart();
 
-                /* prepare image for structure detection */
-                var edgedetector = new CannyEdgeDetector();
-                edgedetector.ApplyInPlace(bmp);
+                /* prepare image for structure detection */                
+                new CannyEdgeDetector().ApplyInPlace(bmp);
                 canceltoken.Token.ThrowIfCancellationRequested();
                 new SISThreshold().ApplyInPlace(bmp);
                 canceltoken.Token.ThrowIfCancellationRequested();
@@ -206,7 +208,7 @@ namespace NINA.Utility {
                             s.Pixeldata.Add(pd);
                         }
                     }
-                    s.HFR = calculateHfr(s);
+                    s.HFR = calculateHfr(s, iarr.Mean);
                     starlist.Add(s);
                 
                 }
@@ -226,7 +228,7 @@ namespace NINA.Utility {
                         ImageLockMode.ReadWrite, newBitmap.PixelFormat);*/
                 int r, posx, posy, offset = 10;
 
-                var threshhold = 100;
+                var threshhold = 200;
                 if(starlist.Count > threshhold) {
                     starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
                     starlist = starlist.GetRange(0, threshhold);
@@ -251,7 +253,7 @@ namespace NINA.Utility {
                 //BitmapSource result = ConvertBitmap(bmp);
             
                 result.Freeze();
-
+                blobCounter = null;
                 orig.Dispose();
                 bmp.Dispose();
                 newBitmap.Dispose();

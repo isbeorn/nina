@@ -402,15 +402,21 @@ namespace NINA.ViewModel {
                                 Image = tmp;
                             }));
 
+                            if (!Cam.Connected) {
+                                throw new OperationCanceledException();
+                            }
+
                             /*Save to disk*/
-                            if (bSave) {
+                            if (bSave) {                               
                                 await save(seq, iarr, framenr, tokenSource, progress);
                             }
 
                             /*Dither*/
                             await dither(seq, tokenSource, progress);
-
-
+                            
+                            if (!Cam.Connected) {
+                                throw new OperationCanceledException();
+                            }
 
                             seq.ExposureCount -= 1;
                             framenr++;

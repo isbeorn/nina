@@ -1368,12 +1368,19 @@ namespace NINA.Model.MyCamera
                     Connected = true;
                     Settings.CameraId = ProgId;
 
-                    if (AscomCamera.SensorType == ASCOM.DeviceInterface.SensorType.Color) {
-                        Notification.ShowError("Sorry! This sensor type is not supported");                        
-                        disconnect();
-                        return false; ;
+                    try {
+
+                    
+                        if (AscomCamera.SensorType == ASCOM.DeviceInterface.SensorType.Color) {
+                            Notification.ShowError("Sorry! This sensor type is not supported");                        
+                            disconnect();
+                            return false; ;
+                        }
+                    } catch(ASCOM.PropertyNotImplementedException) {
+
                     }
-                                        
+
+
                     getCameraInfo();
                     Notification.ShowSuccess("Camera connected.");
                     con = true;

@@ -255,6 +255,7 @@
     <Compile Include="Utility\Converters.cs" />
     <Compile Include="Utility\EnumBindingSourceExtension.cs" />
     <Compile Include="Utility\ImageAnalysis.cs" />
+    <Compile Include="Utility\ImageArray\ImageArray.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\TabControlEx.cs" />
     <Compile Include="Utility\Notification.cs" />

@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyCamera;
 using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
@@ -18,6 +19,8 @@ using System.Windows.Media.Imaging;
 namespace NINA.ViewModel {
     class PlatesolveVM : BaseVM {
 
+        public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
+
         public PlatesolveVM() {
             Name = "Plate Solving";
             Progress = "Idle...";
@@ -27,8 +30,45 @@ namespace NINA.ViewModel {
             CancelBlindSolveCommand = new RelayCommand(cancelBlindSolve);
             SyncCommand = new RelayCommand(syncTelescope);
 
-            
+            SnapExposureDuration = 2;
                     
+        }
+
+        private BinningMode _snapBin;
+        private FilterWheelModel.FilterInfo _snapFilter;
+        private double _snapExposureDuration;
+
+        public BinningMode SnapBin {
+            get {
+                return _snapBin;
+            }
+
+            set {
+                _snapBin = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public FilterWheelModel.FilterInfo SnapFilter {
+            get {
+                return _snapFilter;
+            }
+
+            set {
+                _snapFilter = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double SnapExposureDuration {
+            get {
+                return _snapExposureDuration;
+            }
+
+            set {
+                _snapExposureDuration = value;
+                RaisePropertyChanged();
+            }
         }
 
         private void imageChanged(Object sender, PropertyChangedEventArgs e) {
@@ -80,14 +120,14 @@ namespace NINA.ViewModel {
 
         private async Task<bool> blindSolve(IProgress<string> progress) {
             _blindeSolveCancelToken = new CancellationTokenSource();
-            return await blindSolve(progress, _blindeSolveCancelToken);
+            return await blindSolveWithCapture(SnapExposureDuration, progress, _blindeSolveCancelToken, SnapFilter, SnapBin);            
         }
 
         public async Task<bool> blindSolve(IProgress<string> progress, CancellationTokenSource canceltoken) {
             bool fullresolution = true;
             if(Settings.PlateSolverType == PlateSolverEnum.ASTROMETRY_NET) {
                 fullresolution = Settings.UseFullResolutionPlateSolve;
-                Platesolver = new AstrometryPlateSolver("http://nova.astrometry.net", Settings.AstrometryAPIKey);
+                Platesolver = new AstrometryPlateSolver(ASTROMETRYNETURL, Settings.AstrometryAPIKey);
             } else if (Settings.PlateSolverType == PlateSolverEnum.LOCAL) {
                
                 Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * ImagingVM.Cam.BinX);

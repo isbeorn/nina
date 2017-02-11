@@ -32,8 +32,6 @@ namespace NINA.Utility {
             }
         }
 
-        
-
         public class ImageArray {
             public const ushort HistogramResolution = 1000;
 
@@ -41,31 +39,13 @@ namespace NINA.Utility {
             public ushort[] FlatArray;
             public int X;
             public int Y;
-            public ushort minStDev;
-            public ushort maxStDev;
+            public double StDev;
+            public double Mean;
+            public ushort MinStDev;
+            public ushort MaxStDev;
             private SortedDictionary<ushort, int> _histogram;
 
             public SortedDictionary<ushort, int> Histogram {
-                get {
-                    return _histogram;
-                }
-
-                set {
-                    _histogram = value;
-                }
-            }
-        }
-
-        public class TImageArray<T> {
-            public Array SourceArray;
-            public T[] FlatArray;
-            public int X;
-            public int Y;
-            public T minStDev;
-            public T maxStDev;
-            private Dictionary<T, int> _histogram;
-
-            public Dictionary<T, int> Histogram {
                 get {
                     return _histogram;
                 }
@@ -157,8 +137,10 @@ namespace NINA.Utility {
 
                 
                 iarr.FlatArray = flatArray;
-                iarr.minStDev = min;
-                iarr.maxStDev = max;
+                iarr.StDev = sd;
+                iarr.Mean = average;
+                iarr.MinStDev = min;
+                iarr.MaxStDev = max;
                 iarr.Histogram = histogram;                                    
                 return iarr;
             });           
@@ -166,8 +148,8 @@ namespace NINA.Utility {
 
         public static async Task<ushort[]> stretchArray(ImageArray source) {
             return await Task.Run<ushort[]>(() => {
-                ushort maxVal = source.maxStDev;
-                ushort minVal = source.minStDev;
+                ushort maxVal = source.MaxStDev;
+                ushort minVal = source.MinStDev;
                 ushort dynamic = (ushort)(maxVal - minVal);
 
                 ushort[] stretchedArr = new ushort[source.FlatArray.Length];
@@ -185,7 +167,7 @@ namespace NINA.Utility {
             });
         }
         
-        public static async Task<T[]> TstretchArray<T>(TImageArray<T> source) {
+        /*public static async Task<T[]> TstretchArray<T>(TImageArray<T> source) {
             return await Task.Run<T[]>(() => {
                 dynamic maxVal = source.maxStDev;
                 dynamic minVal = source.minStDev;
@@ -210,7 +192,7 @@ namespace NINA.Utility {
                 }
                 return stretchedArr;
             });
-        }
+        }*/
 
         public static void saveFits(ImageArray iarr, string path, string imagetype, double duration, string filter, Model.MyCamera.BinningMode binning, double temp) {
             try {
