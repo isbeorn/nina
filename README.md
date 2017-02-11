@@ -14,7 +14,7 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 * All Equipment connected via ASCOM
 
-* Monochrome camera control
+* ASCOM camera control
 
 * Temperature control (including a cool down routine for a set amount of time)
 
@@ -25,8 +25,6 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 * Dithering after a set amount of images
 
 * Auto-Stretch image
-
-* Image manipulation with gamma, brightness & contrast sliders 
 
 * Filter wheel control (either manually or automatically during imaging)
 
