@@ -47,6 +47,10 @@ namespace NINA.Utility {
             Show(message, TimeSpan.FromSeconds(3), NotificationType.Warning);
         }
 
+        public static void ShowWarning(string message, TimeSpan lifetime) {
+            Show(message, lifetime, NotificationType.Warning);
+        }
+
         public static void ShowError(string message) {
             Show(message, NotificationsSource.NeverEndingNotification, NotificationType.Error);
         }

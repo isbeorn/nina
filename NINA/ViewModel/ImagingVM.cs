@@ -312,9 +312,17 @@ namespace NINA.ViewModel {
                 await PHD2Client.dither();
 
                 progress.Report(ExposureStatus.SETTLING);
+                var time = 0;
                 await Task.Run<bool>(async () => {
-                    while (PHD2Client.IsDithering) {
+                    while (PHD2Client.IsDithering) {                        
                         await Task.Delay(100);
+                        time += 100;
+
+                        if(time > 20000) {
+                            //Failsafe when phd is not sending settlingdone message
+                            Notification.ShowWarning("PHD2 did not send SettleDone message in time. Skipping settle manually.", ToastNotifications.NotificationsSource.NeverEndingNotification);
+                            PHD2Client.IsDithering = false;
+                        }
                         tokenSource.Token.ThrowIfCancellationRequested();
                     }
                     return true;
