@@ -138,15 +138,17 @@ namespace NINA.Utility {
                 sw.Restart();
                 canceltoken.Token.ThrowIfCancellationRequested();
 
-                
+
 
                 /* stretch image*/
                 /*IntRange inputRange = new IntRange(a.GrayWithoutBlack.Median - (int)(a.GrayWithoutBlack.StdDev * 0.5), a.GrayWithoutBlack.Median + (int)(a.GrayWithoutBlack.StdDev * 1.5));
                 IntRange outputRange = new IntRange(0, byte.MaxValue);
                 new LevelsLinear { InGray = inputRange, OutGray = outputRange }.ApplyInPlace(bmp);*/
 
+                new Threshold(a.GrayWithoutBlack.Median).ApplyInPlace(bmp);
+
                 new BinaryErosion3x3().ApplyInPlace(bmp);
-                new Mean().ApplyInPlace(bmp);
+                new Median().ApplyInPlace(bmp);
 
                 Debug.Print("Time for stretch: " + sw.Elapsed);
                 sw.Restart();
@@ -250,7 +252,7 @@ namespace NINA.Utility {
                 sw.Restart();
 
                 result = ConvertBitmap(newBitmap);
-                //BitmapSource result = ConvertBitmap(bmp);
+                //result = ConvertBitmap(bmp);
             
                 result.Freeze();
                 blobCounter = null;
