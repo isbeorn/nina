@@ -122,33 +122,61 @@ namespace NINA.Utility {
     public async Task<BitmapSource> detectStarsAsync(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
             return await Task.Run<BitmapSource>(() => detectStars(iarr, progress, canceltoken));
         }
-    public BitmapSource detectStars(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
+
+
+
+    private static Bitmap stretch(Bitmap source, double targetHistogramMean) {
+        var stats = new AForge.Imaging.ImageStatistics(source);
+        double power;
+        if (stats.GrayWithoutBlack.Mean <= 1) {
+            power = Math.Log(byte.MaxValue * targetHistogramMean, 2);
+        }
+        else {
+            power = Math.Log(byte.MaxValue * targetHistogramMean, stats.GrayWithoutBlack.Mean);
+        }
+
+        byte[] map = new byte[256];
+
+        for (int i = 2; i < 256; i++) {
+            map[i] = (byte)Math.Min(byte.MaxValue, Math.Pow(i, power));
+        }
+        map[0] = 0;
+        map[1] = (byte)(map[2] / 2);
+
+        var filter = new AForge.Imaging.Filters.ColorRemapping();
+        filter.GrayMap = map;
+        filter.ApplyInPlace(source);
+        return source;
+    }
+
+        public BitmapSource detectStars(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
             BitmapSource result = null;
             try {
-                
+
+                Stopwatch overall = Stopwatch.StartNew();
                 progress.Report("Preparing image for star detection");
-                var bmpsource = NormalizeTiffTo8BitImage(ViewModel.ImagingVM.stretch(iarr).Result);
 
                 Stopwatch sw = Stopwatch.StartNew();
-                Bitmap orig = BitmapFromSource(bmpsource);
-                Bitmap bmp = BitmapFromSource(bmpsource);
-                var a = new AForge.Imaging.ImageStatistics(bmp);
+                var tmpsrc = ViewModel.ImagingVM.prepare(iarr.FlatArray, iarr.X, iarr.Y).Result;
+                //var bmpsource = Convert16BppTo8Bpp(tmpsrc);
+                //var bmpsource = NormalizeTiffTo8BitImage(tmpsrc);
+                //tmpsrc = null;
+
+                Debug.Print("Time to convert to 8bit Image: " + sw.Elapsed);
+
+                sw.Restart();
+                
+                Bitmap orig = Convert16BppTo8Bpp(tmpsrc); 
+                Bitmap bmp = Convert16BppTo8Bpp(tmpsrc); 
 
                 Debug.Print("Time to convert Image: " + sw.Elapsed);
                 sw.Restart();
                 canceltoken.Token.ThrowIfCancellationRequested();
 
 
+                orig = stretch(orig, 0.15);
+                bmp = stretch(bmp, 0.15);
 
-                /* stretch image*/
-                /*IntRange inputRange = new IntRange(a.GrayWithoutBlack.Median - (int)(a.GrayWithoutBlack.StdDev * 0.5), a.GrayWithoutBlack.Median + (int)(a.GrayWithoutBlack.StdDev * 1.5));
-                IntRange outputRange = new IntRange(0, byte.MaxValue);
-                new LevelsLinear { InGray = inputRange, OutGray = outputRange }.ApplyInPlace(bmp);*/
-
-                new Threshold(a.GrayWithoutBlack.Median).ApplyInPlace(bmp);
-
-                new BinaryErosion3x3().ApplyInPlace(bmp);
-                new Median().ApplyInPlace(bmp);
 
                 Debug.Print("Time for stretch: " + sw.Elapsed);
                 sw.Restart();
@@ -230,7 +258,7 @@ namespace NINA.Utility {
                         ImageLockMode.ReadWrite, newBitmap.PixelFormat);*/
                 int r, posx, posy, offset = 10;
 
-                var threshhold = 200;
+                var threshhold = 300;
                 if(starlist.Count > threshhold) {
                     starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
                     starlist = starlist.GetRange(0, threshhold);
@@ -252,13 +280,20 @@ namespace NINA.Utility {
                 sw.Restart();
 
                 result = ConvertBitmap(newBitmap);
+
+                Debug.Print("Time to create bitmapsource: " + sw.Elapsed);
+                sw.Stop();
+                sw = null;
                 //result = ConvertBitmap(bmp);
-            
+
                 result.Freeze();
                 blobCounter = null;
                 orig.Dispose();
                 bmp.Dispose();
                 newBitmap.Dispose();
+                overall.Stop();
+                Debug.Print("Overall star detection: " + overall.Elapsed);
+                overall = null;
 
             }
             catch (OperationCanceledException ex) {
@@ -340,15 +375,57 @@ namespace NINA.Utility {
 
         }
 
-        public static BitmapSource ConvertBitmap(Bitmap source) {
+
+        [DllImport("gdi32")]
+        static extern int DeleteObject(IntPtr o);
+
+        public static BitmapSource ConvertBitmap(System.Drawing.Bitmap source) {
+            IntPtr ip = source.GetHbitmap();
+            BitmapSource bs = null;
+            try {
+                bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ip,
+                   IntPtr.Zero, Int32Rect.Empty,
+                   System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+            }
+            finally {
+                DeleteObject(ip);
+            }
+
+            return bs;
+        }
+
+
+        public static Bitmap BitmapFromSource(BitmapSource source) {
+            return BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
+        }
+
+        public static Bitmap BitmapFromSource(BitmapSource source, System.Drawing.Imaging.PixelFormat pf) {
+            Bitmap bmp = new Bitmap(
+                    source.PixelWidth,
+                    source.PixelHeight,
+                    pf);
+            BitmapData data = bmp.LockBits(
+                    new Rectangle(System.Drawing.Point.Empty, bmp.Size),
+                    ImageLockMode.WriteOnly,
+                    pf);
+            source.CopyPixels(
+                    Int32Rect.Empty,
+                    data.Scan0,
+                    data.Height * data.Stride,
+                    data.Stride);
+            bmp.UnlockBits(data);
+            return bmp;
+        }
+
+        /*public static BitmapSource ConvertBitmap(Bitmap source) {
             return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                           source.GetHbitmap(),
                           IntPtr.Zero,
                           System.Windows.Int32Rect.Empty,
                           BitmapSizeOptions.FromEmptyOptions());
-        }
+        }*/
 
-        public static Bitmap BitmapFromSource(BitmapSource bitmapsource) {
+        /*public static Bitmap BitmapFromSource(BitmapSource bitmapsource) {
             Bitmap bitmap;
             using (var outStream = new MemoryStream()) {
                 BitmapEncoder enc = new BmpBitmapEncoder();
@@ -357,11 +434,24 @@ namespace NINA.Utility {
                 bitmap = new Bitmap(outStream);
             }
             return bitmap;
+        }*/
+
+
+        public static Bitmap Convert16BppTo8Bpp(BitmapSource source) {
+            return AForge.Imaging.Image.Convert16bppTo8bpp(BitmapFromSource(source));
         }
 
+        public static BitmapSource Convert16BppTo8BppSource(BitmapSource source) {
+            FormatConvertedBitmap s = new FormatConvertedBitmap();
+            s.BeginInit();
+            s.Source = source;
+            s.DestinationFormat = System.Windows.Media.PixelFormats.Gray8;            
+            s.EndInit();
+            s.Freeze();
+            return s;
+        }
 
-
-        public static BitmapSource NormalizeTiffTo8BitImage(BitmapSource source) {
+        /*public static BitmapSource NormalizeTiffTo8BitImage(BitmapSource source) {
             // allocate buffer & copy image bytes.
             var rawStride = source.PixelWidth * source.Format.BitsPerPixel / 8;
             var rawImage = new byte[rawStride * source.PixelHeight];
@@ -405,6 +495,7 @@ namespace NINA.Utility {
                 PixelFormats.Gray8, BitmapPalettes.Gray256,
                 buffer8Bit, rawStride / 2);
         }
+        */
 
         //public static BitmapSource ToBitmapSource(IImage image) {
         //    using (System.Drawing.Bitmap source = image.Bitmap) {

@@ -179,7 +179,7 @@ namespace NINA.ViewModel {
                         return b;
                     });
                
-                ImagingVM.Image = ConvertBitmap(bmp);
+                ImagingVM.Image = ImageAnalysis.ConvertBitmap(bmp);
                 bmp.Dispose();                
                 
             }
@@ -271,13 +271,7 @@ namespace NINA.ViewModel {
 
 
 
-        public static BitmapSource ConvertBitmap(Bitmap source) {
-            return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                          source.GetHbitmap(),
-                          IntPtr.Zero,
-                          System.Windows.Int32Rect.Empty,
-                          BitmapSizeOptions.FromEmptyOptions());
-        }
+
 
 
         //    public static bool adjustGamma(Bitmap b, double red, double green, double blue) {

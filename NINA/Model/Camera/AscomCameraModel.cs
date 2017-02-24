@@ -1440,6 +1440,8 @@ namespace NINA.Model.MyCamera
                     }
                 } catch (OperationCanceledException ex) {
                     Logger.trace(ex.Message);
+                } catch {
+                    
                 }
                 return null;
                 

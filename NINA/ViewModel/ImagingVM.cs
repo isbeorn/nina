@@ -403,9 +403,14 @@ namespace NINA.ViewModel {
                                 tmp = await prepare(iarr.FlatArray, iarr.X, iarr.Y);
                             }
 
+                            if (tmp.Format == System.Windows.Media.PixelFormats.Gray16) {
+                                tmp = ImageAnalysis.Convert16BppTo8BppSource(tmp);
+                            }
+                            tmp.Freeze();
+
                             await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                                 /* Free Memory for new Image */
-                                Image = null;
+                                Image = null;                                
                                 System.GC.Collect();
                                 Image = tmp;
                             }));
@@ -462,8 +467,23 @@ namespace NINA.ViewModel {
 
         }
 
+
+
+
+
+
         public static async Task<BitmapSource> stretch(Utility.Utility.ImageArray sourceArray) {
-            
+            /*      
+            BitmapSource bs = await prepare(sourceArray.FlatArray, sourceArray.X, sourceArray.Y);
+            var img = ImageAnalysis.Convert16BppTo8Bpp(bs);
+
+            img = stretch(img, 0.25);
+
+            bs = ImageAnalysis.ConvertBitmap(img);
+       
+            return bs;*/
+
+
             ushort[] arr = await Utility.Utility.stretchArray(sourceArray);
             BitmapSource bs = await prepare(arr, sourceArray.X, sourceArray.Y);
             bs.Freeze();
