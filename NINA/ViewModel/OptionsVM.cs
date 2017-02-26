@@ -182,8 +182,18 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double AnsvrSearchRadius {
+            get {
+                return Settings.AnsvrSearchRadius;
+            }
+            set {
+                Settings.AnsvrSearchRadius = value;
+                RaisePropertyChanged();
+            }
+        }
 
-        
+
+
         public string AstrometryAPIKey {
             get {
                 return Settings.AstrometryAPIKey;

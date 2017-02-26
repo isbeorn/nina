@@ -443,5 +443,17 @@ namespace NINA.Properties {
                 this["HemisphereType"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public double AnsvrSearchRadius {
+            get {
+                return ((double)(this["AnsvrSearchRadius"]));
+            }
+            set {
+                this["AnsvrSearchRadius"] = value;
+            }
+        }
     }
 }

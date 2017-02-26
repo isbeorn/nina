@@ -171,6 +171,7 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
 
                     <StackPanel Orientation="Horizontal">
@@ -218,6 +219,19 @@
                     <StackPanel Grid.Row="2" Orientation="Horizontal">
                         <TextBlock   VerticalAlignment="Center" Width="130">Pixel Size:</TextBlock>
                         <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrPixelSize}" />
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Style.Triggers>
+                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                    </StackPanel>
+                    <StackPanel Grid.Row="4" Orientation="Horizontal">
+                        <TextBlock   VerticalAlignment="Center" Width="130">Search Radius:</TextBlock>
+                        <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrSearchRadius}" />
                         <StackPanel.Style>
                             <Style TargetType="{x:Type StackPanel}">
                                 <Style.Triggers>

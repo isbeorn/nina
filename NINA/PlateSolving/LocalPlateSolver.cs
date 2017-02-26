@@ -9,6 +9,7 @@ using System.Threading;
 using nom.tam.fits;
 using NINA.Utility;
 using System.Globalization;
+using NINA.Utility.Astrometry;
 
 namespace NINA.PlateSolving {
     class LocalPlateSolver : IPlateSolver {
@@ -16,6 +17,9 @@ namespace NINA.PlateSolving {
 
         double _lowarcsecperpixel;
         double _higharcsecperpixel;
+        double _searchradius;
+        
+        Coordinates _target;
 
         static string TMPIMGFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA";
 
@@ -25,7 +29,39 @@ namespace NINA.PlateSolving {
             _higharcsecperpixel = arcsecperpixel + 0.2;
         }
 
-        private PlateSolveResult solve(MemoryStream image, double low, double high, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public LocalPlateSolver(int focallength, double pixelsize, double searchradius, Coordinates target) : this(focallength, pixelsize) {
+            _searchradius = searchradius;
+            _target = target;
+        }
+
+        private string getOptions() {
+            List<string> options = new List<string>();
+
+            options.Add("-p");
+            options.Add("-O");
+            options.Add("-U none");
+            options.Add("-B none");
+            options.Add("-R none");
+            options.Add("-M none");
+            options.Add("-N none");
+            options.Add("-C cancel--crpix");
+            options.Add("-center");
+            options.Add("--objs 100");
+            options.Add("-u arcsecperpix");
+            options.Add("--no-plots");
+            options.Add("-r");            
+            options.Add(string.Format("-L {0}", _lowarcsecperpixel.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
+            options.Add(string.Format("-H {0}", _higharcsecperpixel.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
+
+
+            if (_searchradius > 0) {
+                options.Add(string.Format("-3 {0} -4 {1} -5 {2}", _target.RADegrees.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), _target.Dec.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), _searchradius.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
+            }
+
+            return string.Join(" ", options);
+        }
+
+        private PlateSolveResult solve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
                      
             PlateSolveResult result = new PlateSolveResult();
             try {                
@@ -50,7 +86,7 @@ namespace NINA.PlateSolving {
                 startInfo.UseShellExecute = false;
                 startInfo.RedirectStandardOutput = true;
                 startInfo.CreateNoWindow = true;
-                startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field -p -O -U none -B none -R none -M none -N none -C cancel--crpix -center --objs 100 -u arcsecperpix --no-plots -r -L {1} -H {2} {3}'", cygwinbashpath, low.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), high.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), filepath.Replace("\\", "/"));
+                startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field {1} {2}'", cygwinbashpath, getOptions(), filepath.Replace("\\", "/"));
                 //startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field -p -O -U none -B none -R none -M none -N none --sigma 70--no -C cancel--crpix -center --objs 100 -u arcsecperpix -L {1} -H {2} {3}'", cygwinbashpath, low.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), high.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), filepath.Replace("\\", "/"));
                 process.StartInfo = startInfo;
                 process.Start();
@@ -99,7 +135,7 @@ namespace NINA.PlateSolving {
         }
 
         public async Task<PlateSolveResult> blindSolve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
-            return await Task<PlateSolveResult>.Run(() => solve(image, _lowarcsecperpixel, _higharcsecperpixel, progress, canceltoken));
+            return await Task<PlateSolveResult>.Run(() => solve(image, progress, canceltoken));
         }
     }
 }

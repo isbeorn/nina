@@ -130,7 +130,12 @@ namespace NINA.ViewModel {
                 Platesolver = new AstrometryPlateSolver(ASTROMETRYNETURL, Settings.AstrometryAPIKey);
             } else if (Settings.PlateSolverType == PlateSolverEnum.LOCAL) {
                
-                Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * ImagingVM.Cam.BinX);
+                if(Settings.AnsvrSearchRadius > 0 && Telescope.Connected) {
+                    Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * ImagingVM.Cam.BinX, Settings.AnsvrSearchRadius, new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours));
+                } else {
+                    Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * ImagingVM.Cam.BinX);
+                }
+                
             }
             
 

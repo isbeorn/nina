@@ -45,6 +45,11 @@ namespace NINA.Utility.Astrometry {
                 return Utility.AscomUtil.DegreesToHMS(RA);
             }
         }
+        public double RADegrees {
+            get {
+                return RA * 360 / 24;
+            }
+        }
         public string DecString {
             get {
                 return Utility.AscomUtil.DegreesToDMS(Dec);

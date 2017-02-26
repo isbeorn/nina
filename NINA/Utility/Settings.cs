@@ -90,8 +90,16 @@ namespace NINA.Utility {
             }
         }
 
+        public static double AnsvrSearchRadius {
+            get {
+                return Properties.Settings.Default.AnsvrSearchRadius;
+            }
+            set {
+                Properties.Settings.Default.AnsvrSearchRadius = value;
+                Properties.Settings.Default.Save();
+            }
+        }
 
-        
 
         public static bool UseFullResolutionPlateSolve {
             get {
