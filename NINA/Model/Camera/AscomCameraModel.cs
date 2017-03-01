@@ -17,10 +17,10 @@ namespace NINA.Model.MyCamera
     public class AscomCameraModel :  BaseINPC, ICamera {
 
         public AscomCameraModel() {
-            init();
+            Init();
         }
 
-        private void init() {
+        private void Init() {
             //CameraStateString = "disconnected";
             //ProgId = string.Empty;
 
@@ -159,7 +159,7 @@ namespace NINA.Model.MyCamera
             }
         }
 
-        public void setBinning(short x, short y) {
+        public void SetBinning(short x, short y) {
             BinX = x;
             BinY = y;
         }
@@ -931,13 +931,13 @@ namespace NINA.Model.MyCamera
 
         
 
-        public void getCameraInfo () {
+        public void GetCameraInfo () {
             try {
                  BayerOffsetX = AscomCamera.BayerOffsetX;
                  BayerOffsetY = AscomCamera.BayerOffsetY;
             } catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement BayerOffsets");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement BayerOffsets");
+                Logger.Trace(ex.Message);
                  BayerOffsetX = -1;
                 BayerOffsetY = -1;
             }
@@ -949,8 +949,8 @@ namespace NINA.Model.MyCamera
                  CameraYSize = AscomCamera.CameraYSize;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement CameraSizes");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement CameraSizes");
+                Logger.Trace(ex.Message);
                 CameraXSize = -1;
                 CameraYSize = -1;
             }
@@ -959,8 +959,8 @@ namespace NINA.Model.MyCamera
                 CanAbortExposure = AscomCamera.CanAbortExposure;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement CanAbortExposure");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement CanAbortExposure");
+                Logger.Trace(ex.Message);
                 CanAbortExposure = false;
             }
 
@@ -968,8 +968,8 @@ namespace NINA.Model.MyCamera
                 CanAsymmetricBin = AscomCamera.CanAsymmetricBin;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement CanAsymmetricBin");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement CanAsymmetricBin");
+                Logger.Trace(ex.Message);
                 CanAsymmetricBin = false;
             }
 
@@ -979,8 +979,8 @@ namespace NINA.Model.MyCamera
                 CanStopExposure = AscomCamera.CanStopExposure;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement CanStopExposure");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement CanStopExposure");
+                Logger.Trace(ex.Message);
                 CanStopExposure = false;
             }
 
@@ -988,8 +988,8 @@ namespace NINA.Model.MyCamera
                 HasShutter = AscomCamera.HasShutter;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement HasShutter");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement HasShutter");
+                Logger.Trace(ex.Message);
                 HasShutter = false;
             }
                         
@@ -997,8 +997,8 @@ namespace NINA.Model.MyCamera
                  Description = AscomCamera.Description;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Description");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Description");
+                Logger.Trace(ex.Message);
                 Description = "n.A.";
             }
 
@@ -1006,8 +1006,8 @@ namespace NINA.Model.MyCamera
                  DriverInfo = AscomCamera.DriverInfo;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement DriverInfo");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement DriverInfo");
+                Logger.Trace(ex.Message);
                 DriverInfo = "n.A.";
             }
 
@@ -1015,8 +1015,8 @@ namespace NINA.Model.MyCamera
                  DriverVersion = AscomCamera.DriverVersion;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement DriverVersion");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement DriverVersion");
+                Logger.Trace(ex.Message);
                 DriverVersion = "n.A.";
             }
 
@@ -1024,8 +1024,8 @@ namespace NINA.Model.MyCamera
                  ElectronsPerADU = AscomCamera.ElectronsPerADU;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement ElectronsPerADU");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement ElectronsPerADU");
+                Logger.Trace(ex.Message);
                 ElectronsPerADU = -1;
             }
 
@@ -1034,8 +1034,8 @@ namespace NINA.Model.MyCamera
                  ExposureMin = AscomCamera.ExposureMin;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement ExposureMax/ExposureMin");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement ExposureMax/ExposureMin");
+                Logger.Trace(ex.Message);
                 ExposureMax = -1;
                  ExposureMin = -1;
             }
@@ -1044,8 +1044,8 @@ namespace NINA.Model.MyCamera
                  ExposureResolution = AscomCamera.ExposureResolution;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement ExposureResolution");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement ExposureResolution");
+                Logger.Trace(ex.Message);
                 ExposureResolution = -1;
             }
                         
@@ -1054,8 +1054,8 @@ namespace NINA.Model.MyCamera
                  InterfaceVersion = AscomCamera.InterfaceVersion;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement InterfaceVersion");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement InterfaceVersion");
+                Logger.Trace(ex.Message);
                 InterfaceVersion = -1;
             }
             
@@ -1063,8 +1063,8 @@ namespace NINA.Model.MyCamera
                  MaxADU = AscomCamera.MaxADU;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement MaxADU");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement MaxADU");
+                Logger.Trace(ex.Message);
                 MaxADU = -1;
             }
             try {
@@ -1083,8 +1083,8 @@ namespace NINA.Model.MyCamera
                 }
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement MaxBinning");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement MaxBinning");
+                Logger.Trace(ex.Message);
                 BinningModes.Add(new BinningMode(1, 1));
                  MaxBinX = -1;
                  MaxBinY = -1;
@@ -1093,8 +1093,8 @@ namespace NINA.Model.MyCamera
                  Name = AscomCamera.Name;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Name");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Name");
+                Logger.Trace(ex.Message);
                 Name = "n.A.";
             }
                         
@@ -1103,8 +1103,8 @@ namespace NINA.Model.MyCamera
                  PixelSizeY = AscomCamera.PixelSizeY;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement PixelSize");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement PixelSize");
+                Logger.Trace(ex.Message);
                 PixelSizeX = -1;
                  PixelSizeY = -1;
             }
@@ -1113,8 +1113,8 @@ namespace NINA.Model.MyCamera
                  ReadoutModes = AscomCamera.ReadoutModes;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Readoutmodes");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Readoutmodes");
+                Logger.Trace(ex.Message);
                 ReadoutMode = -1;
                  ReadoutModes = null;
             }
@@ -1123,16 +1123,16 @@ namespace NINA.Model.MyCamera
                  SensorName = AscomCamera.SensorName;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement SensorName");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement SensorName");
+                Logger.Trace(ex.Message);
                 SensorName = "n.A.";
             }
             try {
                  SensorType = AscomCamera.SensorType;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement SensorType");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement SensorType");
+                Logger.Trace(ex.Message);
                 SensorType = ASCOM.DeviceInterface.SensorType.Monochrome;
             }
 
@@ -1141,8 +1141,8 @@ namespace NINA.Model.MyCamera
                  StartY = AscomCamera.StartY;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement StartX/StartY");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement StartX/StartY");
+                Logger.Trace(ex.Message);
                 StartX = -1;
                  StartY = -1;
             }
@@ -1150,8 +1150,8 @@ namespace NINA.Model.MyCamera
                  SupportedActions = AscomCamera.SupportedActions;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement SupportedActions");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement SupportedActions");
+                Logger.Trace(ex.Message);
                 SupportedActions = null;
             }
 
@@ -1162,8 +1162,8 @@ namespace NINA.Model.MyCamera
                  BinY = AscomCamera.BinY;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Binning");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Binning");
+                Logger.Trace(ex.Message);
                 BinX = -1;
                  BinY = -1;
             }
@@ -1173,8 +1173,8 @@ namespace NINA.Model.MyCamera
                  NumY = AscomCamera.NumY;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement NumX/NumY");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement NumX/NumY");
+                Logger.Trace(ex.Message);
                 NumX = -1;
                  NumY = -1;
             }
@@ -1184,8 +1184,8 @@ namespace NINA.Model.MyCamera
                 CanFastReadout = AscomCamera.CanFastReadout;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement FastReadout");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement FastReadout");
+                Logger.Trace(ex.Message);
                 FastReadout = false;
                 CanFastReadout = false;
             }
@@ -1195,8 +1195,8 @@ namespace NINA.Model.MyCamera
                  Gains = AscomCamera.Gains;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Gain");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Gain");
+                Logger.Trace(ex.Message);
                 Gain = -1;
                  Gains = null;
             }
@@ -1205,13 +1205,13 @@ namespace NINA.Model.MyCamera
                 GainMax = AscomCamera.GainMax;
                 GainMin = AscomCamera.GainMin;
             } catch (ASCOM.InvalidOperationException ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Gain");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Gain");
+                Logger.Trace(ex.Message);
                 GainMax = -1;
                 GainMin = -1;
             } catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Gain");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Gain");
+                Logger.Trace(ex.Message);
                 GainMax = -1;
                 GainMin = -1;
             }
@@ -1220,8 +1220,8 @@ namespace NINA.Model.MyCamera
                 CameraState = AscomCamera.CameraState;/*Watch!*/
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement CameraState");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement CameraState");
+                Logger.Trace(ex.Message);
                 CameraState = ASCOM.DeviceInterface.CameraStates.cameraError;
             }
 
@@ -1230,8 +1230,8 @@ namespace NINA.Model.MyCamera
                 HasCCDTemperature = true;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement CCDTemperature");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement CCDTemperature");
+                Logger.Trace(ex.Message);
                 CCDTemperature = double.MinValue;
                 HasCCDTemperature = false;
             }
@@ -1249,8 +1249,8 @@ namespace NINA.Model.MyCamera
 
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Temperature Control");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Temperature Control");
+                Logger.Trace(ex.Message);
                 CanSetCCDTemperature = false;
                 SetCCDTemperature = double.MinValue;
 
@@ -1261,8 +1261,8 @@ namespace NINA.Model.MyCamera
                  HasFullWellCapacity = true;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement FullWellCapacity");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement FullWellCapacity");
+                Logger.Trace(ex.Message);
                 FullWellCapacity = -1;
                  HasFullWellCapacity = false;
             }
@@ -1275,8 +1275,8 @@ namespace NINA.Model.MyCamera
                 
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Cooler Info");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Cooler Info");
+                Logger.Trace(ex.Message);
                 CanCoolerOn = false;
                 CoolerOn = false;
                 CanGetCoolerPower = false;
@@ -1290,8 +1290,8 @@ namespace NINA.Model.MyCamera
                 
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement PulseGuiding");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement PulseGuiding");
+                Logger.Trace(ex.Message);
                 CanPulseGuide = false;
                 IsPulseGuiding = false;
                 
@@ -1301,14 +1301,14 @@ namespace NINA.Model.MyCamera
                  HasHeatSinkTemperature = true;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement HeatSink");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement HeatSink");
+                Logger.Trace(ex.Message);
                 HeatSinkTemperature = double.MinValue;
                  HasHeatSinkTemperature = false;
             }
         }
 
-        public void updateValues() {
+        public void UpdateValues() {
             try {
             
                 CameraState = AscomCamera.CameraState;
@@ -1344,23 +1344,23 @@ namespace NINA.Model.MyCamera
 
         }
 
-        public void disconnect() {
+        public void Disconnect() {
             if(AscomCamera != null && Connected) { 
                 Connected = false;            
                 AscomCamera.Dispose();
-                init();
+                Init();
                 //CameraStateString = "disconnected";
             }
         }
 
-        public bool connect() {
+        public bool Connect() {
             bool con = false;
             string oldProgId = this.ProgId;
             string cameraId = Settings.CameraId;
             ProgId = Camera.Choose(cameraId);
             if((!Connected || oldProgId != ProgId) && ProgId != "") {
 
-                init();
+                Init();
                 try {
                     AscomCamera = new Camera(ProgId);
                     
@@ -1373,7 +1373,7 @@ namespace NINA.Model.MyCamera
                     
                         if (AscomCamera.SensorType == ASCOM.DeviceInterface.SensorType.Color) {
                             Notification.ShowError("Sorry! This sensor type is not supported");                        
-                            disconnect();
+                            Disconnect();
                             return false; ;
                         }
                     } catch(ASCOM.PropertyNotImplementedException) {
@@ -1381,21 +1381,21 @@ namespace NINA.Model.MyCamera
                     }
 
 
-                    getCameraInfo();
+                    GetCameraInfo();
                     Notification.ShowSuccess("Camera connected.");
                     con = true;
                 }
                 catch (ASCOM.DriverAccessCOMException ex) {
-                    Logger.error("Unable to connect to camera");                    
+                    Logger.Error("Unable to connect to camera");                    
                     Notification.ShowError("Unable to connect to camera");
-                    Logger.trace(ex.Message);
+                    Logger.Trace(ex.Message);
                     //CameraStateString = "Unable to connect to camera";
                     Connected = false;
                 }
                 catch (Exception ex) {
-                    Logger.error("Unable to connect to camera");
+                    Logger.Error("Unable to connect to camera");
                     Notification.ShowError("Unable to connect to camera");
-                    Logger.trace(ex.Message);
+                    Logger.Trace(ex.Message);
                     Connected = false;
                 }
 
@@ -1403,11 +1403,11 @@ namespace NINA.Model.MyCamera
             return con;
         }
 
-        public void startExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(double exposureTime, bool isLightFrame) {
             AscomCamera.StartExposure(exposureTime, isLightFrame);
         }
 
-        public void stopExposure() {
+        public void StopExposure() {
             if(AscomCamera.CanStopExposure) { 
                 try {
                     AscomCamera.StopExposure();
@@ -1418,7 +1418,7 @@ namespace NINA.Model.MyCamera
             }
         }
 
-        public async Task<Array> downloadExposure(CancellationTokenSource tokenSource) {
+        public async Task<Array> DownloadExposure(CancellationTokenSource tokenSource) {
             return await Task<Array>.Run(() => {
                 try {
                     ASCOM.Utilities.Util U = new ASCOM.Utilities.Util();
@@ -1439,7 +1439,7 @@ namespace NINA.Model.MyCamera
                         return (Int32[,,])AscomCamera.ImageArray;
                     }
                 } catch (OperationCanceledException ex) {
-                    Logger.trace(ex.Message);
+                    Logger.Trace(ex.Message);
                 } catch {
                     
                 }

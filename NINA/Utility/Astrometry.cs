@@ -72,7 +72,7 @@ namespace NINA.Utility.Astrometry {
         /// </summary>
         /// <param name="targetEpoch"></param>
         /// <returns></returns>
-        public Coordinates transform(Epoch targetEpoch) {
+        public Coordinates Transform(Epoch targetEpoch) {
             if (Epoch == targetEpoch) {
                 return this;
             }

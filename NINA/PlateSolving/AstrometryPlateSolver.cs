@@ -22,76 +22,76 @@ namespace NINA.PlateSolving {
         const string JOBINFOURL = "/api/jobs/{0}/info/";
         const string ANNOTATEDIMAGEURL = "/annotated_display/{0}";
 
-        string domain;
-        string apikey;
+        string _domain;
+        string _apikey;
 
         public AstrometryPlateSolver(string domain, string apikey) {
-            this.domain = domain;
-            this.apikey = apikey; 
+            this._domain = domain;
+            this._apikey = apikey; 
 
         }
 
-        private async Task<JObject> authenticate(CancellationTokenSource canceltoken) {
+        private async Task<JObject> Authenticate(CancellationTokenSource canceltoken) {
 
             string response = string.Empty;            
-            string json = "{\"apikey\":\"" + apikey + "\"}";
-            json = Utility.Utility.encodeUrl(json);
+            string json = "{\"apikey\":\"" + _apikey + "\"}";
+            json = Utility.Utility.EncodeUrl(json);
             string body = "request-json=" + json;
-            response = await Utility.Utility.httpPostRequest(domain + AUTHURL, body, canceltoken);
+            response = await Utility.Utility.HttpPostRequest(_domain + AUTHURL, body, canceltoken);
 
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
-        private async Task<JObject> submitImage(MemoryStream ms, string session, CancellationTokenSource canceltoken) {
+        private async Task<JObject> SubmitImage(MemoryStream ms, string session, CancellationTokenSource canceltoken) {
             NameValueCollection nvc = new NameValueCollection();
             nvc.Add("request-json", "{\"publicly_visible\": \"n\", \"allow_modifications\": \"d\", \"session\": \"" + session + "\", \"allow_commercial_use\": \"d\"}");
-            string response = await Utility.Utility.httpUploadFile(domain + UPLOADURL, ms, "file", "image/jpeg", nvc, canceltoken);
+            string response = await Utility.Utility.HttpUploadFile(_domain + UPLOADURL, ms, "file", "image/jpeg", nvc, canceltoken);
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
-        private async Task<JObject> getSubmissionStatus(string subid, CancellationTokenSource canceltoken) {
-            string response = await Utility.Utility.httpGetRequest(canceltoken, domain + SUBMISSIONURL, subid);
+        private async Task<JObject> GetSubmissionStatus(string subid, CancellationTokenSource canceltoken) {
+            string response = await Utility.Utility.HttpGetRequest(canceltoken, _domain + SUBMISSIONURL, subid);
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
-        private async Task<JObject> getJobStatus(string jobid, CancellationTokenSource canceltoken) {
-            string response = await Utility.Utility.httpGetRequest(canceltoken, domain + JOBSTATUSURL, jobid);
+        private async Task<JObject> GetJobStatus(string jobid, CancellationTokenSource canceltoken) {
+            string response = await Utility.Utility.HttpGetRequest(canceltoken, _domain + JOBSTATUSURL, jobid);
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
-        private async Task<JObject> getJobInfo(string jobid, CancellationTokenSource canceltoken) {
-            string response = await Utility.Utility.httpGetRequest(canceltoken, domain + JOBINFOURL, jobid);
+        private async Task<JObject> GetJobInfo(string jobid, CancellationTokenSource canceltoken) {
+            string response = await Utility.Utility.HttpGetRequest(canceltoken, _domain + JOBINFOURL, jobid);
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
-        private async Task<BitmapImage> getJobImage(string jobid, CancellationTokenSource canceltoken) {
-            return await Utility.Utility.httpGetImage(canceltoken, domain + ANNOTATEDIMAGEURL, jobid);
+        private async Task<BitmapImage> GetJobImage(string jobid, CancellationTokenSource canceltoken) {
+            return await Utility.Utility.HttpGetImage(canceltoken, _domain + ANNOTATEDIMAGEURL, jobid);
         }
 
-        public async Task<PlateSolveResult> blindSolve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public async Task<PlateSolveResult> BlindSolve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
             PlateSolveResult result = new PlateSolveResult();
 
             try {
 
                 progress.Report("Authenticating...");
-                JObject authentication = await authenticate(canceltoken);
+                JObject authentication = await Authenticate(canceltoken);
                 var status = authentication.GetValue("status");
                 string session = string.Empty;
                 if (status != null && status.ToString() == "success") {
                     session = authentication.GetValue("session").ToString();
 
                     progress.Report("Uploading Image...");
-                    JObject imagesubmission = await submitImage(image, session, canceltoken);
+                    JObject imagesubmission = await SubmitImage(image, session, canceltoken);
 
                     string subid = string.Empty;
                     string jobid = string.Empty;
@@ -103,7 +103,7 @@ namespace NINA.PlateSolving {
                         while (true) {
                             canceltoken.Token.ThrowIfCancellationRequested();
 
-                            JObject submissionstatus = await getSubmissionStatus(subid, canceltoken);
+                            JObject submissionstatus = await GetSubmissionStatus(subid, canceltoken);
 
                             JArray jobids;
                             jobids = (JArray)submissionstatus.GetValue("jobs");
@@ -124,7 +124,7 @@ namespace NINA.PlateSolving {
                             progress.Report("Solving ...");
                             while (true) {
                                 canceltoken.Token.ThrowIfCancellationRequested();
-                                JObject ojobstatus = await getJobStatus(jobid, canceltoken);
+                                JObject ojobstatus = await GetJobStatus(jobid, canceltoken);
                                 jobstatus = ojobstatus.GetValue("status").ToString();
 
                                 if ((jobstatus == "failure") || (jobstatus == "success")) {
@@ -136,7 +136,7 @@ namespace NINA.PlateSolving {
 
                             if (jobstatus == "success") {
                                 progress.Report("Getting plate solve result ...");
-                                JObject job = await getJobInfo(jobid, canceltoken);
+                                JObject job = await GetJobInfo(jobid, canceltoken);
                                 JobResult jobinfo = job.ToObject<JobResult>();
 
                                 result.Dec = jobinfo.calibration.dec;
@@ -145,7 +145,7 @@ namespace NINA.PlateSolving {
                                 result.Ra = jobinfo.calibration.ra;
                                 result.Radius = jobinfo.calibration.radius;
 
-                                result.SolvedImage = await getJobImage(jobid, canceltoken);
+                                result.SolvedImage = await GetJobImage(jobid, canceltoken);
                                 progress.Report("Solved");
                             }
                             else {
@@ -171,7 +171,7 @@ namespace NINA.PlateSolving {
             }
 
             catch (System.OperationCanceledException ex) {
-                Logger.trace(ex.Message);
+                Logger.Trace(ex.Message);
                 result.Success = false;
                 progress.Report("Cancelled");
             }

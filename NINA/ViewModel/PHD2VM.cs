@@ -17,8 +17,8 @@ namespace NINA.ViewModel {
             Name = "PHD2";
 
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PHD2SVG"];            
-            ConnectPHDClientCommand = new AsyncCommand<bool>(async () => await Task.Run<bool>(() => connect()));
-            DisconnectPHDClientCommand = new AsyncCommand<bool>(async () => await Task.Run<bool>(() => PHD2Client.disconnect()));
+            ConnectPHDClientCommand = new AsyncCommand<bool>(async () => await Task.Run<bool>(() => Connect()));
+            DisconnectPHDClientCommand = new AsyncCommand<bool>(async () => await Task.Run<bool>(() => PHD2Client.Disconnect()));
 
             PHD2Client.PropertyChanged += PHD2Client_PropertyChanged;
 
@@ -29,14 +29,14 @@ namespace NINA.ViewModel {
             GuideStepsHistory = new ObservableCollection<PhdEventGuideStep>();
         }
 
-        private static Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
+        private static Dispatcher Dispatcher = Dispatcher.CurrentDispatcher;
 
-        private async Task<bool> connect() {
+        private async Task<bool> Connect() {
             /*SetUpPlotModels();*/
-            await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+            await Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                 GuideStepsHistory.Clear();
             }));
-            return await PHD2Client.connect();
+            return await PHD2Client.Connect();
         }
 
         /*private void SetUpPlotModels() {
@@ -74,7 +74,7 @@ namespace NINA.ViewModel {
         private void PHD2Client_PropertyChanged(object sender, PropertyChangedEventArgs e) {        
             if (e.PropertyName == "GuideStep") {
 
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                     if(GuideStepsHistory.Count > 100) {
                         GuideStepsHistory.RemoveAt(0);
                     }

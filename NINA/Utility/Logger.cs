@@ -11,7 +11,7 @@ namespace NINA.Utility {
         static string LOGFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA\\tracelog.txt";
 
         
-        private static void append(string msg) {
+        private static void Append(string msg) {
             try {
                 using (StreamWriter writer = new StreamWriter(LOGFILEPATH, true)) {
                     writer.WriteLine(msg);
@@ -25,27 +25,27 @@ namespace NINA.Utility {
 
         }
 
-        public static void error(string msg) {
+        public static void Error(string msg) {
            
-            append(DateTime.Now.ToString("s") + " ERROR:\t" +  msg);
+            Append(DateTime.Now.ToString("s") + " ERROR:\t" +  msg);
         }
 
-        public static void info(string msg) {
+        public static void Info(string msg) {
             if(Settings.LogLevel >= 0) { 
-                append(DateTime.Now.ToString("s") + " INFO:\t" + msg);
+                Append(DateTime.Now.ToString("s") + " INFO:\t" + msg);
             }
             
         }
 
-        public static void warning(string msg) {
+        public static void Warning(string msg) {
             if (Settings.LogLevel >= 2) {
-                append(DateTime.Now.ToString("s") + " WARNING:\t" + msg);
+                Append(DateTime.Now.ToString("s") + " WARNING:\t" + msg);
             }
         }        
 
-        public static void trace(string msg) {
+        public static void Trace(string msg) {
             if (Settings.LogLevel >= 3) {
-                append(DateTime.Now.ToString("s") + " TRACE:\t" + msg);
+                Append(DateTime.Now.ToString("s") + " TRACE:\t" + msg);
             }
         }
     }

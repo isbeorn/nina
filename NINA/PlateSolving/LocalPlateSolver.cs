@@ -34,7 +34,7 @@ namespace NINA.PlateSolving {
             _target = target;
         }
 
-        private string getOptions() {
+        private string GetOptions() {
             List<string> options = new List<string>();
 
             options.Add("-p");
@@ -61,7 +61,7 @@ namespace NINA.PlateSolving {
             return string.Join(" ", options);
         }
 
-        private PlateSolveResult solve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        private PlateSolveResult Solve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
                      
             PlateSolveResult result = new PlateSolveResult();
             try {                
@@ -86,7 +86,7 @@ namespace NINA.PlateSolving {
                 startInfo.UseShellExecute = false;
                 startInfo.RedirectStandardOutput = true;
                 startInfo.CreateNoWindow = true;
-                startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field {1} {2}'", cygwinbashpath, getOptions(), filepath.Replace("\\", "/"));
+                startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field {1} {2}'", cygwinbashpath, GetOptions(), filepath.Replace("\\", "/"));
                 //startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field -p -O -U none -B none -R none -M none -N none --sigma 70--no -C cancel--crpix -center --objs 100 -u arcsecperpix -L {1} -H {2} {3}'", cygwinbashpath, low.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), high.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), filepath.Replace("\\", "/"));
                 process.StartInfo = startInfo;
                 process.Start();
@@ -127,15 +127,15 @@ namespace NINA.PlateSolving {
                 }
             } catch (OperationCanceledException ex) {
                 progress.Report("Cancelled");
-                Logger.trace(ex.Message);
+                Logger.Trace(ex.Message);
                 result.Success = false;
             }
 
             return result;
         }
 
-        public async Task<PlateSolveResult> blindSolve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
-            return await Task<PlateSolveResult>.Run(() => solve(image, progress, canceltoken));
+        public async Task<PlateSolveResult> BlindSolve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
+            return await Task<PlateSolveResult>.Run(() => Solve(image, progress, canceltoken));
         }
     }
 }

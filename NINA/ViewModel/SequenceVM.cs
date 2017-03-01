@@ -12,7 +12,7 @@ namespace NINA.ViewModel{
     class SequenceVM : BaseINPC {
 
         public SequenceVM() {
-            AddSequenceCommand = new RelayCommand(addSequence);
+            AddSequenceCommand = new RelayCommand(AddSequence);
         }
         
 
@@ -49,7 +49,7 @@ namespace NINA.ViewModel{
             }
         }
 
-        public void addSequence(object o) {
+        public void AddSequence(object o) {
             Sequence.Add(new SequenceModel());
         }
 

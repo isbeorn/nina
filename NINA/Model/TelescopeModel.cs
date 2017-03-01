@@ -12,10 +12,10 @@ namespace NINA.Model {
     class TelescopeModel :BaseINPC {
         public TelescopeModel() {
            
-            init();
+            Init();
         }
 
-        private void init() {
+        private void Init() {
             
         }
 
@@ -56,7 +56,7 @@ namespace NINA.Model {
             }
         }
 
-        internal void updateValues() {
+        internal void UpdateValues() {
             try {
                 Altitude = Telescope.Altitude;
                 Azimuth = Telescope.Azimuth;
@@ -156,7 +156,7 @@ namespace NINA.Model {
             }
         }
 
-        internal void stopSlew() {
+        internal void StopSlew() {
             if(Connected && CanSlew) {
                 Telescope.AbortSlew();
             }
@@ -682,32 +682,32 @@ namespace NINA.Model {
             }
         }
 
-        public bool connect() {
+        public bool Connect() {
             bool con = false;
             string oldProgId = this.ProgId;
             string telescopeId = Settings.TelescopeId;
             ProgId = ASCOM.DriverAccess.Telescope.Choose(telescopeId);
             if ((!Connected || oldProgId != ProgId) && ProgId != "") {
 
-                init();
+                Init();
                 try {                    
                     Telescope = new Telescope(ProgId);                    
                     Connected = true;
                     Settings.TelescopeId = ProgId;                                        
-                    getTelescopeInfo();
+                    GetTelescopeInfo();
                     Notification.ShowSuccess("Telescope connected.");
                     con = true;
                 }
                 catch (ASCOM.DriverAccessCOMException ex) {
-                    Logger.error("Unable to connect to telescope");
-                    Logger.trace(ex.Message);
+                    Logger.Error("Unable to connect to telescope");
+                    Logger.Trace(ex.Message);
                     Notification.ShowError("Unable to connect to telescope");
                     Connected = false;
                 }
                 catch (Exception ex) {
                     Notification.ShowError("Unable to connect to telescope");
-                    Logger.error("Unable to connect to telescope");
-                    Logger.trace(ex.Message);
+                    Logger.Error("Unable to connect to telescope");
+                    Logger.Trace(ex.Message);
                     Connected = false;
                 }
 
@@ -816,7 +816,7 @@ namespace NINA.Model {
         private ASCOM.DeviceInterface.DriveRates _trackingRate;
         private DateTime _uTCDate;
 
-        private void getTelescopeInfo() {
+        private void GetTelescopeInfo() {
 
             /*getters exclusive */
             
@@ -829,8 +829,8 @@ namespace NINA.Model {
                 SiderealTime = Telescope.SiderealTime;
             }
             catch(Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Altitude, RightAscencion, Declination, Azimuth or SiderealTime");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Altitude, RightAscencion, Declination, Azimuth or SiderealTime");
+                Logger.Trace(ex.Message);
                 Altitude = double.MinValue;
                 RightAscension = double.MinValue;
                 Declination = double.MinValue;
@@ -844,8 +844,8 @@ namespace NINA.Model {
                 FocalLength = Telescope.FocalLength;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement ApertureArea, ApertureDiameter or FocalLength");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement ApertureArea, ApertureDiameter or FocalLength");
+                Logger.Trace(ex.Message);
                 ApertureArea = double.MinValue;
                 ApertureDiameter = double.MinValue;
                 FocalLength = double.MinValue;
@@ -858,8 +858,8 @@ namespace NINA.Model {
                 AtPark = Telescope.AtPark;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement AtHome or AtPark");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement AtHome or AtPark");
+                Logger.Trace(ex.Message);
                 CanFindHome = false;
                 CanPark = false;
                 AtHome = false;
@@ -870,8 +870,8 @@ namespace NINA.Model {
                 Name = Telescope.Name;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Name");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Name");
+                Logger.Trace(ex.Message);
                 Name = "n.A.";
             }
 
@@ -879,8 +879,8 @@ namespace NINA.Model {
                 Description = Telescope.Description;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Description");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Description");
+                Logger.Trace(ex.Message);
                 Description = "n.A.";
             }
 
@@ -889,8 +889,8 @@ namespace NINA.Model {
                 DriverVersion = Telescope.DriverVersion;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement DriverInfo or DriverVersion");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement DriverInfo or DriverVersion");
+                Logger.Trace(ex.Message);
                 DriverInfo = "n.A.";
                 DriverVersion = "n.A.";
             }
@@ -898,16 +898,16 @@ namespace NINA.Model {
                 InterfaceVersion = Telescope.InterfaceVersion;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement InterfaceVersion");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement InterfaceVersion");
+                Logger.Trace(ex.Message);
                 InterfaceVersion = 0;
             }
             try {
                 EquatorialSystem = Telescope.EquatorialSystem;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement EquatorialSystem");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement EquatorialSystem");
+                Logger.Trace(ex.Message);
                 EquatorialSystem = EquatorialCoordinateType.equOther;
             }
             try {
@@ -915,8 +915,8 @@ namespace NINA.Model {
                 IsPulseGuiding = Telescope.IsPulseGuiding;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement IsPulseGuiding");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement IsPulseGuiding");
+                Logger.Trace(ex.Message);
                 CanPulseGuide = false;
                 IsPulseGuiding = false;
             }
@@ -929,8 +929,8 @@ namespace NINA.Model {
                 MovingRate = 1;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Slewing");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Slewing");
+                Logger.Trace(ex.Message);
                 CanSlew = false;
                 CanSlewAltAz = false;
                 CanSlewAltAzAsync = false;
@@ -941,16 +941,16 @@ namespace NINA.Model {
                 TrackingRates = Telescope.TrackingRates;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement TrackingRates");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement TrackingRates");
+                Logger.Trace(ex.Message);
                 TrackingRates = null;
             }
             try {
                 SupportedActions = Telescope.SupportedActions;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement SupportedActions");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement SupportedActions");
+                Logger.Trace(ex.Message);
                 SupportedActions = new ArrayList();
             }
 
@@ -959,8 +959,8 @@ namespace NINA.Model {
                 CanSyncAltAz = Telescope.CanSyncAltAz;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement CanSync");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement CanSync");
+                Logger.Trace(ex.Message);
                 CanSync = false;
                 CanSyncAltAz = false;
             }
@@ -970,8 +970,8 @@ namespace NINA.Model {
                 CanUnpark = Telescope.CanUnpark;
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement CanSetPark/CanUnpark");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement CanSetPark/CanUnpark");
+                Logger.Trace(ex.Message);
                 CanSetPark = false;
                 CanUnpark = false;
             }
@@ -982,8 +982,8 @@ namespace NINA.Model {
                 TrackingRate = Telescope.TrackingRate; /*Settable*/
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement Tracking or TrackingRate");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement Tracking or TrackingRate");
+                Logger.Trace(ex.Message);
                 CanSetTracking = false;
                 Tracking = false;
                 TrackingRate = DriveRates.driveSidereal;
@@ -994,8 +994,8 @@ namespace NINA.Model {
                 RightAscensionRate = Telescope.RightAscensionRate; /*Settable*/
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement RightAscensionRate");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement RightAscensionRate");
+                Logger.Trace(ex.Message);
                 CanSetRightAscensionRate = false;
                 RightAscensionRate = double.MinValue;
             }
@@ -1005,8 +1005,8 @@ namespace NINA.Model {
                 SideOfPier = Telescope.SideOfPier; /*Settable*/
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement SideOfPier");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement SideOfPier");
+                Logger.Trace(ex.Message);
                 CanSetPierSide = false;
                 SideOfPier = PierSide.pierUnknown;
             }
@@ -1017,8 +1017,8 @@ namespace NINA.Model {
                 SiteLongitude = Telescope.SiteLongitude; /*Settable*/
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement SiteElevation/SiteLatitude/SiteLongitude");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement SiteElevation/SiteLatitude/SiteLongitude");
+                Logger.Trace(ex.Message);
                 SiteElevation = double.MinValue;
                 SiteLatitude = double.MinValue;
                 SiteLongitude = double.MinValue;
@@ -1029,8 +1029,8 @@ namespace NINA.Model {
                 DeclinationRate = Telescope.DeclinationRate; /*Settable*/
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement DeclinationRate");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement DeclinationRate");
+                Logger.Trace(ex.Message);
                 CanSetDeclinationRate = false;
                 DeclinationRate = double.MinValue;
             }
@@ -1041,8 +1041,8 @@ namespace NINA.Model {
                 GuideRateRightAscension = Telescope.GuideRateRightAscension; /*Settable*/
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement GuideRateDeclination/GuideRateRightAscension");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement GuideRateDeclination/GuideRateRightAscension");
+                Logger.Trace(ex.Message);
                 CanSetGuideRates = false;
                 GuideRateDeclination = double.MinValue;
                 GuideRateRightAscension = double.MinValue;
@@ -1052,8 +1052,8 @@ namespace NINA.Model {
                 UTCDate = Telescope.UTCDate; /*Settable*/
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement UTCDate");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement UTCDate");
+                Logger.Trace(ex.Message);
                 UTCDate = DateTime.MinValue;
             }
 
@@ -1061,8 +1061,8 @@ namespace NINA.Model {
                 DoesRefraction = Telescope.DoesRefraction; /*Settable*/
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement DoesRefraction");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement DoesRefraction");
+                Logger.Trace(ex.Message);
                 DoesRefraction = false;
             }
 
@@ -1070,8 +1070,8 @@ namespace NINA.Model {
                 SlewSettleTime = Telescope.SlewSettleTime; /*Settable*/
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement SlewSettleTime");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement SlewSettleTime");
+                Logger.Trace(ex.Message);
                 SlewSettleTime = short.MinValue;
             }
 
@@ -1080,8 +1080,8 @@ namespace NINA.Model {
                 TargetRightAscension = Telescope.TargetRightAscension; /*Settable*/
             }
             catch (Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement TargetDeclination/TargetRightAscension");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement TargetDeclination/TargetRightAscension");
+                Logger.Trace(ex.Message);
                 TargetDeclination = double.MinValue;
                 TargetRightAscension = double.MinValue;
             } 
@@ -1089,13 +1089,13 @@ namespace NINA.Model {
                 AlignmentMode = Telescope.AlignmentMode;
             }
             catch(Exception ex) {
-                Logger.warning("Used Camera AscomDriver does not implement AlignmentMode");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used Camera AscomDriver does not implement AlignmentMode");
+                Logger.Trace(ex.Message);
                 AlignmentMode = AlignmentModes.algAltAz;
             }                        
         }
 
-        public void park() {
+        public void Park() {
             if(Connected && CanPark) {
                 try {
                     Telescope.Park();
@@ -1111,11 +1111,11 @@ namespace NINA.Model {
             }
         }
 
-        public bool sync(string ra, string dec) {
-            return sync(Utility.Utility.AscomUtil.HMSToHours(ra), Utility.Utility.AscomUtil.DMSToDegrees(dec));            
+        public bool Sync(string ra, string dec) {
+            return Sync(Utility.Utility.AscomUtil.HMSToHours(ra), Utility.Utility.AscomUtil.DMSToDegrees(dec));            
         }
 
-        public bool sync(double ra, double dec) {
+        public bool Sync(double ra, double dec) {
             bool success = false;
             if (Connected && CanSync) {
                 if (Tracking) {
@@ -1136,7 +1136,7 @@ namespace NINA.Model {
             return success;
         }
 
-        public void unpark() {
+        public void Unpark() {
             if(Connected && CanUnpark) {
                 try {
                     Telescope.Unpark();
@@ -1152,7 +1152,7 @@ namespace NINA.Model {
             }
         }
 
-        public void setpark() {
+        public void Setpark() {
             if(Connected && CanSetPark) {
                 try {
                     Telescope.SetPark();
@@ -1165,7 +1165,7 @@ namespace NINA.Model {
         }
 
         
-        public void moveAxis(TelescopeAxes axis, double rate) {
+        public void MoveAxis(TelescopeAxes axis, double rate) {
             if(Connected) {
                 if(CanSlew) {
                     if(!AtPark) {
@@ -1186,7 +1186,7 @@ namespace NINA.Model {
             }
         }
 
-        public void slewToCoordinatesAsync(double ra, double dec) {
+        public void SlewToCoordinatesAsync(double ra, double dec) {
             if(Connected && CanSlew && !AtPark) {
                 try { 
                     if(!Telescope.Tracking) {
@@ -1200,7 +1200,7 @@ namespace NINA.Model {
             
         }
 
-        public void slewToCoordinates(double ra, double dec) {
+        public void SlewToCoordinates(double ra, double dec) {
             if (Connected && CanSlew && !AtPark) {
                 try {
                     if (!Telescope.Tracking) {
@@ -1215,7 +1215,7 @@ namespace NINA.Model {
 
         }
 
-        public void slewToAltAz(double az, double alt) {
+        public void SlewToAltAz(double az, double alt) {
             if (Connected && CanSlew && !AtPark) {
                 try {
                     Telescope.SlewToAltAz(az, alt);
@@ -1226,7 +1226,7 @@ namespace NINA.Model {
             }
         }
 
-        public void slewToAltAzAsync(double az, double alt) {
+        public void SlewToAltAzAsync(double az, double alt) {
             if (Connected && CanSlew && !AtPark) {
                 try {
                     Telescope.SlewToAltAzAsync(az, alt);
@@ -1237,12 +1237,12 @@ namespace NINA.Model {
             }
         }
 
-        public void disconnect() {
+        public void Disconnect() {
             if(Telescope != null && Connected) { 
                 Connected = false;
                 Telescope.Dispose();
                 Telescope = null;
-                init();
+                Init();
             }
             
         }

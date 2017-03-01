@@ -22,29 +22,29 @@ namespace NINA.ViewModel {
             ImageGeometry  = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
 
             //ConnectCameraCommand = new RelayCommand(connectCamera);
-            ChooseCameraCommand = new RelayCommand(chooseCamera);
-            DisconnectCommand = new RelayCommand(disconnectCamera);
-            CoolCamCommand = new AsyncCommand<bool>(() => coolCamera(new Progress<double>(p => CoolingProgress = p)));
-            CancelCoolCamCommand = new RelayCommand(cancelCoolCamera);
+            ChooseCameraCommand = new RelayCommand(ChooseCamera);
+            DisconnectCommand = new RelayCommand(DisconnectCamera);
+            CoolCamCommand = new AsyncCommand<bool>(() => CoolCamera(new Progress<double>(p => CoolingProgress = p)));
+            CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
             
-            updateCamera = new DispatcherTimer();
-            updateCamera.Interval = TimeSpan.FromMilliseconds(1000);
-            updateCamera.Tick += updateCamera_Tick;
+            _updateCamera = new DispatcherTimer();
+            _updateCamera.Interval = TimeSpan.FromMilliseconds(1000);
+            _updateCamera.Tick += UpdateCamera_Tick;
             
             CoolingRunning = false;
             CoolerPowerHistory = new ObservableCollection<KeyValuePair<DateTime, double>>();
             CCDTemperatureHistory = new ObservableCollection<KeyValuePair<DateTime, double>>();
         }
 
-        private static Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
-        private void coolCamera_Tick(IProgress<double> progress) {           
+        private static Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
+        private void CoolCamera_Tick(IProgress<double> progress) {           
 
             double currentTemp = Cam.CCDTemperature;
             double deltaTemp = currentTemp - TargetTemp;
 
             
             DateTime now = DateTime.Now;
-            TimeSpan delta = now.Subtract(deltaT);
+            TimeSpan delta = now.Subtract(_deltaT);
 
             Duration = Duration - ((double)delta.TotalMilliseconds / (1000 * 60));
 
@@ -54,7 +54,7 @@ namespace NINA.ViewModel {
            
             progress.Report(1 - (Duration / _initalDuration));
 
-            deltaT = DateTime.Now;
+            _deltaT = DateTime.Now;
 
             
         }
@@ -116,7 +116,7 @@ namespace NINA.ViewModel {
         }
 
 
-        private DateTime deltaT;
+        private DateTime _deltaT;
 
         private bool _coolingRunning;
         public bool CoolingRunning {
@@ -130,7 +130,7 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _cancelCoolCameraSource;
 
-        private async Task<bool> coolCamera(IProgress<double> progress) {
+        private async Task<bool> CoolCamera(IProgress<double> progress) {
             _cancelCoolCameraSource = new CancellationTokenSource();
             Cam.CoolerOn = true;
             if (Duration == 0) {                            
@@ -140,7 +140,7 @@ namespace NINA.ViewModel {
                 try {
 
                 
-                    deltaT = DateTime.Now;
+                    _deltaT = DateTime.Now;
                     double currentTemp = Cam.CCDTemperature;
                     _startPoint = new Vector2(Duration, currentTemp);
                     _endPoint = new Vector2(0, TargetTemp);
@@ -151,14 +151,14 @@ namespace NINA.ViewModel {
 
                     CoolingRunning = true;
                     do {
-                        coolCamera_Tick(progress);
+                        CoolCamera_Tick(progress);
                         await Task.Delay(TimeSpan.FromMilliseconds(300));
                         _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
                     } while (Duration >= 0);
                                                 
                     
                 } catch(OperationCanceledException ex) {
-                    Logger.trace(ex.Message);
+                    Logger.Trace(ex.Message);
                     
                 } finally {
                     progress.Report(1);
@@ -171,14 +171,14 @@ namespace NINA.ViewModel {
 
         }
 
-        private void cancelCoolCamera(object o) {
+        private void CancelCoolCamera(object o) {
             if(_cancelCoolCameraSource != null) {
                 _cancelCoolCameraSource.Cancel();
             }
         }
             
 
-        DispatcherTimer updateCamera;
+        DispatcherTimer _updateCamera;
 
 
         private double _targetTemp;
@@ -219,38 +219,38 @@ namespace NINA.ViewModel {
             Cam.AscomCamera = new Camera(Cam.ProgId);
         }*/
 
-        private void chooseCamera(object obj) {
-            updateCamera.Stop();
+        private void ChooseCamera(object obj) {
+            _updateCamera.Stop();
             Cam = new Model.MyCamera.AscomCameraModel();
-            if (Cam.connect()) {
+            if (Cam.Connect()) {
                 SetUpPlotModels();
-                updateCamera.Start();
+                _updateCamera.Start();
             }
             
         }
 
-        private void disconnectCamera(object obj) {
+        private void DisconnectCamera(object obj) {
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxImage.Question, System.Windows.MessageBoxResult.Cancel);
             if(result == System.Windows.MessageBoxResult.OK) {
-                updateCamera.Stop();
+                _updateCamera.Stop();
                 if(_cancelCoolCameraSource != null) {
                     _cancelCoolCameraSource.Cancel();
                 }                
                 CoolingRunning = false;
-                Cam.disconnect();
+                Cam.Disconnect();
             }
         }
 
-        void updateCamera_Tick(object sender, EventArgs e) {
+        void UpdateCamera_Tick(object sender, EventArgs e) {
            if(Cam.Connected) {
-                Cam.updateValues();
+                Cam.UpdateValues();
 
                 //var s = (LineSeries)CoolerPowerHistory.Series[0];
 
                 
                 /*if (s.Points.Count >= 200)
                     s.Points.RemoveAt(0);*/
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                     DateTime x = DateTime.Now;
                     if (CoolerPowerHistory.Count > 100) {
                         CoolerPowerHistory.RemoveAt(0);

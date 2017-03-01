@@ -12,8 +12,8 @@ namespace NINA.ViewModel {
         public FilterWheelVM() {
             Name = "Filter Wheel";
             FW = new FilterWheelModel();
-            ChooseFWCommand = new RelayCommand(chooseFW);
-            DisconnectCommand = new RelayCommand(disconnectFW);
+            ChooseFWCommand = new RelayCommand(ChooseFW);
+            DisconnectCommand = new RelayCommand(DisconnectFW);
         }
 
         private FilterWheelModel _fW;
@@ -27,13 +27,13 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void chooseFW(object obj) {            
-            if (FW.connect()) {
+        private void ChooseFW(object obj) {            
+            if (FW.Connect()) {
                 
             }
         }
 
-        private void disconnectFW(object obj) {
+        private void DisconnectFW(object obj) {
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Disconnect Filter Wheel?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxImage.Question, System.Windows.MessageBoxResult.Cancel);
             if (result == System.Windows.MessageBoxResult.OK) {
                 FW.disconnect();

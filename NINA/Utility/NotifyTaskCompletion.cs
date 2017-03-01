@@ -19,7 +19,7 @@ namespace NINA.Utility {
                 await task;
             }
             catch (Exception ex) {
-                Logger.error(ex.Message);
+                Logger.Error(ex.Message);
             }
             var propertyChanged = PropertyChanged;
             if (propertyChanged == null)

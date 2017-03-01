@@ -25,7 +25,7 @@ namespace NINATest {
             ushort[] expFlatArr = { 100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000 };
 
             //Act
-            Utility.ImageArray result = await Utility.convert2DArray(arr);
+            Utility.ImageArray result = await Utility.Convert2DArray(arr);
 
             //Assert
             Assert.AreEqual(expX, result.X);
@@ -64,7 +64,7 @@ namespace NINATest {
             ushort expMinStdDev = 0;
             
             //Act
-            Utility.ImageArray result = await Utility.convert2DArray(arr);
+            Utility.ImageArray result = await Utility.Convert2DArray(arr);
 
             //Assert
             Assert.AreEqual(expMinStdDev, result.MinStDev);
@@ -101,7 +101,7 @@ namespace NINATest {
             ushort expMinStdDev = 0;
 
             //Act
-            Utility.ImageArray result = await Utility.convert2DArray(arr);
+            Utility.ImageArray result = await Utility.Convert2DArray(arr);
 
             //Assert
             Assert.AreEqual(expMinStdDev, result.MinStDev);
@@ -121,7 +121,7 @@ namespace NINATest {
             ushort[] expFlatarr = { 1310,2621,1310,2621,26214,26214,26214,26214,27524,27524,27524,27524,27524,27524,26214,64224,65535,65535,65535,1310};
 
             //Act
-            ushort[] result = await Utility.stretchArray(iarr);
+            ushort[] result = await Utility.StretchArray(iarr);
 
             //Assert
             CollectionAssert.AreEqual(expFlatarr, result);

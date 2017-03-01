@@ -14,7 +14,7 @@ namespace NINA.Model {
 
         }
 
-        private void init() {
+        private void Init() {
 
         }
 
@@ -161,7 +161,7 @@ namespace NINA.Model {
                     try {                 
                         FW.Position = value;                        
                     } catch (Exception ex) {
-                        Logger.trace(ex.Message);
+                        Logger.Trace(ex.Message);
                     
                     }
                     
@@ -183,34 +183,34 @@ namespace NINA.Model {
 
         private bool _connected;
 
-        public bool connect() {            
+        public bool Connect() {            
             bool con = false;
             string oldProgId = this.ProgId;
             string filterwheelid = Settings.FilterWheelId;
             ProgId = FilterWheel.Choose(filterwheelid);
             if ((!Connected || oldProgId != ProgId) && ProgId != "") {
 
-                init();
+                Init();
                 try {
                     FW = new FilterWheel(ProgId);
                     
                     //AscomCamera.Connected = true;
                     Connected = true;
                     Settings.FilterWheelId = ProgId;
-                    getFWInfo();
+                    GetFWInfo();
                     Notification.ShowSuccess("Filter wheel connected");
                     con = true;
                 }
                 catch (ASCOM.DriverAccessCOMException ex) {
                     Notification.ShowError("Unable to connect to filter wheel");
-                    Logger.error("Unable to connect to filter wheel");
-                    Logger.trace(ex.Message);
+                    Logger.Error("Unable to connect to filter wheel");
+                    Logger.Trace(ex.Message);
                     Connected = false;
                 }
                 catch (Exception ex) {
                     Notification.ShowError("Unable to connect to filter wheel");
-                    Logger.error("Unable to connect to filter wheel");
-                    Logger.trace(ex.Message);
+                    Logger.Error("Unable to connect to filter wheel");
+                    Logger.Trace(ex.Message);
                     Connected = false;
                 }
             }
@@ -222,17 +222,17 @@ namespace NINA.Model {
             Position = -1;
             Filters.Clear();
             FW.Dispose();
-            init();            
+            Init();            
         }
 
 
-        private void getFWInfo() {
+        private void GetFWInfo() {
             try {
                 Description = FW.Description;
                 Name = FW.Name;
             } catch (Exception ex) {
-                Logger.error("Unable to connect to FilterWheel");
-                Logger.trace(ex.Message);
+                Logger.Error("Unable to connect to FilterWheel");
+                Logger.Trace(ex.Message);
 
 
             }
@@ -242,8 +242,8 @@ namespace NINA.Model {
                 DriverVersion = FW.DriverVersion;
                 InterfaceVersion = FW.InterfaceVersion;
             }catch (Exception ex) {
-                Logger.warning("Used FilterWheel AscomDriver does not implement DriverInfo");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used FilterWheel AscomDriver does not implement DriverInfo");
+                Logger.Trace(ex.Message);
             }
             
             try {
@@ -258,16 +258,16 @@ namespace NINA.Model {
                 Filters = l;
                 
             } catch (Exception ex) {
-                Logger.warning("Used FilterWheel AscomDriver does not implement FocusOffsets, Names or Positions");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used FilterWheel AscomDriver does not implement FocusOffsets, Names or Positions");
+                Logger.Trace(ex.Message);
             }
 
             
             try {
                 SupportedActions = FW.SupportedActions;
             } catch (Exception ex) {
-                Logger.warning("Used FilterWheel AscomDriver does not implement SupportedActions");
-                Logger.trace(ex.Message);
+                Logger.Warning("Used FilterWheel AscomDriver does not implement SupportedActions");
+                Logger.Trace(ex.Message);
 
             }
         }

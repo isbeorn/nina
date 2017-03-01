@@ -18,9 +18,9 @@ namespace NINA.ViewModel {
 
 
 
-            ExitCommand = new RelayCommand(exitApplication);
-            MinimizeWindowCommand = new RelayCommand(minimizeWindow);
-            MaximizeWindowCommand = new RelayCommand(maximizeWindow);
+            ExitCommand = new RelayCommand(ExitApplication);
+            MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
+            MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
             Visibility = true;
             Views = new ObservableCollection<BaseVM>();
             //Views.Add(this);
@@ -53,7 +53,7 @@ namespace NINA.ViewModel {
 
         public string Version {
             get {               
-                return "v. 0.2.0";
+                return "v. 0.3.0";
             }
         }
 
@@ -79,7 +79,7 @@ namespace NINA.ViewModel {
 
 
 
-        private static void maximizeWindow(object obj) {
+        private static void MaximizeWindow(object obj) {
             if (Application.Current.MainWindow.WindowState == WindowState.Maximized) {
                 Application.Current.MainWindow.WindowState = WindowState.Normal;
             }
@@ -88,11 +88,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void minimizeWindow(object obj) {
+        private void MinimizeWindow(object obj) {
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
 
-        private void exitApplication(object obj) {
+        private void ExitApplication(object obj) {
             if(CameraVM.Cam != null && CameraVM.Cam.Connected) {
                 System.Windows.MessageBoxResult diag = System.Windows.MessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
                 if(diag == MessageBoxResult.OK) {
@@ -104,7 +104,7 @@ namespace NINA.ViewModel {
             
         }
 
-        private void addListeners() {
+        private void AddListeners() {
             
         }
         
@@ -265,7 +265,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void toggleView(object o) {
+        private void ToggleView(object o) {
             if (o != null) {
                 this.Visibility = false;
                 this.OverViewVisibility = false;
@@ -273,7 +273,7 @@ namespace NINA.ViewModel {
                 BaseVM b = null;
                 
                 this.OverViewVisibility = false;
-                b = getViewByName(o.ToString());
+                b = GetViewByName(o.ToString());
                                 
                 if (a != null && b != null ) {
                     a.Visibility = false;
@@ -284,7 +284,7 @@ namespace NINA.ViewModel {
 
         }
 
-        private void toggleMenu(object o) {
+        private void ToggleMenu(object o) {
             this.OverViewVisibility = false;
             if (this.Visibility) {
                 _activeView.Visibility = true;
@@ -296,7 +296,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void toggleOverview(object o) {
+        private void ToggleOverview(object o) {
             this.Visibility = false;
             if(this.OverViewVisibility) {
                 _activeView.Visibility = true;
@@ -308,7 +308,7 @@ namespace NINA.ViewModel {
             
         }
 
-        private void getNextView(object o) {
+        private void GetNextView(object o) {
             this.Visibility = false;
             this.OverViewVisibility = false;
             BaseVM a = _activeView;
@@ -319,7 +319,7 @@ namespace NINA.ViewModel {
             _activeView = Views[idx];         
         }
 
-        private void getPrevView(object o) {
+        private void GetPrevView(object o) {
             this.Visibility = false;         
             this.OverViewVisibility = false;
             BaseVM a = _activeView;
@@ -333,7 +333,7 @@ namespace NINA.ViewModel {
 
        
 
-        private BaseVM getViewByName(String name) {
+        private BaseVM GetViewByName(String name) {
             var a = (from b in Views where b.Name == name select b);
             if (a.Count() > 0) {
                 return a.First();

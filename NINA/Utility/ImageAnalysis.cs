@@ -25,6 +25,7 @@ namespace NINA.Utility {
         private static System.Drawing.FontFamily FONTFAMILY = new System.Drawing.FontFamily("Times New Roman");
         private static Font FONT = new Font(FONTFAMILY, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
 
+        const int OUTERRADIUS = 15;
 
         public ImageAnalysis() {
 
@@ -61,16 +62,16 @@ namespace NINA.Utility {
 
 
 
-        double calculateHfr(Star s, double mean) {
+        double CalculateHfr(Star s, double mean) {
             double hfr = 0.0d;
-            double outerRadius = s.radius;
+            double outerRadius = OUTERRADIUS;
             double sum = 0, sumDist = 0;
 
             int centerX = (int)Math.Floor(s.Position.X);
             int centerY = (int)Math.Floor(s.Position.Y);
 
             foreach(PixelData data in s.Pixeldata) {
-                if (insideCircle(data.PosX, data.PosY, s.Position.X, s.Position.Y, s.radius)) {
+                if (InsideCircle(data.PosX, data.PosY, s.Position.X, s.Position.Y, outerRadius))  {
                     data.value = (ushort) (data.value - mean);
                     if (data.value < 0) data.value = 0;
 
@@ -89,7 +90,7 @@ namespace NINA.Utility {
             return hfr;
         }
 
-        bool insideCircle(double x, double y, double centerX, double centerY, double radius) {
+        bool InsideCircle(double x, double y, double centerX, double centerY, double radius) {
             return (Math.Pow(x - centerX, 2) + Math.Pow(y - centerY, 2) <= Math.Pow(radius, 2));
         }
 
@@ -119,13 +120,13 @@ namespace NINA.Utility {
             }
             */
 
-    public async Task<BitmapSource> detectStarsAsync(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
-            return await Task.Run<BitmapSource>(() => detectStars(iarr, progress, canceltoken));
+    public async Task<BitmapSource> DetectStarsAsync(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
+            return await Task.Run<BitmapSource>(() => DetectStars(iarr, progress, canceltoken));
         }
 
 
 
-    private static Bitmap stretch(Bitmap source, double targetHistogramMean) {
+    private static Bitmap Stretch(Bitmap source, double targetHistogramMean) {
         var stats = new AForge.Imaging.ImageStatistics(source);
         double power;
         if (stats.GrayWithoutBlack.Mean <= 1) {
@@ -149,7 +150,7 @@ namespace NINA.Utility {
         return source;
     }
 
-        public BitmapSource detectStars(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public BitmapSource DetectStars(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
             BitmapSource result = null;
             try {
 
@@ -157,7 +158,7 @@ namespace NINA.Utility {
                 progress.Report("Preparing image for star detection");
 
                 Stopwatch sw = Stopwatch.StartNew();
-                var tmpsrc = ViewModel.ImagingVM.prepare(iarr.FlatArray, iarr.X, iarr.Y).Result;
+                var tmpsrc = ViewModel.ImagingVM.Prepare(iarr.FlatArray, iarr.X, iarr.Y).Result;
                 //var bmpsource = Convert16BppTo8Bpp(tmpsrc);
                 //var bmpsource = NormalizeTiffTo8BitImage(tmpsrc);
                 //tmpsrc = null;
@@ -174,12 +175,14 @@ namespace NINA.Utility {
                 canceltoken.Token.ThrowIfCancellationRequested();
 
 
-                orig = stretch(orig, 0.15);
-                bmp = stretch(bmp, 0.15);
+                orig = Stretch(orig, 0.15);
+                bmp = Stretch(bmp, 0.15);
 
 
                 Debug.Print("Time for stretch: " + sw.Elapsed);
                 sw.Restart();
+
+                new OtsuThreshold().ApplyInPlace(bmp);
 
                 /* prepare image for structure detection */                
                 new CannyEdgeDetector().ApplyInPlace(bmp);
@@ -196,8 +199,8 @@ namespace NINA.Utility {
 
                 /* detect structures */
                 int minStarSize = 5;
-                int maxStarSize = minStarSize * 5;
-                BlobCounter blobCounter = new BlobCounter{ MinWidth = minStarSize, MinHeight = maxStarSize, MaxWidth = maxStarSize, MaxHeight = maxStarSize };
+                int maxStarSize = 150;
+                BlobCounter blobCounter = new BlobCounter();
                 blobCounter.ProcessImage(bmp);
 
                 canceltoken.Token.ThrowIfCancellationRequested();
@@ -238,7 +241,7 @@ namespace NINA.Utility {
                             s.Pixeldata.Add(pd);
                         }
                     }
-                    s.HFR = calculateHfr(s, iarr.Mean);
+                    s.HFR = CalculateHfr(s, iarr.Mean);
                     starlist.Add(s);
                 
                 }
@@ -256,8 +259,10 @@ namespace NINA.Utility {
                 /*BitmapData data = newBitmap.LockBits(
                     new Rectangle(0, 0, newBitmap.Width, newBitmap.Height),
                         ImageLockMode.ReadWrite, newBitmap.PixelFormat);*/
-                int r, posx, posy, offset = 10;
-
+                int r, offset = 10;
+                float textposx, textposy;
+                var m = (from star in starlist select star.HFR).Average();
+                Debug.Print("Mean HFR: " + m);
                 var threshhold = 300;
                 if(starlist.Count > threshhold) {
                     starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
@@ -267,10 +272,13 @@ namespace NINA.Utility {
                 foreach (Star star in starlist) {
                     canceltoken.Token.ThrowIfCancellationRequested();
                     r = (int)Math.Ceiling(star.radius);
-                    posx = star.Rectangle.X - offset;
-                    posy = star.Rectangle.Y - offset;
+                    textposx = star.Position.X - offset;
+                    textposy = star.Position.Y - offset;
                     graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X - offset, star.Rectangle.Y - offset, star.Rectangle.Width + 2*offset, star.Rectangle.Height + 2*offset));
-                    graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(posx - 1.5*offset), Convert.ToSingle(posy + 2.5*offset)));
+                    //graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width , star.Rectangle.Height ));
+                    //graphics.DrawEllipse(new System.Drawing.Pen(System.Drawing.Brushes.Pink, 1), new RectangleF(star.Position.X - OUTERRADIUS, star.Position.Y - OUTERRADIUS,  OUTERRADIUS*2, OUTERRADIUS*2));
+                    //graphics.DrawEllipse(new System.Drawing.Pen(System.Drawing.Brushes.Green, 1), new RectangleF(star.Position.X - (float)star.HFR, star.Position.Y - (float)star.HFR, (float)star.HFR * 2, (float)star.HFR * 2));
+                    graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5*offset), Convert.ToSingle(textposy + 2.5*offset)));
                 }
             
                 //newBitmap.UnlockBits(data);

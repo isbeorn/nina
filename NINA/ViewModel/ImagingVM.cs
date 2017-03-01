@@ -27,10 +27,10 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
 
             SnapExposureDuration = 1;
-            SnapCommand = new AsyncCommand<bool>(() => captureImage(new Progress<string>(p => ExpStatus = p)));
-            CancelSnapCommand = new RelayCommand(cancelCaptureImage);
-            StartSequenceCommand = new AsyncCommand<bool>(() => startSequence(new Progress<string>(p => ExpStatus = p)));
-            CancelSequenceCommand = new RelayCommand(cancelSequence);
+            SnapCommand = new AsyncCommand<bool>(() => CaptureImage(new Progress<string>(p => ExpStatus = p)));
+            CancelSnapCommand = new RelayCommand(CancelCaptureImage);
+            StartSequenceCommand = new AsyncCommand<bool>(() => StartSequence(new Progress<string>(p => ExpStatus = p)));
+            CancelSequenceCommand = new RelayCommand(CancelSequence);
 
            
         }
@@ -47,7 +47,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
+        private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private SequenceVM _seqVM;
         public SequenceVM SeqVM {
@@ -182,9 +182,9 @@ namespace NINA.ViewModel {
 
         
 
-        private async Task changeFilter(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task ChangeFilter(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
             if (seq.FilterType != null && FW.Connected && FW.Position != seq.FilterType.Position) {
-                await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                     FW.Position = seq.FilterType.Position;
                 }));
 
@@ -200,23 +200,23 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void setBinning(SequenceModel seq) {
+        private void SetBinning(SequenceModel seq) {
             if (seq.Binning == null) {
-                Cam.setBinning(1, 1);
+                Cam.SetBinning(1, 1);
             }
             else {
-                Cam.setBinning(seq.Binning.X, seq.Binning.Y);
+                Cam.SetBinning(seq.Binning.X, seq.Binning.Y);
             }
         }
 
-        private async Task capture(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {            
+        private async Task Capture(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {            
             double duration = seq.ExposureTime;
             progress.Report(string.Format(ExposureStatus.EXPOSING, 0, duration));
             bool isLight = false;
             if (Cam.HasShutter) {
                 isLight = true;
             }
-            Cam.startExposure(duration, isLight);
+            Cam.StartExposure(duration, isLight);
             ExposureSeconds = 1;
             progress.Report(string.Format(ExposureStatus.EXPOSING, 1, duration));
             /* Wait for Capture */
@@ -233,16 +233,16 @@ namespace NINA.ViewModel {
             tokenSource.Token.ThrowIfCancellationRequested();
         }
 
-        private async Task<Array> download(CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<Array> Download(CancellationTokenSource tokenSource, IProgress<string> progress) {
             progress.Report(ExposureStatus.DOWNLOADING);
-            return await Cam.downloadExposure(tokenSource);
+            return await Cam.DownloadExposure(tokenSource);
         }
 
-        private async Task<Utility.Utility.ImageArray> convert(Array arr, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<Utility.Utility.ImageArray> Convert(Array arr, CancellationTokenSource tokenSource, IProgress<string> progress) {
             progress.Report(ExposureStatus.PREPARING);
             Utility.Utility.ImageArray iarr;
             if (arr.GetType() == typeof(Int32[,])) {
-                iarr = await Utility.Utility.convert2DArray(arr);
+                iarr = await Utility.Utility.Convert2DArray(arr);
             } else {
                 throw new NotImplementedException();
             }
@@ -251,15 +251,15 @@ namespace NINA.ViewModel {
             return iarr;
         }
 
-        public static async Task<BitmapSource> prepare(ushort[] arr, int x, int y) {
+        public static async Task<BitmapSource> Prepare(ushort[] arr, int x, int y) {
             return await Task.Run<BitmapSource>(() => {
-                BitmapSource src = Utility.Utility.createSourceFromArray(arr, x, y, System.Windows.Media.PixelFormats.Gray16);
+                BitmapSource src = Utility.Utility.CreateSourceFromArray(arr, x, y, System.Windows.Media.PixelFormats.Gray16);
                 src.Freeze();
                 return src;
             });                
         }
 
-        private async Task<bool> save(SequenceModel seq, Utility.Utility.ImageArray iarr, ushort framenr,  CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> Save(SequenceModel seq, Utility.Utility.ImageArray iarr, ushort framenr,  CancellationTokenSource tokenSource, IProgress<string> progress) {
             progress.Report(ExposureStatus.SAVING);
             await Task.Run(() => {
 
@@ -287,16 +287,16 @@ namespace NINA.ViewModel {
 
                 p.Add(new OptionsVM.ImagePattern("$$SENSORTEMP$$", "Temperature of the Camera", string.Format("{0:00}", Cam.CCDTemperature)));
 
-                string filename = Utility.Utility.getImageFileString(p);
+                string filename = Utility.Utility.GetImageFileString(p);
                 string completefilename = Settings.ImageFilePath + filename;
                 if (Settings.FileType == FileTypeEnum.FITS) {                    
                     string imagetype = seq.ImageType;
                     if (imagetype == "SNAP") imagetype = "LIGHT";
-                    Utility.Utility.saveFits(iarr, completefilename, seq.ImageType, seq.ExposureTime, filter, seq.Binning, Cam.CCDTemperature);
+                    Utility.Utility.SaveFits(iarr, completefilename, seq.ImageType, seq.ExposureTime, filter, seq.Binning, Cam.CCDTemperature);
                 } else if (Settings.FileType == FileTypeEnum.TIFF) {
-                    Utility.Utility.saveTiff(iarr, completefilename);
+                    Utility.Utility.SaveTiff(iarr, completefilename);
                 } else {
-                    Utility.Utility.saveTiff(iarr, completefilename);
+                    Utility.Utility.SaveTiff(iarr, completefilename);
                 }
                 
                 
@@ -306,10 +306,10 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private async Task<bool> dither(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> Dither(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
             if (seq.Dither && ((seq.ExposureCount % seq.DitherAmount) == 0)) {
                 progress.Report(ExposureStatus.DITHERING);
-                await PHD2Client.dither();
+                await PHD2Client.Dither();
 
                 progress.Report(ExposureStatus.SETTLING);
                 var time = 0;
@@ -332,7 +332,7 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        public  async Task<bool> startSequence(ICollection<SequenceModel> sequence, bool bCalcHFR,  bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        public  async Task<bool> StartSequence(ICollection<SequenceModel> sequence, bool bCalcHFR,  bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
             return await Task.Run<bool>(async () => {
                 try {
                     IsExposing = true;
@@ -345,42 +345,42 @@ namespace NINA.ViewModel {
                             
 
                             /*Change Filter*/
-                            await changeFilter(seq, tokenSource, progress);
+                            await ChangeFilter(seq, tokenSource, progress);
 
                             if (!Cam.Connected) {
                                 throw new OperationCanceledException();
                             }
 
                             /*Set Camera Binning*/
-                            setBinning(seq);
+                            SetBinning(seq);
 
                             if (!Cam.Connected) {
                                 throw new OperationCanceledException();
                             }
 
                             /*Capture*/
-                            await capture(seq, tokenSource, progress);
+                            await Capture(seq, tokenSource, progress);
 
                             if(!Cam.Connected) {
                                 throw new OperationCanceledException();
                             }
 
                             /*Download Image */
-                            Array arr = await download(tokenSource, progress);
+                            Array arr = await Download(tokenSource, progress);
                             if (arr == null) {
                                 throw new OperationCanceledException();
                             }
 
-                            await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                            await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                                 /* Free Memory for new Image */
                                 SourceArray = null;
                                 System.GC.Collect();                                
                             }));
 
                             /*Convert Array to ushort*/
-                            Utility.Utility.ImageArray iarr = await convert(arr, tokenSource, progress);
+                            Utility.Utility.ImageArray iarr = await Convert(arr, tokenSource, progress);
 
-                            await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                            await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                                 /* Free Memory for new Image */
                                 SourceArray = null;
                                 System.GC.Collect();
@@ -391,16 +391,16 @@ namespace NINA.ViewModel {
                             progress.Report(ImagingVM.ExposureStatus.PREPARING);
                             BitmapSource tmp;
                             if (AutoStretch && !bCalcHFR) {
-                                tmp = await stretch(iarr);
+                                tmp = await Stretch(iarr);
                             }
                             else if (bCalcHFR) {
                                 progress.Report(ImagingVM.ExposureStatus.CALCHFR);
                                 var analysis = new ImageAnalysis();                                
-                                tmp = await analysis.detectStarsAsync(iarr, progress, tokenSource);
+                                tmp = await analysis.DetectStarsAsync(iarr, progress, tokenSource);
                                                            
                             }
                             else {
-                                tmp = await prepare(iarr.FlatArray, iarr.X, iarr.Y);
+                                tmp = await Prepare(iarr.FlatArray, iarr.X, iarr.Y);
                             }
 
                             if (tmp.Format == System.Windows.Media.PixelFormats.Gray16) {
@@ -408,7 +408,7 @@ namespace NINA.ViewModel {
                             }
                             tmp.Freeze();
 
-                            await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                            await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                                 /* Free Memory for new Image */
                                 Image = null;                                
                                 System.GC.Collect();
@@ -421,11 +421,11 @@ namespace NINA.ViewModel {
 
                             /*Save to disk*/
                             if (bSave) {                               
-                                await save(seq, iarr, framenr, tokenSource, progress);
+                                await Save(seq, iarr, framenr, tokenSource, progress);
                             }
 
                             /*Dither*/
-                            await dither(seq, tokenSource, progress);
+                            await Dither(seq, tokenSource, progress);
                             
                             if (!Cam.Connected) {
                                 throw new OperationCanceledException();
@@ -438,20 +438,20 @@ namespace NINA.ViewModel {
                     }
                 }
                 catch (System.OperationCanceledException ex) {
-                    Logger.trace(ex.Message);
+                    Logger.Trace(ex.Message);
                 }
                 finally {
                     progress.Report(ExposureStatus.IDLE);
-                    Cam.stopExposure();
+                    Cam.StopExposure();
                     IsExposing = false;
                 }
                 return true;
             });
         }
 
-        private async Task<bool> startSequence(IProgress<string> progress, CancellationToken token = new CancellationToken()) {
+        private async Task<bool> StartSequence(IProgress<string> progress, CancellationToken token = new CancellationToken()) {
             _cancelSequenceToken = new CancellationTokenSource();
-            return await startSequence(SeqVM.Sequence, CalcHFR, true, _cancelSequenceToken, progress);           
+            return await StartSequence(SeqVM.Sequence, CalcHFR, true, _cancelSequenceToken, progress);           
         }
 
 
@@ -472,7 +472,7 @@ namespace NINA.ViewModel {
 
 
 
-        public static async Task<BitmapSource> stretch(Utility.Utility.ImageArray sourceArray) {
+        public static async Task<BitmapSource> Stretch(Utility.Utility.ImageArray sourceArray) {
             /*      
             BitmapSource bs = await prepare(sourceArray.FlatArray, sourceArray.X, sourceArray.Y);
             var img = ImageAnalysis.Convert16BppTo8Bpp(bs);
@@ -484,8 +484,8 @@ namespace NINA.ViewModel {
             return bs;*/
 
 
-            ushort[] arr = await Utility.Utility.stretchArray(sourceArray);
-            BitmapSource bs = await prepare(arr, sourceArray.X, sourceArray.Y);
+            ushort[] arr = await Utility.Utility.StretchArray(sourceArray);
+            BitmapSource bs = await Prepare(arr, sourceArray.X, sourceArray.Y);
             bs.Freeze();
             return bs;
         }
@@ -533,13 +533,13 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void cancelCaptureImage(object o) {
+        private void CancelCaptureImage(object o) {
             if (_captureImageToken != null) {
                 _captureImageToken.Cancel();
             }
         }
 
-        private void cancelSequence(object o) {
+        private void CancelSequence(object o) {
             if (_cancelSequenceToken != null) {
                 _cancelSequenceToken.Cancel();
             }
@@ -576,7 +576,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<bool> captureImage(IProgress<string> progress) {
+        public async Task<bool> CaptureImage(IProgress<string> progress) {
             _captureImageToken = new CancellationTokenSource();
             if (IsExposing) {
                 Notification.ShowWarning("Camera is busy");
@@ -585,14 +585,14 @@ namespace NINA.ViewModel {
                 do {
                     List<SequenceModel> seq = new List<SequenceModel>();
                     seq.Add(new SequenceModel(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                    await startSequence(seq, CalcHFR, true, _captureImageToken, progress);
+                    await StartSequence(seq, CalcHFR, true, _captureImageToken, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop);
                 return true;
             }
         }
 
-        public async Task<bool> captureImage(double duration, bool bCalcHFR, bool bsave, IProgress<string> progress, CancellationTokenSource token, FilterWheelModel.FilterInfo filter = null, BinningMode binning = null) {
+        public async Task<bool> CaptureImage(double duration, bool bCalcHFR, bool bsave, IProgress<string> progress, CancellationTokenSource token, FilterWheelModel.FilterInfo filter = null, BinningMode binning = null) {
             if (IsExposing) {
                 Notification.ShowWarning("Camera is busy");
                 return true;
@@ -600,7 +600,7 @@ namespace NINA.ViewModel {
             else {
                 List<SequenceModel> seq = new List<SequenceModel>();
                 seq.Add(new SequenceModel(duration, ImageTypes.SNAP, filter, binning, 1));
-                return await startSequence(seq, bCalcHFR, bsave, token, progress);
+                return await StartSequence(seq, bCalcHFR, bsave, token, progress);
             }
         }
 

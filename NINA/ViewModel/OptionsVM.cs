@@ -15,10 +15,10 @@ namespace NINA.ViewModel {
         public OptionsVM() {
             Name = "Options";            
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
-            PreviewFileCommand = new RelayCommand(previewFile);
-            OpenImageFileDiagCommand = new RelayCommand(openImageFileDiag);
-            OpenCygwinFileDiagCommand = new RelayCommand(openCygwinFileDiag);
-            ToggleColorsCommand = new RelayCommand(toggleColors);
+            PreviewFileCommand = new RelayCommand(PreviewFile);
+            OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
+            OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
+            ToggleColorsCommand = new RelayCommand(ToggleColors);
 
             ImageFilePath = Settings.ImageFilePath;
             ImageFilePattern = Settings.ImageFilePattern;
@@ -37,7 +37,7 @@ namespace NINA.ViewModel {
             ImagePatterns = p;
         }
 
-        private void openImageFileDiag(object o) {
+        private void OpenImageFileDiag(object o) {
             var diag = new System.Windows.Forms.FolderBrowserDialog();
             System.Windows.Forms.DialogResult result = diag.ShowDialog();
             if(result == System.Windows.Forms.DialogResult.OK) {
@@ -45,7 +45,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void openCygwinFileDiag(object o) {
+        private void OpenCygwinFileDiag(object o) {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.FileName = "bash.exe";
             if (openFileDialog.ShowDialog() == true) {
@@ -75,8 +75,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void previewFile(object o) {
-            System.Windows.MessageBox.Show(Utility.Utility.getImageFileString(ImagePatterns), "Example File Name", System.Windows.MessageBoxButton.OK);
+        private void PreviewFile(object o) {
+            System.Windows.MessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), "Example File Name", System.Windows.MessageBoxButton.OK);
         }
 
                 private ICommand _previewFileCommand;
@@ -224,7 +224,7 @@ namespace NINA.ViewModel {
             }
         }
     
-        private void toggleColors(object o) {
+        private void ToggleColors(object o) {
             var a = PrimaryColor;
             var b = SecondaryColor;
             var c = BorderColor;

@@ -69,7 +69,7 @@ namespace NINA.Utility {
             }
         }
 
-        public static async Task<ImageArray> convert2DArray(Array input) {
+        public static async Task<ImageArray> Convert2DArray(Array input) {
            
             return await Task<ImageArray>.Run(() => {
                 Int32[,] arr = (Int32[,])input;
@@ -146,7 +146,7 @@ namespace NINA.Utility {
             });           
         }
 
-        public static async Task<ushort[]> stretchArray(ImageArray source) {
+        public static async Task<ushort[]> StretchArray(ImageArray source) {
             return await Task.Run<ushort[]>(() => {
                 ushort maxVal = source.MaxStDev;
                 ushort minVal = source.MinStDev;
@@ -194,7 +194,7 @@ namespace NINA.Utility {
             });
         }*/
 
-        public static void saveFits(ImageArray iarr, string path, string imagetype, double duration, string filter, Model.MyCamera.BinningMode binning, double temp) {
+        public static void SaveFits(ImageArray iarr, string path, string imagetype, double duration, string filter, Model.MyCamera.BinningMode binning, double temp) {
             try {
                 Header h = new Header();
                 h.AddValue("SIMPLE", "T", "C# FITS");
@@ -248,15 +248,15 @@ namespace NINA.Utility {
             }
             catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
-                Logger.error(ex.Message);
+                Logger.Error(ex.Message);
 
             }
         }
 
-        public static void saveTiff(ImageArray iarr, String path) {         
+        public static void SaveTiff(ImageArray iarr, String path) {         
             
             try {
-                BitmapSource bmpSource = createSourceFromArray(iarr.FlatArray, iarr.X, iarr.Y, System.Windows.Media.PixelFormats.Gray16);
+                BitmapSource bmpSource = CreateSourceFromArray(iarr.FlatArray, iarr.X, iarr.Y, System.Windows.Media.PixelFormats.Gray16);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
 
@@ -268,7 +268,7 @@ namespace NINA.Utility {
                 }
             } catch(Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
-                Logger.error(ex.Message);
+                Logger.Error(ex.Message);
 
             }
         }
@@ -319,7 +319,7 @@ namespace NINA.Utility {
         //        buffer8Bit, rawStride / 2);
         //}
 
-        public static BitmapSource createSourceFromArray(Array flatArray, int x, int y, System.Windows.Media.PixelFormat pf) {
+        public static BitmapSource CreateSourceFromArray(Array flatArray, int x, int y, System.Windows.Media.PixelFormat pf) {
             
             //int stride = C.CameraYSize * ((Convert.ToString(C.MaxADU, 2)).Length + 7) / 8;
             int stride = (x * pf.BitsPerPixel + 7) / 8;
@@ -329,7 +329,7 @@ namespace NINA.Utility {
             return source;
         }
 
-        public static string getImageFileString(ICollection<ViewModel.OptionsVM.ImagePattern> patterns) {
+        public static string GetImageFileString(ICollection<ViewModel.OptionsVM.ImagePattern> patterns) {
             string s = Settings.ImageFilePattern;
             foreach(ViewModel.OptionsVM.ImagePattern p in patterns) {
                 s = s.Replace(p.Key, p.Value);
@@ -338,7 +338,7 @@ namespace NINA.Utility {
         }
 
 
-        public static async Task<string> httpGetRequest(CancellationTokenSource canceltoken, string url, params object[] parameters) {
+        public static async Task<string> HttpGetRequest(CancellationTokenSource canceltoken, string url, params object[] parameters) {
             string result = string.Empty;
 
             url = string.Format(url, parameters);
@@ -358,7 +358,7 @@ namespace NINA.Utility {
                     if (canceltoken.Token.IsCancellationRequested) {
                         throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
                     }
-                    Logger.error(ex.Message);
+                    Logger.Error(ex.Message);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (response != null) {
                         response.Close();
@@ -374,12 +374,12 @@ namespace NINA.Utility {
             return result;
         }
 
-        public static string encodeUrl(string s) {
+        public static string EncodeUrl(string s) {
             return HttpUtility.UrlEncode(s);
         }
 
 
-        public static async Task<BitmapImage> httpGetImage(CancellationTokenSource canceltoken, string url, params object[] parameters) {
+        public static async Task<BitmapImage> HttpGetImage(CancellationTokenSource canceltoken, string url, params object[] parameters) {
             BitmapImage bitmap = null;
 
             url = string.Format(url, parameters);
@@ -407,7 +407,7 @@ namespace NINA.Utility {
                     if (canceltoken.Token.IsCancellationRequested) {
                         throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
                     }
-                    Logger.error(ex.Message);
+                    Logger.Error(ex.Message);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (response != null) {
                         response.Close();
@@ -422,7 +422,7 @@ namespace NINA.Utility {
             return bitmap;
         }
 
-        public static async Task<string> httpPostRequest(string url, string body, CancellationTokenSource canceltoken) {
+        public static async Task<string> HttpPostRequest(string url, string body, CancellationTokenSource canceltoken) {
             string result = string.Empty;
             
             HttpWebRequest request = null;
@@ -447,7 +447,7 @@ namespace NINA.Utility {
                     if (canceltoken.Token.IsCancellationRequested) {
                         throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
                     }
-                    Logger.error(ex.Message);
+                    Logger.Error(ex.Message);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (response != null) {
                         response.Close();
@@ -463,7 +463,7 @@ namespace NINA.Utility {
 
         }
 
-        public static async Task<string> httpUploadFile(string url, MemoryStream file, string paramName, string contentType, NameValueCollection nvc, CancellationTokenSource canceltoken) {
+        public static async Task<string> HttpUploadFile(string url, MemoryStream file, string paramName, string contentType, NameValueCollection nvc, CancellationTokenSource canceltoken) {
             string result = string.Empty;            
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
             byte[] boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
@@ -515,7 +515,7 @@ namespace NINA.Utility {
                     if (canceltoken.Token.IsCancellationRequested) {
                         throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
                     }
-                    Logger.error(ex.Message);
+                    Logger.Error(ex.Message);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (wresp != null) {
                         wresp.Close();

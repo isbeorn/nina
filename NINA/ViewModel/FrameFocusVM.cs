@@ -18,9 +18,9 @@ namespace NINA.ViewModel {
         public FrameFocusVM() {
             Name = "Frame & Focus";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
-            CancelSnapCommand = new RelayCommand(cancelCaptureImage);
-            SnapCommand = new AsyncCommand<bool>(() => snap(new Progress<string>(p => ImagingVM.ExpStatus = p)));
-            ApplyImageParamsCommand = new AsyncCommand<bool>(() => applyImageParams());            
+            CancelSnapCommand = new RelayCommand(CancelCaptureImage);
+            SnapCommand = new AsyncCommand<bool>(() => Snap(new Progress<string>(p => ImagingVM.ExpStatus = p)));
+            ApplyImageParamsCommand = new AsyncCommand<bool>(() => ApplyImageParams());            
             Gamma = 1;
             Contrast = 1;
             Brightness = 1;
@@ -149,7 +149,7 @@ namespace NINA.ViewModel {
         
 
 
-        private async Task<bool> snap(IProgress<string> progress) {
+        private async Task<bool> Snap(IProgress<string> progress) {
             if (ImagingVM.IsExposing) {
                 Notification.ShowWarning("Camera is busy");
                 return false;
@@ -158,7 +158,7 @@ namespace NINA.ViewModel {
                     _captureImageToken = new CancellationTokenSource();
                     List<SequenceModel> seq = new List<SequenceModel>();
                     seq.Add(new SequenceModel(SnapExposureDuration, SequenceModel.ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                    await ImagingVM.startSequence(seq, CalcHFR, false, _captureImageToken, progress);
+                    await ImagingVM.StartSequence(seq, CalcHFR, false, _captureImageToken, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop);
                 return true;
@@ -169,13 +169,13 @@ namespace NINA.ViewModel {
 
 
                 
-        private async Task<bool> applyImageParams() {            
+        private async Task<bool> ApplyImageParams() {            
             if(ImagingVM.Image != null) {
 
                 Bitmap bmp = await Task.Run<Bitmap>(async () => {
-                        BitmapSource bs = await ImagingVM.prepare(ImagingVM.SourceArray.FlatArray, ImagingVM.SourceArray.X, ImagingVM.SourceArray.Y);
+                        BitmapSource bs = await ImagingVM.Prepare(ImagingVM.SourceArray.FlatArray, ImagingVM.SourceArray.X, ImagingVM.SourceArray.Y);
                         Bitmap b = ImageAnalysis.BitmapFromSource(bs);
-                        b = adjustImage(b);
+                        b = AdjustImage(b);
                         return b;
                     });
                
@@ -188,7 +188,7 @@ namespace NINA.ViewModel {
         }
 
 
-        private Bitmap adjustImage(Bitmap source) {
+        private Bitmap AdjustImage(Bitmap source) {
             
             Bitmap adjustedImage = new Bitmap(source.Width, source.Height); ;
             float brightness = Brightness;// 1.0f; // no change in brightness
@@ -263,7 +263,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void cancelCaptureImage(object o) {
+        private void CancelCaptureImage(object o) {
             if (_captureImageToken != null) {
                 _captureImageToken.Cancel();
             }

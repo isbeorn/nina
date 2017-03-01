@@ -34,12 +34,12 @@ namespace NINA.Model.MyCamera {
         double CoolerPower { get; }
 
 
-        bool connect();
-        void disconnect();
-        void updateValues();
-        void setBinning(short x, short y);
-        void startExposure(double exposureTime, bool isLightFrame);
-        void stopExposure();
-        Task<Array> downloadExposure(CancellationTokenSource tokenSource); 
+        bool Connect();
+        void Disconnect();
+        void UpdateValues();
+        void SetBinning(short x, short y);
+        void StartExposure(double exposureTime, bool isLightFrame);
+        void StopExposure();
+        Task<Array> DownloadExposure(CancellationTokenSource tokenSource); 
     }
 }

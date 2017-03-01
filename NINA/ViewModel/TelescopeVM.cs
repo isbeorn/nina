@@ -14,35 +14,35 @@ namespace NINA.ViewModel {
             Name = "Telescope";            
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
             Telescope = new TelescopeModel();
-            ChooseTelescopeCommand = new RelayCommand(chooseTelescope);
-            DisconnectCommand = new RelayCommand(disconnectTelescope);
-            StepperMoveRateCommand = new RelayCommand(stepMoveRate);
-            ParkCommand = new AsyncCommand<bool>(parkTelescope);
-            UnparkCommand = new RelayCommand(unparkTelescope);
-            SlewToCoordinatesCommand = new RelayCommand(slewToCoordinates);
+            ChooseTelescopeCommand = new RelayCommand(ChooseTelescope);
+            DisconnectCommand = new RelayCommand(DisconnectTelescope);
+            StepperMoveRateCommand = new RelayCommand(StepMoveRate);
+            ParkCommand = new AsyncCommand<bool>(ParkTelescope);
+            UnparkCommand = new RelayCommand(UnparkTelescope);
+            SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
 
-            MoveCommand = new RelayCommand(move);
-            StopMoveCommand = new RelayCommand(stopMove);
-            StopSlewCommand = new RelayCommand(stopSlew);
+            MoveCommand = new RelayCommand(Move);
+            StopMoveCommand = new RelayCommand(StopMove);
+            StopSlewCommand = new RelayCommand(StopSlew);
 
             _updateTelescope = new DispatcherTimer();
             _updateTelescope.Interval = TimeSpan.FromMilliseconds(300);
-            _updateTelescope.Tick += updateTelescope_Tick;
+            _updateTelescope.Tick += UpdateTelescope_Tick;
         }
 
-        private void updateTelescope_Tick(object sender, EventArgs e) {            
+        private void UpdateTelescope_Tick(object sender, EventArgs e) {            
             if (Telescope.Connected) {
-                Telescope.updateValues();
+                Telescope.UpdateValues();
             }            
         }
 
-        private async Task<bool> parkTelescope() {
-            return await Task.Run<bool>(() => { Telescope.park(); return true; }); 
+        private async Task<bool> ParkTelescope() {
+            return await Task.Run<bool>(() => { Telescope.Park(); return true; }); 
 
         }
 
-        private void unparkTelescope(object o) {
-            Telescope.unpark();
+        private void UnparkTelescope(object o) {
+            Telescope.Unpark();
         }
 
         private DispatcherTimer _updateTelescope;
@@ -58,22 +58,22 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void chooseTelescope(object obj) {
+        private void ChooseTelescope(object obj) {
             _updateTelescope.Stop();
-            if (Telescope.connect()) {
+            if (Telescope.Connect()) {
                 _updateTelescope.Start();                
             }
         }
 
-        private void disconnectTelescope(object obj) {
+        private void DisconnectTelescope(object obj) {
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxImage.Question, System.Windows.MessageBoxResult.Cancel);
             if (result == System.Windows.MessageBoxResult.OK) {
                 _updateTelescope.Stop();
-                Telescope.disconnect();
+                Telescope.Disconnect();
             }
         }
 
-        private void stepMoveRate(object obj) {
+        private void StepMoveRate(object obj) {
             string cmd = obj.ToString();
             if(cmd == "+") {
                 Telescope.MovingRate++;
@@ -82,40 +82,40 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void move(object obj) {
+        private void Move(object obj) {
             string cmd = obj.ToString();
             if(cmd == "W") {                                
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -Telescope.MovingRate);
+                Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -Telescope.MovingRate);
             }
             if (cmd == "O") {
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, Telescope.MovingRate);
+                Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, Telescope.MovingRate);
             }
             if (cmd == "N") {
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, Telescope.MovingRate);
+                Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, Telescope.MovingRate);
             }
             if (cmd == "S") {                
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, -Telescope.MovingRate);
+                Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, -Telescope.MovingRate);
             }
         }
 
-        private void stopMove(object obj) {
+        private void StopMove(object obj) {
             string cmd = obj.ToString();
             if (cmd == "W") {
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
             }
             if (cmd == "O") {
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
             }
             if (cmd == "N") {
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, 0);
+                Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, 0);
             }
             if (cmd == "S") {
-                Telescope.moveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, 0);
+                Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, 0);
             }
         }
 
-        private void stopSlew(object obj) {
-            Telescope.stopSlew();
+        private void StopSlew(object obj) {
+            Telescope.StopSlew();
         }
 
         private double _targetDeclination;
@@ -142,8 +142,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void slewToCoordinates(object obj) {
-            Telescope.slewToCoordinatesAsync(TargetRightAscencion, TargetDeclination);
+        private void SlewToCoordinates(object obj) {
+            Telescope.SlewToCoordinatesAsync(TargetRightAscencion, TargetDeclination);
         }
 
         private ICommand _slewToCoordinatesCommand;

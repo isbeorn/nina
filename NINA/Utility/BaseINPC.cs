@@ -27,24 +27,24 @@ namespace NINA.Utility
             RaisePropertyChanged("IsChanged");
         }
 
-        protected void items_CollectionChanged(object sender,
+        protected void Items_CollectionChanged(object sender,
                System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.OldItems != null)
             {
                 foreach (INotifyPropertyChanged item in e.OldItems)
                     item.PropertyChanged -= new
-                                           PropertyChangedEventHandler(item_PropertyChanged);
+                                           PropertyChangedEventHandler(Item_PropertyChanged);
             }
             if (e.NewItems != null)
             {
                 foreach (INotifyPropertyChanged item in e.NewItems)
                     item.PropertyChanged +=
-                                       new PropertyChangedEventHandler(item_PropertyChanged);
+                                       new PropertyChangedEventHandler(Item_PropertyChanged);
             }
         }
 
-        protected void item_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             RaisePropertyChanged("IsChanged");
         }

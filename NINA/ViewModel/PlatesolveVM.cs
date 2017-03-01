@@ -26,9 +26,9 @@ namespace NINA.ViewModel {
             Progress = "Idle...";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
             
-            BlindSolveCommand = new AsyncCommand<bool>(() => blindSolve(new Progress<string>(p => Progress = p)));
-            CancelBlindSolveCommand = new RelayCommand(cancelBlindSolve);
-            SyncCommand = new RelayCommand(syncTelescope);
+            BlindSolveCommand = new AsyncCommand<bool>(() => BlindSolve(new Progress<string>(p => Progress = p)));
+            CancelBlindSolveCommand = new RelayCommand(CancelBlindSolve);
+            SyncCommand = new RelayCommand(SyncTelescope);
 
             SnapExposureDuration = 2;
                     
@@ -71,19 +71,19 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void imageChanged(Object sender, PropertyChangedEventArgs e) {
+        private void ImageChanged(Object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == "Image") {
                 this.PlateSolveResult = null;
             }
         }
 
-        private void syncTelescope(object obj) {
+        private void SyncTelescope(object obj) {
             if(PlateSolveResult != null) {
                 
                 Coordinates solved = new Coordinates(PlateSolveResult.Ra, PlateSolveResult.Dec, PlateSolveResult.Epoch, Coordinates.RAType.Degrees);
-                solved = solved.transform(Settings.EpochType);
+                solved = solved.Transform(Settings.EpochType);
 
-                if (Telescope.sync(solved.RA, solved.Dec)) {
+                if (Telescope.Sync(solved.RA, solved.Dec)) {
                     Notification.ShowSuccess("Telescope synced to coordinates");
                 } else {
                     Notification.ShowWarning("Telescope sync failed!");
@@ -105,25 +105,25 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<bool> blindSolveWithCapture(double duration, IProgress<string> progress, CancellationTokenSource canceltoken, FilterWheelModel.FilterInfo filter = null, Model.MyCamera.BinningMode binning = null) {
+        public async Task<bool> BlindSolveWithCapture(double duration, IProgress<string> progress, CancellationTokenSource canceltoken, FilterWheelModel.FilterInfo filter = null, Model.MyCamera.BinningMode binning = null) {
             var oldAutoStretch = ImagingVM.AutoStretch;
             ImagingVM.AutoStretch = true;          
-            await ImagingVM.captureImage(duration, false, false, progress, canceltoken, filter, binning);
+            await ImagingVM.CaptureImage(duration, false, false, progress, canceltoken, filter, binning);
             ImagingVM.AutoStretch = oldAutoStretch;
 
             canceltoken.Token.ThrowIfCancellationRequested();
             
-            await blindSolve(progress, canceltoken);
+            await BlindSolve(progress, canceltoken);
             return true;
         }
         
 
-        private async Task<bool> blindSolve(IProgress<string> progress) {
+        private async Task<bool> BlindSolve(IProgress<string> progress) {
             _blindeSolveCancelToken = new CancellationTokenSource();
-            return await blindSolveWithCapture(SnapExposureDuration, progress, _blindeSolveCancelToken, SnapFilter, SnapBin);            
+            return await BlindSolveWithCapture(SnapExposureDuration, progress, _blindeSolveCancelToken, SnapFilter, SnapBin);            
         }
 
-        public async Task<bool> blindSolve(IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public async Task<bool> BlindSolve(IProgress<string> progress, CancellationTokenSource canceltoken) {
             bool fullresolution = true;
             if(Settings.PlateSolverType == PlateSolverEnum.ASTROMETRY_NET) {
                 fullresolution = Settings.UseFullResolutionPlateSolve;
@@ -182,14 +182,14 @@ namespace NINA.ViewModel {
             return await Task<bool>.Run(async () => {
 
                 _blindeSolveCancelToken = new CancellationTokenSource();
-                PlateSolveResult = await Platesolver.blindSolve(ms, progress, _blindeSolveCancelToken);
+                PlateSolveResult = await Platesolver.BlindSolve(ms, progress, _blindeSolveCancelToken);
                 return PlateSolveResult.Success;
             });           
             
         }
 
         private CancellationTokenSource _blindeSolveCancelToken;
-        private void cancelBlindSolve(object o) {
+        private void CancelBlindSolve(object o) {
             if (_blindeSolveCancelToken != null) {
                 _blindeSolveCancelToken.Cancel();
             }
@@ -217,7 +217,7 @@ namespace NINA.ViewModel {
             set {
                 _imagingVM = value;
                 RaisePropertyChanged();
-                ImagingVM.PropertyChanged += new PropertyChangedEventHandler(imageChanged);
+                ImagingVM.PropertyChanged += new PropertyChangedEventHandler(ImageChanged);
             }
         }
 

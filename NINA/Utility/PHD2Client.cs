@@ -19,7 +19,7 @@ namespace NINA.Utility {
         public PHD2Client() {
         }
 
-        private Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
+        private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private PhdEventVersion _version;
         public PhdEventVersion Version {
@@ -149,7 +149,7 @@ namespace NINA.Utility {
             }
         }
 
-        public async Task<bool> connect() {
+        public async Task<bool> Connect() {
             
             try {                
                 _client = new TcpClient();
@@ -162,7 +162,7 @@ namespace NINA.Utility {
                
                 
 
-                startListener(_tokenSource.Token);
+                StartListener(_tokenSource.Token);
             }
             catch (SocketException e) {
                 
@@ -173,16 +173,16 @@ namespace NINA.Utility {
             return Connected;
         }
 
-        public async Task<bool> dither() {
+        public async Task<bool> Dither() {
             if(Connected) {
                 IsDithering = true;
-                await sendMessage(String.Format(PHD2Methods.DITHER, Settings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), Settings.DitherRAOnly.ToString().ToLower()));
+                await SendMessage(String.Format(PHD2Methods.DITHER, Settings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), Settings.DitherRAOnly.ToString().ToLower()));
             }
 
             return IsDithering;
         }
 
-        private async Task<bool> sendMessage(string msg) {
+        private async Task<bool> SendMessage(string msg) {
             if(Connected) {
                 // Translate the passed message into ASCII and store it as a byte array.
                 Byte[] data = new Byte[10240];
@@ -198,7 +198,7 @@ namespace NINA.Utility {
             return true;            
         }
 
-        public bool disconnect() {
+        public bool Disconnect() {
             
             if (Connected) {
                 _tokenSource.Cancel();
@@ -210,7 +210,7 @@ namespace NINA.Utility {
             return !Connected;
         }
         
-        private async void startListener(CancellationToken token) {
+        private async void StartListener(CancellationToken token) {
             while(Connected) {
                 try {
                     if (_stream.DataAvailable) {
@@ -269,9 +269,9 @@ namespace NINA.Utility {
                                             if(phdresp.error == null) {
                                                 PhdImageResult img = JObject.Parse(phdresp.result.ToString()).ToObject<PhdImageResult>();
                                                 byte[] p = Convert.FromBase64String(img.pixels.Trim('\0'));      
-                                                BitmapSource bmp = Utility.createSourceFromArray(p, img.width, img.height, System.Windows.Media.PixelFormats.Gray16);
+                                                BitmapSource bmp = Utility.CreateSourceFromArray(p, img.width, img.height, System.Windows.Media.PixelFormats.Gray16);
                                                 bmp.Freeze();
-                                                await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                                                await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                                                     Image = bmp;
                                                 }));                                            
                                             }
@@ -344,11 +344,11 @@ namespace NINA.Utility {
                     }
 
                     
-                    await sendMessage(PHD2Methods.GET_APP_STATE);
+                    await SendMessage(PHD2Methods.GET_APP_STATE);
                     //await sendMessage(PHD2Methods.GET_STAR_IMAGE); 
                 }
                 catch(System.IO.IOException ex) {
-                    Logger.trace(ex.Message);
+                    Logger.Trace(ex.Message);
                     _stream.Close();
                     _client.Close();
                     IsDithering = false;
@@ -356,7 +356,7 @@ namespace NINA.Utility {
                     RaisePropertyChanged("Connected");
                 }
                 catch (Exception ex) {
-                    Logger.error(ex.Message);
+                    Logger.Error(ex.Message);
                     Notification.ShowError("PHD2 Error: " + ex.Message);
                 }
                 
