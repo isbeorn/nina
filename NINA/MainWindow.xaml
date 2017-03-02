@@ -19,7 +19,9 @@
                         <TextBlock Text="N.I.N.A. - Nighttime Imaging 'N' Astronomy" VerticalAlignment="Center" Margin="4,0,0,0"/>
                     <TextBlock Text="{Binding Version}" VerticalAlignment="Center" Margin="4,0,0,0"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding Status}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"/>
                     <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding OptionsVM.ToggleColorsCommand}" >
                         <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource EyeSVG}" Stretch="Uniform" Margin="5">
                         </Path>

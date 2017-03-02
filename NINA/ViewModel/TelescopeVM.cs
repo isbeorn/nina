@@ -9,8 +9,8 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    class TelescopeVM : BaseVM {
-        public TelescopeVM() {
+    class TelescopeVM : ChildVM {
+        public TelescopeVM(ApplicationVM root) : base(root) {
             Name = "Telescope";            
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
             Telescope = new TelescopeModel();

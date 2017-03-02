@@ -14,12 +14,12 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel {
-    class FrameFocusVM : BaseVM {
-        public FrameFocusVM() {
+    class FrameFocusVM : ChildVM {
+        public FrameFocusVM(ApplicationVM root) : base(root) {
             Name = "Frame & Focus";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
             CancelSnapCommand = new RelayCommand(CancelCaptureImage);
-            SnapCommand = new AsyncCommand<bool>(() => Snap(new Progress<string>(p => ImagingVM.ExpStatus = p)));
+            SnapCommand = new AsyncCommand<bool>(() => Snap(new Progress<string>(p => RootVM.Status = p)));
             ApplyImageParamsCommand = new AsyncCommand<bool>(() => ApplyImageParams());            
             Gamma = 1;
             Contrast = 1;
@@ -158,7 +158,7 @@ namespace NINA.ViewModel {
                     _captureImageToken = new CancellationTokenSource();
                     List<SequenceModel> seq = new List<SequenceModel>();
                     seq.Add(new SequenceModel(SnapExposureDuration, SequenceModel.ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                    await ImagingVM.StartSequence(seq, CalcHFR, false, _captureImageToken, progress);
+                    await ImagingVM.StartSequence(seq,  false, _captureImageToken, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop);
                 return true;
@@ -169,8 +169,8 @@ namespace NINA.ViewModel {
 
 
                 
-        private async Task<bool> ApplyImageParams() {            
-            if(ImagingVM.Image != null) {
+        private async Task<bool> ApplyImageParams() {
+            /*if(ImagingVM.Image != null) {
 
                 Bitmap bmp = await Task.Run<Bitmap>(async () => {
                         BitmapSource bs = await ImagingVM.Prepare(ImagingVM.SourceArray.FlatArray, ImagingVM.SourceArray.X, ImagingVM.SourceArray.Y);
@@ -184,7 +184,8 @@ namespace NINA.ViewModel {
                 
             }
             bool run = await Task.Run<bool>(() => { return true; });
-            return run ;            
+            return run ;   */
+            return true;         
         }
 
 

@@ -12,7 +12,7 @@ using NINA.Utility.Astrometry;
 using NINA.Model.MyCamera;
 
 namespace NINA.ViewModel {
-    class PolarAlignmentVM : BaseVM {
+    class PolarAlignmentVM : ChildVM {
 
         private TelescopeVM _telescopeVM;
         public TelescopeVM TelescopeVM {
@@ -223,7 +223,7 @@ namespace NINA.ViewModel {
 
         DispatcherTimer _updateValues;
 
-        public PolarAlignmentVM() {
+        public PolarAlignmentVM(ApplicationVM root) : base(root) {
             _updateValues = new DispatcherTimer();
             _updateValues.Interval = TimeSpan.FromSeconds(1);
             _updateValues.Tick += UpdateValues_Tick;
@@ -232,7 +232,7 @@ namespace NINA.ViewModel {
             MeasureAzimuthErrorCommand = new AsyncCommand<bool>(() => MeasurePolarError(new Progress<string>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH));
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(() => MeasurePolarError(new Progress<string>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE));
             SlewToMeridianOffsetCommand = new RelayCommand(SlewToMeridianOffset);
-            DARVSlewCommand = new AsyncCommand<bool>(() => darvslew(new Progress<string>(p => ImagingVM.ExpStatus = p), new Progress<string>(p => DarvStatus = p)));
+            DARVSlewCommand = new AsyncCommand<bool>(() => darvslew(new Progress<string>(p => RootVM.Status = p), new Progress<string>(p => DarvStatus = p)));
             CancelDARVSlewCommand = new RelayCommand(Canceldarvslew);
             CancelMeasureAltitudeErrorCommand = new RelayCommand(CancelMeasurePolarError);
             CancelMeasureAzimuthErrorCommand = new RelayCommand(CancelMeasurePolarError);
@@ -413,13 +413,16 @@ namespace NINA.ViewModel {
                 if (!ImagingVM.IsExposing) {
                     _cancelDARVSlewToken = new CancellationTokenSource();
                     try {
-                        var oldAutoStretch = ImagingVM.AutoStretch;
-                        ImagingVM.AutoStretch = true;
-                        var capture = ImagingVM.CaptureImage(DARVSlewDuration + 5, false, false, cameraprogress, _cancelDARVSlewToken);
+                        var oldAutoStretch = ImagingVM.ImageControl.AutoStretch;
+                        var oldDetectStars = ImagingVM.ImageControl.DetectStars;
+                        ImagingVM.ImageControl.AutoStretch = true;
+                        ImagingVM.ImageControl.DetectStars = false;
+                        var capture = ImagingVM.CaptureImage(DARVSlewDuration + 5, false, cameraprogress, _cancelDARVSlewToken);
                         var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken);
 
                         await Task.WhenAll(capture, slew);
-                        ImagingVM.AutoStretch = oldAutoStretch;
+                        ImagingVM.ImageControl.AutoStretch = oldAutoStretch;
+                        ImagingVM.ImageControl.DetectStars = oldDetectStars;
                     }
                     catch (OperationCanceledException ex) {
                         Logger.Trace(ex.Message);

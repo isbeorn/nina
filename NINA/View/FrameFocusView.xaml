@@ -12,102 +12,19 @@
             <ColumnDefinition Width="*"/>
             <!--<ColumnDefinition Width="Auto"/>-->
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="40" />
+        <Grid.RowDefinitions>        
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40" />
-            
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="50" />
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="Zoom" VerticalAlignment="Center" />
-            <Slider Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Value="{Binding Zoom}" TickPlacement="BottomRight" TickFrequency="0.1" IsSnapToTickEnabled="True"  Maximum="10" Minimum="0.1" SmallChange="0.1"></Slider>
-            <TextBlock Grid.Column="2" Text="{Binding Zoom}" VerticalAlignment="Center"></TextBlock>
-        </Grid>
-        <Expander Grid.Row="2" IsExpanded="True" Header="Histogram" DataContext="{Binding ImagingVM}">
-            <local:HistogramView Grid.Row="1" DataContext="{Binding SourceArray}" MinHeight="150" />
-            <!--<chartingToolkit:Chart DataContext="{Binding ImagingVM}" Grid.Row="2"  Title="" Margin="0,0,1,0" Style="{StaticResource ChartStyle}">
-                <chartingToolkit:Chart.Axes>
-                    <chartingToolkit:LinearAxis Visibility="Hidden"
-                            Orientation="X"                            
-                            Minimum="0"
-                            Maximum="200" FontSize="6"/>
-                </chartingToolkit:Chart.Axes>
-                <chartingToolkit:LineSeries  DependentValuePath="Value" 
-				    IndependentValuePath="Key" ItemsSource="{Binding SourceArray.Histogram}" 
-				    IsSelectionEnabled="True" Style="{StaticResource LineSeriesStyle}">
-                    <chartingToolkit:LineSeries.DataPointStyle>
-                        <Style TargetType="chartingToolkit:LineDataPoint">
-                            <Setter Property="Template" Value="{x:Null}" />
-                        </Style>
-                    </chartingToolkit:LineSeries.DataPointStyle>
-                </chartingToolkit:LineSeries>
+        
+        
+        <local:ImageControlView Grid.Row="0" DataContext="{Binding ImagingVM.ImageControl}" />                
 
-            </chartingToolkit:Chart>-->
-        </Expander>
-        <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-            <Grid>
-                <ScrollViewer  PanningMode="Both">
-                    <ScrollViewer.Style>
-                        <Style TargetType="{x:Type ScrollViewer}">
-                            <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
-                            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
-                                        <Grid x:Name="Grid" Background="{TemplateBinding Background}">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Rectangle x:Name="Corner" Grid.Column="1" Fill="{StaticResource BackgroundBrush}" Grid.Row="1"/>
-                                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="0" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
-                                            <ScrollBar x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}"/>
-                                            <ScrollBar x:Name="PART_HorizontalScrollBar" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}"/>
-                                        </Grid>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
 
-                            <!--<Style.Triggers>
-                                <DataTrigger Binding="{Binding IsChecked, ElementName=chkActualSize}" Value="True">
-                                    <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
-                                    <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-                                </DataTrigger>
-                            </Style.Triggers>-->
-                        </Style>
-                    </ScrollViewer.Style>
-                    <Grid>
-                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Opacity="0.2" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="100">
-                        </Path>
-                        <Image Grid.Column="0" Grid.Row="0" Source="{Binding ImagingVM.Image}" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Image.LayoutTransform>
-                                <ScaleTransform ScaleX="{Binding Zoom}" ScaleY="{Binding Zoom}" />
-                            </Image.LayoutTransform>
-                        </Image>                    
-                    </Grid>                
-                </ScrollViewer>
-                <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="50" Background="{StaticResource BorderBrush}" Visibility="{Binding ImagingVM.IsExposing, Converter={StaticResource VisibilityConverter}}">
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{Binding ImagingVM.ExpStatus}"></TextBlock>
-                </Border>
-            </Grid>
-        </Border>
-
-        <Grid Grid.Column="0" Grid.Row="3" IsEnabled="{Binding ImagingVM.Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <local:CameraControlView  IsEnabled="{Binding ImagingVM.Cam.Connected}"
-                    MyAutoStretch="{Binding ImagingVM.AutoStretch, Mode=TwoWay}"
+        <Grid Grid.Column="0" Grid.Row="2" IsEnabled="{Binding ImagingVM.Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <local:CameraControlView  IsEnabled="{Binding ImagingVM.Cam.Connected}"                    
                     MyLoop="{Binding Loop, Mode=TwoWay}"
-                    MyHFR="{Binding CalcHFR, Mode=TwoWay}"
                     MyCommand="{Binding SnapCommand}" 
                     MyCancelCommand="{Binding CancelSnapCommand}" 
                     MyButtonImage="{StaticResource PictureSVG}" 

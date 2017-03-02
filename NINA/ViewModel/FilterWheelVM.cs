@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
-    class FilterWheelVM: BaseVM {
-        public FilterWheelVM() {
+    class FilterWheelVM: ChildVM {
+        public FilterWheelVM(ApplicationVM root) :base(root) {
             Name = "Filter Wheel";
             FW = new FilterWheelModel();
             ChooseFWCommand = new RelayCommand(ChooseFW);

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Linq;
 
 namespace NINATest {
-    [TestClass]
+    /*[TestClass]
     public class UtilityTest {
 
 
@@ -109,26 +109,8 @@ namespace NINATest {
         }
 
 
-        /*[TestMethod]
-        public async Task TstretchArray_StretchTest() {
-            //Arrange
-            Utility.TImageArray<ushort> iarr = new Utility.TImageArray<ushort>();
-            ushort[] flatarr = { 1, 2, 1, 2, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 20, 49, 51, 50, 60000, 1 };
-
-            iarr.FlatArray = flatarr;
-            iarr.minStDev = 0;
-            iarr.maxStDev = 50;
-
-            ushort[] expFlatarr = { 1310, 2621, 1310, 2621, 26214, 26214, 26214, 26214, 27524, 27524, 27524, 27524, 27524, 27524, 26214, 64224, 65535, 65535, 65535, 1310 };
-
-            //Act
-            ushort[] result = await Utility.TstretchArray<ushort>(iarr);
-
-            //Assert
-            CollectionAssert.AreEqual(expFlatarr, result);
-
-        }*/
+       
 
 
-    }
+}*/
 }

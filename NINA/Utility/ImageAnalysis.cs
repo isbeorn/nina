@@ -2,6 +2,7 @@
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
+using NINA.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,9 +27,9 @@ namespace NINA.Utility {
         private static System.Drawing.FontFamily FONTFAMILY = new System.Drawing.FontFamily("Times New Roman");
         private static Font FONT = new Font(FONTFAMILY, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
 
-        const int OUTERRADIUS = 21;
+        private const int OUTERRADIUS = 21;
 
-        public ImageAnalysis() {
+        private ImageAnalysis() {
 
         }
 
@@ -62,7 +63,7 @@ namespace NINA.Utility {
 
 
 
-        double CalculateHfr(Star s, double mean) {
+        static double CalculateHfr(Star s, double mean) {
             double hfr = 0.0d;
             double outerRadius = OUTERRADIUS;
             double sum = 0, sumDist = 0;
@@ -91,38 +92,26 @@ namespace NINA.Utility {
             return hfr;
         }
 
-        bool InsideCircle(double x, double y, double centerX, double centerY, double radius) {
+        static bool InsideCircle(double x, double y, double centerX, double centerY, double radius) {
             return (Math.Pow(x - centerX, 2) + Math.Pow(y - centerY, 2) <= Math.Pow(radius, 2));
         }
 
-        public async Task<BitmapSource> DetectStarsAsync(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
-            return await Task.Run<BitmapSource>(() => DetectStars(iarr, progress, canceltoken));
+        public static async Task<BitmapSource> DetectStarsAsync(BitmapSource source, ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
+            return await Task.Run<BitmapSource>(() => DetectStars(source, iarr, progress, canceltoken));
         }
 
 
 
-        private static ColorRemapping GetColorRemappingFilter(double mean, double targetHistogramMeanPct) {            
-            double power;
-            if (mean <= 1) {
-                power = Math.Log(ushort.MaxValue * targetHistogramMeanPct, 2);
-            }
-            else {
-                power = Math.Log(ushort.MaxValue * targetHistogramMeanPct, mean);
-            }
+        public static ColorRemapping16bpp GetColorRemappingFilter(double mean, double targetHistogramMeanPct) {                        
 
-            byte[] map = new byte[256];
+            ushort[] map = GetStretchMap(mean, targetHistogramMeanPct);
 
-            for (int i = 2; i < 256; i++) {
-                map[i] = (byte)Math.Min(byte.MaxValue, Math.Pow(i, power));
-            }
-            map[0] = 0;
-            map[1] = (byte)(map[2] / 2);
-
-            var filter = new AForge.Imaging.Filters.ColorRemapping();
-            filter.GrayMap = map;
+            var filter = new ColorRemapping16bpp(map);            
 
             return filter;
         }
+
+        
 
 
         private static ushort[] GetStretchMap(double mean, double targetHistogramMeanPct) {
@@ -142,82 +131,29 @@ namespace NINA.Utility {
             map[0] = 0;
             map[1] = (ushort)(map[2] / 2);
 
-            
-
             return map;
         }
+        
 
-        /// <summary>
-        /// Rewritten ColorRemappingFilter to work in 16bit Grayscale pictues - 8bit loses too much precision
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="mean"></param>
-        /// <param name="targetHistogramMeanPct"></param>
-        /// <returns></returns>
-        public static unsafe Bitmap LinearStretch(Bitmap source, double mean, double targetHistogramMeanPct) {
-
-            // lock source bitmap data
-            BitmapData data = source.LockBits(
-                new Rectangle(0, 0, source.Width, source.Height),
-                ImageLockMode.ReadWrite, source.PixelFormat);
-
-            Bitmap result;
-
-            try {
-                UnmanagedImage image = new UnmanagedImage(data);
-            
-            
-               var grayMap = GetStretchMap(mean, targetHistogramMeanPct);
-
-                int pixelSize = System.Drawing.Image.GetPixelFormatSize(image.PixelFormat) / 8;
-
-                // processing start and stop X,Y positions
-                int startX = 0;
-                int startY = 0;
-                int stopX = image.Width;
-                int stopY = image.Height;
-                int offset = image.Stride - image.Width * pixelSize;
-
-                // do the job
-                ushort* ptr = (ushort*)image.ImageData.ToPointer();
-
-                // allign pointer to the first pixel to process
-                ptr += (startY * image.Stride + startX * pixelSize);
-
-            
-                for (int y = startY; y < stopY; y++) {
-                    for (int x = startX; x < stopX; x++, ptr++) {
-                        // gray
-                        *ptr = grayMap[*ptr];
-                    }
-                    ptr += offset;
-                }
-                result = image.ToManagedImage();
-            }
-            finally {
-                source.UnlockBits(data);
-            }
-            return result;
-            
-        }
-
-        public BitmapSource DetectStars(Utility.ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public static BitmapSource DetectStars(BitmapSource source, ImageArray iarr, IProgress<string> progress, CancellationTokenSource canceltoken) {
             BitmapSource result = null;
             try {
 
                 Stopwatch overall = Stopwatch.StartNew();
                 progress.Report("Preparing image for star detection");
 
-                Stopwatch sw = Stopwatch.StartNew();
-                var tmpsrc = ViewModel.ImagingVM.Prepare(iarr.FlatArray, iarr.X, iarr.Y).Result;
+                Stopwatch sw = Stopwatch.StartNew();                
 
                 Debug.Print("Time to convert to 8bit Image: " + sw.Elapsed);
 
                 sw.Restart();
 
                 //Bitmap orig = Convert16BppTo8Bpp(tmpsrc);
-                Bitmap orig = BitmapFromSource(tmpsrc);
-                orig = LinearStretch(orig, iarr.Mean, 0.15);
+                Bitmap orig = BitmapFromSource(source);
+                //orig = LinearStretch(orig, iarr.Mean, 0.15);
+                var filter = GetColorRemappingFilter(iarr.Statistics.Mean, 0.15);
+                filter.ApplyInPlace(orig);
+
                 orig = Convert16BppTo8Bpp(orig);
 
                 Bitmap bmp = orig.Clone(new Rectangle(0, 0, orig.Width, orig.Height), System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
@@ -291,11 +227,11 @@ namespace NINA.Utility {
                     for (int x = s.Rectangle.X; x < s.Rectangle.X + s.Rectangle.Width; x++) {
                         for (int y = s.Rectangle.Y; y < s.Rectangle.Y + s.Rectangle.Height; y++) {
 
-                            PixelData pd = new PixelData { PosX = x, PosY = y, value = iarr.FlatArray[x + (iarr.X * y)] };
+                            PixelData pd = new PixelData { PosX = x, PosY = y, value = iarr.FlatArray[x + (iarr.Statistics.Width * y)] };
                             s.Pixeldata.Add(pd);
                         }
                     }
-                    s.HFR = CalculateHfr(s, iarr.Mean);
+                    s.HFR = CalculateHfr(s, iarr.Statistics.Mean);
                     starlist.Add(s);
 
                 }
@@ -311,6 +247,8 @@ namespace NINA.Utility {
                 int r, offset = 10;
                 float textposx, textposy;
                 var m = (from star in starlist select star.HFR).Average();
+                iarr.Statistics.HFR = m;
+                iarr.Statistics.DetectedStars = starlist.Count;
                 Debug.Print("Mean HFR: " + m);
                 var threshhold = 300;
                 if (starlist.Count > threshhold) {
@@ -342,8 +280,7 @@ namespace NINA.Utility {
                 sw.Stop();
                 sw = null;
                 //result = ConvertBitmap(bmp);
-
-                result.Freeze();
+                
                 blobCounter = null;
                 orig.Dispose();
                 bmp.Dispose();
@@ -353,7 +290,7 @@ namespace NINA.Utility {
                 overall = null;
 
             }
-            catch (OperationCanceledException ex) {
+            catch (OperationCanceledException) {
                 progress.Report("Operation cancelled");
             }
 
@@ -433,7 +370,85 @@ namespace NINA.Utility {
             s.Freeze();
             return s;
         }
+
+        public static BitmapSource CreateSourceFromArray(ImageArray arr ,System.Windows.Media.PixelFormat pf) {
+
+            //int stride = C.CameraYSize * ((Convert.ToString(C.MaxADU, 2)).Length + 7) / 8;
+            int stride = (arr.Statistics.Width * pf.BitsPerPixel + 7) / 8;
+            double dpi = 96;
+
+            BitmapSource source = BitmapSource.Create(arr.Statistics.Width, arr.Statistics.Height, dpi, dpi, pf, null, arr.FlatArray, stride);
+            return source;
+        }
     }
 
 
+
+    public class ColorRemapping16bpp : ColorRemapping {
+        private ushort[] _grayMap16;
+        public ushort[] GrayMap16 {
+            get { return _grayMap16; }
+            set {
+                // check the map
+                if ((value == null) || (value.Length != 65536))
+                    throw new ArgumentException("A map should be array with 65536 value.");
+
+                _grayMap16 = value;
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ColorRemapping"/> class.
+        /// </summary>
+        /// 
+        /// <param name="grayMap">Gray map.</param>
+        /// 
+        /// <remarks>This constructor is supposed for grayscale images.</remarks>
+        /// 
+        public ColorRemapping16bpp(ushort[] grayMap) : base() {
+            FormatTranslations[System.Drawing.Imaging.PixelFormat.Format16bppGrayScale] = System.Drawing.Imaging.PixelFormat.Format16bppGrayScale;
+            GrayMap16 = grayMap;
+        }
+
+        /// <summary>
+        /// Process the filter on the specified image.
+        /// </summary>
+        /// 
+        /// <param name="image">Source image data.</param>
+        /// <param name="rect">Image rectangle for processing by the filter.</param>
+        ///
+        protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect) {
+            if (image.PixelFormat != System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) { 
+                throw new UnsupportedImageFormatException("Source pixel format is not supported by the routine.");
+            }
+
+            int pixelSize = System.Drawing.Image.GetPixelFormatSize(image.PixelFormat) / 8;
+
+            // processing start and stop X,Y positions
+            int startX = rect.Left;
+            int startY = rect.Top;
+            int stopX = startX + rect.Width;
+            int stopY = startY + rect.Height;
+            int offset = image.Stride - rect.Width * pixelSize;
+
+            // do the job
+            ushort* ptr = (ushort*)image.ImageData.ToPointer();
+
+            // allign pointer to the first pixel to process
+            ptr += (startY * image.Stride + startX * pixelSize);
+
+            
+            // grayscale image
+            for (int y = startY; y < stopY; y++) {
+                for (int x = startX; x < stopX; x++, ptr++) {
+                    // gray
+                    *ptr = GrayMap16[*ptr];
+                }
+                ptr += offset;
+            }
+            
+        }
+    }
+
+    
 }

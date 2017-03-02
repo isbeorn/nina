@@ -57,6 +57,17 @@ namespace NINA.ViewModel {
             }
         }
 
+        private string _status;
+        public string Status {
+            get {
+                return _status;
+            }
+            set {
+                _status = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public new bool Visibility {
             get {
                 return _visibility;
@@ -147,7 +158,7 @@ namespace NINA.ViewModel {
         public CameraVM CameraVM {
             get {
                 if(_cameraVM == null) {
-                    _cameraVM = new CameraVM();
+                    _cameraVM = new CameraVM(this);
                     Views.Add(_cameraVM);
 
                 }
@@ -163,7 +174,7 @@ namespace NINA.ViewModel {
         public ImagingVM ImagingVM {
             get {
                 if (_imagingVM == null) {
-                    _imagingVM = new ImagingVM();
+                    _imagingVM = new ImagingVM(this);
                     Views.Add(_imagingVM);
                 }
                 return _imagingVM;
@@ -178,7 +189,7 @@ namespace NINA.ViewModel {
         public PolarAlignmentVM PolarAlignVM {
             get {
                 if (_polarAlignVM == null) {
-                    _polarAlignVM = new PolarAlignmentVM();
+                    _polarAlignVM = new PolarAlignmentVM(this);
                     Views.Add(_polarAlignVM);
                 }
                 return _polarAlignVM;
@@ -192,7 +203,7 @@ namespace NINA.ViewModel {
         public PlatesolveVM PlatesolveVM {
             get {
                 if (_platesolveVM == null) {
-                    _platesolveVM = new PlatesolveVM();
+                    _platesolveVM = new PlatesolveVM(this);
                     Views.Add(_platesolveVM);
                 }
                 return _platesolveVM;
@@ -207,7 +218,7 @@ namespace NINA.ViewModel {
         public TelescopeVM TelescopeVM {
             get {
                 if (_telescopeVM == null) {
-                    _telescopeVM = new TelescopeVM();
+                    _telescopeVM = new TelescopeVM(this);
                     Views.Add(_telescopeVM);
                 }
                 return _telescopeVM;
@@ -222,7 +233,7 @@ namespace NINA.ViewModel {
         public PHD2VM PHD2VM {
             get {
                 if (_phd2VM == null) {
-                    _phd2VM = new PHD2VM();
+                    _phd2VM = new PHD2VM(this);
                     Views.Add(_phd2VM);
                 }
                 return _phd2VM;
@@ -254,7 +265,7 @@ namespace NINA.ViewModel {
         public FrameFocusVM FrameFocusVM {
             get {
                 if (_frameFocusVM == null) {
-                    _frameFocusVM = new FrameFocusVM();
+                    _frameFocusVM = new FrameFocusVM(this);
                     Views.Add(_frameFocusVM);
                 }
                 return _frameFocusVM;

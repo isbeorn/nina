@@ -17,16 +17,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel {
-    class PlatesolveVM : BaseVM {
+    class PlatesolveVM : ChildVM {
 
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
-        public PlatesolveVM() {
+        public PlatesolveVM(ApplicationVM root) : base(root) {
             Name = "Plate Solving";
             Progress = "Idle...";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
             
-            BlindSolveCommand = new AsyncCommand<bool>(() => BlindSolve(new Progress<string>(p => Progress = p)));
+            BlindSolveCommand = new AsyncCommand<bool>(() => BlindSolve(new Progress<string>(p => RootVM.Status = p)));
             CancelBlindSolveCommand = new RelayCommand(CancelBlindSolve);
             SyncCommand = new RelayCommand(SyncTelescope);
 
@@ -106,10 +106,13 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> BlindSolveWithCapture(double duration, IProgress<string> progress, CancellationTokenSource canceltoken, FilterWheelModel.FilterInfo filter = null, Model.MyCamera.BinningMode binning = null) {
-            var oldAutoStretch = ImagingVM.AutoStretch;
-            ImagingVM.AutoStretch = true;          
-            await ImagingVM.CaptureImage(duration, false, false, progress, canceltoken, filter, binning);
-            ImagingVM.AutoStretch = oldAutoStretch;
+            var oldAutoStretch = ImagingVM.ImageControl.AutoStretch;
+            var oldDetectStars = ImagingVM.ImageControl.DetectStars;
+            ImagingVM.ImageControl.AutoStretch = true;
+            ImagingVM.ImageControl.DetectStars = false;
+            await ImagingVM.CaptureImage(duration, false, progress, canceltoken, filter, binning);
+            ImagingVM.ImageControl.DetectStars = oldDetectStars;
+            ImagingVM.ImageControl.AutoStretch = oldAutoStretch;
 
             canceltoken.Token.ThrowIfCancellationRequested();
             
@@ -139,7 +142,7 @@ namespace NINA.ViewModel {
             }
             
 
-            BitmapSource source = ImagingVM.Image;
+            BitmapSource source = ImagingVM.ImageControl.Image;
             BitmapFrame image = null;
             /* Resize Image */
             if (!fullresolution && source.Width > 1400) {

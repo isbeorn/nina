@@ -235,7 +235,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\CameraImage.cs" />
+    <Compile Include="ViewModel\ChildVM.cs" />
+    <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\Camera\BinningMode.cs" />
     <Compile Include="Model\Camera\ICamera.cs" />
     <Compile Include="PlateSolving\LocalPlateSolver.cs" />
@@ -300,6 +301,12 @@
     </Compile>
     <Compile Include="View\HistogramView.xaml.cs">
       <DependentUpon>HistogramView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ImageControlView.xaml.cs">
+      <DependentUpon>ImageControlView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ImageStatisticsView.xaml.cs">
+      <DependentUpon>ImageStatisticsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ImagingView.xaml.cs">
       <DependentUpon>ImagingView.xaml</DependentUpon>
@@ -382,6 +389,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\HistogramView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ImageControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ImageStatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

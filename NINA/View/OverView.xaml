@@ -19,16 +19,10 @@
             <RowDefinition Height="5" />
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
-        <Border BorderThickness="0.5" BorderBrush="Black" Margin="0,0,1,1">
-            <Grid>
-                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Opacity="0.2" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="100">
-                </Path>
-                <Image Source="{Binding ImagingVM.Image}" />
-                <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="50" Background="{StaticResource BorderBrush}" Visibility="{Binding ImagingVM.IsExposing, Converter={StaticResource VisibilityConverter}}">
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{Binding ImagingVM.ExpStatus}"></TextBlock>
-                </Border>                
+            <Grid Margin="0,0,1,1">
+                <local:ImageControlView DataContext="{Binding ImagingVM.ImageControl}" />
             </Grid>
-        </Border>
+      
         <GridSplitter Grid.Column="1"  HorizontalAlignment="Stretch" />
         <GridSplitter Grid.ColumnSpan="3" Grid.Row="1" HorizontalAlignment="Stretch" />
         <local:SequenceView Grid.Column="2" IsEnabled="False" DataContext="{Binding ImagingVM.SeqVM}" Margin="0,0,0,1" />

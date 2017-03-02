@@ -15,9 +15,9 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    class CameraVM : BaseVM {
+    class CameraVM : ChildVM {
 
-        public CameraVM() {
+        public CameraVM(ApplicationVM root) : base(root){
             Name = "Camera";
             ImageGeometry  = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
 
@@ -80,7 +80,7 @@ namespace NINA.ViewModel {
         public FilterWheelVM FilterWheelVM {
             get {
                 if (_filterWheelVM == null) {
-                    _filterWheelVM = new FilterWheelVM();                    
+                    _filterWheelVM = new FilterWheelVM(RootVM);                    
                 }
                 return _filterWheelVM;
             }

@@ -264,7 +264,7 @@ namespace NINA.Utility {
                                             break;
                                         }
                                     case PHD2EventId.GET_STAR_IMAGE: {
-                                            PhdMethodResponse phdresp = o.ToObject<PhdMethodResponse>();                                        
+                                            /*PhdMethodResponse phdresp = o.ToObject<PhdMethodResponse>();                                        
 
                                             if(phdresp.error == null) {
                                                 PhdImageResult img = JObject.Parse(phdresp.result.ToString()).ToObject<PhdImageResult>();
@@ -274,7 +274,7 @@ namespace NINA.Utility {
                                                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                                                     Image = bmp;
                                                 }));                                            
-                                            }
+                                            }*/
                                         
                                         
                                             break;

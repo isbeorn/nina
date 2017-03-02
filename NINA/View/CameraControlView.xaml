@@ -25,32 +25,8 @@
             </StackPanel>
         </StackPanel>
 
-        <UniformGrid Columns="4" Grid.Column="1" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
-            <ToggleButton IsChecked="{Binding MyHFR}"  Margin="5,0,5,0">
-                <ToggleButton.Style>
-                    <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource StarSVG}" Stretch="Uniform" Margin="5">
-                                        </Path>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource StarSVG}" Stretch="Uniform" Margin="5">
-                                        </Path>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ToggleButton.Style>
-
-            </ToggleButton>
+        <UniformGrid Columns="2" Grid.Column="1" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+            
             <ToggleButton IsChecked="{Binding MyLoop}"  Margin="5,0,5,0">
                  <ToggleButton.Style>
                     <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
@@ -76,30 +52,7 @@
                 </ToggleButton.Style>
 
             </ToggleButton>
-            <ToggleButton IsChecked="{Binding MyAutoStretch}"  Margin="5,0,5,0">
-                <ToggleButton.Style>
-                    <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource WandSVG}" Stretch="Uniform" Margin="5">
-                                        </Path>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource WandSVG}" Stretch="Uniform" Margin="5">
-                                        </Path>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ToggleButton.Style>
-            </ToggleButton>
+
 
             <local:CancellableButtonView  Width="50" Height="50" MyCommand="{Binding MyCommand}" MyCancelCommand="{Binding MyCancelCommand}" MyButtonImage="{Binding MyButtonImage}" MyCancelButtonImage="{Binding MyCancelButtonImage}"  Margin="5,0,5,0" HorizontalAlignment="Left"/>
         </UniformGrid>

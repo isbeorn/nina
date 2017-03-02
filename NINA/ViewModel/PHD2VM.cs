@@ -12,8 +12,8 @@ using OxyPlot.Axes;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    class PHD2VM :BaseVM {
-        public PHD2VM() {
+    class PHD2VM : ChildVM {
+        public PHD2VM(ApplicationVM root) : base(root) {
             Name = "PHD2";
 
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PHD2SVG"];            

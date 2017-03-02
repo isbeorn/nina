@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NINA.ViewModel {
-    public class OptionsVM :BaseVM {
+    public  class OptionsVM : BaseVM {
         public OptionsVM() {
             Name = "Options";            
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
