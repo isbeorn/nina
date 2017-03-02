@@ -146,26 +146,6 @@ namespace NINA.Utility {
             });           
         }
 
-        public static async Task<ushort[]> StretchArray(ImageArray source) {
-            return await Task.Run<ushort[]>(() => {
-                ushort maxVal = source.MaxStDev;
-                ushort minVal = source.MinStDev;
-                ushort dynamic = (ushort)(maxVal - minVal);
-
-                ushort[] stretchedArr = new ushort[source.FlatArray.Length];
-
-                for (int i = 0; i < source.FlatArray.Length; i++) {
-
-                    float val = (((float)(source.FlatArray[i] - minVal) / dynamic) * (ushort.MaxValue));
-                    if (val > ushort.MaxValue) {
-                        val = ushort.MaxValue;
-                    }
-                    stretchedArr[i] = (ushort)val;
-
-                }
-                return stretchedArr;
-            });
-        }
         
         /*public static async Task<T[]> TstretchArray<T>(TImageArray<T> source) {
             return await Task.Run<T[]>(() => {

@@ -108,26 +108,6 @@ namespace NINATest {
             Assert.AreEqual(expMaxStdDev, result.MaxStDev);
         }
 
-        [TestMethod]
-        public async Task stretchArray_StretchTest() {
-            //Arrange
-            Utility.ImageArray iarr = new Utility.ImageArray();
-            ushort[] flatarr = { 1, 2, 1, 2, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 20, 49, 51, 50, 60000, 1 };
-
-            iarr.FlatArray = flatarr;
-            iarr.MinStDev = 0;
-            iarr.MaxStDev = 50;
-
-            ushort[] expFlatarr = { 1310,2621,1310,2621,26214,26214,26214,26214,27524,27524,27524,27524,27524,27524,26214,64224,65535,65535,65535,1310};
-
-            //Act
-            ushort[] result = await Utility.StretchArray(iarr);
-
-            //Assert
-            CollectionAssert.AreEqual(expFlatarr, result);
-
-        }
-
 
         /*[TestMethod]
         public async Task TstretchArray_StretchTest() {
