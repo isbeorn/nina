@@ -22,12 +22,9 @@ namespace NINA.Utility {
     class ImageAnalysis {
 
         private static System.Drawing.Pen ELLIPSEPEN = new System.Drawing.Pen(System.Drawing.Brushes.LightYellow, 1);
-        //private static System.Drawing.Pen HFRELLIPSEPEN = new System.Drawing.Pen(System.Drawing.Brushes.Pink, 1);
         private static SolidBrush TEXTBRUSH = new SolidBrush(System.Drawing.Color.Yellow);
         private static System.Drawing.FontFamily FONTFAMILY = new System.Drawing.FontFamily("Times New Roman");
         private static Font FONT = new Font(FONTFAMILY, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
-
-        private const int OUTERRADIUS = 21;
 
         private ImageAnalysis() {
 
@@ -63,17 +60,16 @@ namespace NINA.Utility {
 
 
 
-        static double CalculateHfr(Star s, double mean) {
+        static double CalculateHfr(Star s) {
             double hfr = 0.0d;
-            double outerRadius = OUTERRADIUS;
+            double outerRadius = s.radius;            
             double sum = 0, sumDist = 0;
 
             int centerX = (int)Math.Floor(s.Position.X);
             int centerY = (int)Math.Floor(s.Position.Y);
 
             foreach (PixelData data in s.Pixeldata) {
-                if (InsideCircle(data.PosX, data.PosY, s.Position.X, s.Position.Y, outerRadius)) {
-                    data.value = (ushort)(data.value - mean);
+                if (InsideCircle(data.PosX, data.PosY, s.Position.X, s.Position.Y, outerRadius)) {                    
                     if (data.value < 0) data.value = 0;
 
                     sum += data.value;
@@ -147,11 +143,9 @@ namespace NINA.Utility {
                 Debug.Print("Time to convert to 8bit Image: " + sw.Elapsed);
 
                 sw.Restart();
-
-                //Bitmap orig = Convert16BppTo8Bpp(tmpsrc);
+                
                 Bitmap orig = BitmapFromSource(source);
-                //orig = LinearStretch(orig, iarr.Mean, 0.15);
-                var filter = GetColorRemappingFilter(iarr.Statistics.Mean, 0.15);
+                var filter = GetColorRemappingFilter(iarr.Statistics.Mean, 0.20);
                 filter.ApplyInPlace(orig);
 
                 orig = Convert16BppTo8Bpp(orig);
@@ -165,13 +159,20 @@ namespace NINA.Utility {
                 sw.Restart();
 
 
+                /* Resize to speed up manipulation */
+
+                int targetWidth = 1552;
+                double resizefactor = 1.0;
+                if (bmp.Width > targetWidth) {
+                    resizefactor = (double)targetWidth / bmp.Width;
+
+                    bmp = new ResizeBicubic(targetWidth, (int) Math.Floor(bmp.Height * resizefactor)).Apply(bmp);
+                }
+                double inverseresizefactor = 1.0 / resizefactor;
+                
+
 
                 /* prepare image for structure detection */
-
-                //Noise Reduction and Binarization
-                new Median().ApplyInPlace(bmp);
-                new OtsuThreshold().ApplyInPlace(bmp);
-
                 
                 new CannyEdgeDetector().ApplyInPlace(bmp);
                 canceltoken.Token.ThrowIfCancellationRequested();
@@ -187,8 +188,10 @@ namespace NINA.Utility {
                 progress.Report("Detecting structures");
 
                 /* detect structures */
-                int minStarSize = 5;
-                int maxStarSize = 150;
+                int minStarSize = (int)Math.Floor( 5 * resizefactor);
+                //Prevent Hotpixels to be detected
+                if (minStarSize < 2) minStarSize = 2;
+                int maxStarSize = (int)Math.Ceiling(150 * resizefactor);
                 BlobCounter blobCounter = new BlobCounter();
                 blobCounter.ProcessImage(bmp);
 
@@ -207,7 +210,7 @@ namespace NINA.Utility {
 
 
                 progress.Report("Analyzing stars");
-
+                double value;
                 foreach (Blob blob in blobs) {
                     canceltoken.Token.ThrowIfCancellationRequested();
 
@@ -216,28 +219,30 @@ namespace NINA.Utility {
                     }
                     var points = blobCounter.GetBlobsEdgePoints(blob);
                     AForge.Point centerpoint; float radius;
+                    var rect = new Rectangle((int)Math.Floor(blob.Rectangle.X * inverseresizefactor), (int)Math.Floor(blob.Rectangle.Y * inverseresizefactor), (int)Math.Ceiling(blob.Rectangle.Width * inverseresizefactor), (int)Math.Ceiling(blob.Rectangle.Height * inverseresizefactor));
                     //Star is circle
                     if (checker.IsCircle(points, out centerpoint, out radius)) {
-                        s = new Star { Position = centerpoint, radius = radius, Rectangle = blob.Rectangle };
+                        s = new Star { Position = new AForge.Point(centerpoint.X * (float)inverseresizefactor, centerpoint.Y * (float)inverseresizefactor), radius = radius * inverseresizefactor, Rectangle = rect };
                     }
                     else { //Star is elongated
-                        s = new Star { Position = centerpoint, radius = Math.Max(blob.Rectangle.Width, blob.Rectangle.Height) / 2, Rectangle = blob.Rectangle };
+                        s = new Star { Position = new AForge.Point(centerpoint.X * (float)inverseresizefactor, centerpoint.Y * (float)inverseresizefactor), radius = Math.Max(rect.Width, rect.Height) / 2, Rectangle = rect };
                     }
                     /* get pixeldata */
                     for (int x = s.Rectangle.X; x < s.Rectangle.X + s.Rectangle.Width; x++) {
                         for (int y = s.Rectangle.Y; y < s.Rectangle.Y + s.Rectangle.Height; y++) {
-
-                            PixelData pd = new PixelData { PosX = x, PosY = y, value = iarr.FlatArray[x + (iarr.Statistics.Width * y)] };
+                            value = value = iarr.FlatArray[x + (iarr.Statistics.Width * y)] - iarr.Statistics.Mean;
+                            if(value < 0) { value = 0; }
+                            PixelData pd = new PixelData { PosX = x, PosY = y, value = (ushort)value };
                             s.Pixeldata.Add(pd);
                         }
                     }
-                    s.HFR = CalculateHfr(s, iarr.Statistics.Mean);
+                    s.HFR = CalculateHfr(s  );
                     starlist.Add(s);
 
                 }
                 canceltoken.Token.ThrowIfCancellationRequested();
                 progress.Report("Annotating image");
-                Bitmap newBitmap = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                Bitmap newBitmap = new Bitmap(orig.Width, orig.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
                 Graphics graphics = Graphics.FromImage(newBitmap);
 
@@ -250,7 +255,7 @@ namespace NINA.Utility {
                 iarr.Statistics.HFR = m;
                 iarr.Statistics.DetectedStars = starlist.Count;
                 Debug.Print("Mean HFR: " + m);
-                var threshhold = 300;
+                var threshhold = 200;
                 if (starlist.Count > threshhold) {
                     starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
                     starlist = starlist.GetRange(0, threshhold);
@@ -261,25 +266,15 @@ namespace NINA.Utility {
                     r = (int)Math.Ceiling(star.radius);
                     textposx = star.Position.X - offset;
                     textposy = star.Position.Y - offset;
-                    //graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X - offset, star.Rectangle.Y - offset, star.Rectangle.Width + 2*offset, star.Rectangle.Height + 2*offset));
-                    //graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width , star.Rectangle.Height ));
-                    graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Position.X - OUTERRADIUS, star.Position.Y - OUTERRADIUS, OUTERRADIUS * 2, OUTERRADIUS * 2));
-                    //graphics.DrawEllipse(HFRELLIPSEPEN, new RectangleF(star.Position.X - (float)star.HFR, star.Position.Y - (float)star.HFR, (float)star.HFR * 2, (float)star.HFR * 2));
+                    graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width , star.Rectangle.Height ));
                     graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
                 }
+                
+                result = ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
 
-                //newBitmap.UnlockBits(data);
-
-
-                Debug.Print("Time for retrieving star data: " + sw.Elapsed);
-                sw.Restart();
-
-                result = ConvertBitmap(newBitmap);
-
-                Debug.Print("Time to create bitmapsource: " + sw.Elapsed);
+                Debug.Print("Time to annotate image: " + sw.Elapsed);
                 sw.Stop();
                 sw = null;
-                //result = ConvertBitmap(bmp);
                 
                 blobCounter = null;
                 orig.Dispose();
@@ -298,25 +293,7 @@ namespace NINA.Utility {
         }
 
 
-        [DllImport("gdi32")]
-        static extern int DeleteObject(IntPtr o);
-
-        public static BitmapSource ConvertBitmap(System.Drawing.Bitmap source) {
-            IntPtr ip = source.GetHbitmap();
-            BitmapSource bs = null;
-            try {
-                bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ip,
-                   IntPtr.Zero, Int32Rect.Empty,
-                   System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-            }
-            finally {
-                DeleteObject(ip);
-            }
-
-            return bs;
-        }
-
-        public static BitmapSource ConvertBitmap(System.Drawing.Bitmap bitmap, System.Windows.Media.PixelFormat pf) {
+       public static BitmapSource ConvertBitmap(System.Drawing.Bitmap bitmap, System.Windows.Media.PixelFormat pf) {
             var bitmapData = bitmap.LockBits(
                 new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
                 System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
@@ -398,12 +375,12 @@ namespace NINA.Utility {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ColorRemapping"/> class.
+        /// Initializes a new instance of the <see cref="ColorRemapping16bpp"/> class.
         /// </summary>
         /// 
         /// <param name="grayMap">Gray map.</param>
         /// 
-        /// <remarks>This constructor is supposed for grayscale images.</remarks>
+        /// <remarks>This constructor is supposed for 16bit grayscale images.</remarks>
         /// 
         public ColorRemapping16bpp(ushort[] grayMap) : base() {
             FormatTranslations[System.Drawing.Imaging.PixelFormat.Format16bppGrayScale] = System.Drawing.Imaging.PixelFormat.Format16bppGrayScale;

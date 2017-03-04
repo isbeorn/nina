@@ -3,6 +3,7 @@ using NINA.ViewModel;
 using nom.tam.fits;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,14 +11,37 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace NINA.ViewModel {
     public class ImageControlVM : BaseVM {
+
+        public ImageControlVM() {
+            AutoStretch = false;
+            DetectStars = false;
+            ZoomFactor = 1;
+            ImgStatHistory = new ObservableCollection<ImageStatistics>();
+        }
+
+        private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
+
         private ImageArray _imgArr;
         public ImageArray ImgArr {
             get { return _imgArr; }
             private set { _imgArr = value; RaisePropertyChanged(); }
         }
+
+        private ObservableCollection<ImageStatistics> _imgStatHistory;
+        public ObservableCollection<ImageStatistics> ImgStatHistory {
+            get {
+                return _imgStatHistory;
+            }
+            set {
+                _imgStatHistory = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
         private BitmapSource _image;
         public BitmapSource Image {
@@ -75,12 +99,6 @@ namespace NINA.ViewModel {
         }
 
 
-        public ImageControlVM() {
-            AutoStretch = false;
-            DetectStars = false;
-            ZoomFactor = 1;
-        }
-
         public async Task PrepareArray(Array input) {
             ImgArr = null;
             GC.Collect();
@@ -105,9 +123,17 @@ namespace NINA.ViewModel {
 
                 source = ImageAnalysis.ConvertBitmap(img, System.Windows.Media.PixelFormats.Gray16);
             }
-
             source.Freeze();
-            Image = source;
+            await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                if (this.ImgStatHistory.Count > 100) {
+                    this.ImgStatHistory.RemoveAt(0);
+                }
+                this.ImgStatHistory.Add(this.ImgArr.Statistics);
+                
+                Image = source;
+            }));
+
+            
         }
 
         private async Task<BitmapSource> Stretch(BitmapSource source) {
@@ -258,8 +284,10 @@ namespace NINA.ViewModel {
         public ushort[] FlatArray;
         public ImageStatistics Statistics { get; set; }
 
+        public SortedDictionary<ushort, int> Histogram { get; set; }
+
         private ImageArray() {
-            Statistics = new ImageStatistics();
+            Statistics = new ImageStatistics { Date = DateTime.Now };
         }
 
 
@@ -278,27 +306,9 @@ namespace NINA.ViewModel {
             double average = this.FlatArray.Average(x => x);
             double sumOfSquaresOfDifferences = this.FlatArray.Select(val => (val - average) * (val - average)).Sum();
             double sd = Math.Sqrt(sumOfSquaresOfDifferences / this.FlatArray.Length);
-            ushort min = 0, max = 0;
-            double factor = 2.5;
-
-            if (average - factor * sd < 0) {
-                min = 0;
-            }
-            else {
-                min = (ushort)(average - factor * sd);
-            }
-
-            if (average + factor * sd > ushort.MaxValue) {
-                max = ushort.MaxValue;
-            }
-            else {
-                max = (ushort)(average + factor * sd);
-            }
-
+            
             this.Statistics.StDev = sd;
             this.Statistics.Mean = average;
-            this.Statistics.MinNormalizationValue = min;
-            this.Statistics.MaxNormalizationValue = max;
         }
 
         private void FlipAndConvert(Array input) {
@@ -340,42 +350,44 @@ namespace NINA.ViewModel {
                 }
             }
 
-            this.Statistics.Histogram = histogram;
+            this.Histogram = histogram;
             this.FlatArray = flatArray;
         }
    
     }
 
-    public class ImageStatistics : BaseINPC {
+    public class ImageStatistics : BaseINPC  {
+        public DateTime Date { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public double StDev { get; set; }
         public double Mean { get; set; }
-        double _hFR;
-        public double HFR {
-            get {
-                return _hFR;
-            }
-            set {
-                _hFR = value;
-                RaisePropertyChanged();
-            }
-        }
+        private double _hFR;
 
-        int _detectedStars;
         public int DetectedStars {
             get {
                 return _detectedStars;
             }
+
             set {
                 _detectedStars = value;
                 RaisePropertyChanged();
             }
         }
 
-        public ushort MinNormalizationValue { get; set; }
-        public ushort MaxNormalizationValue { get; set; }
-        public SortedDictionary<ushort, int> Histogram { get; set; }
+        public double HFR {
+            get {
+                return _hFR;
+            }
+
+            set {
+                _hFR = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _detectedStars;
+
     }
 
 }

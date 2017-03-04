@@ -325,7 +325,7 @@ namespace NINA.ViewModel {
                             if (bSave) {                               
                                 await Save(seq, framenr, tokenSource, progress);
                             }
-
+                            
                             /*Dither*/
                             await Dither(seq, tokenSource, progress);
                             
@@ -344,7 +344,7 @@ namespace NINA.ViewModel {
                 }
                 finally {
                     progress.Report(ExposureStatus.IDLE);
-                    Cam.StopExposure();
+                    Cam.AbortExposure ();
                     IsExposing = false;
                 }
                 return true;

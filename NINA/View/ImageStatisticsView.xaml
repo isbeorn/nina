@@ -8,45 +8,56 @@
              d:DesignHeight="300" d:DesignWidth="300">
    
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
+        
         <Expander  IsExpanded="True" Header="Statistics">
-            <Grid MinHeight="150">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
-                    <local:HistogramView />
-                </Border>
-                <Border Grid.Column="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
-                    <StackPanel  VerticalAlignment="Top" Margin="5">
-                        <StackPanel Orientation="Horizontal" >
-                            <TextBlock VerticalAlignment="Center" Width="70">Width:</TextBlock>
-                            <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Width, StringFormat=\{0:#0\}}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="70">Height:</TextBlock>
-                            <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Height, StringFormat=\{0:#\}}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="70">Mean:</TextBlock>
-                            <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Mean, StringFormat=\{0:#.00\}}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="70">StDev:</TextBlock>
-                            <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding StDev, StringFormat=\{0:#.00\}}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="70">#Stars:</TextBlock>
-                            <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding DetectedStars, StringFormat=\{0:#\}}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="70">HFR:</TextBlock>
-                            <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-            </Grid>
+            <TabControl>
+                <TabItem Header="Image" DataContext="{Binding ImgArr}">
+                    <Grid MinHeight="150">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
+                            <local:HistogramView />
+                        </Border>
+                        <Border Grid.Column="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" DataContext="{Binding Statistics}">
+                            <StackPanel  VerticalAlignment="Top" Margin="5">
+                                <StackPanel Orientation="Horizontal" >
+                                    <TextBlock VerticalAlignment="Center" Width="70">Width:</TextBlock>
+                                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Width, StringFormat=\{0:#0\}}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Width="70">Height:</TextBlock>
+                                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Height, StringFormat=\{0:#\}}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Width="70">Mean:</TextBlock>
+                                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Mean, StringFormat=\{0:#.00\}}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Width="70">StDev:</TextBlock>
+                                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding StDev, StringFormat=\{0:#.00\}}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Width="70">#Stars:</TextBlock>
+                                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding DetectedStars, StringFormat=\{0:#\}}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Width="70">HFR:</TextBlock>
+                                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="History">
+                    <Grid MinHeight="150">
+                        <local:ImageHistoryPlotView DataContext="{Binding}" />
+                    </Grid>
+                </TabItem>
+            </TabControl>
         </Expander>
+            
     </Border>
     
 </UserControl>

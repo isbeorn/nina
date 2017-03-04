@@ -115,7 +115,7 @@
                 </Grid>
             </ScrollViewer>
 
-            <local:ImageStatisticsView Grid.Row="2" DataContext="{Binding ImgArr.Statistics}" />
+            <local:ImageStatisticsView Grid.Row="2" DataContext="{Binding}" />
             <!--<Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="50" Background="{StaticResource BorderBrush}" Visibility="{Binding ImagingVM.IsExposing, Converter={StaticResource VisibilityConverter}}">
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{Binding ImagingVM.ExpStatus}"></TextBlock>
         </Border>-->

@@ -305,6 +305,9 @@
     <Compile Include="View\ImageControlView.xaml.cs">
       <DependentUpon>ImageControlView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ImageHistoryPlotView.xaml.cs">
+      <DependentUpon>ImageHistoryPlotView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ImageStatisticsView.xaml.cs">
       <DependentUpon>ImageStatisticsView.xaml</DependentUpon>
     </Compile>
@@ -393,6 +396,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ImageControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ImageHistoryPlotView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
