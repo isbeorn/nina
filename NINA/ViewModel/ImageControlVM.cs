@@ -20,6 +20,7 @@ namespace NINA.ViewModel {
             AutoStretch = false;
             DetectStars = false;
             ZoomFactor = 1;
+            _nextStatHistoryId =  1;
             ImgStatHistory = new ObservableCollection<ImageStatistics>();
         }
 
@@ -31,6 +32,7 @@ namespace NINA.ViewModel {
             private set { _imgArr = value; RaisePropertyChanged(); }
         }
 
+        private int _nextStatHistoryId;
         private ObservableCollection<ImageStatistics> _imgStatHistory;
         public ObservableCollection<ImageStatistics> ImgStatHistory {
             get {
@@ -125,9 +127,11 @@ namespace NINA.ViewModel {
             }
             source.Freeze();
             await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                if (this.ImgStatHistory.Count > 100) {
+                if (this.ImgStatHistory.Count > 25) {
                     this.ImgStatHistory.RemoveAt(0);
                 }
+                this.ImgArr.Statistics.Id = _nextStatHistoryId;
+                _nextStatHistoryId++;
                 this.ImgStatHistory.Add(this.ImgArr.Statistics);
                 
                 Image = source;
@@ -287,7 +291,7 @@ namespace NINA.ViewModel {
         public SortedDictionary<ushort, int> Histogram { get; set; }
 
         private ImageArray() {
-            Statistics = new ImageStatistics { Date = DateTime.Now };
+            Statistics = new ImageStatistics { };
         }
 
 
@@ -357,7 +361,7 @@ namespace NINA.ViewModel {
     }
 
     public class ImageStatistics : BaseINPC  {
-        public DateTime Date { get; set; }
+        public int Id { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public double StDev { get; set; }

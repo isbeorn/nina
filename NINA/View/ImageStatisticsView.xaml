@@ -11,7 +11,10 @@
         
         <Expander  IsExpanded="True" Header="Statistics">
             <TabControl>
-                <TabItem Header="Image" DataContext="{Binding ImgArr}">
+                <TabItem DataContext="{Binding ImgArr}">
+                    <TabItem.Header>
+                        <TextBlock Text="Image" Foreground="{StaticResource ButtonForegroundBrush}" />
+                    </TabItem.Header>
                     <Grid MinHeight="150">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="5*"/>
@@ -50,7 +53,10 @@
                         </Border>
                     </Grid>
                 </TabItem>
-                <TabItem Header="History">
+                <TabItem>
+                    <TabItem.Header>
+                        <TextBlock Text="History" Foreground="{StaticResource ButtonForegroundBrush}" />
+                    </TabItem.Header>
                     <Grid MinHeight="150">
                         <local:ImageHistoryPlotView DataContext="{Binding}" />
                     </Grid>

@@ -20,9 +20,6 @@ namespace NINA.View {
     public partial class ImageHistoryPlotView : UserControl {
         public ImageHistoryPlotView() {
             InitializeComponent();
-            
-            DateAxis.AbsoluteMinimum = OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now);
-            DateAxis.AbsoluteMaximum = OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now.AddDays(1));
         }
     }
 }

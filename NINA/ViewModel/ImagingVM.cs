@@ -344,7 +344,9 @@ namespace NINA.ViewModel {
                 }
                 finally {
                     progress.Report(ExposureStatus.IDLE);
-                    Cam.AbortExposure ();
+                    if(Cam != null && Cam.Connected) {
+                        Cam.AbortExposure();
+                    }
                     IsExposing = false;
                 }
                 return true;

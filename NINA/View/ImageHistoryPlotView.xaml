@@ -43,17 +43,18 @@
                                  MinorGridlineStyle="Dash"
                                  MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
                                  />
-                <oxy:DateTimeAxis Position="Bottom"  x:Name="DateAxis"  />
+                <oxy:LinearAxis Position="Bottom" IntervalLength = "100" TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"/>
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries  ItemsSource="{Binding ImgStatHistory}"  
-                                DataFieldX="Date" 
+                                DataFieldX="Id" 
                                 DataFieldY="HFR" 
                                 MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" 
                                 MarkerType="Circle"
                                 Title=" HFR"/>
                 <oxy:LineSeries ItemsSource="{Binding ImgStatHistory}"  
-                                DataFieldX="Date" YAxisKey="Secondary"
+                                DataFieldX="Id" YAxisKey="Secondary"
                                 DataFieldY="DetectedStars"  
                                 MarkerFill="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" 
                                 MarkerType="Circle"
