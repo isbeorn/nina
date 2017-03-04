@@ -355,7 +355,6 @@
     <Compile Include="ViewModel\ApplicationVM.cs" />
     <Compile Include="ViewModel\CameraVM.cs" />
     <Compile Include="Model\Camera\AscomCameraModel.cs" />
-    <Compile Include="CameraPOC.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
