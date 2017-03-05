@@ -118,32 +118,78 @@ namespace NINA.ViewModel {
             Telescope.StopSlew();
         }
 
-        private double _targetDeclination;
-        private double _targetRightAscencion;
-        public double TargetDeclination {
+        private int _targetDeclinationDegrees;        
+        public int TargetDeclinationDegrees {
             get {
-                return _targetDeclination;
+                return _targetDeclinationDegrees;
             }
 
             set {
-                _targetDeclination = value;
+                _targetDeclinationDegrees = value;
+                RaisePropertyChanged();
+            }
+        }
+        private int _targetDeclinationMinutes;
+        public int TargetDeclinationMinutes {
+            get {
+                return _targetDeclinationMinutes;
+            }
+
+            set {
+                _targetDeclinationMinutes = value;
+                RaisePropertyChanged();
+            }
+        }
+        private double _targetDeclinationSeconds;
+        public double TargetDeclinationSeconds {
+            get {
+                return _targetDeclinationSeconds;
+            }
+
+            set {
+                _targetDeclinationSeconds = value;
                 RaisePropertyChanged();
             }
         }
 
-        public double TargetRightAscencion {
+        private int _targetRightAscencionHours;
+        public int TargetRightAscencionHours {
             get {
-                return _targetRightAscencion;
+                return _targetRightAscencionHours;
             }
 
             set {
-                _targetRightAscencion = value;
+                _targetRightAscencionHours = value;
+                RaisePropertyChanged();
+            }
+        }
+        private int _targetRightAscencionMinutes;
+        public int TargetRightAscencionMinutes {
+            get {
+                return _targetRightAscencionMinutes;
+            }
+
+            set {
+                _targetRightAscencionMinutes = value;
+                RaisePropertyChanged();
+            }
+        }
+        private double _targetRightAscencionSeconds;
+        public double TargetRightAscencionSeconds {
+            get {
+                return _targetRightAscencionSeconds;
+            }
+
+            set {
+                _targetRightAscencionSeconds = value;
                 RaisePropertyChanged();
             }
         }
 
         private void SlewToCoordinates(object obj) {
-            Telescope.SlewToCoordinatesAsync(TargetRightAscencion, TargetDeclination);
+            var targetRightAscencion = Utility.Utility.AscomUtil.HMSToHours(TargetRightAscencionHours + ":" + TargetRightAscencionMinutes + ":" + TargetRightAscencionSeconds);
+            var targetDeclination = Utility.Utility.AscomUtil.HMSToHours(TargetDeclinationDegrees + ":" + TargetDeclinationMinutes + ":" + TargetDeclinationSeconds);
+            Telescope.SlewToCoordinatesAsync(targetRightAscencion, targetDeclination);
         }
 
         private ICommand _slewToCoordinatesCommand;

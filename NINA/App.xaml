@@ -21,6 +21,10 @@
             <util:DatabindingDebugConverter x:Key="DebugConverter" />
             <util:InverseNullToBooleanConverter x:Key="InverseNullToBooleanConverter" />
             <util:GreaterZeroRule x:Key="GreaterZeroRule" />
+            <util:HoursRule x:Key="HoursRule" />
+            <util:MinutesRule x:Key="MinutesRule" />
+            <util:SecondsRule x:Key="SecondsRule" />
+            <util:DegreesRule x:Key="DegreesRule" />
             <util:SetAlphaToColorConverter x:Key="SetAlphaToColorConverter" />
             <util:NullToVisibilityCollapsedConverter x:Key="NullToVisibilityCollapsedConverter" />
 
