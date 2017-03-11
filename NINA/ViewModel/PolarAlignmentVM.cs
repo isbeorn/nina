@@ -241,7 +241,7 @@ namespace NINA.ViewModel {
             MeridianOffset = 0;
             Declination = 0;
             DARVSlewDuration = 60;
-            DARVSlewRate = 0.1;
+            DARVSlewRate = 0.01;
             SnapExposureDuration = 2;
         }
 

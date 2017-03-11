@@ -115,7 +115,7 @@
                             <TextBlock>Slew Rate (deg/sec)</TextBlock>
                             <TextBox >
                                 <TextBox.Text>
-                                    <Binding Path="DARVSlewRate" UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding Path="DARVSlewRate" UpdateSourceTrigger="LostFocus" >
                                         <Binding.ValidationRules>
                                             <StaticResource ResourceKey="GreaterZeroRule" />
                                         </Binding.ValidationRules>
@@ -126,7 +126,7 @@
                             <TextBlock>Slew Duration:</TextBlock>
                             <TextBox >
                                 <TextBox.Text>
-                                    <Binding Path="DARVSlewDuration" UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding Path="DARVSlewDuration" UpdateSourceTrigger="LostFocus" >
                                         <Binding.ValidationRules>
                                             <StaticResource ResourceKey="GreaterZeroRule" />
                                         </Binding.ValidationRules>
