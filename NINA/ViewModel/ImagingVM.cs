@@ -285,6 +285,7 @@ namespace NINA.ViewModel {
                             await ChangeFilter(seq, tokenSource, progress);
 
                             if (!Cam.Connected) {
+                                tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
 
@@ -292,6 +293,7 @@ namespace NINA.ViewModel {
                             SetBinning(seq);
 
                             if (!Cam.Connected) {
+                                tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
 
@@ -299,12 +301,14 @@ namespace NINA.ViewModel {
                             await Capture(seq, tokenSource, progress);
 
                             if(!Cam.Connected) {
+                                tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
 
                             /*Download Image */
                             Array arr = await Download(tokenSource, progress);
                             if (arr == null) {
+                                tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
 
@@ -318,6 +322,7 @@ namespace NINA.ViewModel {
 
 
                             if (!Cam.Connected) {
+                                tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
 
@@ -330,6 +335,7 @@ namespace NINA.ViewModel {
                             await Dither(seq, tokenSource, progress);
                             
                             if (!Cam.Connected) {
+                                tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
 
@@ -341,6 +347,9 @@ namespace NINA.ViewModel {
                 }
                 catch (System.OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
+                }
+                catch(Exception ex) {
+                    Notification.ShowError(ex.Message);
                 }
                 finally {
                     progress.Report(ExposureStatus.IDLE);

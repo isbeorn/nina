@@ -70,10 +70,9 @@ namespace NINA.Utility {
                         result = streamReader.ReadToEnd();
                     }
                 }
-                catch (Exception ex) {
-                    if (canceltoken.Token.IsCancellationRequested) {
-                        throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
-                    }
+                catch (Exception ex) {                    
+                    canceltoken.Token.ThrowIfCancellationRequested();
+                     
                     Logger.Error(ex.Message);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (response != null) {
@@ -120,9 +119,7 @@ namespace NINA.Utility {
                     }
                 }
                 catch (Exception ex) {
-                    if (canceltoken.Token.IsCancellationRequested) {
-                        throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
-                    }
+                    canceltoken.Token.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (response != null) {
@@ -160,9 +157,7 @@ namespace NINA.Utility {
                     }
                 }
                 catch (Exception ex) {
-                    if (canceltoken.Token.IsCancellationRequested) {
-                        throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
-                    }
+                    canceltoken.Token.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (response != null) {
@@ -228,9 +223,7 @@ namespace NINA.Utility {
                     }
                 }
                 catch (Exception ex) {
-                    if (canceltoken.Token.IsCancellationRequested) {
-                        throw new OperationCanceledException(ex.Message, ex, canceltoken.Token);
-                    }
+                    canceltoken.Token.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     if (wresp != null) {

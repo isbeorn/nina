@@ -182,10 +182,8 @@ namespace NINA.ViewModel {
             encoder.Save(ms);
             ms.Seek(0, SeekOrigin.Begin);
 
-            return await Task<bool>.Run(async () => {
-
-                _blindeSolveCancelToken = new CancellationTokenSource();
-                PlateSolveResult = await Platesolver.BlindSolve(ms, progress, _blindeSolveCancelToken);
+            return await Task<bool>.Run(async () => {                
+                PlateSolveResult = await Platesolver.BlindSolve(ms, progress, canceltoken);
                 return PlateSolveResult.Success;
             });           
             
