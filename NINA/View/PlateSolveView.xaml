@@ -89,6 +89,21 @@
                         </Path>
                     </Grid>
                 </Button>
+
+                <Button  Width="50" Height="50" Command="{Binding SyncAndReslewCommand}" Margin="5,0,5,0">
+                    <Grid>
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5,30,30,5">
+                        </Path>
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource NextSVG}" Stretch="Uniform" Margin="15,30,15,5">
+                        </Path>
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="30,30,5,5">
+                        </Path>
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
+                        </Path>
+
+                        
+                    </Grid>
+                </Button>
             </StackPanel>
         </Grid>
     </Grid>

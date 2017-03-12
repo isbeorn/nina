@@ -27,11 +27,21 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
             
             BlindSolveCommand = new AsyncCommand<bool>(() => BlindSolve(new Progress<string>(p => RootVM.Status = p)));
+            
             CancelBlindSolveCommand = new RelayCommand(CancelBlindSolve);
             SyncCommand = new RelayCommand(SyncTelescope);
+            SyncAndReslewCommand = new RelayCommand(SyncTelescopeAndReslew);
 
             SnapExposureDuration = 2;
                     
+        }
+
+        private void SyncTelescopeAndReslew(object obj) {
+            var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+
+            if(sync()) {
+                Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
+            }
         }
 
         private BinningMode _snapBin;
@@ -77,14 +87,16 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SyncTelescope(object obj) {
-            if(PlateSolveResult != null) {
-                
+        private bool sync() {
+            var success = false;
+            if (PlateSolveResult != null) {
+
                 Coordinates solved = new Coordinates(PlateSolveResult.Ra, PlateSolveResult.Dec, PlateSolveResult.Epoch, Coordinates.RAType.Degrees);
                 solved = solved.Transform(Settings.EpochType);
 
                 if (Telescope.Sync(solved.RA, solved.Dec)) {
                     Notification.ShowSuccess("Telescope synced to coordinates");
+                    success = true;
                 } else {
                     Notification.ShowWarning("Telescope sync failed!");
                 }
@@ -92,6 +104,11 @@ namespace NINA.ViewModel {
             } else {
                 Notification.ShowWarning("No coordinates available to sync telescope!");
             }
+            return success;
+        }
+
+        private void SyncTelescope(object obj) {
+            sync();
         }
 
         private string _progress;
@@ -278,6 +295,17 @@ namespace NINA.ViewModel {
 
             set {
                 _plateSolveResult = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ICommand _syncAndReslewCommand;
+        public ICommand SyncAndReslewCommand {
+            get {
+                return _syncAndReslewCommand;
+            }
+            private set {
+                _syncAndReslewCommand = value;
                 RaisePropertyChanged();
             }
         }
