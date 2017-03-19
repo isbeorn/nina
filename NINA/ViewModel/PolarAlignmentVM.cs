@@ -311,14 +311,14 @@ namespace NINA.ViewModel {
 
         private string Deg2str(double deg, int precision) {
             if (Math.Abs(deg) > 1) {
-                return deg.ToString("N" + precision) + "°";
+                return deg.ToString("N" + precision) + "° (degrees)";
             }
             var amin = deg * 60;
             if (Math.Abs(amin) > 1) {
-                return amin.ToString("N" + precision) + "'";
+                return amin.ToString("N" + precision) + "' (arcmin)";
             }
             var asec = deg * 3600;
-            return asec.ToString("N" + precision) + "''";
+            return asec.ToString("N" + precision) + "'' (arcsec)";
         }
 
         private string _darvStatus;
