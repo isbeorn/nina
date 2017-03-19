@@ -36,6 +36,15 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 * Fully customizable UI colors for both Night mode and Daylight mode
 
+* Star detection and HFR calculation, including stats history during imaging session
+
+* Platesolving using Astrometry.Net or a local instance of it
+
+* Polar alignment assistant 
+     * Polaris position in polar scope 
+     * PA Error calculation using platesolving 
+     * DARV alignment procedure
+
 ** Feedback**
 
 Mail to: isbeorn86+NINA@googlemail.com
