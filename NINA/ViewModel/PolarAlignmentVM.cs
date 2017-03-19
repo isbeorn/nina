@@ -311,7 +311,7 @@ namespace NINA.ViewModel {
 
         private string Deg2str(double deg, int precision) {
             if (Math.Abs(deg) > 1) {
-                return deg.ToString("N" + precision) + "° (degrees)";
+                return deg.ToString("N" + precision) + "° (degree)";
             }
             var amin = deg * 60;
             if (Math.Abs(amin) > 1) {
