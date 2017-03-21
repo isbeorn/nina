@@ -58,8 +58,8 @@
                         </Button>
                     </Grid>
 
-                    <Grid Grid.Row="1"  IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}" HorizontalAlignment="Left">
-                        <local:CameraControlView  IsEnabled="{Binding Cam.Connected}"                            
+                    <Grid Grid.Row="1"  IsEnabled="{Binding ImagingVM.Cam, Converter={StaticResource InverseNullToBooleanConverter}}" HorizontalAlignment="Left">
+                        <local:CameraControlView  IsEnabled="{Binding ImagingVM.Cam.Connected}"                            
                             MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes, Mode=TwoWay}"
                             MyFilters="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters, Mode=TwoWay}"
                             MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"

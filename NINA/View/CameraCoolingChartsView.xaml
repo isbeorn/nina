@@ -16,7 +16,7 @@
 
         <oxy:Plot 
                   Background="{StaticResource BackgroundBrush}"
-                  PlotAreaBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}" 
+                  PlotAreaBackground="{StaticResource BackgroundBrush}" 
                   PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
                   LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
                   LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
@@ -51,7 +51,7 @@
 
         <oxy:Plot Grid.Column="2" 
                   Background="{StaticResource BackgroundBrush}"
-                  PlotAreaBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}" 
+                  PlotAreaBackground="{StaticResource BackgroundBrush}" 
                   PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
                   LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
                   LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
