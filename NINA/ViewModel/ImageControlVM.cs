@@ -21,7 +21,7 @@ namespace NINA.ViewModel {
             DetectStars = false;
             ZoomFactor = 1;
             _nextStatHistoryId =  1;
-            ImgStatHistory = new ObservableCollection<ImageStatistics>();
+            ImgStatHistory = new AsyncObservableCollection<ImageStatistics>();
         }
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
@@ -33,8 +33,8 @@ namespace NINA.ViewModel {
         }
 
         private int _nextStatHistoryId;
-        private ObservableCollection<ImageStatistics> _imgStatHistory;
-        public ObservableCollection<ImageStatistics> ImgStatHistory {
+        private AsyncObservableCollection<ImageStatistics> _imgStatHistory;
+        public AsyncObservableCollection<ImageStatistics> ImgStatHistory {
             get {
                 return _imgStatHistory;
             }

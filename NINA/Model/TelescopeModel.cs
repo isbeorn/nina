@@ -45,12 +45,26 @@ namespace NINA.Model {
         bool _connected;
         public bool Connected {
             get {
+                var con = _connected;
+                if (_connected) {
+                    try {
+                        con = Telescope.Connected;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Disconnect();
+                    }
+                }
                 return _connected;
             }
             set {
                 _connected = value;
                 if (Telescope != null) {
-                    Telescope.Connected = value;
+                    try {
+                        Telescope.Connected = value;
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        _connected = false;
+                    }
                 }
                 RaisePropertyChanged();
             }
@@ -58,13 +72,15 @@ namespace NINA.Model {
 
         internal void UpdateValues() {
             try {
-                Altitude = Telescope.Altitude;
-                Azimuth = Telescope.Azimuth;
-                Declination = Telescope.Declination;
-                RightAscension = Telescope.RightAscension;
-                SiderealTime = Telescope.SiderealTime;
-                AtPark = Telescope.AtPark;
-                Tracking = Telescope.Tracking;
+                    if(Connected) { 
+                    Altitude = Telescope.Altitude;
+                    Azimuth = Telescope.Azimuth;
+                    Declination = Telescope.Declination;
+                    RightAscension = Telescope.RightAscension;
+                    SiderealTime = Telescope.SiderealTime;
+                    AtPark = Telescope.AtPark;
+                    Tracking = Telescope.Tracking;
+                }
             } catch (Exception e) {
                 Notification.ShowError(e.Message);
             }
@@ -721,7 +737,7 @@ namespace NINA.Model {
                 return _movingRate;
             }
             set {
-                if (Telescope != null && Telescope.Connected) {
+                if (Telescope != null && Connected) {
                     double result = value;                
                     if (result < 0) result = 0;
                     bool incr = result > _movingRate;
@@ -1238,7 +1254,7 @@ namespace NINA.Model {
         }
 
         public void Disconnect() {
-            if(Telescope != null && Connected) { 
+            if(Telescope != null) { 
                 Connected = false;
                 Telescope.Dispose();
                 Telescope = null;

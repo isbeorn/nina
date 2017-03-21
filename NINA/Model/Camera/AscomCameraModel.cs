@@ -81,7 +81,7 @@ namespace NINA.Model.MyCamera
             BinX = -1;
             BinY = -1;
 
-            BinningModes = new ObservableCollection<BinningMode>();
+            BinningModes = new AsyncObservableCollection<BinningMode>();
             //CCDTemperatureHistory.Clear();
             //CoolerPowerHistory.Clear();
             
@@ -346,34 +346,6 @@ namespace NINA.Model.MyCamera
             }
         }
 
-        /*ObservableCollection<KeyValuePair<DateTime, double>> _cCDTemperatureHistory;
-        public ObservableCollection<KeyValuePair<DateTime, double>> CCDTemperatureHistory {
-            get {
-                if (_cCDTemperatureHistory == null) {
-                    _cCDTemperatureHistory = new ObservableCollection<KeyValuePair<DateTime, double>>();
-                }
-                return _cCDTemperatureHistory;
-            }
-            set {
-                _cCDTemperatureHistory = value;
-                RaisePropertyChanged();
-            }
-        }
-       
-        ObservableCollection<KeyValuePair<DateTime, double>> _coolerPowerHistory;            
-        public ObservableCollection<KeyValuePair<DateTime, double>> CoolerPowerHistory {
-            get {
-                if(_coolerPowerHistory == null) {
-                    _coolerPowerHistory = new ObservableCollection<KeyValuePair<DateTime, double>>();
-                }
-                return _coolerPowerHistory;
-            }
-            set {
-                _coolerPowerHistory = value;
-                RaisePropertyChanged();
-            }
-        }*/
-
         string _description;
         public string Description {
             get {
@@ -531,11 +503,11 @@ namespace NINA.Model.MyCamera
             }
         }
 
-        ObservableCollection<BinningMode> _binningModes;
-        public ObservableCollection<BinningMode> BinningModes {
+        AsyncObservableCollection<BinningMode> _binningModes;
+        public AsyncObservableCollection<BinningMode> BinningModes {
             get {
                 if(_binningModes == null) {
-                    _binningModes = new ObservableCollection<BinningMode>();
+                    _binningModes = new AsyncObservableCollection<BinningMode>();
                 }
                 return _binningModes;
             }
@@ -645,12 +617,26 @@ namespace NINA.Model.MyCamera
         bool _connected;
         public bool Connected {
             get {
+                var con = _connected;
+                if(_connected) {
+                    try {
+                        con = AscomCamera.Connected;
+                    } catch(Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        Disconnect();
+                    }
+                }
                 return _connected;
             }
             set {
                 _connected = value;
-                if (AscomCamera != null) { 
-                    AscomCamera.Connected = value;
+                if (AscomCamera != null) {
+                    try {
+                        AscomCamera.Connected = value;
+                    } catch(Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        _connected = false;
+                    }                    
                 }
                 RaisePropertyChanged();
             }
@@ -1310,32 +1296,33 @@ namespace NINA.Model.MyCamera
 
         public void UpdateValues() {
             try {
-            
-                CameraState = AscomCamera.CameraState;
-                if( HasCCDTemperature) {
-                    _prevcCDTemperature = CCDTemperature;
-                    CCDTemperature = AscomCamera.CCDTemperature;                    
-                    
-                }
-            
-                if( HasFullWellCapacity) {
-                     FullWellCapacity = AscomCamera.FullWellCapacity;
-                }
+                if(Connected) {
+                    CameraState = AscomCamera.CameraState;
+                    if (HasCCDTemperature) {
+                        _prevcCDTemperature = CCDTemperature;
+                        CCDTemperature = AscomCamera.CCDTemperature;
 
-                if ( HasHeatSinkTemperature) {
-                     HeatSinkTemperature = AscomCamera.HeatSinkTemperature;
-                }
-            
-            
+                    }
 
-                if ( CanGetCoolerPower) {
-                    _prevCoolerPower = CoolerPower;
-                     CoolerPower = AscomCamera.CoolerPower;
-                    
-                }
+                    if (HasFullWellCapacity) {
+                        FullWellCapacity = AscomCamera.FullWellCapacity;
+                    }
 
-                if (CanPulseGuide) {
-                     IsPulseGuiding = AscomCamera.IsPulseGuiding;
+                    if (HasHeatSinkTemperature) {
+                        HeatSinkTemperature = AscomCamera.HeatSinkTemperature;
+                    }
+
+
+
+                    if (CanGetCoolerPower) {
+                        _prevCoolerPower = CoolerPower;
+                        CoolerPower = AscomCamera.CoolerPower;
+
+                    }
+
+                    if (CanPulseGuide) {
+                        IsPulseGuiding = AscomCamera.IsPulseGuiding;
+                    }
                 }
             }
             catch (Exception e) {
@@ -1345,11 +1332,10 @@ namespace NINA.Model.MyCamera
         }
 
         public void Disconnect() {
-            if(AscomCamera != null && Connected) { 
+            if(AscomCamera != null) { 
                 Connected = false;            
                 AscomCamera.Dispose();
-                Init();
-                //CameraStateString = "disconnected";
+                Init();                
             }
         }
 
@@ -1364,7 +1350,7 @@ namespace NINA.Model.MyCamera
                 try {
                     AscomCamera = new Camera(ProgId);
                     
-                    //AscomCamera.Connected = true;
+                    
                     Connected = true;
                     Settings.CameraId = ProgId;
 

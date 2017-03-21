@@ -26,16 +26,16 @@ namespace NINA.ViewModel {
 
             MaxY = 4;
 
-            GuideStepsHistory = new ObservableCollection<PhdEventGuideStep>();
+            GuideStepsHistory = new AsyncObservableCollection<PhdEventGuideStep>();
         }
 
         private static Dispatcher Dispatcher = Dispatcher.CurrentDispatcher;
 
         private async Task<bool> Connect() {
-            /*SetUpPlotModels();*/
-            await Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                GuideStepsHistory.Clear();
-            }));
+            
+            
+            GuideStepsHistory.Clear();
+            
             return await PHD2Client.Connect();
         }
 
@@ -74,52 +74,25 @@ namespace NINA.ViewModel {
         private void PHD2Client_PropertyChanged(object sender, PropertyChangedEventArgs e) {        
             if (e.PropertyName == "GuideStep") {
 
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    if(GuideStepsHistory.Count > 100) {
-                        GuideStepsHistory.RemoveAt(0);
-                    }
-                    GuideStepsHistory.Add(PHD2Client.GuideStep);
-                    RaisePropertyChanged("GuideStepsHistory");
-                }));
+                
+                if(GuideStepsHistory.Count > 100) {
+                    GuideStepsHistory.RemoveAt(0);
+                }
+                GuideStepsHistory.Add(PHD2Client.GuideStep);
+                RaisePropertyChanged("GuideStepsHistory");
+                
               
                 
 
-                /*var ls = (LineSeries)GuideSteps.Series[0];
-                
-                double x = PHD2Client.GuideStep.Time;
-                if (ls.Points.Count >= 100)
-                    ls.Points.RemoveAt(0);
-
-                ls.Points.Add(new DataPoint(x, PHD2Client.GuideStep.RADistanceRaw));
-
-
-                ls = (LineSeries)GuideSteps.Series[1];                
-                if (ls.Points.Count >= 100)
-                    ls.Points.RemoveAt(0);
-
-                ls.Points.Add(new DataPoint(x, -PHD2Client.GuideStep.DecDistanceRaw));
-
-                var lbs = (LinearBarSeries)GuideSteps.Series[2];
-                if (lbs.Points.Count >= 100)
-                   lbs.Points.RemoveAt(0);
-
-                lbs.Points.Add(new DataPoint(x-0.2, PHD2Client.GuideStep.RADistanceGuide));
-
-                lbs = (LinearBarSeries)GuideSteps.Series[3];
-                if (lbs.Points.Count >= 100)
-                    lbs.Points.RemoveAt(0);
-
-                lbs.Points.Add(new DataPoint(x+0.2, -PHD2Client.GuideStep.DecDistanceGuide));
-
-                GuideSteps.InvalidatePlot(true);*/
+               
             }
                 
         
         }
 
-        /*public PlotModel GuideSteps { get; set; }*/
+        
 
-        public ObservableCollection<PhdEventGuideStep> GuideStepsHistory { get; set; }
+        public AsyncObservableCollection<PhdEventGuideStep> GuideStepsHistory { get; set; }
 
         public PHD2Client PHD2Client {
             get {
@@ -140,11 +113,7 @@ namespace NINA.ViewModel {
             }
 
             set {
-                _maxY = value;
-                /*if(GuideSteps != null && GuideSteps.Axes.Count > 0) { 
-                    GuideSteps.Axes[0].Maximum = MaxY;
-                    GuideSteps.Axes[0].Minimum = -MaxY;
-                }*/
+                _maxY = value;                
                 RaisePropertyChanged();
                 RaisePropertyChanged("MinY");
             }

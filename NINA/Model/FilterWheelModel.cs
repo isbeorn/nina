@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace NINA.Model {
     public class FilterWheelModel :BaseINPC {
@@ -46,13 +47,27 @@ namespace NINA.Model {
 
         public bool Connected {
             get {
+                var con = _connected;
+                if(_connected) {
+                    try {
+                        con = FW.Connected;
+                    } catch(Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        disconnect();
+                    }
+                }
                 return _connected;
             }
 
             set {
                 _connected = value;
                 if (FW != null) {
-                    FW.Connected = value;
+                    try {
+                        FW.Connected = value;
+                    } catch(Exception ex) {
+                        Notification.ShowError(ex.Message);
+                        _connected = false;
+                    }                    
                 }
                 RaisePropertyChanged();
             }
@@ -148,7 +163,7 @@ namespace NINA.Model {
 
         public short Position {
             get {
-                if(FW != null && FW.Connected) {
+                if(Connected) {
                     return FW.Position;
                 } else {
                     return -1;
@@ -157,7 +172,7 @@ namespace NINA.Model {
             }
 
             set {                
-                if (FW != null) {
+                if (Connected) {
                     try {                 
                         FW.Position = value;                        
                     } catch (Exception ex) {
@@ -220,7 +235,9 @@ namespace NINA.Model {
         public void disconnect() {
             Connected = false;
             Position = -1;
-            Filters.Clear();
+
+            Filters.Clear();            
+            
             FW.Dispose();
             Init();            
         }
@@ -251,7 +268,7 @@ namespace NINA.Model {
                 Names = FW.Names;
                 Position = FW.Position;
 
-                var l = new ObservableCollection<FilterInfo>();
+                var l = new AsyncObservableCollection<FilterInfo>();
                 for (int i = 0; i < Names.Length; i++) {                    
                     l.Add(new FilterInfo(Names[i], FocusOffsets[i], (short)i));
                 }
@@ -272,8 +289,8 @@ namespace NINA.Model {
             }
         }
 
-        private ObservableCollection<FilterInfo> _filters;
-        public ObservableCollection<FilterInfo> Filters {
+        private AsyncObservableCollection<FilterInfo> _filters;
+        public AsyncObservableCollection<FilterInfo> Filters {
             get {                
                 return _filters;
             }
