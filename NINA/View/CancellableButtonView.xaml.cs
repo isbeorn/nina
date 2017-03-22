@@ -23,7 +23,19 @@ namespace NINA.View {
             LayoutRoot.DataContext = this;
         }
 
-       
+
+        public static readonly DependencyProperty MyButtonTooltipProperty =
+            DependencyProperty.Register("MyButtonTooltip", typeof(string), typeof(CancellableButtonView), new UIPropertyMetadata(null));
+
+        public string MyButtonTooltip {
+            get {
+                return (string)GetValue(MyButtonTooltipProperty);
+            }
+            set {
+                SetValue(MyButtonTooltipProperty, value);
+            }
+        }
+
         public static readonly DependencyProperty MyButtonTextProperty =
             DependencyProperty.Register("MyButtonText", typeof(string), typeof(CancellableButtonView), new UIPropertyMetadata(null));
 

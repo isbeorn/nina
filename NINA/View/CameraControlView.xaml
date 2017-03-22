@@ -28,7 +28,12 @@
         <UniformGrid Columns="2" Grid.Column="1" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
             
             <ToggleButton IsChecked="{Binding MyLoop}"  Margin="5,0,5,0">
-                 <ToggleButton.Style>
+                <ToggleButton.ToolTip>
+                    <ToolTip ToolTipService.ShowOnDisabled="True">
+                        Loop exposures
+                    </ToolTip>
+                </ToggleButton.ToolTip>
+                <ToggleButton.Style>
                     <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
                         <Style.Triggers>
                             <Trigger Property="IsChecked" Value="True">
@@ -54,7 +59,7 @@
             </ToggleButton>
 
 
-            <local:CancellableButtonView  Width="50" Height="50" MyCommand="{Binding MyCommand}" MyCancelCommand="{Binding MyCancelCommand}" MyButtonImage="{Binding MyButtonImage}" MyCancelButtonImage="{Binding MyCancelButtonImage}"  Margin="5,0,5,0" HorizontalAlignment="Left"/>
+            <local:CancellableButtonView  Width="50" Height="50" MyCommand="{Binding MyCommand}" MyCancelCommand="{Binding MyCancelCommand}" MyButtonImage="{Binding MyButtonImage}" MyCancelButtonImage="{Binding MyCancelButtonImage}"  Margin="5,0,5,0" HorizontalAlignment="Left" MyButtonTooltip="Take exposure"/>
         </UniformGrid>
     </Grid>
 </UserControl>

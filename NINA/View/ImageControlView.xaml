@@ -28,6 +28,11 @@
                 <TextBlock Grid.Column="2" Text="{Binding ZoomFactor}" VerticalAlignment="Center"></TextBlock>
 
                 <ToggleButton Grid.Column="3" IsChecked="{Binding AutoStretch}"  Margin="5,0,5,0">
+                    <ToggleButton.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            Autostretch image
+                        </ToolTip>
+                    </ToggleButton.ToolTip>
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
                             <Style.Triggers>
@@ -53,6 +58,11 @@
                 </ToggleButton>
 
                 <ToggleButton Grid.Column="4" IsChecked="{Binding DetectStars}"  Margin="5,0,5,0">
+                    <ToggleButton.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            Detect stars and calculate HFR
+                        </ToolTip>
+                    </ToggleButton.ToolTip>
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
                             <Style.Triggers>

@@ -35,11 +35,16 @@
         
         <StackPanel Grid.Row="1"  Orientation="Horizontal">
             <Button Width="50" Height="50" Command="{Binding SeqVM.AddSequenceCommand}"  Margin="5,0,5,0">
+                <Button.ToolTip>
+                    <ToolTip ToolTipService.ShowOnDisabled="True">
+                        Add new row to sequence list
+                    </ToolTip>
+                </Button.ToolTip>
                 <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource AddSVG}" Stretch="Uniform" Margin="5">
                 </Path>
             </Button>
 
-            <local:CancellableButtonView MyCommand="{Binding StartSequenceCommand}" MyCancelCommand="{Binding CancelSequenceCommand}" MyButtonImage="{StaticResource PlaySVG}" MyCancelButtonImage="{StaticResource CancelSVG}" />
+            <local:CancellableButtonView MyCommand="{Binding StartSequenceCommand}" MyCancelCommand="{Binding CancelSequenceCommand}" MyButtonImage="{StaticResource PlaySVG}" MyCancelButtonImage="{StaticResource CancelSVG}" MyButtonTooltip="Start sequence" />
 
         </StackPanel>
         

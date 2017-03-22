@@ -79,9 +79,19 @@
                                 MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
                                 MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />
             
-                <local:CancellableButtonView  Width="50" Height="50" Margin="5,0,5,0" MyCommand="{Binding BlindSolveCommand}" MyCancelCommand="{Binding CancelBlindSolveCommand}" MyButtonImage="{StaticResource PlatesolveSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" />
+                <local:CancellableButtonView  Width="50" Height="50" Margin="5,0,5,0" 
+                                              MyCommand="{Binding BlindSolveCommand}" 
+                                              MyCancelCommand="{Binding CancelBlindSolveCommand}" 
+                                              MyButtonImage="{StaticResource PlatesolveSVG}" 
+                                              MyCancelButtonImage="{StaticResource CancelSVG}" 
+                                              MyButtonTooltip="Capture image and platesolve"/>
            
                 <Button  Width="50" Height="50" Command="{Binding SyncCommand}" Margin="5,0,5,0">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            Sync scope to coordinates
+                        </ToolTip>
+                    </Button.ToolTip>
                     <Grid>
                         <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="25,25,5,5">
                         </Path>
@@ -91,6 +101,11 @@
                 </Button>
 
                 <Button  Width="50" Height="50" Command="{Binding SyncAndReslewCommand}" Margin="5,0,5,0">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            Sync scope to coordinates and reslew to initial target
+                        </ToolTip>
+                    </Button.ToolTip>
                     <Grid>
                         <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5,30,30,5">
                         </Path>

@@ -15,6 +15,11 @@
         </Grid>
 
         <Button  Command="{Binding MyCommand}" Visibility="{Binding MyCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+            <Button.ToolTip>
+                <ToolTip ToolTipService.ShowOnDisabled="True" >
+                    <TextBlock Text="{Binding MyButtonTooltip}" />
+                </ToolTip>
+            </Button.ToolTip>
             <Grid>
             <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding MyButtonImage}" Stretch="Uniform" Margin="5" RenderTransformOrigin="0.5,0.5">
                 

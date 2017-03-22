@@ -73,7 +73,13 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,10,0,0">
                                 <TextBlock VerticalAlignment="Center">Altitude measurement side:</TextBlock>
                                 <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:AltitudeSite} }}" SelectedItem="{Binding AltitudeSiteType}" Margin="10,0,0,0"/>
-                                <local:CancellableButtonView Width="50" Height="50" MyCommand="{Binding MeasureAltitudeErrorCommand}" MyCancelCommand="{Binding CancelMeasureAltitudeErrorCommand}" MyButtonImage="{StaticResource ArrowTwoSidesRotated}" MyCancelButtonImage="{StaticResource CancelSVG}" Margin="10,0,0,0"/>
+                                <local:CancellableButtonView Width="50" Height="50" 
+                                                             MyCommand="{Binding MeasureAltitudeErrorCommand}" 
+                                                             MyCancelCommand="{Binding CancelMeasureAltitudeErrorCommand}" 
+                                                             MyButtonImage="{StaticResource ArrowTwoSidesRotated}" 
+                                                             MyCancelButtonImage="{StaticResource CancelSVG}" 
+                                                             MyButtonTooltip="Measure Altitude Error&#10;Point Scope East or West and adjust Side of Pier combobox accordingly"
+                                                             Margin="10,0,0,0"/>
                                 <TextBlock Text="{Binding AltitudePolarErrorStatus}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </StackPanel>
@@ -83,7 +89,12 @@
                         <StackPanel Orientation="Vertical">
                             <TextBlock>Point telescope near meridian.</TextBlock>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,10,0,0">
-                                <local:CancellableButtonView Width="50" Height="50" MyCommand="{Binding MeasureAzimuthErrorCommand}" MyCancelCommand="{Binding CancelMeasureAzimuthErrorCommand}" MyButtonImage="{StaticResource ArrowTwoSides}" MyCancelButtonImage="{StaticResource CancelSVG}" />
+                                <local:CancellableButtonView Width="50" Height="50" 
+                                                             MyCommand="{Binding MeasureAzimuthErrorCommand}" 
+                                                             MyCancelCommand="{Binding CancelMeasureAzimuthErrorCommand}" 
+                                                             MyButtonImage="{StaticResource ArrowTwoSides}" 
+                                                             MyCancelButtonImage="{StaticResource CancelSVG}" 
+                                                             MyButtonTooltip="Measure Azimuth Error&#10;Point Scope South near Meridian"/>
                                 <TextBlock Text="{Binding AzimuthPolarErrorStatus}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                             
@@ -137,7 +148,12 @@
                             <TextBlock Text="{Binding DarvStatus}"></TextBlock>
                         </StackPanel>
 
-                        <local:CancellableButtonView Height="30" Grid.Row="1" Margin="0,10,0,0" MyCommand="{Binding DARVSlewCommand}" MyCancelCommand="{Binding CancelDARVSlewCommand}" MyButtonText="Slew"  MyCancelButtonImage="{StaticResource CancelSVG}" />
+                        <local:CancellableButtonView Height="30" Grid.Row="1" Margin="0,10,0,0" 
+                                                     MyCommand="{Binding DARVSlewCommand}" 
+                                                     MyCancelCommand="{Binding CancelDARVSlewCommand}" 
+                                                     MyButtonText="Slew"  
+                                                     MyCancelButtonImage="{StaticResource CancelSVG}"
+                                                     MyButtonTooltip="This will take an exposure while slewing the scope slowly to one side and back&#10;when the lines are not aligned there is some PA error"/>
 
                     </Grid>
                 </Grid>

@@ -84,7 +84,8 @@
                                      BarWidth="3"
                                      FillColor="Transparent"/>
             </oxy:Plot.Series>
-        </oxy:Plot>
+        </oxy:Plot>
+
         <!--<oxy:PlotView Grid.Column="1"   Model="{Binding GuideSteps}" Background="{StaticResource BackgroundBrush}">
             
         </oxy:PlotView>-->
