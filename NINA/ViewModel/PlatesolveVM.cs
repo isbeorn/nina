@@ -22,6 +22,10 @@ namespace NINA.ViewModel {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
         public PlatesolveVM(ApplicationVM root) : base(root) {
+            
+            this.ImagingVM = root.ImagingVM;
+            this.TelescopeVM = root.TelescopeVM;
+
             Name = "Plate Solving";
             Progress = "Idle...";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
@@ -87,7 +91,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private bool sync() {
+        public bool sync() {
             var success = false;
             if (PlateSolveResult != null) {
 
@@ -132,9 +136,8 @@ namespace NINA.ViewModel {
             ImagingVM.ImageControl.AutoStretch = oldAutoStretch;
 
             canceltoken.Token.ThrowIfCancellationRequested();
-            
-            await BlindSolve(progress, canceltoken);
-            return true;
+                        
+            return await BlindSolve(progress, canceltoken); ;
         }
         
 

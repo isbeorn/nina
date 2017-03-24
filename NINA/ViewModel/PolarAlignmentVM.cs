@@ -14,6 +14,33 @@ using NINA.Model.MyCamera;
 namespace NINA.ViewModel {
     class PolarAlignmentVM : ChildVM {
 
+        public PolarAlignmentVM(ApplicationVM root) : base(root) {
+
+            this.TelescopeVM = root.TelescopeVM;
+            this.PlatesolveVM = root.PlatesolveVM;
+            this.ImagingVM = root.ImagingVM;
+
+            _updateValues = new DispatcherTimer();
+            _updateValues.Interval = TimeSpan.FromSeconds(1);
+            _updateValues.Tick += UpdateValues_Tick;
+            _updateValues.Start();
+
+            MeasureAzimuthErrorCommand = new AsyncCommand<bool>(() => MeasurePolarError(new Progress<string>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH));
+            MeasureAltitudeErrorCommand = new AsyncCommand<bool>(() => MeasurePolarError(new Progress<string>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE));
+            SlewToMeridianOffsetCommand = new RelayCommand(SlewToMeridianOffset);
+            DARVSlewCommand = new AsyncCommand<bool>(() => darvslew(new Progress<string>(p => RootVM.Status = p), new Progress<string>(p => DarvStatus = p)));
+            CancelDARVSlewCommand = new RelayCommand(Canceldarvslew);
+            CancelMeasureAltitudeErrorCommand = new RelayCommand(CancelMeasurePolarError);
+            CancelMeasureAzimuthErrorCommand = new RelayCommand(CancelMeasurePolarError);
+
+            Zoom = 1;
+            MeridianOffset = 0;
+            Declination = 0;
+            DARVSlewDuration = 60;
+            DARVSlewRate = 0.01;
+            SnapExposureDuration = 2;
+        }
+
         private TelescopeVM _telescopeVM;
         public TelescopeVM TelescopeVM {
             get {
@@ -222,28 +249,6 @@ namespace NINA.ViewModel {
 
 
         DispatcherTimer _updateValues;
-
-        public PolarAlignmentVM(ApplicationVM root) : base(root) {
-            _updateValues = new DispatcherTimer();
-            _updateValues.Interval = TimeSpan.FromSeconds(1);
-            _updateValues.Tick += UpdateValues_Tick;
-            _updateValues.Start();
-
-            MeasureAzimuthErrorCommand = new AsyncCommand<bool>(() => MeasurePolarError(new Progress<string>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH));
-            MeasureAltitudeErrorCommand = new AsyncCommand<bool>(() => MeasurePolarError(new Progress<string>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE));
-            SlewToMeridianOffsetCommand = new RelayCommand(SlewToMeridianOffset);
-            DARVSlewCommand = new AsyncCommand<bool>(() => darvslew(new Progress<string>(p => RootVM.Status = p), new Progress<string>(p => DarvStatus = p)));
-            CancelDARVSlewCommand = new RelayCommand(Canceldarvslew);
-            CancelMeasureAltitudeErrorCommand = new RelayCommand(CancelMeasurePolarError);
-            CancelMeasureAzimuthErrorCommand = new RelayCommand(CancelMeasurePolarError);
-
-            Zoom = 1;
-            MeridianOffset = 0;
-            Declination = 0;
-            DARVSlewDuration = 60;
-            DARVSlewRate = 0.01;
-            SnapExposureDuration = 2;
-        }
 
         private BinningMode _snapBin;
         private FilterWheelModel.FilterInfo _snapFilter;

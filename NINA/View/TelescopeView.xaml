@@ -85,12 +85,16 @@
                         <TextBlock>Site Elevation</TextBlock>
                         <TextBlock Text="{Binding Telescope.SiteElevation}" Margin="5,0,0,0" />
                     </StackPanel>
-                    
-                    
+
+
                     
                     <StackPanel Orientation="Horizontal">
                         <TextBlock><Run Text="Sidereal Time:"/></TextBlock>
                         <TextBlock Text="{Binding Telescope.SiderealTimeString}" Margin="5,0,0,0" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock><Run Text="Remaining Hours To Meridian:"/></TextBlock>
+                        <TextBlock Text="{Binding Telescope.HoursToMeridianString}" Margin="5,0,0,0" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock><Run Text="Right Ascension:"/></TextBlock>

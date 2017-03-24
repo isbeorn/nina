@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 namespace NINA.ViewModel {
     class FrameFocusVM : ChildVM {
         public FrameFocusVM(ApplicationVM root) : base(root) {
+            ImagingVM = root.ImagingVM;
+
             Name = "Frame & Focus";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
             CancelSnapCommand = new RelayCommand(CancelCaptureImage);

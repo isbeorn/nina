@@ -17,6 +17,7 @@ using System.Windows;
 namespace NINA.Utility {
     public class PHD2Client : BaseINPC {
         public PHD2Client() {
+            Paused = false;
         }
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
@@ -123,7 +124,15 @@ namespace NINA.Utility {
             }
         }*/
 
-
+        private bool _paused;
+        public bool Paused {
+            get {
+                return _paused;
+            }
+            set {
+                _paused = value;
+            }
+        }
 
         private TcpClient _client;
         private NetworkStream _stream;
@@ -180,6 +189,13 @@ namespace NINA.Utility {
             }
 
             return IsDithering;
+        }
+
+        public async Task<bool> Pause(bool pause) {
+            if (Connected) {
+                await SendMessage(String.Format(PHD2Methods.PAUSE, pause.ToString().ToLower()));
+            }
+            return true;
         }
 
         private async Task<bool> SendMessage(string msg) {
@@ -279,6 +295,13 @@ namespace NINA.Utility {
                                         
                                             break;
                                         }
+                                    case PHD2EventId.PAUSE: {
+                                            break;
+                                    }
+                                    case "Resumed": {
+                                            Paused = false;
+                                            break;
+                                        }
                                     case "Version": {
                                             Version = o.ToObject<PhdEventVersion>();                                        
                                             break;
@@ -313,6 +336,7 @@ namespace NINA.Utility {
                                             break;
                                         }
                                     case "Paused": {
+                                            Paused = true;
                                             break;
                                         }
                                     case "StartCalibration": {

@@ -87,6 +87,9 @@ namespace NINA.Model {
 
         public MyCamera.BinningMode Binning {
             get {
+                if(_binning == null) {
+                    _binning = new MyCamera.BinningMode(1, 1);
+                }
                 return _binning;
             }
 

@@ -516,6 +516,36 @@ namespace NINA.ViewModel {
 
         }
 
-        
+        public bool AutoMeridianFlip {
+            get {
+                return Settings.AutoMeridianFlip;
+            }
+            set {
+                Settings.AutoMeridianFlip = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double MinutesAfterMeridian {
+            get {
+                return Settings.MinutesAfterMeridian;
+            }
+            set {
+                Settings.MinutesAfterMeridian = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool RecenterAfterFlip {
+            get {
+                return Settings.RecenterAfterFlip;
+            }
+            set {
+                Settings.RecenterAfterFlip = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
     }
 }

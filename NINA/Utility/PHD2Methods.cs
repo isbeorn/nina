@@ -13,6 +13,7 @@ namespace NINA.Utility {
         public const string CLEAR_CALIBRATION = "4";
         public const string DITHER = "5";
 
+        public const string PAUSE = "10";
 
         public const string GET_STAR_IMAGE = "97";
         public const string GET_EXPOSURE = "98";
@@ -31,9 +32,9 @@ namespace NINA.Utility {
         public static string DITHER = "{{\"method\": \"dither\", \"params\": [{0}, {1}, {{\"pixels\": 1.5, \"time\": 8, \"timeout\": 40}}], \"id\": " + PHD2EventId.DITHER + "}}\r\n";        
 
 
-        public static string LOOP = "{\"method\": \"loop\", \"id\": " + PHD2EventId.LOOP + "}\r\n";
+        public static string LOOP = "{{\"method\": \"loop\", \"id\": " + PHD2EventId.LOOP + "}}\r\n";
 
-        public static string AUTO_SELECT_STAR = "{\"method\": \"find_star\", \"params\": [], \"id\": " + PHD2EventId.AUTO_SELECT_STAR + "}\r\n";
+        public static string AUTO_SELECT_STAR = "{{\"method\": \"find_star\", \"params\": [], \"id\": " + PHD2EventId.AUTO_SELECT_STAR + "}}\r\n";
 
         /// <summary>
         /// 0: RECALIBRATE: true/false
@@ -43,13 +44,12 @@ namespace NINA.Utility {
         /// 3: SETTLE TIMEOUT: int - time limit before settling is considered to have failed
         /// 
         /// </summary>
-        public static string GUIDE = "{\"method\": \"guide\", \"params\": [{\"pixels\": 1.5, \"time\": 8, \"timeout\": 40}, {0}], \"id\": " + PHD2EventId.GUIDE + "}\r\n";
+        public static string GUIDE = "{{\"method\": \"guide\", \"params\": [{\"pixels\": 1.5, \"time\": 8, \"timeout\": 40}, {0}], \"id\": " + PHD2EventId.GUIDE + "}}\r\n";
 
-        public static string CLEAR_CALIBRATION = "{\"method\": \"clear_calibration\", \"params\": [\"both\"], \"id\": " + PHD2EventId.CLEAR_CALIBRATION + "}\r\n";
-
-
+        public static string CLEAR_CALIBRATION = "{\"method\": \"clear_calibration\", \"params\": [\"both\"], \"id\": " + PHD2EventId.CLEAR_CALIBRATION + "}}\r\n";
 
 
+        public static string PAUSE = "{{\"method\": \"set_paused\", \"params\": [{0}], \"id\": " + PHD2EventId.PAUSE + "}}\r\n";
 
 
         public static string GET_STAR_IMAGE = "{\"method\": \"get_star_image\",\"id\": " + PHD2EventId.GET_STAR_IMAGE + "}\r\n";        

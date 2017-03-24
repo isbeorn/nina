@@ -23,6 +23,8 @@ namespace NINA.ViewModel {
     class ImagingVM : ChildVM {
 
         public ImagingVM(ApplicationVM root) : base(root) {
+            CameraVM = root.CameraVM;
+
             Name = "Imaging";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
 
@@ -41,7 +43,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public PHD2Client PHD2Client {
+        private PHD2Client PHD2Client {
             get {
                 return Utility.Utility.PHDClient;
             }
@@ -89,6 +91,18 @@ namespace NINA.ViewModel {
         public ICamera Cam {
             get {
                 return CameraVM.Cam;
+            }
+        }
+
+        private TelescopeModel Telescope {
+            get {
+                return RootVM.TelescopeVM.Telescope;
+            }
+        }
+
+        private PlatesolveVM PlatesolveVM {
+            get {
+                return RootVM.PlatesolveVM;
             }
         }
 
@@ -197,28 +211,39 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task Capture(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {            
-            double duration = seq.ExposureTime;
-            progress.Report(string.Format(ExposureStatus.EXPOSING, 0, duration));
-            bool isLight = false;
-            if (Cam.HasShutter) {
-                isLight = true;
+        private async Task Capture(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
+            IsExposing = true;
+            try {
+                double duration = seq.ExposureTime;
+                progress.Report(string.Format(ExposureStatus.EXPOSING, 0, duration));
+                bool isLight = false;
+                if (Cam.HasShutter) {
+                    isLight = true;
+                }
+                Cam.StartExposure(duration, isLight);
+                ExposureSeconds = 1;
+                progress.Report(string.Format(ExposureStatus.EXPOSING, 1, duration));
+                /* Wait for Capture */
+                if (duration >= 1) {
+                    await Task.Run(async () => {
+                        do {
+                            await Task.Delay(1000, tokenSource.Token);
+                            tokenSource.Token.ThrowIfCancellationRequested();
+                            ExposureSeconds += 1;
+                            progress.Report(string.Format(ExposureStatus.EXPOSING, ExposureSeconds, duration));
+                        } while ((ExposureSeconds < duration) && Cam.Connected);
+                    });
+                }
+                tokenSource.Token.ThrowIfCancellationRequested();
+            } catch (System.OperationCanceledException ex) {
+                Logger.Trace(ex.Message);
+            } catch (Exception ex) {
+                Notification.ShowError(ex.Message);
+            } finally {
+                IsExposing = false;
             }
-            Cam.StartExposure(duration, isLight);
-            ExposureSeconds = 1;
-            progress.Report(string.Format(ExposureStatus.EXPOSING, 1, duration));
-            /* Wait for Capture */
-            if (duration >= 1) {
-                await Task.Run(async () => {
-                    do {
-                        await Task.Delay(1000, tokenSource.Token);
-                        tokenSource.Token.ThrowIfCancellationRequested();
-                        ExposureSeconds += 1;
-                        progress.Report(string.Format(ExposureStatus.EXPOSING, ExposureSeconds, duration));
-                    } while ((ExposureSeconds < duration) && Cam.Connected);
-                });
-            }
-            tokenSource.Token.ThrowIfCancellationRequested();
+            
+            
         }
 
         private async Task<Array> Download(CancellationTokenSource tokenSource, IProgress<string> progress) {
@@ -272,7 +297,7 @@ namespace NINA.ViewModel {
         public  async Task<bool> StartSequence(ICollection<SequenceModel> sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
             return await Task.Run<bool>(async () => {
                 try {
-                    IsExposing = true;
+                    
 
                     ushort framenr = 1;
                     foreach (SequenceModel seq in sequence) {
@@ -297,10 +322,15 @@ namespace NINA.ViewModel {
                                 throw new OperationCanceledException();
                             }
 
+
+                            /* Auto Meridian Flip */
+                            await CheckMeridianFlip(seq, tokenSource, progress);
+                                                        
+
                             /*Capture*/
                             await Capture(seq, tokenSource, progress);
 
-                            if(!Cam.Connected) {
+                            if (!Cam.Connected) {
                                 tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
@@ -356,15 +386,89 @@ namespace NINA.ViewModel {
                     if(Cam != null && Cam.Connected) {
                         Cam.AbortExposure();
                     }
-                    IsExposing = false;
                 }
                 return true;
             });
         }
 
+        /// <summary>
+        /// Checks if auto meridian flip should be considered and executes it
+        /// 1) Compare next exposure length with time to meridian - If exposure length is greater than time to flip the system will wait
+        /// 2) Pause PHD2
+        /// 3) Execute the flip
+        /// 4) If recentering is enabled, platesolve current position, sync and recenter to old target position
+        /// 5) Resume PHD2
+        /// </summary>
+        /// <param name="seq">Current Sequence row</param>
+        /// <param name="tokenSource">cancel token</param>
+        /// <param name="progress">progress reporter</param>
+        /// <returns></returns>
+        private async Task CheckMeridianFlip(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
+            if(Settings.AutoMeridianFlip) {
+                if(Telescope.Connected) {
+
+                    if(Telescope.TimeToMeridianFlip < (seq.ExposureTime / 60 / 60)) {
+                        int remainingtime = (int)(Telescope.TimeToMeridianFlip * 60 * 60);
+                        Notification.ShowInformation("Meridian flip procedure initiated", TimeSpan.FromSeconds(remainingtime));
+                        do {
+                            progress.Report(string.Format("Next exposure paused until passing meridian. Remaining time: {0} seconds", remainingtime));
+                            await Task.Delay(1000, tokenSource.Token);
+                            remainingtime = remainingtime - 1;
+                        } while (remainingtime > 0);
+                        
+                    
+                        progress.Report("Pausing PHD2");
+                        await PHD2Client.Pause(true);
+
+                        var coords = Telescope.Coordinates;
+
+                        progress.Report("Executing Meridian Flip");
+                        var flipsuccess = Telescope.MeridianFlip();
+                        
+                        if (flipsuccess) {
+                            if(Settings.RecenterAfterFlip) { 
+                                progress.Report("Initializing Platesolve");
+                                
+                                var platesovlesuccess = await PlatesolveVM.BlindSolveWithCapture(PlatesolveVM.SnapExposureDuration, progress, tokenSource, PlatesolveVM.SnapFilter, PlatesolveVM.SnapBin);
+
+                                progress.Report("Sync and Reslew");
+                                if (platesovlesuccess) {
+                                    PlatesolveVM.sync();
+                                    Telescope.SlewToCoordinates(coords.RA, coords.Dec);
+                                } else {
+                                    Notification.ShowWarning("Platesolve failed");
+                                }
+                            }
+
+                            progress.Report("Resuming PHD2");
+                            await PHD2Client.Pause(false);
+
+                            var time = 0;
+                            while (PHD2Client.Paused) {
+                                await Task.Delay(500, tokenSource.Token);
+                                time += 500;
+                                if (time > 20000) {
+                                    //Failsafe when phd is not sending resume message
+                                    Notification.ShowWarning("PHD2 did not send Resume message in time. Caputre Sequence will be resumed, but make sure PHD2 is guiding again!", ToastNotifications.NotificationsSource.NeverEndingNotification);                            
+                                    tokenSource.Token.ThrowIfCancellationRequested();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
+
         private async Task<bool> StartSequence(IProgress<string> progress, CancellationToken token = new CancellationToken()) {
             _cancelSequenceToken = new CancellationTokenSource();
-            return await StartSequence(SeqVM.Sequence, true, _cancelSequenceToken, progress);           
+            if (IsExposing) {
+                Notification.ShowWarning("Camera is busy");
+                return false;
+            } else {
+                return await StartSequence(SeqVM.Sequence, true, _cancelSequenceToken, progress);
+            }
+                
         }
 
 
@@ -443,7 +547,7 @@ namespace NINA.ViewModel {
             _captureImageToken = new CancellationTokenSource();
             if (IsExposing) {
                 Notification.ShowWarning("Camera is busy");
-                return true;
+                return false;
             } else {
                 do {
                     List<SequenceModel> seq = new List<SequenceModel>();
@@ -458,7 +562,7 @@ namespace NINA.ViewModel {
         public async Task<bool> CaptureImage(double duration, bool bsave, IProgress<string> progress, CancellationTokenSource token, FilterWheelModel.FilterInfo filter = null, BinningMode binning = null) {
             if (IsExposing) {
                 Notification.ShowWarning("Camera is busy");
-                return true;
+                return false;
             }
             else {
                 List<SequenceModel> seq = new List<SequenceModel>();

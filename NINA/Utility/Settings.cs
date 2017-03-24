@@ -377,6 +377,36 @@ namespace NINA.Utility {
             }
         }
 
+        public static bool AutoMeridianFlip {
+            get {
+                return Properties.Settings.Default.AutoMeridianFlip;
+            }
+            set {
+                Properties.Settings.Default.AutoMeridianFlip = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static double MinutesAfterMeridian {
+            get {
+                return Properties.Settings.Default.MinutesAfterMeridian;
+            }
+            set {
+                Properties.Settings.Default.MinutesAfterMeridian = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static bool RecenterAfterFlip {
+            get {
+                return Properties.Settings.Default.RecenterAfterFlip;
+            }
+            set {
+                Properties.Settings.Default.RecenterAfterFlip = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
 
     }
 

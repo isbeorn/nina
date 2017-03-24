@@ -7,16 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ASCOM.DeviceInterface;
+using NINA.Utility.Astrometry;
 
 namespace NINA.Model {
-    class TelescopeModel :BaseINPC {
+    class TelescopeModel : BaseINPC {
         public TelescopeModel() {
-           
+
             Init();
         }
 
         private void Init() {
-            
+
         }
 
         private Telescope _telescope;
@@ -72,7 +73,7 @@ namespace NINA.Model {
 
         internal void UpdateValues() {
             try {
-                    if(Connected) { 
+                if (Connected) {
                     Altitude = Telescope.Altitude;
                     Azimuth = Telescope.Azimuth;
                     Declination = Telescope.Declination;
@@ -80,11 +81,17 @@ namespace NINA.Model {
                     SiderealTime = Telescope.SiderealTime;
                     AtPark = Telescope.AtPark;
                     Tracking = Telescope.Tracking;
+                    var hourstomed = RightAscension - SiderealTime;
+                    if (hourstomed < 0) {
+                        hourstomed = hourstomed + 24;
+                    }
+                    HoursToMeridian = hourstomed;
+
                 }
             } catch (Exception e) {
                 Notification.ShowError(e.Message);
             }
-            
+
         }
 
         public AlignmentModes AlignmentMode {
@@ -149,6 +156,46 @@ namespace NINA.Model {
             }
         }
 
+        private double _hoursToMeridian;
+        public double HoursToMeridian {
+            get {
+                return _hoursToMeridian;
+            }
+            private set {
+                _hoursToMeridian = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged("HoursToMeridianString");
+            }
+
+        }
+
+        public string HoursToMeridianString {
+            get {
+                return Utility.Utility.AscomUtil.HoursToHMS(HoursToMeridian);
+            }
+        }
+
+        public double TimeToMeridianFlip {
+            get {
+                var hourstomed = double.MaxValue;
+                try { 
+                    hourstomed = RightAscension + (Settings.MinutesAfterMeridian / 60) - SiderealTime;
+                    if(hourstomed < 0) {
+                        hourstomed += 24;
+                    }
+                } catch (Exception ex) {
+                    Notification.ShowError(ex.Message);
+                }
+                return hourstomed;
+            }
+        }
+
+        public string TimeToMeridianFlipString {
+            get {
+                return Utility.Utility.AscomUtil.HoursToHMS(TimeToMeridianFlip);
+            }
+        }
+
         public bool AtPark {
             get {
                 return _atPark;
@@ -173,7 +220,7 @@ namespace NINA.Model {
         }
 
         internal void StopSlew() {
-            if(Connected && CanSlew) {
+            if (Connected && CanSlew) {
                 Telescope.AbortSlew();
             }
         }
@@ -496,7 +543,7 @@ namespace NINA.Model {
         }
         public string SiderealTimeString {
             get {
-                return Utility.Utility.AscomUtil.DegreesToDMS(SiderealTime);
+                return Utility.Utility.AscomUtil.HoursToHMS(SiderealTime);
             }
         }
 
@@ -542,6 +589,30 @@ namespace NINA.Model {
                 _declinationRate = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public  Coordinates Coordinates {
+            get { 
+                return new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+            }
+        }
+
+        internal bool MeridianFlip() {
+            var success = false;
+            try { 
+                if(Telescope.CanSetPierSide) {            
+                    var pierside = Telescope.SideOfPier;
+                    var flippedside = pierside == PierSide.pierEast ? PierSide.pierWest : PierSide.pierEast;
+                    Telescope.SideOfPier = flippedside;                    
+                }
+
+                Telescope.SlewToCoordinates(Telescope.RightAscension, Telescope.Declination);
+                success = true;
+
+            } catch (Exception) {
+                Notification.ShowError("Meridian Flip failed");
+            }
+            return success;
         }
 
         public bool DoesRefraction {
