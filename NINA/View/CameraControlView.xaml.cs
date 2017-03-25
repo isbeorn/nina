@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static NINA.Model.FilterWheelModel;
+
 
 namespace NINA.View {
     /// <summary>
@@ -99,11 +99,11 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MyFiltersProperty =
-            DependencyProperty.Register("MyFilters", typeof(ObservableCollection<FilterInfo>), typeof(CameraControlView), new UIPropertyMetadata(null));
+            DependencyProperty.Register("MyFilters", typeof(ObservableCollection<Model.MyFilterWheel.FilterInfo>), typeof(CameraControlView), new UIPropertyMetadata(null));
 
-        public ObservableCollection<FilterInfo> MyFilters {
+        public ObservableCollection<Model.MyFilterWheel.FilterInfo> MyFilters {
             get {
-                return (ObservableCollection<FilterInfo>)GetValue(MyFiltersProperty);
+                return (ObservableCollection<Model.MyFilterWheel.FilterInfo>)GetValue(MyFiltersProperty);
             }
             set {
                 SetValue(MyFiltersProperty, value);
@@ -111,11 +111,11 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MySelectedFilterProperty =
-            DependencyProperty.Register("MySelectedFilter", typeof(FilterInfo), typeof(CameraControlView), new UIPropertyMetadata(null));
+            DependencyProperty.Register("MySelectedFilter", typeof(Model.MyFilterWheel.FilterInfo), typeof(CameraControlView), new UIPropertyMetadata(null));
 
-        public FilterInfo MySelectedFilter {
+        public Model.MyFilterWheel.FilterInfo MySelectedFilter {
             get {
-                return (FilterInfo)GetValue(MySelectedFilterProperty);
+                return (Model.MyFilterWheel.FilterInfo)GetValue(MySelectedFilterProperty);
             }
             set {
                 SetValue(MySelectedFilterProperty, value);

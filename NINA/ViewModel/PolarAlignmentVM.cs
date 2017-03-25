@@ -251,7 +251,7 @@ namespace NINA.ViewModel {
         DispatcherTimer _updateValues;
 
         private BinningMode _snapBin;
-        private FilterWheelModel.FilterInfo _snapFilter;
+        private Model.MyFilterWheel.FilterInfo _snapFilter;
         private double _snapExposureDuration;
 
         public BinningMode SnapBin {
@@ -265,7 +265,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public FilterWheelModel.FilterInfo SnapFilter {
+        public Model.MyFilterWheel.FilterInfo SnapFilter {
             get {
                 return _snapFilter;
             }

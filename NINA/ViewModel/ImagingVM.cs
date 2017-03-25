@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static NINA.Model.SequenceModel;
 using System.ComponentModel;
+using NINA.Model.MyFilterWheel;
 
 namespace NINA.ViewModel {
     class ImagingVM : ChildVM {
@@ -107,7 +108,7 @@ namespace NINA.ViewModel {
         }
 
         
-        public FilterWheelModel FW {
+        public IFilterWheel FW {
             get {
                 return CameraVM.FilterWheelVM.FW;
             }
@@ -185,7 +186,7 @@ namespace NINA.ViewModel {
         
 
         private async Task ChangeFilter(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
-            if (seq.FilterType != null && FW.Connected && FW.Position != seq.FilterType.Position) {
+            if (seq.FilterType != null && FW != null && FW.Connected && FW.Position != seq.FilterType.Position) {
                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                     FW.Position = seq.FilterType.Position;
                 }));
@@ -259,7 +260,7 @@ namespace NINA.ViewModel {
             progress.Report(ExposureStatus.SAVING);
 
             var filter = string.Empty;
-            if (FW.Filters != null) {
+            if (FW != null && FW.Filters != null) {
                 filter = FW.Filters.ElementAt(FW.Position).Name;            
             }
 
@@ -518,8 +519,8 @@ namespace NINA.ViewModel {
         CancellationTokenSource _captureImageToken;
         private RelayCommand _cancelSnapCommand;
 
-        private FilterWheelModel.FilterInfo _snapFilter;
-        public FilterWheelModel.FilterInfo SnapFilter {
+        private Model.MyFilterWheel.FilterInfo _snapFilter;
+        public Model.MyFilterWheel.FilterInfo SnapFilter {
             get {
                 return _snapFilter;
             }
@@ -559,7 +560,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<bool> CaptureImage(double duration, bool bsave, IProgress<string> progress, CancellationTokenSource token, FilterWheelModel.FilterInfo filter = null, BinningMode binning = null) {
+        public async Task<bool> CaptureImage(double duration, bool bsave, IProgress<string> progress, CancellationTokenSource token, Model.MyFilterWheel.FilterInfo filter = null, BinningMode binning = null) {
             if (IsExposing) {
                 Notification.ShowWarning("Camera is busy");
                 return false;

@@ -49,7 +49,7 @@ namespace NINA.ViewModel {
         }
 
         private BinningMode _snapBin;
-        private FilterWheelModel.FilterInfo _snapFilter;
+        private Model.MyFilterWheel.FilterInfo _snapFilter;
         private double _snapExposureDuration;
 
         public BinningMode SnapBin {
@@ -63,7 +63,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public FilterWheelModel.FilterInfo SnapFilter {
+        public Model.MyFilterWheel.FilterInfo SnapFilter {
             get {
                 return _snapFilter;
             }
@@ -126,7 +126,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<bool> BlindSolveWithCapture(double duration, IProgress<string> progress, CancellationTokenSource canceltoken, FilterWheelModel.FilterInfo filter = null, Model.MyCamera.BinningMode binning = null) {
+        public async Task<bool> BlindSolveWithCapture(double duration, IProgress<string> progress, CancellationTokenSource canceltoken, Model.MyFilterWheel.FilterInfo filter = null, Model.MyCamera.BinningMode binning = null) {
             var oldAutoStretch = ImagingVM.ImageControl.AutoStretch;
             var oldDetectStars = ImagingVM.ImageControl.DetectStars;
             ImagingVM.ImageControl.AutoStretch = true;

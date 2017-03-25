@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,13 @@ using System.Windows.Input;
 namespace NINA.ViewModel {
     class FilterWheelVM: ChildVM {
         public FilterWheelVM(ApplicationVM root) :base(root) {
-            Name = "Filter Wheel";
-            FW = new FilterWheelModel();
+            Name = "Filter Wheel";            
             ChooseFWCommand = new RelayCommand(ChooseFW);
             DisconnectCommand = new RelayCommand(DisconnectFW);
         }
 
-        private FilterWheelModel _fW;
-        public FilterWheelModel FW {
+        private IFilterWheel _fW;
+        public IFilterWheel FW {
             get {
                 return _fW;
             }
@@ -27,16 +27,22 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void ChooseFW(object obj) {            
-            if (FW.Connect()) {
-                
+        private void ChooseFW(object obj) {                 
+            string filterwheelid = Settings.FilterWheelId;
+            var id = ASCOM.DriverAccess.FilterWheel.Choose(filterwheelid);
+            if(id != "") {
+                FW = new AscomFilterWheel(id);
+                if (FW.Connect()) {
+                    Settings.FilterWheelId = id;
+                }
             }
+            
         }
 
         private void DisconnectFW(object obj) {
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Disconnect Filter Wheel?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxImage.Question, System.Windows.MessageBoxResult.Cancel);
             if (result == System.Windows.MessageBoxResult.OK) {
-                FW.disconnect();
+                FW.Disconnect();
             }
         }
 

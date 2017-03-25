@@ -84,8 +84,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        private FilterWheelModel.FilterInfo _snapFilter;
-        public FilterWheelModel.FilterInfo SnapFilter {
+        private Model.MyFilterWheel.FilterInfo _snapFilter;
+        public Model.MyFilterWheel.FilterInfo SnapFilter {
             get {
                 return _snapFilter;
             }

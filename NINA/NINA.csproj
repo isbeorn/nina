@@ -235,13 +235,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\MyFilterWheel\AscomFilterWheel.cs" />
+    <Compile Include="Model\MyFilterWheel\IFilterWheel.cs" />
     <Compile Include="ViewModel\ChildVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
-    <Compile Include="Model\Camera\BinningMode.cs" />
-    <Compile Include="Model\Camera\ICamera.cs" />
+    <Compile Include="Model\MyCamera\BinningMode.cs" />
+    <Compile Include="Model\MyCamera\ICamera.cs" />
     <Compile Include="PlateSolving\LocalPlateSolver.cs" />
     <Compile Include="PlateSolving\AstrometryPlateSolver.cs" />
-    <Compile Include="Model\FilterWheelModel.cs" />
     <Compile Include="PlateSolving\IPlateSolver.cs" />
     <Compile Include="Model\SequenceModel.cs" />
     <Compile Include="Model\TelescopeModel.cs" />
@@ -354,7 +355,7 @@
     </Compile>
     <Compile Include="ViewModel\ApplicationVM.cs" />
     <Compile Include="ViewModel\CameraVM.cs" />
-    <Compile Include="Model\Camera\AscomCameraModel.cs" />
+    <Compile Include="Model\MyCamera\AscomCameraModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
