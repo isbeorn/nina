@@ -10,7 +10,7 @@ namespace NINA.Model.MyCamera {
     interface ICamera {
 
         bool HasShutter { get; }
-        bool Connected { get; set; }
+        bool Connected { get; }
         double CCDTemperature { get; }
         double SetCCDTemperature { get; set; }
         short BinX { get; set; }

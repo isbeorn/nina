@@ -10,15 +10,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyFilterWheel {
-    class AscomFilterWheel : FilterWheel, INotifyPropertyChanged, IFilterWheel  {
+    class AscomFilterWheel : BaseINPC, IFilterWheel  {
 
-        public AscomFilterWheel(string filterWheelId) : base(filterWheelId) {
+        public AscomFilterWheel(string filterWheelId) {
+            _filterwheel = new FilterWheel(filterWheelId);
             var l = new AsyncObservableCollection<FilterInfo>();
             for (int i = 0; i < Names.Length; i++) {
                 l.Add(new FilterInfo(Names[i], FocusOffsets[i], (short)i));
             }
             Filters = l;            
         }
+
+        private FilterWheel _filterwheel;
         
         public bool Connect() {
             try {            
@@ -36,11 +39,11 @@ namespace NINA.Model.MyFilterWheel {
         }
 
         private bool _connected;
-        public new bool Connected {
+        public bool Connected {
             get {
                 bool val = false;
                 try {
-                    val = base.Connected;
+                    val = _filterwheel.Connected;
                     if (_connected != val) {
                         Notification.ShowWarning("Filter wheel connection lost! Please reconnect filter wheel!");
                         Disconnect();                                               
@@ -55,7 +58,7 @@ namespace NINA.Model.MyFilterWheel {
             private set {
                 try {
                     _connected = value;
-                    base.Connected = value;
+                    _filterwheel.Connected = value;
                     
                 } catch(Exception ex) {
                     Notification.ShowError(ex.Message + "\n Please reconnect filter wheel!");
@@ -65,52 +68,52 @@ namespace NINA.Model.MyFilterWheel {
             }
         }
 
-        public new string Description {
+        public string Description {
             get {
-                return base.Description;
+                return _filterwheel.Description;
             }
         }
 
-        public new string Name {
+        public string Name {
             get {
-                return base.Name;
+                return _filterwheel.Name;
             }
         }
 
-        public new string DriverInfo {
+        public string DriverInfo {
             get {
-                return base.DriverInfo;
+                return _filterwheel.DriverInfo;
             }
         }
 
-        public new string DriverVersion {
+        public string DriverVersion {
             get {
-                return base.DriverVersion;
+                return _filterwheel.DriverVersion;
             }
         }
 
-        public new short InterfaceVersion {
+        public short InterfaceVersion {
             get {
-                return base.InterfaceVersion;
+                return _filterwheel.InterfaceVersion;
             }
         }
 
-        public new int[] FocusOffsets {
+        public int[] FocusOffsets {
             get {
-                return base.FocusOffsets;
+                return _filterwheel.FocusOffsets;
             }
         }
 
-        public new string[] Names {
+        public string[] Names {
             get {
-                return base.Names;
+                return _filterwheel.Names;
             }
         }
 
-        public new short Position {
+        public short Position {
             get {
                 if(Connected) {
-                    return base.Position;
+                    return _filterwheel.Position;
                 } else {
                     return -1;
                 }
@@ -118,7 +121,7 @@ namespace NINA.Model.MyFilterWheel {
             set {
                 if(Connected) {
                     try {
-                        base.Position = value;
+                        _filterwheel.Position = value;
                     } catch(ASCOM.DriverAccessCOMException ex) {
                         Notification.ShowWarning(ex.Message);
                     }                    
@@ -128,9 +131,9 @@ namespace NINA.Model.MyFilterWheel {
             }
         }
 
-        public new ArrayList SupportedActions {
+        public ArrayList SupportedActions {
             get {
-                return base.SupportedActions;
+                return _filterwheel.SupportedActions;
             }
         }
 
@@ -142,7 +145,7 @@ namespace NINA.Model.MyFilterWheel {
 
             Filters.Clear();
 
-            this.Dispose();            
+            _filterwheel.Dispose();            
         }
 
         private AsyncObservableCollection<FilterInfo> _filters;
@@ -155,23 +158,7 @@ namespace NINA.Model.MyFilterWheel {
                 RaisePropertyChanged();
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
-            var handler = PropertyChanged;
-            if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        protected void RaiseAllPropertiesChanged() {
-            var handler = PropertyChanged;
-            if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(null));
-            }
-        }
-
+        
 
     }
 

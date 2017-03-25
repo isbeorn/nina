@@ -48,5 +48,12 @@ namespace NINA.Utility
         {
             RaisePropertyChanged("IsChanged");
         }
+
+        protected void RaiseAllPropertiesChanged() {
+            var handler = PropertyChanged;
+            if (handler != null) {
+                handler(this, new PropertyChangedEventArgs(null));
+            }
+        }
     }
 }
