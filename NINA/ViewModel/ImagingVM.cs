@@ -410,7 +410,7 @@ namespace NINA.ViewModel {
         /// <returns></returns>
         private async Task CheckMeridianFlip(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
             if(Settings.AutoMeridianFlip) {
-                if(Telescope.Connected) {
+                if(Telescope != null && Telescope.Connected) {
 
                     if(Telescope.TimeToMeridianFlip < (seq.ExposureTime / 60 / 60)) {
                         int remainingtime = (int)(Telescope.TimeToMeridianFlip * 60 * 60);

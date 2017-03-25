@@ -706,11 +706,15 @@ namespace NINA.Model.MyCamera {
 
         public string SensorName {
             get {
+                string val = string.Empty;
                 if(Connected) {
-                    return _camera.SensorName;
-                } else {
-                    return string.Empty;
+                    try {
+                        val = _camera.SensorName;                        
+                    } catch(PropertyNotImplementedException) {
+
+                    }                    
                 }
+                return val;
             }
         }
 

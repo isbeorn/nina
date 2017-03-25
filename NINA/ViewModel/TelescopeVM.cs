@@ -32,7 +32,7 @@ namespace NINA.ViewModel {
         }
 
         private void UpdateTelescope_Tick(object sender, EventArgs e) {            
-            if (Telescope.Connected) {
+            if (Telescope != null && Telescope.Connected) {
                 Telescope.UpdateValues();
             }            
         }
