@@ -91,7 +91,7 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock><Run Text="Camera State:"/></TextBlock>
-                            <TextBlock Text="{Binding Cam.CameraStateString}" Margin="5,0,0,0" />
+                            <TextBlock Text="{Binding Cam.CameraState}" Margin="5,0,0,0" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">

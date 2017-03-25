@@ -378,15 +378,18 @@ namespace NINA.ViewModel {
                 }
                 catch (System.OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
+                    if (Cam != null && Cam.Connected) {
+                        Cam.AbortExposure();
+                    }
                 }
                 catch(Exception ex) {
                     Notification.ShowError(ex.Message);
-                }
-                finally {
-                    progress.Report(ExposureStatus.IDLE);
-                    if(Cam != null && Cam.Connected) {
+                    if (Cam != null && Cam.Connected) {
                         Cam.AbortExposure();
                     }
+                }
+                finally {
+                    progress.Report(ExposureStatus.IDLE);                    
                 }
                 return true;
             });

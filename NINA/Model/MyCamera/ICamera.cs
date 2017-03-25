@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +9,12 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyCamera {
     interface ICamera {
 
-        bool HasShutter { get; set; }
+        bool HasShutter { get; }
         bool Connected { get; set; }
         double CCDTemperature { get; }
         double SetCCDTemperature { get; set; }
         short BinX { get; set; }
         short BinY { get; set; }
-        string CameraStateString { get; }
         string Name { get;  }
         string Description { get; }
         string DriverInfo { get; }
@@ -32,7 +32,7 @@ namespace NINA.Model.MyCamera {
         bool CanSetCCDTemperature { get; }
         bool CoolerOn { get; set; }
         double CoolerPower { get; }
-
+        AsyncObservableCollection<BinningMode> BinningModes { get; }
 
         bool Connect();
         void Disconnect();

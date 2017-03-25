@@ -235,6 +235,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyFilterWheel\AscomFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\IFilterWheel.cs" />
     <Compile Include="ViewModel\ChildVM.cs" />
@@ -355,7 +356,6 @@
     </Compile>
     <Compile Include="ViewModel\ApplicationVM.cs" />
     <Compile Include="ViewModel\CameraVM.cs" />
-    <Compile Include="Model\MyCamera\AscomCameraModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

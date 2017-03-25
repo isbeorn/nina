@@ -36,28 +36,30 @@ namespace NINA.Model.MyFilterWheel {
         private bool _connected;
         public new bool Connected {
             get {
-                bool con = false;
+                bool val = false;
                 try {
-                    con = base.Connected;
-                    if(_connected != con) {                        
-                        Connected = con;
-                        Notification.ShowWarning("Filter wheel connection was changed outside application!");
+                    val = base.Connected;
+                    if (_connected != val) {
+                        Notification.ShowWarning("Filter wheel connection lost! Please reconnect filter wheel!");
+                        Disconnect();                                               
+                    }                    
+                } catch(Exception) {
+                    if(_connected) {
+                        Disconnect();
                     }
-                } catch (Exception) {
-                    Notification.ShowError(ex.Message + "\n Please reconnect filter wheel!");                    
                 }
-                return con;
+                return val;                
             }
             private set {
                 try {
-                    base.Connected = value;
                     _connected = value;
+                    base.Connected = value;
+                    
                 } catch(Exception ex) {
-                    Notification.ShowError(ex.Message + "\n Please reconnect filter wheel!");                    
+                    Notification.ShowError(ex.Message + "\n Please reconnect filter wheel!");
+                    _connected = false;
                 }
                 RaisePropertyChanged();
-
-
             }
         }
 

@@ -220,12 +220,16 @@ namespace NINA.ViewModel {
         }*/
 
         private void ChooseCamera(object obj) {
-            _updateCamera.Stop();
-            Cam = new Model.MyCamera.AscomCameraModel();
-            if (Cam.Connect()) {
-                _updateCamera.Start();
+
+            string cameraid = Settings.CameraId;
+            var id = ASCOM.DriverAccess.Camera.Choose(cameraid);
+            if (id != "") {
+                Cam = new Model.MyCamera.AscomCamera(id);
+                if (Cam.Connect()) {
+                    Settings.CameraId = id;
+                    _updateCamera.Start();
+                }
             }
-            
         }
 
         private void DisconnectCamera(object obj) {
