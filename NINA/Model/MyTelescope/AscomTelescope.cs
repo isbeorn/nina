@@ -27,6 +27,7 @@ namespace NINA.Model.MyTelescope {
             _canSetUTCDate = true;
             _canGetSlewing = true;
             _canGetSideOfPier = true;
+            _canGetSiteElevation = true;
             _canSetSiteElevation = true;
             _canGetSiteLatLong = true;
             _canSetSiteLatLong = true;
@@ -1039,15 +1040,15 @@ namespace NINA.Model.MyTelescope {
 
         public void UpdateValues() {
 
-            RaisePropertyChanged("Altitude");
-            RaisePropertyChanged("Azimuth");
-            RaisePropertyChanged("Declination");
-            RaisePropertyChanged("RightAscension");
-            RaisePropertyChanged("SiderealTime");
-            RaisePropertyChanged("AtPark");
-            RaisePropertyChanged("Tracking");
-            RaisePropertyChanged("HoursToMeridian");
+            RaisePropertyChanged("AltitudeString");
+            RaisePropertyChanged("AzimuthString");
+            RaisePropertyChanged("DeclinationString");
+            RaisePropertyChanged("RightAscensionString");
+            RaisePropertyChanged("SiderealTimeString");
             RaisePropertyChanged("HoursToMeridianString");
+            RaisePropertyChanged("AtPark");
+            RaisePropertyChanged("Tracking");            
+            
 
         }
 
