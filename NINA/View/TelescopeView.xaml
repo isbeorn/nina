@@ -35,20 +35,22 @@
                     </Image>-->
                             </Grid>
                         </Button>
-                        <Button Grid.Column="6" Height="50" Width="50" Command="{Binding DisconnectCommand}" IsEnabled="{Binding Telescope.Connected}"
+                        <Grid Grid.Column="6" Visibility="{Binding Telescope, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Button  Height="50" Width="50" Command="{Binding DisconnectCommand}" IsEnabled="{Binding Telescope.Connected}"
                     Visibility="{Binding Telescope.Connected, Converter={StaticResource VisibilityConverter}}">
-                            <Grid>
+                                <Grid>
 
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
 
-                                </Path>
-                                <!--<Image Source="/AstrophotographyBuddy;component/Resources/plugged.png">
+                                    </Path>
+                                    <!--<Image Source="/AstrophotographyBuddy;component/Resources/plugged.png">
                                     <Image.RenderTransform>
                                         <ScaleTransform CenterX="45" CenterY="45" ScaleX="0.3" ScaleY="0.3"/>
                                     </Image.RenderTransform>
                                 </Image>-->
-                            </Grid>
-                        </Button>
+                                </Grid>
+                            </Button>
+                        </Grid>
                     </Grid>
 
                     <StackPanel>

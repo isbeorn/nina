@@ -19,6 +19,7 @@ using System.Windows.Threading;
 using static NINA.Model.SequenceModel;
 using System.ComponentModel;
 using NINA.Model.MyFilterWheel;
+using NINA.Model.MyTelescope;
 
 namespace NINA.ViewModel {
     class ImagingVM : ChildVM {
@@ -95,7 +96,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private TelescopeModel Telescope {
+        private ITelescope Telescope {
             get {
                 return RootVM.TelescopeVM.Telescope;
             }

@@ -1,5 +1,6 @@
 ﻿using NINA.Model;
 using NINA.Model.MyCamera;
+using NINA.Model.MyTelescope;
 using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
@@ -252,7 +253,7 @@ namespace NINA.ViewModel {
             }
         }
                 
-        public TelescopeModel Telescope {
+        public ITelescope Telescope {
             get {
                 return TelescopeVM.Telescope;
             }

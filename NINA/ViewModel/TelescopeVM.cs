@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyTelescope;
 using NINA.Utility;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace NINA.ViewModel {
         public TelescopeVM(ApplicationVM root) : base(root) {
             Name = "Telescope";            
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
-            Telescope = new TelescopeModel();
+            
             ChooseTelescopeCommand = new RelayCommand(ChooseTelescope);
             DisconnectCommand = new RelayCommand(DisconnectTelescope);
             StepperMoveRateCommand = new RelayCommand(StepMoveRate);
@@ -47,22 +48,29 @@ namespace NINA.ViewModel {
 
         private DispatcherTimer _updateTelescope;
 
-       private TelescopeModel _telescope;
-        public TelescopeModel Telescope {
+       private ITelescope _telescope;
+        public ITelescope Telescope {
             get {
                 return _telescope;
             }
             set {
                 _telescope = value;
-                RaisePropertyChanged();
             }
         }
 
         private void ChooseTelescope(object obj) {
             _updateTelescope.Stop();
-            if (Telescope.Connect()) {
-                _updateTelescope.Start();                
-            }
+            string telescopeid = Settings.TelescopeId;
+            var id = ASCOM.DriverAccess.Telescope.Choose(telescopeid);
+            if (id != "") {
+                Telescope = new Model.MyTelescope.AscomTelescope(id);
+                if (Telescope.Connect()) {
+                    Settings.TelescopeId = id;
+                    _updateTelescope.Start();
+                }
+
+                RaisePropertyChanged("Telescope");
+            }            
         }
 
         private void DisconnectTelescope(object obj) {

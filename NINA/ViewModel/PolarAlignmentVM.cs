@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using NINA.Utility.Astrometry;
 using NINA.Model.MyCamera;
+using NINA.Model.MyTelescope;
 
 namespace NINA.ViewModel {
     class PolarAlignmentVM : ChildVM {
@@ -52,7 +53,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public TelescopeModel Telescope {
+        public ITelescope Telescope {
             get {
                 return TelescopeVM.Telescope;
             }
@@ -685,7 +686,7 @@ namespace NINA.ViewModel {
 
 
         private void UpdateValues_Tick(object sender, EventArgs e) {
-            if (Telescope.Connected) {
+            if (Telescope != null && Telescope.Connected) {
 
                 var ascomutil = Utility.Utility.AscomUtil;
 

@@ -41,19 +41,22 @@ namespace NINA.Model.MyFilterWheel {
         private bool _connected;
         public bool Connected {
             get {
-                bool val = false;
-                try {
-                    val = _filterwheel.Connected;
-                    if (_connected != val) {
-                        Notification.ShowWarning("Filter wheel connection lost! Please reconnect filter wheel!");
-                        Disconnect();                                               
-                    }                    
-                } catch(Exception) {
-                    if(_connected) {
+                if (_connected) {
+                    bool val = false;
+                    try {
+                        val = _filterwheel.Connected;
+                        if (_connected != val) {
+                            Notification.ShowWarning("Filter wheel connection lost! Please reconnect filter wheel!");
+                            Disconnect();
+                        }
+                    } catch (Exception) {
                         Disconnect();
                     }
+                    return val;
+
+                } else {
+                    return false;
                 }
-                return val;                
             }
             private set {
                 try {
@@ -141,10 +144,7 @@ namespace NINA.Model.MyFilterWheel {
 
         public void Disconnect() {
             Connected = false;
-            Position = -1;
-
             Filters.Clear();
-
             _filterwheel.Dispose();            
         }
 

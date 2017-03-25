@@ -238,6 +238,8 @@
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyFilterWheel\AscomFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\IFilterWheel.cs" />
+    <Compile Include="Model\MyTelescope\AscomTelescope.cs" />
+    <Compile Include="Model\MyTelescope\ITelescope.cs" />
     <Compile Include="ViewModel\ChildVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
@@ -246,7 +248,6 @@
     <Compile Include="PlateSolving\AstrometryPlateSolver.cs" />
     <Compile Include="PlateSolving\IPlateSolver.cs" />
     <Compile Include="Model\SequenceModel.cs" />
-    <Compile Include="Model\TelescopeModel.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

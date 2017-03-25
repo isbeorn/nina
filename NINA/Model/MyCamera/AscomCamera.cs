@@ -228,19 +228,22 @@ namespace NINA.Model.MyCamera {
         private bool _connected;
         public bool Connected {
             get {
-                bool val = false;
-                try {
-                    val = _camera.Connected;
-                    if (_connected != val) {
-                        Notification.ShowWarning("Camera connection lost! Please reconnect camera!");
+                if (_connected) {
+                    bool val = false;
+                    try {
+                        val = _camera.Connected;
+                        if (_connected != val) {
+                            Notification.ShowWarning("Camera connection lost! Please reconnect camera!");
+                            Disconnect();
+                        }
+                    } catch (Exception) {
                         Disconnect();
                     }
-                } catch (Exception) {
-                    if (_connected) {
-                        Disconnect();
-                    }
+                    return val;
+
+                } else {
+                    return false;
                 }
-                return val;
             }
             private set {
                 try {
@@ -540,7 +543,9 @@ namespace NINA.Model.MyCamera {
             get {
                 double val = -1;
                 try {
-                    val = _camera.LastExposureDuration;
+                    if (Connected && _hasLastExposureInfo) {
+                        val = _camera.LastExposureDuration;
+                    }
                 } catch(ASCOM.InvalidOperationException) {
 
                 } catch(PropertyNotImplementedException) {
@@ -553,7 +558,9 @@ namespace NINA.Model.MyCamera {
             get {
                 string val = string.Empty;
                 try {
-                    val = _camera.LastExposureStartTime;
+                    if (Connected && _hasLastExposureInfo) {
+                        val = _camera.LastExposureStartTime;
+                    }
                 } catch (ASCOM.InvalidOperationException) {
 
                 } catch (PropertyNotImplementedException) {
