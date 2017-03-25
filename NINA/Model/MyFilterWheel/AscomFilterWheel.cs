@@ -22,9 +22,11 @@ namespace NINA.Model.MyFilterWheel {
         
         public bool Connect() {
             try {            
-                Connected = true;                
-                Notification.ShowSuccess("Filter wheel connected");
-                RaisePropertyChanged("Position");
+                Connected = true;      
+                if(Connected) {
+                    RaiseAllPropertiesChanged();
+                    Notification.ShowSuccess("Filter wheel connected");                    
+                }
             } catch (ASCOM.DriverAccessCOMException ex) {
                 Notification.ShowError(ex.Message);
             } catch(Exception ex) {
@@ -163,7 +165,14 @@ namespace NINA.Model.MyFilterWheel {
             }
         }
 
-        
+        protected void RaiseAllPropertiesChanged() {
+            var handler = PropertyChanged;
+            if (handler != null) {
+                handler(this, new PropertyChangedEventArgs(null));
+            }
+        }
+
+
     }
 
 

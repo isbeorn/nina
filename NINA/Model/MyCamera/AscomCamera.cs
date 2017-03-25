@@ -782,9 +782,11 @@ namespace NINA.Model.MyCamera {
         public bool Connect() {
             try {              
                 Connected = true;
-                init();
-                RaiseAllPropertiesChanged();
-                Notification.ShowSuccess("Camera connected");                
+                if(Connected) { 
+                    init();
+                    RaiseAllPropertiesChanged();
+                    Notification.ShowSuccess("Camera connected");
+                }
             } catch (ASCOM.DriverAccessCOMException ex) {
                 Notification.ShowError(ex.Message);
             } catch (Exception ex) {

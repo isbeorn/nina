@@ -211,7 +211,6 @@ namespace NINA.ViewModel {
             }
             set {
                 _cam = value;
-                RaisePropertyChanged();
             }
         }
 
@@ -229,6 +228,8 @@ namespace NINA.ViewModel {
                     Settings.CameraId = id;
                     _updateCamera.Start();
                 }
+
+                RaisePropertyChanged("Cam");
             }
         }
 

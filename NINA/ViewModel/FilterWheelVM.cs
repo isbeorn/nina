@@ -22,8 +22,7 @@ namespace NINA.ViewModel {
                 return _fW;
             }
             set {
-                _fW = value;
-                RaisePropertyChanged();
+                _fW = value; 
             }
         }
 
@@ -35,6 +34,8 @@ namespace NINA.ViewModel {
                 if (FW.Connect()) {
                     Settings.FilterWheelId = id;
                 }
+                RaisePropertyChanged("FW");
+
             }
             
         }
