@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyFilterWheel {
-    class AscomFilterWheel : BaseINPC, IFilterWheel  {
+    class AscomFilterWheel : BaseINPC, IFilterWheel, IDisposable  {
 
         public AscomFilterWheel(string filterWheelId) {
             _filterwheel = new FilterWheel(filterWheelId);
@@ -146,6 +146,10 @@ namespace NINA.Model.MyFilterWheel {
             Connected = false;
             Filters.Clear();
             _filterwheel.Dispose();            
+        }
+
+        public void Dispose() {
+            _filterwheel.Dispose();
         }
 
         private AsyncObservableCollection<FilterInfo> _filters;

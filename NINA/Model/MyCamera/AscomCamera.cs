@@ -13,7 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
-    class AscomCamera : BaseINPC, ICamera {
+    class AscomCamera : BaseINPC, ICamera, IDisposable {
         public AscomCamera(string cameraId)  {
             _camera = new Camera(cameraId);
         }
@@ -880,6 +880,10 @@ namespace NINA.Model.MyCamera {
             BinY = y;
             NumX = CameraXSize / x;
             NumY = CameraYSize / y;
+        }
+
+        public void Dispose() {
+            _camera.Dispose();
         }
     }
 }

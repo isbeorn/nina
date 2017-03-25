@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyTelescope {
-    class AscomTelescope : BaseINPC, ITelescope {
+    class AscomTelescope : BaseINPC, ITelescope, IDisposable {
         public AscomTelescope(string telescopeId) {
             _telescope = new Telescope(telescopeId);
         }
@@ -1049,6 +1049,10 @@ namespace NINA.Model.MyTelescope {
             RaisePropertyChanged("HoursToMeridian");
             RaisePropertyChanged("HoursToMeridianString");
 
+        }
+
+        public void Dispose() {
+            _telescope.Dispose();
         }
 
         public double HoursToMeridian {
