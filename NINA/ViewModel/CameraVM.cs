@@ -220,6 +220,13 @@ namespace NINA.ViewModel {
 
         private void ChooseCamera(object obj) {
 
+            /*var i = ZWOptical.ASISDK.ASICameras.Count;
+            Cam = ZWOptical.ASISDK.ASICameras.GetCamera(i - 1);
+            if(Cam.Connect()) {
+                _updateCamera.Start();
+                RaisePropertyChanged("Cam");
+            }*/
+
             string cameraid = Settings.CameraId;
             var id = ASCOM.DriverAccess.Camera.Choose(cameraid);
             if (id != "") {

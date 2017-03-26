@@ -815,8 +815,8 @@ namespace NINA.Model.MyCamera {
         }
 
 
-        public async Task<Array> DownloadExposure(CancellationTokenSource tokenSource) {
-            return await Task<Array>.Run(() => {
+        public async Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource) {
+            return await Task<ImageArray>.Run(async () => {
                 try {
                     ASCOM.Utilities.Util U = new ASCOM.Utilities.Util();
                     while (!ImageReady && Connected) {
@@ -826,13 +826,13 @@ namespace NINA.Model.MyCamera {
                     }
 
                     Array arr;
-
                     if (ImageArray.GetType() == typeof(Int32[,])) {
                         arr = (Int32[,])ImageArray;
-                        return arr;
+                        return await MyCamera.ImageArray.CreateInstance(arr);
+                        
                     } else {
                         arr = (Int32[,,])ImageArray;
-                        return (Int32[,,])ImageArray;
+                        return await MyCamera.ImageArray.CreateInstance(arr);
                     }
                 } catch (OperationCanceledException ex) {
                     Logger.Trace(ex.Message);

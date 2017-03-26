@@ -248,7 +248,7 @@ namespace NINA.ViewModel {
             
         }
 
-        private async Task<Array> Download(CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<ImageArray> Download(CancellationTokenSource tokenSource, IProgress<string> progress) {
             progress.Report(ExposureStatus.DOWNLOADING);
             return await Cam.DownloadExposure(tokenSource);
         }
@@ -338,14 +338,13 @@ namespace NINA.ViewModel {
                             }
 
                             /*Download Image */
-                            Array arr = await Download(tokenSource, progress);
+                            ImageArray arr = await Download(tokenSource, progress);
                             if (arr == null) {
                                 tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
 
-                            await ImageControl.PrepareArray(arr);
-                            arr = null;
+                            ImageControl.ImgArr = arr;                            
 
                             /*Prepare Image for UI*/
                             progress.Report(ImagingVM.ExposureStatus.PREPARING);

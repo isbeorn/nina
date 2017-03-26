@@ -205,6 +205,9 @@ namespace NINA.ViewModel {
 
             return await Task<bool>.Run(async () => {                
                 PlateSolveResult = await Platesolver.BlindSolve(ms, progress, canceltoken);
+                if(!PlateSolveResult.Success) {
+                    Notification.ShowWarning("Platesolve failed");
+                }
                 return PlateSolveResult.Success;
             });           
             

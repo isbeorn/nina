@@ -2,6 +2,7 @@
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
+using NINA.Model.MyCamera;
 using NINA.ViewModel;
 using System;
 using System.Collections.Generic;
