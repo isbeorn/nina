@@ -68,47 +68,44 @@ namespace NINA.Model.MyCamera {
 
         public double CCDTemperature {
             get {
-                var tempControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_TEMPERATURE);
-                return (double)tempControl.Value / 10;
+                return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TEMPERATURE) / 10; //ASI driver gets temperature in Celsius * 10
             }
         }
 
     public double SetCCDTemperature {
             get {
                 if (CanSetCCDTemperature) {
-                    var tempControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
-                    return (double)tempControl.Value;
+                    return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
                 } else {
                     return double.MinValue;
                 }
             } 
             set {
                 if(CanSetCCDTemperature) {
-                    var tempControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
-                    tempControl.Value = (int)value;
+                    if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP, (int)value)) {
+                        RaisePropertyChanged();
+                    }
                 }                
             }
         }
         public short BinX {
             get {
-                var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
-                return (short)binningControl.Value;
+                return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
             }
             set {
-                var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
-                binningControl.Value = value;
-                RaisePropertyChanged();
+                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
+                    RaisePropertyChanged();
+                }
             }
         }
         public short BinY {
             get {
-                var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
-                return (short)binningControl.Value;
+                return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
             }
             set {
-                var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
-                binningControl.Value = value;
-                RaisePropertyChanged();
+                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -156,27 +153,23 @@ namespace NINA.Model.MyCamera {
 
         public double ExposureMin {
             get {
-                var exposureSettings = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE);
-                return (double)exposureSettings.MinValue / 1000000;
+                return (double)GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE) / 1000000;                
             }            
         }
         public double ExposureMax {
             get {
-                var exposureSettings = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE);
-                return (double)exposureSettings.MaxValue / 1000000;
+                return (double)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE) / 1000000;                
             }
         }
 
         public short MaxBinX {
             get {
-                var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
-                return (short)binningControl.MaxValue;
+                return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
             }
         }
         public short MaxBinY {
             get {
-                var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
-                return (short)binningControl.MaxValue;
+                return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);                
             }
         }
 
@@ -193,8 +186,8 @@ namespace NINA.Model.MyCamera {
 
         public bool CanSetCCDTemperature {
             get {
-                var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);
-                if (control != null && control.MaxValue > 0) {
+                var val =  GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);                
+                if (val > 0) {
                     return true;
                 } else {
                     return false;
@@ -202,21 +195,21 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CoolerOn { get {
-                var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);
-                return control.Value == 0 ? false : true ;
+        public bool CoolerOn {
+            get {
+                var value = GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);                
+                return value == 0 ? false : true ;
             }
             set {
-                var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);
-                control.Value = value ? 1 : 0;
-                RaisePropertyChanged();
+                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN, value ? 1 : 0)) {
+                    RaisePropertyChanged();
+                }
             }
         }
 
         public double CoolerPower {
             get {
-                var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_POWER_PERC);
-                return (double)control.Value;
+                return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_POWER_PERC);
             }
         }
 
@@ -319,8 +312,8 @@ namespace NINA.Model.MyCamera {
                     GetExposureData(pointer, buffersize);
 
                     ushort[] arr = new ushort[size / 2];
-                    Copy(pointer, arr, 0, size / 2);
-
+                    CopyToUShort(pointer, arr, 0, size / 2);
+                    Marshal.FreeHGlobal(pointer);
                     return await ImageArray.CreateInstance(arr, Resolution.Width, Resolution.Height);
 
 
@@ -333,7 +326,7 @@ namespace NINA.Model.MyCamera {
 
         }
 
-        private void Copy(IntPtr source, ushort[] destination, int startIndex, int length) {
+        private void CopyToUShort(IntPtr source, ushort[] destination, int startIndex, int length) {
             unsafe
             {
                 var sourcePtr = (ushort*)source;
@@ -378,6 +371,65 @@ namespace NINA.Model.MyCamera {
         private CameraControl GetControl(ASICameraDll.ASI_CONTROL_TYPE controlType) {
             return Controls.FirstOrDefault(x => x.ControlType == controlType);
         }
+                
+        public int Gain {
+            get {
+                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
+            }
+            set {
+                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN, value)) {
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int Offset {
+            get {
+                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BRIGHTNESS);
+            }
+            set {
+                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BRIGHTNESS, value)) {
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int USBLimit {
+            get {
+                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);                
+            }
+            set {
+                if(SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD, value)) {
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int GetControlValue(ASICameraDll.ASI_CONTROL_TYPE type) {
+            var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
+            return control.Value;
+        }
+
+        private int GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE type) {
+            var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
+            return control.MaxValue;
+        }
+
+        private int GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE type) {
+            var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
+            return control.MinValue;
+        }
+
+        private bool SetControlValue(ASICameraDll.ASI_CONTROL_TYPE type, int value) {
+            var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
+            if (value <= control.MaxValue && value >= control.MinValue) {
+                control.Value = value;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
     }
 
 
