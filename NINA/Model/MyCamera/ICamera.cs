@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
-    interface ICamera {
+    interface ICamera : IDevice {
         
         bool HasShutter { get; }
         bool Connected { get; }
@@ -32,6 +32,7 @@ namespace NINA.Model.MyCamera {
         bool CanSetCCDTemperature { get; }
         bool CoolerOn { get; set; }
         double CoolerPower { get; }
+        
         AsyncObservableCollection<BinningMode> BinningModes { get; }
 
         bool Connect();
@@ -41,6 +42,7 @@ namespace NINA.Model.MyCamera {
         void StartExposure(double exposureTime, bool isLightFrame);
         void StopExposure();
         void AbortExposure();
+        
         Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource); 
     }
 

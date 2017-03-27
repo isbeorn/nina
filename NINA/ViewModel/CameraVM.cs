@@ -214,28 +214,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        /*private void connectCamera(object obj) {
-            Cam.AscomCamera = new Camera(Cam.ProgId);
-        }*/
-
         private void ChooseCamera(object obj) {
-
-            /*var i = ZWOptical.ASISDK.ASICameras.Count;
-            Cam = ZWOptical.ASISDK.ASICameras.GetCamera(i - 1);
-            if(Cam.Connect()) {
+            Cam = (Model.MyCamera.ICamera)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Camera);
+            if (Cam != null && Cam.Connect()) {
                 _updateCamera.Start();
-                RaisePropertyChanged("Cam");
-            }*/
-
-            string cameraid = Settings.CameraId;
-            var id = ASCOM.DriverAccess.Camera.Choose(cameraid);
-            if (id != "") {
-                Cam = new Model.MyCamera.AscomCamera(id);
-                if (Cam.Connect()) {
-                    Settings.CameraId = id;
-                    _updateCamera.Start();
-                }
-
+                Settings.CameraId = Cam.Id;
                 RaisePropertyChanged("Cam");
             }
         }

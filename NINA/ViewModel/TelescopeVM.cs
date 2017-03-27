@@ -60,17 +60,12 @@ namespace NINA.ViewModel {
 
         private void ChooseTelescope(object obj) {
             _updateTelescope.Stop();
-            string telescopeid = Settings.TelescopeId;
-            var id = ASCOM.DriverAccess.Telescope.Choose(telescopeid);
-            if (id != "") {
-                Telescope = new Model.MyTelescope.AscomTelescope(id);
-                if (Telescope.Connect()) {
-                    Settings.TelescopeId = id;
-                    _updateTelescope.Start();
-                }
-
+            Telescope = (Model.MyTelescope.ITelescope)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Telescope);
+            if (Telescope != null && Telescope.Connect()) {
+                _updateTelescope.Start();
+                Settings.TelescopeId = Telescope.Id;
                 RaisePropertyChanged("Telescope");
-            }            
+            }
         }
 
         private void DisconnectTelescope(object obj) {

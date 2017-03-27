@@ -26,18 +26,13 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void ChooseFW(object obj) {                 
-            string filterwheelid = Settings.FilterWheelId;
-            var id = ASCOM.DriverAccess.FilterWheel.Choose(filterwheelid);
-            if(id != "") {
-                FW = new AscomFilterWheel(id);
-                if (FW.Connect()) {
-                    Settings.FilterWheelId = id;
-                }
-                RaisePropertyChanged("FW");
-
-            }
+        private void ChooseFW(object obj) {            
+            FW = (Model.MyFilterWheel.IFilterWheel)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.FilterWheel);
+            if (FW != null && FW.Connect()) {
             
+                Settings.FilterWheelId = FW.Id;
+                RaisePropertyChanged("FW");
+            }            
         }
 
         private void DisconnectFW(object obj) {

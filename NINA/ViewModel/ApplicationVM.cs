@@ -175,8 +175,6 @@ namespace NINA.ViewModel {
             }
         }
 
-       
-
         private FrameFocusVM _frameFocusVM;
         public FrameFocusVM FrameFocusVM {
             get {

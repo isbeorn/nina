@@ -14,8 +14,19 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
     class AscomCamera : BaseINPC, ICamera, IDisposable {
-        public AscomCamera(string cameraId)  {
-            _camera = new Camera(cameraId);
+        public AscomCamera(string cameraId, string name)  {            
+            Id = cameraId;
+            Name = name;
+        }
+
+        private string _id;
+        public string Id {
+            get {
+                return _id;
+            } set {
+                _id = value;
+                RaisePropertyChanged();
+            }
         }
 
         private Camera _camera;
@@ -598,16 +609,14 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private string _name;
         public string Name {
             get {
-                string val = string.Empty;
-                try {
-                    if(Connected) {
-                        val = _camera.Name;
-                    }                    
-                } catch(DriverException) {
-                }
-                return val;
+                return _name;
+            }
+            set {
+                _name = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -794,7 +803,8 @@ namespace NINA.Model.MyCamera {
         public AsyncObservableCollection<BinningMode> BinningModes { get; private set; }
 
         public bool Connect() {
-            try {              
+            try {
+                _camera = new Camera(Id);
                 Connected = true;
                 if(Connected) { 
                     init();
@@ -888,6 +898,24 @@ namespace NINA.Model.MyCamera {
 
         public void Dispose() {
             _camera.Dispose();
+        }
+
+        public bool HasSetupDialog {
+            get {
+                return true;
+            }
+        }
+        public void SetupDialog() {
+            if(HasSetupDialog) {
+                try {               
+                _camera = new Camera(Id);
+                _camera.SetupDialog();
+                _camera.Dispose();
+                _camera = null;
+                } catch(Exception ex) {
+                    Notification.ShowError(ex.Message);
+                }
+            }            
         }
     }
 }

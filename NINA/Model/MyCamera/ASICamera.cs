@@ -15,9 +15,21 @@ namespace NINA.Model.MyCamera {
         
         public ASICamera(int cameraId) {
             _cameraId = cameraId;
+            Id = cameraId.ToString();
         }
 
         private int _cameraId;
+
+        private string _id;
+        public string Id {
+            get {
+                return _id;
+            }
+            set {
+                _id = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private ASICameraDll.ASI_CAMERA_INFO? _info;
         private ASICameraDll.ASI_CAMERA_INFO Info {
@@ -430,6 +442,18 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public bool HasSetupDialog {
+            get {
+                return false;
+            }
+        }
+        public void SetupDialog() {
+            
+        }
+
+        public void Initialize() {
+            throw new NotImplementedException();
+        }
     }
 
 

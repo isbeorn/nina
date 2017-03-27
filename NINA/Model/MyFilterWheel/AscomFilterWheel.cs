@@ -12,21 +12,38 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyFilterWheel {
     class AscomFilterWheel : BaseINPC, IFilterWheel, IDisposable  {
 
-        public AscomFilterWheel(string filterWheelId) {
-            _filterwheel = new FilterWheel(filterWheelId);
+        public AscomFilterWheel(string filterWheelId, string name) {           
+            Id = filterWheelId;
+            Name = name;
+        }
+
+        private void init() {
             var l = new AsyncObservableCollection<FilterInfo>();
             for (int i = 0; i < Names.Length; i++) {
                 l.Add(new FilterInfo(Names[i], FocusOffsets[i], (short)i));
             }
-            Filters = l;            
+            Filters = l;
+        }
+
+        private string _id;
+        public string Id {
+            get {
+                return _id;
+            }
+            set {
+                _id = value;
+                RaisePropertyChanged();
+            }
         }
 
         private FilterWheel _filterwheel;
         
         public bool Connect() {
-            try {            
+            try {
+                _filterwheel = new FilterWheel(Id);
                 Connected = true;      
                 if(Connected) {
+                    init();
                     RaiseAllPropertiesChanged();
                     Notification.ShowSuccess("Filter wheel connected");                    
                 }
@@ -77,9 +94,14 @@ namespace NINA.Model.MyFilterWheel {
             }
         }
 
+        private string _name;
         public string Name {
             get {
-                return _filterwheel.Name;
+                return _name;
+            }
+            set {
+                _name = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -152,6 +174,7 @@ namespace NINA.Model.MyFilterWheel {
             _filterwheel.Dispose();
         }
 
+      
         private AsyncObservableCollection<FilterInfo> _filters;
         public AsyncObservableCollection<FilterInfo> Filters {
             get {
@@ -162,8 +185,24 @@ namespace NINA.Model.MyFilterWheel {
                 RaisePropertyChanged();
             }
         }
-        
 
+        public bool HasSetupDialog {
+            get {
+                return true;
+            }
+        }
+        public void SetupDialog() {
+            if (HasSetupDialog) {
+                try { 
+                    _filterwheel = new FilterWheel(Id);
+                    _filterwheel.SetupDialog();
+                    _filterwheel.Dispose();
+                    _filterwheel = null;
+                } catch (Exception ex) {
+                    Notification.ShowError(ex.Message);
+                }
+            }
+        }
     }
 
 

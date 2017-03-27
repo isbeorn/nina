@@ -235,6 +235,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
     <Compile Include="Utility\ASISDK\ASICameraDll.cs" />
@@ -244,6 +245,8 @@
     <Compile Include="Model\MyTelescope\AscomTelescope.cs" />
     <Compile Include="Model\MyTelescope\ITelescope.cs" />
     <Compile Include="Utility\ASISDK\ASICameras.cs" />
+    <Compile Include="Utility\DialogCloser.cs" />
+    <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\ChildVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
@@ -287,6 +290,9 @@
     <Compile Include="ViewModel\TelescopeVM.cs" />
     <Compile Include="View\ApplicationMenu.xaml.cs">
       <DependentUpon>ApplicationMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\EquipmentChooserView.xaml.cs">
+      <DependentUpon>EquipmentChooserView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CameraControlView.xaml.cs">
       <DependentUpon>CameraControlView.xaml</DependentUpon>
@@ -369,6 +375,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\ApplicationMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\EquipmentChooserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

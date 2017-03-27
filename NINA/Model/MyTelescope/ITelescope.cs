@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyTelescope {
-    interface ITelescope {
+    interface ITelescope : IDevice {
         bool Connected { get; }
         Coordinates Coordinates { get; }
         double RightAscension { get; }

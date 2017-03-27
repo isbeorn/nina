@@ -12,8 +12,9 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MyTelescope {
     class AscomTelescope : BaseINPC, ITelescope, IDisposable {
-        public AscomTelescope(string telescopeId) {
-            _telescope = new Telescope(telescopeId);
+        public AscomTelescope(string telescopeId, string name) {            
+            Id = telescopeId;
+            Name = name;
         }
 
         private void init() {
@@ -34,6 +35,17 @@ namespace NINA.Model.MyTelescope {
             _canSetSlewSettleTime = true;
             _canGetTargetRaDec = true;
             _canSetTargetRaDec = true;
+        }
+
+        private string _id;
+        public string Id {
+            get {
+                return _id;
+            }
+            set {
+                _id = value;
+                RaisePropertyChanged();
+            }
         }
 
         private Telescope _telescope;
@@ -463,14 +475,14 @@ namespace NINA.Model.MyTelescope {
 
             }
         }
+        private string _name;
         public string Name {
             get {
-                if (Connected) {
-                    return _telescope.Name;
-                } else {
-                    return string.Empty;
-                }
-
+                return _name;
+            }
+            set {
+                _name = value;
+                RaisePropertyChanged();
             }
         }
         public double RightAscension {
@@ -872,6 +884,7 @@ namespace NINA.Model.MyTelescope {
 
         public bool Connect() {
             try {
+                _telescope = new Telescope(Id);
                 Connected = true;
                 if (Connected) {
                     init();
@@ -1131,6 +1144,24 @@ namespace NINA.Model.MyTelescope {
 
                     _movingRate = result;
                     RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool HasSetupDialog {
+            get {
+                return true;
+            }
+        }
+        public void SetupDialog() {
+            if (HasSetupDialog) {
+                try { 
+                    _telescope = new Telescope(Id);
+                    _telescope.SetupDialog();
+                    _telescope.Dispose();
+                    _telescope = null;
+                } catch (Exception ex) {
+                    Notification.ShowError(ex.Message);
                 }
             }
         }

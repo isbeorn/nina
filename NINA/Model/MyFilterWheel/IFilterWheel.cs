@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyFilterWheel {
-    interface IFilterWheel {
+    interface IFilterWheel :IDevice {
         bool Connected { get; }
         string Description { get; }
         string Name { get;  }
