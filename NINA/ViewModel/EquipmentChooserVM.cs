@@ -125,23 +125,25 @@ namespace NINA.ViewModel {
 
         private void GetCameras() {
             var ascomDevices = new ASCOM.Utilities.Profile();
-            
-            foreach(ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
+
+            for (int i = 0; i < ASICameras.Count; i++) {
+                var cam = ASICameras.GetCamera(i);
+                if (cam.Name != "") {
+                    Devices.Add(cam);
+                }
+            }
+
+            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
                 
                 try {
-                    AscomCamera cam = new AscomCamera(device.Key, device.Value);
+                    AscomCamera cam = new AscomCamera(device.Key, "ASCOM --- " + device.Value);
                     Devices.Add(cam);
                 } catch (Exception) {
                     //only add cameras which are supported. e.g. x86 drivers will not work in x64
                 }
             }
             
-            for(int i = 0; i < ASICameras.Count; i++) {
-                var cam = ASICameras.GetCamera(i);
-                if (cam.Name != "") {
-                    Devices.Add(cam);
-                }
-            }
+            
 
             if(Devices.Count > 0) {
                 var items = (from device in Devices where device.Id == Settings.CameraId select device);

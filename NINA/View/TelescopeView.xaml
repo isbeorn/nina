@@ -118,220 +118,221 @@
                 </StackPanel>
             </GroupBox>
         </Grid>
-        <Grid Grid.Row="1" IsEnabled="{Binding Telescope.Connected}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <GroupBox Header="Manual Coordinates">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Width="60">Target RA</TextBlock>
-                        <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                            <TextBox.Text>
-                                <Binding Path="TargetRightAscencionHours" UpdateSourceTrigger="LostFocus" >
-                                    <Binding.ValidationRules>
-                                        <StaticResource ResourceKey="HoursRule" />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock>h</TextBlock>
-                        <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                            <TextBox.Text>
-                                <Binding Path="TargetRightAscencionMinutes" UpdateSourceTrigger="LostFocus" >
-                                    <Binding.ValidationRules>
-                                        <StaticResource ResourceKey="MinutesRule" />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock>m</TextBlock>
-                        <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                            <TextBox.Text>
-                                <Binding Path="TargetRightAscencionSeconds" UpdateSourceTrigger="LostFocus" >
-                                    <Binding.ValidationRules>
-                                        <StaticResource ResourceKey="SecondsRule" />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock>s</TextBlock>
+        <Grid Grid.Row="1" IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <Grid  IsEnabled="{Binding Telescope.Connected}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <GroupBox Header="Manual Coordinates">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Width="60">Target RA</TextBlock>
+                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                <TextBox.Text>
+                                    <Binding Path="TargetRightAscencionHours" UpdateSourceTrigger="LostFocus" >
+                                        <Binding.ValidationRules>
+                                            <StaticResource ResourceKey="HoursRule" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBlock>h</TextBlock>
+                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                <TextBox.Text>
+                                    <Binding Path="TargetRightAscencionMinutes" UpdateSourceTrigger="LostFocus" >
+                                        <Binding.ValidationRules>
+                                            <StaticResource ResourceKey="MinutesRule" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBlock>m</TextBlock>
+                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                <TextBox.Text>
+                                    <Binding Path="TargetRightAscencionSeconds" UpdateSourceTrigger="LostFocus" >
+                                        <Binding.ValidationRules>
+                                            <StaticResource ResourceKey="SecondsRule" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBlock>s</TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Width="60">Target Dec</TextBlock>
+                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                <TextBox.Text>
+                                    <Binding Path="TargetDeclinationDegrees" UpdateSourceTrigger="LostFocus" >
+                                        <Binding.ValidationRules>
+                                            <StaticResource ResourceKey="DegreesRule" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBlock>d</TextBlock>
+                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                <TextBox.Text>
+                                    <Binding Path="TargetDeclinationMinutes" UpdateSourceTrigger="LostFocus" >
+                                        <Binding.ValidationRules>
+                                            <StaticResource ResourceKey="MinutesRule" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBlock>m</TextBlock>
+                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                <TextBox.Text>
+                                    <Binding Path="TargetDeclinationSeconds" UpdateSourceTrigger="LostFocus" >
+                                        <Binding.ValidationRules>
+                                            <StaticResource ResourceKey="SecondsRule" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBlock>s</TextBlock>
+                        </StackPanel>
+                        <Button Grid.Row="2" Grid.Column="3" Height="80" Width="80" Command="{Binding SlewToCoordinatesCommand}" HorizontalAlignment="Right">
+                            <TextBlock Text ="Slew" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                        </Button>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Width="60">Target Dec</TextBlock>
-                        <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                            <TextBox.Text>
-                                <Binding Path="TargetDeclinationDegrees" UpdateSourceTrigger="LostFocus" >
-                                    <Binding.ValidationRules>
-                                        <StaticResource ResourceKey="DegreesRule" />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock>d</TextBlock>
-                        <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                            <TextBox.Text>
-                                <Binding Path="TargetDeclinationMinutes" UpdateSourceTrigger="LostFocus" >
-                                    <Binding.ValidationRules>
-                                        <StaticResource ResourceKey="MinutesRule" />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock>m</TextBlock>
-                        <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                            <TextBox.Text>
-                                <Binding Path="TargetDeclinationSeconds" UpdateSourceTrigger="LostFocus" >
-                                    <Binding.ValidationRules>
-                                        <StaticResource ResourceKey="SecondsRule" />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock>s</TextBlock>
-                    </StackPanel>
-                    <Button Grid.Row="2" Grid.Column="3" Height="80" Width="80" Command="{Binding SlewToCoordinatesCommand}" HorizontalAlignment="Right">
-                        <TextBlock Text ="Slew" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                    </Button>
-                </StackPanel>
                 
-            </GroupBox>
-            <GroupBox Grid.Column="1" Header="Manual Control" IsEnabled="{Binding Telescope.CanSlew}">
+                </GroupBox>
+                <GroupBox Grid.Column="1" Header="Manual Control" IsEnabled="{Binding Telescope.CanSlew}">
 
               
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="100"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal">
-                        <TextBlock Margin="0,0,5,0" VerticalAlignment="Center"><Run Text="Rate:"/></TextBlock>
-                        <RepeatButton Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding StepperMoveRateCommand}" CommandParameter="-">
-                            <TextBlock Text ="&#x25BC;" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="100"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal">
+                            <TextBlock Margin="0,0,5,0" VerticalAlignment="Center"><Run Text="Rate:"/></TextBlock>
+                            <RepeatButton Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding StepperMoveRateCommand}" CommandParameter="-">
+                                <TextBlock Text ="&#x25BC;" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                                </RepeatButton>
+                            <TextBox VerticalAlignment="Center" Text="{Binding Telescope.MovingRate}" MinWidth="40" />
+                            <RepeatButton VerticalAlignment="Center" Width="50" HorizontalAlignment="Center" Command="{Binding StepperMoveRateCommand}" CommandParameter="+">
+                                <TextBlock Text ="&#x25B2;" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                             </RepeatButton>
-                        <TextBox VerticalAlignment="Center" Text="{Binding Telescope.MovingRate}" MinWidth="40" />
-                        <RepeatButton VerticalAlignment="Center" Width="50" HorizontalAlignment="Center" Command="{Binding StepperMoveRateCommand}" CommandParameter="+">
-                            <TextBlock Text ="&#x25B2;" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                        </RepeatButton>
-                    </StackPanel>
-                    <Button Grid.Row="1" Grid.Column="0" Height="80" Width="80" HorizontalAlignment="Right"   >
-                        <TextBlock Text ="W" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewStylusDown">
-                                <i:InvokeCommandAction CommandParameter="W" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>                            
-                            <i:EventTrigger EventName="PreviewStylusUp"> 
-                                <i:InvokeCommandAction CommandParameter="W" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewTouchDown">
-                                <i:InvokeCommandAction CommandParameter="W" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>                            
-                            <i:EventTrigger EventName="PreviewTouchUp">  
-                                <i:InvokeCommandAction CommandParameter="W" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <i:InvokeCommandAction CommandParameter="W" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonUp" >
-                                <i:InvokeCommandAction CommandParameter="W" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
+                        </StackPanel>
+                        <Button Grid.Row="1" Grid.Column="0" Height="80" Width="80" HorizontalAlignment="Right"   >
+                            <TextBlock Text ="W" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewStylusDown">
+                                    <i:InvokeCommandAction CommandParameter="W" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>                            
+                                <i:EventTrigger EventName="PreviewStylusUp"> 
+                                    <i:InvokeCommandAction CommandParameter="W" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewTouchDown">
+                                    <i:InvokeCommandAction CommandParameter="W" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>                            
+                                <i:EventTrigger EventName="PreviewTouchUp">  
+                                    <i:InvokeCommandAction CommandParameter="W" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <i:InvokeCommandAction CommandParameter="W" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonUp" >
+                                    <i:InvokeCommandAction CommandParameter="W" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
                             
-                    </Button>
-                    <Button Grid.Row="1" Grid.Column="2" Height="80" Width="80" HorizontalAlignment="Left"  >
-                        <TextBlock Text ="O" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewStylusDown">
-                                <i:InvokeCommandAction CommandParameter="O" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>                            
-                            <i:EventTrigger EventName="PreviewStylusUp"> 
-                                <i:InvokeCommandAction CommandParameter="O" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewTouchDown">
-                                <i:InvokeCommandAction CommandParameter="O" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>                            
-                            <i:EventTrigger EventName="PreviewTouchUp">  
-                                <i:InvokeCommandAction CommandParameter="O" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <i:InvokeCommandAction CommandParameter="O" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonUp" >
-                                <i:InvokeCommandAction CommandParameter="O" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>                            
-                    </Button>
-                    <Button Grid.Row="0" Grid.Column="1" Height="80" Width="80" VerticalAlignment="Bottom" >
-                        <TextBlock Text ="N" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewStylusDown">
-                                <i:InvokeCommandAction CommandParameter="N" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>                            
-                            <i:EventTrigger EventName="PreviewStylusUp"> 
-                                <i:InvokeCommandAction CommandParameter="N" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewTouchDown">
-                                <i:InvokeCommandAction CommandParameter="N" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>                            
-                            <i:EventTrigger EventName="PreviewTouchUp">  
-                                <i:InvokeCommandAction CommandParameter="N" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <i:InvokeCommandAction CommandParameter="N" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonUp" >
-                                <i:InvokeCommandAction CommandParameter="N" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>
-                    <Button Grid.Row="2" Grid.Column="1" Height="80" Width="80" VerticalAlignment="Top">
-                        <TextBlock Text ="S" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewStylusDown">
-                                <i:InvokeCommandAction CommandParameter="S" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewStylusUp">
-                                <i:InvokeCommandAction CommandParameter="S" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewTouchDown">
-                                <i:InvokeCommandAction CommandParameter="S" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewTouchUp">
-                                <i:InvokeCommandAction CommandParameter="S" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
+                        </Button>
+                        <Button Grid.Row="1" Grid.Column="2" Height="80" Width="80" HorizontalAlignment="Left"  >
+                            <TextBlock Text ="O" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewStylusDown">
+                                    <i:InvokeCommandAction CommandParameter="O" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>                            
+                                <i:EventTrigger EventName="PreviewStylusUp"> 
+                                    <i:InvokeCommandAction CommandParameter="O" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewTouchDown">
+                                    <i:InvokeCommandAction CommandParameter="O" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>                            
+                                <i:EventTrigger EventName="PreviewTouchUp">  
+                                    <i:InvokeCommandAction CommandParameter="O" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <i:InvokeCommandAction CommandParameter="O" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonUp" >
+                                    <i:InvokeCommandAction CommandParameter="O" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>                            
+                        </Button>
+                        <Button Grid.Row="0" Grid.Column="1" Height="80" Width="80" VerticalAlignment="Bottom" >
+                            <TextBlock Text ="N" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewStylusDown">
+                                    <i:InvokeCommandAction CommandParameter="N" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>                            
+                                <i:EventTrigger EventName="PreviewStylusUp"> 
+                                    <i:InvokeCommandAction CommandParameter="N" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewTouchDown">
+                                    <i:InvokeCommandAction CommandParameter="N" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>                            
+                                <i:EventTrigger EventName="PreviewTouchUp">  
+                                    <i:InvokeCommandAction CommandParameter="N" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <i:InvokeCommandAction CommandParameter="N" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonUp" >
+                                    <i:InvokeCommandAction CommandParameter="N" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+                        <Button Grid.Row="2" Grid.Column="1" Height="80" Width="80" VerticalAlignment="Top">
+                            <TextBlock Text ="S" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewStylusDown">
+                                    <i:InvokeCommandAction CommandParameter="S" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewStylusUp">
+                                    <i:InvokeCommandAction CommandParameter="S" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewTouchDown">
+                                    <i:InvokeCommandAction CommandParameter="S" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewTouchUp">
+                                    <i:InvokeCommandAction CommandParameter="S" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
                                 
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <i:InvokeCommandAction CommandParameter="S" Command="{Binding MoveCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonUp" >
-                                <i:InvokeCommandAction CommandParameter="S" Command="{Binding StopMoveCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>
-                    <Button Grid.Row="1" Grid.Column="1" Height="80" Width="80" Command="{Binding StopSlewCommand}">
-                        <TextBlock Text ="STOP" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                    </Button>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <i:InvokeCommandAction CommandParameter="S" Command="{Binding MoveCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonUp" >
+                                    <i:InvokeCommandAction CommandParameter="S" Command="{Binding StopMoveCommand}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+                        <Button Grid.Row="1" Grid.Column="1" Height="80" Width="80" Command="{Binding StopSlewCommand}">
+                            <TextBlock Text ="STOP" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                        </Button>
 
-                    <Button Grid.Row="2" Grid.Column="3" Height="80" Width="80" Command="{Binding ParkCommand}" HorizontalAlignment="Right" Visibility="{Binding Telescope.AtPark, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                        <TextBlock Text ="PARK" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                    </Button>
+                        <Button Grid.Row="2" Grid.Column="3" Height="80" Width="80" Command="{Binding ParkCommand}" HorizontalAlignment="Right" Visibility="{Binding Telescope.AtPark, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                            <TextBlock Text ="PARK" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                        </Button>
 
-                    <Button Grid.Row="2" Grid.Column="3" Height="80" Width="80" Command="{Binding UnparkCommand}" HorizontalAlignment="Right" Visibility="{Binding Telescope.AtPark, Converter={StaticResource VisibilityConverter}}">
-                        <TextBlock Text ="UNPARK" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                    </Button>
+                        <Button Grid.Row="2" Grid.Column="3" Height="80" Width="80" Command="{Binding UnparkCommand}" HorizontalAlignment="Right" Visibility="{Binding Telescope.AtPark, Converter={StaticResource VisibilityConverter}}">
+                            <TextBlock Text ="UNPARK" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                        </Button>
                     
-                </Grid>
+                    </Grid>
              
-            </GroupBox>
-
+                </GroupBox>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

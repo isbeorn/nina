@@ -1,4 +1,5 @@
 ﻿using NINA.Model.MyCamera;
+using NINA.Utility;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -123,11 +124,11 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MyBinningModesProperty =
-            DependencyProperty.Register("MyBinningModes", typeof(ObservableCollection<BinningMode>), typeof(CameraControlView), new UIPropertyMetadata(null));
+            DependencyProperty.Register("MyBinningModes", typeof(AsyncObservableCollection<BinningMode>), typeof(CameraControlView), new UIPropertyMetadata(null));
 
-        public ObservableCollection<BinningMode> MyBinningModes {
+        public AsyncObservableCollection<BinningMode> MyBinningModes {
             get {
-                return (ObservableCollection<BinningMode>)GetValue(MyBinningModesProperty);
+                return (AsyncObservableCollection<BinningMode>)GetValue(MyBinningModesProperty);
             }
             set {
                 SetValue(MyBinningModesProperty, value);

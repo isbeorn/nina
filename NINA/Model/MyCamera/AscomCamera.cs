@@ -35,9 +35,10 @@ namespace NINA.Model.MyCamera {
             _hasBayerOffset = true;
             _hasCCDTemperature = true;
             _hasCooler = true;
-            _canSetGain = true;
-            _canGetGain = true;
-            _hasLastExposureInfo = true;
+            CanSetGain = true;
+            CanGetGain = true;
+            _canGetGainMinMax = true;
+        _hasLastExposureInfo = true;
             _hasPercentCompleted = true;
             BinningModes = new AsyncObservableCollection<BinningMode>();
             for (short i = 1; i <= MaxBinX; i++) {
@@ -121,18 +122,18 @@ namespace NINA.Model.MyCamera {
         }
 
 
-        public CameraStates CameraState {
+        public string CameraState {
             get {
-                CameraStates state;
+                string state;
                 try {
                     if (Connected) {
-                        state = _camera.CameraState;
+                        state = _camera.CameraState.ToString();
                     } else {
-                        state = CameraStates.cameraIdle;
+                        state = CameraStates.cameraIdle.ToString();
                     }
                 } catch (NotConnectedException ex) {
                     Notification.ShowError(ex.Message);
-                    state = CameraStates.cameraError;
+                    state = CameraStates.cameraError.ToString();
                 }
                 return state;
             }
@@ -417,38 +418,62 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private bool _canGetGain;
+        public bool CanGetGain {
+            get {
+                return _canGetGain;
+            }
+            set {
+                _canGetGain = value;
+                RaisePropertyChanged();
+            }
+        }
         private bool _canSetGain;
+        public bool CanSetGain {
+            get {
+                return _canSetGain;
+            }
+            set { _canSetGain = value;
+                RaisePropertyChanged();
+            }
+        }
         public short Gain {
             get {
                 short val = -1;
-                if (Connected && _canSetGain) {
-                    val = _camera.Gain;
+                if (Connected && CanGetGain) {
+                    try { 
+                        val = _camera.Gain;
+                    } catch(PropertyNotImplementedException) {
+                        CanGetGain = false;
+                    }
                 }
                 return val;
             }
             set {
-                if(Connected && _canSetGain) {
+                if(Connected && CanSetGain) {
                     try { 
                         _camera.Gain = value;
                     } catch (PropertyNotImplementedException) {
-                        _canSetGain = false;
+                        CanSetGain = false;
                     } catch (InvalidValueException ex) {
                         Notification.ShowWarning(ex.Message);
+                    } catch(Exception) {
+                        CanSetGain = false;
                     }
                     RaisePropertyChanged();
                 }
             }
         }
 
-        private bool _canGetGain;
+        private bool _canGetGainMinMax;
         public short GainMax {
             get {
                 short val = -1;
-                if (Connected && _canGetGain) {
+                if (Connected && _canGetGainMinMax) {
                     try { 
                         val = _camera.GainMax;
                     } catch(PropertyNotImplementedException) {
-                        _canGetGain = false;
+                        _canGetGainMinMax = false;
                     }
                 }
                 return val;
@@ -457,11 +482,11 @@ namespace NINA.Model.MyCamera {
         public short GainMin {
             get {
                 short val = -1;
-                if (Connected && _canGetGain) {
+                if (Connected && _canGetGainMinMax) {
                     try {
                         val = _camera.GainMin;
                     } catch (PropertyNotImplementedException) {
-                        _canGetGain = false;
+                        _canGetGainMinMax = false;
                     }
                 }
                 return val;
@@ -470,11 +495,11 @@ namespace NINA.Model.MyCamera {
         public ArrayList Gains {
             get {
                 ArrayList val = new ArrayList();
-                if (Connected && _canGetGain) {
+                if (Connected && CanGetGain) {
                     try {
                         val = _camera.Gains;
                     } catch (PropertyNotImplementedException) {
-                        _canGetGain = false;
+                        CanGetGain = false;
                     }
                 }
                 return val;
@@ -905,6 +930,18 @@ namespace NINA.Model.MyCamera {
                 return true;
             }
         }
+
+        public bool CanSetOffset {
+            get {
+                return false;
+            }
+        }
+        public bool CanSetUSBLimit {
+            get {
+                return false;
+            }
+        }
+
         public void SetupDialog() {
             if(HasSetupDialog) {
                 try {               

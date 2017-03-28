@@ -6,9 +6,9 @@
         xmlns:util="clr-namespace:NINA.Utility"
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" util:DialogCloser.DialogResult="{Binding DialogResult}" ResizeMode="NoResize" Height="200" Width="300">
-    <Border BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
-        <Grid>
+             d:DesignHeight="300" d:DesignWidth="300" util:DialogCloser.DialogResult="{Binding DialogResult}" ResizeMode="NoResize" Height="150" Width="300">
+    
+        <Grid Background="{StaticResource BackgroundBrush}" Margin="5"> 
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition Height="50" />
@@ -21,17 +21,25 @@
                 <ComboBox MinHeight="40" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" SelectedValuePath="Name" DisplayMemberPath="Name"  ></ComboBox>
                 <Button Grid.Column="1" Width="40" Height="40"  Command="{Binding SetupDialogCommand}"  IsEnabled="{Binding SelectedDevice.HasSetupDialog}">
                     <Grid>
-                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5">
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5">
                         </Path>
                     </Grid>
                 </Button>
             </Grid>
             <UniformGrid Columns="2" Grid.Row="1">
-                <Button IsDefault="True" Click="ButtonOK_Click">OK</Button>
-                <Button IsCancel="True">Cancel</Button>
+                <Button IsDefault="True" Click="ButtonOK_Click">
+                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}">
+                        OK
+                    </TextBlock>    
+                </Button>
+                <Button IsCancel="True">
+                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}">
+                        Cancel
+                    </TextBlock> 
+                </Button>
             </UniformGrid>
       
         </Grid>
-    </Border>
+    
 
 </Window>

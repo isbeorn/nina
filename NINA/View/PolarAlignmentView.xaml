@@ -9,7 +9,7 @@
              
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="400">
-    <Grid>
+    <Grid IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
         <Border HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" Background="{StaticResource BackgroundBrush}" Panel.ZIndex="99">
             <TextBlock   FontSize="40" >
                 Please connect Telescope

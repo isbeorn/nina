@@ -32,7 +32,16 @@ namespace NINA.Model.MyCamera {
         bool CanSetCCDTemperature { get; }
         bool CoolerOn { get; set; }
         double CoolerPower { get; }
-        
+        string CameraState { get; }
+
+        bool CanSetOffset { get; }
+        bool CanSetUSBLimit { get; }
+        bool CanGetGain { get; }
+        bool CanSetGain { get; }
+        short GainMax { get; }
+        short GainMin { get; }
+        short Gain { get; set; }
+
         AsyncObservableCollection<BinningMode> BinningModes { get; }
 
         bool Connect();

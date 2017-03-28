@@ -12,6 +12,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="2*" />
         </Grid.RowDefinitions>
         <!--<Grid.ColumnDefinitions>
@@ -21,8 +22,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>                
             </Grid.ColumnDefinitions>
             <GroupBox Header="Camera">
                 <Grid>
@@ -119,6 +119,11 @@
                             <TextBlock Text="{Binding Cam.SensorType}" Margin="5,0,0,0" />
                         </StackPanel>
 
+                        
+                        
+                        
+                        
+
                     </StackPanel>
                 </Grid>
             </GroupBox>
@@ -167,73 +172,102 @@
                     </StackPanel>
                 </UniformGrid>
             </GroupBox>
-            <GroupBox Header="Filter Wheel" Grid.Column="2">
-                <view:FilterWheelView Grid.Row="1" DataContext="{Binding FilterWheelVM}"></view:FilterWheelView>
-            </GroupBox>
+            
         </Grid>
-        <Grid  Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="{Binding Cam.Connected}">
-            <GroupBox Header="Temperature Control" IsEnabled="{Binding Cam.CanSetCCDTemperature}" >
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="2*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Vertical">
-                        <!--<StackPanel Orientation="Horizontal">
+        <Grid Grid.Row="1" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <Grid  IsEnabled="{Binding Cam.Connected}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <GroupBox Header="Filter Wheel">
+                    <view:FilterWheelView Grid.Row="1" DataContext="{Binding FilterWheelVM}"></view:FilterWheelView>
+                </GroupBox>
+                <GroupBox Header="Camera Settings" Grid.Column="1">
+                    <StackPanel>
+                        <DockPanel Visibility="{Binding Cam.CanGetGain , Converter={StaticResource VisibilityConverter}}">
+                            <TextBlock VerticalAlignment="Center" MinWidth="100"><Run Text="Gain:"/></TextBlock>
+                            <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{Binding Cam.Gain}"></TextBlock>
+                            <Slider Minimum="{Binding Cam.GainMin}" Maximum="{Binding Cam.GainMax}" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Cam.Gain}" IsEnabled="{Binding Cam.CanSetGain}"></Slider>                        
+                        </DockPanel>
+                        <DockPanel  Visibility="{Binding Cam.CanSetOffset , Converter={StaticResource VisibilityConverter}}">
+                            <TextBlock VerticalAlignment="Center" MinWidth="100"><Run Text="Offset:"/></TextBlock>
+                            <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{Binding Cam.Offset}"></TextBlock>
+                            <Slider Minimum="{Binding Cam.OffsetMin}" Maximum="{Binding Cam.OffsetMax}" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Cam.Offset}"></Slider>
+                        </DockPanel>
+                        <DockPanel Visibility="{Binding Cam.CanSetUSBLimit , Converter={StaticResource VisibilityConverter}}">
+                            <TextBlock VerticalAlignment="Center" MinWidth="100"><Run Text="USB Limit:"/></TextBlock>
+                            <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{Binding Cam.USBLimit}"></TextBlock>
+                            <Slider Minimum="{Binding Cam.USBLimitMin}" Maximum="{Binding Cam.USBLimitMax}" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Cam.USBLimit}" ></Slider>
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>            
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="2" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <Grid IsEnabled="{Binding Cam.Connected}">
+                <GroupBox Header="Temperature Control" IsEnabled="{Binding Cam.CanSetCCDTemperature}" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="2*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Vertical">
+                            <!--<StackPanel Orientation="Horizontal">
                         <TextBlock>Heat Sink Temperature</TextBlock>
                         <TextBlock Text="{Binding Cam.HeatSinkTemperature}" Margin="5,0,0,0"/>
                     </StackPanel>-->
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding Cam.CoolerOn}" />
-                            <TextBlock Margin="5,0,0,0" ><Run Text="Cooler On"/></TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox IsChecked="{Binding Cam.CoolerOn}" />
+                                <TextBlock Margin="5,0,0,0" ><Run Text="Cooler On"/></TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock><Run Text="Cooler Power"/></TextBlock>
+                                <TextBlock Text="{Binding Cam.CoolerPower, StringFormat=\{0:#.00\}%}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock><Run Text="CCD Temperature"/></TextBlock>
+                                <TextBlock Text="{Binding Cam.CCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" IsEnabled="False">
+                                <TextBlock Text="Target Temperature" />
+                                <!--<Slider Value="{Binding Cam.SetCCDTemperature}" Minimum="-50" Maximum="20" SmallChange=".1" TickPlacement="BottomRight"/>-->
+                                <TextBlock Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" MinWidth="20" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Cooler Power"/></TextBlock>
-                            <TextBlock Text="{Binding Cam.CoolerPower, StringFormat=\{0:#.00\}%}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="CCD Temperature"/></TextBlock>
-                            <TextBlock Text="{Binding Cam.CCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" IsEnabled="False">
-                            <TextBlock Text="Target Temperature" />
-                            <!--<Slider Value="{Binding Cam.SetCCDTemperature}" Minimum="-50" Maximum="20" SmallChange=".1" TickPlacement="BottomRight"/>-->
-                            <TextBlock Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" MinWidth="20" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
-                        </StackPanel>
-                    </StackPanel>
 
-                    <Grid Grid.Column="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="20" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="50" />
-                        </Grid.RowDefinitions>
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="40" />
+                            </Grid.RowDefinitions>
 
-                        <TextBlock>Target Temp.</TextBlock>
-                        <TextBlock  Grid.Row="1">Duration</TextBlock>
+                            <TextBlock>Target Temp.</TextBlock>
+                            <TextBlock  Grid.Row="1">Duration</TextBlock>
 
-                        <Slider Grid.Column="1" Minimum="-50" Maximum="20" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding TargetTemp}" IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"></Slider>
-                        <TextBlock Grid.Column="2" Text="{Binding TargetTemp, StringFormat=\{0:#.0\}}" ></TextBlock>
-                        <Slider  Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="30" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Duration}" IsEnabled="{Binding CoolingRunning , Converter={StaticResource InverseBooleanConverter}}"></Slider>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Duration, StringFormat=\{0:#.0\}}"/>
+                            <Slider Grid.Column="1" Minimum="-50" Maximum="20" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding TargetTemp}" IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"></Slider>
+                            <TextBlock Grid.Column="2" Text="{Binding TargetTemp, StringFormat=\{0:#.0\}}" ></TextBlock>
+                            <Slider  Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="30" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Duration}" IsEnabled="{Binding CoolingRunning , Converter={StaticResource InverseBooleanConverter}}"></Slider>
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Duration, StringFormat=\{0:#.0\}}"/>
 
-                        <StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <TextBlock Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}"  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" Visibility="{Binding CoolingRunning, Converter={StaticResource VisibilityConverter}}"/>
-                            <local:CancellableButtonView MyCommand="{Binding CoolCamCommand}" MyCancelCommand="{Binding CancelCoolCamCommand}" MyButtonImage="{StaticResource CheckedSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" HorizontalAlignment="Right" Width="50" Height="50" />
-                        </StackPanel>
-                        
-                    </Grid>
-                    <local:CameraCoolingChartsView DataContext="{Binding}" Grid.Row="1" Grid.ColumnSpan="2"></local:CameraCoolingChartsView>
-                    <!--<chartingToolkit:Chart Grid.Row="2" Grid.Column="0" DataContext="{Binding Cam.CoolerPowerHistory}"  Title="Cooler Power" Style="{StaticResource ChartStyle}">
+                            <StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}"  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" Visibility="{Binding CoolingRunning, Converter={StaticResource VisibilityConverter}}"/>
+                                <local:CancellableButtonView MyCommand="{Binding CoolCamCommand}" MyCancelCommand="{Binding CancelCoolCamCommand}" MyButtonImage="{StaticResource CheckedSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" HorizontalAlignment="Right" Width="40" Height="40" />
+                            </StackPanel>
+
+                        </Grid>
+                        <local:CameraCoolingChartsView DataContext="{Binding}" Grid.Row="1" Grid.ColumnSpan="2"></local:CameraCoolingChartsView>
+                        <!--<chartingToolkit:Chart Grid.Row="2" Grid.Column="0" DataContext="{Binding Cam.CoolerPowerHistory}"  Title="Cooler Power" Style="{StaticResource ChartStyle}">
                     <chartingToolkit:LineSeries  DependentValuePath="Value" 
 				    IndependentValuePath="Key" ItemsSource="{Binding}" 
 				    IsSelectionEnabled="True" Style="{StaticResource LineSeriesStyle}">
@@ -245,10 +279,10 @@
 				    IsSelectionEnabled="True" Style="{StaticResource LineSeriesStyle}"/>
                 </chartingToolkit:Chart>-->
 
-                </Grid>
-            </GroupBox>
+                    </Grid>
+                </GroupBox>
+            </Grid>
         </Grid>
-        
 
 
 

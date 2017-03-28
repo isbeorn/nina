@@ -377,21 +377,55 @@ namespace NINA.Model.MyCamera {
             RaisePropertyChanged("CoolerPower");
             RaisePropertyChanged("CoolerOn");
             RaisePropertyChanged("SetCCDTemperature");
-            
+            RaisePropertyChanged("CameraState");
         }
 
         private CameraControl GetControl(ASICameraDll.ASI_CONTROL_TYPE controlType) {
             return Controls.FirstOrDefault(x => x.ControlType == controlType);
         }
-                
-        public int Gain {
+
+        public bool CanGetGain {
             get {
-                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
+                return true;
+            }
+        }
+        public bool CanSetGain {
+            get {
+                return true;
+            }
+        }
+
+        public short Gain {
+            get {
+                return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
             }
             set {
                 if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN, value)) {
                     RaisePropertyChanged();
                 }
+            }
+        }
+
+        public short GainMax {
+            get {
+                return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
+            } 
+        }
+
+        public short GainMin {
+            get {
+                return (short)GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
+            }
+        }
+
+        public bool CanSetOffset {
+            get {
+                return true;
+            }
+        }
+        public bool CanSetUSBLimit {
+            get {
+                return true;
             }
         }
 
@@ -405,6 +439,17 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+        public int OffsetMin {
+            get {
+                return GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BRIGHTNESS);
+            }
+        }
+
+        public int OffsetMax {
+            get {
+                return GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BRIGHTNESS);
+            }
+        }
 
         public int USBLimit {
             get {
@@ -416,24 +461,34 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+        public int USBLimitMin {
+            get {
+                return GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
+            }
+        }
+        public int USBLimitMax {
+            get {
+                return GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
+            }
+        }
 
         private int GetControlValue(ASICameraDll.ASI_CONTROL_TYPE type) {
-            var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
+            var control = GetControl(type);
             return control.Value;
         }
 
         private int GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE type) {
-            var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
+            var control = GetControl(type);
             return control.MaxValue;
         }
 
         private int GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE type) {
-            var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
+            var control = GetControl(type);
             return control.MinValue;
         }
 
         private bool SetControlValue(ASICameraDll.ASI_CONTROL_TYPE type, int value) {
-            var control = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
+            var control = GetControl(type);
             if (value <= control.MaxValue && value >= control.MinValue) {
                 control.Value = value;
                 return true;
@@ -447,6 +502,13 @@ namespace NINA.Model.MyCamera {
                 return false;
             }
         }
+
+        public string CameraState {
+            get {
+                return ExposureStatus.ToString();
+            }
+        }
+
         public void SetupDialog() {
             
         }
