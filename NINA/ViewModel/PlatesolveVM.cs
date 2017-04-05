@@ -215,9 +215,7 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _blindeSolveCancelToken;
         private void CancelBlindSolve(object o) {
-            if (_blindeSolveCancelToken != null) {
-                _blindeSolveCancelToken.Cancel();
-            }
+                _blindeSolveCancelToken?.Cancel();
         }
 
         IPlateSolver _platesolver;

@@ -1053,14 +1053,14 @@ namespace NINA.Model.MyTelescope {
 
         public void UpdateValues() {
 
-            RaisePropertyChanged("AltitudeString");
-            RaisePropertyChanged("AzimuthString");
-            RaisePropertyChanged("DeclinationString");
-            RaisePropertyChanged("RightAscensionString");
-            RaisePropertyChanged("SiderealTimeString");
-            RaisePropertyChanged("HoursToMeridianString");
-            RaisePropertyChanged("AtPark");
-            RaisePropertyChanged("Tracking");            
+            RaisePropertyChanged(nameof(AltitudeString));
+            RaisePropertyChanged(nameof(AzimuthString));
+            RaisePropertyChanged(nameof(DeclinationString));
+            RaisePropertyChanged(nameof(RightAscensionString));
+            RaisePropertyChanged(nameof(SiderealTimeString));
+            RaisePropertyChanged(nameof(HoursToMeridianString));
+            RaisePropertyChanged(nameof(AtPark));
+            RaisePropertyChanged(nameof(Tracking));            
             
 
         }

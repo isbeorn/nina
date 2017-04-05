@@ -64,7 +64,7 @@ namespace NINA.ViewModel {
             if (Telescope != null && Telescope.Connect()) {
                 _updateTelescope.Start();
                 Settings.TelescopeId = Telescope.Id;
-                RaisePropertyChanged("Telescope");
+                RaisePropertyChanged(nameof(Telescope));
             }
         }
 

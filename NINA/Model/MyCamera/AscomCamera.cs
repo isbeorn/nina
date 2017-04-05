@@ -906,11 +906,11 @@ namespace NINA.Model.MyCamera {
         }
 
         public void UpdateValues() {
-            RaisePropertyChanged("CCDTemperature");
-            RaisePropertyChanged("FullWellCapacity");
-            RaisePropertyChanged("HeatSinkTemperature");
-            RaisePropertyChanged("CoolerPower");
-            RaisePropertyChanged("IsPulseGuiding");
+            RaisePropertyChanged(nameof(CCDTemperature));
+            RaisePropertyChanged(nameof(FullWellCapacity));
+            RaisePropertyChanged(nameof(HeatSinkTemperature));
+            RaisePropertyChanged(nameof(CoolerPower));
+            RaisePropertyChanged(nameof(IsPulseGuiding));
             
         }
 

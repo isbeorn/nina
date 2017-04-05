@@ -260,7 +260,7 @@ namespace NINA.Model.MyCamera {
                     return false;
                 }
                 this.CaptureAreaInfo = new CaptureAreaInfo(this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
-                RaisePropertyChanged("Connected");
+                RaisePropertyChanged(nameof(Connected));
                 RaiseAllPropertiesChanged();
                 Notification.ShowSuccess("Camera connected");
             } catch (Exception ex) {
@@ -373,11 +373,11 @@ namespace NINA.Model.MyCamera {
         }
 
         public void UpdateValues() {
-            RaisePropertyChanged("CCDTemperature");
-            RaisePropertyChanged("CoolerPower");
-            RaisePropertyChanged("CoolerOn");
-            RaisePropertyChanged("SetCCDTemperature");
-            RaisePropertyChanged("CameraState");
+            RaisePropertyChanged(nameof(CCDTemperature));
+            RaisePropertyChanged(nameof(CoolerPower));
+            RaisePropertyChanged(nameof(CoolerOn));
+            RaisePropertyChanged(nameof(SetCCDTemperature));
+            RaisePropertyChanged(nameof(CameraState));
         }
 
         private CameraControl GetControl(ASICameraDll.ASI_CONTROL_TYPE controlType) {

@@ -79,7 +79,7 @@ namespace NINA.ViewModel {
                     GuideStepsHistory.RemoveAt(0);
                 }
                 GuideStepsHistory.Add(PHD2Client.GuideStep);
-                RaisePropertyChanged("GuideStepsHistory");
+                RaisePropertyChanged(nameof(GuideStepsHistory));
                 
               
                 
@@ -115,7 +115,7 @@ namespace NINA.ViewModel {
             set {
                 _maxY = value;                
                 RaisePropertyChanged();
-                RaisePropertyChanged("MinY");
+                RaisePropertyChanged(nameof(MinY));
             }
         }
 

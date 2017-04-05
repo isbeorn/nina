@@ -172,9 +172,7 @@ namespace NINA.ViewModel {
         }
 
         private void CancelCoolCamera(object o) {
-            if(_cancelCoolCameraSource != null) {
-                _cancelCoolCameraSource.Cancel();
-            }
+            _cancelCoolCameraSource?.Cancel();
         }
             
 
@@ -219,7 +217,7 @@ namespace NINA.ViewModel {
             if (Cam != null && Cam.Connect()) {
                 _updateCamera.Start();
                 Settings.CameraId = Cam.Id;
-                RaisePropertyChanged("Cam");
+                RaisePropertyChanged(nameof(Cam));
             }
         }
 
@@ -227,9 +225,7 @@ namespace NINA.ViewModel {
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxImage.Question, System.Windows.MessageBoxResult.Cancel);
             if(result == System.Windows.MessageBoxResult.OK) {
                 _updateCamera.Stop();
-                if(_cancelCoolCameraSource != null) {
-                    _cancelCoolCameraSource.Cancel();
-                }                
+                _cancelCoolCameraSource?.Cancel();
                 CoolingRunning = false;
                 Cam.Disconnect();
             }

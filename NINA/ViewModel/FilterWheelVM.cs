@@ -31,7 +31,7 @@ namespace NINA.ViewModel {
             if (FW != null && FW.Connect()) {
             
                 Settings.FilterWheelId = FW.Id;
-                RaisePropertyChanged("FW");
+                RaisePropertyChanged(nameof(FW));
             }            
         }
 

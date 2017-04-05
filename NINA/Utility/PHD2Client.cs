@@ -164,7 +164,7 @@ namespace NINA.Utility {
                 _client = new TcpClient();
                 await _client.ConnectAsync(Settings.PHD2ServerUrl, Settings.PHD2ServerPort);
                 _stream = _client.GetStream();
-                RaisePropertyChanged("Connected");
+                RaisePropertyChanged(nameof(Connected));
                 _tokenSource = new CancellationTokenSource();
                 
                 Notification.ShowSuccess("Connected to PHD2 Server");
@@ -221,7 +221,7 @@ namespace NINA.Utility {
                 _stream.Close();
                 _client.Close();
                 IsDithering = false;
-                RaisePropertyChanged("Connected");
+                RaisePropertyChanged(nameof(Connected));
             }
             return !Connected;
         }
@@ -377,7 +377,7 @@ namespace NINA.Utility {
                     _client.Close();
                     IsDithering = false;
                     Notification.ShowError("PHD2 Error: " + ex.Message);
-                    RaisePropertyChanged("Connected");
+                    RaisePropertyChanged(nameof(Connected));
                 }
                 catch (Exception ex) {
                     Logger.Error(ex.Message);

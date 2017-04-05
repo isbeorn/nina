@@ -87,7 +87,7 @@ namespace NINA.PlateSolving {
                 JObject authentication = await Authenticate(canceltoken);
                 var status = authentication.GetValue("status");
                 string session = string.Empty;
-                if (status != null && status.ToString() == "success") {
+                if (status?.ToString() == "success") {
                     session = authentication.GetValue("session").ToString();
 
                     progress.Report("Uploading Image...");
@@ -95,7 +95,7 @@ namespace NINA.PlateSolving {
 
                     string subid = string.Empty;
                     string jobid = string.Empty;
-                    if (imagesubmission.GetValue("status") != null && imagesubmission.GetValue("status").ToString() == "success") {
+                    if (imagesubmission.GetValue("status")?.ToString() == "success") {
                         subid = imagesubmission.GetValue("subid").ToString();
 
                         

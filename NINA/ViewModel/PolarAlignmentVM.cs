@@ -53,7 +53,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public ITelescope Telescope {
+        private ITelescope Telescope {
             get {
                 return TelescopeVM.Telescope;
             }
@@ -445,16 +445,12 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private void Canceldarvslew(object o) {
-            if (_cancelDARVSlewToken != null) {
-                _cancelDARVSlewToken.Cancel();
-            }
+        private void Canceldarvslew(object o) {            
+                _cancelDARVSlewToken?.Cancel();            
         }
 
-        private void CancelMeasurePolarError(object o) {
-            if (_cancelMeasureErrorToken != null) {
-                _cancelMeasureErrorToken.Cancel();
-            }
+        private void CancelMeasurePolarError(object o) {            
+                _cancelMeasureErrorToken?.Cancel();            
         }
 
         private AltitudeSite _altitudeSiteType;
