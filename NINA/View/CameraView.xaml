@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"  
              xmlns:view="clr-namespace:NINA.View"
-             xmlns:util="clr-namespace:NINA.Utility" x:Class="NINA.View.CameraView"             
+             xmlns:util="clr-namespace:NINA.Utility" x:Class="NINA.View.CameraView"        
+             xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid >
@@ -95,7 +96,7 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Name:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc Name}"></TextBlock>
                             <TextBlock Text="{Binding Cam.Name}" Margin="5,0,0,0" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">

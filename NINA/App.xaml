@@ -8,7 +8,7 @@
     <Application.Resources>
         <ResourceDictionary>
 
-            <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary.MergedDictionaries >
                 <ResourceDictionary Source="/NINA;component/Resources/SVGDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
