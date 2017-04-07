@@ -32,7 +32,7 @@ namespace NINA.ViewModel {
         }
 
         private void UpdateTelescope_Tick(object sender, EventArgs e) {            
-            if (Telescope != null && Telescope.Connected) {
+            if (Telescope?.Connected == true) {
                 Telescope.UpdateValues();
             }            
         }
@@ -61,7 +61,7 @@ namespace NINA.ViewModel {
         private void ChooseTelescope(object obj) {
             _updateTelescope.Stop();
             Telescope = (Model.MyTelescope.ITelescope)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Telescope);
-            if (Telescope != null && Telescope.Connect()) {
+            if (Telescope?.Connect() == true) {
                 _updateTelescope.Start();
                 Settings.TelescopeId = Telescope.Id;
                 RaisePropertyChanged(nameof(Telescope));

@@ -214,7 +214,7 @@ namespace NINA.ViewModel {
 
         private void ChooseCamera(object obj) {
             Cam = (Model.MyCamera.ICamera)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Camera);
-            if (Cam != null && Cam.Connect()) {
+            if (Cam?.Connect() == true) {
                 _updateCamera.Start();
                 Settings.CameraId = Cam.Id;
                 RaisePropertyChanged(nameof(Cam));

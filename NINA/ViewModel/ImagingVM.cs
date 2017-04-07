@@ -376,13 +376,13 @@ namespace NINA.ViewModel {
                 }
                 catch (System.OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
-                    if (Cam != null && Cam.Connected) {
+                    if (Cam?.Connected == true) {
                         Cam.AbortExposure();
                     }
                 }
                 catch(Exception ex) {
                     Notification.ShowError(ex.Message);
-                    if (Cam != null && Cam.Connected) {
+                    if (Cam?.Connected == true) {
                         Cam.AbortExposure();
                     }
                 }
@@ -407,7 +407,7 @@ namespace NINA.ViewModel {
         /// <returns></returns>
         private async Task CheckMeridianFlip(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
             if(Settings.AutoMeridianFlip) {
-                if(Telescope != null && Telescope.Connected) {
+                if(Telescope?.Connected == true) {
 
                     if(Telescope.TimeToMeridianFlip < (seq.ExposureTime / 60 / 60)) {
                         int remainingtime = (int)(Telescope.TimeToMeridianFlip * 60 * 60);

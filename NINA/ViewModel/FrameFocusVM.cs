@@ -218,9 +218,7 @@ namespace NINA.ViewModel {
         }
 
         private void CancelCaptureImage(object o) {
-            if (_captureImageToken != null) {
-                _captureImageToken.Cancel();
-            }
+            _captureImageToken?.Cancel();
         }
 
 

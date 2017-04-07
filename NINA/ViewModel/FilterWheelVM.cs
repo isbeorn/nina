@@ -28,7 +28,7 @@ namespace NINA.ViewModel {
 
         private void ChooseFW(object obj) {            
             FW = (Model.MyFilterWheel.IFilterWheel)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.FilterWheel);
-            if (FW != null && FW.Connect()) {
+            if (FW?.Connect() == true) {
             
                 Settings.FilterWheelId = FW.Id;
                 RaisePropertyChanged(nameof(FW));

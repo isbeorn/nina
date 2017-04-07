@@ -122,10 +122,10 @@ namespace NINA.Utility {
                     canceltoken.Token.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
-                    if (response != null) {
-                        response.Close();
-                        response = null;
-                    }
+                    
+                    response?.Close();
+                    response = null;
+                    
                     
                 }
                 finally {
@@ -160,10 +160,10 @@ namespace NINA.Utility {
                     canceltoken.Token.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
-                    if (response != null) {
-                        response.Close();
-                        response = null;
-                    }
+                    
+                    response?.Close();
+                    response = null;
+                    
                 }
                 finally {
                     request = null;
@@ -226,10 +226,10 @@ namespace NINA.Utility {
                     canceltoken.Token.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
-                    if (wresp != null) {
-                        wresp.Close();
-                        wresp = null;
-                    }
+                    
+                    wresp?.Close();
+                    wresp = null;
+                    
                 }
                 finally {
                     wr = null;

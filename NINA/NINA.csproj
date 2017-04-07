@@ -371,6 +371,13 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\Locale.de-DE.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Locale.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\SVGDictionary.xaml">
       <SubType>Designer</SubType>
     </Page>

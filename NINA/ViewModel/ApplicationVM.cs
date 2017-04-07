@@ -54,7 +54,7 @@ namespace NINA.ViewModel {
         }
 
         private void ExitApplication(object obj) {
-            if(CameraVM.Cam != null && CameraVM.Cam.Connected) {
+            if(CameraVM?.Cam?.Connected == true) {
                 System.Windows.MessageBoxResult diag = System.Windows.MessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
                 if(diag == MessageBoxResult.OK) {
                     Application.Current.Shutdown();

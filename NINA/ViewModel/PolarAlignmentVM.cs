@@ -467,7 +467,7 @@ namespace NINA.ViewModel {
         
 
         private async Task<bool> MeasurePolarError(IProgress<string> progress, Direction direction) {
-            if (ImagingVM.Cam != null && ImagingVM.Cam.Connected) {
+            if (ImagingVM?.Cam?.Connected == true) {
 
                 if (!ImagingVM.IsExposing) {
 
@@ -682,7 +682,7 @@ namespace NINA.ViewModel {
 
 
         private void UpdateValues_Tick(object sender, EventArgs e) {
-            if (Telescope != null && Telescope.Connected) {
+            if (Telescope?.Connected == true) {
 
                 var ascomutil = Utility.Utility.AscomUtil;
 

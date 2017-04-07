@@ -39,7 +39,7 @@ namespace NINA.ViewModel {
         }
 
         private void OpenSetupDialog(object o) {
-            if(SelectedDevice != null && SelectedDevice.HasSetupDialog) {
+            if(SelectedDevice?.HasSetupDialog == true) {
                 SelectedDevice.SetupDialog();
             }
         }
