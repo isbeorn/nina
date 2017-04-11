@@ -96,7 +96,7 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{ns:Loc Name}"></TextBlock>
+                            <TextBlock Text="{ns:Loc LblName}"></TextBlock>
                             <TextBlock Text="{Binding Cam.Name}" Margin="5,0,0,0" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">

@@ -3,6 +3,6 @@
                     xmlns:local="clr-namespace:NINA.Resources"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     
-    <s:String x:Key="Name">123</s:String>
+    <s:String x:Key="LblName">123</s:String>
     
 </ResourceDictionary>
