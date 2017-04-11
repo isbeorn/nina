@@ -4,6 +4,31 @@
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     
     <s:String x:Key="LblName">Name</s:String>
-    
-    
+    <s:String x:Key="LblCameraState">Camera State</s:String>
+    <s:String x:Key="LblDescription">Description</s:String>
+    <s:String x:Key="LblDriverInfo">Driver Info</s:String>
+    <s:String x:Key="LblDriverVersion">Driver Version</s:String>
+    <s:String x:Key="LblSensorName">Sensor Name</s:String>
+    <s:String x:Key="LblSensorType">Sensor Type</s:String>
+    <s:String x:Key="LblCameraXSize">Camera X Size</s:String>
+    <s:String x:Key="LblCameraYSize">Camera Y Size</s:String>
+    <s:String x:Key="LblMinExpTime">Minimum Exposure Time</s:String>
+    <s:String x:Key="LblMaxExpTime">Maximum Exposure Time</s:String>
+    <s:String x:Key="LblMaxBinX">Max Binning X</s:String>
+    <s:String x:Key="LblMaxBinY">Max Binning Y</s:String>
+    <s:String x:Key="LblPixelSizeX">Pixel Size X</s:String>
+    <s:String x:Key="LblPixelSizeY">Pixel Size Y</s:String>
+    <s:String x:Key="LblCamInfo">Camera Info</s:String>
+    <s:String x:Key="LblCam">Camera</s:String>
+    <s:String x:Key="LblFilterWheel">Filter Wheel</s:String>
+    <s:String x:Key="LblCamSettings">Camera Settings</s:String>
+    <s:String x:Key="LblGain">Gain</s:String>
+    <s:String x:Key="LblOffset">Offset</s:String>
+    <s:String x:Key="LblUSBLimit">USB Limit</s:String>
+    <s:String x:Key="LblTempControl">Temperature Control</s:String>
+    <s:String x:Key="LblCoolerOn">Cooler On</s:String>
+    <s:String x:Key="LblCoolerPower">Cooler Power</s:String>
+    <s:String x:Key="LblChipTemp">Chip Temperature</s:String>
+    <s:String x:Key="LblTargetTemp">Target Temperature</s:String>
+    <s:String x:Key="LblDuration">Duration</s:String>    
 </ResourceDictionary>

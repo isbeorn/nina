@@ -2,7 +2,34 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:NINA.Resources"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
-    
-    <s:String x:Key="LblName">123</s:String>
-    
+
+    <s:String x:Key="LblName">Name</s:String>
+    <s:String x:Key="LblCameraState">Kamera Status</s:String>
+    <s:String x:Key="LblDescription">Beschreibung</s:String>
+    <s:String x:Key="LblDriverInfo">Treiber Info</s:String>
+    <s:String x:Key="LblDriverVersion">Treiber Version</s:String>
+    <s:String x:Key="LblSensorName">Sensor Name</s:String>
+    <s:String x:Key="LblSensorType">Sensor Typ</s:String>
+    <s:String x:Key="LblCameraXSize">Kamera X Größe</s:String>
+    <s:String x:Key="LblCameraYSize">Kamera Y Größe</s:String>
+    <s:String x:Key="LblMinExpTime">Minimum Belichtungszeit</s:String>
+    <s:String x:Key="LblMaxExpTime">Maximum Belichtungszeit</s:String>
+    <s:String x:Key="LblMaxBinX">Max Binning X</s:String>
+    <s:String x:Key="LblMaxBinY">Max Binning Y</s:String>
+    <s:String x:Key="LblPixelSizeX">Pixel Größe X</s:String>
+    <s:String x:Key="LblPixelSizeY">Pixel Größe Y</s:String>
+    <s:String x:Key="LblCamInfo">Kamera Info</s:String>
+    <s:String x:Key="LblCam">Kamera</s:String>
+    <s:String x:Key="LblFilterWheel">Filterrad</s:String>
+    <s:String x:Key="LblCamSettings">Kamera Einstellungen</s:String>
+    <s:String x:Key="LblGain">Gain</s:String>
+    <s:String x:Key="LblOffset">Offset</s:String>
+    <s:String x:Key="LblUSBLimit">USB Limit</s:String>
+    <s:String x:Key="LblTempControl">Temperaturkontrolle</s:String>
+    <s:String x:Key="LblCoolerOn">Kühler an</s:String>
+    <s:String x:Key="LblCoolerPower">Kühlerstärke</s:String>
+    <s:String x:Key="LblChipTemp">Chip Temperatur</s:String>
+    <s:String x:Key="LblTargetTemp">Zieltemperatur</s:String>
+    <s:String x:Key="LblDuration">Dauer</s:String>
+
 </ResourceDictionary>

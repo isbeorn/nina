@@ -16,32 +16,20 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="2*" />
         </Grid.RowDefinitions>
-        <!--<Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>            
-        </Grid.ColumnDefinitions>-->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>                
             </Grid.ColumnDefinitions>
-            <GroupBox Header="Camera">
+            <GroupBox Header="{ns:Loc LblCam}">
                 <Grid>
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top">
                         <Grid Height="50" Width="50" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Button   Command="{Binding ChooseCameraCommand}"  IsEnabled="{Binding Cam.Connected, Converter={StaticResource InverseBooleanConverter}}"
                             Visibility="{Binding Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                <Grid>
-                                    <!--<Rectangle Fill="{StaticResource CameraSVG}" Width="45" Height="45" />-->
-
+                                <Grid>                                   
                                     <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5">
                                     </Path>
-                                    <!--<Image Margin="5" Source="/AstrophotographyBuddy;component/Resources/CamInactive.png"></Image>
-                            <Image Source="/AstrophotographyBuddy;component/Resources/unplugged.png">
-                                <Image.RenderTransform>
-                                    <ScaleTransform CenterX="45" CenterY="45" ScaleX="0.3" ScaleY="0.3"/>
-                                </Image.RenderTransform>
-                            </Image>-->
                                 </Grid>
                             </Button>
                             <Grid Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
@@ -50,11 +38,6 @@
                                     <Grid>
                                         <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5">
                                         </Path>
-                                        <!--<Image Source="/AstrophotographyBuddy;component/Resources/plugged.png">
-                                            <Image.RenderTransform>
-                                                <ScaleTransform CenterX="45" CenterY="45" ScaleX="0.3" ScaleY="0.3"/>
-                                            </Image.RenderTransform>
-                                        </Image>-->
                                     </Grid>
                                 </Button>
                             </Grid>
@@ -65,12 +48,6 @@
                                 <Grid>
                                     <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource FWSVG}" Stretch="Uniform" Margin="5">
                                     </Path>
-
-                                    <!--<Image Source="/AstrophotographyBuddy;component/Resources/unplugged.png">
-                                <Image.RenderTransform>
-                                    <ScaleTransform CenterX="45" CenterY="45" ScaleX="0.3" ScaleY="0.3"/>
-                                </Image.RenderTransform>
-                            </Image>-->
                                 </Grid>
                             </Button>
                             <Grid Grid.Column="4" Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}">
@@ -79,11 +56,6 @@
                                     <Grid>
                                         <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource FWSVG}" Stretch="Uniform" Margin="5">
                                         </Path>
-                                        <!--<Image Source="/AstrophotographyBuddy;component/Resources/plugged.png">
-                                <Image.RenderTransform>
-                                    <ScaleTransform CenterX="45" CenterY="45" ScaleX="0.3" ScaleY="0.3"/>
-                                </Image.RenderTransform>
-                            </Image>-->
                                     </Grid>
                                 </Button>
                             </Grid>
@@ -91,7 +63,7 @@
                     </StackPanel>
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Camera State:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblCameraState}"></TextBlock>
                             <TextBlock Text="{Binding Cam.CameraState}" Margin="5,0,0,0" />
                         </StackPanel>
 
@@ -100,75 +72,69 @@
                             <TextBlock Text="{Binding Cam.Name}" Margin="5,0,0,0" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Description:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblDescription}"></TextBlock>
                             <TextBlock Text="{Binding Cam.Description}" Margin="5,0,0,0" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Driver Info:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblDriverInfo}"></TextBlock>
                             <TextBlock Text="{Binding Cam.DriverInfo}" Margin="5,0,0,0" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Driver Version:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblDriverVersion}"></TextBlock>
                             <TextBlock Text="{Binding Cam.DriverVersion}" Margin="5,0,0,0" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Sensor Name:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblSensorName}"></TextBlock>
                             <TextBlock Text="{Binding Cam.SensorName}" Margin="5,0,0,0" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Sensor Type:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblSensorType}"></TextBlock>
                             <TextBlock Text="{Binding Cam.SensorType}" Margin="5,0,0,0" />
                         </StackPanel>
-
-                        
-                        
-                        
-                        
-
                     </StackPanel>
                 </Grid>
             </GroupBox>
-            <GroupBox Header="Camera Infos" Grid.Column="1">
+            <GroupBox Header="{ns:Loc LblCamInfo}" Grid.Column="1">
                 <UniformGrid Columns="2" >
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Camera X Size:"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblCameraXSize}"></TextBlock>
                         <TextBlock Text="{Binding Cam.CameraXSize}" Margin="5,0,0,0" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Camera Y Size:"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblCameraYSize}"></TextBlock>
                         <TextBlock Text="{Binding Cam.CameraYSize}" Margin="5,0,0,0" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Minimum Exposure Time:"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblMinExpTime}"></TextBlock>
                         <TextBlock Text="{Binding Cam.ExposureMin}" Margin="5,0,0,0" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Maximum Exposure Time:"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblMaxExpTime}"></TextBlock>
                         <TextBlock Text="{Binding Cam.ExposureMax}" Margin="5,0,0,0" />
                     </StackPanel>
 
 
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Max Binning X:"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblMaxBinX}"></TextBlock>
                         <TextBlock Text="{Binding Cam.MaxBinX}" Margin="5,0,0,0" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Max Binning Y:"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblMaxBinY}"></TextBlock>
                         <TextBlock Text="{Binding Cam.MaxBinY}" Margin="5,0,0,0" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Pixel Size X:"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblPixelSizeX}"></TextBlock>
                         <TextBlock Text="{Binding Cam.PixelSizeX}" Margin="5,0,0,0" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Pixel Size Y:"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblPixelSizeY}"></TextBlock>
                         <TextBlock Text="{Binding Cam.PixelSizeY}" Margin="5,0,0,0" />
                     </StackPanel>
                 </UniformGrid>
@@ -181,23 +147,23 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <GroupBox Header="Filter Wheel">
+                <GroupBox Header="{ns:Loc LblFilterWheel}">
                     <view:FilterWheelView Grid.Row="1" DataContext="{Binding FilterWheelVM}"></view:FilterWheelView>
                 </GroupBox>
-                <GroupBox Header="Camera Settings" Grid.Column="1">
+                <GroupBox Header="{ns:Loc LblCamSettings}" Grid.Column="1">
                     <StackPanel>
                         <DockPanel Visibility="{Binding Cam.CanGetGain , Converter={StaticResource VisibilityConverter}}">
-                            <TextBlock VerticalAlignment="Center" MinWidth="100"><Run Text="Gain:"/></TextBlock>
+                            <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{ns:Loc LblGain}"></TextBlock>
                             <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{Binding Cam.Gain}"></TextBlock>
                             <Slider Minimum="{Binding Cam.GainMin}" Maximum="{Binding Cam.GainMax}" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Cam.Gain}" IsEnabled="{Binding Cam.CanSetGain}"></Slider>                        
                         </DockPanel>
                         <DockPanel  Visibility="{Binding Cam.CanSetOffset , Converter={StaticResource VisibilityConverter}}">
-                            <TextBlock VerticalAlignment="Center" MinWidth="100"><Run Text="Offset:"/></TextBlock>
+                            <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{ns:Loc LblOffset}"></TextBlock>
                             <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{Binding Cam.Offset}"></TextBlock>
                             <Slider Minimum="{Binding Cam.OffsetMin}" Maximum="{Binding Cam.OffsetMax}" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Cam.Offset}"></Slider>
                         </DockPanel>
                         <DockPanel Visibility="{Binding Cam.CanSetUSBLimit , Converter={StaticResource VisibilityConverter}}">
-                            <TextBlock VerticalAlignment="Center" MinWidth="100"><Run Text="USB Limit:"/></TextBlock>
+                            <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{ns:Loc LblUSBLimit}"></TextBlock>
                             <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{Binding Cam.USBLimit}"></TextBlock>
                             <Slider Minimum="{Binding Cam.USBLimitMin}" Maximum="{Binding Cam.USBLimitMax}" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Cam.USBLimit}" ></Slider>
                         </DockPanel>
@@ -207,7 +173,7 @@
         </Grid>
         <Grid Grid.Row="2" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
             <Grid IsEnabled="{Binding Cam.Connected}">
-                <GroupBox Header="Temperature Control" IsEnabled="{Binding Cam.CanSetCCDTemperature}" >
+                <GroupBox Header="{ns:Loc LblTempControl}" IsEnabled="{Binding Cam.CanSetCCDTemperature}" >
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
@@ -224,26 +190,25 @@
                     </StackPanel>-->
                             <StackPanel Orientation="Horizontal">
                                 <CheckBox IsChecked="{Binding Cam.CoolerOn}" />
-                                <TextBlock Margin="5,0,0,0" ><Run Text="Cooler On"/></TextBlock>
+                                <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblCoolerOn}"></TextBlock>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock><Run Text="Cooler Power"/></TextBlock>
+                                <TextBlock Text="{ns:Loc LblCoolerPower}"></TextBlock>
                                 <TextBlock Text="{Binding Cam.CoolerPower, StringFormat=\{0:#.00\}%}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock><Run Text="CCD Temperature"/></TextBlock>
+                                <TextBlock Text="{ns:Loc LblChipTemp}"></TextBlock>
                                 <TextBlock Text="{Binding Cam.CCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" IsEnabled="False">
-                                <TextBlock Text="Target Temperature" />
-                                <!--<Slider Value="{Binding Cam.SetCCDTemperature}" Minimum="-50" Maximum="20" SmallChange=".1" TickPlacement="BottomRight"/>-->
+                                <TextBlock Text="{ns:Loc LblTargetTemp}" />                                
                                 <TextBlock Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" MinWidth="20" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
                             </StackPanel>
                         </StackPanel>
 
                         <Grid Grid.Column="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="110" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="20" />
                             </Grid.ColumnDefinitions>
@@ -253,8 +218,8 @@
                                 <RowDefinition Height="40" />
                             </Grid.RowDefinitions>
 
-                            <TextBlock>Target Temp.</TextBlock>
-                            <TextBlock  Grid.Row="1">Duration</TextBlock>
+                            <TextBlock Text="{ns:Loc LblTargetTemp}"></TextBlock>
+                            <TextBlock  Grid.Row="1" Text="{ns:Loc LblDuration}"></TextBlock>
 
                             <Slider Grid.Column="1" Minimum="-50" Maximum="20" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding TargetTemp}" IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"></Slider>
                             <TextBlock Grid.Column="2" Text="{Binding TargetTemp, StringFormat=\{0:#.0\}}" ></TextBlock>
