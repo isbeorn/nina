@@ -112,21 +112,13 @@ namespace NINA.ViewModel {
             Image = null;
             GC.Collect();
             BitmapSource source = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
-
-            source.Freeze();
+            
             if (DetectStars) {
                 source = await ImageAnalysis.DetectStarsAsync(source, ImgArr, progress, canceltoken);
             } else if (AutoStretch) {
-                var img = ImageAnalysis.BitmapFromSource(source);
-
-                var filter = ImageAnalysis.GetColorRemappingFilter(ImgArr.Statistics.Mean, 0.25);
-                filter.ApplyInPlace(img);
-
-                source = null;
-
-                source = ImageAnalysis.ConvertBitmap(img, System.Windows.Media.PixelFormats.Gray16);
+                source = await StretchAsync(source);
             }
-            source.Freeze();
+            
             await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                 if (this.ImgStatHistory.Count > 25) {
                     this.ImgStatHistory.RemoveAt(0);
@@ -141,18 +133,21 @@ namespace NINA.ViewModel {
             
         }
 
-        private async Task<BitmapSource> Stretch(BitmapSource source) {
-            return await Task<BitmapSource>.Run(() => {
-                var img = ImageAnalysis.BitmapFromSource(source);
+        private async Task<BitmapSource> StretchAsync(BitmapSource source) {
+            return await Task<BitmapSource>.Run(() => Stretch(source));
+        }
 
-                var filter = ImageAnalysis.GetColorRemappingFilter(ImgArr.Statistics.Mean, 0.25);
-                filter.ApplyInPlace(img);
+        private BitmapSource Stretch(BitmapSource source) {
+            var img = ImageAnalysis.BitmapFromSource(source);
 
-                source = null;
+            var filter = ImageAnalysis.GetColorRemappingFilter(ImgArr.Statistics.Mean, 0.25);
+            filter.ApplyInPlace(img);
 
-                source = ImageAnalysis.ConvertBitmap(img, System.Windows.Media.PixelFormats.Gray16);
-                return source;
-            });
+            source = null;
+
+            source = ImageAnalysis.ConvertBitmap(img, System.Windows.Media.PixelFormats.Gray16);
+            source.Freeze();
+            return source;
         }
 
 

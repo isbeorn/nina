@@ -289,7 +289,7 @@ namespace NINA.Utility {
             catch (OperationCanceledException) {
                 progress.Report("Operation cancelled");
             }
-
+            result.Freeze();
             return result;
         }
 
@@ -356,6 +356,7 @@ namespace NINA.Utility {
             double dpi = 96;
 
             BitmapSource source = BitmapSource.Create(arr.Statistics.Width, arr.Statistics.Height, dpi, dpi, pf, null, arr.FlatArray, stride);
+            source.Freeze();
             return source;
         }
     }
