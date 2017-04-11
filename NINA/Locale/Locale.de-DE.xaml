@@ -27,9 +27,33 @@
     <s:String x:Key="LblUSBLimit">USB Limit</s:String>
     <s:String x:Key="LblTempControl">Temperaturkontrolle</s:String>
     <s:String x:Key="LblCoolerOn">Kühler an</s:String>
-    <s:String x:Key="LblCoolerPower">Kühlerstärke</s:String>
+    <s:String x:Key="LblCoolerPower">Kühlerleistung</s:String>
     <s:String x:Key="LblChipTemp">Chip Temperatur</s:String>
     <s:String x:Key="LblTargetTemp">Zieltemperatur</s:String>
     <s:String x:Key="LblDuration">Dauer</s:String>
-
+    <s:String x:Key="LblExposureTime">Belichtungszeit</s:String>
+    <s:String x:Key="LblFilter">Filter</s:String>
+    <s:String x:Key="LblBinning">Binning</s:String>
+    <s:String x:Key="LblTooltipLoop">Schaltet wiederholenden Aufnahmemodus an/aus</s:String>
+    <s:String x:Key="LblTooltipTakeExposure">Startet Aufnahme</s:String>
+    <s:String x:Key="LblOK">OK</s:String>
+    <s:String x:Key="LblCancel">Abbrechen</s:String>
+    <s:String x:Key="LblSettings">Einstellungen</s:String>
+    <s:String x:Key="LblFilterName">Filter Name</s:String>
+    <s:String x:Key="LblFocusOffset">Fokus Offset</s:String>
+    <s:String x:Key="LblHistogram">Histogramm</s:String>
+    <s:String x:Key="LblTooltipAutoStretch">Schaltet automatisches Strecken des Histogramms an/aus (nur Anzeige)</s:String>
+    <s:String x:Key="LblTooltipDetectStars">Schaltet automatisches Erkennen und Auswerten (Half-Flus-Radius) von Sternen an/aus</s:String>
+    <s:String x:Key="LblHFR">HFR</s:String>
+    <s:String x:Key="LblDetectedStars">Erkannte Sterne</s:String>
+    <s:String x:Key="LblImage">Bild</s:String>
+    <s:String x:Key="LblWidth">Breite</s:String>
+    <s:String x:Key="LblHeight">Höhe</s:String>
+    <s:String x:Key="LblMean">Mittelwert</s:String>
+    <s:String x:Key="LblStDev">σ</s:String>
+    <s:String x:Key="LblNrStars">#Sterne</s:String>
+    <s:String x:Key="LblHistory">Historie</s:String>
+    <s:String x:Key="LblTooltipAddSequence">Fügt eine neue Reihe in die Liste der Sequenzen hinzu</s:String>
+    <s:String x:Key="LblTooltipStartSequence">Startet die Sequenzen</s:String>
+    <s:String x:Key="LblGeneral">Allgemein</s:String>
 </ResourceDictionary>

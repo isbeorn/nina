@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid x:Name="LayoutRoot">        
@@ -13,14 +14,14 @@
         </Grid.ColumnDefinitions>
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding MyCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}}">
-            <TextBlock VerticalAlignment="Center">Exposure Time:</TextBlock>
+            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblExposureTime}"></TextBlock>
             <TextBox Margin="5" MinWidth="50"  Text="{Binding MyExposureDuration}" VerticalAlignment="Center" ></TextBox>
             <StackPanel Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Filter:</TextBlock>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{ns:Loc LblFilter}"></TextBlock>
                 <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding MyFilters}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedFilter}" SelectedValuePath="Name"></ComboBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Binning:</TextBlock>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{ns:Loc LblBinning}"></TextBlock>
                 <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding MyBinningModes}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedBinningMode}" SelectedValuePath="Name"></ComboBox>
             </StackPanel>
         </StackPanel>
@@ -30,7 +31,7 @@
             <ToggleButton IsChecked="{Binding MyLoop}"  Margin="5,0,5,0">
                 <ToggleButton.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
-                        Loop exposures
+                        <TextBlock Text="{ns:Loc LblTooltipLoop}" />
                     </ToolTip>
                 </ToggleButton.ToolTip>
                 <ToggleButton.Style>
@@ -59,7 +60,7 @@
             </ToggleButton>
 
 
-            <local:CancellableButtonView  Width="50" Height="50" MyCommand="{Binding MyCommand}" MyCancelCommand="{Binding MyCancelCommand}" MyButtonImage="{Binding MyButtonImage}" MyCancelButtonImage="{Binding MyCancelButtonImage}"  Margin="5,0,5,0" HorizontalAlignment="Left" MyButtonTooltip="Take exposure"/>
+            <local:CancellableButtonView  Width="50" Height="50" MyCommand="{Binding MyCommand}" MyCancelCommand="{Binding MyCancelCommand}" MyButtonImage="{Binding MyButtonImage}" MyCancelButtonImage="{Binding MyCancelButtonImage}"  Margin="5,0,5,0" HorizontalAlignment="Left" MyButtonTooltip="{ns:Loc LblTooltipTakeExposure}"/>
         </UniformGrid>
     </Grid>
 </UserControl>

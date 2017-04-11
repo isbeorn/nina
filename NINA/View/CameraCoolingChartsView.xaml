@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
-             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"           
+             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"   
+             xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -43,7 +44,7 @@
                 <oxy:LineSeries ItemsSource="{Binding CoolerPowerHistory}" 
                                 DataFieldX="Key" 
                                 DataFieldY="Value" 
-                                Title="Cooler Power"/>                
+                                Title="{ns:Loc LblCoolerPower}"/>                
             </oxy:Plot.Series>
         </oxy:Plot>
         
@@ -78,7 +79,7 @@
                 <oxy:LineSeries ItemsSource="{Binding CCDTemperatureHistory}" 
                                 DataFieldX="Key" 
                                 DataFieldY="Value"                                  
-                                Title="Chip Temperature"/>
+                                Title="{ns:Loc LblChipTemp}"/>
             </oxy:Plot.Series>
         </oxy:Plot>
     </Grid>

@@ -7,12 +7,13 @@
              xmlns:model="clr-namespace:NINA.Model"
              xmlns:util="clr-namespace:NINA.Utility"
              xmlns:astrometry="clr-namespace:NINA.Utility.Astrometry"
+             xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Background="{StaticResource BackgroundBrush}">
     <TabControl>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Text="General" Foreground="{StaticResource ButtonForegroundBrush}" />
+                <TextBlock Text="{ns:Loc LblGeneral}" Foreground="{StaticResource ButtonForegroundBrush}" />
             </TabItem.Header>
             <UniformGrid Columns="2" Rows="3">
                 <GroupBox Header="Astrometry">

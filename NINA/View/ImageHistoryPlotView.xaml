@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"             
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"  
+             xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -52,13 +53,13 @@
                                 DataFieldY="HFR" 
                                 MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" 
                                 MarkerType="Circle"
-                                Title=" HFR"/>
+                                Title="{ns:Loc LblHFR}"/>
                 <oxy:LineSeries ItemsSource="{Binding ImgStatHistory}"  
                                 DataFieldX="Id" YAxisKey="Secondary"
                                 DataFieldY="DetectedStars"  
                                 MarkerFill="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" 
                                 MarkerType="Circle"
-                                Title="Detected Stars"/>
+                                Title="{ns:Loc LblDetectedStars}"/>
                 
             </oxy:Plot.Series>
         </oxy:Plot>

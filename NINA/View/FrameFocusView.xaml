@@ -10,17 +10,13 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <!--<ColumnDefinition Width="Auto"/>-->
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>        
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-
         
-        
-        <local:ImageControlView Grid.Row="0" DataContext="{Binding ImagingVM.ImageControl}" />                
-
+        <local:ImageControlView Grid.Row="0" DataContext="{Binding ImagingVM.ImageControl}" />   
 
         <Grid Grid.Column="0" Grid.Row="2" IsEnabled="{Binding ImagingVM.Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
             <local:CameraControlView  IsEnabled="{Binding ImagingVM.Cam.Connected}"                    
@@ -34,57 +30,6 @@
                     MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
                     MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
                     MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />
-        </Grid>
-       <!--
-        <Expander ExpandDirection="Right"  Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" IsExpanded="False">
-            <Expander.Header>
-                <TextBlock Text="Image Manipulation" TextOptions.TextFormattingMode="Display"
-TextOptions.TextRenderingMode="ClearType"
-UseLayoutRounding="true">
-                    <TextBlock.LayoutTransform>
-                        <RotateTransform Angle="-90"/>
-                    </TextBlock.LayoutTransform>
-                </TextBlock>
-            </Expander.Header>
-            <Grid  >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="50"/>
-                </Grid.RowDefinitions>
-
-                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource BrightnessSVG}" Stretch="Uniform" Margin="5">
-                </Path>
-                <Slider Grid.Row="1" Orientation="Vertical" Width="25" Value="{Binding Brightness}" MinWidth="50"   Maximum="2" Minimum="0" SmallChange="0.1"></Slider>
-                <TextBlock HorizontalAlignment="Center" Grid.Row="2" Text="{Binding Brightness}"></TextBlock>
-
-                <Path Grid.Column="1" Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource ContrastSVG}" Stretch="Uniform" Margin="5">
-                </Path>
-
-                <Slider  Grid.Row="1" Grid.Column="1" Orientation="Vertical" Width="25" Value="{Binding Contrast}" MinWidth="50" Maximum="10" Minimum="0" SmallChange="0.1"></Slider>
-                <TextBlock HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1" Text="{Binding Contrast}"></TextBlock>
-
-                <Path Fill="{StaticResource ButtonForegroundBrush}" Grid.Column="2" Data="{StaticResource GammaSVG}" Stretch="Uniform" Margin="5">
-                </Path>
-                <Slider HorizontalAlignment="Center" Grid.Row="1" Grid.Column="2" Orientation="Vertical" Width="25" MinWidth="50" Value="{Binding Gamma}" Maximum="5" Minimum="0.2" SmallChange="0.1"></Slider>
-                <TextBlock HorizontalAlignment="Center" Grid.Row="2" Grid.Column="2" Text="{Binding Gamma}"></TextBlock>
-                
-                <UniformGrid Grid.Row="3" Columns="1" Grid.ColumnSpan="99" >
-                    <Button Command="{Binding ApplyImageParamsCommand}" Width="50" Height="50" HorizontalAlignment="Right" Margin="5,0,5,0"> 
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CheckedSVG}" Stretch="Uniform" Margin="5">
-                        </Path>
-                    </Button>
-                </UniformGrid>
-            </Grid>
-
-            
-        </Expander>
-        -->
+        </Grid>       
     </Grid>
 </UserControl>

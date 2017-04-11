@@ -5,14 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
              xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Background="{StaticResource BackgroundBrush}">
         <ListView ItemsSource="{Binding FW.Filters}" SelectedIndex="{Binding FW.Position}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Filter Name" Width="Auto" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Focus Offset" Width="Auto" DisplayMemberBinding="{Binding FocusOffset}" />
+                    <GridViewColumn Header="{ns:Loc LblFilterName}" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="{ns:Loc LblFocusOffset}" Width="Auto" DisplayMemberBinding="{Binding FocusOffset}" />
                 </GridView>
             </ListView.View>
         </ListView>
