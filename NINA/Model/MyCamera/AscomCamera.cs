@@ -655,6 +655,9 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 if (Connected) {
+                    if (value % 2 > 0) {
+                        value--;
+                    }
                     _camera.NumX = value;
                     RaisePropertyChanged();
                 }
@@ -670,6 +673,9 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 if (Connected) {
+                    if (value % 2 > 0) {
+                        value--;
+                    }
                     _camera.NumY = value;
                     RaisePropertyChanged();
                 }                
@@ -917,8 +923,11 @@ namespace NINA.Model.MyCamera {
         public void SetBinning(short x, short y) {
             BinX = x;
             BinY = y;
-            NumX = CameraXSize / x;
-            NumY = CameraYSize / y;
+
+            var newX = CameraXSize / x;
+            var newY = CameraYSize / y;            
+            NumX = newX;            
+            NumY = newY;            
         }
 
         public void Dispose() {
