@@ -23,18 +23,16 @@
                                 <ColumnDefinition Width="15"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Ellipse Width="15" Height="15"  Fill="{StaticResource ButtonBackgroundBrush}">
-
-                            </Ellipse>
-                            <Path x:Name="icon" Fill="{StaticResource ButtonForegroundBrush}" Width="15" Height="15" Margin="2" Data="{StaticResource NextSVG}" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Path.RenderTransform>
+                            <Polygon x:Name="icon" Points="0,0 12,7.5, 0,15" Width="15" Height="15" 
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2"
+                                     Fill="{StaticResource ButtonBackgroundBrush}" RenderTransformOrigin="0.5,0.5">
+                                <Polygon.RenderTransform>
                                     <TransformGroup>
-                                        <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
                                         <RotateTransform Angle="90"></RotateTransform>
                                     </TransformGroup>
 
-                                </Path.RenderTransform>
-                            </Path>
+                                </Polygon.RenderTransform>
+                            </Polygon>
                             <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" Margin="4,0,0,0" RecognizesAccessKey="True" SnapsToDevicePixels="True" VerticalAlignment="Center"/>
                         </Grid>
                     </Border>
@@ -43,7 +41,6 @@
                             <Setter Property="RenderTransform"  TargetName="icon">
                                 <Setter.Value>
                                     <TransformGroup>
-                                        <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
                                         <RotateTransform Angle="0"></RotateTransform>
                                     </TransformGroup>
                                 </Setter.Value>
