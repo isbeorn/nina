@@ -18,6 +18,7 @@
                 <ResourceDictionary Source="StaticResources\Converters.xaml" />
                 
                 <!-- UI Styles -->
+                <ResourceDictionary Source="Styles\Window.xaml" />
                 <ResourceDictionary Source="Styles\TextBlock.xaml" />
                 <ResourceDictionary Source="Styles\TextBox.xaml" />
                 <ResourceDictionary Source="Styles\TabControl.xaml" />
