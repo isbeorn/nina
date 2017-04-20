@@ -3,71 +3,92 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:view="clr-namespace:NINA.View"
         xmlns:util="clr-namespace:NINA.Utility"
-        xmlns:local="clr-namespace:NINA.View"   
+        xmlns:local="clr-namespace:NINA"   
+        DataContext="{StaticResource AppVM}"
         xmlns:toast="clr-namespace:ToastNotifications;assembly=ToastNotifications"
-    Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy" MinHeight="720" MinWidth="1280" Background="{StaticResource BackgroundBrush}" Icon="/NINA;component/Resources/observatory.png" WindowStyle="None" MouseDown="Window_MouseDown"  AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
+    Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy" MinHeight="720" MinWidth="1280" Background="{StaticResource BackgroundBrush}" Icon="/NINA;component/Resources/observatory.png"  >
+
+
+
+    <Window.Style>
+        <Style TargetType="{x:Type local:MainWindow}">
+            <Setter Property="WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <WindowChrome />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type local:MainWindow}">
+                        <Grid Background="{StaticResource BackgroundBrush}">
+                            <Border Background="{StaticResource BackgroundBrush}"
+                            Margin="{Binding WindowNonClientFrameThickness}">
+                                <ContentPresenter Content="{TemplateBinding Content}" />
+                            </Border>
+                            <StackPanel Orientation="Horizontal" Margin="2.5,2.5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" >
+                                <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Fill="{StaticResource Observatory}" Width="30" Height="30"/>
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                                <TextBlock Text="{Binding Version}" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,2.5,2.5,0" VerticalAlignment="Top" HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding Status}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding OptionsVM.ToggleColorsCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Button.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                                            Toggles colors to alternative color schema
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource EyeSVG}" Stretch="Uniform" Margin="5">
+                                    </Path>
+                                </Button>
+                                <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding MinimizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MinimizeWindowSVG}" VerticalAlignment="Bottom" Stretch="Uniform" Margin="5,18,5,5">
+                                    </Path>
+
+                                </Button>
+                                <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MaximizeSVG}" Stretch="Uniform" Margin="5">
+
+                                    </Path>
+                                </Button>
+                                <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding ExitCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="5">
+                                    </Path>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Style>
+
+
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
-    <Grid DataContext="{StaticResource AppVM}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="35" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+        <Grid >
             <Grid>
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Fill="{StaticResource Observatory}" Width="30" Height="30"/>
-                        <TextBlock Text="N.I.N.A. - Nighttime Imaging 'N' Astronomy" VerticalAlignment="Center" Margin="4,0,0,0"/>
-                    <TextBlock Text="{Binding Version}" VerticalAlignment="Center" Margin="4,0,0,0"/>
-                </StackPanel>
-                    
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBlock Text="{Binding Status}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding OptionsVM.ToggleColorsCommand}" >
-                            <Button.ToolTip>
-                                <ToolTip ToolTipService.ShowOnDisabled="True">
-                                    Toggles colors to alternative color schema
-                                </ToolTip>
-                            </Button.ToolTip>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource EyeSVG}" Stretch="Uniform" Margin="5">
-                        </Path>
-                    </Button>
-                    <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding MinimizeWindowCommand}">
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MinimizeWindowSVG}" VerticalAlignment="Bottom" Stretch="Uniform" Margin="5,18,5,5">
-                        </Path>
-
-                    </Button>
-                    <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding MaximizeWindowCommand}">
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MaximizeSVG}" Stretch="Uniform" Margin="5">
-
-                        </Path>
-                    </Button>
-                    <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding ExitCommand}">
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="5">
-                        </Path>
-                    </Button>
-
-                </StackPanel>
-            </Grid>
-
-
-            <TabControl Grid.Row="1" TabStripPlacement="Left">
-
-               
-                <TabItem >
-                    <TabItem.Header>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35" /> <!-- reserved for windowchrome -->
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                
+                <TabControl Grid.Row="1" TabStripPlacement="Left">
+                    <TabItem >
+                        <TabItem.Header>
                             <Grid >
                                 <Grid  Height="50" Width="50">
                                     <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5"  >
                                     </Path>
                                 </Grid>
-                                
+
                                 <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
                                         Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
                                         Opacity="0.5" 
                                         Data="{StaticResource PowerSVG}" 
                                         Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
                                 </Path>
-                                
+
                                 <Grid Visibility="{Binding CameraVM.Cam, Converter={StaticResource NullToVisibilityConverter}}">
                                     <Path Fill="{StaticResource ButtonForegroundBrush}" 
                                           Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource VisibilityConverter}}"                                          
@@ -75,41 +96,41 @@
                                           Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
                                     </Path>
                                 </Grid>
-                            </Grid>                            
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:CameraView DataContext="{Binding CameraVM}" ></view:CameraView>
-                    </TabItem.Content>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource ImagingSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
-                        </Path>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:ImagingView DataContext="{Binding ImagingVM}" ></view:ImagingView>
-                    </TabItem.Content>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource FocusSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
-                        </Path>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:FrameFocusView DataContext="{Binding FrameFocusVM}" ></view:FrameFocusView>
-                    </TabItem.Content>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PlatesolveSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
-                        </Path>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:PlateSolveView DataContext="{Binding PlatesolveVM}" ></view:PlateSolveView>
-                    </TabItem.Content>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
+                            </Grid>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:CameraView DataContext="{Binding CameraVM}" ></view:CameraView>
+                        </TabItem.Content>
+                    </TabItem>
+                    <TabItem>
+                        <TabItem.Header>
+                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource ImagingSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
+                            </Path>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:ImagingView DataContext="{Binding ImagingVM}" ></view:ImagingView>
+                        </TabItem.Content>
+                    </TabItem>
+                    <TabItem>
+                        <TabItem.Header>
+                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource FocusSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
+                            </Path>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:FrameFocusView DataContext="{Binding FrameFocusVM}" ></view:FrameFocusView>
+                        </TabItem.Content>
+                    </TabItem>
+                    <TabItem>
+                        <TabItem.Header>
+                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PlatesolveSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
+                            </Path>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:PlateSolveView DataContext="{Binding PlatesolveVM}" ></view:PlateSolveView>
+                        </TabItem.Content>
+                    </TabItem>
+                    <TabItem>
+                        <TabItem.Header>
                             <Grid>
                                 <Grid  Height="50" Width="50">
                                     <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5" >
@@ -131,10 +152,10 @@
                                 </Grid>
                             </Grid>
                         </TabItem.Header>
-                    <TabItem.Content>
-                        <view:TelescopeView DataContext="{Binding TelescopeVM}" ></view:TelescopeView>
-                    </TabItem.Content>
-                </TabItem>
+                        <TabItem.Content>
+                            <view:TelescopeView DataContext="{Binding TelescopeVM}" ></view:TelescopeView>
+                        </TabItem.Content>
+                    </TabItem>
                     <TabItem>
                         <TabItem.Header>
 
@@ -146,7 +167,7 @@
                         </TabItem.Content>
                     </TabItem>
                     <TabItem>
-                    <TabItem.Header>
+                        <TabItem.Header>
                             <Grid>
                                 <Grid Height="50" Width="50">
                                     <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PHD2SVG}" Stretch="Uniform" Margin="5"  >
@@ -167,251 +188,38 @@
                                     </Path>
                                 </Grid>
                             </Grid>
-                        
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:PHD2View DataContext="{Binding PHD2VM}" ></view:PHD2View>
-                    </TabItem.Content>
-                </TabItem>
-                    
-                    <TabItem>
-                    <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MinimizeSVG}" Stretch="Uniform"  Margin="5" Height="50" Width="50" >
-                        </Path>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:OverView DataContext="{Binding}"></view:OverView>
-                    </TabItem.Content>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
-                        </Path>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:OptionsView DataContext="{Binding OptionsVM}" ></view:OptionsView>
-                    </TabItem.Content>
-                </TabItem>
-            </TabControl>
 
-            <toast:NotificationTray Grid.Row="1" NotificationsSource="{Binding Source={x:Static util:Notification.NotificationSource}}"
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:PHD2View DataContext="{Binding PHD2VM}" ></view:PHD2View>
+                        </TabItem.Content>
+                    </TabItem>
+
+                    <TabItem>
+                        <TabItem.Header>
+                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MinimizeSVG}" Stretch="Uniform"  Margin="5" Height="50" Width="50" >
+                            </Path>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:OverView DataContext="{Binding}"></view:OverView>
+                        </TabItem.Content>
+                    </TabItem>
+                    <TabItem>
+                        <TabItem.Header>
+                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
+                            </Path>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:OptionsView DataContext="{Binding OptionsVM}" ></view:OptionsView>
+                        </TabItem.Content>
+                    </TabItem>
+                </TabControl>
+
+                <toast:NotificationTray Grid.Row="1" NotificationsSource="{Binding Source={x:Static util:Notification.NotificationSource}}"
                         PopupFlowDirection="RightUp"
                         VerticalAlignment="Top"
                         HorizontalAlignment="Right" />
-        </Grid>
-  
-
-    <!--        <Grid  Visibility="Collapsed">
-            <Grid.RowDefinitions>
-            <RowDefinition Height="35" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid>
-            <StackPanel Orientation="Horizontal">            
-                <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Fill="{StaticResource Observatory}" Width="30" Height="30"/>
-                <TextBlock Text="Astrophotography Buddy" VerticalAlignment="Center" Margin="4,0,0,0"/>
-                <TextBlock Text="{Binding Version}" VerticalAlignment="Center" Margin="4,0,0,0"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding MinimizeWindowCommand}">
-                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MinimizeWindowSVG}" VerticalAlignment="Bottom" Stretch="Uniform" Margin="5,18,5,5">
-                    </Path>
-                
-                </Button>
-                <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding MaximizeWindowCommand}">
-                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MaximizeSVG}" Stretch="Uniform" Margin="5">
-                  
-                    </Path>
-                </Button>
-                <Button HorizontalAlignment="Right" Height="30" Width="40" Command="{Binding ExitCommand}">
-                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="5">
-                    </Path>
-                </Button>
-
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="55" />
-                <ColumnDefinition Width="60" />
-                <ColumnDefinition Width="60" />                        
-                <ColumnDefinition Width="60" />
-                <ColumnDefinition Width="60" />
-                <ColumnDefinition Width="60" />
-                <ColumnDefinition Width="60" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="60" />
-                <ColumnDefinition Width="60" />
-            </Grid.ColumnDefinitions>
-
-            <ToggleButton Grid.Column="0" Height="50" Width="50"  IsChecked="{Binding Visibility}" HorizontalAlignment="Left" VerticalAlignment="Center"   >
-                
-                <ToggleButton.Style>
-                    <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MenuSVG}" Stretch="Uniform" Margin="5" >
-                                        </Path>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MenuSVG}" Stretch="Uniform" Margin="5" >
-                                        </Path>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ToggleButton.Style>
-            </ToggleButton>
-            <ToggleButton  Grid.Column="2" Height="50" Width="50" IsChecked="{Binding OverViewVisibility}"  HorizontalAlignment="Center" VerticalAlignment="Center" >
-                <ToggleButton.Style>
-                    <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MinimizeSVG}" Stretch="Uniform" Margin="5">
-                                        </Path>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MinimizeSVG}" Stretch="Uniform" Margin="5">
-                                        </Path>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ToggleButton.Style>
-                
-            </ToggleButton>
-            <Button Grid.Column="1" Height="50" Width="50"  Command="{Binding PrevViewCommand}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource NextSVG}" Stretch="Uniform" Margin="5">
-                    <Path.LayoutTransform>                     
-                            <RotateTransform Angle="180"></RotateTransform>
-                    </Path.LayoutTransform>
-                </Path>
-            </Button>
-            <Button Grid.Column="3" Height="50" Width="50" Command="{Binding CameraVM.ChooseCameraCommand}"  IsEnabled="{Binding CameraVM.Cam.Connected, Converter={StaticResource InverseBooleanConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                    <Grid>
-                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5">
-                    </Path>
-                   
-                </Grid>
-            </Button>
-            <Button Grid.Column="3" Height="50" Width="50" Command="{Binding CameraVM.DisconnectCommand}" IsEnabled="{Binding CameraVM.Cam.Connected}" HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource VisibilityConverter}}">
-                <Grid>
-                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5">
-                    </Path>
-                    <Image Source="/AstrophotographyBuddy;component/Resources/plugged.png">
-                        <Image.RenderTransform>
-                            <ScaleTransform CenterX="45" CenterY="45" ScaleX="0.3" ScaleY="0.3"/>
-                        </Image.RenderTransform>
-                    </Image>
-                </Grid>
-            </Button>
-            <Grid Grid.Column="4" DataContext="{Binding CameraVM}">
-                <Button Grid.Column="4" Height="50" Width="50" Command="{Binding FilterWheelVM.ChooseFWCommand}"  IsEnabled="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBooleanConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                    <Grid>
-                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource FWSVG}" Stretch="Uniform" Margin="5">
-                        </Path>
-                        
-                    </Grid>
-                </Button>
-
-                <Button Grid.Column="4" Height="50" Width="50" Command="{Binding FilterWheelVM.DisconnectCommand}" IsEnabled="{Binding FilterWheelVM.FW.Connected}" HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}">
-                    <Grid>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource FWSVG}" Stretch="Uniform" Margin="5">
-                        </Path>
-                        
-                    </Grid>
-                </Button>
             </Grid>
-
-            <Button Grid.Column="5" Height="50" Width="50" Command="{Binding ConnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Grid>
-                    
-                    <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PHD2SVG}" Stretch="Uniform" Margin="5" Visibility="{Binding ConnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                    </Path>
-                    
-                    <Grid Visibility="{Binding ConnectPHDClientCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}" >
-                        <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ConnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" Text="Connecting..." />
-                    </Grid>
-                </Grid>
-            </Button>
-            <Button Grid.Column="5" Height="50" Width="50" Command="{Binding DisconnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource VisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Grid>
-                       <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PHD2SVG}" Stretch="Uniform" Margin="5" Visibility="{Binding DisconnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                        </Path>
-                    <Grid Visibility="{Binding DisconnectPHDClientCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}" >
-                        <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding DisconnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" Text="Disonnecting..." />
-                    </Grid>
-                </Grid>
-            </Button>
-            <Button Grid.Column="6" Height="50" Width="50" Command="{Binding TelescopeVM.ChooseTelescopeCommand}"  IsEnabled="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                <Grid>
-                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
-
-                        </Path>
-                    </Grid>
-            </Button>
-            <Button Grid.Column="6" Height="50" Width="50" Command="{Binding TelescopeVM.DisconnectCommand}" IsEnabled="{Binding TelescopeVM.Telescope.Connected}" HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource VisibilityConverter}}">
-                <Grid>
-
-                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
-
-                    </Path>
-                    <Image Source="/AstrophotographyBuddy;component/Resources/plugged.png">
-                        <Image.RenderTransform>
-                            <ScaleTransform CenterX="45" CenterY="45" ScaleX="0.3" ScaleY="0.3"/>
-                        </Image.RenderTransform>
-                    </Image>
-                </Grid>
-            </Button>
-
-            <TextBlock Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ImagingVM.ExpStatus}"></TextBlock>
-
-            <Button Grid.Column="8" Height="50" Width="50" Command="{Binding OptionsVM.ToggleColorsCommand}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource EyeSVG}" Stretch="Uniform" Margin="5">
-                </Path>
-            </Button>
-
-            <Button Grid.Column="9" Height="50" Width="50" Command="{Binding NextViewCommand}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource NextSVG}" Stretch="Uniform" Margin="5">                  
-                </Path>
-            </Button>
         </Grid>
-        
-        <Grid Grid.Row="2" Margin="0,10,0,0">
-            <view:ApplicationMenu DataContext="{Binding}" Visibility="{Binding Visibility, Converter={StaticResource VisibilityConverter}}"></view:ApplicationMenu>
-            <view:OverView DataContext="{Binding}" Visibility="{Binding OverViewVisibility, Converter={StaticResource VisibilityConverter}}"> </view:OverView>
-            <view:CameraView DataContext="{Binding CameraVM}" Visibility="{Binding Visibility, Converter={StaticResource VisibilityConverter}}"></view:CameraView>
-            <view:ImagingView DataContext="{Binding ImagingVM}" Visibility="{Binding Visibility, Converter={StaticResource VisibilityConverter}}"></view:ImagingView>
-            <view:FrameFocusView DataContext="{Binding FrameFocusVM}" Visibility="{Binding Visibility, Converter={StaticResource VisibilityConverter}}"></view:FrameFocusView>
-            <view:PlateSolveView DataContext="{Binding PlatesolveVM}" Visibility="{Binding Visibility, Converter={StaticResource VisibilityConverter}}"></view:PlateSolveView>
-            <view:TelescopeView DataContext="{Binding TelescopeVM}" Visibility="{Binding Visibility, Converter={StaticResource VisibilityConverter}}"></view:TelescopeView>
-            <view:PHD2View DataContext="{Binding PHD2VM}" Visibility="{Binding Visibility, Converter={StaticResource VisibilityConverter}}"></view:PHD2View>
-            <view:OptionsView DataContext="{Binding OptionsVM}" Visibility="{Binding Visibility, Converter={StaticResource VisibilityConverter}}"></view:OptionsView>
-        </Grid>
-        
-
-    </Grid>-->
-    </Grid>
     </Border>
 </Window>
