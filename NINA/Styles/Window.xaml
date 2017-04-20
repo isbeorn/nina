@@ -5,7 +5,7 @@
     <Style x:Key="MainWindow" TargetType="{x:Type Window}">
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
-                <WindowChrome CaptionHeight="30" GlassFrameThickness="0" />
+                <WindowChrome CaptionHeight="30" GlassFrameThickness="-1" />
             </Setter.Value>
         </Setter>
         <Setter Property="Template">
@@ -65,6 +65,35 @@
                                 <ContentPresenter Content="{TemplateBinding Content}" />
                             </Border>
 
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="NoResizeWindow" TargetType="{x:Type Window}">
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <WindowChrome CaptionHeight="30" GlassFrameThickness="-1" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Window}">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">                        
+                        <Grid Background="{StaticResource BackgroundBrush}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" Margin="2.5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" >
+                                <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Fill="{StaticResource Observatory}" Width="25" Height="25"/>
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" VerticalAlignment="Center" Margin="4,0,0,0"/>                                
+                            </StackPanel>
+                            <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}">
+                                <ContentPresenter Content="{TemplateBinding Content}" />
+                            </Border>
                         </Grid>
                     </Border>
                 </ControlTemplate>

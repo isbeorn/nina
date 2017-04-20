@@ -90,7 +90,14 @@ namespace NINA.ViewModel {
                 Title = "Choose Equipment",
                 DataContext = chooser
             };
+
+            var mainwindow = System.Windows.Application.Current.MainWindow;
+            mainwindow.Opacity = 0.5;
+            win.Left = mainwindow.Left + (mainwindow.Width - win.Width) / 2; ;
+            win.Top = mainwindow.Top + (mainwindow.Height - win.Height) / 2;
+
             win.ShowDialog();
+            mainwindow.Opacity = 1;
             if (win.DialogResult.Value) {
                 return chooser.SelectedDevice;
             } else {
