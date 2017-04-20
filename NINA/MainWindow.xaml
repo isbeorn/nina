@@ -15,7 +15,7 @@
         <Style TargetType="{x:Type local:MainWindow}">
             <Setter Property="WindowChrome.WindowChrome">
                 <Setter.Value>
-                    <WindowChrome CaptionHeight="30" />
+                    <WindowChrome CaptionHeight="30" GlassFrameThickness="0" />
                 </Setter.Value>
             </Setter>
             <Setter Property="Template">
