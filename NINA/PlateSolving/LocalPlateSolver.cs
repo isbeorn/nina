@@ -71,10 +71,10 @@ namespace NINA.PlateSolving {
                     image.CopyTo(fs);
                 }
 
-                var cygwinbashpath = Path.GetFullPath(Settings.CygwinBashLocation);                
+                var cygwinbashpath = Path.GetFullPath(Settings.CygwinLocation + "\\bin\\bash.exe");                
 
                 if (!File.Exists(cygwinbashpath)) {
-                    Utility.Notification.ShowError(string.Format("ansvr cygwin bash not found at {0}", cygwinbashpath));
+                    Utility.Notification.ShowError(string.Format("cygwin bash not found at {0}", cygwinbashpath));
                     result.Success = false;
                     return result;
                 }

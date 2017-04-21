@@ -189,6 +189,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.104.0\lib\net45\System.Data.SQLite.dll</HintPath>
@@ -204,6 +205,7 @@
     </Reference>
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -235,6 +237,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AstrometryIndexDownloader\AstrometryIndexDownloader.xaml.cs">
+      <DependentUpon>AstrometryIndexDownloader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AstrometryIndexDownloader\AstrometryIndexDownloaderVM.cs" />
+    <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
+      <DependentUpon>EquipmentChooser.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
@@ -247,7 +256,7 @@
     <Compile Include="Model\MyTelescope\ITelescope.cs" />
     <Compile Include="Utility\ASISDK\ASICameras.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
-    <Compile Include="ViewModel\EquipmentChooserVM.cs" />
+    <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\ChildVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
@@ -291,9 +300,6 @@
     <Compile Include="ViewModel\TelescopeVM.cs" />
     <Compile Include="View\ApplicationMenu.xaml.cs">
       <DependentUpon>ApplicationMenu.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\EquipmentChooserView.xaml.cs">
-      <DependentUpon>EquipmentChooserView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CameraControlView.xaml.cs">
       <DependentUpon>CameraControlView.xaml</DependentUpon>
@@ -358,6 +364,14 @@
     <Compile Include="View\TelescopeView.xaml.cs">
       <DependentUpon>TelescopeView.xaml</DependentUpon>
     </Compile>
+    <Page Include="AstrometryIndexDownloader\AstrometryIndexDownloader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EquipmentChooser\EquipmentChooser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -460,10 +474,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ApplicationMenu.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\EquipmentChooserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

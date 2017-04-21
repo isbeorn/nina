@@ -5,7 +5,7 @@
     <Style x:Key="MainWindow" TargetType="{x:Type Window}">
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
-                <WindowChrome CaptionHeight="30" GlassFrameThickness="-1" />
+                <WindowChrome CaptionHeight="30" GlassFrameThickness="-1" UseAeroCaptionButtons="False" />
             </Setter.Value>
         </Setter>
         <Setter Property="Template">
@@ -81,8 +81,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">                        
-                        <Grid Background="{StaticResource BackgroundBrush}">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
+                        <Grid Background="Transparent">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="30" />
                                 <RowDefinition Height="*" />

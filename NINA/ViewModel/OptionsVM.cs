@@ -4,6 +4,7 @@ using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace NINA.ViewModel {
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
+            DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
 
             ImageFilePath = Settings.ImageFilePath;
             ImageFilePattern = Settings.ImageFilePattern;
@@ -35,6 +37,13 @@ namespace NINA.ViewModel {
             p.Add(new ImagePattern("$$SENSORTEMP$$", "Temperature of the Camera", "-15"));
             p.Add(new ImagePattern("$$EXPOSURETIME$$", "Exposure Time in seconds", string.Format("{0:0.00}", 10.21234)));
             ImagePatterns = p;
+
+            ScanForIndexFiles();
+        }
+
+        private void DownloadIndexes(object obj) {
+            AstrometryIndexDownloader.AstrometryIndexDownloaderVM.Show(CygwinLocation);
+            ScanForIndexFiles();
         }
 
         private void OpenImageFileDiag(object o) {
@@ -46,11 +55,47 @@ namespace NINA.ViewModel {
         }
 
         private void OpenCygwinFileDiag(object o) {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.FileName = "bash.exe";
-            if (openFileDialog.ShowDialog() == true) {
-                CygwinBashLocation = openFileDialog.FileName;
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.SelectedPath = Settings.CygwinLocation;
+            
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                CygwinLocation = dialog.SelectedPath;                
             }            
+        }
+
+        private void ScanForIndexFiles() {
+            IndexFiles.Clear();
+            DirectoryInfo di = new DirectoryInfo(CygwinLocation + @"\usr\share\astrometry\data");
+            if(di.Exists) {
+                foreach(FileInfo f in di.GetFiles("*.fits")) {
+                    IndexFiles.Add(f.Name);
+                }
+            }
+        }
+
+        private ICommand _downloadIndexesCommand;
+        public ICommand DownloadIndexesCommand {
+            get {
+                return _downloadIndexesCommand;
+            }
+            set {
+                _downloadIndexesCommand = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ObservableCollection<string> _indexfiles;
+        public ObservableCollection<string> IndexFiles {
+            get {
+                if(_indexfiles == null) {
+                    _indexfiles = new ObservableCollection<string>();
+                }
+                return _indexfiles;
+            }
+            set {
+                _indexfiles = value;
+                RaisePropertyChanged();
+            }
         }
 
         private ICommand _openCygwinFileDiagCommand;
@@ -162,12 +207,13 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string CygwinBashLocation {
+        public string CygwinLocation {
             get {
-                return Settings.CygwinBashLocation;
+                return Settings.CygwinLocation;
             }
             set {
-                Settings.CygwinBashLocation = value;
+                Settings.CygwinLocation = value;
+                ScanForIndexFiles();
                 RaisePropertyChanged();
             }
         }

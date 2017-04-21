@@ -1,4 +1,5 @@
-﻿using NINA.Model;
+﻿using NINA.EquipmentChooser;
+using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using System;

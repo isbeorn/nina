@@ -374,7 +374,7 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public int PlateSolverType {
             get {
                 return ((int)(this["PlateSolverType"]));
@@ -410,13 +410,13 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string CygwinBashLocation {
+        [global::System.Configuration.DefaultSettingValueAttribute("%localappdata%\\NINA\\cygwin")]
+        public string CygwinLocation {
             get {
-                return ((string)(this["CygwinBashLocation"]));
+                return ((string)(this["CygwinLocation"]));
             }
             set {
-                this["CygwinBashLocation"] = value;
+                this["CygwinLocation"] = value;
             }
         }
         

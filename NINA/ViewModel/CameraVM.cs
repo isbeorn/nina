@@ -1,4 +1,5 @@
 ﻿using ASCOM.DriverAccess;
+using NINA.EquipmentChooser;
 using NINA.Utility;
 using NINA.ViewModel;
 using OxyPlot;

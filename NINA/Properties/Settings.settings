@@ -90,7 +90,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="PlateSolverType" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="AnsvrFocalLength" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">750</Value>
@@ -98,8 +98,8 @@
     <Setting Name="AnsvrPixelSize" Type="System.Double" Scope="User">
       <Value Profile="(Default)">3.8</Value>
     </Setting>
-    <Setting Name="CygwinBashLocation" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="CygwinLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%localappdata%\NINA\cygwin</Value>
     </Setting>
     <Setting Name="EpochType" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>

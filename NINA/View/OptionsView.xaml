@@ -152,104 +152,7 @@
                         <CheckBox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"  IsChecked="{Binding DitherRAOnly}" />
 
                     </Grid>
-                </GroupBox>
-                <GroupBox Header="Plate Solving">
-                    <UniformGrid Rows="2">
-
-                        <ComboBox Name="platesolvecombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:PlateSolverEnum}}}" SelectedItem="{Binding PlateSolverType}" Grid.ColumnSpan="2"/>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130">API Key:</TextBlock>
-                                <TextBox  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AstrometryAPIKey}" MinWidth="130"/>
-                                <StackPanel.Style>
-                                    <Style TargetType="{x:Type StackPanel}">
-                                        <Style.Triggers>
-                                            <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="1">
-                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130">cygwin bash location:</TextBlock>
-                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding CygwinBashLocation}" MinWidth="130" />
-                                <Button Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="40" Width="40" Grid.Column="2" Command="{Binding OpenCygwinFileDiagCommand}">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
-                                </Button>
-                                <StackPanel.Style>
-                                    <Style TargetType="{x:Type StackPanel}">
-                                        <Style.Triggers>
-                                            <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
-                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130">Focal Length:</TextBlock>
-                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrFocalLength}" />
-                                <StackPanel.Style>
-                                    <Style TargetType="{x:Type StackPanel}">
-                                        <Style.Triggers>
-                                            <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
-                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
-                            </StackPanel>
-                            <StackPanel Grid.Row="2" Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130">Pixel Size:</TextBlock>
-                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrPixelSize}" />
-                                <StackPanel.Style>
-                                    <Style TargetType="{x:Type StackPanel}">
-                                        <Style.Triggers>
-                                            <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
-                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
-                            </StackPanel>
-                            <StackPanel Grid.Row="4" Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130">Search Radius:</TextBlock>
-                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrSearchRadius}" />
-                                <StackPanel.Style>
-                                    <Style TargetType="{x:Type StackPanel}">
-                                        <Style.Triggers>
-                                            <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
-                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
-                            </StackPanel>
-                            <StackPanel  Grid.Row="1" Orientation="Horizontal">
-                                <TextBlock Grid.Row="1"  VerticalAlignment="Center" Width="130">Use full resolution:</TextBlock>
-                                <CheckBox  HorizontalAlignment="Stretch" VerticalAlignment="Center" IsChecked="{Binding UseFullResolutionPlateSolve}" />
-                                <StackPanel.Style>
-                                    <Style TargetType="{x:Type StackPanel}">
-                                        <Style.Triggers>
-                                            <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="1">
-                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
-                            </StackPanel>
-                        </Grid>
-
-                    </UniformGrid>
-                </GroupBox>
+                </GroupBox>               
             </UniformGrid>
         </TabItem>
         <TabItem>
@@ -321,6 +224,106 @@
                     </StackPanel>
                 </GroupBox>
             </UniformGrid>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Text="Plate Solver" Foreground="{StaticResource ButtonForegroundBrush}" />
+            </TabItem.Header>
+            <GroupBox Header="Plate Solving">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <ComboBox Name="platesolvecombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:PlateSolverEnum}}}" SelectedItem="{Binding PlateSolverType}" Grid.ColumnSpan="2"/>
+
+                    <!-- Astrometry.Net -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.Style>
+                            <Style TargetType="{x:Type Grid}">
+                                <Style.Triggers>
+                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="1">
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock   VerticalAlignment="Center" Width="130">API Key:</TextBlock>
+                                <TextBox  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AstrometryAPIKey}" MinWidth="130"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Width="130">Use full resolution:</TextBlock>
+                                <CheckBox  HorizontalAlignment="Stretch" VerticalAlignment="Center" IsChecked="{Binding UseFullResolutionPlateSolve}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    
+                    <!-- Local -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.Style>
+                            <Style TargetType="{x:Type Grid}">
+                                <Style.Triggers>
+                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock   VerticalAlignment="Center" Width="130">cygwin location:</TextBlock>
+                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding CygwinLocation}" MinWidth="130" />
+                                <Button VerticalAlignment="Center" HorizontalAlignment="Center" Height="40" Width="40" Grid.Column="2" Command="{Binding OpenCygwinFileDiagCommand}">
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock   VerticalAlignment="Center" Width="130">Focal Length:</TextBlock>
+                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrFocalLength}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock   VerticalAlignment="Center" Width="130">Pixel Size:</TextBlock>
+                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrPixelSize}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock   VerticalAlignment="Center" Width="130">Search Radius:</TextBlock>
+                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrSearchRadius}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions >
+                                <RowDefinition />
+                                <RowDefinition Height="40" />
+                            </Grid.RowDefinitions>
+                            <ListView ItemsSource="{Binding IndexFiles}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding}" />
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                            <Button Grid.Row="1" Command="{Binding DownloadIndexesCommand}">
+                                <Button.Content>
+                                    <TextBlock Text="Download more Index files" Foreground="{StaticResource ButtonForegroundBrush}" />
+                                </Button.Content>
+                                
+                            </Button>
+                        </Grid>
+                        
+                    </Grid>                   
+                </Grid>
+            </GroupBox>
         </TabItem>
     </TabControl>   
 </UserControl>

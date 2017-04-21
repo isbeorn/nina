@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NINA", "NINA\NINA.csproj", "{7DEC1B46-9701-4E49-90C1-F4427845669E}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NINATest", "NINATest\NINATest.csproj", "{102E88D0-82E9-4DA5-919A-94FC68E32F3E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarDataImport", "StarDataImport\StarDataImport.csproj", "{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetupCygwinInstallAction", "SetupCygwinInstallAction\SetupCygwinInstallAction.csproj", "{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +69,18 @@ Global
 		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Release|x64.Build.0 = Release|Any CPU
 		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Release|x86.ActiveCfg = Release|Any CPU
 		{EF4C7961-BFA7-407F-ADEC-41F11794E7FB}.Release|x86.Build.0 = Release|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Debug|x64.Build.0 = Debug|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Debug|x86.Build.0 = Debug|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Release|x64.ActiveCfg = Release|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Release|x64.Build.0 = Release|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Release|x86.ActiveCfg = Release|Any CPU
+		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,148 @@
+﻿<Window x:Class="NINA.AstrometryIndexDownloader.AstrometryIndexDownloader"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NINA.AstrometryIndexDownloader"
+        xmlns:util="clr-namespace:NINA.Utility"
+        xmlns:ns="clr-namespace:NINA.Locale"
+        xmlns:view="clr-namespace:NINA.View"
+        util:DialogCloser.DialogResult="{Binding DialogResult}" 
+        mc:Ignorable="d"
+        Title="Astrometry Index Downloader" Height="350" Width="550" ResizeMode="NoResize" Style="{StaticResource NoResizeWindow}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="100"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Margin="5">
+            Select index files to download. Choose files based on your Field of View. 
+            <LineBreak />
+            The FoV calculator can give you a hint which files to download
+        </TextBlock>
+        <GroupBox Header="FoV Calculator" Grid.Row="1">
+            <StackPanel Margin="5">
+                <UniformGrid Columns="3">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Focal Length: " />
+                        <TextBox Text="{Binding FocalLength}" MinWidth="40"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Pixel size in µm: "/>
+                        <TextBox Text="{Binding PixelSize}"  MinWidth="40"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Resolution: "/>
+                        <TextBox Text="{Binding CamWidth}"  MinWidth="40"/>
+                        <TextBlock Text="x"/>
+                        <TextBox Text="{Binding CamHeight}"  MinWidth="40"/>
+                        <TextBlock Text="px"/>
+                    </StackPanel>
+                </UniformGrid>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Arcsecs per pixel: " />
+                    <TextBlock Text="{Binding ArcsecPerPixel, StringFormat=\{0:#.00\}}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Field of View: " />
+                    <TextBlock Text="{Binding FieldOfView, StringFormat=\{0:#.00\}}" />
+                    <TextBlock Text=" arcmin" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Recommended Indexes: " />
+                    <TextBlock Text="{Binding RecommendedIndexes}" />
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Grid.Row="2">
+            <StackPanel Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Narrowest FoV:" MinWidth="85" VerticalAlignment="Center"  />
+                    <ComboBox ItemsSource="{Binding Indexes}" SelectedItem="{Binding SelectedNarrowest}" MinWidth="300">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Index: " />
+                                        <TextBlock Text="{Binding Name}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <TextBlock Text="Stars: " />
+                                        <TextBlock Text="{Binding Stars}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                        <TextBlock Text="from " />
+                                        <TextBlock Text="{Binding MinArcMin}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal">
+                                        <TextBlock Text="to " />
+                                        <TextBlock Text="{Binding MaxArcMin}" />
+                                        <TextBlock Text=" arcmin" />
+                                    </StackPanel>
+
+                                </Grid>
+
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Widest FoV:" MinWidth="85" VerticalAlignment="Center" />
+                    <ComboBox ItemsSource="{Binding Indexes}" MinWidth="300" SelectedItem="{Binding SelectedWidest}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Index: " />
+                                        <TextBlock Text="{Binding Name}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <TextBlock Text="Stars: " />
+                                        <TextBlock Text="{Binding Stars}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                        <TextBlock Text="from " />
+                                        <TextBlock Text="{Binding MinArcMin}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal">
+                                        <TextBlock Text="to " />
+                                        <TextBlock Text="{Binding MaxArcMin}" />
+                                        <TextBlock Text=" arcmin" />
+                                    </StackPanel>
+
+                                </Grid>
+
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+
+                <Grid>
+                    <StackPanel Orientation="Horizontal" Margin="0,50,0,0">
+                        <view:CancellableButtonView Width="100" Height="30"  MyCommand="{Binding DownloadCommand}" MyButtonText="{ns:Loc LblDownload}" MyCancelCommand="{Binding CancelDownloadCommand}" MyCancelButtonImage="{StaticResource CancelSVG}"  Margin="5,0,5,0" HorizontalAlignment="Left" MyButtonTooltip="{ns:Loc LblTooltipTakeExposure}"/>
+                        <TextBlock Text="{Binding DownloadStatus}" Margin="5,0,0,0" VerticalAlignment="Center"/>                    
+                    </StackPanel>
+                    <Button IsDefault="True" Click="ButtonOK_Click" Margin="0,50,0,0" Width="100" Height="30" HorizontalAlignment="Right">
+                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblOK}">
+                        </TextBlock>
+                    </Button>
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Window>

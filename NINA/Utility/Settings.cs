@@ -29,12 +29,12 @@ namespace NINA.Utility {
 
         }
 
-        public static string CygwinBashLocation {
+        public static string CygwinLocation {
             get {
-                return Properties.Settings.Default.CygwinBashLocation;
+                return Environment.ExpandEnvironmentVariables(Properties.Settings.Default.CygwinLocation);
             }
             set {
-                Properties.Settings.Default.CygwinBashLocation = value;
+                Properties.Settings.Default.CygwinLocation = value;
                 Properties.Settings.Default.Save();
             }
 

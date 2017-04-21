@@ -56,4 +56,5 @@
     <s:String x:Key="LblTooltipAddSequence">Add new row to sequence list</s:String>
     <s:String x:Key="LblTooltipStartSequence">Starts sequences</s:String>
     <s:String x:Key="LblGeneral">General</s:String>
+    <s:String x:Key="LblDownload">Download</s:String>
 </ResourceDictionary>

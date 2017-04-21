@@ -2,6 +2,7 @@
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
+using NINA.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ZWOptical.ASISDK;
 
-namespace NINA.ViewModel {
+namespace NINA.EquipmentChooser {
     class EquipmentChooserVM : BaseVM {
         private EquipmentChooserVM(EquipmentType equipment) {
             if(equipment == EquipmentType.Camera) {
@@ -86,13 +87,13 @@ namespace NINA.ViewModel {
             var chooser = new EquipmentChooserVM(equipment);
 
 
-            System.Windows.Window win = new View.EquipmentChooserView {
+            System.Windows.Window win = new EquipmentChooser {
                 Title = "Choose Equipment",
                 DataContext = chooser
             };
 
             var mainwindow = System.Windows.Application.Current.MainWindow;
-            mainwindow.Opacity = 0.5;
+            mainwindow.Opacity = 0.8;
             win.Left = mainwindow.Left + (mainwindow.Width - win.Width) / 2; ;
             win.Top = mainwindow.Top + (mainwindow.Height - win.Height) / 2;
 

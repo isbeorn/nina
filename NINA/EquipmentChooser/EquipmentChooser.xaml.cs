@@ -10,15 +10,14 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace NINA.View {
+namespace NINA.EquipmentChooser {
     /// <summary>
-    /// Interaction logic for EquipmentChooserView.xaml
+    /// Interaction logic for EquipmentChooser.xaml
     /// </summary>
-    public partial class EquipmentChooserView : Window {
-        public EquipmentChooserView() {
+    public partial class EquipmentChooser : Window {
+        public EquipmentChooser() {
             InitializeComponent();
         }
 

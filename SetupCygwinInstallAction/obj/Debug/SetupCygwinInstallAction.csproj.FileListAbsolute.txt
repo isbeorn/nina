@@ -1,0 +1,8 @@
+D:\Projects\nina\SetupCygwinInstallAction\bin\Debug\SetupCygwinInstallAction.dll
+D:\Projects\nina\SetupCygwinInstallAction\bin\Debug\SetupCygwinInstallAction.pdb
+D:\Projects\nina\SetupCygwinInstallAction\obj\Debug\SetupCygwinInstallAction.Properties.Resources.resources
+D:\Projects\nina\SetupCygwinInstallAction\obj\Debug\SetupCygwinInstallAction.csproj.GenerateResource.Cache
+D:\Projects\nina\SetupCygwinInstallAction\obj\Debug\SetupCygwinInstallAction.dll
+D:\Projects\nina\SetupCygwinInstallAction\obj\Debug\SetupCygwinInstallAction.pdb
+D:\Projects\nina\SetupCygwinInstallAction\bin\Debug\DotNetZip.dll
+D:\Projects\nina\SetupCygwinInstallAction\bin\Debug\DotNetZip.xml
