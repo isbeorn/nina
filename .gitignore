@@ -8,4 +8,6 @@ NINATest/bin/
 NINATest/obj/
 StarDataImport/bin/
 StarDataImport/obj/
+SetupCygwinInstallAction/obj/
+SetupCygwinInstallAction/bin/
 /packages
