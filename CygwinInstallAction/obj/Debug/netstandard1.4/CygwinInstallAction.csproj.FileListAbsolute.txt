@@ -1,3 +1,0 @@
-D:\Projects\nina\CygwinInstallAction\bin\Debug\netstandard1.4\CygwinInstallAction.deps.json
-D:\Projects\nina\CygwinInstallAction\obj\Debug\netstandard1.4\CygwinInstallAction.csprojResolveAssemblyReference.cache
-D:\Projects\nina\CygwinInstallAction\obj\Debug\netstandard1.4\CygwinInstallAction.AssemblyInfo.cs
