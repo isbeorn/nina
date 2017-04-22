@@ -189,8 +189,9 @@
                         <TextBlock Text="{Binding Cam.HeatSinkTemperature}" Margin="5,0,0,0"/>
                     </StackPanel>-->
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox IsChecked="{Binding Cam.CoolerOn}" />
-                                <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblCoolerOn}"></TextBlock>
+                                <TextBlock Text="{ns:Loc LblCoolerOn}" VerticalAlignment="Center"></TextBlock>
+                                <CheckBox IsChecked="{Binding Cam.CoolerOn}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
+                                
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{ns:Loc LblCoolerPower}"></TextBlock>

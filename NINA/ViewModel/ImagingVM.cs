@@ -464,6 +464,10 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StartSequence(IProgress<string> progress, CancellationToken token = new CancellationToken()) {
             _cancelSequenceToken = new CancellationTokenSource();
+            if(Cam?.Connected != true) {
+                Notification.ShowWarning("No Camera connected");
+                return false;
+            }
             if (IsExposing) {
                 Notification.ShowWarning("Camera is busy");
                 return false;
