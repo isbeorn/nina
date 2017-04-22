@@ -48,7 +48,7 @@
       <Value Profile="(Default)">#FF0B3C5D</Value>
     </Setting>
     <Setting Name="ButtonBackgroundSelectedColor" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFC49F66</Value>
+      <Value Profile="(Default)">#FF2190DB</Value>
     </Setting>
     <Setting Name="ButtonForegroundColor" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FFFFFFFF</Value>

@@ -206,7 +206,7 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFC49F66")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF2190DB")]
         public global::System.Windows.Media.Color ButtonBackgroundSelectedColor {
             get {
                 return ((global::System.Windows.Media.Color)(this["ButtonBackgroundSelectedColor"]));
