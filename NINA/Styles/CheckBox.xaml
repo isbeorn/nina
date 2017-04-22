@@ -28,6 +28,24 @@
                             <Setter TargetName="Off" Property="Background" Value="{StaticResource ButtonForegroundBrush }" />
                             <Setter TargetName="OffText" Property="Foreground" Value="{StaticResource PrimaryBrush}" />
                         </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter TargetName="On" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter TargetName="Off" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

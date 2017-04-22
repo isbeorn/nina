@@ -44,7 +44,7 @@
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonBackgroundBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Button Background Selected:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155">Button Highlight:</TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding ButtonBackgroundSelectedColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonBackgroundSelectedBrush}"></Button>
                         </StackPanel>
@@ -91,7 +91,7 @@
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonBackgroundBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Button Background Selected:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155">Button Highlight:</TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonBackgroundSelectedColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonBackgroundSelectedBrush}"></Button>
                         </StackPanel>
