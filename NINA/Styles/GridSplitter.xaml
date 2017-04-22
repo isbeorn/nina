@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:NINA.Styles">
 
     <Style TargetType="{x:Type GridSplitter}">
-        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+        <Setter Property="Background" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource BorderBrush}" />
     </Style>
 </ResourceDictionary>
