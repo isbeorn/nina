@@ -22,10 +22,7 @@ namespace NINA.ViewModel {
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
 
-            ImageFilePath = Settings.ImageFilePath;
-            ImageFilePattern = Settings.ImageFilePattern;
-            PHD2ServerUrl = Settings.PHD2ServerUrl;
-            PHD2ServerPort = Settings.PHD2ServerPort;
+            
 
             HashSet<ImagePattern> p = new HashSet<ImagePattern>();
             p.Add(new ImagePattern("$$FILTER$$", "Filtername", "L"));
@@ -48,6 +45,7 @@ namespace NINA.ViewModel {
 
         private void OpenImageFileDiag(object o) {
             var diag = new System.Windows.Forms.FolderBrowserDialog();
+            diag.SelectedPath = ImageFilePath;
             System.Windows.Forms.DialogResult result = diag.ShowDialog();
             if(result == System.Windows.Forms.DialogResult.OK) {
                 ImageFilePath = diag.SelectedPath + "\\";
