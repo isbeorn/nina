@@ -11,29 +11,19 @@
 
         <Grid  IsEnabled="{Binding ImagingVM.Cam.Connected}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="*" />            
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3*"/>                         
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
-                <Grid>
-                    <local:ImageControlView DataContext="{Binding ImagingVM.ImageControl}" />
-                    <!--<Image Source="{Binding ImagingVM.Image}"/>-->
-                    <!--<Grid>
-                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Opacity="0.2" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="100">
-                        </Path>
-                        <Image Source="{Binding Image}" />
-                    </Grid>
-                    <Image Source="{Binding PlateSolveResult.SolvedImage}" Visibility="{Binding PlateSolveResult, Converter={StaticResource NullToVisibilityConverter}}" />
-                    <Image Source="{Binding ImagingVM.Image}" Visibility="{Binding PlateSolveResult, Converter={StaticResource InverseNullToVisibilityConverter}}" />
-                    <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="450" Height="50" Background="{StaticResource BorderBrush}">
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundBrush}" Text="{Binding Progress}"></TextBlock>
-                    </Border>-->
-                </Grid>
+
+            <Grid Grid.Column="1">
+                <local:ImageControlView DataContext="{Binding ImagingVM.ImageControl}" />
+            </Grid>
             
-            <Border Grid.Column="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+            <Border  BorderBrush="{StaticResource BorderBrush}" BorderThickness="1 1 0 1">
                 <UniformGrid Columns="1">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock>Center RA:</TextBlock>

@@ -303,6 +303,10 @@ namespace NINA.ViewModel {
                     foreach (SequenceModel seq in sequence) {
                         seq.Active = true;
 
+                        if(seq.Dither && !PHD2Client.Connected) {
+                            Notification.ShowWarning("PHD2 Dither is enabled, but not connected!");
+                        }
+
                         while (seq.ExposureCount > 0) {
                             
 

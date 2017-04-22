@@ -23,37 +23,22 @@
     </UserControl.Resources>
     <Grid>
 
-        <DataGrid  x:Name="grd" ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" RowStyle="{StaticResource HighlightRow}">
+        <DataGrid  x:Name="grd" ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" RowStyle="{StaticResource HighlightRow}" BorderThickness="1 0 0 1">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="#" Binding="{Binding ExposureCount}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Time" Binding="{Binding ExposureTime}"></DataGridTextColumn>
                 <DataGridComboBoxColumn Header="Type" ItemsSource="{Binding Source={StaticResource AppVM}, Path=ImagingVM.SeqVM.ImageTypes}" SelectedItemBinding="{Binding ImageType, Mode=TwoWay}" />
                 <DataGridComboBoxColumn Header="Filter" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters}" DisplayMemberPath="Name" SelectedItemBinding="{Binding FilterType}" SelectedValuePath="Name"></DataGridComboBoxColumn>
                 <DataGridComboBoxColumn Header="Binning" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}" DisplayMemberPath="Name" SelectedItemBinding="{Binding Binning}" SelectedValuePath="Name"></DataGridComboBoxColumn>
-                <DataGridCheckBoxColumn Header="Dither" Binding="{Binding Dither}" >                   
-                    
-                    
-                </DataGridCheckBoxColumn>
+                <DataGridTemplateColumn Header="Dither">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>                
                 <DataGridTextColumn Header="Dither Every # Frame" Binding="{Binding DitherAmount}"></DataGridTextColumn>
-            </DataGrid.Columns>
-            
+            </DataGrid.Columns>            
         </DataGrid>
-        
-
-        <!-- <ItemsControl ItemsSource="{Binding Sequence}" >
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type model:SequenceModel}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding ExposureTime}"/>
-                        <TextBlock Text="{Binding ImageType}"/>
-                        <TextBlock Text="{Binding FilterType}"/>
-                        <TextBlock Text="{Binding Binning}"/>
-                        <TextBlock Text="{Binding ExposureCount}"/>
-
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>-->
-
     </Grid>
 </UserControl>

@@ -11,13 +11,11 @@
             <Border
                       x:Name="Border" 
                       Grid.ColumnSpan="2"
-                      CornerRadius="2"
                       Background="{StaticResource ButtonBackgroundBrush}"
                       BorderBrush="{StaticResource BorderBrush}"
                       BorderThickness="1" />
             <Border x:Name="LeftBorder"
-                      Grid.Column="0"
-                      CornerRadius="2,0,0,2" 
+                      Grid.Column="0" 
                       Margin="1" 
                       Background="{StaticResource BackgroundBrush}" 
                       BorderBrush="{StaticResource BorderBrush}"
@@ -110,8 +108,8 @@
                                 <Border 
                                         x:Name="DropDownBorder"
                                         Background="{StaticResource BackgroundBrush}"
-                                        BorderThickness="1"
-                                        BorderBrush="{StaticResource BackgroundBrush}"/>
+                                        BorderThickness="1 0 1 1"
+                                        BorderBrush="{StaticResource BorderBrush}"/>
                                 <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
                                     <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>
@@ -129,7 +127,6 @@
                             <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
                         </Trigger>
                         <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
-                            <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="4"/>
                             <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0"/>
                         </Trigger>
                         <Trigger Property="IsEditable" Value="true">

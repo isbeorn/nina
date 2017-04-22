@@ -8,9 +8,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
    
-    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
+    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 1 0 0" >
         
-        <Expander  IsExpanded="True" Header="Statistics">
+        <Expander  IsExpanded="False" Header="Statistics">
             <TabControl>
                 <TabItem DataContext="{Binding ImgArr}">
                     <TabItem.Header>
