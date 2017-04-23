@@ -40,6 +40,8 @@ namespace NINA.ViewModel {
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Disconnect Filter Wheel?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxImage.Question, System.Windows.MessageBoxResult.Cancel);
             if (result == System.Windows.MessageBoxResult.OK) {
                 FW.Disconnect();
+                FW = null;
+                RaisePropertyChanged(nameof(FW));
             }
         }
 

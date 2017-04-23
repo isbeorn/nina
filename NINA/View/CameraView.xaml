@@ -207,27 +207,37 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <Grid Grid.Column="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="110" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="20" />
-                            </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="1">                            
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="40" />
                             </Grid.RowDefinitions>
 
-                            <TextBlock Text="{ns:Loc LblTargetTemp}"></TextBlock>
-                            <TextBlock  Grid.Row="1" Text="{ns:Loc LblDuration}"></TextBlock>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="30"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock DockPanel.Dock="Left" Text="{ns:Loc LblTargetTemp}" VerticalAlignment="Center"></TextBlock>
+                                <Slider Grid.Column="1" Minimum="-50" Maximum="20" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding TargetTemp}" IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"></Slider>
+                                <TextBlock Grid.Column="2" DockPanel.Dock="Right" Text="{Binding TargetTemp, StringFormat=\{0:#.0\}}" VerticalAlignment="Center"></TextBlock>
+                            </Grid>
 
-                            <Slider Grid.Column="1" Minimum="-50" Maximum="20" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding TargetTemp}" IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"></Slider>
-                            <TextBlock Grid.Column="2" Text="{Binding TargetTemp, StringFormat=\{0:#.0\}}" ></TextBlock>
-                            <Slider  Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="30" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Duration}" IsEnabled="{Binding CoolingRunning , Converter={StaticResource InverseBooleanConverter}}"></Slider>
-                            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Duration, StringFormat=\{0:#.0\}}"/>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="30"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{ns:Loc LblDuration}" VerticalAlignment="Center"></TextBlock>
+                                <Slider Grid.Column="1" Minimum="0" Maximum="30" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Duration}" IsEnabled="{Binding CoolingRunning , Converter={StaticResource InverseBooleanConverter}}"></Slider>
+                                <TextBlock Grid.Column="2" Text="{Binding Duration, StringFormat=\{0:#.0\}}" VerticalAlignment="Center"/>
+                            </Grid>
+                            
 
-                            <StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
                                 <TextBlock Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}"  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" Visibility="{Binding CoolingRunning, Converter={StaticResource VisibilityConverter}}"/>
                                 <local:CancellableButtonView MyCommand="{Binding CoolCamCommand}" MyCancelCommand="{Binding CancelCoolCamCommand}" MyButtonImage="{StaticResource CheckedSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" HorizontalAlignment="Right" Width="40" Height="40" />
                             </StackPanel>

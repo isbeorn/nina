@@ -58,9 +58,9 @@
 
         <GroupBox Grid.Row="2">
             <StackPanel Margin="5">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Narrowest FoV:" MinWidth="85" VerticalAlignment="Center"  />
-                    <ComboBox ItemsSource="{Binding Indexes}" SelectedItem="{Binding SelectedNarrowest}" MinWidth="300">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Left" Text="Narrowest FoV:" MinWidth="85" VerticalAlignment="Center"  />
+                    <ComboBox DockPanel.Dock="Right" ItemsSource="{Binding Indexes}" SelectedItem="{Binding SelectedNarrowest}" MinWidth="300">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -93,11 +93,11 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                </StackPanel>
+                </DockPanel>
 
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Widest FoV:" MinWidth="85" VerticalAlignment="Center" />
-                    <ComboBox ItemsSource="{Binding Indexes}" MinWidth="300" SelectedItem="{Binding SelectedWidest}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Left" Text="Widest FoV:" MinWidth="85" VerticalAlignment="Center" />
+                    <ComboBox DockPanel.Dock="Right" ItemsSource="{Binding Indexes}" MinWidth="300" SelectedItem="{Binding SelectedWidest}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -130,7 +130,7 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                </StackPanel>
+                </DockPanel>
 
                 <Grid>
                     <StackPanel Orientation="Horizontal" Margin="0,50,0,0">

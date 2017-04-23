@@ -281,23 +281,23 @@
                         </Grid.Style>
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130">cygwin location:</TextBlock>
+                                <TextBlock   VerticalAlignment="Center" Width="130">Cygwin location:</TextBlock>
                                 <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding CygwinLocation}" MinWidth="130" />
-                                <Button VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Grid.Column="2" Command="{Binding OpenCygwinFileDiagCommand}">
+                                <Button Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Grid.Column="2" Command="{Binding OpenCygwinFileDiagCommand}">
                                     <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
                                 </Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock   VerticalAlignment="Center" Width="130">Focal Length:</TextBlock>
-                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrFocalLength}" />
+                                <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrFocalLength}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock   VerticalAlignment="Center" Width="130">Pixel Size:</TextBlock>
-                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrPixelSize}" />
+                                <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrPixelSize}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock   VerticalAlignment="Center" Width="130">Search Radius:</TextBlock>
-                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrSearchRadius}" />
+                                <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrSearchRadius}" />
                             </StackPanel>
                         </StackPanel>
                         <Grid Grid.Column="1">

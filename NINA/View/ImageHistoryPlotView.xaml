@@ -23,28 +23,26 @@
                 <oxy:LinearAxis  Position="Left" 
                                   Maximum="10" 
                                  Minimum="0"    
-                                 IntervalLength = "25"
+                                 IntervalLength = "25" IsZoomEnabled="False" IsPanEnabled="False"
                                  TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                                  AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                                  
-                                 MajorGridlineStyle="LongDash"
+                                 MajorGridlineStyle="Solid"
                                  MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
-                                 MinorGridlineStyle="Dash"
-                                 MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
+                                 
                                  />
                 <oxy:LinearAxis  Position="Right" Key="Secondary"
                                   Maximum="400" 
                                  Minimum="0"    
-                                 IntervalLength = "25"
+                                 IntervalLength = "25" IsZoomEnabled="False" IsPanEnabled="False"
                                  TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                                  AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                                  
-                                 MajorGridlineStyle="LongDash"
+                                 MajorGridlineStyle="Solid"
                                  MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
-                                 MinorGridlineStyle="Dash"
-                                 MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
+                                 
                                  />
-                <oxy:LinearAxis Position="Bottom" IntervalLength = "100" TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                <oxy:LinearAxis Position="Bottom" IntervalLength = "100" TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" IsZoomEnabled="False" IsPanEnabled="False"
                                  AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"/>
             </oxy:Plot.Axes>
             <oxy:Plot.Series>

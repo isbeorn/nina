@@ -74,6 +74,8 @@ namespace NINA.ViewModel {
             if (result == System.Windows.MessageBoxResult.OK) {
                 _updateTelescope.Stop();
                 Telescope.Disconnect();
+                Telescope = null;
+                RaisePropertyChanged(nameof(Telescope));
             }
         }
 

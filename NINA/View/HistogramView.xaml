@@ -20,21 +20,17 @@
                   LegendPosition="TopRight"
                   >
             <oxy:Plot.Axes>
-                <oxy:LinearAxis  Position="Left"                                    
+                <oxy:LinearAxis  Position="Left"    IsZoomEnabled="False" IsPanEnabled="False"                                
                                  IntervalLength = "50"
                                  TextColor="Transparent"
-                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"                                 
-                                 MajorGridlineStyle="LongDash"
-                                 MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
-                                 MinorGridlineStyle="Dash"
-                                 MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
+                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"                                                                  
                                  />
-                <oxy:LinearAxis Position="Bottom"  Minimum="0"
-                                MajorGridlineStyle="LongDash"
+                <oxy:LinearAxis Position="Bottom"  Minimum="0" IsZoomEnabled="False" IsPanEnabled="False"
+                                MajorGridlineStyle="Solid"
                                  MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
-                                 MinorGridlineStyle="Dash"
+                                 MinorGridlineStyle="Solid"
                                  MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
-                                IntervalLength = "500"
+                                MajorStep="500" MinorStep="250"
                                 TextColor="Transparent"
                                  Maximum="1000" />
             </oxy:Plot.Axes>

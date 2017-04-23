@@ -229,6 +229,8 @@ namespace NINA.ViewModel {
                 _cancelCoolCameraSource?.Cancel();
                 CoolingRunning = false;
                 Cam.Disconnect();
+                Cam = null;
+                RaisePropertyChanged(nameof(Cam));
             }
         }
 

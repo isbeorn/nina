@@ -16,19 +16,19 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding MyCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}}">
             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblExposureTime}"></TextBlock>
             <TextBox Margin="5" MinWidth="50"  Text="{Binding MyExposureDuration}" VerticalAlignment="Center" ></TextBox>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{ns:Loc LblFilter}"></TextBlock>
-                <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding MyFilters}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedFilter}" SelectedValuePath="Name"></ComboBox>
+                <ComboBox Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding MyFilters}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedFilter}" SelectedValuePath="Name"></ComboBox>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{ns:Loc LblBinning}"></TextBlock>
-                <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding MyBinningModes}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedBinningMode}" SelectedValuePath="Name"></ComboBox>
+                <ComboBox Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding MyBinningModes}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedBinningMode}" SelectedValuePath="Name"></ComboBox>
             </StackPanel>
         </StackPanel>
 
-        <UniformGrid Columns="2" Grid.Column="1" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
-            
-            <ToggleButton IsChecked="{Binding MyLoop}"  Margin="5,0,5,0">
+        <UniformGrid Columns="2" Grid.Column="1" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" Margin="5,0,0,0">
+
+            <ToggleButton IsChecked="{Binding MyLoop}" Width="50" Height="50">
                 <ToggleButton.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc LblTooltipLoop}" />
