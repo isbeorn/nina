@@ -9,18 +9,106 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>            
-        </Grid.ColumnDefinitions>
-            
+
             <GroupBox Header="Telescope">
                 <Grid>
+                    <StackPanel>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock><Run Text="Name:"/></TextBlock>
+                                    <TextBlock Text="{Binding Telescope.Name}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock><Run Text="Description:"/></TextBlock>
+                                    <TextBlock Text="{Binding Telescope.Description}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock><Run Text="Driver Info:"/></TextBlock>
+                                    <TextBlock Text="{Binding Telescope.DriverInfo}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow" />
+                                </UniformGrid>
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock><Run Text="Driver Version:"/></TextBlock>
+                                    <TextBlock Text="{Binding Telescope.DriverVersion}" Margin="5,0,0,0" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock>Site Latitude</TextBlock>
+                                    <TextBlock Text="{Binding Telescope.SiteLatitude}" Margin="5,0,0,0" />
+                                </UniformGrid>
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock>Site Longitude</TextBlock>
+                                    <TextBlock Text="{Binding Telescope.SiteLongitude}" Margin="5,0,0,0" />
+                                </UniformGrid>
+
+                            </UniformGrid>
+                        </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock>Site Elevation</TextBlock>
+                                    <TextBlock Text="{Binding Telescope.SiteElevation}" Margin="5,0,0,0" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock><Run Text="Sidereal Time:"/></TextBlock>
+                                    <TextBlock Text="{Binding Telescope.SiderealTimeString}" Margin="5,0,0,0" />
+                                </UniformGrid>
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock><Run Text="Remaining Hours To Meridian:"/></TextBlock>
+                                    <TextBlock Text="{Binding Telescope.HoursToMeridianString}" Margin="5,0,0,0" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock><Run Text="Right Ascension:"/></TextBlock>
+                                    <TextBlock Text="{Binding Telescope.RightAscensionString}" Margin="5,0,0,0" />
+                                </UniformGrid>
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock><Run Text="Declination:"/></TextBlock>
+                                    <TextBlock Text="{Binding Telescope.DeclinationString}" Margin="5,0,0,0" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock><Run Text="Altitude:"/></TextBlock>
+                                    <TextBlock Text="{Binding Telescope.AltitudeString}" Margin="5,0,0,0" />
+                                </UniformGrid>
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock><Run Text="Azimuth:"/></TextBlock>
+                                    <TextBlock Text="{Binding Telescope.AzimuthString}" Margin="5,0,0,0" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                    </StackPanel>
+
                     <Grid Height="50" Width="50" HorizontalAlignment="Right" VerticalAlignment="Top">
                         <Button Command="{Binding ChooseTelescopeCommand}"  IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}" 
                     Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
@@ -28,11 +116,6 @@
                                 <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
 
                                 </Path>
-                                <!--<Image Source="/AstrophotographyBuddy;component/Resources/unplugged.png">
-                        <Image.RenderTransform>
-                            <ScaleTransform CenterX="45" CenterY="45" ScaleX="0.3" ScaleY="0.3"/>
-                        </Image.RenderTransform>
-                    </Image>-->
                             </Grid>
                         </Button>
                         <Grid Grid.Column="6" Visibility="{Binding Telescope, Converter={StaticResource NullToVisibilityConverter}}">
@@ -43,164 +126,100 @@
                                     <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
 
                                     </Path>
-                                    <!--<Image Source="/AstrophotographyBuddy;component/Resources/plugged.png">
-                                    <Image.RenderTransform>
-                                        <ScaleTransform CenterX="45" CenterY="45" ScaleX="0.3" ScaleY="0.3"/>
-                                    </Image.RenderTransform>
-                                </Image>-->
                                 </Grid>
                             </Button>
                         </Grid>
                     </Grid>
-
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Name:"/></TextBlock>
-                            <TextBlock Text="{Binding Telescope.Name}" Margin="5,0,0,0" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Description:"/></TextBlock>
-                            <TextBlock Text="{Binding Telescope.Description}" Margin="5,0,0,0" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Driver Info:"/></TextBlock>
-                            <TextBlock Text="{Binding Telescope.DriverInfo}" Margin="5,0,0,0" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock><Run Text="Driver Version:"/></TextBlock>
-                            <TextBlock Text="{Binding Telescope.DriverVersion}" Margin="5,0,0,0" />
-                        </StackPanel>
-                    </StackPanel>
                 </Grid>
             </GroupBox>
-            <GroupBox Grid.Column="1" Header="Position">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>Site Latitude</TextBlock>
-                        <TextBlock Text="{Binding Telescope.SiteLatitude}" Margin="5,0,0,0" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>Site Longitude</TextBlock>
-                        <TextBlock Text="{Binding Telescope.SiteLongitude}" Margin="5,0,0,0" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>Site Elevation</TextBlock>
-                        <TextBlock Text="{Binding Telescope.SiteElevation}" Margin="5,0,0,0" />
-                    </StackPanel>
-
-
-                    
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Sidereal Time:"/></TextBlock>
-                        <TextBlock Text="{Binding Telescope.SiderealTimeString}" Margin="5,0,0,0" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Remaining Hours To Meridian:"/></TextBlock>
-                        <TextBlock Text="{Binding Telescope.HoursToMeridianString}" Margin="5,0,0,0" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Right Ascension:"/></TextBlock>
-                        <TextBlock Text="{Binding Telescope.RightAscensionString}" Margin="5,0,0,0" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Declination:"/></TextBlock>
-                        <TextBlock Text="{Binding Telescope.DeclinationString}" Margin="5,0,0,0" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Altitude:"/></TextBlock>
-                        <TextBlock Text="{Binding Telescope.AltitudeString}" Margin="5,0,0,0" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock><Run Text="Azimuth:"/></TextBlock>
-                        <TextBlock Text="{Binding Telescope.AzimuthString}" Margin="5,0,0,0" />
-                    </StackPanel>
-
-                </StackPanel>
-            </GroupBox>
         </Grid>
+
         <Grid Grid.Row="1" IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
             <Grid  IsEnabled="{Binding Telescope.Connected}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
                 <GroupBox Header="Manual Coordinates">
                     <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Width="60">Target RA</TextBlock>
-                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                                <TextBox.Text>
-                                    <Binding Path="TargetRightAscencionHours" UpdateSourceTrigger="LostFocus" >
-                                        <Binding.ValidationRules>
-                                            <StaticResource ResourceKey="HoursRule" />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                            <TextBlock>h</TextBlock>
-                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                                <TextBox.Text>
-                                    <Binding Path="TargetRightAscencionMinutes" UpdateSourceTrigger="LostFocus" >
-                                        <Binding.ValidationRules>
-                                            <StaticResource ResourceKey="MinutesRule" />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                            <TextBlock>m</TextBlock>
-                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                                <TextBox.Text>
-                                    <Binding Path="TargetRightAscencionSeconds" UpdateSourceTrigger="LostFocus" >
-                                        <Binding.ValidationRules>
-                                            <StaticResource ResourceKey="SecondsRule" />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                            <TextBlock>s</TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Width="60">Target Dec</TextBlock>
-                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                                <TextBox.Text>
-                                    <Binding Path="TargetDeclinationDegrees" UpdateSourceTrigger="LostFocus" >
-                                        <Binding.ValidationRules>
-                                            <StaticResource ResourceKey="DegreesRule" />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                            <TextBlock>d</TextBlock>
-                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                                <TextBox.Text>
-                                    <Binding Path="TargetDeclinationMinutes" UpdateSourceTrigger="LostFocus" >
-                                        <Binding.ValidationRules>
-                                            <StaticResource ResourceKey="MinutesRule" />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                            <TextBlock>m</TextBlock>
-                            <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
-                                <TextBox.Text>
-                                    <Binding Path="TargetDeclinationSeconds" UpdateSourceTrigger="LostFocus" >
-                                        <Binding.ValidationRules>
-                                            <StaticResource ResourceKey="SecondsRule" />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                            <TextBlock>s</TextBlock>
-                        </StackPanel>
-                        <Button Grid.Row="2" Grid.Column="3" Height="80" Width="80" Command="{Binding SlewToCoordinatesCommand}" HorizontalAlignment="Right">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6">
+                                <TextBlock Width="60">Target RA</TextBlock>
+                                <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                    <TextBox.Text>
+                                        <Binding Path="TargetRightAscencionHours" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <StaticResource ResourceKey="HoursRule" />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <TextBlock>h</TextBlock>
+                                <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                    <TextBox.Text>
+                                        <Binding Path="TargetRightAscencionMinutes" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <StaticResource ResourceKey="MinutesRule" />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <TextBlock>m</TextBlock>
+                                <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                    <TextBox.Text>
+                                        <Binding Path="TargetRightAscencionSeconds" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <StaticResource ResourceKey="SecondsRule" />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <TextBlock>s</TextBlock>
+                            </StackPanel>
+                        </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6">
+                                <TextBlock Width="60">Target Dec</TextBlock>
+                                <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                    <TextBox.Text>
+                                        <Binding Path="TargetDeclinationDegrees" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <StaticResource ResourceKey="DegreesRule" />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <TextBlock>d</TextBlock>
+                                <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                    <TextBox.Text>
+                                        <Binding Path="TargetDeclinationMinutes" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <StaticResource ResourceKey="MinutesRule" />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <TextBlock>m</TextBlock>
+                                <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
+                                    <TextBox.Text>
+                                        <Binding Path="TargetDeclinationSeconds" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <StaticResource ResourceKey="SecondsRule" />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <TextBlock>s</TextBlock>
+                            </StackPanel>
+                        </Border>
+                        <Button Margin="5" Height="50" Width="50" Command="{Binding SlewToCoordinatesCommand}" HorizontalAlignment="Left">
                             <TextBlock Text ="Slew" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                         </Button>
                     </StackPanel>
-                
-                </GroupBox>
-                <GroupBox Grid.Column="1" Header="Manual Control" IsEnabled="{Binding Telescope.CanSlew}">
 
-              
+                </GroupBox>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1" IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <Grid  IsEnabled="{Binding Telescope.Connected}">
+                <GroupBox Grid.Row="1" Header="Manual Control" IsEnabled="{Binding Telescope.CanSlew}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -217,7 +236,7 @@
                             <TextBlock Margin="0,0,5,0" VerticalAlignment="Center"><Run Text="Rate:"/></TextBlock>
                             <RepeatButton Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding StepperMoveRateCommand}" CommandParameter="-">
                                 <TextBlock Text ="&#x25BC;" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                                </RepeatButton>
+                            </RepeatButton>
                             <TextBox VerticalAlignment="Center" Text="{Binding Telescope.MovingRate}" MinWidth="40" />
                             <RepeatButton VerticalAlignment="Center" Width="50" HorizontalAlignment="Center" Command="{Binding StepperMoveRateCommand}" CommandParameter="+">
                                 <TextBlock Text ="&#x25B2;" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
@@ -228,14 +247,14 @@
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewStylusDown">
                                     <i:InvokeCommandAction CommandParameter="W" Command="{Binding MoveCommand}"/>
-                                </i:EventTrigger>                            
-                                <i:EventTrigger EventName="PreviewStylusUp"> 
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewStylusUp">
                                     <i:InvokeCommandAction CommandParameter="W" Command="{Binding StopMoveCommand}"/>
                                 </i:EventTrigger>
                                 <i:EventTrigger EventName="PreviewTouchDown">
                                     <i:InvokeCommandAction CommandParameter="W" Command="{Binding MoveCommand}"/>
-                                </i:EventTrigger>                            
-                                <i:EventTrigger EventName="PreviewTouchUp">  
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewTouchUp">
                                     <i:InvokeCommandAction CommandParameter="W" Command="{Binding StopMoveCommand}"/>
                                 </i:EventTrigger>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
@@ -245,21 +264,20 @@
                                     <i:InvokeCommandAction CommandParameter="W" Command="{Binding StopMoveCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                            
                         </Button>
                         <Button Grid.Row="1" Grid.Column="2" Height="80" Width="80" HorizontalAlignment="Left"  >
                             <TextBlock Text ="O" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewStylusDown">
                                     <i:InvokeCommandAction CommandParameter="O" Command="{Binding MoveCommand}"/>
-                                </i:EventTrigger>                            
-                                <i:EventTrigger EventName="PreviewStylusUp"> 
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewStylusUp">
                                     <i:InvokeCommandAction CommandParameter="O" Command="{Binding StopMoveCommand}"/>
                                 </i:EventTrigger>
                                 <i:EventTrigger EventName="PreviewTouchDown">
                                     <i:InvokeCommandAction CommandParameter="O" Command="{Binding MoveCommand}"/>
-                                </i:EventTrigger>                            
-                                <i:EventTrigger EventName="PreviewTouchUp">  
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewTouchUp">
                                     <i:InvokeCommandAction CommandParameter="O" Command="{Binding StopMoveCommand}"/>
                                 </i:EventTrigger>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
@@ -268,21 +286,21 @@
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonUp" >
                                     <i:InvokeCommandAction CommandParameter="O" Command="{Binding StopMoveCommand}"/>
                                 </i:EventTrigger>
-                            </i:Interaction.Triggers>                            
+                            </i:Interaction.Triggers>
                         </Button>
                         <Button Grid.Row="0" Grid.Column="1" Height="80" Width="80" VerticalAlignment="Bottom" >
                             <TextBlock Text ="N" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewStylusDown">
                                     <i:InvokeCommandAction CommandParameter="N" Command="{Binding MoveCommand}"/>
-                                </i:EventTrigger>                            
-                                <i:EventTrigger EventName="PreviewStylusUp"> 
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewStylusUp">
                                     <i:InvokeCommandAction CommandParameter="N" Command="{Binding StopMoveCommand}"/>
                                 </i:EventTrigger>
                                 <i:EventTrigger EventName="PreviewTouchDown">
                                     <i:InvokeCommandAction CommandParameter="N" Command="{Binding MoveCommand}"/>
-                                </i:EventTrigger>                            
-                                <i:EventTrigger EventName="PreviewTouchUp">  
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="PreviewTouchUp">
                                     <i:InvokeCommandAction CommandParameter="N" Command="{Binding StopMoveCommand}"/>
                                 </i:EventTrigger>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
@@ -308,7 +326,7 @@
                                 <i:EventTrigger EventName="PreviewTouchUp">
                                     <i:InvokeCommandAction CommandParameter="S" Command="{Binding StopMoveCommand}"/>
                                 </i:EventTrigger>
-                                
+
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                     <i:InvokeCommandAction CommandParameter="S" Command="{Binding MoveCommand}"/>
                                 </i:EventTrigger>
@@ -328,9 +346,7 @@
                         <Button Grid.Row="2" Grid.Column="3" Height="80" Width="80" Command="{Binding UnparkCommand}" HorizontalAlignment="Right" Visibility="{Binding Telescope.AtPark, Converter={StaticResource VisibilityConverter}}">
                             <TextBlock Text ="UNPARK" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                         </Button>
-                    
                     </Grid>
-             
                 </GroupBox>
             </Grid>
         </Grid>

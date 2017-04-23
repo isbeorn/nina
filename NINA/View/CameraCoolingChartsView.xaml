@@ -9,11 +9,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="5" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
         <oxy:Plot 
                   Background="{StaticResource BackgroundBrush}"
@@ -48,9 +48,9 @@
             </oxy:Plot.Series>
         </oxy:Plot>
         
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"  />        
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch"  />        
 
-        <oxy:Plot Grid.Column="2" 
+        <oxy:Plot Grid.Row="2" 
                   Background="{StaticResource BackgroundBrush}"
                   PlotAreaBackground="{StaticResource BackgroundBrush}" 
                   PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 

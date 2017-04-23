@@ -59,8 +59,7 @@
                 </UniformGrid>
             </Border>
 
-            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" >
-                <!--<TextBlock Text="{Binding Progress}" VerticalAlignment="Center" />-->
+            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" >                
             
                 <local:CameraControlView                             
                                 MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes, Mode=TwoWay}"

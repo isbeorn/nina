@@ -122,7 +122,7 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#AA0B3C5D")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#AABCBCBC")]
         public global::System.Windows.Media.Color BorderColor {
             get {
                 return ((global::System.Windows.Media.Color)(this["BorderColor"]));

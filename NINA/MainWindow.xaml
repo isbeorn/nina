@@ -14,7 +14,7 @@
 
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
         <Grid DataContext="{StaticResource AppVM}">                
-            <TabControl Grid.Row="1" TabStripPlacement="Left">
+            <TabControl TabStripPlacement="Left">
                 <TabItem >
                     <TabItem.Header>
                         <Grid >

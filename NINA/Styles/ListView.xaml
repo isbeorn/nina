@@ -94,8 +94,8 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
-                <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}"/>
+                <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>

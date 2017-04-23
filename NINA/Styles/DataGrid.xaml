@@ -23,8 +23,9 @@
                     <Condition Property="IsMouseOver" Value="True" />
                     <Condition Property="SortDirection" Value="{x:Null}" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
-                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+
+                <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}"/>
+                <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}"/>
             </MultiTrigger>
 
             <MultiTrigger>
@@ -32,8 +33,9 @@
                     <Condition Property="IsMouseOver" Value="true" />
                     <Condition Property="SortDirection" Value="{x:Null}" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
-                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+
+                <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}"/>
+                <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}"/>
             </MultiTrigger>
             <Trigger Property="SortDirection" Value="Ascending">
                 <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />

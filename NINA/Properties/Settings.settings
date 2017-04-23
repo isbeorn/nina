@@ -27,7 +27,7 @@
       <Value Profile="(Default)">#FF1D2731</Value>
     </Setting>
     <Setting Name="BorderColor" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#AA0B3C5D</Value>
+      <Value Profile="(Default)">#AABCBCBC</Value>
     </Setting>
     <Setting Name="BackgroundColor" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FFFFFFFF</Value>

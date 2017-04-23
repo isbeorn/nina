@@ -10,7 +10,7 @@
              xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Background="{StaticResource BackgroundBrush}">
-    <TabControl>
+    <TabControl TabStripPlacement="Top">
         <TabItem>
             <TabItem.Header>
                 <TextBlock Text="{ns:Loc LblGeneral}" Foreground="{StaticResource ButtonForegroundBrush}" />
@@ -151,14 +151,14 @@
                         <CheckBox Grid.Row="3" Grid.Column="1" Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding DitherRAOnly}" />
 
                     </Grid>
-                </GroupBox>               
+                </GroupBox>
             </UniformGrid>
         </TabItem>
         <TabItem>
             <TabItem.Header>
                 <TextBlock Text="Imaging" Foreground="{StaticResource ButtonForegroundBrush}" />
             </TabItem.Header>
-            <UniformGrid Columns="2" Rows="2">
+            <UniformGrid Columns="2">
                 <GroupBox Header="File Settings">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -188,7 +188,7 @@
                             <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PreviewSVG}" Stretch="Uniform" Margin="5"/>
                         </Button>
 
-                        <ListView Grid.Row="4" Grid.ColumnSpan="3" ItemsSource="{Binding ImagePatterns}">
+                        <ListView Grid.Row="4" Grid.ColumnSpan="3" Margin="0 5 0 0" ItemsSource="{Binding ImagePatterns}">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="PatternName" Width="Auto" DisplayMemberBinding="{Binding Key}" />
@@ -263,7 +263,7 @@
                             </StackPanel>
                         </StackPanel>
                     </Grid>
-                    
+
                     <!-- Local -->
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
@@ -280,25 +280,40 @@
                             </Style>
                         </Grid.Style>
                         <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130">Cygwin location:</TextBlock>
-                                <TextBox   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding CygwinLocation}" MinWidth="130" />
-                                <Button Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Grid.Column="2" Command="{Binding OpenCygwinFileDiagCommand}">
+                            <Grid Margin="0 6 0 6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock   HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Cygwin location:</TextBlock>
+                                <TextBox  Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding CygwinLocation}" MinWidth="130" />
+
+
+                                <Button Margin="5 0 0 0" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" Width="30" Command="{Binding OpenCygwinFileDiagCommand}">
                                     <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
                                 </Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130">Focal Length:</TextBlock>
-                                <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrFocalLength}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130">Pixel Size:</TextBlock>
-                                <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrPixelSize}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130">Search Radius:</TextBlock>
-                                <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrSearchRadius}" />
-                            </StackPanel>
+                            </Grid>
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" Width="130">Focal Length:</TextBlock>
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrFocalLength}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Pixel Size:</TextBlock>
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrPixelSize}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Search Radius:</TextBlock>
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrSearchRadius}" />
+                                </UniformGrid>
+                            </UniformGrid>
                         </StackPanel>
                         <Grid Grid.Column="1">
                             <Grid.RowDefinitions >
@@ -316,13 +331,13 @@
                                 <Button.Content>
                                     <TextBlock Text="Download more Index files" Foreground="{StaticResource ButtonForegroundBrush}" />
                                 </Button.Content>
-                                
+
                             </Button>
                         </Grid>
-                        
-                    </Grid>                   
+
+                    </Grid>
                 </Grid>
             </GroupBox>
         </TabItem>
-    </TabControl>   
+    </TabControl>
 </UserControl>
