@@ -48,3 +48,17 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 ** Feedback**
 
 Mail to: isbeorn86+NINA@googlemail.com
+
+
+** Credit **
+
+Some icons made by 
+[Madebyoliver](http://www.flaticon.com/authors/madebyoliver)
+[Bogdan Rosu](http://www.flaticon.com/authors/bogdan-rosu)
+[Appzgear](http://www.flaticon.com/authors/appzgear)
+[Dale Humphries](http://www.flaticon.com/authors/dale-humphries)
+[Dave Gandy](http://www.flaticon.com/authors/dave-gandy)
+from
+[Flaticon](http://www.flaticon.com)
+licenced by 
+[Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/)
