@@ -43,7 +43,7 @@
                                     <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding StDev, StringFormat=\{0:#.00\}}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblNoStars}"></TextBlock>
+                                    <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblNrStars}"></TextBlock>
                                     <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding DetectedStars, StringFormat=\{0:#\}}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">

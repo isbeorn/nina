@@ -9,11 +9,11 @@
         xmlns:view="clr-namespace:NINA.View"
         util:DialogCloser.DialogResult="{Binding DialogResult}" 
         mc:Ignorable="d"
-        Title="Astrometry Index Downloader" Height="350" Width="550" ResizeMode="NoResize" Style="{StaticResource NoResizeWindow}">
+        Title="Astrometry Index Downloader" Height="400" Width="600" ResizeMode="NoResize" Style="{StaticResource NoResizeWindow}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="150"/>
             <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Margin="5">

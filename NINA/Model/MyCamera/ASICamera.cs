@@ -213,7 +213,7 @@ namespace NINA.Model.MyCamera {
                 return value == 0 ? false : true ;
             }
             set {
-                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN, value ? 1 : 0)) {
+                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON, value ? 1 : 0)) {
                     RaisePropertyChanged();
                 }
             }

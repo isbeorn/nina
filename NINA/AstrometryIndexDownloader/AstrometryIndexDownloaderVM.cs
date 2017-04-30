@@ -230,8 +230,8 @@ namespace NINA.AstrometryIndexDownloader {
         public string RecommendedIndexes {
             get {
                 var fov = FieldOfView;
-                var min = fov * 0.6;
-                var max = fov * 1.4;
+                var min = fov * 0.2;
+                var max = fov * 1.2;
                 List<IndexFile> l = Indexes.ToList();
 
                 IndexFile nearestmin = l.Aggregate((x, y) => Math.Abs(x.MinArcMin - min) < Math.Abs(y.MinArcMin - min) ? x : y);
