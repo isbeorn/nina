@@ -360,7 +360,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
-            int exposureMs = (int)exposureTime * 1000000;
+            int exposureMs = (int)(exposureTime * 1000000);
             var exposureSettings = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE);
             exposureSettings.Value = exposureMs;
             exposureSettings.IsAuto = false;
