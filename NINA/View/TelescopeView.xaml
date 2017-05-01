@@ -109,7 +109,7 @@
                         </Border>
                     </StackPanel>
 
-                    <Grid Height="50" Width="50" HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <Grid Height="50" Width="50" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                         <Button Command="{Binding ChooseTelescopeCommand}"  IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}" 
                     Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                             <Grid>

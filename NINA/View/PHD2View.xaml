@@ -37,7 +37,7 @@
                                 </UniformGrid>
                             </Border>
                         </StackPanel>
-                        <Grid Height="50" Width="50" HorizontalAlignment="Right" VerticalAlignment="Top">
+                        <Grid Height="50" Width="50" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                             <Button  Command="{Binding ConnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" >
                                 <Grid>
 

@@ -131,7 +131,7 @@
                         </Border>
                     </StackPanel>
 
-                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" >
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" >
                         <Grid Height="50" Width="50" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Button   Command="{Binding ChooseCameraCommand}"  IsEnabled="{Binding Cam.Connected, Converter={StaticResource InverseBooleanConverter}}"
                             Visibility="{Binding Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
