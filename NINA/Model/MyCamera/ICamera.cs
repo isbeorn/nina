@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -56,12 +57,8 @@ namespace NINA.Model.MyCamera {
     }
 
     public class ImageArray {
-        public const ushort HistogramResolution = 1000;
-
         public ushort[] FlatArray;
-        public ImageStatistics Statistics { get; set; }
-
-        public SortedDictionary<ushort, int> Histogram { get; set; }
+        public ImageStatistics Statistics { get; set; }        
 
         private ImageArray() {
             Statistics = new ImageStatistics { };
@@ -97,6 +94,10 @@ namespace NINA.Model.MyCamera {
 
             this.Statistics.StDev = sd;
             this.Statistics.Mean = average;
+            
+            this.Statistics.Histogram = this.FlatArray.GroupBy(x => Math.Floor(x * ((double)ImageStatistics.HistogramResolution / ushort.MaxValue)))
+                .Select(g => new {Key = g.Key, Value = g.Count()})
+                .OrderBy(item => item.Key);
         }
 
         private void FlipAndConvert(Array input) {
@@ -107,8 +108,8 @@ namespace NINA.Model.MyCamera {
             this.Statistics.Width = width;
             this.Statistics.Height = height;
             ushort[] flatArray = new ushort[arr.Length];
-            ushort value, histogramkey;
-            SortedDictionary<ushort, int> histogram = new SortedDictionary<ushort, int>();
+            ushort value;
+            
             unsafe
             {
                 fixed (Int32* ptr = arr) {
@@ -116,28 +117,14 @@ namespace NINA.Model.MyCamera {
                     for (int i = 0; i < arr.Length; i++) {
                         value = (ushort)ptr[i];
 
-
-
-
                         idx = ((i % height) * width) + row;
                         if ((i % (height)) == (height - 1)) row++;
-
-                        histogramkey = Convert.ToUInt16(Math.Round(((double)ImageArray.HistogramResolution / ushort.MaxValue) * value));
-                        if (histogram.ContainsKey(histogramkey)) {
-                            histogram[histogramkey] += 1;
-                        } else {
-                            histogram.Add(histogramkey, 1);
-                        }
-
+                        
                         ushort b = value;
                         flatArray[idx] = b;
-
-
                     }
                 }
-            }
-
-            this.Histogram = histogram;
+            }            
             this.FlatArray = flatArray;
         }
 
@@ -150,6 +137,11 @@ namespace NINA.Model.MyCamera {
         public double StDev { get; set; }
         public double Mean { get; set; }
         private double _hFR;
+
+        public IEnumerable Histogram { get; set; }
+        public static double HistogramMajorStep = 642.5;
+        public static double HistogramMinorStep = 321.25;
+        public static double HistogramResolution = 1285;
 
         public int DetectedStars {
             get {

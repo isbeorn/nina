@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:NINA.View"
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf" 
              xmlns:ns="clr-namespace:NINA.Locale"
+             xmlns:cam="clr-namespace:NINA.Model.MyCamera"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -30,12 +31,12 @@
                                  MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                                  MinorGridlineStyle="Solid"
                                  MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
-                                MajorStep="500" MinorStep="250"
+                                MajorStep="{x:Static cam:ImageStatistics.HistogramMajorStep}" MinorStep="{x:Static cam:ImageStatistics.HistogramMinorStep}"
                                 TextColor="Transparent"
-                                 Maximum="1000" />
+                                 Maximum="{x:Static cam:ImageStatistics.HistogramResolution}" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LinearBarSeries ItemsSource="{Binding Histogram}"
+                <oxy:LinearBarSeries ItemsSource="{Binding Statistics.Histogram}"
                                 DataFieldX="Key" 
                                 DataFieldY="Value"     
                                 BarWidth="0.001"
