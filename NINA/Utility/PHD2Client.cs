@@ -198,6 +198,13 @@ namespace NINA.Utility {
             return true;
         }
 
+        public async Task<bool> AutoSelectStar() {
+            if (Connected) {
+                await SendMessage(String.Format(PHD2Methods.AUTO_SELECT_STAR));
+            }
+            return true;
+        }
+
         private async Task<bool> SendMessage(string msg) {
             if(Connected) {
                 // Translate the passed message into ASCII and store it as a byte array.

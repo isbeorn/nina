@@ -447,6 +447,7 @@ namespace NINA.ViewModel {
                             }
 
                             progress.Report("Resuming PHD2");
+                            await PHD2Client.AutoSelectStar();
                             await PHD2Client.Pause(false);
 
                             var time = 0;
