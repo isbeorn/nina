@@ -23,6 +23,13 @@ namespace NINA.ViewModel {
             ZoomFactor = 1;
             _nextStatHistoryId =  1;
             ImgStatHistory = new AsyncObservableCollection<ImageStatistics>();
+
+            Mediator.Instance.Register((object o) => {
+                AutoStretch = (bool)o;
+            }, MediatorMessages.AutoStrechChanged);
+            Mediator.Instance.Register((object o) => {
+                DetectStars = (bool)o;
+            }, MediatorMessages.DetectStarsChanged);
         }
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
@@ -54,6 +61,7 @@ namespace NINA.ViewModel {
             private set {
                 _image = value;
                 RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.ImageChanged, _image);
             }
         }
 

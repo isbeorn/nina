@@ -20,16 +20,20 @@ namespace NINA.ViewModel {
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
             
             Name = "Menu";
+
+            Mediator.Instance.Register((object o) => {
+                Status = (string)o;
+            }, MediatorMessages.StatusUpdate);
         }     
 
 
         public string Version {
             get {               
-                return "v. 0.3.1";
+                return "v. 0.4";
             }
         }
 
-        private string _status;
+        private string _status;        
         public string Status {
             get {
                 return _status;
@@ -39,6 +43,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
 
         private static void MaximizeWindow(object obj) {
             if (Application.Current.MainWindow.WindowState == WindowState.Maximized) {
@@ -81,7 +86,7 @@ namespace NINA.ViewModel {
         public CameraVM CameraVM {
             get {
                 if(_cameraVM == null) {
-                    _cameraVM = new CameraVM(this);
+                    _cameraVM = new CameraVM();
 
                 }
                 return _cameraVM;
@@ -96,7 +101,7 @@ namespace NINA.ViewModel {
         public ImagingVM ImagingVM {
             get {
                 if (_imagingVM == null) {
-                    _imagingVM = new ImagingVM(this);
+                    _imagingVM = new ImagingVM();
                 }
                 return _imagingVM;
             }
@@ -110,7 +115,7 @@ namespace NINA.ViewModel {
         public PolarAlignmentVM PolarAlignVM {
             get {
                 if (_polarAlignVM == null) {
-                    _polarAlignVM = new PolarAlignmentVM(this);
+                    _polarAlignVM = new PolarAlignmentVM();
                 }
                 return _polarAlignVM;
             } set {
@@ -123,7 +128,7 @@ namespace NINA.ViewModel {
         public PlatesolveVM PlatesolveVM {
             get {
                 if (_platesolveVM == null) {
-                    _platesolveVM = new PlatesolveVM(this);
+                    _platesolveVM = new PlatesolveVM();
                 }
                 return _platesolveVM;
             }
@@ -137,7 +142,7 @@ namespace NINA.ViewModel {
         public TelescopeVM TelescopeVM {
             get {
                 if (_telescopeVM == null) {
-                    _telescopeVM = new TelescopeVM(this);
+                    _telescopeVM = new TelescopeVM();
                 }
                 return _telescopeVM;
             }
@@ -151,7 +156,7 @@ namespace NINA.ViewModel {
         public PHD2VM PHD2VM {
             get {
                 if (_phd2VM == null) {
-                    _phd2VM = new PHD2VM(this);
+                    _phd2VM = new PHD2VM();
                 }
                 return _phd2VM;
             }
@@ -179,7 +184,7 @@ namespace NINA.ViewModel {
         public FrameFocusVM FrameFocusVM {
             get {
                 if (_frameFocusVM == null) {
-                    _frameFocusVM = new FrameFocusVM(this);
+                    _frameFocusVM = new FrameFocusVM();
                 }
                 return _frameFocusVM;
             }

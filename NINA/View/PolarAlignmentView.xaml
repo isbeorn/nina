@@ -9,13 +9,13 @@
              
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="400">
-    <Grid IsEnabled="{Binding TelescopeVM.Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
-        <Border HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" Background="{StaticResource BackgroundBrush}" Panel.ZIndex="99">
+    <Grid IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
+        <Border HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" Background="{StaticResource BackgroundBrush}" Panel.ZIndex="99">
             <TextBlock   FontSize="40" >
                 Please connect Telescope
             </TextBlock>
         </Border>
-        <Grid IsEnabled="{Binding TelescopeVM.Telescope.Connected}">
+        <Grid IsEnabled="{Binding Telescope.Connected}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -58,8 +58,8 @@
                         </Button>
                     </Grid>
 
-                    <Grid Grid.Row="1"  IsEnabled="{Binding ImagingVM.Cam, Converter={StaticResource InverseNullToBooleanConverter}}" HorizontalAlignment="Left">
-                        <local:CameraControlView  IsEnabled="{Binding ImagingVM.Cam.Connected}"                            
+                    <Grid Grid.Row="1"  IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}" HorizontalAlignment="Left">
+                        <local:CameraControlView  IsEnabled="{Binding Cam.Connected}"                            
                             MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes, Mode=TwoWay}"
                             MyFilters="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters, Mode=TwoWay}"
                             MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
@@ -112,7 +112,7 @@
                         <ColumnDefinition Width="140" />
                     </Grid.ColumnDefinitions>
                     <Grid>
-                        <local:ImageControlView DataContext="{Binding ImagingVM.ImageControl}" />
+                        <local:ImageControlView DataContext="{Binding Source={StaticResource AppVM}, Path=ImagingVM.ImageControl}" />
                     </Grid>
                     <Grid Grid.Column="1"  Margin="5,0,0,0">
                         <Grid.RowDefinitions>

@@ -13,14 +13,10 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyTelescope;
 
 namespace NINA.ViewModel {
-    class PolarAlignmentVM : ChildVM {
+    class PolarAlignmentVM : BaseVM {
 
-        public PolarAlignmentVM(ApplicationVM root) : base(root) {
-
-            this.TelescopeVM = root.TelescopeVM;
-            this.PlatesolveVM = root.PlatesolveVM;
-            this.ImagingVM = root.ImagingVM;
-
+        public PolarAlignmentVM() : base() {
+            
             _updateValues = new DispatcherTimer();
             _updateValues.Interval = TimeSpan.FromSeconds(1);
             _updateValues.Tick += UpdateValues_Tick;
@@ -29,7 +25,7 @@ namespace NINA.ViewModel {
             MeasureAzimuthErrorCommand = new AsyncCommand<bool>(() => MeasurePolarError(new Progress<string>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH));
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(() => MeasurePolarError(new Progress<string>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE));
             SlewToMeridianOffsetCommand = new RelayCommand(SlewToMeridianOffset);
-            DARVSlewCommand = new AsyncCommand<bool>(() => darvslew(new Progress<string>(p => RootVM.Status = p), new Progress<string>(p => DarvStatus = p)));
+            DARVSlewCommand = new AsyncCommand<bool>(() => Darvslew(new Progress<string>(p => Status = p), new Progress<string>(p => DarvStatus = p)));
             CancelDARVSlewCommand = new RelayCommand(Canceldarvslew);
             CancelMeasureAltitudeErrorCommand = new RelayCommand(CancelMeasurePolarError);
             CancelMeasureAzimuthErrorCommand = new RelayCommand(CancelMeasurePolarError);
@@ -40,44 +36,84 @@ namespace NINA.ViewModel {
             DARVSlewDuration = 60;
             DARVSlewRate = 0.01;
             SnapExposureDuration = 2;
+
+            Mediator.Instance.Register((object o) => {
+                Cam = (ICamera)o;
+            }, MediatorMessages.CameraChanged);
+
+            Mediator.Instance.Register((object o) => {
+                Telescope = (ITelescope)o;
+            }, MediatorMessages.TelescopeChanged);
+
+            Mediator.Instance.Register((object o) => {
+                IsExposing = (bool)o;
+            }, MediatorMessages.IsExposingUpdate);
+
+            Mediator.Instance.Register((object o) => {
+                _autoStretch = (bool)o;
+            }, MediatorMessages.AutoStrechChanged);
+            Mediator.Instance.Register((object o) => {
+                _detectStars = (bool)o;
+            }, MediatorMessages.DetectStarsChanged);
+
+            Mediator.Instance.Register((object o) => {
+                _plateSolveResult = (PlateSolving.PlateSolveResult)o;
+            }, MediatorMessages.PlateSolveResultChanged);
         }
 
-        private TelescopeVM _telescopeVM;
-        public TelescopeVM TelescopeVM {
+        private string _status;
+        public string Status {
             get {
-                return _telescopeVM;
+                return _status;
             }
             set {
-                _telescopeVM = value;
+                _status = value;
+                RaisePropertyChanged();
+
+                Mediator.Instance.Notify(MediatorMessages.StatusUpdate, _status);
+            }
+        }
+
+        private ITelescope _telescope;
+        public ITelescope Telescope {
+            get {
+                return _telescope;
+            }
+            set {
+                _telescope = value;
                 RaisePropertyChanged();
             }
         }
 
-        private ITelescope Telescope {
+        private ICamera _cam;
+        public ICamera Cam {
             get {
-                return TelescopeVM.Telescope;
+                return _cam;
             }
-        }
-
-        private PlatesolveVM _platesolveVM;
-        public PlatesolveVM PlatesolveVM {
-            get {
-                return _platesolveVM;
-            }
-
             set {
-                _platesolveVM = value;
+                _cam = value;
                 RaisePropertyChanged();
             }
         }
 
-        private ImagingVM _imagingVM;
-        public ImagingVM ImagingVM {
+        private bool _isExposing;
+        public bool IsExposing {
             get {
-                return _imagingVM;
+                return _isExposing;
             }
             set {
-                _imagingVM = value;
+                _isExposing = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private PlateSolving.PlateSolveResult _plateSolveResult;
+        public PlateSolving.PlateSolveResult PlateSolveResult {
+            get {
+                return _plateSolveResult;
+            }
+            set {
+                _plateSolveResult = value;
                 RaisePropertyChanged();
             }
         }
@@ -414,21 +450,37 @@ namespace NINA.ViewModel {
             });
         }
 
-        private async Task<bool> darvslew(IProgress<string> cameraprogress, IProgress<string> slewprogress) {
-            if (ImagingVM.Cam.Connected) {
-                if (!ImagingVM.IsExposing) {
+        private bool _autoStretch;
+        public bool AutoStretch {
+            get {
+                return _autoStretch;
+            }
+        }
+
+        private bool _detectStars;
+        public bool DetectStars {
+            get {
+                return _detectStars;
+            }
+        }
+
+        private async Task<bool> Darvslew(IProgress<string> cameraprogress, IProgress<string> slewprogress) {
+            if (Cam?.Connected == true) {
+                if (!IsExposing) {
                     _cancelDARVSlewToken = new CancellationTokenSource();
                     try {
-                        var oldAutoStretch = ImagingVM.ImageControl.AutoStretch;
-                        var oldDetectStars = ImagingVM.ImageControl.DetectStars;
-                        ImagingVM.ImageControl.AutoStretch = true;
-                        ImagingVM.ImageControl.DetectStars = false;
-                        var capture = ImagingVM.CaptureImage(DARVSlewDuration + 5, false, cameraprogress, _cancelDARVSlewToken);
+                        var oldAutoStretch = AutoStretch;
+                        var oldDetectStars = DetectStars;
+                        Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, true);
+                        Mediator.Instance.Notify(MediatorMessages.DetectStarsChanged, false);
+
+                        var capture = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { DARVSlewDuration + 5, false, cameraprogress, _cancelDARVSlewToken });                        
                         var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken);
 
                         await Task.WhenAll(capture, slew);
-                        ImagingVM.ImageControl.AutoStretch = oldAutoStretch;
-                        ImagingVM.ImageControl.DetectStars = oldDetectStars;
+
+                        Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, oldAutoStretch);
+                        Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, oldDetectStars);
                     }
                     catch (OperationCanceledException ex) {
                         Logger.Trace(ex.Message);
@@ -467,9 +519,9 @@ namespace NINA.ViewModel {
         
 
         private async Task<bool> MeasurePolarError(IProgress<string> progress, Direction direction) {
-            if (ImagingVM?.Cam?.Connected == true) {
+            if (Cam?.Connected == true) {
 
-                if (!ImagingVM.IsExposing) {
+                if (!IsExposing) {
 
                     _cancelMeasureErrorToken = new CancellationTokenSource();
                     try {
@@ -591,12 +643,12 @@ namespace NINA.ViewModel {
 
                 progress.Report("Solving image...");
 
-                await PlatesolveVM.BlindSolveWithCapture(SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin);
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });
 
                 canceltoken.Token.ThrowIfCancellationRequested();
 
 
-                PlateSolving.PlateSolveResult startSolveResult = PlatesolveVM.PlateSolveResult;
+                PlateSolving.PlateSolveResult startSolveResult = PlateSolveResult;
                 if (!startSolveResult.Success) {
                     return double.NaN;
                 }
@@ -623,12 +675,12 @@ namespace NINA.ViewModel {
                 canceltoken.Token.ThrowIfCancellationRequested();
 
 
-                await PlatesolveVM.BlindSolveWithCapture(SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin);
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });                
 
                 canceltoken.Token.ThrowIfCancellationRequested();
 
 
-                PlateSolving.PlateSolveResult targetSolveResult = PlatesolveVM.PlateSolveResult;
+                PlateSolving.PlateSolveResult targetSolveResult = PlateSolveResult;
                 if (!targetSolveResult.Success) {
                     return double.NaN;
                 }

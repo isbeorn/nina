@@ -15,11 +15,13 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        
-        <local:ImageControlView Grid.Row="0" DataContext="{Binding ImagingVM.ImageControl}" />   
 
-        <Grid Grid.Column="0" Grid.Row="2" IsEnabled="{Binding ImagingVM.Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <local:CameraControlView  IsEnabled="{Binding ImagingVM.Cam.Connected}"                    
+
+
+        <local:ImageControlView Grid.Row="0" DataContext="{Binding Source={StaticResource AppVM}, Path=ImagingVM.ImageControl}"/>
+
+        <Grid Grid.Column="0" Grid.Row="2" IsEnabled="{Binding Source={StaticResource AppVM}, Path=ImagingVM.Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <local:CameraControlView  IsEnabled="{Binding Source={StaticResource AppVM}, Path=ImagingVM.Cam.Connected}"                    
                     MyLoop="{Binding Loop, Mode=TwoWay}"
                     MyCommand="{Binding SnapCommand}" 
                     MyCancelCommand="{Binding CancelSnapCommand}" 

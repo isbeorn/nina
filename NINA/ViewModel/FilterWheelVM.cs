@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
-    class FilterWheelVM: ChildVM {
-        public FilterWheelVM(ApplicationVM root) :base(root) {
+    class FilterWheelVM: BaseVM {
+        public FilterWheelVM() :base() {
             Name = "Filter Wheel";            
             ChooseFWCommand = new RelayCommand(ChooseFW);
             DisconnectCommand = new RelayCommand(DisconnectFW);
@@ -23,7 +23,9 @@ namespace NINA.ViewModel {
                 return _fW;
             }
             set {
-                _fW = value; 
+                _fW = value;
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.FilterWheelChanged, _fW);
             }
         }
 
@@ -31,9 +33,10 @@ namespace NINA.ViewModel {
             FW = (Model.MyFilterWheel.IFilterWheel)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.FilterWheel);
             if (FW?.Connect() == true) {
             
-                Settings.FilterWheelId = FW.Id;
-                RaisePropertyChanged(nameof(FW));
-            }            
+                Settings.FilterWheelId = FW.Id;                
+            } else {
+                FW = null;
+            }
         }
 
         private void DisconnectFW(object obj) {

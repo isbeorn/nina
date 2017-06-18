@@ -22,26 +22,75 @@ using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
 
 namespace NINA.ViewModel {
-    class ImagingVM : ChildVM {
+    class ImagingVM : BaseVM {
 
-        public ImagingVM(ApplicationVM root) : base(root) {
-            CameraVM = root.CameraVM;
+        public ImagingVM() : base() {
 
             Name = "Imaging";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
 
             SnapExposureDuration = 1;
-            SnapCommand = new AsyncCommand<bool>(() => CaptureImage(new Progress<string>(p => RootVM.Status = p)));
+            SnapCommand = new AsyncCommand<bool>(() => CaptureImage(new Progress<string>(p => Status = p)));
             CancelSnapCommand = new RelayCommand(CancelCaptureImage);
-            StartSequenceCommand = new AsyncCommand<bool>(() => StartSequence(new Progress<string>(p => RootVM.Status = p)));
+            StartSequenceCommand = new AsyncCommand<bool>(() => StartSequence(new Progress<string>(p => Status = p)));
             CancelSequenceCommand = new RelayCommand(CancelSequence);
 
             ImageControl = new ImageControlVM();
+
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                var args = (object[])o;
+                ICollection<SequenceModel> seq = (ICollection<SequenceModel>)args[0];
+                bool save = (bool)args[1];
+                CancellationTokenSource token = (CancellationTokenSource)args[2];
+                IProgress<string> progress = (IProgress<string>)args[3];
+                await StartSequence(seq, save, token, progress);
+            }, AsyncMediatorMessages.StartSequence);
+                        
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                var args = (object[])o;
+                double duration = (double)args[0];
+                bool save = (bool)args[1];
+                IProgress<string> progress = (IProgress<string>)args[2];
+                CancellationTokenSource token = (CancellationTokenSource)args[3];
+                FilterInfo filter = (FilterInfo)args[4];
+                BinningMode binning = (BinningMode)args[5];
+                await CaptureImage(duration, save, progress, token, filter, binning);
+            }, AsyncMediatorMessages.CaptureImage);
+
+            Mediator.Instance.Register((object o) => {
+                Cam = (ICamera)o;
+            }, MediatorMessages.CameraChanged);
+
+            Mediator.Instance.Register((object o) => {
+                Telescope = (ITelescope)o;
+            }, MediatorMessages.TelescopeChanged);
+            
+            Mediator.Instance.Register((object o) => {
+                FW = (IFilterWheel)o;
+            }, MediatorMessages.FilterWheelChanged);
+
+            Mediator.Instance.Register((object o) => {
+                PlateSolveFilter = (FilterInfo)o;
+            }, MediatorMessages.PlateSolveFilterChanged);
+            Mediator.Instance.Register((object o) => {
+                PlateSolveBinning = (BinningMode)o;
+            }, MediatorMessages.PlateSolveBinningChanged);
+            Mediator.Instance.Register((object o) => {
+                PlateSolveExposureDuration = (double)o;
+            }, MediatorMessages.PlateSolveExposureDurationChanged);
+
         }
 
-        private void CameraVM_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == "Cam") {
-                RaisePropertyChanged(e.PropertyName);
+        private string _status;
+        public string Status {
+            get {
+                return _status;
+            }
+            set {
+                _status = value;
+                RaisePropertyChanged();
+
+                Mediator.Instance.Notify(MediatorMessages.StatusUpdate, _status);
             }
         }
 
@@ -65,18 +114,7 @@ namespace NINA.ViewModel {
                 _seqVM = value;
                 RaisePropertyChanged();
             }
-        }
-
-        private CameraVM _cameraVM;
-        public CameraVM CameraVM {
-            get {
-                return _cameraVM;
-            } set {
-                _cameraVM = value;
-                CameraVM.PropertyChanged += CameraVM_PropertyChanged;
-                RaisePropertyChanged();
-            }
-        }
+        }       
 
         private bool _loop;
         public bool Loop {
@@ -90,28 +128,33 @@ namespace NINA.ViewModel {
 
         }
 
+        private ICamera _cam;
         public ICamera Cam {
             get {
-                return CameraVM.Cam;
+                return _cam;
+            } set {
+                _cam = value;
+                RaisePropertyChanged();
             }
         }
 
-        private ITelescope Telescope {
+        private ITelescope _telescope;
+        public ITelescope Telescope {
             get {
-                return RootVM.TelescopeVM.Telescope;
+                return _telescope;
+            } set {
+                _telescope = value;
+                RaisePropertyChanged();
             }
         }
 
-        private PlatesolveVM PlatesolveVM {
-            get {
-                return RootVM.PlatesolveVM;
-            }
-        }
-
-        
+        private IFilterWheel _fW;
         public IFilterWheel FW {
             get {
-                return CameraVM.FilterWheelVM.FW;
+                return _fW;
+            } set {
+                _fW = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -159,6 +202,8 @@ namespace NINA.ViewModel {
             } set {
                 _isExposing = value;
                 RaisePropertyChanged();
+
+                Mediator.Instance.Notify(MediatorMessages.IsExposingUpdate, _isExposing);
             }
         }
         
@@ -293,7 +338,7 @@ namespace NINA.ViewModel {
             tokenSource.Token.ThrowIfCancellationRequested();
             return true;
         }
-
+                
         public  async Task<bool> StartSequence(ICollection<SequenceModel> sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
             return await Task.Run<bool>(async () => {
                 try {
@@ -327,9 +372,9 @@ namespace NINA.ViewModel {
                             }
 
 
-                            /* Auto Meridian Flip */
+                           
                             await CheckMeridianFlip(seq, tokenSource, progress);
-                                                        
+                                
 
                             /*Capture*/
                             await Capture(seq, tokenSource, progress);
@@ -397,6 +442,14 @@ namespace NINA.ViewModel {
             });
         }
 
+
+        private double _plateSolveExposureDuration;       
+        private BinningMode _plateSolveBinning;
+        private FilterInfo _plateSolveFilter;
+        public double PlateSolveExposureDuration { get => _plateSolveExposureDuration; set => _plateSolveExposureDuration = value; }
+        public BinningMode PlateSolveBinning { get => _plateSolveBinning; set => _plateSolveBinning = value; }
+        public FilterInfo PlateSolveFilter { get => _plateSolveFilter; set => _plateSolveFilter = value; }
+
         /// <summary>
         /// Checks if auto meridian flip should be considered and executes it
         /// 1) Compare next exposure length with time to meridian - If exposure length is greater than time to flip the system will wait
@@ -434,16 +487,13 @@ namespace NINA.ViewModel {
                         if (flipsuccess) {
                             if(Settings.RecenterAfterFlip) { 
                                 progress.Report("Initializing Platesolve");
-                                
-                                var platesovlesuccess = await PlatesolveVM.BlindSolveWithCapture(PlatesolveVM.SnapExposureDuration, progress, tokenSource, PlatesolveVM.SnapFilter, PlatesolveVM.SnapBin);
 
+                                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.BlindSolveWithCapture, new object[] { SnapExposureDuration, progress, tokenSource, SnapFilter, SnapBin });
+
+                                
                                 progress.Report("Sync and Reslew");
-                                if (platesovlesuccess) {
-                                    PlatesolveVM.sync();
-                                    Telescope.SlewToCoordinates(coords.RA, coords.Dec);
-                                } else {
-                                    Notification.ShowWarning("Platesolve failed");
-                                }
+                                Mediator.Instance.Notify(MediatorMessages.Sync, null);
+                                Telescope.SlewToCoordinates(coords.RA, coords.Dec);                                
                             }
 
                             progress.Report("Resuming PHD2");
@@ -549,6 +599,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+       
 
         public async Task<bool> CaptureImage(IProgress<string> progress) {
             _captureImageToken = new CancellationTokenSource();

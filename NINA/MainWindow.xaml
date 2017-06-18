@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:view="clr-namespace:NINA.View"
         xmlns:util="clr-namespace:NINA.Utility"
+        xmlns:vm="clr-namespace:NINA.ViewModel"
         xmlns:local="clr-namespace:NINA"   
-        Name="ThisWindow"
-        
+        Name="ThisWindow"        
+        xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"        
         xmlns:toast="clr-namespace:ToastNotifications;assembly=ToastNotifications"
         Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy" 
         MinHeight="720" MinWidth="1280" 
@@ -13,7 +14,7 @@
         Style="{StaticResource MainWindow}">
 
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
-        <Grid DataContext="{StaticResource AppVM}">                
+        <Grid DataContext="{StaticResource AppVM}">
             <TabControl TabStripPlacement="Left">
                 <TabItem >
                     <TabItem.Header>
@@ -154,12 +155,50 @@
                         <view:OptionsView DataContext="{Binding OptionsVM}" ></view:OptionsView>
                     </TabItem.Content>
                 </TabItem>
+                <TabItem Visibility="Collapsed">
+                    <TabItem.Header>
+                        y
+                        y
+                        y
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <dock:DockingManager
+                            DataContext="{Binding DockManagerVM}"
+                            DocumentsSource="{Binding Documents}"
+                            AnchorablesSource="{Binding Anchorables}">
+
+                            <dock:DockingManager.Resources>
+
+                                <!-- add views for specific ViewModels 
+                                <DataTemplate DataType="{x:Type vm:DockableVM}">
+                                    <view:ImageControlView />
+                                </DataTemplate>-->
+
+                            </dock:DockingManager.Resources>
+                            <dock:DockingManager.DocumentHeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Content.Title}" />                                   
+                                </DataTemplate>
+                            </dock:DockingManager.DocumentHeaderTemplate>
+
+                            
+                            <!--<dock:DockingManager.LayoutItemContainerStyle>                                
+                                <Style TargetType="{x:Type dock:LayoutItem}" >
+                                    <Setter Property="Title" Value="{Binding Model.Title}" />
+                                    <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
+                                    <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
+                                </Style>
+                            </dock:DockingManager.LayoutItemContainerStyle>-->
+
+                        </dock:DockingManager>
+                    </TabItem.Content>
+                </TabItem>
             </TabControl>
 
             <toast:NotificationTray Grid.Row="1" NotificationsSource="{Binding Source={x:Static util:Notification.NotificationSource}}"
                     PopupFlowDirection="RightUp"
                     VerticalAlignment="Top"
-                    HorizontalAlignment="Right" />            
+                    HorizontalAlignment="Right" />
         </Grid>
     </Border>
 </Window>

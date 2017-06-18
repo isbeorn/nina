@@ -6,10 +6,10 @@
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid IsEnabled="{Binding ImagingVM.Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+    <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
 
 
-        <Grid  IsEnabled="{Binding ImagingVM.Cam.Connected}">
+        <Grid  IsEnabled="{Binding Cam.Connected}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="3*"/>                         
@@ -20,7 +20,7 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Column="1">
-                <local:ImageControlView DataContext="{Binding ImagingVM.ImageControl}" />
+                <local:ImageControlView DataContext="{Binding Source={StaticResource AppVM}, Path=ImagingVM.ImageControl}" />
             </Grid>
             
             <Border  BorderBrush="{StaticResource BorderBrush}" BorderThickness="1 1 0 1">

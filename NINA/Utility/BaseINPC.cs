@@ -13,11 +13,7 @@ namespace NINA.Utility
         
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -50,10 +46,7 @@ namespace NINA.Utility
         }
 
         protected void RaiseAllPropertiesChanged() {
-            var handler = PropertyChanged;
-            if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(null));
-            }
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));            
         }
     }
 }

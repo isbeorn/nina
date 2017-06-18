@@ -16,9 +16,9 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    class CameraVM : ChildVM {
+    class CameraVM : BaseVM {
 
-        public CameraVM(ApplicationVM root) : base(root){
+        public CameraVM() : base(){
             Name = "Camera";
             ImageGeometry  = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
 
@@ -81,7 +81,7 @@ namespace NINA.ViewModel {
         public FilterWheelVM FilterWheelVM {
             get {
                 if (_filterWheelVM == null) {
-                    _filterWheelVM = new FilterWheelVM(RootVM);                    
+                    _filterWheelVM = new FilterWheelVM();                    
                 }
                 return _filterWheelVM;
             }
@@ -210,6 +210,8 @@ namespace NINA.ViewModel {
             }
             set {
                 _cam = value;
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.CameraChanged, _cam);
             }
         }
 
@@ -217,8 +219,9 @@ namespace NINA.ViewModel {
             Cam = (Model.MyCamera.ICamera)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Camera);
             if (Cam?.Connect() == true) {
                 _updateCamera.Start();
-                Settings.CameraId = Cam.Id;
-                RaisePropertyChanged(nameof(Cam));
+                Settings.CameraId = Cam.Id;                
+            } else {
+                Cam = null;
             }
         }
 
@@ -229,8 +232,7 @@ namespace NINA.ViewModel {
                 _cancelCoolCameraSource?.Cancel();
                 CoolingRunning = false;
                 Cam.Disconnect();
-                Cam = null;
-                RaisePropertyChanged(nameof(Cam));
+                Cam = null;                
             }
         }
 

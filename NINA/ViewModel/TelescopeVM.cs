@@ -11,8 +11,8 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    class TelescopeVM : ChildVM {
-        public TelescopeVM(ApplicationVM root) : base(root) {
+    class TelescopeVM : BaseVM {
+        public TelescopeVM() : base() {
             Name = "Telescope";            
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
             
@@ -56,6 +56,8 @@ namespace NINA.ViewModel {
             }
             set {
                 _telescope = value;
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.TelescopeChanged, _telescope);
             }
         }
 
@@ -64,8 +66,9 @@ namespace NINA.ViewModel {
             Telescope = (Model.MyTelescope.ITelescope)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Telescope);
             if (Telescope?.Connect() == true) {
                 _updateTelescope.Start();
-                Settings.TelescopeId = Telescope.Id;
-                RaisePropertyChanged(nameof(Telescope));
+                Settings.TelescopeId = Telescope.Id;                
+            } else {
+                Telescope = null;
             }
         }
 
@@ -75,7 +78,6 @@ namespace NINA.ViewModel {
                 _updateTelescope.Stop();
                 Telescope.Disconnect();
                 Telescope = null;
-                RaisePropertyChanged(nameof(Telescope));
             }
         }
 

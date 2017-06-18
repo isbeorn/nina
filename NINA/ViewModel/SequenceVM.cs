@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel{
-    class SequenceVM : BaseINPC {
+    class SequenceVM : BaseVM {
 
         public SequenceVM() {
             AddSequenceCommand = new RelayCommand(AddSequence);
