@@ -11,9 +11,10 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    class TelescopeVM : BaseVM {
+    class TelescopeVM : DockableVM {
         public TelescopeVM() : base() {
-            Name = "Telescope";            
+            Title = "Telescope";
+            CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
             
             ChooseTelescopeCommand = new RelayCommand(ChooseTelescope);

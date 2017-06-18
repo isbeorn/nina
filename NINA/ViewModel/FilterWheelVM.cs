@@ -10,9 +10,10 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
-    class FilterWheelVM: BaseVM {
+    class FilterWheelVM: DockableVM {
         public FilterWheelVM() :base() {
-            Name = "Filter Wheel";            
+            Title = "Filter Wheel";
+            CanClose = false;
             ChooseFWCommand = new RelayCommand(ChooseFW);
             DisconnectCommand = new RelayCommand(DisconnectFW);
         }

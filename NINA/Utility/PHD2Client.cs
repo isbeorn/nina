@@ -386,6 +386,14 @@ namespace NINA.Utility {
                     Notification.ShowError("PHD2 Error: " + ex.Message);
                     RaisePropertyChanged(nameof(Connected));
                 }
+                catch(OperationCanceledException ex) {
+                    Logger.Trace(ex.Message);
+                    _stream.Close();
+                    _client.Close();
+                    IsDithering = false;
+                    Notification.ShowError("PHD2 Error: " + ex.Message);
+                    RaisePropertyChanged(nameof(Connected));
+                }
                 catch (Exception ex) {
                     Logger.Error(ex.Message);
                     Notification.ShowError("PHD2 Error: " + ex.Message);
@@ -559,7 +567,9 @@ namespace NINA.Utility {
             }
 
             set {
-                time = value;
+                time = DateTime.UtcNow
+               .Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+               .TotalSeconds;
             }
         }
 

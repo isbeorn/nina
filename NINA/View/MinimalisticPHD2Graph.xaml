@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="NINA.View.MinimalisticPHD2Graph"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"      
+             xmlns:local="clr-namespace:NINA.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <oxy:Plot Background="{StaticResource BackgroundBrush}"
+                  PlotAreaBackground="{StaticResource BackgroundBrush}" 
+                  PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}"                  
+                  >
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis  Position="Left" 
+                                 Maximum="{Binding MaxY}" 
+                                 Minimum="{Binding MinY}"   
+                                 IntervalLength = "50"
+                                 IsAxisVisible="False"
+                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                 
+                                 MajorGridlineStyle="LongDash"
+                                 MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                                 MinorGridlineStyle="Dash"
+                                 MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
+                                 />
+                <oxy:LinearAxis Position="Bottom" IsAxisVisible="False"  />
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries ItemsSource="{Binding GuideStepsHistoryMinimal}" 
+                                DataFieldX="Time" 
+                                DataFieldY="RADistanceRaw" 
+                                Color="Blue"
+                                />
+                <oxy:LineSeries ItemsSource="{Binding GuideStepsHistoryMinimal}" 
+                                DataFieldX="Time" 
+                                DataFieldY="DecDistanceRaw" 
+                                Color="Red"
+                               />
+                <oxy:LinearBarSeries ItemsSource="{Binding GuideStepsHistoryMinimal}"    
+                                     DataFieldX="TimeRA" 
+                                     DataFieldY="RADistanceGuide" 
+                                     Color="Blue"
+                                    
+                                     StrokeColor="Blue"
+                                     StrokeThickness="1"
+                                     BarWidth="3"
+                                     FillColor="Transparent"/>
+                <oxy:LinearBarSeries ItemsSource="{Binding GuideStepsHistoryMinimal}" 
+                                     DisplayMemberPath="DecDistanceGuide" 
+                                     DataFieldX="TimeDec" 
+                                     DataFieldY="DecDistanceGuide" 
+                                     Color="Red"
+                                    
+                                     StrokeColor="Red"
+                                     StrokeThickness="1"
+                                     BarWidth="3"
+                                     FillColor="Transparent"/>
+            </oxy:Plot.Series>
+        </oxy:Plot>
+
+    </Grid>
+</UserControl>

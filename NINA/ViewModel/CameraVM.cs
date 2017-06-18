@@ -16,10 +16,11 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    class CameraVM : BaseVM {
+    class CameraVM : DockableVM {
 
         public CameraVM() : base(){
-            Name = "Camera";
+            Title = "Camera";
+            CanClose = false;
             ImageGeometry  = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
 
             //ConnectCameraCommand = new RelayCommand(connectCamera);

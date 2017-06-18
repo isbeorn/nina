@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="NINA.View.AnchorableTelescopeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NINA.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel Orientation="Vertical">
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+            <UniformGrid Columns="2" VerticalAlignment="Center">
+                <TextBlock><Run Text="Connected"/></TextBlock>
+                <TextBlock Text="{Binding Telescope.Connected, FallbackValue=False}" Margin="5,0,0,0" />
+            </UniformGrid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+            <UniformGrid Columns="2" VerticalAlignment="Center">
+                <TextBlock><Run Text="Tracking"/></TextBlock>
+                <TextBlock Text="{Binding Telescope.Tracking}" Margin="5,0,0,0" />
+            </UniformGrid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+            <UniformGrid Columns="2" VerticalAlignment="Center" >
+
+                <TextBlock><Run Text="Sidereal Time:"/></TextBlock>
+                <TextBlock Text="{Binding Telescope.SiderealTimeString}" Margin="5,0,0,0" />
+
+            </UniformGrid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+            <UniformGrid Columns="2" VerticalAlignment="Center">
+
+                <TextBlock><Run Text="Meridian in:"/></TextBlock>
+                <TextBlock Text="{Binding Telescope.HoursToMeridianString}" Margin="5,0,0,0" />
+
+            </UniformGrid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+            <UniformGrid Columns="2" VerticalAlignment="Center" >
+
+                <TextBlock><Run Text="Right Ascension:"/></TextBlock>
+                <TextBlock Text="{Binding Telescope.RightAscensionString}" Margin="5,0,0,0" />
+
+            </UniformGrid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+            <UniformGrid Columns="2" VerticalAlignment="Center">
+
+                <TextBlock><Run Text="Declination:"/></TextBlock>
+                <TextBlock Text="{Binding Telescope.DeclinationString}" Margin="5,0,0,0" />
+
+            </UniformGrid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+            <UniformGrid Columns="2" VerticalAlignment="Center" >
+
+                <TextBlock><Run Text="Altitude:"/></TextBlock>
+                <TextBlock Text="{Binding Telescope.AltitudeString}" Margin="5,0,0,0" />
+            </UniformGrid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+            <UniformGrid Columns="2" VerticalAlignment="Center">
+                <TextBlock><Run Text="Azimuth:"/></TextBlock>
+
+
+                <TextBlock Text="{Binding Telescope.AzimuthString}" Margin="5,0,0,0" />
+
+            </UniformGrid>
+        </Border>
+    </StackPanel>
+</UserControl>

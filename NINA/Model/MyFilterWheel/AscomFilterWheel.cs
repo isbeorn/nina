@@ -146,7 +146,19 @@ namespace NINA.Model.MyFilterWheel {
             set {
                 if(Connected) {
                     try {
+                        
                         _filterwheel.Position = value;
+
+                        //Notify UI once filter is in proper position
+                        Task.Run(() => {
+                            try {
+                                while (Connected && _filterwheel.Position == -1) {
+                                }
+                                RaisePropertyChanged(nameof(Position));
+                            } catch (Exception) { }
+                            
+                        });
+                        
                     } catch(ASCOM.DriverAccessCOMException ex) {
                         Notification.ShowWarning(ex.Message);
                     }                    

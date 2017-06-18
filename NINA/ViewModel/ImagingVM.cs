@@ -22,11 +22,12 @@ using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
 
 namespace NINA.ViewModel {
-    class ImagingVM : BaseVM {
+    class ImagingVM : DockableVM {
 
         public ImagingVM() : base() {
 
-            Name = "Imaging";
+            Title = "Imaging";
+            CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
 
             SnapExposureDuration = 1;
@@ -332,7 +333,7 @@ namespace NINA.ViewModel {
 
                         if(time > 20000) {
                             //Failsafe when phd is not sending settlingdone message
-                            Notification.ShowWarning("PHD2 did not send SettleDone message in time. Skipping settle manually.", ToastNotifications.NotificationsSource.NeverEndingNotification);
+                            Notification.ShowWarning("PHD2 did not send SettleDone message in time. Skipping settle manually."/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);
                             PHD2Client.IsDithering = false;
                         }
                         tokenSource.Token.ThrowIfCancellationRequested();
@@ -363,7 +364,7 @@ namespace NINA.ViewModel {
                             /*Change Filter*/
                             await ChangeFilter(seq, tokenSource, progress);
 
-                            if (!Cam.Connected) {
+                            if (Cam?.Connected != true) {
                                 tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
@@ -371,7 +372,7 @@ namespace NINA.ViewModel {
                             /*Set Camera Binning*/
                             SetBinning(seq);
 
-                            if (!Cam.Connected) {
+                            if (Cam?.Connected != true) {
                                 tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
@@ -384,7 +385,7 @@ namespace NINA.ViewModel {
                             /*Capture*/
                             await Capture(seq, tokenSource, progress);
 
-                            if (!Cam.Connected) {
+                            if (Cam?.Connected != true) {
                                 tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
@@ -404,7 +405,7 @@ namespace NINA.ViewModel {
                             await ImageControl.PrepareImage(progress, tokenSource);
 
 
-                            if (!Cam.Connected) {
+                            if (Cam?.Connected != true) {
                                 tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
@@ -417,7 +418,7 @@ namespace NINA.ViewModel {
                             /*Dither*/
                             await Dither(seq, tokenSource, progress);
                             
-                            if (!Cam.Connected) {
+                            if (Cam?.Connected != true) {
                                 tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
@@ -511,7 +512,7 @@ namespace NINA.ViewModel {
                                 time += 500;
                                 if (time > 20000) {
                                     //Failsafe when phd is not sending resume message
-                                    Notification.ShowWarning("PHD2 did not send Resume message in time. Caputre Sequence will be resumed, but make sure PHD2 is guiding again!", ToastNotifications.NotificationsSource.NeverEndingNotification);                            
+                                    Notification.ShowWarning("PHD2 did not send Resume message in time. Caputre Sequence will be resumed, but make sure PHD2 is guiding again!"/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);                            
                                     tokenSource.Token.ThrowIfCancellationRequested();
                                 }
                             }

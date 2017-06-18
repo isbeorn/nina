@@ -25,6 +25,7 @@ namespace NINA.Model.MyTelescope {
         double TimeToMeridianFlip { get; }
         string TimeToMeridianFlipString { get; }
         double MovingRate { get; set; }
+        bool Tracking { get; set; }
 
         bool Connect();
         void Disconnect();

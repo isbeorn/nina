@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 namespace NINA.ViewModel {
     public class DockManagerVM : BaseVM {
 
-        public DockManagerVM(IEnumerable<DockableVM> dockWindowViewModels) {
+        public DockManagerVM(/*IEnumerable<DockableVM> dockWindowViewModels*/) {
             this.Documents = new ObservableCollection<DockableVM>();
             this.Anchorables = new ObservableCollection<object>();
 
-            foreach (var document in dockWindowViewModels) {
+            /*foreach (var document in dockWindowViewModels) {
                 document.PropertyChanged += DockWindowViewModel_PropertyChanged;
                 if (!document.IsClosed)
                     this.Documents.Add(document);
-            }
+            }*/
         }
 
         /// <summary>Gets a collection of all visible documents</summary>
@@ -49,7 +49,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void DockWindowViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        /*private void DockWindowViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             DockableVM document = sender as DockableVM;
 
             if (e.PropertyName == nameof(DockableVM.IsClosed)) {
@@ -58,7 +58,7 @@ namespace NINA.ViewModel {
                 else
                     this.Documents.Remove(document);
             }
-        }
+        }*/
 
     }
 }

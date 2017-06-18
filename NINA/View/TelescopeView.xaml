@@ -17,7 +17,7 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid>
+        <Grid Grid.ColumnSpan="2">
 
             <GroupBox Header="Telescope">
                 <Grid>
@@ -78,7 +78,7 @@
                                     <TextBlock Text="{Binding Telescope.SiderealTimeString}" Margin="5,0,0,0" />
                                 </UniformGrid>
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock><Run Text="Remaining Hours To Meridian:"/></TextBlock>
+                                    <TextBlock><Run Text="Meridian in:"/></TextBlock>
                                     <TextBlock Text="{Binding Telescope.HoursToMeridianString}" Margin="5,0,0,0" />
                                 </UniformGrid>
                             </UniformGrid>

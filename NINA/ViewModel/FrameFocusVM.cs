@@ -14,10 +14,11 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel {
-    class FrameFocusVM : BaseVM {
+    class FrameFocusVM : DockableVM {
         public FrameFocusVM() : base() {
 
-            Name = "Frame & Focus";
+            Title = "Frame & Focus";
+            CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
             CancelSnapCommand = new RelayCommand(CancelCaptureImage);
             SnapCommand = new AsyncCommand<bool>(() => Snap(new Progress<string>(p => Status = p)));            

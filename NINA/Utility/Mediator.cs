@@ -76,7 +76,9 @@ namespace NINA.Utility {
         PlateSolveExposureDurationChanged = 10,
         PlateSolveBinningChanged = 11,
         PlateSolveFilterChanged = 12,
-        Sync = 13
+        Sync = 13,
+        ChangeAutoStretch = 14,
+        ChangeDetectStars = 15
     };
 
     public enum AsyncMediatorMessages {

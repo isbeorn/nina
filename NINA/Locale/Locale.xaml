@@ -59,4 +59,6 @@
     <s:String x:Key="LblDownload">Download</s:String>
     <s:String x:Key="LblOn">On</s:String>
     <s:String x:Key="LblOff">Off</s:String>
+    <s:String x:Key="LblChipTempShort">Chip Temp.</s:String>
+    <s:String x:Key="LblTargetTempShort">Target Temp.</s:String>
 </ResourceDictionary>

@@ -30,10 +30,10 @@ namespace NINA.ViewModel {
         private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
                 AutoStretch = (bool)o;
-            }, MediatorMessages.AutoStrechChanged);
+            }, MediatorMessages.ChangeAutoStretch);
             Mediator.Instance.Register((object o) => {
                 DetectStars = (bool)o;
-            }, MediatorMessages.DetectStarsChanged);
+            }, MediatorMessages.ChangeDetectStars);
         }
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
@@ -77,6 +77,7 @@ namespace NINA.ViewModel {
             set {
                 _autoStretch = value;
                 RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, _autoStretch);
             }
         }
 
@@ -88,6 +89,7 @@ namespace NINA.ViewModel {
             set {
                 _detectStars = value;
                 RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.DetectStarsChanged, _detectStars);
             }
         }
 

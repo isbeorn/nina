@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="NINA.View.AnchorableCameraView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ns="clr-namespace:NINA.Locale"
+             xmlns:local="clr-namespace:NINA.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+        <Grid  IsEnabled="{Binding Cam.Connected}">
+            <StackPanel Orientation="Vertical" IsEnabled="{Binding Cam.CanSetCCDTemperature}">
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                    <UniformGrid Columns="2" VerticalAlignment="Center">
+                        <TextBlock><Run Text="Connected"/></TextBlock>
+                        <TextBlock Text="{Binding Cam.Connected, FallbackValue=False}" Margin="5,0,0,0" />
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                    <UniformGrid Columns="2" >                        
+                            <TextBlock Text="{ns:Loc LblCoolerOn}" VerticalAlignment="Center"></TextBlock>
+                            <CheckBox IsChecked="{Binding Cam.CoolerOn}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>                        
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                    <UniformGrid Columns="2" VerticalAlignment="Center" >                        
+                            <TextBlock Text="{ns:Loc LblCoolerPower}"></TextBlock>
+                            <TextBlock Text="{Binding Cam.CoolerPower, StringFormat=\{0:#.00\}%}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>                        
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                    <UniformGrid Columns="2" VerticalAlignment="Center">                        
+                            <TextBlock Text="{ns:Loc LblChipTempShort}"></TextBlock>
+                            <TextBlock Text="{Binding Cam.CCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>                        
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                    <UniformGrid Columns="2" VerticalAlignment="Center">                        
+                            <TextBlock Text="{ns:Loc LblTargetTempShort}" />
+                            <TextBlock Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" MinWidth="20" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>                        
+                    </UniformGrid>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

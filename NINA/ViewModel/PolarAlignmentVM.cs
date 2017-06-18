@@ -13,10 +13,13 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyTelescope;
 
 namespace NINA.ViewModel {
-    class PolarAlignmentVM : BaseVM {
+    class PolarAlignmentVM : DockableVM {
 
         public PolarAlignmentVM() : base() {
-            
+            Title = "Polar alignment";
+            CanClose = false;
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PolarAlignSVG"];
+
             _updateValues = new DispatcherTimer();
             _updateValues.Interval = TimeSpan.FromSeconds(1);
             _updateValues.Tick += UpdateValues_Tick;
@@ -475,16 +478,16 @@ namespace NINA.ViewModel {
                     try {
                         var oldAutoStretch = AutoStretch;
                         var oldDetectStars = DetectStars;
-                        Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, true);
-                        Mediator.Instance.Notify(MediatorMessages.DetectStarsChanged, false);
+                        Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
+                        Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
                         var capture = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { DARVSlewDuration + 5, false, cameraprogress, _cancelDARVSlewToken });                        
                         var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken);
 
                         await Task.WhenAll(capture, slew);
 
-                        Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, oldAutoStretch);
-                        Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, oldDetectStars);
+                        Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
+                        Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
                     }
                     catch (OperationCanceledException ex) {
                         Logger.Trace(ex.Message);

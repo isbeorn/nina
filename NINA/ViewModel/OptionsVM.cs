@@ -12,9 +12,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NINA.ViewModel {
-    public  class OptionsVM : BaseVM {
+    public  class OptionsVM : DockableVM {
         public OptionsVM() {
-            Name = "Options";            
+            Title = "Options";
+            CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);

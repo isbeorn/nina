@@ -3,36 +3,66 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"              
+             xmlns:view="clr-namespace:NINA.View"
+             xmlns:vm="clr-namespace:NINA.ViewModel"
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="3*" />
-            <RowDefinition Height="5" />
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="5" />
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <dock:DockingManager
+                            DataContext="{Binding}"
+                            DocumentsSource="{Binding Documents}"
+                            AnchorablesSource="{Binding Anchorables}">
+
+            <dock:DockingManager.Resources>
+                <DataTemplate DataType="{x:Type vm:CameraVM}">
+                    <view:AnchorableCameraView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:FilterWheelVM}">
+                    <view:AnchorableFilterWheelView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:FrameFocusVM}">
+                    <!--<view:FrameFocusView />-->
+                    <view:ImageControlView DataContext="{Binding Source={StaticResource AppVM}, Path=ImagingVM.ImageControl}"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:TelescopeVM}">
+                    <view:AnchorableTelescopeView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:PHD2VM}">
+                    <view:AnchorablePHD2View />
+                </DataTemplate>
+            </dock:DockingManager.Resources>
+
+            <!--<dock:DockingManager.DocumentHeaderTemplate>
+                                <DataTemplate>
+                                    <Grid Background="{StaticResource ButtonBackgroundBrush}" >
+                                        <Grid  Height="50" Width="50">
+                                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding Content.ImageGeometry}" Stretch="Uniform" Margin="5"  >
+                                            </Path>
+                                        </Grid>
+                                    </Grid>
+                                    <TextBlock Text="{Binding Content.Title}" />                                   
+                                </DataTemplate>
+                            </dock:DockingManager.DocumentHeaderTemplate>-->
 
 
-        <local:ImageControlView DataContext="{Binding ImagingVM.ImageControl}" Grid.ColumnSpan="3"/>
-        
-        <GridSplitter Grid.ColumnSpan="3" Grid.Row="1" HorizontalAlignment="Stretch" />
-        
-        <local:SequenceView Grid.Row="2" IsEnabled="False" DataContext="{Binding ImagingVM.SeqVM}" Margin="0,0,0,1" />
-
-        <GridSplitter Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
-
-        <local:CameraCoolingChartsView Grid.Row="2" Grid.Column="2" Grid.RowSpan="3"  DataContext="{Binding CameraVM}"></local:CameraCoolingChartsView>
-        
-        <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" />
-        
-        <local:PHD2Graph Grid.Row="4" DataContext="{Binding PHD2VM}" />
+            <dock:DockingManager.LayoutItemContainerStyle>
+                <Style TargetType="{x:Type dock:LayoutItem}" >
+                    <Setter Property="Title" Value="{Binding Model.Title}" />
+                    <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
+                    <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
+                </Style>                
+            </dock:DockingManager.LayoutItemContainerStyle>
+            <dock:LayoutRoot>
+                <dock:LayoutPanel Orientation="Horizontal">
+                    <dock:LayoutAnchorablePane DockWidth="*">
+                    </dock:LayoutAnchorablePane>
+                    <dock:LayoutDocumentPane DockWidth="4*"/>
+                    <dock:LayoutAnchorablePane DockWidth="*">
+                    </dock:LayoutAnchorablePane>
+                </dock:LayoutPanel>
+            </dock:LayoutRoot>
+        </dock:DockingManager>
     </Grid>
 </UserControl>

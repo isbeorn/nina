@@ -18,13 +18,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel {
-    class PlatesolveVM : BaseVM {
+    class PlatesolveVM : DockableVM {
 
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
         public PlatesolveVM() : base() {
-            Name = "Plate Solving";
-            Progress = "Idle...";
+            Title = "Plate Solving";
+            CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
             
             BlindSolveCommand = new AsyncCommand<bool>(() => BlindSolve(new Progress<string>(p => Status = p)));
@@ -177,17 +177,6 @@ namespace NINA.ViewModel {
             sync();
         }
 
-        private string _progress;
-        public string Progress {
-            get {
-                return _progress;
-            }
-            set {
-                _progress = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private BitmapSource _image;
         public BitmapSource Image {
             get {
@@ -216,13 +205,13 @@ namespace NINA.ViewModel {
         public async Task<bool> BlindSolveWithCapture(double duration, IProgress<string> progress, CancellationTokenSource canceltoken, Model.MyFilterWheel.FilterInfo filter = null, Model.MyCamera.BinningMode binning = null) {
             var oldAutoStretch = AutoStretch;
             var oldDetectStars = DetectStars;
-            Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, true);
-            Mediator.Instance.Notify(MediatorMessages.DetectStarsChanged, false);           
+            Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
+            Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);           
 
             await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { duration, false, progress, canceltoken, filter, binning });
 
-            Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, oldAutoStretch);
-            Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, oldDetectStars);
+            Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
+            Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
 
             canceltoken.Token.ThrowIfCancellationRequested();
                         

@@ -12,16 +12,27 @@ using System.Windows.Input;
 using ToastNotifications;
 
 namespace NINA.ViewModel {
-    class ApplicationVM : BaseVM {
+    class ApplicationVM : DockManagerVM {
 
         public ApplicationVM() {
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
-            
-            Name = "Menu";
-
+                        
             RegisterMediatorMessages();
+
+
+            
+            //this.Documents.Add(ImagingVM);
+            this.Documents.Add(FrameFocusVM);
+            //this.Documents.Add(PlatesolveVM);            
+            //this.Documents.Add(PolarAlignVM);
+            this.Anchorables.Add(CameraVM);
+            this.Anchorables.Add(PHD2VM);
+            this.Anchorables.Add(TelescopeVM);
+            this.Anchorables.Add(CameraVM.FilterWheelVM);
+            //this.Documents.Add();
+
         }     
 
         private void RegisterMediatorMessages() {
@@ -29,6 +40,7 @@ namespace NINA.ViewModel {
                 Status = (string)o;
             }, MediatorMessages.StatusUpdate);
         }
+        
 
 
         public string Version {
