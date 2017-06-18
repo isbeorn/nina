@@ -286,6 +286,8 @@
     <Compile Include="ViewModel\BaseVM.cs" />
     <Compile Include="ViewModel\FilterWheelVM.cs" />
     <Compile Include="ViewModel\FrameFocusVM.cs" />
+    <Compile Include="ViewModel\ImageHistoryVM.cs" />
+    <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\PHD2VM.cs" />
@@ -298,6 +300,12 @@
     </Compile>
     <Compile Include="View\AnchorableFilterWheelView.xaml.cs">
       <DependentUpon>AnchorableFilterWheelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AnchorableImageHistoryView.xaml.cs">
+      <DependentUpon>AnchorableImageHistoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AnchorableImageStatisticsView.xaml.cs">
+      <DependentUpon>AnchorableImageStatisticsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AnchorablePHD2View.xaml.cs">
       <DependentUpon>AnchorablePHD2View.xaml</DependentUpon>
@@ -488,6 +496,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AnchorableFilterWheelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AnchorableImageHistoryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AnchorableImageStatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

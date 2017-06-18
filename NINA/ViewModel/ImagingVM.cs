@@ -397,7 +397,7 @@ namespace NINA.ViewModel {
                                 throw new OperationCanceledException();
                             }
 
-                            ImageControl.ImgArr = arr;                            
+                            ImageControl.ImgArr = arr;
 
                             /*Prepare Image for UI*/
                             progress.Report(ImagingVM.ExposureStatus.PREPARING);

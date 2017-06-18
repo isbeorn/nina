@@ -19,8 +19,21 @@
                 <DataTemplate DataType="{x:Type vm:CameraVM}">
                     <view:AnchorableCameraView />
                 </DataTemplate>
+                
+                <!--Statistics-->
+                
                 <DataTemplate DataType="{x:Type vm:FilterWheelVM}">
                     <view:AnchorableFilterWheelView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:ImageHistoryVM}">
+                    <view:AnchorableImageHistoryView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:ImageStatisticsVM}">
+                    <view:AnchorableImageStatisticsView />
+                </DataTemplate>
+                
+                <DataTemplate DataType="ImageStatistics">
+                    <view:AnchorableImageStatisticsView />
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type vm:FrameFocusVM}">
                     <!--<view:FrameFocusView />-->

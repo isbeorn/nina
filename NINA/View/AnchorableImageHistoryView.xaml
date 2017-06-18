@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="NINA.View.AnchorableImageHistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"  
+             xmlns:ns="clr-namespace:NINA.Locale"
+             xmlns:local="clr-namespace:NINA.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <oxy:Plot 
+                 Background="{StaticResource BackgroundBrush}"
+                  PlotAreaBackground="{StaticResource BackgroundBrush}" 
+                  PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}"                   
+                  >
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis  Position="Left" 
+                                  Maximum="10" 
+                                 Minimum="0"    
+                                 IntervalLength = "25" IsZoomEnabled="False" IsPanEnabled="False"
+                                 TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                 
+                                 MajorGridlineStyle="Solid"
+                                 MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                                 
+                                 />
+                <oxy:LinearAxis  Position="Right" Key="Secondary"
+                                  Maximum="400" 
+                                 Minimum="0"    
+                                 IntervalLength = "25" IsZoomEnabled="False" IsPanEnabled="False"
+                                 TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                 
+                                 MajorGridlineStyle="Solid"
+                                 MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                                 
+                                 />
+                <oxy:LinearAxis Position="Bottom" IntervalLength = "100" TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" IsZoomEnabled="False" IsPanEnabled="False"
+                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"/>
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries  ItemsSource="{Binding ImgStatHistory}"  
+                                DataFieldX="Id" 
+                                DataFieldY="HFR" 
+                                MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" 
+                                MarkerType="Circle" />
+                <oxy:LineSeries ItemsSource="{Binding ImgStatHistory}"  
+                                DataFieldX="Id" YAxisKey="Secondary"
+                                DataFieldY="DetectedStars"  
+                                MarkerFill="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" 
+                                MarkerType="Circle" />
+
+            </oxy:Plot.Series>
+        </oxy:Plot>
+    </Grid>
+</UserControl>

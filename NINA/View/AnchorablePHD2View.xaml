@@ -7,8 +7,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <StackPanel>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" >
                 <UniformGrid Columns="2" VerticalAlignment="Center">
                     
                         <TextBlock><Run Text="Connected"/></TextBlock>
@@ -16,7 +20,7 @@
                     
                 </UniformGrid>
             </Border>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" Grid.Row="1">
                 <UniformGrid Columns="2" VerticalAlignment="Center">
                     
                         <TextBlock><Run Text="State"/></TextBlock>
@@ -24,7 +28,7 @@
                     
                 </UniformGrid>
             </Border>
-            <local:MinimalisticPHD2Graph Grid.Row="1" DataContext="{Binding}" IsEnabled="{Binding PHD2Client.Connected }" MinHeight="120" />
-        </StackPanel>
+            <local:MinimalisticPHD2Graph Grid.Row="2" DataContext="{Binding}" IsEnabled="{Binding PHD2Client.Connected }" />
+        
     </Grid>
 </UserControl>

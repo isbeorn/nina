@@ -31,6 +31,8 @@ namespace NINA.ViewModel {
             this.Anchorables.Add(PHD2VM);
             this.Anchorables.Add(TelescopeVM);
             this.Anchorables.Add(CameraVM.FilterWheelVM);
+            this.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
+            this.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
             //this.Documents.Add();
 
         }     

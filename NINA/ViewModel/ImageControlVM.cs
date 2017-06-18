@@ -21,8 +21,6 @@ namespace NINA.ViewModel {
             AutoStretch = false;
             DetectStars = false;
             ZoomFactor = 1;
-            _nextStatHistoryId =  1;
-            ImgStatHistory = new AsyncObservableCollection<ImageStatistics>();
 
             RegisterMediatorMessages();
         }
@@ -40,22 +38,43 @@ namespace NINA.ViewModel {
 
         private ImageArray _imgArr;
         public ImageArray ImgArr {
-            get { return _imgArr; }
-            set { _imgArr = value; RaisePropertyChanged(); }
-        }
-
-        private int _nextStatHistoryId;
-        private AsyncObservableCollection<ImageStatistics> _imgStatHistory;
-        public AsyncObservableCollection<ImageStatistics> ImgStatHistory {
             get {
-                return _imgStatHistory;
+                return _imgArr;
             }
             set {
-                _imgStatHistory = value;
+                _imgArr = value;
+                RaisePropertyChanged();
+                ImgStatisticsVM.Add(ImgArr.Statistics);
+            }
+        }
+        
+        private ImageHistoryVM _imgHistoryVM;
+        public ImageHistoryVM ImgHistoryVM {
+            get {
+                if(_imgHistoryVM == null) {
+                    _imgHistoryVM = new ImageHistoryVM();
+                }
+                return _imgHistoryVM;
+            }
+            set {
+                _imgHistoryVM = value;
                 RaisePropertyChanged();
             }
         }
 
+        private ImageStatisticsVM _imgStatisticsVM;
+        public ImageStatisticsVM ImgStatisticsVM {
+            get {
+                if(_imgStatisticsVM == null) {
+                    _imgStatisticsVM = new ImageStatisticsVM();
+                }
+                return _imgStatisticsVM;
+            }
+            set {
+                _imgStatisticsVM = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private BitmapSource _image;
         public BitmapSource Image {
@@ -134,13 +153,7 @@ namespace NINA.ViewModel {
             }
             
             await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                if (this.ImgStatHistory.Count > 25) {
-                    this.ImgStatHistory.RemoveAt(0);
-                }
-                this.ImgArr.Statistics.Id = _nextStatHistoryId;
-                _nextStatHistoryId++;
-                this.ImgStatHistory.Add(this.ImgArr.Statistics);
-                
+                ImgHistoryVM.Add(ImgStatisticsVM.Statistics);                
                 Image = source;
             }));
 

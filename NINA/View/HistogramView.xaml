@@ -14,11 +14,7 @@
                   Background="{StaticResource BackgroundBrush}"
                   PlotAreaBackground="{StaticResource BackgroundBrush}" 
                   PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
-                  LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
-                  LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
-                  LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                  LegendOrientation="Vertical"
-                  LegendPosition="TopRight"
+                  
                   >
             <oxy:Plot.Axes>
                 <oxy:LinearAxis  Position="Left"    IsZoomEnabled="False" IsPanEnabled="False"                                
@@ -36,11 +32,10 @@
                                  Maximum="{x:Static cam:ImageStatistics.HistogramResolution}" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LinearBarSeries ItemsSource="{Binding Statistics.Histogram}"
+                <oxy:LinearBarSeries ItemsSource="{Binding Histogram}"
                                 DataFieldX="Key" 
                                 DataFieldY="Value"     
-                                BarWidth="0.001"
-                                Title="{ns:Loc LblHistogram}"/>
+                                BarWidth="0.001"                                />
             </oxy:Plot.Series>
         </oxy:Plot>
     </Grid>

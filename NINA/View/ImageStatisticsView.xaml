@@ -16,7 +16,7 @@
                     <TabItem.Header>
                         <TextBlock Text="{ns:Loc LblImage}" Foreground="{StaticResource ButtonForegroundBrush}" />
                     </TabItem.Header>
-                    <Grid MinHeight="150">
+                    <Grid MinHeight="150" DataContext="{Binding Statistics}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="5*"/>
                             <ColumnDefinition Width="2*"/>
@@ -24,7 +24,7 @@
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
                             <local:HistogramView />
                         </Border>
-                        <Border Grid.Column="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" DataContext="{Binding Statistics}">
+                        <Border Grid.Column="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
                             <StackPanel  VerticalAlignment="Top" Margin="5">
                                 <StackPanel Orientation="Horizontal" >
                                     <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblWidth}"></TextBlock>
@@ -59,7 +59,7 @@
                         <TextBlock Text="{ns:Loc LblHistory}" Foreground="{StaticResource ButtonForegroundBrush}" />
                     </TabItem.Header>
                     <Grid MinHeight="150">
-                        <local:ImageHistoryPlotView DataContext="{Binding}" />
+                        <local:ImageHistoryPlotView DataContext="{Binding ImgHistoryVM}" />
                     </Grid>
                 </TabItem>
             </TabControl>
