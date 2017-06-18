@@ -24,6 +24,10 @@ namespace NINA.ViewModel {
             _nextStatHistoryId =  1;
             ImgStatHistory = new AsyncObservableCollection<ImageStatistics>();
 
+            RegisterMediatorMessages();
+        }
+
+        private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
                 AutoStretch = (bool)o;
             }, MediatorMessages.AutoStrechChanged);

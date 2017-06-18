@@ -37,6 +37,10 @@ namespace NINA.ViewModel {
             DARVSlewRate = 0.01;
             SnapExposureDuration = 2;
 
+            RegisterMediatorMessages();
+        }
+
+        private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
                 Cam = (ICamera)o;
             }, MediatorMessages.CameraChanged);

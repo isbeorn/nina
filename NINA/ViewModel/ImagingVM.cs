@@ -36,7 +36,11 @@ namespace NINA.ViewModel {
             CancelSequenceCommand = new RelayCommand(CancelSequence);
 
             ImageControl = new ImageControlVM();
+            
+            RegisterMediatorMessages();
+        }
 
+        private void RegisterMediatorMessages() {
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;
                 ICollection<SequenceModel> seq = (ICollection<SequenceModel>)args[0];
@@ -45,7 +49,7 @@ namespace NINA.ViewModel {
                 IProgress<string> progress = (IProgress<string>)args[3];
                 await StartSequence(seq, save, token, progress);
             }, AsyncMediatorMessages.StartSequence);
-                        
+
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;
                 double duration = (double)args[0];
@@ -72,13 +76,14 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 PlateSolveFilter = (FilterInfo)o;
             }, MediatorMessages.PlateSolveFilterChanged);
+
             Mediator.Instance.Register((object o) => {
                 PlateSolveBinning = (BinningMode)o;
             }, MediatorMessages.PlateSolveBinningChanged);
+
             Mediator.Instance.Register((object o) => {
                 PlateSolveExposureDuration = (double)o;
             }, MediatorMessages.PlateSolveExposureDurationChanged);
-
         }
 
         private string _status;

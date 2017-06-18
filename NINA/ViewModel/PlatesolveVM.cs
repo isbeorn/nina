@@ -36,6 +36,10 @@ namespace NINA.ViewModel {
             SnapExposureDuration = 2;
 
 
+            RegisterMediatorMessages();
+        }
+
+        private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
                 Telescope = (ITelescope)o;
             }, MediatorMessages.TelescopeChanged);

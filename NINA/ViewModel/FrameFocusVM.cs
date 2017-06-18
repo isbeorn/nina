@@ -24,6 +24,10 @@ namespace NINA.ViewModel {
             Zoom = 1;
             SnapExposureDuration = 1;
 
+            RegisterMediatorMessages();
+        }
+
+        private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
                 IsExposing = (bool)o;
             }, MediatorMessages.IsExposingUpdate);

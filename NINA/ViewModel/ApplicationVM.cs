@@ -21,10 +21,14 @@ namespace NINA.ViewModel {
             
             Name = "Menu";
 
+            RegisterMediatorMessages();
+        }     
+
+        private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
                 Status = (string)o;
             }, MediatorMessages.StatusUpdate);
-        }     
+        }
 
 
         public string Version {
@@ -68,12 +72,7 @@ namespace NINA.ViewModel {
                 Application.Current.Shutdown();
             }
             
-        }
-
-        private void AddListeners() {
-            
-        }
-        
+        }               
         
         public PHD2Client PHD2Client {
             get {
