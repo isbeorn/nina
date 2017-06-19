@@ -32,6 +32,18 @@ namespace NINA.ViewModel {
             }
         }
 
+        private string _contentId;
+        public string ContentId {
+            get {
+                return _contentId;
+            }
+            set {
+                _contentId = value;
+                RaisePropertyChanged();
+
+            }
+        }
+
         private string _title;
         public string Title {
             get {

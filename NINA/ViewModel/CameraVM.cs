@@ -20,6 +20,7 @@ namespace NINA.ViewModel {
 
         public CameraVM() : base(){
             Title = "Camera";
+            ContentId = "Camera";
             CanClose = false;
             ImageGeometry  = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
 

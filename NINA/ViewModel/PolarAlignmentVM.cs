@@ -650,7 +650,7 @@ namespace NINA.ViewModel {
 
                 progress.Report("Solving image...");
 
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.BlindSolveWithCapture, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });
 
                 canceltoken.Token.ThrowIfCancellationRequested();
 

@@ -15,9 +15,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    public class ImageControlVM : BaseVM {
+    public class ImageControlVM : DockableVM {
 
         public ImageControlVM() {
+            Title = "Image";
+            CanClose = false;
             AutoStretch = false;
             DetectStars = false;
             ZoomFactor = 1;

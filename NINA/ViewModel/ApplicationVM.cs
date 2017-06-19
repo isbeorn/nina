@@ -24,13 +24,14 @@ namespace NINA.ViewModel {
 
             
             //this.Documents.Add(ImagingVM);
-            this.Documents.Add(FrameFocusVM);
-            //this.Documents.Add(PlatesolveVM);            
-            //this.Documents.Add(PolarAlignVM);
+            this.Documents.Add(ImagingVM.ImageControl);
+            this.Anchorables.Add(PlatesolveVM);            
+            this.Anchorables.Add(PolarAlignVM);
             this.Anchorables.Add(CameraVM);
             this.Anchorables.Add(PHD2VM);
             this.Anchorables.Add(TelescopeVM);
             this.Anchorables.Add(CameraVM.FilterWheelVM);
+            this.Anchorables.Add(ImagingVM);
             this.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
             this.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
             //this.Documents.Add();

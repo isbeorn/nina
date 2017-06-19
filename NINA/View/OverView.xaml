@@ -19,9 +19,13 @@
                 <DataTemplate DataType="{x:Type vm:CameraVM}">
                     <view:AnchorableCameraView />
                 </DataTemplate>
-                
-                <!--Statistics-->
-                
+
+                <DataTemplate DataType="{x:Type vm:ImagingVM}">
+                    <view:AnchorableCameraControlView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
+                    <view:AnchorablePlateSolveView />
+                </DataTemplate>
                 <DataTemplate DataType="{x:Type vm:FilterWheelVM}">
                     <view:AnchorableFilterWheelView />
                 </DataTemplate>
@@ -31,13 +35,14 @@
                 <DataTemplate DataType="{x:Type vm:ImageStatisticsVM}">
                     <view:AnchorableImageStatisticsView />
                 </DataTemplate>
-                
+                <DataTemplate DataType="{x:Type vm:PolarAlignmentVM}">
+                    <view:AnchorablePolarAlignmentView />
+                </DataTemplate>
                 <DataTemplate DataType="ImageStatistics">
                     <view:AnchorableImageStatisticsView />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:FrameFocusVM}">
-                    <!--<view:FrameFocusView />-->
-                    <view:ImageControlView DataContext="{Binding Source={StaticResource AppVM}, Path=ImagingVM.ImageControl}"/>
+                <DataTemplate DataType="{x:Type vm:ImageControlVM}">                    
+                    <view:ImageControlView />
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type vm:TelescopeVM}">
                     <view:AnchorableTelescopeView />
@@ -65,6 +70,7 @@
                     <Setter Property="Title" Value="{Binding Model.Title}" />
                     <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
                     <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
+                    <Setter Property="ContentId" Value="{Binding Model.ContentId}" />
                 </Style>                
             </dock:DockingManager.LayoutItemContainerStyle>
             <dock:LayoutRoot>

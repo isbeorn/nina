@@ -7,28 +7,36 @@
              xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid x:Name="LayoutRoot">        
-        <Grid.ColumnDefinitions>
+    <StackPanel x:Name="LayoutRoot" Orientation="{Binding MyOrientation}">
+        <!--<Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding MyCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}}">
-            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblExposureTime}"></TextBlock>
-            <TextBox Margin="5" MinWidth="50"  Text="{Binding MyExposureDuration}" VerticalAlignment="Center" ></TextBox>
-            <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{ns:Loc LblFilter}"></TextBlock>
-                <ComboBox Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding MyFilters}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedFilter}" SelectedValuePath="Name"></ComboBox>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{ns:Loc LblBinning}"></TextBlock>
-                <ComboBox Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" ItemsSource="{Binding MyBinningModes}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedBinningMode}" SelectedValuePath="Name"></ComboBox>
-            </StackPanel>
+        </Grid.ColumnDefinitions>-->
+
+        <StackPanel Orientation="{Binding MyOrientation}"  IsEnabled="{Binding MyCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}}">
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblExposureTime}"></TextBlock>
+                    <TextBox Margin="5" MinWidth="50"  Text="{Binding MyExposureDuration}"></TextBox>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock VerticalAlignment="Center"  Text="{ns:Loc LblFilter}"></TextBlock>
+                    <ComboBox Margin="5,0,0,0"  Height="25" ItemsSource="{Binding MyFilters}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedFilter}" SelectedValuePath="Name"></ComboBox>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBinning}"></TextBlock>
+                    <ComboBox Margin="5,0,0,0" Height="25" ItemsSource="{Binding MyBinningModes}" DisplayMemberPath="Name" SelectedItem="{Binding MySelectedBinningMode}" SelectedValuePath="Name"></ComboBox>
+                </UniformGrid>
+            </Border>
         </StackPanel>
 
-        <UniformGrid Columns="2" Grid.Column="1" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" Margin="5,0,0,0">
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding MyCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" Margin="5,0,0,0">
 
-            <ToggleButton IsChecked="{Binding MyLoop}" Width="50" Height="50">
+            <ToggleButton IsChecked="{Binding MyLoop}" Width="45" Height="45">
                 <ToggleButton.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc LblTooltipLoop}" />
@@ -60,7 +68,7 @@
             </ToggleButton>
 
 
-            <local:CancellableButtonView  Width="50" Height="50" MyCommand="{Binding MyCommand}" MyCancelCommand="{Binding MyCancelCommand}" MyButtonImage="{Binding MyButtonImage}" MyCancelButtonImage="{Binding MyCancelButtonImage}"  Margin="5,0,5,0" HorizontalAlignment="Left" MyButtonTooltip="{ns:Loc LblTooltipTakeExposure}"/>
-        </UniformGrid>
-    </Grid>
+            <local:CancellableButtonView  Width="45" Height="45" MyCommand="{Binding MyCommand}" MyCancelCommand="{Binding MyCancelCommand}" MyButtonImage="{Binding MyButtonImage}" MyCancelButtonImage="{Binding MyCancelButtonImage}"  Margin="5,0,5,0" HorizontalAlignment="Left" MyButtonTooltip="{ns:Loc LblTooltipTakeExposure}"/>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

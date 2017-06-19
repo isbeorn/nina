@@ -28,7 +28,7 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MyCommandProperty =
-            DependencyProperty.Register("MyCommand", typeof(ICommand), typeof(CameraControlView), new UIPropertyMetadata(null));
+            DependencyProperty.Register(nameof(MyCommand), typeof(ICommand), typeof(CameraControlView), new UIPropertyMetadata(null));
 
         public ICommand MyCommand {
             get {
@@ -40,7 +40,7 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MyCancelCommandProperty =
-           DependencyProperty.Register("MyCancelCommand", typeof(ICommand), typeof(CameraControlView), new UIPropertyMetadata(null));
+           DependencyProperty.Register(nameof(MyCancelCommand), typeof(ICommand), typeof(CameraControlView), new UIPropertyMetadata(null));
 
         public ICommand MyCancelCommand {
             get {
@@ -51,8 +51,20 @@ namespace NINA.View {
             }
         }
 
+        public static readonly DependencyProperty MyOrientationProperty =
+          DependencyProperty.Register(nameof(MyOrientation), typeof(Orientation), typeof(CameraControlView), new UIPropertyMetadata(Orientation.Horizontal));
+
+        public Orientation MyOrientation {
+            get {
+                return (Orientation)GetValue(MyOrientationProperty);
+            }
+            set {
+                SetValue(MyOrientationProperty, value);
+            }
+        }
+
         public static readonly DependencyProperty MyButtonImageProperty =
-           DependencyProperty.Register("MyButtonImage", typeof(Geometry), typeof(CameraControlView), new UIPropertyMetadata(null));
+           DependencyProperty.Register(nameof(MyButtonImage), typeof(Geometry), typeof(CameraControlView), new UIPropertyMetadata(null));
 
         public Geometry MyButtonImage {
             get {
@@ -64,7 +76,7 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MyCancelButtonImageProperty =
-           DependencyProperty.Register("MyCancelButtonImage", typeof(Geometry), typeof(CameraControlView), new UIPropertyMetadata(null));
+           DependencyProperty.Register(nameof(MyCancelButtonImage), typeof(Geometry), typeof(CameraControlView), new UIPropertyMetadata(null));
 
         public Geometry MyCancelButtonImage {
             get {
@@ -76,7 +88,7 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MyButtonTextProperty =
-            DependencyProperty.Register("MyButtonText", typeof(string), typeof(CameraControlView), new UIPropertyMetadata(null));
+            DependencyProperty.Register(nameof(MyButtonText), typeof(string), typeof(CameraControlView), new UIPropertyMetadata(null));
 
         public string MyButtonText {
             get {
@@ -88,7 +100,7 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MyExposureDurationProperty =
-            DependencyProperty.Register("MyExposureDuration", typeof(double), typeof(CameraControlView), new UIPropertyMetadata(null));
+            DependencyProperty.Register(nameof(MyExposureDuration), typeof(double), typeof(CameraControlView), new UIPropertyMetadata(null));
 
         public double MyExposureDuration {
             get {
@@ -100,7 +112,7 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MyFiltersProperty =
-            DependencyProperty.Register("MyFilters", typeof(ObservableCollection<Model.MyFilterWheel.FilterInfo>), typeof(CameraControlView), new UIPropertyMetadata(null));
+            DependencyProperty.Register(nameof(MyFilters), typeof(ObservableCollection<Model.MyFilterWheel.FilterInfo>), typeof(CameraControlView), new UIPropertyMetadata(null));
 
         public ObservableCollection<Model.MyFilterWheel.FilterInfo> MyFilters {
             get {
@@ -112,7 +124,7 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MySelectedFilterProperty =
-            DependencyProperty.Register("MySelectedFilter", typeof(Model.MyFilterWheel.FilterInfo), typeof(CameraControlView), new UIPropertyMetadata(null));
+            DependencyProperty.Register(nameof(MySelectedFilter), typeof(Model.MyFilterWheel.FilterInfo), typeof(CameraControlView), new UIPropertyMetadata(null));
 
         public Model.MyFilterWheel.FilterInfo MySelectedFilter {
             get {
@@ -124,7 +136,7 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MyBinningModesProperty =
-            DependencyProperty.Register("MyBinningModes", typeof(AsyncObservableCollection<BinningMode>), typeof(CameraControlView), new UIPropertyMetadata(null));
+            DependencyProperty.Register(nameof(MyBinningModes), typeof(AsyncObservableCollection<BinningMode>), typeof(CameraControlView), new UIPropertyMetadata(null));
 
         public AsyncObservableCollection<BinningMode> MyBinningModes {
             get {
@@ -136,7 +148,7 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MySelectedBinningModeProperty =
-            DependencyProperty.Register("MySelectedBinningMode", typeof(BinningMode), typeof(CameraControlView), new UIPropertyMetadata(null));
+            DependencyProperty.Register(nameof(MySelectedBinningMode), typeof(BinningMode), typeof(CameraControlView), new UIPropertyMetadata(null));
 
         public BinningMode MySelectedBinningMode {
             get {
@@ -148,7 +160,7 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MyLoopProperty =
-           DependencyProperty.Register("MyLoop", typeof(bool), typeof(CameraControlView), new UIPropertyMetadata(null));
+           DependencyProperty.Register(nameof(MyLoop), typeof(bool), typeof(CameraControlView), new UIPropertyMetadata(null));
 
         public bool MyLoop {
             get {

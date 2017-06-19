@@ -295,6 +295,9 @@
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
     <Compile Include="ViewModel\TelescopeVM.cs" />
+    <Compile Include="View\AnchorableCameraControlView.xaml.cs">
+      <DependentUpon>AnchorableCameraControlView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\AnchorableCameraView.xaml.cs">
       <DependentUpon>AnchorableCameraView.xaml</DependentUpon>
     </Compile>
@@ -309,6 +312,12 @@
     </Compile>
     <Compile Include="View\AnchorablePHD2View.xaml.cs">
       <DependentUpon>AnchorablePHD2View.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AnchorablePlateSolveView.xaml.cs">
+      <DependentUpon>AnchorablePlateSolveView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AnchorablePolarAlignmentView.xaml.cs">
+      <DependentUpon>AnchorablePolarAlignmentView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AnchorableTelescopeView.xaml.cs">
       <DependentUpon>AnchorableTelescopeView.xaml</DependentUpon>
@@ -491,6 +500,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\AnchorableCameraControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AnchorableCameraView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -508,6 +521,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AnchorablePHD2View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AnchorablePlateSolveView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AnchorablePolarAlignmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
