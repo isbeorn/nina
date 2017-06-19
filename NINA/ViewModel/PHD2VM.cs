@@ -15,6 +15,7 @@ namespace NINA.ViewModel {
     class PHD2VM : DockableVM {
         public PHD2VM() : base() {
             Title = "PHD2";
+            ContentId = nameof(PHD2VM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PHD2SVG"];            
             ConnectPHDClientCommand = new AsyncCommand<bool>(async () => await Task.Run<bool>(() => Connect()));

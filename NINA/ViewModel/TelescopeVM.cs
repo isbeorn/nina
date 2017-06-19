@@ -14,6 +14,7 @@ namespace NINA.ViewModel {
     class TelescopeVM : DockableVM {
         public TelescopeVM() : base() {
             Title = "Telescope";
+            ContentId = nameof(TelescopeVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
             

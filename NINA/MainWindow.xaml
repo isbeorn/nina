@@ -143,7 +143,7 @@
                         </Path>
                     </TabItem.Header>
                     <TabItem.Content>
-                        <view:OverView DataContext="{Binding}"></view:OverView>
+                        <view:OverView x:Name="Overview" DataContext="{Binding}"></view:OverView>
 
 
 

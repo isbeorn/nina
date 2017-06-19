@@ -18,7 +18,8 @@ namespace NINA.ViewModel {
     public class ImageControlVM : DockableVM {
 
         public ImageControlVM() {
-            Title = "Image";
+            Title = "Image Area";
+            ContentId = nameof(ImageControlVM);
             CanClose = false;
             AutoStretch = false;
             DetectStars = false;

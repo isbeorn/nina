@@ -17,6 +17,7 @@ namespace NINA.ViewModel {
 
         public PolarAlignmentVM() : base() {
             Title = "Polar alignment";
+            ContentId = nameof(PolarAlignmentVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PolarAlignSVG"];
 

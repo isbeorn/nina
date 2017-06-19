@@ -248,8 +248,11 @@
     <Compile Include="Model\MyTelescope\AscomTelescope.cs" />
     <Compile Include="Model\MyTelescope\ITelescope.cs" />
     <Compile Include="Utility\ASISDK\ASICameras.cs" />
+    <Compile Include="Utility\AvalonDock\PaneStyleSelector.cs" />
+    <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
+    <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
     <Compile Include="Utility\Mediator.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
@@ -346,6 +349,9 @@
     <Compile Include="View\HistogramView.xaml.cs">
       <DependentUpon>HistogramView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ImageAreaView.xaml.cs">
+      <DependentUpon>ImageAreaView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ImageControlView.xaml.cs">
       <DependentUpon>ImageControlView.xaml</DependentUpon>
     </Compile>
@@ -433,6 +439,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="StaticResources\Converters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\AvalonDock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -565,6 +575,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\HistogramView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ImageAreaView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

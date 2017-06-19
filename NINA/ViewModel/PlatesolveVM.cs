@@ -24,6 +24,7 @@ namespace NINA.ViewModel {
 
         public PlatesolveVM() : base() {
             Title = "Plate Solving";
+            ContentId = nameof(PlatesolveVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
             

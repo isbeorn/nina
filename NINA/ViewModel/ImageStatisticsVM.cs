@@ -12,6 +12,7 @@ namespace NINA.ViewModel {
 
         public ImageStatisticsVM() {
             Title = "Statistics";
+            ContentId = nameof(ImageStatisticsVM);
             CanClose = false;
             Statistics = new ImageStatistics { };
         }

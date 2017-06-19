@@ -3,24 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"              
+             xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"    
+             
              xmlns:view="clr-namespace:NINA.View"
              xmlns:vm="clr-namespace:NINA.ViewModel"
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:util="clr-namespace:NINA.Utility.AvalonDock"
+            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    
+    
+    
     <Grid>
-        <dock:DockingManager
+        <dock:DockingManager x:Name="dockManager"
                             DataContext="{Binding}"
                             DocumentsSource="{Binding Documents}"
                             AnchorablesSource="{Binding Anchorables}">
-
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Loaded">
+                    <i:InvokeCommandAction Command="{Binding LoadAvalonDockLayoutCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type dock:DockingManager}}}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            
             <dock:DockingManager.Resources>
-                <DataTemplate DataType="{x:Type vm:CameraVM}">
-                    <view:AnchorableCameraView />
-                </DataTemplate>
+                
 
-                <DataTemplate DataType="{x:Type vm:ImagingVM}">
+                <!--<DataTemplate DataType="{x:Type vm:ImagingVM}">
                     <view:AnchorableCameraControlView />
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
@@ -44,13 +53,98 @@
                 <DataTemplate DataType="{x:Type vm:ImageControlVM}">                    
                     <view:ImageControlView />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:TelescopeVM}">
-                    <view:AnchorableTelescopeView />
-                </DataTemplate>
+                
                 <DataTemplate DataType="{x:Type vm:PHD2VM}">
                     <view:AnchorablePHD2View />
-                </DataTemplate>
+                </DataTemplate>-->
             </dock:DockingManager.Resources>
+
+            <dock:DockingManager.LayoutItemTemplateSelector>
+                <util:PaneTemplateSelector>
+                    <util:PaneTemplateSelector.CameraTemplate>
+                        <DataTemplate>
+                            <view:AnchorableCameraView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.CameraTemplate>
+                    <util:PaneTemplateSelector.TelescopeTemplate>
+                        <DataTemplate>
+                            <view:AnchorableTelescopeView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.TelescopeTemplate>
+                    <util:PaneTemplateSelector.ImageControlTemplate>
+                        <DataTemplate>
+                            <view:ImageAreaView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.ImageControlTemplate>
+
+                    <util:PaneTemplateSelector.PlatesolveTemplate>
+                        <DataTemplate>
+                            <view:AnchorablePlateSolveView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.PlatesolveTemplate>
+
+                    <util:PaneTemplateSelector.PolarAlignmentTemplate>
+                        <DataTemplate>
+                            <view:AnchorablePolarAlignmentView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.PolarAlignmentTemplate>
+
+                    <util:PaneTemplateSelector.PHD2Template>
+                        <DataTemplate>
+                            <view:AnchorablePHD2View />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.PHD2Template>
+
+                    <util:PaneTemplateSelector.FilterWheelTemplate>
+                        <DataTemplate>
+                            <view:AnchorableFilterWheelView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.FilterWheelTemplate>
+
+                    <util:PaneTemplateSelector.ImagingTemplate>
+                        <DataTemplate>
+                            <view:AnchorableCameraControlView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.ImagingTemplate>
+
+                    <util:PaneTemplateSelector.ImageHistoryTemplate>
+                        <DataTemplate>
+                            <view:AnchorableImageHistoryView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.ImageHistoryTemplate>
+
+                    <util:PaneTemplateSelector.ImageStatisticsTemplate>
+                        <DataTemplate>
+                            <view:AnchorableImageStatisticsView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.ImageStatisticsTemplate>
+
+
+
+                </util:PaneTemplateSelector>
+            </dock:DockingManager.LayoutItemTemplateSelector>
+
+            <dock:DockingManager.LayoutItemContainerStyleSelector>
+                <util:PaneStyleSelector>
+                    <util:PaneStyleSelector.AnchorableStyle>
+                        <Style TargetType="{x:Type dock:LayoutAnchorableItem}" >
+                            <Setter Property="Title" Value="{Binding Model.Title}" />                            
+                            <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
+                            <Setter Property="ContentId" Value="{Binding Model.ContentId}" />
+                        </Style>
+                    </util:PaneStyleSelector.AnchorableStyle>
+                    <util:PaneStyleSelector.DocumentStyle>
+                        <Style TargetType="{x:Type dock:LayoutItem}" >
+                            <Setter Property="Title" Value="{Binding Model.Title}" />
+                            <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
+                            <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
+                            <Setter Property="ContentId" Value="{Binding Model.ContentId}" />
+                        </Style>
+                    </util:PaneStyleSelector.DocumentStyle>
+                </util:PaneStyleSelector>
+            </dock:DockingManager.LayoutItemContainerStyleSelector>
 
             <!--<dock:DockingManager.DocumentHeaderTemplate>
                                 <DataTemplate>
@@ -65,20 +159,16 @@
                             </dock:DockingManager.DocumentHeaderTemplate>-->
 
 
-            <dock:DockingManager.LayoutItemContainerStyle>
-                <Style TargetType="{x:Type dock:LayoutItem}" >
-                    <Setter Property="Title" Value="{Binding Model.Title}" />
-                    <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
-                    <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
-                    <Setter Property="ContentId" Value="{Binding Model.ContentId}" />
-                </Style>                
-            </dock:DockingManager.LayoutItemContainerStyle>
+            <dock:DockingManager.LayoutUpdateStrategy>
+                <util:LayoutInitializer/>
+            </dock:DockingManager.LayoutUpdateStrategy>
+            
             <dock:LayoutRoot>
                 <dock:LayoutPanel Orientation="Horizontal">
-                    <dock:LayoutAnchorablePane DockWidth="*">
-                    </dock:LayoutAnchorablePane>
+                    <!--<dock:LayoutAnchorablePane Name="ToolsPaneLeft" DockWidth="*">
+                    </dock:LayoutAnchorablePane>-->
                     <dock:LayoutDocumentPane DockWidth="4*"/>
-                    <dock:LayoutAnchorablePane DockWidth="*">
+                    <dock:LayoutAnchorablePane Name="ToolsPane" DockWidth="*">
                     </dock:LayoutAnchorablePane>
                 </dock:LayoutPanel>
             </dock:LayoutRoot>

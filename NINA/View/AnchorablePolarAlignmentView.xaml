@@ -9,80 +9,82 @@
              
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
-        <StackPanel IsEnabled="{Binding Telescope.Connected}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <Grid IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}" >
+            <StackPanel IsEnabled="{Binding Telescope.Connected}">
 
-            <local:PolarScopeView MinHeight="200" />
-            <GroupBox Grid.Column="1" Header="Plate Solved PA">
-                <StackPanel Orientation="Vertical">
+                <local:PolarScopeView MinHeight="200" />
+                <GroupBox Grid.Column="1" Header="Plate Solved PA">
                     <StackPanel Orientation="Vertical">
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                            <UniformGrid Columns="2" VerticalAlignment="Center">
-                                <TextBlock>Meridian Offset</TextBlock>
-                                <TextBox Margin="0,0,10,0" Text="{Binding MeridianOffset}"></TextBox>
-                            </UniformGrid>
-                        </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                            <UniformGrid Columns="2" VerticalAlignment="Center">
-                                <TextBlock>Declination</TextBlock>
-                                <TextBox Margin="0,0,10,0" Text="{Binding Declination}"></TextBox>
-                            </UniformGrid>
-                        </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">                            
-                                <Button Command="{Binding SlewToMeridianOffsetCommand}" MinWidth="60" Height="25" HorizontalAlignment="Right" VerticalAlignment="Center" >
-                                    <TextBlock Text ="Slew" Foreground="{StaticResource ButtonForegroundBrush}" VerticalAlignment="Center"></TextBlock>                                </Button>
+                        <StackPanel Orientation="Vertical">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                                <UniformGrid Columns="2" VerticalAlignment="Center">
+                                    <TextBlock>Meridian Offset</TextBlock>
+                                    <TextBox Margin="0,0,10,0" Text="{Binding MeridianOffset}"></TextBox>
+                                </UniformGrid>
+                            </Border>
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                                <UniformGrid Columns="2" VerticalAlignment="Center">
+                                    <TextBlock>Declination</TextBlock>
+                                    <TextBox Margin="0,0,10,0" Text="{Binding Declination}"></TextBox>
+                                </UniformGrid>
+                            </Border>
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">                            
+                                    <Button Command="{Binding SlewToMeridianOffsetCommand}" MinWidth="60" Height="25" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                                        <TextBlock Text ="Slew" Foreground="{StaticResource ButtonForegroundBrush}" VerticalAlignment="Center"></TextBlock>                                </Button>
                             
-                        </Border>
+                            </Border>
+                        </StackPanel>
+
+                        <Grid   IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}" >
+                            <local:CameraControlView  IsEnabled="{Binding Cam.Connected}"      
+                                MyOrientation="Vertical"
+                                MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes, Mode=TwoWay}"
+                                MyFilters="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters, Mode=TwoWay}"
+                                MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
+                                MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
+                                MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />
+                        </Grid>
+
+                        <GroupBox Header="Altitude Measurement" Grid.Row="2" Margin="-20,10,-20,0">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock TextWrapping="WrapWithOverflow">Point telescope east or west. <LineBreak /> Adjust combobox value accordingly</TextBlock>
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="0,20,0,0">
+                                    <TextBlock VerticalAlignment="Center">Altitude measurement side</TextBlock>
+                                    <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:AltitudeSite} }}" SelectedItem="{Binding AltitudeSiteType}" />
+                                    <local:CancellableButtonView Width="40" Height="40" HorizontalAlignment="Right" 
+                                                                 MyCommand="{Binding MeasureAltitudeErrorCommand}" 
+                                                                 MyCancelCommand="{Binding CancelMeasureAltitudeErrorCommand}" 
+                                                                 MyButtonImage="{StaticResource ArrowTwoSidesRotated}" 
+                                                                 MyCancelButtonImage="{StaticResource CancelSVG}" 
+                                                                 MyButtonTooltip="Measure Altitude Error&#10;Point Scope East or West and adjust Side of Pier combobox accordingly"
+                                                                 Margin="10,0,0,0"/>
+                                    <TextBlock Text="{Binding AltitudePolarErrorStatus}" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                        </GroupBox>
+                        <GroupBox Header="Azimuth Measurement" Margin="-20,0,-20,0">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock>Point telescope near meridian.</TextBlock>
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="0,10,0,0">
+                                    <local:CancellableButtonView Width="40" Height="40" HorizontalAlignment="Right" 
+                                                                 MyCommand="{Binding MeasureAzimuthErrorCommand}" 
+                                                                 MyCancelCommand="{Binding CancelMeasureAzimuthErrorCommand}" 
+                                                                 MyButtonImage="{StaticResource ArrowTwoSides}" 
+                                                                 MyCancelButtonImage="{StaticResource CancelSVG}" 
+                                                                 MyButtonTooltip="Measure Azimuth Error&#10;Point Scope South near Meridian"/>
+                                    <TextBlock Text="{Binding AzimuthPolarErrorStatus}" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </GroupBox>
                     </StackPanel>
-
-                    <Grid   IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}" >
-                        <local:CameraControlView  IsEnabled="{Binding Cam.Connected}"      
-                            MyOrientation="Vertical"
-                            MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes, Mode=TwoWay}"
-                            MyFilters="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters, Mode=TwoWay}"
-                            MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
-                            MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
-                            MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />
-                    </Grid>
-
-                    <GroupBox Header="Altitude Measurement" Grid.Row="2" Margin="-20,10,-20,0">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock TextWrapping="WrapWithOverflow">Point telescope east or west. Adjust combobox value accordingly</TextBlock>
-                            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="0,20,0,0">
-                                <TextBlock VerticalAlignment="Center">Altitude measurement side</TextBlock>
-                                <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:AltitudeSite} }}" SelectedItem="{Binding AltitudeSiteType}" />
-                                <local:CancellableButtonView Width="40" Height="40" HorizontalAlignment="Right" 
-                                                             MyCommand="{Binding MeasureAltitudeErrorCommand}" 
-                                                             MyCancelCommand="{Binding CancelMeasureAltitudeErrorCommand}" 
-                                                             MyButtonImage="{StaticResource ArrowTwoSidesRotated}" 
-                                                             MyCancelButtonImage="{StaticResource CancelSVG}" 
-                                                             MyButtonTooltip="Measure Altitude Error&#10;Point Scope East or West and adjust Side of Pier combobox accordingly"
-                                                             Margin="10,0,0,0"/>
-                                <TextBlock Text="{Binding AltitudePolarErrorStatus}" Margin="10,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </StackPanel>
-
-                    </GroupBox>
-                    <GroupBox Header="Azimuth Measurement" Margin="-20,0,-20,0">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock>Point telescope near meridian.</TextBlock>
-                            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="0,10,0,0">
-                                <local:CancellableButtonView Width="40" Height="40" HorizontalAlignment="Right" 
-                                                             MyCommand="{Binding MeasureAzimuthErrorCommand}" 
-                                                             MyCancelCommand="{Binding CancelMeasureAzimuthErrorCommand}" 
-                                                             MyButtonImage="{StaticResource ArrowTwoSides}" 
-                                                             MyCancelButtonImage="{StaticResource CancelSVG}" 
-                                                             MyButtonTooltip="Measure Azimuth Error&#10;Point Scope South near Meridian"/>
-                                <TextBlock Text="{Binding AzimuthPolarErrorStatus}" Margin="10,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-
-                        </StackPanel>
-                    </GroupBox>
-                </StackPanel>
-            </GroupBox>
-        </StackPanel>
+                </GroupBox>
+            </StackPanel>
 
 
 
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

@@ -18,25 +18,54 @@ namespace NINA.ViewModel {
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
-                        
+            LoadAvalonDockLayoutCommand = new RelayCommand(LoadAvalonDockLayout);
             RegisterMediatorMessages();
 
 
-            
+
+
+            InitAvalonDockLayout();
+        }  
+        
+        public void InitAvalonDockLayout() {
             //this.Documents.Add(ImagingVM);
             this.Documents.Add(ImagingVM.ImageControl);
+            this.Anchorables.Add(CameraVM);
+            this.Anchorables.Add(TelescopeVM);
             this.Anchorables.Add(PlatesolveVM);            
             this.Anchorables.Add(PolarAlignVM);
-            this.Anchorables.Add(CameraVM);
+            
             this.Anchorables.Add(PHD2VM);
-            this.Anchorables.Add(TelescopeVM);
+            
             this.Anchorables.Add(CameraVM.FilterWheelVM);
             this.Anchorables.Add(ImagingVM);
             this.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
             this.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
             //this.Documents.Add();
+        }
 
-        }     
+        private Xceed.Wpf.AvalonDock.DockingManager _dockmanager;
+        private bool _dockloaded = false;
+        public void LoadAvalonDockLayout(object o) {
+            if(!_dockloaded) { 
+                _dockmanager = (Xceed.Wpf.AvalonDock.DockingManager)o;
+                var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+                serializer.LayoutSerializationCallback += (s, args) => {
+                    
+                    args.Content = args.Content;
+                };
+
+                if (System.IO.File.Exists(@".\AvalonDock.config")) {
+                    serializer.Deserialize(@".\AvalonDock.config");
+                }
+                _dockloaded = true;
+            }
+        }
+
+        public void SaveAvalonDockLayout() {
+            /*var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+            serializer.Serialize(@".\AvalonDock.config");*/
+        }
 
         private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
@@ -78,7 +107,8 @@ namespace NINA.ViewModel {
         }
 
         private void ExitApplication(object obj) {
-            if(CameraVM?.Cam?.Connected == true) {
+            SaveAvalonDockLayout();
+            if (CameraVM?.Cam?.Connected == true) {
                 System.Windows.MessageBoxResult diag = System.Windows.MessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
                 if(diag == MessageBoxResult.OK) {
                     Application.Current.Shutdown();
@@ -246,8 +276,20 @@ namespace NINA.ViewModel {
             }
         }
 
-        
-        
-        
+        private ICommand _loadAvalonDockLayoutCommand;
+        public ICommand LoadAvalonDockLayoutCommand {
+            get {
+                return _loadAvalonDockLayoutCommand;
+            }
+
+            set {
+                _loadAvalonDockLayoutCommand = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
     }
 }

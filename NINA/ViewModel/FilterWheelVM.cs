@@ -13,6 +13,7 @@ namespace NINA.ViewModel {
     class FilterWheelVM: DockableVM {
         public FilterWheelVM() :base() {
             Title = "Filter Wheel";
+            ContentId = nameof(FilterWheelVM);
             CanClose = false;
             ChooseFWCommand = new RelayCommand(ChooseFW);
             DisconnectCommand = new RelayCommand(DisconnectFW);

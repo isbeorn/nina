@@ -11,6 +11,7 @@ namespace NINA.ViewModel {
 
         public ImageHistoryVM() {
             Title = "Image History";
+            ContentId = nameof(ImageHistoryVM);
             CanClose = false;
             _nextStatHistoryId = 1;
             ImgStatHistory = new AsyncObservableCollection<ImageStatistics>();

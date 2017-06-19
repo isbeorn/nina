@@ -15,6 +15,7 @@ namespace NINA.ViewModel {
     public  class OptionsVM : DockableVM {
         public OptionsVM() {
             Title = "Options";
+            ContentId = nameof(OptionsVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
             PreviewFileCommand = new RelayCommand(PreviewFile);
