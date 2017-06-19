@@ -17,13 +17,11 @@ namespace NINA.Locale {
             locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };
         }
 
-        private static readonly Loc _instance = new Loc();
-        public static Loc Instance {
-            get {
-                return _instance;
-            }
-        }
+        private static readonly Lazy<Loc> lazy =
+        new Lazy<Loc>(() => new Loc());
 
+        public static Loc Instance { get { return lazy.Value; } }
+        
         ResourceDictionary locale = null;
                         
         public string this[string key] {

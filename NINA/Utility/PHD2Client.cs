@@ -16,10 +16,16 @@ using System.Windows;
 
 namespace NINA.Utility {
     public class PHD2Client : BaseINPC {
-        public PHD2Client() {
+
+        private PHD2Client() {
             Paused = false;
         }
 
+        private static readonly Lazy<PHD2Client> lazy =
+            new Lazy<PHD2Client>(() => new PHD2Client());
+
+        public static PHD2Client Instance { get { return lazy.Value; } }
+        
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private PhdEventVersion _version;

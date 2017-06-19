@@ -8,18 +8,11 @@ using System.Threading.Tasks;
 namespace NINA.Utility {
     class Mediator {
         private Mediator() { }
-        private static Mediator _instance = new Mediator();
-        private static object lockObject = new object();
 
-        public static Mediator Instance {
-            get {
-                lock (lockObject) {
-                    if (_instance == null)
-                        _instance = new Mediator();
-                    return _instance;
-                }
-            }
-        }
+        private static readonly Lazy<Mediator> lazy =
+            new Lazy<Mediator>(() => new Mediator());
+
+        public static Mediator Instance { get { return lazy.Value; } }
 
         Dictionary<MediatorMessages, List<Action<Object>>> _internalList
             = new Dictionary<MediatorMessages, List<Action<Object>>>();

@@ -20,28 +20,16 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.Utility {
     public static class Utility {
+
+
+        private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
+            new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
+
+        public static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }       
         
-        private static ASCOM.Utilities.Util _ascomUtil;
-        public static ASCOM.Utilities.Util AscomUtil {
-            get {
-                if(_ascomUtil == null) {
-                    _ascomUtil = new ASCOM.Utilities.Util();
-                }
-                return _ascomUtil;
-
-            }
-        }
-
-        private static PHD2Client _pHDClient;
         public static PHD2Client PHDClient {
             get {
-                if (_pHDClient == null) {
-                    _pHDClient = new PHD2Client();
-                }
-                return _pHDClient;
-            }
-            set {
-                _pHDClient = value;
+                return PHD2Client.Instance;
             }
         }
         

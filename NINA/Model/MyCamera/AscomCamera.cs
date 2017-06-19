@@ -859,7 +859,7 @@ namespace NINA.Model.MyCamera {
         public async Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource) {
             return await Task<ImageArray>.Run(async () => {
                 try {
-                    ASCOM.Utilities.Util U = new ASCOM.Utilities.Util();
+                    ASCOM.Utilities.Util U = Utility.Utility.AscomUtil;
                     while (!ImageReady && Connected) {
                         //Console.Write(".");
                         U.WaitForMilliseconds(10);
