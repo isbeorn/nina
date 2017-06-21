@@ -40,6 +40,28 @@
                             <TextBlock Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" MinWidth="20" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>                        
                     </UniformGrid>
                 </Border>
+                
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="5">
+                </Border>
+                
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                    <UniformGrid Columns="2" VerticalAlignment="Center">
+                        <TextBlock Text="{ns:Loc LblTargetTempShort}" VerticalAlignment="Center"></TextBlock>
+                        <local:StepperControl Value="{Binding TargetTemp, Mode=TwoWay}" />
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                    <UniformGrid Columns="2" VerticalAlignment="Center">
+                        <TextBlock Text="{ns:Loc LblDuration}" VerticalAlignment="Center"></TextBlock>
+                        <local:StepperControl Value="{Binding Duration, Mode=TwoWay}" />                        
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                    <UniformGrid Columns="2" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}"  VerticalAlignment="Center" Visibility="{Binding CoolingRunning, Converter={StaticResource BooleanToVisibilityHiddenConverter}}" />
+                        <local:CancellableButtonView MyCommand="{Binding CoolCamCommand}" HorizontalAlignment="Right" MyCancelCommand="{Binding CancelCoolCamCommand}" MyButtonImage="{StaticResource ThermometerSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" VerticalAlignment="Center" Width="40" Height="40" />
+                    </UniformGrid>
+                </Border>
             </StackPanel>
         </Grid>
     </Grid>

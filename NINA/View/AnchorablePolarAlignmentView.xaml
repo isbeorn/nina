@@ -9,7 +9,7 @@
              
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
         <Grid IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}" >
             <StackPanel IsEnabled="{Binding Telescope.Connected}">
 
@@ -79,6 +79,45 @@
 
                             </StackPanel>
                         </GroupBox>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="D.A.R.V. Slew">
+                    <StackPanel>
+                        <TextBlock TextWrapping="Wrap">Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back.</TextBlock>
+                        <StackPanel VerticalAlignment="Bottom">
+
+                            <TextBlock>Slew Rate (deg/sec)</TextBlock>
+                            <TextBox >
+                                <TextBox.Text>
+                                    <Binding Path="DARVSlewRate" UpdateSourceTrigger="LostFocus" >
+                                        <Binding.ValidationRules>
+                                            <StaticResource ResourceKey="GreaterZeroRule" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+
+                            </TextBox>
+                            <TextBlock>Slew Duration:</TextBlock>
+                            <TextBox >
+                                <TextBox.Text>
+                                    <Binding Path="DARVSlewDuration" UpdateSourceTrigger="LostFocus" >
+                                        <Binding.ValidationRules>
+                                            <StaticResource ResourceKey="GreaterZeroRule" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+
+                            </TextBox>
+                            <TextBlock Text="{Binding DarvStatus}"></TextBlock>
+                        </StackPanel>
+
+                        <local:CancellableButtonView Height="30" Margin="0,10,0,0" 
+                                                     MyCommand="{Binding DARVSlewCommand}" 
+                                                     MyCancelCommand="{Binding CancelDARVSlewCommand}" 
+                                                     MyButtonText="Slew"  
+                                                     MyCancelButtonImage="{StaticResource CancelSVG}"
+                                                     MyButtonTooltip="This will take an exposure while slewing the scope slowly to one side and back&#10;when the lines are not aligned there is some PA error"/>
+
                     </StackPanel>
                 </GroupBox>
             </StackPanel>

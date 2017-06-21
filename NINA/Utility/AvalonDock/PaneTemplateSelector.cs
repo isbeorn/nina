@@ -33,7 +33,9 @@ namespace NINA.Utility.AvalonDock {
 
         public DataTemplate ImageHistoryTemplate { get; set; }
 
-        public DataTemplate ImageStatisticsTemplate { get; set; }        
+        public DataTemplate ImageStatisticsTemplate { get; set; }
+
+        public DataTemplate SequenceTemplate { get; set; }
 
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
@@ -67,6 +69,9 @@ namespace NINA.Utility.AvalonDock {
             
             if (item is ImageControlVM)
                 return ImageControlTemplate;
+
+            if (item is SequenceVM)
+                return SequenceTemplate;
 
             return base.SelectTemplate(item, container);
         }

@@ -1,4 +1,5 @@
-﻿using NINA.Model.MyCamera;
+﻿using EDSDKLib;
+using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
@@ -16,7 +17,7 @@ using ZWOptical.ASISDK;
 namespace NINA.EquipmentChooser {
     class EquipmentChooserVM : BaseVM {
         private EquipmentChooserVM(EquipmentType equipment) {
-            if(equipment == EquipmentType.Camera) {
+            if(equipment == EquipmentType.Camera) {                
                 GetCameras();
             } else if (equipment == EquipmentType.Telescope) {
                 GetTelescopes();
@@ -150,10 +151,50 @@ namespace NINA.EquipmentChooser {
                     //only add cameras which are supported. e.g. x86 drivers will not work in x64
                 }
             }
+
+
+            
+            /*IntPtr cameraList;
+            uint err = EDSDK.EdsGetCameraList(out cameraList);
+            if (err == EDSDK.EDS_ERR_OK) {
+                int count;
+                err = EDSDK.EdsGetChildCount(cameraList, out count);
+
+                for(int i = 0; i < count; i++) {
+                    IntPtr cam;
+                    err = EDSDK.EdsGetChildAtIndex(cameraList, i, out cam);
+
+                    EDSDK.EdsDeviceInfo info;
+                    err = EDSDK.EdsGetDeviceInfo(cam, out info);
+
+
+                    Devices.Add(new EDCamera(cam, info));*/
+                    /*err = EDSDK.EdsOpenSession(cam);                        
+
+                    IntPtr saveTo = (IntPtr)EDSDK.EdsSaveTo.Host;
+                    err = EDSDK.EdsSetPropertyData(cam, EDSDK.PropID_SaveTo, 0, 4, saveTo);
+
+                    EDSDK.EdsCapacity capacity = new EDSDK.EdsCapacity();
+                    capacity.NumberOfFreeClusters = 0x7FFFFFFF;
+                    capacity.BytesPerSector = 0x1000;
+                    capacity.Reset = 1;
+                    err = EDSDK.EdsSetCapacity(cam, capacity);
+
+                    err = EDSDK.EdsSendCommand(cam, EDSDK.CameraCommand_TakePicture, 0);
+
+                    err = EDSDK.EdsCloseSession(cam);*/
+               /* }
+
+                    
+            }*/
+                    
+
             
             
 
-            if(Devices.Count > 0) {
+
+
+            if (Devices.Count > 0) {
                 var items = (from device in Devices where device.Id == Settings.CameraId select device);
                 if (items.Count() > 0) {
                     SelectedDevice = items.First();

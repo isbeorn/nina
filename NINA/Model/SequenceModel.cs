@@ -18,7 +18,7 @@ namespace NINA.Model {
         public SequenceModel() {
             ExposureTime = 1;
             ImageType = ImageTypes.LIGHT;
-            ExposureCount = 1;            
+            TotalExposureCount = 1;            
             Dither = false;
             DitherAmount = 1; 
         }
@@ -107,6 +107,27 @@ namespace NINA.Model {
             set {
                 _exposureCount = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ProgressExposureCount));
+
+            }
+        }
+
+        private int _totalExposureCount;
+        public int TotalExposureCount {
+            get {
+                return _totalExposureCount;
+            }
+            set {
+                _totalExposureCount = value;
+                ExposureCount = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ProgressExposureCount));
+            }
+        }
+
+        public int ProgressExposureCount {
+            get {
+                return TotalExposureCount - ExposureCount;
             }
         }
 

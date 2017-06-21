@@ -16,9 +16,9 @@
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
         <Grid DataContext="{StaticResource AppVM}">            
             <TabControl TabStripPlacement="Left">
-                <TabItem >
+                <TabItem>
                     <TabItem.Header>
-                        <Grid >
+                        <Grid>
                             <Grid  Height="50" Width="50">
                                 <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5"  >
                                 </Path>
@@ -37,75 +37,11 @@
                                         Data="{StaticResource PowerSVG}" 
                                         Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
                                 </Path>
-                            </Grid>
+                            </Grid>                            
                         </Grid>
                     </TabItem.Header>
                     <TabItem.Content>
                         <view:CameraView DataContext="{Binding CameraVM}" ></view:CameraView>
-                    </TabItem.Content>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource ImagingSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
-                        </Path>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:ImagingView DataContext="{Binding ImagingVM}" ></view:ImagingView>
-                    </TabItem.Content>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource FocusSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
-                        </Path>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:FrameFocusView DataContext="{Binding FrameFocusVM}" ></view:FrameFocusView>
-                    </TabItem.Content>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PlatesolveSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
-                        </Path>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:PlateSolveView DataContext="{Binding PlatesolveVM}" ></view:PlateSolveView>
-                    </TabItem.Content>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <Grid>
-                            <Grid  Height="50" Width="50">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5" >
-                                </Path>
-                            </Grid>
-                            <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
-                                        Visibility="{Binding  TelescopeVM.Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                        Opacity="0.5" 
-                                        Data="{StaticResource PowerSVG}" 
-                                        Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                            </Path>
-
-                            <Grid Visibility="{Binding TelescopeVM.Telescope, Converter={StaticResource NullToVisibilityConverter}}">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" 
-                                            Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource VisibilityConverter}}"                                          
-                                            Data="{StaticResource PowerSVG}" 
-                                            Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                                </Path>
-                            </Grid>
-                        </Grid>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:TelescopeView DataContext="{Binding TelescopeVM}" ></view:TelescopeView>
-                    </TabItem.Content>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PolarAlignSVG}" Stretch="Uniform" Margin="1" Height="50" Width="50" >
-                        </Path>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:PolarAlignmentView DataContext="{Binding PolarAlignVM}" ></view:PolarAlignmentView>
                     </TabItem.Content>
                 </TabItem>
                 <TabItem>
@@ -136,18 +72,79 @@
                         <view:PHD2View DataContext="{Binding PHD2VM}" ></view:PHD2View>
                     </TabItem.Content>
                 </TabItem>
-
+                <!--
                 <TabItem>
                     <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MinimizeSVG}" Stretch="Uniform"  Margin="5" Height="50" Width="50" >
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource FocusSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
+                        </Path>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <view:FrameFocusView DataContext="{Binding FrameFocusVM}" ></view:FrameFocusView>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PlatesolveSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
+                        </Path>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <view:PlateSolveView DataContext="{Binding PlatesolveVM}" ></view:PlateSolveView>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PolarAlignSVG}" Stretch="Uniform" Margin="1" Height="50" Width="50" >
+                        </Path>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <view:PolarAlignmentView DataContext="{Binding PolarAlignVM}" ></view:PolarAlignmentView>
+                    </TabItem.Content>
+                </TabItem>
+                -->
+                <TabItem>
+                    <TabItem.Header>
+                        <Grid>
+                            <Grid  Height="50" Width="50">
+                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5" >
+                                </Path>
+                            </Grid>
+                            <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
+                                        Visibility="{Binding  TelescopeVM.Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                        Opacity="0.5" 
+                                        Data="{StaticResource PowerSVG}" 
+                                        Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
+                            </Path>
+
+                            <Grid Visibility="{Binding TelescopeVM.Telescope, Converter={StaticResource NullToVisibilityConverter}}">
+                                <Path Fill="{StaticResource ButtonForegroundBrush}" 
+                                            Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource VisibilityConverter}}"                                          
+                                            Data="{StaticResource PowerSVG}" 
+                                            Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
+                                </Path>
+                            </Grid>
+                        </Grid>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <view:TelescopeView DataContext="{Binding TelescopeVM}" ></view:TelescopeView>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SequenceSVG}" Stretch="Uniform" Margin="10" Height="50" Width="50" >
+                        </Path>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <view:SequenceView DataContext="{Binding SeqVM}" ></view:SequenceView>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource ImagingSVG}" Stretch="Uniform"  Margin="5" Height="50" Width="50" >
                         </Path>
                     </TabItem.Header>
                     <TabItem.Content>
                         <view:OverView x:Name="Overview" DataContext="{Binding}"></view:OverView>
-
-
-
-
                     </TabItem.Content>
                 </TabItem>
                 <TabItem>

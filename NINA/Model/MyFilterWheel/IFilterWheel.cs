@@ -69,5 +69,9 @@ namespace NINA.Model.MyFilterWheel {
             FocusOffset = offset;
             Position = position;
         }
+
+        public override string ToString() {
+            return Name;
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace NINA.ViewModel {
             this.Anchorables.Add(PolarAlignVM);
             
             this.Anchorables.Add(PHD2VM);
-            
+            this.Anchorables.Add(SeqVM);
             this.Anchorables.Add(CameraVM.FilterWheelVM);
             this.Anchorables.Add(ImagingVM);
             this.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
@@ -137,6 +137,20 @@ namespace NINA.ViewModel {
             }
             set {
                 _cameraVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private SequenceVM _seqVM;
+        public SequenceVM SeqVM {
+            get {
+                if(_seqVM == null) {
+                    _seqVM = new SequenceVM();
+                }
+                return _seqVM;
+            }
+            set {
+                _seqVM = value;
                 RaisePropertyChanged();
             }
         }
@@ -288,8 +302,6 @@ namespace NINA.ViewModel {
             }
         }
 
-
-
-
+        
     }
 }

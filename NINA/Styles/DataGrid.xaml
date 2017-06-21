@@ -9,6 +9,7 @@
     </Style>
 
     <Style TargetType="{x:Type DataGridColumnHeader}"  >
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
@@ -49,4 +50,10 @@
     <Style TargetType="{x:Type DataGridRowHeader}">
         <Setter Property="Background" Value="Transparent" />
     </Style>
+
+    
+    <Style TargetType="{x:Type DataGridCell}">
+        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+    </Style>
+    
 </ResourceDictionary>

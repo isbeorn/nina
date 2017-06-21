@@ -53,7 +53,9 @@
     <s:String x:Key="LblStDev">σ</s:String>
     <s:String x:Key="LblNrStars">#Sterne</s:String>
     <s:String x:Key="LblHistory">Historie</s:String>
+    <s:String x:Key="LblSequence">Sequenz</s:String>
     <s:String x:Key="LblTooltipAddSequence">Fügt eine neue Reihe in die Liste der Sequenzen hinzu</s:String>
+    <s:String x:Key="LblTooltipRemoveSequence">Entfernt selektierte Reihe aus der Liste der Sequenzen</s:String>
     <s:String x:Key="LblTooltipStartSequence">Startet die Sequenzen</s:String>
     <s:String x:Key="LblGeneral">Allgemein</s:String>
     <s:String x:Key="LblDownload">Herunterladen</s:String>

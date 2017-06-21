@@ -119,7 +119,11 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.ImageStatisticsTemplate>
 
-
+                    <util:PaneTemplateSelector.SequenceTemplate>
+                        <DataTemplate>
+                            <view:AnchorableSequenceView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.SequenceTemplate>
 
                 </util:PaneTemplateSelector>
             </dock:DockingManager.LayoutItemTemplateSelector>

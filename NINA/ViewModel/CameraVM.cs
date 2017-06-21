@@ -161,12 +161,12 @@ namespace NINA.ViewModel {
                                                 
                     
                 } catch(OperationCanceledException ex) {
+                    Cam.SetCCDTemperature = Cam.CCDTemperature;
                     Logger.Trace(ex.Message);
                     
                 } finally {
                     progress.Report(1);
-                    Duration = 0;
-                    Cam.SetCCDTemperature = Cam.CCDTemperature;
+                    Duration = 0;                    
                     CoolingRunning = false;
                 }
             }

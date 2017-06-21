@@ -34,9 +34,7 @@ namespace NINA.ViewModel {
             SnapExposureDuration = 1;
             SnapCommand = new AsyncCommand<bool>(() => CaptureImage(new Progress<string>(p => Status = p)));
             CancelSnapCommand = new RelayCommand(CancelCaptureImage);
-            StartSequenceCommand = new AsyncCommand<bool>(() => StartSequence(new Progress<string>(p => Status = p)));
-            CancelSequenceCommand = new RelayCommand(CancelSequence);
-
+            
             ImageControl = new ImageControlVM();
             
             RegisterMediatorMessages();
@@ -44,7 +42,7 @@ namespace NINA.ViewModel {
 
         private void RegisterMediatorMessages() {
             Mediator.Instance.RegisterAsync(async (object o) => {
-                var args = (object[])o;
+                var args = (object[])o;                
                 ICollection<SequenceModel> seq = (ICollection<SequenceModel>)args[0];
                 bool save = (bool)args[1];
                 CancellationTokenSource token = (CancellationTokenSource)args[2];
@@ -58,8 +56,15 @@ namespace NINA.ViewModel {
                 bool save = (bool)args[1];
                 IProgress<string> progress = (IProgress<string>)args[2];
                 CancellationTokenSource token = (CancellationTokenSource)args[3];
-                FilterInfo filter = (FilterInfo)args[4];
-                BinningMode binning = (BinningMode)args[5];
+                FilterInfo filter = null;
+                if(args.Length > 4) {
+                    filter = (FilterInfo)args[4];
+                }
+                BinningMode binning = null;
+                if (args.Length > 5) {
+                    binning = (BinningMode)args[5];
+                }                
+                
                 await CaptureImage(duration, save, progress, token, filter, binning);
             }, AsyncMediatorMessages.CaptureImage);
 
@@ -108,20 +113,6 @@ namespace NINA.ViewModel {
         }
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
-
-        private SequenceVM _seqVM;
-        public SequenceVM SeqVM {
-            get {
-                if(_seqVM == null) {
-                    _seqVM = new SequenceVM();
-                }
-                return _seqVM;
-            }
-            set {
-                _seqVM = value;
-                RaisePropertyChanged();
-            }
-        }       
 
         private bool _loop;
         public bool Loop {
@@ -225,16 +216,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private IAsyncCommand _startSequenceCommand;
-        public IAsyncCommand StartSequenceCommand {
-            get {
-                return _startSequenceCommand;
-            }
-            set {
-                _startSequenceCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+
 
         
 
@@ -347,106 +329,116 @@ namespace NINA.ViewModel {
         }
                 
         public  async Task<bool> StartSequence(ICollection<SequenceModel> sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
-            return await Task.Run<bool>(async () => {
-                try {
+            if (Cam?.Connected != true) {
+                Notification.ShowWarning("No Camera connected");
+                return false;
+            }
+            if (IsExposing) {
+                Notification.ShowWarning("Camera is busy");
+                return false;
+            } 
+
+            try {
                     
 
-                    ushort framenr = 1;
-                    foreach (SequenceModel seq in sequence) {
-                        seq.Active = true;
+                ushort framenr = 1;
+                foreach (SequenceModel seq in sequence) {
 
-                        if(seq.Dither && !PHD2Client.Connected) {
-                            Notification.ShowWarning("PHD2 Dither is enabled, but not connected!");
-                        }
+                    Mediator.Instance.Notify(MediatorMessages.ActiveSequenceChanged, seq);
+                    seq.Active = true;
 
-                        while (seq.ExposureCount > 0) {
+                    if(seq.Dither && !PHD2Client.Connected) {
+                        Notification.ShowWarning("PHD2 Dither is enabled, but not connected!");
+                    }
+
+                    while (seq.ExposureCount > 0) {
                             
 
-                            /*Change Filter*/
-                            await ChangeFilter(seq, tokenSource, progress);
+                        /*Change Filter*/
+                        await ChangeFilter(seq, tokenSource, progress);
 
-                            if (Cam?.Connected != true) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
+                        if (Cam?.Connected != true) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
+                        }
 
-                            /*Set Camera Binning*/
-                            SetBinning(seq);
+                        /*Set Camera Binning*/
+                        SetBinning(seq);
 
-                            if (Cam?.Connected != true) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
+                        if (Cam?.Connected != true) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
+                        }
 
 
                            
-                            await CheckMeridianFlip(seq, tokenSource, progress);
+                        await CheckMeridianFlip(seq, tokenSource, progress);
                                 
 
-                            /*Capture*/
-                            await Capture(seq, tokenSource, progress);
+                        /*Capture*/
+                        await Capture(seq, tokenSource, progress);
 
-                            if (Cam?.Connected != true) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
-
-                            /*Download Image */
-                            ImageArray arr = await Download(tokenSource, progress);
-                            if (arr == null) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
-
-                            ImageControl.ImgArr = arr;
-
-                            /*Prepare Image for UI*/
-                            progress.Report(ImagingVM.ExposureStatus.PREPARING);
-
-                            await ImageControl.PrepareImage(progress, tokenSource);
-
-
-                            if (Cam?.Connected != true) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
-
-                            /*Save to disk*/
-                            if (bSave) {                               
-                                await Save(seq, framenr, tokenSource, progress);
-                            }
-                            
-                            /*Dither*/
-                            await Dither(seq, tokenSource, progress);
-                            
-                            if (Cam?.Connected != true) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
-
-                            seq.ExposureCount -= 1;
-                            framenr++;
+                        if (Cam?.Connected != true) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
                         }
-                        seq.Active = false;
+
+                        /*Download Image */
+                        ImageArray arr = await Download(tokenSource, progress);
+                        if (arr == null) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
+                        }
+
+                        ImageControl.ImgArr = arr;
+
+                        /*Prepare Image for UI*/
+                        progress.Report(ImagingVM.ExposureStatus.PREPARING);
+
+                        await ImageControl.PrepareImage(progress, tokenSource);
+
+
+                        if (Cam?.Connected != true) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
+                        }
+
+                        /*Save to disk*/
+                        if (bSave) {                               
+                            await Save(seq, framenr, tokenSource, progress);
+                        }
+                            
+                        /*Dither*/
+                        await Dither(seq, tokenSource, progress);
+                            
+                        if (Cam?.Connected != true) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
+                        }
+
+                        seq.ExposureCount -= 1;
+                        framenr++;
                     }
+                    seq.Active = false;
                 }
-                catch (System.OperationCanceledException ex) {
-                    Logger.Trace(ex.Message);
-                    if (Cam?.Connected == true) {
-                        Cam.AbortExposure();
-                    }
+            }
+            catch (System.OperationCanceledException ex) {
+                Logger.Trace(ex.Message);
+                if (Cam?.Connected == true) {
+                    Cam.AbortExposure();
                 }
-                catch(Exception ex) {
-                    Notification.ShowError(ex.Message);
-                    if (Cam?.Connected == true) {
-                        Cam.AbortExposure();
-                    }
+            }
+            catch(Exception ex) {
+                Notification.ShowError(ex.Message);
+                if (Cam?.Connected == true) {
+                    Cam.AbortExposure();
                 }
-                finally {
-                    progress.Report(ExposureStatus.IDLE);                    
-                }
-                return true;
-            });
+            }
+            finally {
+                progress.Report(ExposureStatus.IDLE);
+                Mediator.Instance.Notify(MediatorMessages.ActiveSequenceChanged, null);
+            }
+            return true;            
         }
 
 
@@ -524,20 +516,7 @@ namespace NINA.ViewModel {
             
         }
 
-        private async Task<bool> StartSequence(IProgress<string> progress, CancellationToken token = new CancellationToken()) {
-            _cancelSequenceToken = new CancellationTokenSource();
-            if(Cam?.Connected != true) {
-                Notification.ShowWarning("No Camera connected");
-                return false;
-            }
-            if (IsExposing) {
-                Notification.ShowWarning("Camera is busy");
-                return false;
-            } else {
-                return await StartSequence(SeqVM.Sequence, true, _cancelSequenceToken, progress);
-            }
-                
-        }
+        
 
 
         ImageControlVM _imageControl;
@@ -557,27 +536,14 @@ namespace NINA.ViewModel {
             }
         }
 
-        public RelayCommand CancelSequenceCommand {
-            get {
-                return _cancelSequenceCommand;
-            }
-
-            set {
-                _cancelSequenceCommand = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private void CancelCaptureImage(object o) {
                 _captureImageToken?.Cancel();
         }
 
-        private void CancelSequence(object o) {
-                _cancelSequenceToken?.Cancel();
-        }
+
 
         CancellationTokenSource _cancelSequenceToken;
-        private RelayCommand _cancelSequenceCommand;
 
         CancellationTokenSource _captureImageToken;
         private RelayCommand _cancelSnapCommand;

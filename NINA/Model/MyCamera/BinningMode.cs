@@ -39,5 +39,9 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged();
             }
         }
+
+        public override string ToString() {
+            return Name;
+        }
     }
 }

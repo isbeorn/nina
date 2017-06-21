@@ -21,24 +21,60 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <Grid>
+    <GroupBox Header="{ns:Loc LblSequence}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <DataGrid  x:Name="grd" ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}" RowStyle="{StaticResource HighlightRow}" BorderThickness="1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" Header="Remaining #" Binding="{Binding ExposureCount}" IsReadOnly="True">
 
-        <DataGrid  x:Name="grd" ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" RowStyle="{StaticResource HighlightRow}" BorderThickness="1 0 0 1">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="#" Binding="{Binding ExposureCount}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Time" Binding="{Binding ExposureTime}"></DataGridTextColumn>
-                <DataGridComboBoxColumn Header="Type" ItemsSource="{Binding Source={StaticResource AppVM}, Path=ImagingVM.SeqVM.ImageTypes}" SelectedItemBinding="{Binding ImageType, Mode=TwoWay}" />
-                <DataGridComboBoxColumn Header="Filter" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters}" DisplayMemberPath="Name" SelectedItemBinding="{Binding FilterType}" SelectedValuePath="Name"></DataGridComboBoxColumn>
-                <DataGridComboBoxColumn Header="Binning" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}" DisplayMemberPath="Name" SelectedItemBinding="{Binding Binning}" SelectedValuePath="Name"></DataGridComboBoxColumn>
-                <DataGridTemplateColumn Header="Dither">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>                
-                <DataGridTextColumn Header="Dither Every # Frame" Binding="{Binding DitherAmount}"></DataGridTextColumn>
-            </DataGrid.Columns>            
-        </DataGrid>
-    </Grid>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Total #" Binding="{Binding TotalExposureCount}">
+
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Time" Binding="{Binding ExposureTime}"></DataGridTextColumn>
+                    <DataGridComboBoxColumn Width="*" Header="Type" ItemsSource="{Binding Source={StaticResource AppVM}, Path=SeqVM.ImageTypes}" SelectedItemBinding="{Binding ImageType, Mode=TwoWay}" />
+                    <DataGridComboBoxColumn Width="*" Header="Filter" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters}" DisplayMemberPath="Name" SelectedItemBinding="{Binding FilterType}" SelectedValuePath="Name"></DataGridComboBoxColumn>
+                    <DataGridComboBoxColumn Width="*" Header="Binning" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}" DisplayMemberPath="Name" SelectedItemBinding="{Binding Binning}" SelectedValuePath="Name"></DataGridComboBoxColumn>
+                    <DataGridTemplateColumn Width="*" Header="Dither">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Width="*" Header="Dither Every # Frame" Binding="{Binding DitherAmount}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0 5 0 5">
+                <Button Width="40"    Command="{Binding AddSequenceCommand}"  >
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipAddSequence}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource AddSVG}" Stretch="Uniform" Margin="5">
+                    </Path>
+                </Button>
+                <Button Width="40"   Command="{Binding RemoveSequenceCommand}"  >
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipRemoveSequence}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SubstractSVG}" Stretch="Uniform" Margin="5">
+                    </Path>
+                </Button>
+                <local:CancellableButtonView 
+                    MyCommand="{Binding StartSequenceCommand}" 
+                    MyCancelCommand="{Binding CancelSequenceCommand}" 
+                    MyButtonImage="{StaticResource PlaySVG}" 
+                    MyCancelButtonImage="{StaticResource CancelSVG}" 
+                    MyButtonTooltip="{ns:Loc LblTooltipStartSequence}" />
+            </StackPanel>            
+        </Grid>       
+    </GroupBox>
 </UserControl>
