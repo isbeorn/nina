@@ -541,10 +541,6 @@ namespace NINA.ViewModel {
                 _captureImageToken?.Cancel();
         }
 
-
-
-        CancellationTokenSource _cancelSequenceToken;
-
         CancellationTokenSource _captureImageToken;
         private RelayCommand _cancelSnapCommand;
 

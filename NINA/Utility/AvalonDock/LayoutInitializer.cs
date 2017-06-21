@@ -7,6 +7,9 @@ using Xceed.Wpf.AvalonDock.Layout;
 
 namespace NINA.Utility.AvalonDock {
     class LayoutInitializer : ILayoutUpdateStrategy {
+
+        public static string LAYOUTFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA\\avalondock.config";
+
         public bool BeforeInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableToShow, ILayoutContainer destinationContainer) {
             //AD wants to add the anchorable into destinationContainer
             //just for test provide a new anchorablepane 

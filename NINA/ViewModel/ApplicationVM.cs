@@ -55,16 +55,16 @@ namespace NINA.ViewModel {
                     args.Content = args.Content;
                 };
 
-                if (System.IO.File.Exists(@".\AvalonDock.config")) {
-                    serializer.Deserialize(@".\AvalonDock.config");
+                if (System.IO.File.Exists(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH)) {
+                    serializer.Deserialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
                 }
                 _dockloaded = true;
             }
         }
 
         public void SaveAvalonDockLayout() {
-            /*var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
-            serializer.Serialize(@".\AvalonDock.config");*/
+            var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+            serializer.Serialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
         }
 
         private void RegisterMediatorMessages() {
