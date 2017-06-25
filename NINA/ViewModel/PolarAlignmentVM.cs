@@ -683,7 +683,7 @@ namespace NINA.ViewModel {
                 canceltoken.Token.ThrowIfCancellationRequested();
 
 
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });                
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.BlindSolveWithCapture, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });                
 
                 canceltoken.Token.ThrowIfCancellationRequested();
 
@@ -706,9 +706,9 @@ namespace NINA.ViewModel {
                 Logger.Trace(ex.Message);
             }
             finally {
-                progress.Report("Slewing back to origin...");
+                //progress.Report("Slewing back to origin...");
                 Telescope.SlewToCoordinates(startPosition.RA, startPosition.Dec);
-                progress.Report("Done");
+                //progress.Report("Done");
             }
 
             return poleError;

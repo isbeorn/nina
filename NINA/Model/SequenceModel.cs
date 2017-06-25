@@ -39,18 +39,7 @@ namespace NINA.Model {
         private string _imageType;
         private MyFilterWheel.FilterInfo _filterType;
         private MyCamera.BinningMode _binning;
-        private int _exposureCount;
-        private bool _active;
-
-        public bool Active {
-            get {
-                return _active;
-            }
-            set {
-                _active = value;
-                RaisePropertyChanged();
-            }
-        }
+        private int _exposureCount;        
 
         public double ExposureTime {
             get {

@@ -125,6 +125,12 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.SequenceTemplate>
 
+                    <util:PaneTemplateSelector.WeatherDataTemplate>
+                        <DataTemplate>
+                            <view:AnchorableWeatherDataView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.WeatherDataTemplate>
+
                 </util:PaneTemplateSelector>
             </dock:DockingManager.LayoutItemTemplateSelector>
 

@@ -34,8 +34,8 @@ namespace NINA.ViewModel {
         private static Dispatcher Dispatcher = Dispatcher.CurrentDispatcher;
 
         private async Task<bool> Connect() {
-            
-            
+
+
             GuideStepsHistory.Clear();
             GuideStepsHistoryMinimal.Clear();
 

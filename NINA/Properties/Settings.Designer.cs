@@ -491,5 +491,53 @@ namespace NINA.Properties {
                 this["RecenterAfterFlip"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int WeatherDataType {
+            get {
+                return ((int)(this["WeatherDataType"]));
+            }
+            set {
+                this["WeatherDataType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OpenWeatherMapAPIKey {
+            get {
+                return ((string)(this["OpenWeatherMapAPIKey"]));
+            }
+            set {
+                this["OpenWeatherMapAPIKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://api.openweathermap.org/data/2.5/weather")]
+        public string OpenWeatherMapUrl {
+            get {
+                return ((string)(this["OpenWeatherMapUrl"]));
+            }
+            set {
+                this["OpenWeatherMapUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OpenWeatherMapLocation {
+            get {
+                return ((string)(this["OpenWeatherMapLocation"]));
+            }
+            set {
+                this["OpenWeatherMapLocation"] = value;
+            }
+        }
     }
 }

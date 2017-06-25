@@ -21,9 +21,6 @@ namespace NINA.ViewModel {
             LoadAvalonDockLayoutCommand = new RelayCommand(LoadAvalonDockLayout);
             RegisterMediatorMessages();
 
-
-
-
             InitAvalonDockLayout();
         }  
         
@@ -34,7 +31,7 @@ namespace NINA.ViewModel {
             this.Anchorables.Add(TelescopeVM);
             this.Anchorables.Add(PlatesolveVM);            
             this.Anchorables.Add(PolarAlignVM);
-            
+            this.Anchorables.Add(WeatherDataVM);
             this.Anchorables.Add(PHD2VM);
             this.Anchorables.Add(SeqVM);
             this.Anchorables.Add(CameraVM.FilterWheelVM);
@@ -137,6 +134,21 @@ namespace NINA.ViewModel {
             }
             set {
                 _cameraVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private WeatherDataVM _weatherDataVM;
+        public WeatherDataVM WeatherDataVM {
+            get {
+                if (_weatherDataVM == null) {
+                    _weatherDataVM = new WeatherDataVM();
+
+                }
+                return _weatherDataVM;
+            }
+            set {
+                _weatherDataVM = value;
                 RaisePropertyChanged();
             }
         }

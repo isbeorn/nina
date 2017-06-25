@@ -119,5 +119,17 @@
     <Setting Name="RecenterAfterFlip" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="WeatherDataType" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="OpenWeatherMapAPIKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="OpenWeatherMapUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://api.openweathermap.org/data/2.5/weather</Value>
+    </Setting>
+    <Setting Name="OpenWeatherMapLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

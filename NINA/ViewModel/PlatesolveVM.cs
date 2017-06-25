@@ -373,6 +373,7 @@ namespace NINA.ViewModel {
             set {
                 _plateSolveResult = value;
                 RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.PlateSolveResultChanged, _plateSolveResult);
             }
         }
 

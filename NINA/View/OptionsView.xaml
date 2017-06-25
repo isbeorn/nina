@@ -152,6 +152,23 @@
 
                     </Grid>
                 </GroupBox>
+                <GroupBox Header="Weather Data">
+                    <StackPanel>
+                        <ComboBox Name="weatherdatacombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:WeatherDataEnum}}}" SelectedItem="{Binding WeatherDataType}" />
+                        <UniformGrid Columns="2" Margin="0 5 0 0">
+                            <TextBlock Text="URL" />
+                            <TextBox Text="{Binding OpenWeatherMapUrl}" HorizontalAlignment="Stretch" />
+                        </UniformGrid>
+                        <UniformGrid Columns="2"  Margin="0 5 0 0">
+                            <TextBlock Text="API Key" />
+                            <TextBox Text="{Binding OpenWeatherMapAPIKey}" HorizontalAlignment="Stretch" />
+                        </UniformGrid>
+                        <UniformGrid Columns="2"  Margin="0 5 0 0">
+                            <TextBlock Text="Location" />
+                            <TextBox Text="{Binding OpenWeatherMapLocation}" HorizontalAlignment="Stretch" />
+                        </UniformGrid>
+                    </StackPanel>
+                </GroupBox>
             </UniformGrid>
         </TabItem>
         <TabItem>

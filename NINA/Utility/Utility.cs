@@ -226,6 +226,13 @@ namespace NINA.Utility {
             return result;
         }
 
+        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp) {
+            // Unix timestamp is seconds past epoch
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime;
+        }
+
     }
     public enum FileTypeEnum {
         TIFF,
@@ -238,6 +245,12 @@ namespace NINA.Utility {
         ASTROMETRY_NET,
         [Description("Local")]
         LOCAL
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum WeatherDataEnum {
+        [Description("openweathermap.org")]
+        OPENWEATHERMAP
     }
 
 

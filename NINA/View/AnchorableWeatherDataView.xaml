@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="NINA.View.AnchorableWeatherDataView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NINA.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" DataContext="{Binding WeatherData}">
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock>Latitude</TextBlock>
+                    <TextBlock Text="{Binding Latitude}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock>Longitude</TextBlock>
+                    <TextBlock Text="{Binding Longitude}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock>Temperature</TextBlock>
+                    <TextBlock Text="{Binding Temperature}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock>Humidity</TextBlock>
+                    <TextBlock Text="{Binding Humidity, StringFormat=\{0:#.00\}%}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock>Dewpoint</TextBlock>
+                    <TextBlock Text="{Binding Dewpoint, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock>Pressure</TextBlock>
+                    <TextBlock Text="{Binding Pressure}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>            
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock>WindSpeed</TextBlock>
+                    <TextBlock Text="{Binding WindSpeed}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock>WindDirection</TextBlock>
+                    <TextBlock Text="{Binding WindDirection}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock>CloudCoverage</TextBlock>
+                    <TextBlock Text="{Binding CloudCoverage, StringFormat=\{0:#.00\}%}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock>Sunrise</TextBlock>
+                    <TextBlock Text="{Binding Sunrise}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock>Sunset</TextBlock>
+                    <TextBlock Text="{Binding Sunset}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>
+            
+
+        
+        </StackPanel>
+        <Button Command="{Binding UpdateWeatherDataCommand}" Height="45"/>
+    </StackPanel>
+</UserControl>

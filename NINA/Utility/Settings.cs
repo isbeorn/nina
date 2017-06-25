@@ -50,6 +50,46 @@ namespace NINA.Utility {
             }
         }
 
+        public static WeatherDataEnum WeatherDataType {
+            get {
+                return (WeatherDataEnum)Properties.Settings.Default.WeatherDataType;
+            }
+            set {
+                Properties.Settings.Default.WeatherDataType = (int)value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static string OpenWeatherMapAPIKey {
+            get {
+                return Properties.Settings.Default.OpenWeatherMapAPIKey;
+            }
+            set {
+                Properties.Settings.Default.OpenWeatherMapAPIKey = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static string OpenWeatherMapUrl {
+            get {
+                return Properties.Settings.Default.OpenWeatherMapUrl;
+            }
+            set {
+                Properties.Settings.Default.OpenWeatherMapUrl = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static string OpenWeatherMapLocation {
+            get {
+                return Properties.Settings.Default.OpenWeatherMapLocation;
+            }
+            set {
+                Properties.Settings.Default.OpenWeatherMapLocation = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         public static Epoch EpochType {
             get {
                 return (Epoch)Properties.Settings.Default.EpochType;

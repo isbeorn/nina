@@ -238,7 +238,45 @@ namespace NINA.ViewModel {
             }
         }
 
+        public WeatherDataEnum WeatherDataType {
+            get {
+                return Settings.WeatherDataType;
+            }
+            set {
+                Settings.WeatherDataType = value;
+                RaisePropertyChanged();
+            }
+        }
 
+        public string OpenWeatherMapAPIKey {
+            get {
+                return Settings.OpenWeatherMapAPIKey;
+            }
+            set {
+                Settings.OpenWeatherMapAPIKey = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string OpenWeatherMapUrl {
+            get {
+                return Settings.OpenWeatherMapUrl;
+            }
+            set {
+                Settings.OpenWeatherMapUrl = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string OpenWeatherMapLocation {
+            get {
+                return Settings.OpenWeatherMapLocation;
+            }
+            set {
+                Settings.OpenWeatherMapLocation = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public string AstrometryAPIKey {
             get {

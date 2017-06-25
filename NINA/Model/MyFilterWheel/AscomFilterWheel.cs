@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace NINA.Model.MyFilterWheel {
     class AscomFilterWheel : BaseINPC, IFilterWheel, IDisposable  {
@@ -135,6 +136,8 @@ namespace NINA.Model.MyFilterWheel {
             }
         }
 
+        private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
+
         public short Position {
             get {
                 if(Connected) {
@@ -145,20 +148,8 @@ namespace NINA.Model.MyFilterWheel {
             }
             set {
                 if(Connected) {
-                    try {
-                        
-                        _filterwheel.Position = value;
-
-                        //Notify UI once filter is in proper position
-                        Task.Run(() => {
-                            try {
-                                while (Connected && _filterwheel.Position == -1) {
-                                }
-                                RaisePropertyChanged(nameof(Position));
-                            } catch (Exception) { }
-                            
-                        });
-                        
+                    try {                        
+                        _filterwheel.Position = value;                                                
                     } catch(ASCOM.DriverAccessCOMException ex) {
                         Notification.ShowWarning(ex.Message);
                     }                    

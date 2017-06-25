@@ -37,6 +37,8 @@ namespace NINA.Utility.AvalonDock {
 
         public DataTemplate SequenceTemplate { get; set; }
 
+        public DataTemplate WeatherDataTemplate { get; set; }
+
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
 
@@ -72,6 +74,9 @@ namespace NINA.Utility.AvalonDock {
 
             if (item is SequenceVM)
                 return SequenceTemplate;
+
+            if (item is WeatherDataVM)
+                return WeatherDataTemplate;
 
             return base.SelectTemplate(item, container);
         }
