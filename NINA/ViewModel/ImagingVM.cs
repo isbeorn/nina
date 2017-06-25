@@ -126,6 +126,18 @@ namespace NINA.ViewModel {
 
         }
 
+        private bool _snapSave;
+        public bool SnapSave {
+            get {
+                return _snapSave;
+            }
+            set {
+                _snapSave = value;
+                RaisePropertyChanged();
+            }
+
+        }
+
         private ICamera _cam;
         public ICamera Cam {
             get {
@@ -580,7 +592,7 @@ namespace NINA.ViewModel {
                 do {
                     List<SequenceModel> seq = new List<SequenceModel>();
                     seq.Add(new SequenceModel(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                    await StartSequence(seq,  true, _captureImageToken, progress);
+                    await StartSequence(seq,  SnapSave, _captureImageToken, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop);
                 return true;

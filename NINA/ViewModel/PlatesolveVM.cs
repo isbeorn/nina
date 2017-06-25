@@ -26,13 +26,13 @@ namespace NINA.ViewModel {
             Title = "Plate Solving";
             ContentId = nameof(PlatesolveVM);
             CanClose = false;
+            SyncScope = false;
+            SlewToTarget = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
             
-            BlindSolveCommand = new AsyncCommand<bool>(() => BlindSolve(new Progress<string>(p => Status = p)));
+            BlindSolveCommand = new AsyncCommand<bool>(() => CaputureAndSolve(new Progress<string>(p => Status = p)));
             
             CancelBlindSolveCommand = new RelayCommand(CancelBlindSolve);
-            SyncCommand = new RelayCommand(SyncTelescope);
-            SyncAndReslewCommand = new RelayCommand(SyncTelescopeAndReslew);
 
             SnapExposureDuration = 2;
 
@@ -89,18 +89,32 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SyncTelescopeAndReslew(object obj) {
-            if (Telescope?.Connected != true) {
-                Notification.ShowWarning("Unable to sync. Telescope is not connected!");
-                return;
+        private bool _syncScope;
+        public bool SyncScope {
+            get {
+                return _syncScope;
             }
-            
-            var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
-
-            if(sync()) {
-                Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
+            set {
+                _syncScope = value;
+                RaisePropertyChanged();
             }
         }
+
+        private bool _slewToTarget;
+        public bool SlewToTarget {
+            get {
+                return _slewToTarget;
+            }
+            set {
+                _slewToTarget = value;
+                if(_slewToTarget && !SyncScope) {
+                    SyncScope = true;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        
 
         private BinningMode _snapBin;
         private Model.MyFilterWheel.FilterInfo _snapFilter;
@@ -173,11 +187,7 @@ namespace NINA.ViewModel {
             }
             return success;
         }
-
-        private void SyncTelescope(object obj) {
-            sync();
-        }
-
+        
         private BitmapSource _image;
         public BitmapSource Image {
             get {
@@ -220,9 +230,22 @@ namespace NINA.ViewModel {
         }
         
 
-        private async Task<bool> BlindSolve(IProgress<string> progress) {
+        private async Task<bool> CaputureAndSolve(IProgress<string> progress) {
             _blindeSolveCancelToken = new CancellationTokenSource();
-            return await BlindSolveWithCapture(SnapExposureDuration, progress, _blindeSolveCancelToken, SnapFilter, SnapBin);            
+            var solvesuccess = await BlindSolveWithCapture(SnapExposureDuration, progress, _blindeSolveCancelToken, SnapFilter, SnapBin);
+
+            if(solvesuccess && SyncScope) {
+                if (Telescope?.Connected != true) {
+                    Notification.ShowWarning("Unable to sync. Telescope is not connected!");
+                    return false;
+                }
+                var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+                if(sync() && SlewToTarget) {
+                    Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);                    
+                }
+            }
+
+            return solvesuccess;
         }
 
         public async Task<bool> BlindSolve(IProgress<string> progress, CancellationTokenSource canceltoken) {
@@ -352,18 +375,7 @@ namespace NINA.ViewModel {
                 _cancelBlindSolveCommand = value;
                 RaisePropertyChanged();
             }
-        }
-
-        private ICommand _syncCommand;
-        public ICommand SyncCommand {
-            get {
-                return _syncCommand;
-            }
-            set {
-                _syncCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        }        
 
         public PlateSolveResult PlateSolveResult {
             get {
@@ -375,17 +387,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.PlateSolveResultChanged, _plateSolveResult);
             }
-        }
-
-        private ICommand _syncAndReslewCommand;
-        public ICommand SyncAndReslewCommand {
-            get {
-                return _syncAndReslewCommand;
-            }
-            private set {
-                _syncAndReslewCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        }        
     }
 }

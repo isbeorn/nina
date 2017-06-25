@@ -78,6 +78,12 @@
 
         
         </StackPanel>
-        <Button Command="{Binding UpdateWeatherDataCommand}" Height="45"/>
+        <Button Command="{Binding UpdateWeatherDataCommand}" Height="35" Margin="10 10 10 0">
+            <Button.ToolTip>
+                Refresh
+            </Button.ToolTip>
+            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
+            </Path>
+        </Button>    
     </StackPanel>
 </UserControl>

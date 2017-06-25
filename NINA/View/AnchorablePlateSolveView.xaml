@@ -54,7 +54,21 @@
                         </UniformGrid>
                     </Border>
 
+
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                    </Border>
+
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                        <UniformGrid Columns="2" >
+                            <TextBlock Text="Sync" VerticalAlignment="Center"></TextBlock>
+                            <CheckBox IsChecked="{Binding SyncScope}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                        <UniformGrid Columns="2" >
+                            <TextBlock Text="Reslew to Target" VerticalAlignment="Center"></TextBlock>
+                            <CheckBox IsChecked="{Binding SlewToTarget}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
+                        </UniformGrid>
                     </Border>
                 
                     <local:CameraControlView          
@@ -65,49 +79,15 @@
                                     MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
                                     MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />
                 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0" >                   
+                    
 
-                        <local:CancellableButtonView  Width="50" Height="50" Margin="5,0,5,0" 
-                                                  MyCommand="{Binding BlindSolveCommand}" 
-                                                  MyCancelCommand="{Binding CancelBlindSolveCommand}" 
-                                                  MyButtonImage="{StaticResource PlatesolveSVG}" 
-                                                  MyCancelButtonImage="{StaticResource CancelSVG}" 
-                                                  MyButtonTooltip="Capture image and platesolve"/>
-
-                        <Button  Width="50" Height="50" Command="{Binding SyncCommand}" Margin="5,0,5,0">
-                            <Button.ToolTip>
-                                <ToolTip ToolTipService.ShowOnDisabled="True">
-                                    Sync scope to coordinates
-                                </ToolTip>
-                            </Button.ToolTip>
-                            <Grid>
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="25,25,5,5">
-                                </Path>
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
-                                </Path>
-                            </Grid>
-                        </Button>
-
-                        <Button  Width="50" Height="50" Command="{Binding SyncAndReslewCommand}" Margin="5,0,5,0">
-                            <Button.ToolTip>
-                                <ToolTip ToolTipService.ShowOnDisabled="True">
-                                    Sync scope to coordinates and reslew to initial target
-                                </ToolTip>
-                            </Button.ToolTip>
-                            <Grid>
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5,30,30,5">
-                                </Path>
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource NextSVG}" Stretch="Uniform" Margin="15,30,15,5">
-                                </Path>
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="30,30,5,5">
-                                </Path>
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
-                                </Path>
-
-
-                            </Grid>
-                        </Button>
-                    </StackPanel>
+                    <local:CancellableButtonView Height="35" Margin="10,10,10,0" 
+                                                MyCommand="{Binding BlindSolveCommand}" 
+                                                MyCancelCommand="{Binding CancelBlindSolveCommand}" 
+                                                MyButtonImage="{StaticResource PlatesolveSVG}" 
+                                                MyCancelButtonImage="{StaticResource CancelSVG}" 
+                                                MyButtonTooltip="Capture image and platesolve"/>
+                    
                 </StackPanel>          
             </Grid>
         </Grid>

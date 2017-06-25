@@ -34,6 +34,8 @@
     <s:String x:Key="LblExposureTime">Exposure Time</s:String>
     <s:String x:Key="LblFilter">Filter</s:String>
     <s:String x:Key="LblBinning">Binning</s:String>
+    <s:String x:Key="LblLoop">Loop</s:String>
+    <s:String x:Key="LblSave">Save</s:String>
     <s:String x:Key="LblTooltipLoop">Enables/disables looping exposures</s:String>
     <s:String x:Key="LblTooltipTakeExposure">Starts Exposure</s:String>
     <s:String x:Key="LblOK">OK</s:String>

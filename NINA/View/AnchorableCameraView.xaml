@@ -57,9 +57,13 @@
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                    <UniformGrid Columns="2" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}"  VerticalAlignment="Center" Visibility="{Binding CoolingRunning, Converter={StaticResource BooleanToVisibilityHiddenConverter}}" />
-                        <local:CancellableButtonView MyCommand="{Binding CoolCamCommand}" HorizontalAlignment="Right" MyCancelCommand="{Binding CancelCoolCamCommand}" MyButtonImage="{StaticResource ThermometerSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" VerticalAlignment="Center" Width="40" Height="40" />
+                    <UniformGrid Rows="2" VerticalAlignment="Center">
+                        <local:CancellableButtonView MyCommand="{Binding CoolCamCommand}" MyCancelCommand="{Binding CancelCoolCamCommand}" MyButtonImage="{StaticResource ThermometerSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" VerticalAlignment="Center" Height="35" Margin="10 10 10 0" />
+                        <Grid Visibility="{Binding CoolingRunning, Converter={StaticResource BooleanToVisibilityHiddenConverter}}" Margin="10 0 10 0" Height="35">
+                            <ProgressBar Minimum="0" Maximum="1" Value="{Binding CoolingProgress}"/>
+                            <TextBlock Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}" HorizontalAlignment="Center" VerticalAlignment="Center"   />
+                        </Grid>
+                        
                     </UniformGrid>
                 </Border>
             </StackPanel>

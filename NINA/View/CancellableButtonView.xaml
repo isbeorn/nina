@@ -9,7 +9,7 @@
     <Grid x:Name="LayoutRoot">
         <Grid Visibility="{Binding MyCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}"  >
             <Button Command="{Binding MyCancelCommand}" Visibility="{Binding MyCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}">
-                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding MyCancelButtonImage}" Stretch="Uniform" Margin="5" RenderTransformOrigin="0.5,0.5">
+                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding MyCancelButtonImage}" Width="40" Stretch="Uniform" Margin="5" RenderTransformOrigin="0.5,0.5">
                 </Path>
             </Button>
         </Grid>
@@ -21,7 +21,7 @@
                 </ToolTip>
             </Button.ToolTip>
             <Grid>
-                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding MyButtonImage}" Stretch="Uniform" Margin="5" RenderTransformOrigin="0.5,0.5">
+                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding MyButtonImage}" Width="40" Stretch="Uniform"  Margin="5" RenderTransformOrigin="0.5,0.5">
                 </Path>
                 <TextBlock Text="{Binding MyButtonText}" Foreground="{StaticResource ButtonForegroundBrush}" />
             </Grid>

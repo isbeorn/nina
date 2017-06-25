@@ -34,6 +34,8 @@
     <s:String x:Key="LblExposureTime">Belichtungszeit</s:String>
     <s:String x:Key="LblFilter">Filter</s:String>
     <s:String x:Key="LblBinning">Binning</s:String>
+    <s:String x:Key="LblLoop">Loop</s:String>
+    <s:String x:Key="LblSave">Speichern</s:String>
     <s:String x:Key="LblTooltipLoop">Schaltet wiederholenden Aufnahmemodus an/aus</s:String>
     <s:String x:Key="LblTooltipTakeExposure">Startet Aufnahme</s:String>
     <s:String x:Key="LblOK">OK</s:String>
