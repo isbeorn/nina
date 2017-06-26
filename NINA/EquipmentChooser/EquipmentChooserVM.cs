@@ -1,5 +1,4 @@
-﻿using EDSDKLib;
-using NINA.Model.MyCamera;
+﻿using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
 using NINA.Utility;

@@ -239,8 +239,7 @@
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
-    <Compile Include="Model\MyCamera\ASICamera.cs" />
-    <Compile Include="Model\MyCamera\EDCamera.cs" />
+    <Compile Include="Model\MyCamera\ASICamera.cs" />    
     <Compile Include="Model\MyWeatherData\OpenWeatherMapData.cs" />
     <Compile Include="Utility\ASISDK\ASICameraDll.cs" />
     <Compile Include="Utility\ASISDK\ASICameraDll2.cs" />
@@ -253,8 +252,7 @@
     <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
-    <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
-    <Compile Include="Utility\EDSDK\EDSDK.cs" />
+    <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />    
     <Compile Include="Utility\Mediator.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />

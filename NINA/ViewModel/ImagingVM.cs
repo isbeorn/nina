@@ -79,18 +79,6 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 FW = (IFilterWheel)o;
             }, MediatorMessages.FilterWheelChanged);
-
-            Mediator.Instance.Register((object o) => {
-                PlateSolveFilter = (FilterInfo)o;
-            }, MediatorMessages.PlateSolveFilterChanged);
-
-            Mediator.Instance.Register((object o) => {
-                PlateSolveBinning = (BinningMode)o;
-            }, MediatorMessages.PlateSolveBinningChanged);
-
-            Mediator.Instance.Register((object o) => {
-                PlateSolveExposureDuration = (double)o;
-            }, MediatorMessages.PlateSolveExposureDurationChanged);
         }
 
         private string _status;
@@ -453,14 +441,6 @@ namespace NINA.ViewModel {
                      
         }
 
-
-        private double _plateSolveExposureDuration;       
-        private BinningMode _plateSolveBinning;
-        private FilterInfo _plateSolveFilter;
-        public double PlateSolveExposureDuration { get => _plateSolveExposureDuration; set => _plateSolveExposureDuration = value; }
-        public BinningMode PlateSolveBinning { get => _plateSolveBinning; set => _plateSolveBinning = value; }
-        public FilterInfo PlateSolveFilter { get => _plateSolveFilter; set => _plateSolveFilter = value; }
-
         /// <summary>
         /// Checks if auto meridian flip should be considered and executes it
         /// 1) Compare next exposure length with time to meridian - If exposure length is greater than time to flip the system will wait
@@ -499,7 +479,7 @@ namespace NINA.ViewModel {
                             if(Settings.RecenterAfterFlip) { 
                                 progress.Report("Initializing Platesolve");
 
-                                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.BlindSolveWithCapture, new object[] { SnapExposureDuration, progress, tokenSource, SnapFilter, SnapBin });
+                                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.BlindSolveWithCapture, new object[] { null , progress, tokenSource, null, null });
 
                                 
                                 progress.Report("Sync and Reslew");

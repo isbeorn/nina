@@ -43,8 +43,32 @@ namespace NINA.AstrometryIndexDownloader {
 
         }
 
+        private int _maximumFiles;
+        public int MaximumFiles {
+            get {
+                return _maximumFiles;
+            }
+            set {
+                _maximumFiles = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _processedFiles;
+        public int ProcessedFiles {
+            get {
+                return _processedFiles;
+            }
+            set {
+                _processedFiles = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private async Task<bool> Download(IProgress<string> progress) {
             var l = GetFullIndexList();
+            
+            ProcessedFiles = 0;
             try {
                 System.IO.DirectoryInfo i = new System.IO.DirectoryInfo(_destinationfolder);
                 if (!i.Exists) {
@@ -52,16 +76,16 @@ namespace NINA.AstrometryIndexDownloader {
                     return false;
                 }
 
-                foreach (IndexFile f in l) {
-               
-                    if (f.MaxArcMin <= SelectedWidest.MaxArcMin && f.MinArcMin >= SelectedNarrowest.MinArcMin) {
-                        progress.Report("Downloading file " + f.Name);
-                        _cancelDownloadToken.Token.ThrowIfCancellationRequested();
-                        var success = await DownloadFile(f);
-                        if (!success) {
-                            break;
-                        }
-                    }                                
+                var filteredindexes = l.Where((x) => x.MaxArcMin <= SelectedWidest.MaxArcMin && x.MinArcMin >= SelectedNarrowest.MinArcMin);
+                MaximumFiles = filteredindexes.Count();
+                foreach (IndexFile f in filteredindexes) {
+                    progress.Report("Downloading file " + f.Name);
+                    _cancelDownloadToken.Token.ThrowIfCancellationRequested();
+                    var success = await DownloadFile(f);
+                    ProcessedFiles++;
+                    if (!success) {
+                        break;
+                    }                                                    
                 }
             } catch (OperationCanceledException) {
                 

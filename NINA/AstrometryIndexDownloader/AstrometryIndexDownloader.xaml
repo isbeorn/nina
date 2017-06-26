@@ -132,12 +132,19 @@
                     </ComboBox>
                 </DockPanel>
 
-                <Grid>
-                    <StackPanel Orientation="Horizontal" Margin="0,50,0,0">
-                        <view:CancellableButtonView Width="100" Height="30"  MyCommand="{Binding DownloadCommand}" MyButtonText="{ns:Loc LblDownload}" MyCancelCommand="{Binding CancelDownloadCommand}" MyCancelButtonImage="{StaticResource CancelSVG}"  Margin="5,0,5,0" HorizontalAlignment="Left" MyButtonTooltip="{ns:Loc LblTooltipTakeExposure}"/>
-                        <TextBlock Text="{Binding DownloadStatus}" Margin="5,0,0,0" VerticalAlignment="Center"/>                    
-                    </StackPanel>
-                    <Button IsDefault="True" Click="ButtonOK_Click" Margin="0,50,0,0" Width="100" Height="30" HorizontalAlignment="Right">
+                <Grid Margin="0 40 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="100" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <view:CancellableButtonView Grid.Column="0" Width="100" Height="30"  MyCommand="{Binding DownloadCommand}" MyButtonText="{ns:Loc LblDownload}" MyCancelCommand="{Binding CancelDownloadCommand}" MyCancelButtonImage="{StaticResource CancelSVG}"  MyButtonTooltip="{ns:Loc LblTooltipTakeExposure}"/>
+                    <Grid Margin="5,0,5,0" VerticalAlignment="Center" Grid.Column="1">
+                        <ProgressBar Minimum="0" Maximum="{Binding MaximumFiles}" Value="{Binding ProcessedFiles}" />
+                        <TextBlock Text="{Binding DownloadStatus}" />
+                    </Grid>
+                    <Button Grid.Column="2" IsDefault="True" Click="ButtonOK_Click"  Width="100" Height="30" HorizontalAlignment="Right">
                         <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblOK}">
                         </TextBlock>
                     </Button>
