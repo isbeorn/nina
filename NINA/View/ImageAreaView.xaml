@@ -23,7 +23,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Text="Zoom" VerticalAlignment="Center" />
             <Slider Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Value="{Binding ZoomFactor}" TickPlacement="BottomRight" TickFrequency="0.1" IsSnapToTickEnabled="True"  Maximum="10" Minimum="0.1" SmallChange="0.1"></Slider>
-            <TextBlock Grid.Column="2" Text="{Binding ZoomFactor}" VerticalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Column="2" Text="{Binding ZoomFactor, StringFormat=\{0:P0\}}" VerticalAlignment="Center"></TextBlock>
 
             <ToggleButton Grid.Column="3" IsChecked="{Binding AutoStretch}"  Margin="5,0,5,0">
                 <ToggleButton.ToolTip>
