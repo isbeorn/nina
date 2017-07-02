@@ -241,6 +241,7 @@
     <Compile Include="Utility\Mediator.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
+    <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />

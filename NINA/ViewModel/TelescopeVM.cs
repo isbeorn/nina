@@ -63,9 +63,23 @@ namespace NINA.ViewModel {
             }
         }
 
+        private TelescopeChooserVM _telescopeChooserVM;
+        public TelescopeChooserVM TelescopeChooserVM {
+            get {
+                if(_telescopeChooserVM == null) {
+                    _telescopeChooserVM = new TelescopeChooserVM();
+                }
+                return _telescopeChooserVM;
+            }
+            set {
+                _telescopeChooserVM = value;
+            }
+        }
+
+
         private void ChooseTelescope(object obj) {
             _updateTelescope.Stop();
-            Telescope = (Model.MyTelescope.ITelescope)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Telescope);
+            Telescope = (ITelescope)TelescopeChooserVM.SelectedDevice; //(Model.MyTelescope.ITelescope)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Telescope);
             if (Telescope?.Connect() == true) {
                 _updateTelescope.Start();
                 Settings.TelescopeId = Telescope.Id;                
@@ -302,5 +316,26 @@ namespace NINA.ViewModel {
         }
 
         
+    }
+
+    class TelescopeChooserVM : EquipmentChooserVM {
+        public override void GetEquipment() {
+            var ascomDevices = new ASCOM.Utilities.Profile();
+
+            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Telescope")) {
+
+                try {
+                    AscomTelescope cam = new AscomTelescope(device.Key, device.Value);
+                    Devices.Add(cam);
+                } catch (Exception) {
+                    //only add telescopes which are supported. e.g. x86 drivers will not work in x64
+                }
+            }
+
+            if (Devices.Count > 0) {
+                var selected = (from device in Devices where device.Id == Settings.TelescopeId select device).First();
+                SelectedDevice = selected;
+            }
+        }
     }
 }

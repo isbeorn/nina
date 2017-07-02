@@ -17,7 +17,34 @@
             <UniformGrid Columns="2">
 
 
-                <GroupBox Header="PHD2 Status">
+                <GroupBox >
+                    <GroupBox.Header>
+                        <UniformGrid Columns="2" >
+                            <TextBlock Text="PHD2 Status" VerticalAlignment="Center" FontSize="20"></TextBlock>
+                            <Grid Margin="5" Height="40" Width="40" HorizontalAlignment="Right">
+                                <Button  Command="{Binding ConnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" >
+                                    <Grid>
+
+                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5" Visibility="{Binding ConnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                        </Path>
+                                        <Grid Visibility="{Binding ConnectPHDClientCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}" >
+                                            <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ConnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" Text="..." />
+                                        </Grid>
+                                    </Grid>
+                                </Button>
+                                <Button Command="{Binding DisconnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource VisibilityConverter}}">
+                                    <Grid>
+
+                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5" Visibility="{Binding DisconnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                        </Path>
+                                        <Grid Visibility="{Binding DisconnectPHDClientCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}" >
+                                            <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding DisconnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" Text="Disonnecting..." />
+                                        </Grid>
+                                    </Grid>
+                                </Button>
+                            </Grid>
+                        </UniformGrid>
+                    </GroupBox.Header>
                     <Grid>
                         <StackPanel>
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
@@ -36,29 +63,7 @@
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
-                        </StackPanel>
-                        <Grid Height="50" Width="50" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                            <Button  Command="{Binding ConnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" >
-                                <Grid>
-
-                                    <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PHD2SVG}" Stretch="Uniform" Margin="5" Visibility="{Binding ConnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                    </Path>
-                                    <Grid Visibility="{Binding ConnectPHDClientCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}" >
-                                        <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ConnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" Text="..." />
-                                    </Grid>
-                                </Grid>
-                            </Button>
-                            <Button Command="{Binding DisconnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource VisibilityConverter}}">
-                                <Grid>
-
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PHD2SVG}" Stretch="Uniform" Margin="5" Visibility="{Binding DisconnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                    </Path>
-                                    <Grid Visibility="{Binding DisconnectPHDClientCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}" >
-                                        <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding DisconnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" Text="Disonnecting..." />
-                                    </Grid>
-                                </Grid>
-                            </Button>
-                        </Grid>
+                        </StackPanel>                        
                     </Grid>
                 </GroupBox>
             </UniformGrid>

@@ -31,8 +31,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void ChooseFW(object obj) {            
-            FW = (Model.MyFilterWheel.IFilterWheel)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.FilterWheel);
+        private void ChooseFW(object obj) {
+            FW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;//(Model.MyFilterWheel.IFilterWheel)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.FilterWheel);
             if (FW?.Connect() == true) {
             
                 Settings.FilterWheelId = FW.Id;                
@@ -71,7 +71,42 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        private FilterWheelChooserVM _filterWheelChooserVM;
+        public FilterWheelChooserVM FilterWheelChooserVM {
+            get {
+                if (_filterWheelChooserVM == null) {
+                    _filterWheelChooserVM = new FilterWheelChooserVM();
+                }
+                return _filterWheelChooserVM;
+            }
+            set {
+                _filterWheelChooserVM = value;
+            }
+        }
     }
 
-    
+    class FilterWheelChooserVM : EquipmentChooserVM {
+        public override void GetEquipment() {
+            var ascomDevices = new ASCOM.Utilities.Profile();
+
+            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("FilterWheel")) {
+
+                try {
+                    AscomFilterWheel cam = new AscomFilterWheel(device.Key, device.Value);
+                    Devices.Add(cam);
+                } catch (Exception) {
+                    //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
+                }
+            }
+
+            if (Devices.Count > 0) {
+                var selected = (from device in Devices where device.Id == Settings.FilterWheelId select device).First();
+                SelectedDevice = selected;
+            }
+        }
+    }
+
+
+
 }

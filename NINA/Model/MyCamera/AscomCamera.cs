@@ -953,11 +953,18 @@ namespace NINA.Model.MyCamera {
 
         public void SetupDialog() {
             if(HasSetupDialog) {
-                try {               
-                _camera = new Camera(Id);
-                _camera.SetupDialog();
-                _camera.Dispose();
-                _camera = null;
+                try {
+                    bool dispose = false;
+                    if(_camera == null) {
+                        _camera = new Camera(Id);
+                        dispose = true;
+                    }
+                
+                    _camera.SetupDialog();
+                    if(dispose) {
+                        _camera.Dispose();
+                        _camera = null;
+                    }
                 } catch(Exception ex) {
                     Notification.ShowError(ex.Message);
                 }

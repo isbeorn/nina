@@ -196,11 +196,16 @@ namespace NINA.Model.MyFilterWheel {
         }
         public void SetupDialog() {
             if (HasSetupDialog) {
-                try { 
-                    _filterwheel = new FilterWheel(Id);
+                try {
+                    bool dispose = false;
+                    if(_filterwheel == null) {
+                        _filterwheel = new FilterWheel(Id);
+                    }                    
                     _filterwheel.SetupDialog();
-                    _filterwheel.Dispose();
-                    _filterwheel = null;
+                    if(dispose) {
+                        _filterwheel.Dispose();
+                        _filterwheel = null;
+                    }                    
                 } catch (Exception ex) {
                     Notification.ShowError(ex.Message);
                 }

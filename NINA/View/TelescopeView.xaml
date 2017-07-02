@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
              xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -17,9 +18,59 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid Grid.ColumnSpan="2">
+        <Grid Grid.ColumnSpan="1">
 
-            <GroupBox Header="Telescope">
+            <GroupBox>
+                <GroupBox.Header>
+                    <UniformGrid Columns="2" >
+                        <TextBlock Text="Telescope" VerticalAlignment="Center" FontSize="20"></TextBlock>
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="40" />
+                            </Grid.ColumnDefinitions>
+                            <ComboBox MinHeight="40" 
+                                      IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}" 
+                                      ItemsSource="{Binding TelescopeChooserVM.Devices}" 
+                                      SelectedItem="{Binding TelescopeChooserVM.SelectedDevice}" 
+                                      SelectedValuePath="Name" 
+                                      DisplayMemberPath="Name"  ></ComboBox>
+                            <Button Grid.Column="1" Width="40" Height="40"  Command="{Binding TelescopeChooserVM.SetupDialogCommand}"  IsEnabled="{Binding TelescopeChooserVM.SelectedDevice.HasSetupDialog}">
+                                <Button.ToolTip>
+                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                        <TextBlock Text="{ns:Loc LblSettings}" />
+                                    </ToolTip>
+                                </Button.ToolTip>
+                                <Grid>
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5">
+                                    </Path>
+                                </Grid>
+                            </Button>
+                            <Grid Height="40" Width="40" Grid.Column="2">
+                                <Button Command="{Binding ChooseTelescopeCommand}"  
+                                        IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}" 
+                                        Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                    <Grid>
+                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
+
+                                        </Path>
+                                    </Grid>
+                                </Button>
+                                <Grid Visibility="{Binding Telescope, Converter={StaticResource NullToVisibilityConverter}}">
+                                    <Button  Command="{Binding DisconnectCommand}" 
+                                             IsEnabled="{Binding Telescope.Connected}"
+                                             Visibility="{Binding Telescope.Connected, Converter={StaticResource VisibilityConverter}}">
+                                        <Grid>
+                                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
+                                            </Path>
+                                        </Grid>
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </UniformGrid>
+                </GroupBox.Header>
                 <Grid>
                     <StackPanel>
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
@@ -108,28 +159,6 @@
                             </UniformGrid>
                         </Border>
                     </StackPanel>
-
-                    <Grid Height="50" Width="50" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                        <Button Command="{Binding ChooseTelescopeCommand}"  IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}" 
-                    Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                            <Grid>
-                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
-
-                                </Path>
-                            </Grid>
-                        </Button>
-                        <Grid Grid.Column="6" Visibility="{Binding Telescope, Converter={StaticResource NullToVisibilityConverter}}">
-                            <Button  Height="50" Width="50" Command="{Binding DisconnectCommand}" IsEnabled="{Binding Telescope.Connected}"
-                    Visibility="{Binding Telescope.Connected, Converter={StaticResource VisibilityConverter}}">
-                                <Grid>
-
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5">
-
-                                    </Path>
-                                </Grid>
-                            </Button>
-                        </Grid>
-                    </Grid>
                 </Grid>
             </GroupBox>
         </Grid>

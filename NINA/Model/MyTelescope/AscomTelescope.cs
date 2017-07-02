@@ -1155,11 +1155,16 @@ namespace NINA.Model.MyTelescope {
         }
         public void SetupDialog() {
             if (HasSetupDialog) {
-                try { 
-                    _telescope = new Telescope(Id);
+                try {
+                    bool dispose = false;
+                    if(_telescope == null) {
+                        _telescope = new Telescope(Id);
+                    }                    
                     _telescope.SetupDialog();
-                    _telescope.Dispose();
-                    _telescope = null;
+                    if(dispose) {
+                        _telescope.Dispose();
+                        _telescope = null;
+                    }
                 } catch (Exception ex) {
                     Notification.ShowError(ex.Message);
                 }

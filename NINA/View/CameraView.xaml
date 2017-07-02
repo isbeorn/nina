@@ -22,7 +22,56 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.RowSpan="2">
-            <GroupBox Header="{ns:Loc LblCam}">
+            <GroupBox >
+                <GroupBox.Header>
+                    <UniformGrid Columns="2" >
+                        <TextBlock Text="{ns:Loc LblCam}" VerticalAlignment="Center" FontSize="20"></TextBlock>
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="40" />
+                            </Grid.ColumnDefinitions>
+                            <ComboBox MinHeight="40" 
+                                      IsEnabled="{Binding Cam.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                      ItemsSource="{Binding CameraChooserVM.Devices}" 
+                                      SelectedItem="{Binding CameraChooserVM.SelectedDevice}" 
+                                      SelectedValuePath="Name" 
+                                      DisplayMemberPath="Name"  ></ComboBox>
+                            <Button Grid.Column="1" Width="40" Height="40"  Command="{Binding CameraChooserVM.SetupDialogCommand}"  IsEnabled="{Binding CameraChooserVM.SelectedDevice.HasSetupDialog}">
+                                <Button.ToolTip>
+                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                        <TextBlock Text="{ns:Loc LblSettings}" />
+                                    </ToolTip>
+                                </Button.ToolTip>
+                                <Grid>
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5">
+                                    </Path>
+                                </Grid>
+                            </Button>
+                            <Grid Height="40" Width="40" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Button   Command="{Binding ChooseCameraCommand}"  
+                                                  IsEnabled="{Binding Cam.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                                  Visibility="{Binding Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                    <Grid>
+                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
+                                        </Path>
+                                    </Grid>
+                                </Button>
+                                <Grid Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
+                                    <Button Command="{Binding DisconnectCommand}" 
+                                                    IsEnabled="{Binding Cam.Connected}"
+                                                    Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}">
+                                        <Grid>
+                                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
+                                            </Path>
+                                        </Grid>
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </UniformGrid>
+                </GroupBox.Header>
                 <Grid >
                     <StackPanel>
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
@@ -130,45 +179,6 @@
                             </UniformGrid>
                         </Border>
                     </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" >
-                        <Grid Height="50" Width="50" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Button   Command="{Binding ChooseCameraCommand}"  IsEnabled="{Binding Cam.Connected, Converter={StaticResource InverseBooleanConverter}}"
-                            Visibility="{Binding Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                <Grid>
-                                    <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5">
-                                    </Path>
-                                </Grid>
-                            </Button>
-                            <Grid Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
-                                <Button Command="{Binding DisconnectCommand}" IsEnabled="{Binding Cam.Connected}"
-                                Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}">
-                                    <Grid>
-                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5">
-                                        </Path>
-                                    </Grid>
-                                </Button>
-                            </Grid>
-                        </Grid>
-                        <Grid Height="50" Width="50" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Button Command="{Binding FilterWheelVM.ChooseFWCommand}"  IsEnabled="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
-                        Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                <Grid>
-                                    <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource FWSVG}" Stretch="Uniform" Margin="5">
-                                    </Path>
-                                </Grid>
-                            </Button>
-                            <Grid Grid.Column="4" Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}">
-                                <Button  Height="50" Width="50" Command="{Binding FilterWheelVM.DisconnectCommand}" IsEnabled="{Binding FilterWheelVM.FW.Connected}" 
-                        Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}">
-                                    <Grid>
-                                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource FWSVG}" Stretch="Uniform" Margin="5">
-                                        </Path>
-                                    </Grid>
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </StackPanel>
                 </Grid>
             </GroupBox>
         </Grid>
@@ -196,19 +206,68 @@
                 </StackPanel>
             </GroupBox>
         </Grid>
-        <Grid Grid.Row="1" Grid.Column="1" IsEnabled="{Binding FW, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <GroupBox Header="{ns:Loc LblFilterWheel}" IsEnabled="{Binding FW.Connected}">
+        <Grid Grid.Row="2">
+            <GroupBox>
+                <GroupBox.Header>
+                    <UniformGrid Columns="2" >
+                        <TextBlock Text="{ns:Loc LblFilterWheel}" VerticalAlignment="Center" FontSize="20"></TextBlock>
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="40" />
+                            </Grid.ColumnDefinitions>
+                            <ComboBox MinHeight="40" 
+                                          IsEnabled="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                          ItemsSource="{Binding FilterWheelVM.FilterWheelChooserVM.Devices}" 
+                                          SelectedItem="{Binding FilterWheelVM.FilterWheelChooserVM.SelectedDevice}" 
+                                          SelectedValuePath="Name" 
+                                          DisplayMemberPath="Name"  ></ComboBox>
+                            <Button Grid.Column="1" Width="40" Height="40"  Command="{Binding FilterWheelVM.FilterWheelChooserVM.SetupDialogCommand}"  IsEnabled="{Binding FilterWheelVM.FilterWheelChooserVM.SelectedDevice.HasSetupDialog}">
+                                <Button.ToolTip>
+                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                        <TextBlock Text="{ns:Loc LblSettings}" />
+                                    </ToolTip>
+                                </Button.ToolTip>
+                                <Grid>
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5">
+                                    </Path>
+                                </Grid>
+                            </Button>
+                            <Grid Height="40" Width="40" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Button Command="{Binding FilterWheelVM.ChooseFWCommand}"  
+                                        IsEnabled="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                        Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                    <Grid>
+                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
+                                        </Path>
+                                    </Grid>
+                                </Button>
+                                <Grid Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}">
+                                    <Button  Command="{Binding FilterWheelVM.DisconnectCommand}" 
+                                             IsEnabled="{Binding FilterWheelVM.FW.Connected}" 
+                                             Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}">
+                                        <Grid>
+                                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
+                                            </Path>
+                                        </Grid>
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </UniformGrid>
+                </GroupBox.Header>
                 <view:FilterWheelView Grid.Row="1" DataContext="{Binding FilterWheelVM}"></view:FilterWheelView>
             </GroupBox>
         </Grid>
-        <Grid Grid.Row="2" Grid.ColumnSpan="2" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
             <Grid IsEnabled="{Binding Cam.Connected}">
                 <GroupBox Header="{ns:Loc LblTempControl}" IsEnabled="{Binding Cam.CanSetCCDTemperature}" >
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
                         <StackPanel Orientation="Vertical">
                             
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
@@ -284,7 +343,7 @@
 
                         
                         
-                        <local:CameraCoolingChartsView Margin="5" DataContext="{Binding}" Grid.Column="1" Grid.RowSpan="2"></local:CameraCoolingChartsView>
+                        <local:CameraCoolingChartsView Margin="5" DataContext="{Binding}" Grid.Row="1"></local:CameraCoolingChartsView>
                         
                     </Grid>
                 </GroupBox>

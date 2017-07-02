@@ -22,7 +22,7 @@ namespace NINA.Utility {
                 parentWindow: Application.Current.MainWindow,
                 corner: Corner.TopRight,
                 offsetX: 10,
-                offsetY: 10);
+                offsetY: 40);
 
             cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
                 notificationLifetime: TimeSpan.FromSeconds(3),

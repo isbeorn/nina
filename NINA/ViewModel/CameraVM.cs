@@ -1,5 +1,6 @@
 ﻿using ASCOM.DriverAccess;
 using NINA.EquipmentChooser;
+using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.ViewModel;
 using OxyPlot;
@@ -14,38 +15,39 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using ZWOptical.ASISDK;
 
 namespace NINA.ViewModel {
     class CameraVM : DockableVM {
 
-        public CameraVM() : base(){
+        public CameraVM() : base() {
             Title = "Camera";
             ContentId = nameof(CameraVM);
             CanClose = false;
-            ImageGeometry  = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
 
             //ConnectCameraCommand = new RelayCommand(connectCamera);
             ChooseCameraCommand = new RelayCommand(ChooseCamera);
             DisconnectCommand = new RelayCommand(DisconnectCamera);
             CoolCamCommand = new AsyncCommand<bool>(() => CoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
-            
+
             _updateCamera = new DispatcherTimer();
             _updateCamera.Interval = TimeSpan.FromMilliseconds(1000);
             _updateCamera.Tick += UpdateCamera_Tick;
-            
+
             CoolingRunning = false;
             CoolerPowerHistory = new AsyncObservableCollection<KeyValuePair<DateTime, double>>();
             CCDTemperatureHistory = new AsyncObservableCollection<KeyValuePair<DateTime, double>>();
         }
 
-        
-        private void CoolCamera_Tick(IProgress<double> progress) {           
+
+        private void CoolCamera_Tick(IProgress<double> progress) {
 
             double currentTemp = Cam.CCDTemperature;
             double deltaTemp = currentTemp - TargetTemp;
 
-            
+
             DateTime now = DateTime.Now;
             TimeSpan delta = now.Subtract(_deltaT);
 
@@ -54,12 +56,25 @@ namespace NINA.ViewModel {
             //double newTemp = GetY(_startPoint, _endPoint, Duration);
             double newTemp = GetY(_startPoint, _endPoint, new Vector2(-_startPoint.X, _startPoint.Y), Duration);
             Cam.SetCCDTemperature = newTemp;
-           
+
             progress.Report(1 - (Duration / _initalDuration));
 
             _deltaT = DateTime.Now;
 
-            
+
+        }
+
+        private CameraChooserVM _cameraChooserVM;
+        public CameraChooserVM CameraChooserVM {
+            get {
+                if(_cameraChooserVM == null) {
+                    _cameraChooserVM = new CameraChooserVM();
+                }
+                return _cameraChooserVM;
+            }
+            set {
+                _cameraChooserVM = value;
+            }
         }
 
         private class Vector2 {
@@ -83,7 +98,7 @@ namespace NINA.ViewModel {
         public FilterWheelVM FilterWheelVM {
             get {
                 if (_filterWheelVM == null) {
-                    _filterWheelVM = new FilterWheelVM();                    
+                    _filterWheelVM = new FilterWheelVM();
                 }
                 return _filterWheelVM;
             }
@@ -93,12 +108,12 @@ namespace NINA.ViewModel {
             }
         }
 
-        private double GetY(Vector2 point1, Vector2 point2, Vector2 point3, double x) {            
+        private double GetY(Vector2 point1, Vector2 point2, Vector2 point3, double x) {
             double denom = (point1.X - point2.X) * (point1.X - point3.X) * (point2.X - point3.X);
             double A = (point3.X * (point2.Y - point1.Y) + point2.X * (point1.Y - point3.Y) + point1.X * (point3.Y - point2.Y)) / denom;
             double B = (point3.X * point3.X * (point1.Y - point2.Y) + point2.X * point2.X * (point3.Y - point1.Y) + point1.X * point1.X * (point2.Y - point3.Y)) / denom;
             double C = (point2.X * point3.X * (point2.X - point3.X) * point1.Y + point3.X * point1.X * (point3.X - point1.X) * point2.Y + point1.X * point2.X * (point1.X - point2.X) * point3.Y) / denom;
-            
+
             return (A * Math.Pow(x, 2) + B * x + C);
         }
 
@@ -125,7 +140,8 @@ namespace NINA.ViewModel {
         public bool CoolingRunning {
             get {
                 return _coolingRunning;
-            } set {
+            }
+            set {
                 _coolingRunning = value;
                 RaisePropertyChanged();
             }
@@ -136,13 +152,13 @@ namespace NINA.ViewModel {
         private async Task<bool> CoolCamera(IProgress<double> progress) {
             _cancelCoolCameraSource = new CancellationTokenSource();
             Cam.CoolerOn = true;
-            if (Duration == 0) {                            
+            if (Duration == 0) {
                 Cam.SetCCDTemperature = TargetTemp;
                 progress.Report(1);
             } else {
                 try {
 
-                
+
                     _deltaT = DateTime.Now;
                     double currentTemp = Cam.CCDTemperature;
                     _startPoint = new Vector2(Duration, currentTemp);
@@ -158,15 +174,15 @@ namespace NINA.ViewModel {
                         await Task.Delay(TimeSpan.FromMilliseconds(300));
                         _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
                     } while (Duration >= 0);
-                                                
-                    
-                } catch(OperationCanceledException ex) {
+
+
+                } catch (OperationCanceledException ex) {
                     Cam.SetCCDTemperature = Cam.CCDTemperature;
                     Logger.Trace(ex.Message);
-                    
+
                 } finally {
                     progress.Report(1);
-                    Duration = 0;                    
+                    Duration = 0;
                     CoolingRunning = false;
                 }
             }
@@ -177,7 +193,7 @@ namespace NINA.ViewModel {
         private void CancelCoolCamera(object o) {
             _cancelCoolCameraSource?.Cancel();
         }
-            
+
 
         DispatcherTimer _updateCamera;
 
@@ -218,10 +234,10 @@ namespace NINA.ViewModel {
         }
 
         private void ChooseCamera(object obj) {
-            Cam = (Model.MyCamera.ICamera)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Camera);
+            Cam = (ICamera)CameraChooserVM.SelectedDevice; /*(Model.MyCamera.ICamera)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Camera);*/
             if (Cam?.Connect() == true) {
                 _updateCamera.Start();
-                Settings.CameraId = Cam.Id;                
+                Settings.CameraId = Cam.Id;
             } else {
                 Cam = null;
             }
@@ -229,19 +245,19 @@ namespace NINA.ViewModel {
 
         private void DisconnectCamera(object obj) {
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxImage.Question, System.Windows.MessageBoxResult.Cancel);
-            if(result == System.Windows.MessageBoxResult.OK) {
+            if (result == System.Windows.MessageBoxResult.OK) {
                 _updateCamera.Stop();
                 _cancelCoolCameraSource?.Cancel();
                 CoolingRunning = false;
                 Cam.Disconnect();
-                Cam = null;                
+                Cam = null;
             }
         }
 
         void UpdateCamera_Tick(object sender, EventArgs e) {
-           if(Cam.Connected) {
+            if (Cam.Connected) {
                 Cam.UpdateValues();
-                
+
                 DateTime x = DateTime.Now;
                 if (CoolerPowerHistory.Count > 100) {
                     CoolerPowerHistory.RemoveAt(0);
@@ -252,9 +268,9 @@ namespace NINA.ViewModel {
                     CCDTemperatureHistory.RemoveAt(0);
                 }
                 CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, Cam.CCDTemperature));
-                
+
             }
-            
+
         }
 
 
@@ -264,7 +280,7 @@ namespace NINA.ViewModel {
 
 
 
-       
+
 
 
         private ICommand _coolCamCommand;
@@ -281,8 +297,9 @@ namespace NINA.ViewModel {
         private ICommand _chooseCameraCommand;
         public ICommand ChooseCameraCommand {
             get {
-                return _chooseCameraCommand; 
-            } set {
+                return _chooseCameraCommand;
+            }
+            set {
                 _chooseCameraCommand = value;
                 RaisePropertyChanged();
             }
@@ -302,8 +319,87 @@ namespace NINA.ViewModel {
         private ICommand _cancelCoolCommand;
         public ICommand CancelCoolCamCommand {
             get { return _cancelCoolCommand; }
-            private set { _cancelCoolCommand = value; RaisePropertyChanged(); } }
+            private set { _cancelCoolCommand = value; RaisePropertyChanged(); }
+        }
 
-        
+
+    }
+
+    class CameraChooserVM : EquipmentChooserVM {
+        public override void GetEquipment() {
+
+
+            var ascomDevices = new ASCOM.Utilities.Profile();
+
+            for (int i = 0; i < ASICameras.Count; i++) {
+                var cam = ASICameras.GetCamera(i);
+                if (cam.Name != "") {
+                    Devices.Add(cam);
+                }
+            }
+
+            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
+
+                try {
+                    AscomCamera cam = new AscomCamera(device.Key, "ASCOM --- " + device.Value);
+                    Devices.Add(cam);
+                } catch (Exception) {
+                    //only add cameras which are supported. e.g. x86 drivers will not work in x64
+                }
+            }
+
+
+
+            /*IntPtr cameraList;
+            uint err = EDSDK.EdsGetCameraList(out cameraList);
+            if (err == EDSDK.EDS_ERR_OK) {
+                int count;
+                err = EDSDK.EdsGetChildCount(cameraList, out count);
+
+                for(int i = 0; i < count; i++) {
+                    IntPtr cam;
+                    err = EDSDK.EdsGetChildAtIndex(cameraList, i, out cam);
+
+                    EDSDK.EdsDeviceInfo info;
+                    err = EDSDK.EdsGetDeviceInfo(cam, out info);
+
+
+                    Devices.Add(new EDCamera(cam, info));*/
+            /*err = EDSDK.EdsOpenSession(cam);                        
+
+            IntPtr saveTo = (IntPtr)EDSDK.EdsSaveTo.Host;
+            err = EDSDK.EdsSetPropertyData(cam, EDSDK.PropID_SaveTo, 0, 4, saveTo);
+
+            EDSDK.EdsCapacity capacity = new EDSDK.EdsCapacity();
+            capacity.NumberOfFreeClusters = 0x7FFFFFFF;
+            capacity.BytesPerSector = 0x1000;
+            capacity.Reset = 1;
+            err = EDSDK.EdsSetCapacity(cam, capacity);
+
+            err = EDSDK.EdsSendCommand(cam, EDSDK.CameraCommand_TakePicture, 0);
+
+            err = EDSDK.EdsCloseSession(cam);*/
+            /* }
+
+
+         }*/
+
+
+
+
+
+
+
+            if (Devices.Count > 0) {
+                var items = (from device in Devices where device.Id == Settings.CameraId select device);
+                if (items.Count() > 0) {
+                    SelectedDevice = items.First();
+
+                } else {
+                    SelectedDevice = Devices.First();
+                }
+            }
+        }
+
     }
 }
