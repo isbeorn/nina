@@ -7,7 +7,7 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 * .NET Framework 4.6.2 or later
 
-* ASCOM Platform 6.2 or later
+* ASCOM Platform 6.3 or later
 
 
 **Features**
