@@ -20,13 +20,13 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center">
                         <TextBlock VerticalAlignment="Center"  Text="{ns:Loc LblFilter}"></TextBlock>
-                        <ComboBox Margin="5,0,0,0"  Height="25" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters, Mode=TwoWay}" DisplayMemberPath="Name" SelectedItem="{Binding SnapFilter, Mode=TwoWay}" SelectedValuePath="Name"></ComboBox>
+                        <ComboBox Margin="5,0,0,0"  Height="25" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters}" DisplayMemberPath="Name" SelectedItem="{Binding SnapFilter, Mode=TwoWay}" SelectedValuePath="Name"></ComboBox>
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center">
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBinning}"></TextBlock>
-                        <ComboBox Margin="5,0,0,0" Height="25" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes, Mode=TwoWay}" DisplayMemberPath="Name" SelectedItem="{Binding SnapBin, Mode=TwoWay}" SelectedValuePath="Name"></ComboBox>
+                        <ComboBox Margin="5,0,0,0" Height="25" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}" DisplayMemberPath="Name" SelectedItem="{Binding SnapBin, Mode=TwoWay}" SelectedValuePath="Name"></ComboBox>
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
