@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Xml.Linq;
 
 namespace NINA.ViewModel {
     public class ImageControlVM : DockableVM {
@@ -206,6 +207,8 @@ namespace NINA.ViewModel {
 
                 string filename = Utility.Utility.GetImageFileString(p);
                 string completefilename = Settings.ImageFilePath + filename;
+
+                
                 if (Settings.FileType == FileTypeEnum.FITS) {
                     string imagetype = imageType;
                     if (imagetype == "SNAP") imagetype = "LIGHT";
@@ -213,6 +216,9 @@ namespace NINA.ViewModel {
                 }
                 else if (Settings.FileType == FileTypeEnum.TIFF) {
                     SaveTiff(completefilename);
+                }
+                else if (Settings.FileType == FileTypeEnum.XISF) {
+                    SaveXisf(completefilename, imageType, exposuretime, filter, binning, ccdtemp);
                 }
                 else {
                     SaveTiff(completefilename);
@@ -305,9 +311,178 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void SaveXisf(String path, string imagetype, double duration, string filter, string binning, double temp) {
+            try {
+                Stopwatch sw = Stopwatch.StartNew();
+                                
+                var header = new XISFHeader();
+
+                header.AddEmbeddedImage(ImgArr, imagetype);
+
+                header.AddMetaDataProperty("Instrument:Camera:XBinning", "Int", binning.Substring(0,1));
+                header.AddMetaDataProperty("Instrument:Camera:YBinning", "Int", binning.Substring(2,1));
+                header.AddMetaDataProperty("Instrument:Filter:Name", "String", filter);
+                header.AddMetaDataProperty("Instrument:Sensor:Temperature", "Float", temp.ToString());
+                header.AddMetaDataProperty("Instrument:ExposureTime", "Float", duration.ToString());
+
+                /*
+                 Instrument:Camera:Gain Float
+                 Instrument:Camera:ISOSpeed Int
+                 Instrument:Camera:Name String
+                 Instrument:Camera:XBinning Int
+                 Instrument:Camera:YBinning Int
+                 Instrument:ExposureTime Float
+                 Instrument:Filter:Name String
+                 Instrument:Sensor:Temperature Float
+                 Instrument:Sensor:XPixelSize Float
+                 Instrument:Sensor:YPixelSize Float
+                 Instrument:Telescope:Aperture Float
+                 Instrument:Telescope:FocalLength Float
+                 Instrument:Telescope:Name String
+
+                */
+
+                //var data = new XISFData(ImgArr.FlatArray);
+                XISF img = new XISF(header);
+
+                img.Save(path);
+
+                sw.Stop();
+                Debug.Print("Time to save XISF: " + sw.Elapsed);
+                sw = null;
+
+                } catch (Exception ex) {
+                Notification.ShowError("Image file error: " + ex.Message);
+                Logger.Error(ex.Message);
+
+            }
+        }
+
 
     }
 
     
+
+    class XISF {
+        XISFHeader Header { get; set; }
+
+        public XISF(XISFHeader header) {
+            this.Header = header;
+        }
+        
+        public bool Save(string path) {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+
+            
+            using (FileStream fs = new FileStream(path + ".xisf", FileMode.Create)) {
+                /* Header */
+                Header.Save(fs);                
+            }
+
+            return true;
+        }
+    }
+
+    /**
+     * Specifications: http://pixinsight.com/doc/docs/XISF-1.0-spec/XISF-1.0-spec.html#xisf_header
+     */
+    class XISFHeader {
+        public XDocument Header { get; set; }
+                
+        public XElement MetaData { get; set; }
+        public XElement Image { get; set; }
+        private XElement Xisf;
+
+        XNamespace xmlns = XNamespace.Get("http://www.pixinsight.com/xisf");
+        XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
+        XNamespace propertyns = "XISF";
+
+        /* Create Header with embedded Image */
+        public XISFHeader() {
+            Xisf = new XElement(xmlns + "xisf",
+                    new XAttribute("version", "1.0"),
+                    new XAttribute("xmlns", "http://www.pixinsight.com/xisf"),
+                    new XAttribute(XNamespace.Xmlns + "xsi", xsi),
+                    new XAttribute(xsi + "schemaLocation", "http://www.pixinsight.com/xisf http://pixinsight.com/xisf/xisf-1.0.xsd")
+            );            
+
+            MetaData = new XElement("Metadata");
+
+            AddMetaDataProperty("CreationTime", "String", DateTime.UtcNow.ToString("o"));
+            AddMetaDataProperty("CreatorApplication", "String", "Nighttime Imaging 'N' Astronomy");
+
+            Xisf.Add(MetaData);
+
+            Header = new XDocument(
+                new XDeclaration("1.0", "UTF-8", null),
+                Xisf
+            );
+        }
+
+        public void AddMetaDataProperty(string id, string type, string value) {
+            XElement xelem;
+            if(type == "String") {
+                xelem = new XElement("Property",
+                    new XAttribute("id", "XISF:" + id),
+                    new XAttribute("type", type),
+                    value
+                );
+            } else {
+                xelem = new XElement("Property",
+                    new XAttribute("id", "XISF:" + id),
+                    new XAttribute("type", type),
+                    new XAttribute("value", value)
+                );
+            }
+
+            MetaData.Add(xelem);
+        }
+
+        public void AddEmbeddedImage(ImageArray arr, string imageType) {
+
+            var image = new XElement("Image",
+                    new XAttribute("geometry", arr.Statistics.Width + ":" + arr.Statistics.Height + ":" + "1"),
+                    new XAttribute("sampleFormat", "UInt16"),
+                    new XAttribute("imageType", imageType),
+                    new XAttribute("location", "embedded"),
+                    new XAttribute("colorSpace", "Gray")
+                    );
+                        
+            byte[] result = new byte[arr.FlatArray.Length * sizeof(ushort)];
+            Buffer.BlockCopy(arr.FlatArray, 0, result, 0, result.Length);            
+            var s = Convert.ToBase64String(result);
+
+            var data = new XElement("Data", new XAttribute("encoding", "base64"), s);
+
+            image.Add(data);
+            Xisf.Add(image);
+        }
+
+        public void Save(Stream s) {
+            /*XISF0100*/
+            byte[] monolithicsignature = new byte[] { 88, 73, 83, 70, 48, 49, 48, 48 };
+            s.Write(monolithicsignature, 0, monolithicsignature.Length);
+
+            /*Xml header length */
+            var headerlength = BitConverter.GetBytes(System.Text.ASCIIEncoding.UTF8.GetByteCount(Header.ToString()));
+            s.Write(headerlength, 0, headerlength.Length);
+
+            /*reserved space 4 byte must be 0 */
+            var reserved = new byte[] { 0, 0, 0, 0 };
+            s.Write(reserved, 0, reserved.Length);
+
+            using (StreamWriter sw = new StreamWriter(s, Encoding.UTF8)) {                
+                sw.Write(Header.ToString());
+            }
+        }
+    }
+
+    class XISFData {
+        public ushort[] Data;
+        public XISFData(ushort[] data) {
+            this.Data = data;
+        }
+    }
+
 
 }

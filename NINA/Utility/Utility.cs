@@ -236,7 +236,8 @@ namespace NINA.Utility {
     }
     public enum FileTypeEnum {
         TIFF,
-        FITS
+        FITS,
+        XISF
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
