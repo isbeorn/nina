@@ -38,7 +38,7 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 * Star detection and HFR calculation, including stats history during imaging session
 
-* Platesolving using Astrometry.Net or a local instance of it
+* Platesolving using Astrometry.Net or a local instance via cygwin
 
 * Polar alignment assistant 
      * Polaris position in polar scope 
