@@ -209,11 +209,11 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="ToastNotifications, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ToastNotifications.1.5.0\lib\net40\ToastNotifications.dll</HintPath>
+    <Reference Include="ToastNotifications, Version=2.2.0.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
+      <HintPath>..\packages\ToastNotifications.2.2.0\lib\net40\ToastNotifications.dll</HintPath>
     </Reference>
-    <Reference Include="ToastNotifications.Messages, Version=2.1.3.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
-      <HintPath>..\packages\ToastNotifications.Messages.2.1.3\lib\net452\ToastNotifications.Messages.dll</HintPath>
+    <Reference Include="ToastNotifications.Messages, Version=2.2.0.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
+      <HintPath>..\packages\ToastNotifications.Messages.2.2.0\lib\net40\ToastNotifications.Messages.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -239,7 +239,7 @@
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
-    <Compile Include="Model\MyCamera\ASICamera.cs" />    
+    <Compile Include="Model\MyCamera\ASICamera.cs" />
     <Compile Include="Model\MyWeatherData\OpenWeatherMapData.cs" />
     <Compile Include="Utility\ASISDK\ASICameraDll.cs" />
     <Compile Include="Utility\ASISDK\ASICameraDll2.cs" />
@@ -252,7 +252,7 @@
     <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
-    <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />    
+    <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
     <Compile Include="Utility\Mediator.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />

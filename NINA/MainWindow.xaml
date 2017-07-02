@@ -6,8 +6,6 @@
         
         xmlns:local="clr-namespace:NINA"   
         Name="ThisWindow"        
-           
-        xmlns:toast="clr-namespace:ToastNotifications;assembly=ToastNotifications"
         Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy" 
         MinHeight="720" MinWidth="1280" 
         Background="{StaticResource BackgroundBrush}" Icon="/NINA;component/Resources/observatory.png" 
@@ -157,11 +155,6 @@
                     </TabItem.Content>
                 </TabItem>
             </TabControl>
-
-            <toast:NotificationTray Grid.Row="1" NotificationsSource="{Binding Source={x:Static util:Notification.NotificationSource}}"
-                    PopupFlowDirection="RightUp"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Right" />
         </Grid>
     </Border>
 </Window>

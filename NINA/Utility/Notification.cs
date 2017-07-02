@@ -3,66 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
 using ToastNotifications;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Messages;
+using ToastNotifications.Position;
 
 namespace NINA.Utility {
     static class Notification {
 
-        private static NotificationsSource _notificationSource;
-
+        
         private static Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
 
-        public static NotificationsSource NotificationSource {
-            get {
-                if (_notificationSource == null) {
-                    _notificationSource = new NotificationsSource {
-                        MaximumNotificationCount = 1                       
-                    };
-                }
-                return _notificationSource;
-            }
-            set {
-                _notificationSource = value;
-                if (NotificationChanged != null)
-                    NotificationChanged(null, EventArgs.Empty);
-            }
-        }
+        static Notifier notifier = new Notifier(cfg =>
+        {
+            cfg.PositionProvider = new WindowPositionProvider(
+                parentWindow: Application.Current.MainWindow,
+                corner: Corner.TopRight,
+                offsetX: 10,
+                offsetY: 10);
 
-        public static event EventHandler NotificationChanged;
+            cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                notificationLifetime: TimeSpan.FromSeconds(3),
+                maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+
+            cfg.Dispatcher = dispatcher;
+        });
 
         public static void ShowInformation(string message) {
-            Show(message, TimeSpan.FromSeconds(3), NotificationType.Information);            
+            notifier.ShowInformation(message);         
         }
 
         public static void ShowInformation(string message, TimeSpan lifetime) {
-            Show(message, lifetime, NotificationType.Information);
+            notifier.ShowInformation(message);
         }
 
         public static void ShowSuccess(string message) {
-            Show(message, TimeSpan.FromSeconds(3), NotificationType.Success);
+            notifier.ShowSuccess(message);
         }
 
         public static void ShowWarning(string message) {
-            Show(message, TimeSpan.FromSeconds(3), NotificationType.Warning);
+            notifier.ShowWarning(message);
         }
 
         public static void ShowWarning(string message, TimeSpan lifetime) {
-            Show(message, lifetime, NotificationType.Warning);
+            notifier.ShowWarning(message);
         }
 
         public static void ShowError(string message) {
-            Show(message, NotificationsSource.NeverEndingNotification, NotificationType.Error);
+            notifier.ShowError(message);            
         }
 
-
-        private static void Show(string message, TimeSpan lifetime, NotificationType type) {
-            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                NotificationSource.NotificationLifeTime = lifetime;
-                NotificationSource.Show(message, type);
-            }));
-            
-        }
+        
 
     }
 }
