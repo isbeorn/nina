@@ -5,9 +5,9 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 * 64-bit Windows 7 or later
 
-* .NET Framework 4.5 or later
+* .NET Framework 4.6.2 or later
 
-* ASCOM Platform 6.2 or later
+* ASCOM Platform 6.3 or later
 
 
 **Features**
@@ -38,7 +38,7 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 * Star detection and HFR calculation, including stats history during imaging session
 
-* Platesolving using Astrometry.Net or a local instance of it
+* Platesolving using Astrometry.Net or a local instance via cygwin
 
 * Polar alignment assistant 
      * Polaris position in polar scope 
