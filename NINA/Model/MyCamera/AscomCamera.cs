@@ -853,6 +853,7 @@ namespace NINA.Model.MyCamera {
         public void Disconnect() {            
             Connected = false;
             _camera.Dispose();
+            _camera = null;
         }
 
 

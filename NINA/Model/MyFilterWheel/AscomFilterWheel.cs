@@ -170,7 +170,8 @@ namespace NINA.Model.MyFilterWheel {
         public void Disconnect() {
             Connected = false;
             Filters.Clear();
-            _filterwheel.Dispose();            
+            _filterwheel.Dispose();
+            _filterwheel = null;
         }
 
         public void Dispose() {
