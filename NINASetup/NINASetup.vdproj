@@ -4532,7 +4532,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:N.I.N.A. - Nighttime Imaging 'N' Astronomy"
         "ProductCode" = "8:{9D3A3EA7-63AF-4230-9D1F-6187EDEF36A3}"
-        "PackageCode" = "8:{B830391A-D596-4B50-9FCC-46C27449CA65}"
+        "PackageCode" = "8:{ABB209A3-05D0-476B-97CC-4DA84B4497D3}"
         "UpgradeCode" = "8:{5DC025EA-3D24-4E6B-9F82-79718D70896A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -5459,7 +5459,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1CB6472DBDBF4BD4A442DB7BA216741F"
             {
-            "SourcePath" = "8:..\\SetupCygwinInstallAction\\obj\\Debug\\SetupCygwinInstallAction.dll"
+            "SourcePath" = "8:..\\SetupCygwinInstallAction\\obj\\Release\\SetupCygwinInstallAction.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
@@ -5513,9 +5513,37 @@
                 {
                 }
             }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C5146D86AC1C439796A5D9FF7D1E1757"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:ContentFiles"
+            "OutputProjectGuid" = "8:{7DEC1B46-9701-4E49-90C1-F4427845669E}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FF25606544D448558FB12DA74BACB4E5"
             {
-            "SourcePath" = "8:..\\NINA\\obj\\x64\\Debug\\NINA.exe"
+            "SourcePath" = "8:..\\NINA\\obj\\x64\\Release\\NINA.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
