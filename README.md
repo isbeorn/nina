@@ -56,6 +56,8 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 Mail to: isbeorn86+NINA@googlemail.com
 
+** Setup Checksum **
+bbb76627aa827f4a5803a447e7d8f8df
 
 ** Credit **
 
