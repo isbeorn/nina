@@ -322,7 +322,11 @@ namespace NINA.ViewModel {
                 header.AddMetaDataProperty("Instrument:Camera:XBinning", "Int", binning.Substring(0,1));
                 header.AddMetaDataProperty("Instrument:Camera:YBinning", "Int", binning.Substring(2,1));
                 header.AddMetaDataProperty("Instrument:Filter:Name", "String", filter);
-                header.AddMetaDataProperty("Instrument:Sensor:Temperature", "Float", temp.ToString());
+
+                if(!double.IsNaN(temp)) {
+                    header.AddMetaDataProperty("Instrument:Sensor:Temperature", "Float", temp.ToString());
+                }                
+
                 header.AddMetaDataProperty("Instrument:ExposureTime", "Float", duration.ToString());
 
                 /*

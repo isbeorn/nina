@@ -23,6 +23,11 @@
                             <TextBlock Text="PHD2 Status" VerticalAlignment="Center" FontSize="20"></TextBlock>
                             <Grid Margin="5" Height="40" Width="40" HorizontalAlignment="Right">
                                 <Button  Command="{Binding ConnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" >
+                                    <Button.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="Connect" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
                                     <Grid>
 
                                         <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5" Visibility="{Binding ConnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
@@ -33,6 +38,11 @@
                                     </Grid>
                                 </Button>
                                 <Button Command="{Binding DisconnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource VisibilityConverter}}">
+                                    <Button.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="Disconnect" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
                                     <Grid>
 
                                         <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5" Visibility="{Binding DisconnectPHDClientCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">

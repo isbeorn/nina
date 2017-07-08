@@ -29,6 +29,7 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
                             <ComboBox MinHeight="40" 
                                       IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}" 
@@ -47,10 +48,26 @@
                                     </Path>
                                 </Grid>
                             </Button>
-                            <Grid Height="40" Width="40" Grid.Column="2">
+                            <Button Grid.Column="2" Height="40" Width="40" Command="{Binding RefreshTelescopeListCommand}">
+                                <Button.ToolTip>
+                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                        <TextBlock Text="Rescan devices" />
+                                    </ToolTip>
+                                </Button.ToolTip>
+                                <Grid>
+                                    <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
+                                    </Path>
+                                </Grid>
+                            </Button>
+                            <Grid Height="40" Width="40" Grid.Column="3">
                                 <Button Command="{Binding ChooseTelescopeCommand}"  
                                         IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}" 
                                         Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                    <Button.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="Connect" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
                                     <Grid>
                                         <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
 
@@ -61,6 +78,11 @@
                                     <Button  Command="{Binding DisconnectCommand}" 
                                              IsEnabled="{Binding Telescope.Connected}"
                                              Visibility="{Binding Telescope.Connected, Converter={StaticResource VisibilityConverter}}">
+                                        <Button.ToolTip>
+                                            <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                <TextBlock Text="Disconnect" />
+                                            </ToolTip>
+                                        </Button.ToolTip>
                                         <Grid>
                                             <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
                                             </Path>

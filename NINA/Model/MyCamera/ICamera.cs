@@ -101,6 +101,14 @@ namespace NINA.Model.MyCamera {
         }
 
         private void FlipAndConvert(Array input) {
+            if(input.GetType() == typeof(Int32[,,])) {
+                this.FlatArray = FlipAndConvert3d(input);
+            } else {
+                this.FlatArray = FlipAndConvert2d(input);
+            }
+        }
+
+        private ushort[] FlipAndConvert2d(Array input) {
             Int32[,] arr = (Int32[,])input;
             int width = arr.GetLength(0);
             int height = arr.GetLength(1);
@@ -109,7 +117,7 @@ namespace NINA.Model.MyCamera {
             this.Statistics.Height = height;
             ushort[] flatArray = new ushort[arr.Length];
             ushort value;
-            
+
             unsafe
             {
                 fixed (Int32* ptr = arr) {
@@ -119,16 +127,22 @@ namespace NINA.Model.MyCamera {
 
                         idx = ((i % height) * width) + row;
                         if ((i % (height)) == (height - 1)) row++;
-                        
+
                         ushort b = value;
                         flatArray[idx] = b;
                     }
                 }
-            }            
-            this.FlatArray = flatArray;
+            }
+            return flatArray;
         }
 
+        private ushort[] FlipAndConvert3d(Array input) {
+            Notification.ShowError("Color sensor is not yet supported");
+            throw new NotSupportedException();
+        }
     }
+
+   
 
     public class ImageStatistics : BaseINPC {
         public int Id { get; set; }

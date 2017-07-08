@@ -31,6 +31,10 @@ namespace NINA.Utility {
             cfg.Dispatcher = dispatcher;
         });
 
+        public static void Initialize() {
+
+        }
+
         public static void ShowInformation(string message) {
             notifier.ShowInformation(message);         
         }

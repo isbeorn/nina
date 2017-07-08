@@ -1,4 +1,5 @@
 ﻿using ASCOM.DriverAccess;
+using EDSDKLib;
 using NINA.EquipmentChooser;
 using NINA.Model.MyCamera;
 using NINA.Utility;
@@ -31,6 +32,7 @@ namespace NINA.ViewModel {
             DisconnectCommand = new RelayCommand(DisconnectCamera);
             CoolCamCommand = new AsyncCommand<bool>(() => CoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
+            RefreshCameraListCommand = new RelayCommand(RefreshCameraList);
 
             _updateCamera = new DispatcherTimer();
             _updateCamera.Interval = TimeSpan.FromMilliseconds(1000);
@@ -39,8 +41,12 @@ namespace NINA.ViewModel {
             CoolingRunning = false;
             CoolerPowerHistory = new AsyncObservableCollection<KeyValuePair<DateTime, double>>();
             CCDTemperatureHistory = new AsyncObservableCollection<KeyValuePair<DateTime, double>>();
+            
         }
 
+        private void RefreshCameraList(object obj) {
+            CameraChooserVM.GetEquipment();
+        }
 
         private void CoolCamera_Tick(IProgress<double> progress) {
 
@@ -234,7 +240,7 @@ namespace NINA.ViewModel {
         }
 
         private void ChooseCamera(object obj) {
-            Cam = (ICamera)CameraChooserVM.SelectedDevice; /*(Model.MyCamera.ICamera)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Camera);*/
+            Cam = (ICamera)CameraChooserVM.SelectedDevice; 
             if (Cam?.Connect() == true) {
                 _updateCamera.Start();
                 Settings.CameraId = Cam.Id;
@@ -323,11 +329,20 @@ namespace NINA.ViewModel {
         }
 
 
+        ICommand _refreshCameraListCommand;
+        public ICommand RefreshCameraListCommand {
+            get {
+                return _refreshCameraListCommand;
+            }
+            set {
+                _refreshCameraListCommand = value;
+            }
+        }
     }
 
     class CameraChooserVM : EquipmentChooserVM {
         public override void GetEquipment() {
-
+            Devices.Clear();
 
             var ascomDevices = new ASCOM.Utilities.Profile();
 
@@ -341,7 +356,7 @@ namespace NINA.ViewModel {
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
 
                 try {
-                    AscomCamera cam = new AscomCamera(device.Key, "ASCOM --- " + device.Value);
+                    AscomCamera cam = new AscomCamera(device.Key, device.Value + " (ASCOM)");
                     Devices.Add(cam);
                 } catch (Exception) {
                     //only add cameras which are supported. e.g. x86 drivers will not work in x64
@@ -350,9 +365,9 @@ namespace NINA.ViewModel {
 
 
 
-            /*IntPtr cameraList;
+            IntPtr cameraList;
             uint err = EDSDK.EdsGetCameraList(out cameraList);
-            if (err == EDSDK.EDS_ERR_OK) {
+            if (err == (uint)EDSDK.EDS_ERR.OK) {
                 int count;
                 err = EDSDK.EdsGetChildCount(cameraList, out count);
 
@@ -364,25 +379,11 @@ namespace NINA.ViewModel {
                     err = EDSDK.EdsGetDeviceInfo(cam, out info);
 
 
-                    Devices.Add(new EDCamera(cam, info));*/
-            /*err = EDSDK.EdsOpenSession(cam);                        
-
-            IntPtr saveTo = (IntPtr)EDSDK.EdsSaveTo.Host;
-            err = EDSDK.EdsSetPropertyData(cam, EDSDK.PropID_SaveTo, 0, 4, saveTo);
-
-            EDSDK.EdsCapacity capacity = new EDSDK.EdsCapacity();
-            capacity.NumberOfFreeClusters = 0x7FFFFFFF;
-            capacity.BytesPerSector = 0x1000;
-            capacity.Reset = 1;
-            err = EDSDK.EdsSetCapacity(cam, capacity);
-
-            err = EDSDK.EdsSendCommand(cam, EDSDK.CameraCommand_TakePicture, 0);
-
-            err = EDSDK.EdsCloseSession(cam);*/
-            /* }
+                    Devices.Add(new EDCamera(cam, info));          
+             }
 
 
-         }*/
+         }
 
 
 
@@ -400,6 +401,7 @@ namespace NINA.ViewModel {
                 }
             }
         }
+
 
     }
 }

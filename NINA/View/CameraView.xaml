@@ -31,6 +31,7 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
                             <ComboBox MinHeight="40" 
                                       IsEnabled="{Binding Cam.Connected, Converter={StaticResource InverseBooleanConverter}}"
@@ -49,10 +50,26 @@
                                     </Path>
                                 </Grid>
                             </Button>
-                            <Grid Height="40" Width="40" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Button Grid.Column="2" Height="40" Width="40" Command="{Binding RefreshCameraListCommand}">
+                                <Button.ToolTip>
+                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                        <TextBlock Text="Rescan devices" />
+                                    </ToolTip>
+                                </Button.ToolTip>
+                                <Grid>
+                                    <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
+                                    </Path>
+                                </Grid>
+                            </Button>
+                            <Grid Height="40" Width="40" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Button   Command="{Binding ChooseCameraCommand}"  
                                                   IsEnabled="{Binding Cam.Connected, Converter={StaticResource InverseBooleanConverter}}"
                                                   Visibility="{Binding Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                    <Button.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="Connect" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
                                     <Grid>
                                         <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
                                         </Path>
@@ -62,6 +79,11 @@
                                     <Button Command="{Binding DisconnectCommand}" 
                                                     IsEnabled="{Binding Cam.Connected}"
                                                     Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}">
+                                        <Button.ToolTip>
+                                            <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                <TextBlock Text="Disconnect" />
+                                            </ToolTip>
+                                        </Button.ToolTip>
                                         <Grid>
                                             <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
                                             </Path>
@@ -191,7 +213,7 @@
                     <DockPanel Visibility="{Binding Cam.CanGetGain , Converter={StaticResource VisibilityConverter}}">
                         <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{ns:Loc LblGain}"></TextBlock>
                         <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{Binding Cam.Gain}"></TextBlock>
-                        <Slider Minimum="{Binding Cam.GainMin}" Maximum="{Binding Cam.GainMax}" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Cam.Gain}" IsEnabled="{Binding Cam.CanSetGain}"></Slider>
+                        <Slider Minimum="{Binding Cam.GainMin}" Maximum="{Binding Cam.GainMax}" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Ticks="{Binding Cam.GainTicks}" Value="{Binding Cam.Gain}" IsEnabled="{Binding Cam.CanSetGain}"></Slider>
                     </DockPanel>
                     <DockPanel  Visibility="{Binding Cam.CanSetOffset , Converter={StaticResource VisibilityConverter}}">
                         <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{ns:Loc LblOffset}"></TextBlock>
@@ -216,6 +238,7 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
                             <ComboBox MinHeight="40" 
                                           IsEnabled="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
@@ -234,10 +257,26 @@
                                     </Path>
                                 </Grid>
                             </Button>
-                            <Grid Height="40" Width="40" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Button Grid.Column="2" Height="40" Width="40" Command="{Binding FilterWheelVM.RefreshFWListCommand}">
+                                <Button.ToolTip>
+                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                        <TextBlock Text="Rescan devices" />
+                                    </ToolTip>
+                                </Button.ToolTip>
+                                <Grid>
+                                    <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
+                                    </Path>
+                                </Grid>
+                            </Button>
+                            <Grid Height="40" Width="40" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Button Command="{Binding FilterWheelVM.ChooseFWCommand}"  
                                         IsEnabled="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
                                         Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                    <Button.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="Connect" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
                                     <Grid>
                                         <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
                                         </Path>
@@ -247,6 +286,11 @@
                                     <Button  Command="{Binding FilterWheelVM.DisconnectCommand}" 
                                              IsEnabled="{Binding FilterWheelVM.FW.Connected}" 
                                              Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}">
+                                        <Button.ToolTip>
+                                            <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                <TextBlock Text="Disconnect" />
+                                            </ToolTip>
+                                        </Button.ToolTip>
                                         <Grid>
                                             <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
                                             </Path>

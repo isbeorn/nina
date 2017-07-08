@@ -17,6 +17,11 @@ namespace NINA.ViewModel {
             CanClose = false;
             ChooseFWCommand = new RelayCommand(ChooseFW);
             DisconnectCommand = new RelayCommand(DisconnectFW);
+            RefreshFWListCommand = new RelayCommand(RefreshFWList);
+        }
+
+        private void RefreshFWList(object obj) {
+            FilterWheelChooserVM.GetEquipment();
         }
 
         private IFilterWheel _fW;
@@ -32,7 +37,7 @@ namespace NINA.ViewModel {
         }
 
         private void ChooseFW(object obj) {
-            FW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;//(Model.MyFilterWheel.IFilterWheel)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.FilterWheel);
+            FW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
             if (FW?.Connect() == true) {
             
                 Settings.FilterWheelId = FW.Id;                
@@ -82,6 +87,16 @@ namespace NINA.ViewModel {
             }
             set {
                 _filterWheelChooserVM = value;
+            }
+        }
+
+        ICommand _refreshFWListCommand;
+        public ICommand RefreshFWListCommand {
+            get {
+                return _refreshFWListCommand;
+            }
+            set {
+                _refreshFWListCommand = value;
             }
         }
     }

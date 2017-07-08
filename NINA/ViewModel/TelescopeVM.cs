@@ -24,6 +24,7 @@ namespace NINA.ViewModel {
             ParkCommand = new AsyncCommand<bool>(ParkTelescope);
             UnparkCommand = new RelayCommand(UnparkTelescope);
             SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
+            RefreshTelescopeListCommand = new RelayCommand(RefreshTelescopeList);
 
             MoveCommand = new RelayCommand(Move);
             StopMoveCommand = new RelayCommand(StopMove);
@@ -32,6 +33,10 @@ namespace NINA.ViewModel {
             _updateTelescope = new DispatcherTimer();
             _updateTelescope.Interval = TimeSpan.FromMilliseconds(300);
             _updateTelescope.Tick += UpdateTelescope_Tick;
+        }
+
+        private void RefreshTelescopeList(object obj) {
+            TelescopeChooserVM.GetEquipment();
         }
 
         private void UpdateTelescope_Tick(object sender, EventArgs e) {            
@@ -79,7 +84,7 @@ namespace NINA.ViewModel {
 
         private void ChooseTelescope(object obj) {
             _updateTelescope.Stop();
-            Telescope = (ITelescope)TelescopeChooserVM.SelectedDevice; //(Model.MyTelescope.ITelescope)EquipmentChooserVM.Show(EquipmentChooserVM.EquipmentType.Telescope);
+            Telescope = (ITelescope)TelescopeChooserVM.SelectedDevice; 
             if (Telescope?.Connect() == true) {
                 _updateTelescope.Start();
                 Settings.TelescopeId = Telescope.Id;                
@@ -315,7 +320,17 @@ namespace NINA.ViewModel {
             }
         }
 
-        
+        ICommand _refreshTelescopeListCommand;
+        public ICommand RefreshTelescopeListCommand {
+            get {
+                return _refreshTelescopeListCommand;
+            }
+            set {
+                _refreshTelescopeListCommand = value;
+            }
+        }
+
+
     }
 
     class TelescopeChooserVM : EquipmentChooserVM {

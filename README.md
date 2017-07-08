@@ -32,7 +32,7 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 * Macros to set up custom file names
 
-* Supported Image formats: FITS & TIFF
+* Supported Image formats: FITS, TIFF, XISF
 
 * Fully customizable UI colors for both Night mode and Daylight mode
 
@@ -40,10 +40,17 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 
 * Platesolving using Astrometry.Net or a local instance via cygwin
 
+* Weather data by OpenWeatherMap 
+
 * Polar alignment assistant 
      * Polaris position in polar scope 
      * PA Error calculation using platesolving 
      * DARV alignment procedure
+
+* Experimental
+     * ASI Native Driver
+     * Canon Cameras 
+     * Auto Meridian Flip
 
 ** Feedback**
 
@@ -62,3 +69,5 @@ from
 [Flaticon](http://www.flaticon.com)
 licenced by 
 [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/)
+
+DCRaw (for Canon RAW image processing) - https://www.cybercom.net/~dcoffin/dcraw/

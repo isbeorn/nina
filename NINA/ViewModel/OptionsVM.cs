@@ -65,12 +65,17 @@ namespace NINA.ViewModel {
 
         private void ScanForIndexFiles() {
             IndexFiles.Clear();
-            DirectoryInfo di = new DirectoryInfo(CygwinLocation + @"\usr\share\astrometry\data");
-            if(di.Exists) {
-                foreach(FileInfo f in di.GetFiles("*.fits")) {
-                    IndexFiles.Add(f.Name);
+            try {
+                DirectoryInfo di = new DirectoryInfo(CygwinLocation + @"\usr\share\astrometry\data");
+                if (di.Exists) {
+                    foreach (FileInfo f in di.GetFiles("*.fits")) {
+                        IndexFiles.Add(f.Name);
+                    }
                 }
+            } catch(Exception ex) {
+             
             }
+            
         }
 
         private ICommand _downloadIndexesCommand;
