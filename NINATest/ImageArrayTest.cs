@@ -123,7 +123,7 @@ namespace NINATest {
 
             //Assert
             Assert.AreEqual(stdev, result.Statistics.StDev);
-            Assert.AreEqual(stdev, result.Statistics.Mean);
+            Assert.AreEqual(mean, result.Statistics.Mean);
         }
     }
 }
