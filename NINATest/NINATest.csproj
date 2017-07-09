@@ -55,7 +55,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ImageArrayTest.cs" />
-    <Compile Include="UtilityTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
