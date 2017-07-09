@@ -10,5 +10,5 @@ StarDataImport/bin/
 StarDataImport/obj/
 SetupCygwinInstallAction/obj/
 SetupCygwinInstallAction/bin/
-/packages
-/NINA/Utility/EDSDK/EDSDK.dll
+packages/
+NINA/Utility/EDSDK/EDSDK.dll
