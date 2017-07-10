@@ -1,5 +1,5 @@
 # N.I.N.A. - Nighttime Imaging 'N' Astronomy #
-A simple tool to control various Astrophotography Equipment using the ASCOM Interface.
+
 
 **System Requirements**
 
