@@ -32,6 +32,9 @@
                         <Trigger Property="IsSelected" Value="False">
                             <Setter TargetName="Panel" Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
                         </Trigger>
+                        <Trigger SourceName="Panel" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Panel" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -60,6 +63,9 @@
                         </Trigger>
                         <Trigger Property="IsSelected" Value="False">
                             <Setter TargetName="Panel" Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                        </Trigger>
+                        <Trigger SourceName="Panel" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Panel" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
