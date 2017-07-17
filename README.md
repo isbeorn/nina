@@ -1,5 +1,5 @@
 # N.I.N.A. - Nighttime Imaging 'N' Astronomy #
-A simple tool to control various Astrophotography Equipment using the ASCOM Interface.
+
 
 **System Requirements**
 
@@ -55,6 +55,8 @@ A simple tool to control various Astrophotography Equipment using the ASCOM Inte
 ** Feedback**
 
 Mail to: isbeorn86+NINA@googlemail.com
+
+or directly via Discord: @[]()Isbeorn#1882 
 
 ** Setup Checksum **
 
