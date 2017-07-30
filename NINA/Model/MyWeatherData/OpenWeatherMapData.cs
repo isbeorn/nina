@@ -36,8 +36,21 @@ namespace NINA.Model.MyWeatherData {
         }        
 
         public async Task<bool> Update() {
+            var apikey = Settings.OpenWeatherMapAPIKey;
+            var location = Settings.OpenWeatherMapLocation;
+
+            if(string.IsNullOrEmpty(apikey)) {
+                Notification.ShowError("Unable to get weather data! No API Key set");
+                return false;
+            }
+            if(string.IsNullOrEmpty(location)) {
+                Notification.ShowError("Unable to get weather data! No location set");
+                return false;
+            }
+
             var url = Settings.OpenWeatherMapUrl + "?appid={0}&q={1}";
-            string result = await Utility.Utility.HttpGetRequest(new CancellationTokenSource(), url, Settings.OpenWeatherMapAPIKey, Settings.OpenWeatherMapLocation);
+            string result = await Utility.Utility.HttpGetRequest(new CancellationTokenSource(), url, apikey, location);
+            
             JObject o = JObject.Parse(result);
             var openweatherdata = o.ToObject<OpenWeatherDataResponse>();
 

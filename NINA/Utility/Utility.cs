@@ -60,9 +60,10 @@ namespace NINA.Utility {
                 }
                 catch (Exception ex) {                    
                     canceltoken.Token.ThrowIfCancellationRequested();
-                     
-                    Logger.Error(ex.Message);
-                    Notification.ShowError(string.Format("Unable to connect to {0}", url));
+
+                    //Logger.Error(ex.Message);
+                    //Notification.ShowError(string.Format("Unable to connect to {0}", url));
+                    Notification.ShowError(ex.Message);
                     if (response != null) {
                         response.Close();
                         response = null;
