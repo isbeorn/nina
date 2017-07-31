@@ -314,6 +314,7 @@ namespace NINA.ViewModel {
         }
     
         private void ToggleColors(object o) {
+            var s = ColorSchemaName;
             var a = PrimaryColor;
             var b = SecondaryColor;
             var c = BorderColor;
@@ -323,6 +324,7 @@ namespace NINA.ViewModel {
             var g = ButtonForegroundColor;
             var h = ButtonForegroundDisabledColor;
 
+            ColorSchemaName = AlternativeColorSchemaName;
             PrimaryColor = AltPrimaryColor;
             SecondaryColor = AltSecondaryColor;
             BorderColor = AltBorderColor;
@@ -332,6 +334,7 @@ namespace NINA.ViewModel {
             ButtonForegroundColor = AltButtonForegroundColor;
             ButtonForegroundDisabledColor = AltButtonForegroundDisabledColor;
 
+            AlternativeColorSchemaName = s;
             AltPrimaryColor = a;
             AltSecondaryColor = b;
             AltBorderColor = c;
@@ -341,6 +344,34 @@ namespace NINA.ViewModel {
             AltButtonForegroundColor = g;
             AltButtonForegroundDisabledColor = h;
         }
+
+        public string ColorSchemaName { 
+            get {
+                return Settings.ColorSchemaName;
+            }
+            set {               
+                Settings.ColorSchemaName = value;                
+                RaiseAllPropertiesChanged();
+            }
+        }
+
+        public ColorSchemas ColorSchemas {
+            get {
+                return Settings.ColorSchemas;
+            }
+        }
+
+        public string AlternativeColorSchemaName {
+            get {
+                return Settings.AltColorSchemaName;
+            }
+            set {
+                
+                Settings.AltColorSchemaName = value;
+                RaiseAllPropertiesChanged();
+            }
+        }
+        
 
         public Color PrimaryColor {
             get {

@@ -2,11 +2,15 @@
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media;
 
 namespace NINA.Utility {
     static class Settings  {
-               
+        
+        static Settings() {
+            ColorSchemas = ColorSchemas.ReadColorSchemas();            
+        }
 
         public static FileTypeEnum FileType {
             get {
@@ -246,87 +250,170 @@ namespace NINA.Utility {
             }
         }
 
-        public static Color PrimaryColor {
+        public static string ColorSchemaName
+        {
             get {
-                return Properties.Settings.Default.PrimaryColor;
+                return Properties.Settings.Default.ColorSchemaType;
+            }
+            set {                
+                Properties.Settings.Default.ColorSchemaType = value;
+                ColorSchema = ColorSchemas.Items.Where(x => x.Name == value).FirstOrDefault();
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static string AltColorSchemaName {
+            get {
+                return Properties.Settings.Default.AlternativeColorSchemaType;
             }
             set {
-                Properties.Settings.Default.PrimaryColor = value;
+                Properties.Settings.Default.AlternativeColorSchemaType = value;
+                AlternativeColorSchema = ColorSchemas.Items.Where(x => x.Name == value).FirstOrDefault();                
                 Properties.Settings.Default.Save();
+            }
+        }
+
+        public static ColorSchemas ColorSchemas { get; set; }
+
+        private static ColorSchema _colorSchema;
+        public static ColorSchema ColorSchema {
+            get {
+                if(_colorSchema == null) {
+                    _colorSchema = ColorSchemas.Items.Where(x => x.Name == ColorSchemaName).FirstOrDefault();
+                    if(_colorSchema == null) {
+                        _colorSchema = ColorSchemas.CreateDefaultSchema();
+                    }
+                }
+                return _colorSchema;
+            }
+            set {
+                _colorSchema = value;                
+            }
+        }
+
+        private static ColorSchema _alternativeColorSchema;
+        public static ColorSchema AlternativeColorSchema {
+            get {
+
+                if (_alternativeColorSchema == null) {
+                    _alternativeColorSchema = ColorSchemas.Items.Where(x => x.Name == AltColorSchemaName).FirstOrDefault();
+                    if (_alternativeColorSchema == null) {
+                        _alternativeColorSchema = ColorSchemas.CreateDefaultAltSchema();
+                    }
+                }
+                return _alternativeColorSchema;
+            }
+            set {
+                _alternativeColorSchema = value;
+            }
+        }
+
+
+        public static Color PrimaryColor {
+            get {                
+                return ColorSchema.PrimaryColor;
+            }
+            set {                
+                if(ColorSchemaName == "Custom") {
+                    ColorSchema.PrimaryColor = value;
+                    Properties.Settings.Default.PrimaryColor = value;
+                    Properties.Settings.Default.Save();
+                }                
             }
         }
 
         public static Color SecondaryColor {
             get {
-                return Properties.Settings.Default.SecondaryColor;
+                return ColorSchema.SecondaryColor;
             }
             set {
-                Properties.Settings.Default.SecondaryColor = value;
-                Properties.Settings.Default.Save();
+                if (ColorSchemaName == "Custom") {
+                    ColorSchema.SecondaryColor = value;
+                    Properties.Settings.Default.SecondaryColor = value;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 
         public static Color BorderColor {
             get {
-                return Properties.Settings.Default.BorderColor;
+                return ColorSchema.BorderColor;
             }
             set {
-                Properties.Settings.Default.BorderColor = value;
-                Properties.Settings.Default.Save();
+                if (ColorSchemaName == "Custom") {
+                    ColorSchema.BorderColor = value;
+                    Properties.Settings.Default.BorderColor = value;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 
         public static Color BackgroundColor {
             get {
-                return Properties.Settings.Default.BackgroundColor;
+                return ColorSchema.BackgroundColor;
             }
             set {
-                Properties.Settings.Default.BackgroundColor = value;
-                Properties.Settings.Default.Save();
+                if (ColorSchemaName == "Custom") {
+                    ColorSchema.BackgroundColor = value;
+                    Properties.Settings.Default.BackgroundColor = value;
+                    Properties.Settings.Default.Save();
+                }
 
             }
         }
 
         public static Color ButtonBackgroundColor {
             get {
-                return Properties.Settings.Default.ButtonBackgroundColor;
+                return ColorSchema.ButtonBackgroundColor;
             }
             set {
-                Properties.Settings.Default.ButtonBackgroundColor = value;
-                Properties.Settings.Default.Save();
+                if (ColorSchemaName == "Custom") {
+                    ColorSchema.ButtonBackgroundColor = value;
+                    Properties.Settings.Default.ButtonBackgroundColor = value;
+                    Properties.Settings.Default.Save();
+                }
 
             }
         }
 
         public static Color ButtonBackgroundSelectedColor {
             get {
-                return Properties.Settings.Default.ButtonBackgroundSelectedColor;
+                return ColorSchema.ButtonBackgroundSelectedColor;
             }
             set {
-                Properties.Settings.Default.ButtonBackgroundSelectedColor = value;
-                Properties.Settings.Default.Save();
+                if (ColorSchemaName == "Custom") {
+                    ColorSchema.ButtonBackgroundSelectedColor = value;
+                    Properties.Settings.Default.ButtonBackgroundSelectedColor = value;
+                    Properties.Settings.Default.Save();
+                }
 
             }
         }
 
         public static Color ButtonForegroundDisabledColor {
             get {
-                return Properties.Settings.Default.ButtonForegroundDisabledColor;
+                return ColorSchema.ButtonForegroundDisabledColor;
             }
             set {
-                Properties.Settings.Default.ButtonForegroundDisabledColor = value;
-                Properties.Settings.Default.Save();
+                if (ColorSchemaName == "Custom") {
+                    ColorSchema.ButtonForegroundDisabledColor = value;
+                    Properties.Settings.Default.ButtonForegroundDisabledColor = value;
+                    Properties.Settings.Default.Save();
+                }
 
             }
         }
 
         public static Color ButtonForegroundColor {
             get {
-                return Properties.Settings.Default.ButtonForegroundColor;
+                return ColorSchema.ButtonForegroundColor;
             }
             set {
-                Properties.Settings.Default.ButtonForegroundColor = value;
-                Properties.Settings.Default.Save();
+                if (ColorSchemaName == "Custom") {
+                    ColorSchema.ButtonForegroundColor = value;
+                    Properties.Settings.Default.ButtonForegroundColor = value;
+                    Properties.Settings.Default.Save();
+                }
 
             }
         }
@@ -334,86 +421,105 @@ namespace NINA.Utility {
 
         public static Color AltPrimaryColor {
             get {
-                return Properties.Settings.Default.AltPrimaryColor;
+                return AlternativeColorSchema.PrimaryColor;
             }
             set {
-                Properties.Settings.Default.AltPrimaryColor = value;
-                Properties.Settings.Default.Save();
+                if (ColorSchemaName == "Alternative Custom") {
+                    AlternativeColorSchema.PrimaryColor = value;
+                    Properties.Settings.Default.AltPrimaryColor = value;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 
         public static Color AltSecondaryColor {
             get {
-                return Properties.Settings.Default.AltSecondaryColor;
+                return AlternativeColorSchema.SecondaryColor;
             }
             set {
-                Properties.Settings.Default.AltSecondaryColor = value;
-                Properties.Settings.Default.Save();
+                if (ColorSchemaName == "Alternative Custom") {
+                    AlternativeColorSchema.SecondaryColor = value;
+                    Properties.Settings.Default.AltSecondaryColor = value;
+                    Properties.Settings.Default.Save();
+                }               
             }
         }
 
         public static Color AltBorderColor {
             get {
-                return Properties.Settings.Default.AltBorderColor;
+                return AlternativeColorSchema.BorderColor;
             }
             set {
-                Properties.Settings.Default.AltBorderColor = value;
-                Properties.Settings.Default.Save();
+                if (ColorSchemaName == "Alternative Custom") {
+                    AlternativeColorSchema.BorderColor = value;
+                    Properties.Settings.Default.AltBorderColor = value;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 
         public static Color AltBackgroundColor {
             get {
-                return Properties.Settings.Default.AltBackgroundColor;
+                return AlternativeColorSchema.BackgroundColor;
             }
             set {
-                Properties.Settings.Default.AltBackgroundColor = value;
-                Properties.Settings.Default.Save();
-
+                if (ColorSchemaName == "Alternative Custom") {
+                    AlternativeColorSchema.BackgroundColor = value;
+                    Properties.Settings.Default.AltBackgroundColor = value;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 
         public static Color AltButtonBackgroundColor {
             get {
-                return Properties.Settings.Default.AltButtonBackgroundColor;
+                return AlternativeColorSchema.ButtonBackgroundColor;
             }
             set {
-                Properties.Settings.Default.AltButtonBackgroundColor = value;
-                Properties.Settings.Default.Save();
-
+                if (ColorSchemaName == "Alternative Custom") {
+                    AlternativeColorSchema.ButtonBackgroundColor = value;
+                    Properties.Settings.Default.AltButtonBackgroundColor = value;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 
         public static Color AltButtonBackgroundSelectedColor {
             get {
-                return Properties.Settings.Default.AltButtonBackgroundSelectedColor;
+                return AlternativeColorSchema.ButtonBackgroundSelectedColor;
             }
             set {
-                Properties.Settings.Default.AltButtonBackgroundSelectedColor = value;
-                Properties.Settings.Default.Save();
-
+                if (ColorSchemaName == "Alternative Custom") {
+                    AlternativeColorSchema.ButtonBackgroundSelectedColor = value;
+                    Properties.Settings.Default.AltButtonBackgroundSelectedColor = value;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 
         public static Color AltButtonForegroundDisabledColor {
             get {
-                return Properties.Settings.Default.AltButtonForegroundDisabledColor;
+                return AlternativeColorSchema.ButtonForegroundDisabledColor;
             }
             set {
-                Properties.Settings.Default.AltButtonForegroundDisabledColor = value;
-                Properties.Settings.Default.Save();
-
+                if (ColorSchemaName == "Alternative Custom") {
+                    AlternativeColorSchema.ButtonForegroundDisabledColor = value;
+                    Properties.Settings.Default.AltButtonForegroundDisabledColor = value;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 
         public static Color AltButtonForegroundColor {
             get {
-                return Properties.Settings.Default.AltButtonForegroundColor;
+                return AlternativeColorSchema.ButtonForegroundColor;
             }
             set {
-                Properties.Settings.Default.AltButtonForegroundColor = value;
-                Properties.Settings.Default.Save();
-
+                if (ColorSchemaName == "Alternative Custom") {
+                    AlternativeColorSchema.ButtonForegroundColor = value;
+                    Properties.Settings.Default.AltButtonForegroundColor = value;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 

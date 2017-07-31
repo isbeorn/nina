@@ -16,8 +16,10 @@
                 <TextBlock Text="{ns:Loc LblGeneral}" Foreground="{StaticResource ButtonForegroundBrush}" />
             </TabItem.Header>
             <UniformGrid Columns="2" Rows="3">
-                <GroupBox Header="UI Colors Current">
+                <GroupBox Header="Current UI Color Schema">
                     <UniformGrid Columns="2">
+                        <ComboBox ItemsSource="{Binding ColorSchemas.Items}" DisplayMemberPath="Name" SelectedValue="{Binding ColorSchemaName}" SelectedValuePath="Name" Grid.ColumnSpan="2"/>
+                        <Grid />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock VerticalAlignment="Center" Width="155">Primary:</TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding PrimaryColor}" />
@@ -63,8 +65,10 @@
                     </UniformGrid>
 
                 </GroupBox>
-                <GroupBox Header="UI Colors Alternative">
+                <GroupBox Header="Alternative UI Color Schema">
                     <UniformGrid Columns="2">
+                        <ComboBox ItemsSource="{Binding ColorSchemas.Items}" DisplayMemberPath="Name" SelectedValue="{Binding AlternativeColorSchemaName}" SelectedValuePath="Name" Grid.ColumnSpan="2"/>                        
+                        <Grid />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock VerticalAlignment="Center" Width="155">Primary:</TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltPrimaryColor}" />

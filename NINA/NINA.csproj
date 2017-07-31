@@ -240,6 +240,7 @@
     <Compile Include="Utility\ASISDK\ASICameras.cs" />
     <Compile Include="Utility\AvalonDock\PaneStyleSelector.cs" />
     <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
+    <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
@@ -670,6 +671,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Content Include="Utility\ColorSchema\ColorSchemas.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Utility\EDSDK\dcraw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
