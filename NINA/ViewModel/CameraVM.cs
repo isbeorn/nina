@@ -250,8 +250,8 @@ namespace NINA.ViewModel {
         }
 
         private void DisconnectCamera(object obj) {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxImage.Question, System.Windows.MessageBoxResult.Cancel);
-            if (result == System.Windows.MessageBoxResult.OK) {
+            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);            
+            if (diag == System.Windows.MessageBoxResult.OK) {
                 _updateCamera.Stop();
                 _cancelCoolCameraSource?.Cancel();
                 CoolingRunning = false;

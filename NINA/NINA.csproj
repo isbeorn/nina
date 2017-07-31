@@ -227,6 +227,10 @@
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
     <Compile Include="Model\MyWeatherData\OpenWeatherMapData.cs" />
+    <Compile Include="MyMessageBox\MyMessageBox.cs" />
+    <Compile Include="MyMessageBox\MyMessageBoxView.xaml.cs">
+      <DependentUpon>MyMessageBoxView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utility\ASISDK\ASICameraDll.cs" />
     <Compile Include="Utility\ASISDK\ASICameraDll2.cs" />
     <Compile Include="Model\MyFilterWheel\AscomFilterWheel.cs" />
@@ -422,6 +426,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Locale\Locale.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MyMessageBox\MyMessageBoxView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -94,8 +94,8 @@ namespace NINA.ViewModel {
         }
 
         private void DisconnectTelescope(object obj) {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxImage.Question, System.Windows.MessageBoxResult.Cancel);
-            if (result == System.Windows.MessageBoxResult.OK) {
+            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);            
+            if (diag == System.Windows.MessageBoxResult.OK) {
                 _updateTelescope.Stop();
                 Telescope.Disconnect();
                 Telescope = null;
