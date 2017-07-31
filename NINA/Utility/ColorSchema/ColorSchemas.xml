@@ -30,6 +30,16 @@
     <ButtonForegroundColor Color="#FFD8D8D8" />
     <ButtonForegroundDisabledColor Color="#FF9E9E9E" />
   </ColorSchema>
+  <ColorSchema Name="Persian Faint">
+    <PrimaryColor Color="#FFECF0F1" />
+    <SecondaryColor Color="#FF1D2731" />
+    <BorderColor Color="#AA3F4141" />
+    <BackgroundColor Color="#FF263238" />
+    <ButtonBackgroundColor Color="#FF007063" />
+    <ButtonBackgroundSelectedColor Color="#FF00BCA6" />
+    <ButtonForegroundColor Color="#FFBDC3C7" />
+    <ButtonForegroundDisabledColor Color="#FF1D2731" />
+  </ColorSchema>
   <ColorSchema Name="High Contrast">
     <PrimaryColor Color="#FFFFFFFF" />
     <SecondaryColor Color="#FF00FF11" />
@@ -59,5 +69,15 @@
     <ButtonBackgroundSelectedColor Color="#FF64A6BD" />
     <ButtonForegroundColor Color="#FFF8E9E9" />
     <ButtonForegroundDisabledColor Color="#FF696D7D" />
+  </ColorSchema>
+  <ColorSchema Name="Vivid Malachite">
+    <PrimaryColor Color="#FFECF0F1" />
+    <SecondaryColor Color="#FF1D2731" />
+    <BorderColor Color="#FF285238" />
+    <BackgroundColor Color="#FF34403A" />
+    <ButtonBackgroundColor Color="#FF138A36" />
+    <ButtonBackgroundSelectedColor Color="#FF04E824" />
+    <ButtonForegroundColor Color="#FFBDC3C7" />
+    <ButtonForegroundDisabledColor Color="#FF1D2731" />
   </ColorSchema>
 </ColorSchemas>
