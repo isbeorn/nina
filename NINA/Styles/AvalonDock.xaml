@@ -284,6 +284,9 @@
     </Style>
 
 
+    <Style TargetType="{x:Type dock:LayoutAutoHideWindowControl}">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+    </Style>
 
     <Style TargetType="{x:Type dock:DockingManager}">
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
