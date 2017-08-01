@@ -60,7 +60,7 @@ or directly via Discord: @[]()Isbeorn#1882
 
 ** Setup Checksum **
 
-bbb766[]()27aa82[]()7f4a58[]()03a447[]()e7d8f8[]()df
+d62690[]()a87d36[]()95dd70[]()4040e8[]()cf674b[]()f4
 
 ** Credit **
 
