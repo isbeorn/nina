@@ -50,14 +50,14 @@
     <ButtonForegroundColor Color="#FFFFFFFF" />
     <ButtonForegroundDisabledColor Color="#FF9E9E9E" />
   </ColorSchema>
-  <ColorSchema Name="Black Coral">
-    <PrimaryColor Color="#FFF7F7FF" />
+  <ColorSchema Name="Black Coral">    
+    <PrimaryColor Color="#FFDEDEE8" />
     <SecondaryColor Color="#FF592941" />
     <BorderColor Color="#FF577590" />
     <BackgroundColor Color="#FF545E75" />
     <ButtonBackgroundColor Color="#FFC03221" />
     <ButtonBackgroundSelectedColor Color="#FFF2D0A4" />
-    <ButtonForegroundColor Color="#FFFFFFFF" />
+    <ButtonForegroundColor Color="#FFF7F7FF" />
     <ButtonForegroundDisabledColor Color="#FF004E64" />
   </ColorSchema>
   <ColorSchema Name="Arsenic">
