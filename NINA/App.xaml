@@ -34,6 +34,7 @@
                 <ResourceDictionary Source="Styles\ScrollViewer.xaml" />
                 <ResourceDictionary Source="Styles\ComboBox.xaml" />
                 <ResourceDictionary Source="Styles\GridSplitter.xaml" />
+                <ResourceDictionary Source="Styles\ProgressBar.xaml" />
                 <ResourceDictionary Source="Styles\AvalonDock.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
             </ResourceDictionary.MergedDictionaries>

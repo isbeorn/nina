@@ -131,11 +131,13 @@ namespace NINA.ViewModel{
 
         private void RemoveSequence(object obj) {
             var idx = SelectedSequenceIdx;
-            Sequence.RemoveAt(idx);            
-            if(idx < Sequence.Count - 1) {
-                SelectedSequenceIdx = idx;
-            } else {
-                SelectedSequenceIdx = Sequence.Count - 1;
+            if(idx > -1) { 
+                Sequence.RemoveAt(idx);            
+                if(idx < Sequence.Count - 1) {
+                    SelectedSequenceIdx = idx;
+                } else {
+                    SelectedSequenceIdx = Sequence.Count - 1;
+                }
             }
         }
 
