@@ -80,4 +80,14 @@
     <ButtonForegroundColor Color="#FFBDC3C7" />
     <ButtonForegroundDisabledColor Color="#FF1D2731" />
   </ColorSchema>
+  <ColorSchema Name="Shark">
+    <PrimaryColor Color="#FFEDEDED" />
+    <SecondaryColor Color="#FFA9AAAC" />
+    <BorderColor Color="#AA3E4146" />
+    <BackgroundColor Color="#FF36393E" />
+    <ButtonBackgroundColor Color="#FF36393E" />
+    <ButtonBackgroundSelectedColor Color="#FF24252A" />
+    <ButtonForegroundColor Color="#FFA9AAAC" />
+    <ButtonForegroundDisabledColor Color="#FF1D2731" />
+  </ColorSchema>
 </ColorSchemas>
