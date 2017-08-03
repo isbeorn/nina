@@ -15,7 +15,7 @@
                 <RowDefinition />
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            <DataGrid  x:Name="grd" ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}" BorderThickness="1">
+            <DataGrid ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="*" Header="Remaining #" Binding="{Binding ExposureCount}" IsReadOnly="True">
 
