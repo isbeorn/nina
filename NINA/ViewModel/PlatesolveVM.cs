@@ -230,19 +230,38 @@ namespace NINA.ViewModel {
         private async Task<bool> CaputureAndSolve(IProgress<string> progress) {
             _blindeSolveCancelToken = new CancellationTokenSource();
             var solvesuccess = await BlindSolveWithCapture(SnapExposureDuration, progress, _blindeSolveCancelToken, SnapFilter, SnapBin);
-
-            if (solvesuccess && SyncScope) {
-                if (Telescope?.Connected != true) {
-                    Notification.ShowWarning("Unable to sync. Telescope is not connected!");
-                    return false;
-                }
-                var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
-                if (sync() && SlewToTarget) {
-                    Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
+            
+            PlateSolveResultList.Add(PlateSolveResult);
+            if(solvesuccess) {
+                CalculateError();
+                if (SyncScope) {
+                    if (Telescope?.Connected != true) {
+                        Notification.ShowWarning("Unable to sync. Telescope is not connected!");
+                        return false;
+                    }
+                    var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+                    if (sync() && SlewToTarget) {
+                        Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
+                    }
                 }
             }
-
+           
+            
+            RaiseAllPropertiesChanged();
             return solvesuccess;
+        }
+
+        private void CalculateError() {
+            if (Telescope?.Connected == true) {
+
+                Coordinates solved = new Coordinates(PlateSolveResult.Ra, PlateSolveResult.Dec, PlateSolveResult.Epoch, Coordinates.RAType.Degrees);
+                solved = solved.Transform(Settings.EpochType);
+
+                var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+                
+                PlateSolveResult.RaError = coords.RADegrees - solved.RADegrees;
+                PlateSolveResult.DecError = coords.Dec - solved.Dec;                
+            }
         }
 
         public async Task<bool> BlindSolve(IProgress<string> progress, CancellationTokenSource canceltoken) {
@@ -327,7 +346,7 @@ namespace NINA.ViewModel {
 
         }
 
-        private PlateSolveResult _plateSolveResult;
+        
 
         private ITelescope _telescope;
         public ITelescope Telescope {
@@ -373,6 +392,21 @@ namespace NINA.ViewModel {
             }
         }
 
+        private AsyncObservableCollection<PlateSolveResult> _plateSolveResultList;
+        public AsyncObservableCollection<PlateSolveResult> PlateSolveResultList {
+            get {
+                if(_plateSolveResultList == null) {
+                    _plateSolveResultList = new AsyncObservableCollection<PlateSolveResult>();
+                }
+                return _plateSolveResultList;
+            }
+            set {
+                _plateSolveResultList = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private PlateSolveResult _plateSolveResult;
         public PlateSolveResult PlateSolveResult {
             get {
                 return _plateSolveResult;

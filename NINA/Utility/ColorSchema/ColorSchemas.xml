@@ -55,8 +55,8 @@
     <SecondaryColor Color="#FF592941" />
     <BorderColor Color="#FF656F87" />
     <BackgroundColor Color="#FF545E75" />
-    <ButtonBackgroundColor Color="#FFC03221" />
-    <ButtonBackgroundSelectedColor Color="#FFF2D0A4" />
+    <ButtonBackgroundColor Color="#FF99261a" />
+    <ButtonBackgroundSelectedColor Color="#FFe5a859" />
     <ButtonForegroundColor Color="#FFF7F7FF" />
     <ButtonForegroundDisabledColor Color="#FF004E64" />
   </ColorSchema>
