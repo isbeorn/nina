@@ -53,10 +53,10 @@
   <ColorSchema Name="Black Coral">    
     <PrimaryColor Color="#FFDEDEE8" />
     <SecondaryColor Color="#FF592941" />
-    <BorderColor Color="#FF577590" />
+    <BorderColor Color="#FF656F87" />
     <BackgroundColor Color="#FF545E75" />
-    <ButtonBackgroundColor Color="#FFC03221" />
-    <ButtonBackgroundSelectedColor Color="#FFF2D0A4" />
+    <ButtonBackgroundColor Color="#FF99261a" />
+    <ButtonBackgroundSelectedColor Color="#FFe5a859" />
     <ButtonForegroundColor Color="#FFF7F7FF" />
     <ButtonForegroundDisabledColor Color="#FF004E64" />
   </ColorSchema>
@@ -78,6 +78,16 @@
     <ButtonBackgroundColor Color="#FF138A36" />
     <ButtonBackgroundSelectedColor Color="#FF04E824" />
     <ButtonForegroundColor Color="#FFBDC3C7" />
+    <ButtonForegroundDisabledColor Color="#FF1D2731" />
+  </ColorSchema>
+  <ColorSchema Name="Shark">
+    <PrimaryColor Color="#FFEDEDED" />
+    <SecondaryColor Color="#FFA9AAAC" />
+    <BorderColor Color="#AA3E4146" />
+    <BackgroundColor Color="#FF36393E" />
+    <ButtonBackgroundColor Color="#FF36393E" />
+    <ButtonBackgroundSelectedColor Color="#FF24252A" />
+    <ButtonForegroundColor Color="#FFA9AAAC" />
     <ButtonForegroundDisabledColor Color="#FF1D2731" />
   </ColorSchema>
 </ColorSchemas>

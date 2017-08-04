@@ -120,5 +120,29 @@ namespace NINA.PlateSolving {
                 _epoch = value;
             }
         }
+
+        public double RaError { get; set; }
+        public string RaErrorString {
+            get {
+                return Utility.Utility.AscomUtil.DegreesToHMS(RaError);
+            }
+        }
+        public double RaPixError {
+            get {
+                return (RaError * 60 * 60) / Pixscale;
+            }
+        }
+
+        public double DecError { get; set; }
+        public double DecPixError {
+            get {
+                return (DecError * 60 * 60) / Pixscale;
+            }
+        }
+        public string DecErrorString {
+            get {
+                return Utility.Utility.AscomUtil.DegreesToDMS(RaError);
+            }
+        }
     }
 }

@@ -7,9 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" x:Name="grid">
         <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}" >
-            <Grid  IsEnabled="{Binding Cam.Connected}">
+            <Grid  IsEnabled="{Binding Cam.Connected}" >
                 <StackPanel Orientation="Vertical">
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
@@ -87,7 +87,23 @@
                                                 MyButtonImage="{StaticResource PlatesolveSVG}" 
                                                 MyCancelButtonImage="{StaticResource CancelSVG}" 
                                                 MyButtonTooltip="Capture image and platesolve"/>
-                    
+
+                    <DataGrid ItemsSource="{Binding PlateSolveResultList}" AutoGenerateColumns="False"  CanUserAddRows="False" Width="{Binding ElementName=grid, Path=ActualWidth}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="*" Header="Success" Binding="{Binding Success}" IsReadOnly="True" />
+                            <DataGridTextColumn Width="*" Header="Ra" Binding="{Binding RaString}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="Dec" Binding="{Binding DecString}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="Ra Error" Binding="{Binding RaErrorString}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="Dec Error" Binding="{Binding DecErrorString}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="Ra Pix Error" Binding="{Binding RaPixError, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="Dec Pix Error" Binding="{Binding DecPixError, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="Orientation" Binding="{Binding Orientation, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
+                            
+
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+
                 </StackPanel>          
             </Grid>
         </Grid>

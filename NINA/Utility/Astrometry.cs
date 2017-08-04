@@ -42,7 +42,7 @@ namespace NINA.Utility.Astrometry {
         public double Dec;
         public string RAString {
             get {
-                return Utility.AscomUtil.DegreesToHMS(RA);
+                return Utility.AscomUtil.DegreesToHMS(RADegrees);
             }
         }
         public double RADegrees {

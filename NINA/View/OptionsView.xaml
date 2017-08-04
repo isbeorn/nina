@@ -344,7 +344,7 @@
                             <ListView ItemsSource="{Binding IndexFiles}">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding}" />
+                                        <GridViewColumn Header="Index File" Width="Auto" DisplayMemberBinding="{Binding}" />
                                     </GridView>
                                 </ListView.View>
                             </ListView>
