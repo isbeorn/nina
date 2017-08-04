@@ -401,7 +401,7 @@ namespace NINA.Utility {
                     RaisePropertyChanged(nameof(Connected));
                 }
                 catch (Exception ex) {
-                    Logger.Error(ex.Message);
+                    Logger.Error(ex.Message, ex.StackTrace);
                     Notification.ShowError("PHD2 Error: " + ex.Message);
                 }
                 

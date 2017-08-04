@@ -109,7 +109,7 @@ namespace NINA.Utility {
                 }
                 catch (Exception ex) {
                     canceltoken.Token.ThrowIfCancellationRequested();
-                    Logger.Error(ex.Message);
+                    Logger.Error(ex.Message, ex.StackTrace);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     
                     response?.Close();
@@ -147,7 +147,7 @@ namespace NINA.Utility {
                 }
                 catch (Exception ex) {
                     canceltoken.Token.ThrowIfCancellationRequested();
-                    Logger.Error(ex.Message);
+                    Logger.Error(ex.Message, ex.StackTrace);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     
                     response?.Close();
@@ -213,7 +213,7 @@ namespace NINA.Utility {
                 }
                 catch (Exception ex) {
                     canceltoken.Token.ThrowIfCancellationRequested();
-                    Logger.Error(ex.Message);
+                    Logger.Error(ex.Message, ex.StackTrace);
                     Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     
                     wresp?.Close();

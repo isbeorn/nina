@@ -285,7 +285,7 @@ namespace NINA.ViewModel {
             }
             catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
-                Logger.Error(ex.Message);
+                Logger.Error(ex.Message, ex.StackTrace);
 
             }
         }
@@ -306,7 +306,7 @@ namespace NINA.ViewModel {
             }
             catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
-                Logger.Error(ex.Message);
+                Logger.Error(ex.Message, ex.StackTrace);
 
             }
         }
@@ -357,7 +357,7 @@ namespace NINA.ViewModel {
 
                 } catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
-                Logger.Error(ex.Message);
+                Logger.Error(ex.Message, ex.StackTrace);
 
             }
         }

@@ -25,9 +25,9 @@ namespace NINA.Utility {
 
         }
 
-        public static void Error(string msg) {
+        public static void Error(string msg, string stacktrace = "") {
            
-            Append(DateTime.Now.ToString("s") + " ERROR:\t" +  msg);
+            Append(DateTime.Now.ToString("s") + " ERROR:\t" +  msg + '\t' + stacktrace);
         }
 
         public static void Info(string msg) {
