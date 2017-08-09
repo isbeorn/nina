@@ -160,6 +160,9 @@ namespace NINA.ViewModel {
             }
             set {
                 _zoomFactor = value;
+                if(_zoomFactor < 0) {
+                    _zoomFactor = 0;
+                }
                 RaisePropertyChanged();
             }
         }
