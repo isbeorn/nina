@@ -30,12 +30,14 @@ namespace NINA.ViewModel {
         }
 
         public void Add(ImageStatistics stats) {
-            if (this.ImgStatHistory.Count > 25) {
-                this.ImgStatHistory.RemoveAt(0);
-            }
-            stats.Id = _nextStatHistoryId;
-            _nextStatHistoryId++;
-            this.ImgStatHistory.Add(stats);
+            if(stats?.DetectedStars > 0) {
+                if (this.ImgStatHistory.Count > 25) {
+                    this.ImgStatHistory.RemoveAt(0);
+                }
+                stats.Id = _nextStatHistoryId;
+                _nextStatHistoryId++;
+                this.ImgStatHistory.Add(stats);
+            }            
         }
     }
 }
