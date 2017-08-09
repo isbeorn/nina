@@ -46,6 +46,7 @@
     <s:String x:Key="LblHistogram">Histogram</s:String>
     <s:String x:Key="LblTooltipAutoStretch">Toggles an automatic autostretch to image on/off (display only)</s:String>
     <s:String x:Key="LblTooltipDetectStars">Toggles automatic star detection and analysis (Half-Flus-Radius) on/off</s:String>
+    <s:String x:Key="LblTooltipCrossHair">Toggles crosshair on/off</s:String>
     <s:String x:Key="LblHFR">HFR</s:String>
     <s:String x:Key="LblDetectedStars">Detected Stars</s:String>
     <s:String x:Key="LblImage">Image</s:String>

@@ -24,6 +24,8 @@ namespace NINA.ViewModel {
             CanClose = false;
             AutoStretch = false;
             DetectStars = false;
+            ShowCrossHair = false;
+            AutoStretchFactor = 0.25;
             ZoomFactor = 1;
 
             RegisterMediatorMessages();
@@ -104,6 +106,28 @@ namespace NINA.ViewModel {
             }
         }
 
+        private double _autoStretchFactor;
+        public double AutoStretchFactor {
+            get {
+                return _autoStretchFactor;
+            }
+            set {
+                _autoStretchFactor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _showCrossHair;
+        public bool ShowCrossHair {
+            get {
+                return _showCrossHair;
+            }
+            set {
+                _showCrossHair = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool _detectStars;
         public bool DetectStars {
             get {
@@ -171,7 +195,7 @@ namespace NINA.ViewModel {
         private BitmapSource Stretch(BitmapSource source) {
             var img = ImageAnalysis.BitmapFromSource(source);
 
-            var filter = ImageAnalysis.GetColorRemappingFilter(ImgArr.Statistics.Mean, 0.25);
+            var filter = ImageAnalysis.GetColorRemappingFilter(ImgArr.Statistics.Mean, AutoStretchFactor);
             filter.ApplyInPlace(img);
 
             source = null;

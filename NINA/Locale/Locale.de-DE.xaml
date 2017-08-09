@@ -46,6 +46,7 @@
     <s:String x:Key="LblHistogram">Histogramm</s:String>
     <s:String x:Key="LblTooltipAutoStretch">Schaltet automatisches Strecken des Histogramms an/aus (nur Anzeige)</s:String>
     <s:String x:Key="LblTooltipDetectStars">Schaltet automatisches Erkennen und Auswerten (Half-Flus-Radius) von Sternen an/aus</s:String>
+    <s:String x:Key="LblTooltipCrossHair">Schaltet Fadenkreuz an/aus</s:String>
     <s:String x:Key="LblHFR">HFR</s:String>
     <s:String x:Key="LblDetectedStars">Erkannte Sterne</s:String>
     <s:String x:Key="LblImage">Bild</s:String>

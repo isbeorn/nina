@@ -119,10 +119,10 @@ namespace NINA.Utility {
             else {
                 power = Math.Log(ushort.MaxValue * targetHistogramMeanPct, mean);
             }
+            
+            ushort[] map = new ushort[ushort.MaxValue + 1];
 
-            ushort[] map = new ushort[65536];
-
-            for (int i = 2; i < 65536; i++) {
+            for (int i = 2; i < map.Length; i++) {
                 map[i] = (ushort)Math.Min(ushort.MaxValue , Math.Pow(i, power));
             }
             map[0] = 0;
