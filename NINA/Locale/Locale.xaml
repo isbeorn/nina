@@ -66,4 +66,6 @@
     <s:String x:Key="LblOff">Off</s:String>
     <s:String x:Key="LblChipTempShort">Chip Temp.</s:String>
     <s:String x:Key="LblTargetTempShort">Target Temp.</s:String>
+    <s:String x:Key="LblZoomIn">Zoom in by 25%</s:String>
+    <s:String x:Key="LblZoomOut">Zoom out by 25%</s:String>
 </ResourceDictionary>

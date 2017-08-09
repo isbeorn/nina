@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml.Linq;
@@ -28,7 +29,19 @@ namespace NINA.ViewModel {
             AutoStretchFactor = 0.25;
             ZoomFactor = 1;
 
+            ZoomInCommand = new RelayCommand(ZoomIn);
+            ZoomOutCommand = new RelayCommand(ZoomOut);
+
+
             RegisterMediatorMessages();
+        }
+
+        private void ZoomOut(object obj) {
+            ZoomFactor -= .25;
+        }
+
+        private void ZoomIn(object obj) {
+            ZoomFactor += .25;
         }
 
         private void RegisterMediatorMessages() {
@@ -386,7 +399,27 @@ namespace NINA.ViewModel {
             }
         }
 
+        private ICommand _zoomInCommand;
+        public ICommand ZoomInCommand {
+            get {
+                return _zoomInCommand;
+            }
+            set {
+                _zoomInCommand = value;
+                RaisePropertyChanged();
+            }
+        }
 
+        private ICommand _zoomOutCommand;
+        public ICommand ZoomOutCommand {
+            get {
+                return _zoomOutCommand;
+            }
+            set {
+                _zoomOutCommand = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 
     

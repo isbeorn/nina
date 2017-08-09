@@ -64,4 +64,6 @@
     <s:String x:Key="LblDownload">Herunterladen</s:String>
     <s:String x:Key="LblOn">An</s:String>
     <s:String x:Key="LblOff">Aus</s:String>
+    <s:String x:Key="LblZoomIn">25% hineinzoomen</s:String>
+    <s:String x:Key="LblZoomOut">25% herauszoomen</s:String>
 </ResourceDictionary>

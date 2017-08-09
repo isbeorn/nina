@@ -14,19 +14,39 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40" />
-
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="*" />                
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="50" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Zoom" VerticalAlignment="Center" />
-            <Slider Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Value="{Binding ZoomFactor}" TickPlacement="BottomRight" TickFrequency="0.1" IsSnapToTickEnabled="True"  Maximum="10" Minimum="0.1" SmallChange="0.1"></Slider>
+            <Button Grid.Column="0" Command="{Binding ZoomInCommand}" Margin="5,0,5,0">
+                <Button.ToolTip>
+                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                        <TextBlock Text="{ns:Loc LblZoomIn}" />
+                    </ToolTip>
+                </Button.ToolTip>
+                <Grid>
+                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource ZoomIn}" Stretch="Uniform" Margin="5">
+                    </Path>
+                </Grid>
+            </Button>
+            <Button Grid.Column="1" Command="{Binding ZoomOutCommand}" Margin="5,0,5,0">
+                <Button.ToolTip>
+                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                        <TextBlock Text="{ns:Loc LblZoomOut}" />
+                    </ToolTip>
+                </Button.ToolTip>
+                <Grid>
+                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource ZoomOut}" Stretch="Uniform" Margin="5">
+                    </Path>
+                </Grid>
+            </Button>
             <TextBlock Grid.Column="2" Text="{Binding ZoomFactor, StringFormat=\{0:P0\}}" VerticalAlignment="Center"></TextBlock>
 
-            <ToggleButton Grid.Column="3" IsChecked="{Binding AutoStretch}"  Margin="5,0,5,0">
+            <ToggleButton Grid.Column="4" IsChecked="{Binding AutoStretch}"  Margin="5,0,5,0">
                 <ToggleButton.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc LblTooltipAutoStretch}" />
@@ -55,7 +75,7 @@
                     </Style>
                 </ToggleButton.Style>
             </ToggleButton>
-            <ToggleButton Grid.Column="4" IsChecked="{Binding ShowCrossHair}"  Margin="5,0,5,0">
+            <ToggleButton Grid.Column="5" IsChecked="{Binding ShowCrossHair}"  Margin="5,0,5,0">
                 <ToggleButton.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc LblTooltipCrossHair}" />
@@ -85,7 +105,7 @@
                 </ToggleButton.Style>
             </ToggleButton>
 
-            <ToggleButton Grid.Column="5" IsChecked="{Binding DetectStars}"  Margin="5,0,5,0">
+            <ToggleButton Grid.Column="6" IsChecked="{Binding DetectStars}"  Margin="5,0,5,0">
                 <ToggleButton.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc LblTooltipDetectStars}" />
