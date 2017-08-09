@@ -31,9 +31,14 @@ namespace NINA.ViewModel {
 
             ZoomInCommand = new RelayCommand(ZoomIn);
             ZoomOutCommand = new RelayCommand(ZoomOut);
+            ZoomResetCommand = new RelayCommand(ZoomReset);
 
 
             RegisterMediatorMessages();
+        }
+
+        private void ZoomReset(object obj) {
+            ZoomFactor = 1;
         }
 
         private void ZoomOut(object obj) {
@@ -423,6 +428,18 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        private ICommand _zoomResetCommand;
+        public ICommand ZoomResetCommand {
+            get {
+                return _zoomResetCommand;
+            }
+            set {
+                _zoomResetCommand = value;
+                RaisePropertyChanged();
+            }
+        }
+
     }
 
     

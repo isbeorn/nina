@@ -68,4 +68,5 @@
     <s:String x:Key="LblTargetTempShort">Target Temp.</s:String>
     <s:String x:Key="LblZoomIn">Zoom in by 25%</s:String>
     <s:String x:Key="LblZoomOut">Zoom out by 25%</s:String>
+    <s:String x:Key="LblZoomStretch">Fit Image to Area</s:String>
 </ResourceDictionary>

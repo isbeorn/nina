@@ -44,7 +44,17 @@
                     </Path>
                 </Grid>
             </Button>
-            <TextBlock Grid.Column="2" Text="{Binding ZoomFactor, StringFormat=\{0:P0\}}" VerticalAlignment="Center"></TextBlock>
+            <Button Grid.Column="2" Command="{Binding ZoomResetCommand}" Margin="5,0,5,0">
+                <Button.ToolTip>
+                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                        <TextBlock Text="{ns:Loc LblZoomStretch}" />
+                    </ToolTip>
+                </Button.ToolTip>
+                <Grid>
+                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource Stretch}" Stretch="Uniform" Margin="5">
+                    </Path>
+                </Grid>
+            </Button>            
 
             <ToggleButton Grid.Column="4" IsChecked="{Binding AutoStretch}"  Margin="5,0,5,0">
                 <ToggleButton.ToolTip>
