@@ -36,6 +36,7 @@
                 <ResourceDictionary Source="Styles\GridSplitter.xaml" />
                 <ResourceDictionary Source="Styles\ProgressBar.xaml" />
                 <ResourceDictionary Source="Styles\AvalonDock.xaml" />
+                <ResourceDictionary Source="Styles\Tooltip.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
