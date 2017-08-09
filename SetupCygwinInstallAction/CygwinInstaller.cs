@@ -24,27 +24,41 @@ namespace SetupCygwinInstallAction {
             base.Install(stateSaver);
             string input = this.Context.Parameters["INSTALLCYGWIN"];
 
-            if(input == "1") {
+            if (input == "1") {
                 try {
                     DirectoryInfo d = new DirectoryInfo(LOCALAPPDATA);
                     if (!d.Exists) {
                         d.Create();
                     }
-                    
+
                     var zipFile = SetupCygwinInstallAction.Properties.Resources.cygwin;
                     using (var s = new MemoryStream(zipFile)) {
                         var a = ZipFile.Read(s);
                         a.ExtractAll(LOCALAPPDATA);
-                        
+
                     }
 
-                } catch(Exception) {
-                    
+                    System.Diagnostics.Process process = new System.Diagnostics.Process();
+                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                    startInfo.FileName = "cmd.exe";
+                    startInfo.UseShellExecute = false;
+                    startInfo.RedirectStandardOutput = true;
+                    startInfo.CreateNoWindow = true;
+                    startInfo.Arguments = string.Format("/C {0} --login -c 'mkpasswd -c >> /etc/passwd'", LOCALAPPDATA + "\\cygwin\\bin\\bash.exe");
+                    process.StartInfo = startInfo;
+                    process.Start();
+                    while (!process.StandardOutput.EndOfStream) {
+                    }
+
+
+                } catch (Exception) {
+
                 }
             }
-            
+
         }
-        
+
         public override void Rollback(IDictionary savedState) {
             base.Rollback(savedState);
 
@@ -59,7 +73,7 @@ namespace SetupCygwinInstallAction {
                 }
                 di.Delete();
             } catch (Exception) {
-                
+
             }
         }
 
@@ -76,12 +90,12 @@ namespace SetupCygwinInstallAction {
                     dir.Delete(true);
                 }
                 di.Delete();
-            } catch(Exception) {
-                
+            } catch (Exception) {
+
             }
-            
+
         }
     }
 
-    
+
 }
