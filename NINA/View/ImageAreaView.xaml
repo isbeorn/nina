@@ -22,7 +22,7 @@
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="50" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Command="{Binding ZoomInCommand}" Margin="5,0,5,0">
+            <Button Grid.Column="0"  Margin="5,0,5,0" Click="ButtonZoomIn_Click">
                 <Button.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="False">
                         <TextBlock Text="{ns:Loc LblZoomIn}" />
@@ -33,7 +33,7 @@
                     </Path>
                 </Grid>
             </Button>
-            <Button Grid.Column="1" Command="{Binding ZoomOutCommand}" Margin="5,0,5,0">
+            <Button Grid.Column="1" Margin="5,0,5,0" Click="ButtonZoomOut_Click">
                 <Button.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="False">
                         <TextBlock Text="{ns:Loc LblZoomOut}" />
@@ -44,7 +44,7 @@
                     </Path>
                 </Grid>
             </Button>
-            <Button Grid.Column="2" Command="{Binding ZoomResetCommand}" Margin="5,0,5,0">
+            <Button Grid.Column="2" Command="{Binding ZoomResetCommand}" Margin="5,0,5,0" Click="ButtonZoomReset_Click">
                 <Button.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="False">
                         <TextBlock Text="{ns:Loc LblZoomStretch}" />
@@ -146,9 +146,7 @@
             </ToggleButton>
         </Grid>
         <ScrollViewer  PanningMode="Both" Grid.Row="1" x:Name="sv" 
-                       PreviewMouseLeftButtonDown="sv_PreviewMouseLeftButtonDown" 
-                       PreviewMouseLeftButtonUp="sv_PreviewMouseLeftButtonUp" 
-                       PreviewMouseMove="sv_PreviewMouseMove"                        
+                                             
                        >
             
             <ScrollViewer.Style>
@@ -180,7 +178,7 @@
             <Grid>
                 <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Opacity="0.2" Data="{StaticResource PictureSVG}" Stretch="Uniform" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="100">
                 </Path>
-                <Grid>
+                <Grid x:Name="grid">
                     <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" 
                            Width="{Binding ActualWidth, ElementName=sv}"
                            Height="{Binding ActualHeight, ElementName=sv}">
@@ -202,7 +200,7 @@
                               Stretch="Uniform"  Stroke="{StaticResource ButtonBackgroundSelectedBrush}" StrokeThickness="2" />                        
                     </Grid>
                     <Grid.LayoutTransform>
-                        <ScaleTransform ScaleX="{Binding ZoomFactor}" ScaleY="{Binding ZoomFactor}" />
+                        <ScaleTransform x:Name="scaleTransform" />
                     </Grid.LayoutTransform>
                 </Grid>
                 

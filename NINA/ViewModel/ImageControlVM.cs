@@ -27,26 +27,9 @@ namespace NINA.ViewModel {
             DetectStars = false;
             ShowCrossHair = false;
             AutoStretchFactor = 0.25;
-            ZoomFactor = 1;
-
-            ZoomInCommand = new RelayCommand(ZoomIn);
-            ZoomOutCommand = new RelayCommand(ZoomOut);
-            ZoomResetCommand = new RelayCommand(ZoomReset);
 
 
             RegisterMediatorMessages();
-        }
-
-        private void ZoomReset(object obj) {
-            ZoomFactor = 1;
-        }
-
-        private void ZoomOut(object obj) {
-            ZoomFactor -= .25;
-        }
-
-        private void ZoomIn(object obj) {
-            ZoomFactor += .25;
         }
 
         private void RegisterMediatorMessages() {
@@ -155,20 +138,6 @@ namespace NINA.ViewModel {
                 _detectStars = value;
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.DetectStarsChanged, _detectStars);
-            }
-        }
-
-        private double _zoomFactor;
-        public double ZoomFactor {
-            get {
-                return _zoomFactor;
-            }
-            set {
-                _zoomFactor = value;
-                if(_zoomFactor < 0) {
-                    _zoomFactor = 0;
-                }
-                RaisePropertyChanged();
             }
         }
 
@@ -404,39 +373,6 @@ namespace NINA.ViewModel {
                 Notification.ShowError("Image file error: " + ex.Message);
                 Logger.Error(ex.Message, ex.StackTrace);
 
-            }
-        }
-
-        private ICommand _zoomInCommand;
-        public ICommand ZoomInCommand {
-            get {
-                return _zoomInCommand;
-            }
-            set {
-                _zoomInCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _zoomOutCommand;
-        public ICommand ZoomOutCommand {
-            get {
-                return _zoomOutCommand;
-            }
-            set {
-                _zoomOutCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _zoomResetCommand;
-        public ICommand ZoomResetCommand {
-            get {
-                return _zoomResetCommand;
-            }
-            set {
-                _zoomResetCommand = value;
-                RaisePropertyChanged();
             }
         }
 
