@@ -47,13 +47,13 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center">
                         <TextBlock Text="{ns:Loc LblTargetTempShort}" VerticalAlignment="Center"></TextBlock>
-                        <local:StepperControl Value="{Binding TargetTemp, Mode=TwoWay}" />
+                        <local:StepperControl Value="{Binding TargetTemp, Mode=TwoWay}" MinValue="-50" MaxValue="20" StepSize="0.5" />
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center">
                         <TextBlock Text="{ns:Loc LblDuration}" VerticalAlignment="Center"></TextBlock>
-                        <local:StepperControl Value="{Binding Duration, Mode=TwoWay}" />                        
+                        <local:StepperControl Value="{Binding Duration, Mode=TwoWay}" MinValue="0" />                        
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">

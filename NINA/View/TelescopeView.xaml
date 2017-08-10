@@ -55,7 +55,7 @@
                                     </ToolTip>
                                 </Button.ToolTip>
                                 <Grid>
-                                    <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
                                     </Path>
                                 </Grid>
                             </Button>

@@ -16,7 +16,7 @@
             <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource AddSVG}" Stretch="Uniform" Margin="5">
             </Path> 
         </Button>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Value, StringFormat=\{0:#.0\}}" Grid.Column="1" />
+        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center" Text="{Binding Value, StringFormat=\{0:#.0\}}" Grid.Column="1" />
         <Button Click="Button_Minus_Click" Height="25" Grid.Column="2">
             <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SubstractSVG}" Stretch="Uniform" Margin="5">
             </Path>

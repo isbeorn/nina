@@ -33,13 +33,55 @@ namespace NINA.View {
             set {
                 SetValue(ValueProperty, value);
             }
-        }        
+        }
 
-        private void Button_Plus_Click(object sender, RoutedEventArgs e) {
-            Value++;
+        public static readonly DependencyProperty MinValueProperty =
+           DependencyProperty.Register(nameof(MinValue), typeof(double), typeof(StepperControl), new UIPropertyMetadata(double.MinValue));
+
+        public double MinValue {
+            get {
+                return (double)GetValue(MinValueProperty);
+            }
+            set {
+                SetValue(MinValueProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty MaxValueProperty =
+           DependencyProperty.Register(nameof(MaxValue), typeof(double), typeof(StepperControl), new UIPropertyMetadata(double.MaxValue));
+
+        public double MaxValue {
+            get {
+                return (double)GetValue(MaxValueProperty);
+            }
+            set {
+                SetValue(MaxValueProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty StepSizeProperty =
+           DependencyProperty.Register(nameof(StepSize), typeof(double), typeof(StepperControl), new UIPropertyMetadata(1.0d));
+
+        public double StepSize {
+            get {
+                return (double)GetValue(StepSizeProperty);
+            }
+            set {
+                SetValue(StepSizeProperty, value);
+            }
+        }
+
+        private void Button_Plus_Click(object sender, RoutedEventArgs e) {            
+            Value += StepSize;
+            if (Value > MaxValue) {
+                Value = MaxValue;
+            }
         }
         private void Button_Minus_Click(object sender, RoutedEventArgs e) {
-            Value--;
+            Value -= StepSize;
+            if (Value < MinValue) {
+                Value = MinValue;
+            }
         }
     }
 }

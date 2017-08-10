@@ -58,7 +58,7 @@
     <ButtonBackgroundColor Color="#FF99261a" />
     <ButtonBackgroundSelectedColor Color="#FFe5a859" />
     <ButtonForegroundColor Color="#FFF7F7FF" />
-    <ButtonForegroundDisabledColor Color="#FF004E64" />
+    <ButtonForegroundDisabledColor Color="#FF22293A" />
   </ColorSchema>
   <ColorSchema Name="Arsenic">
     <PrimaryColor Color="#FFFFFFFF" />
