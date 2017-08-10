@@ -21,5 +21,27 @@ namespace NINA.View {
         public ImageAreaView() {
             InitializeComponent();
         }
+
+        Point scrollMousePoint = new Point();
+        double hOff = 1;
+        double vOff = 1;
+
+        private void sv_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            scrollMousePoint = e.GetPosition(sv);
+            hOff = sv.HorizontalOffset;
+            vOff = sv.VerticalOffset;
+            sv.CaptureMouse();
+        }
+
+        private void sv_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {            
+            sv.ReleaseMouseCapture();
+        }
+
+        private void sv_PreviewMouseMove(object sender, MouseEventArgs e) {
+            if (sv.IsMouseCaptured) {
+                sv.ScrollToHorizontalOffset(hOff + (scrollMousePoint.X - e.GetPosition(sv).X));
+                sv.ScrollToVerticalOffset(vOff + (scrollMousePoint.Y - e.GetPosition(sv).Y));
+            }
+        }        
     }
 }

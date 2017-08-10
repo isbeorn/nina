@@ -145,7 +145,12 @@
                 </ToggleButton.Style>
             </ToggleButton>
         </Grid>
-        <ScrollViewer  PanningMode="Both" Grid.Row="1" x:Name="sv">
+        <ScrollViewer  PanningMode="Both" Grid.Row="1" x:Name="sv" 
+                       PreviewMouseLeftButtonDown="sv_PreviewMouseLeftButtonDown" 
+                       PreviewMouseLeftButtonUp="sv_PreviewMouseLeftButtonUp" 
+                       PreviewMouseMove="sv_PreviewMouseMove"                        
+                       >
+            
             <ScrollViewer.Style>
                 <Style TargetType="{x:Type ScrollViewer}">
                     <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
