@@ -132,8 +132,8 @@ namespace NINA.View {
                     double dXInTargetPixels = targetNow.Value.X - targetBefore.Value.X;
                     double dYInTargetPixels = targetNow.Value.Y - targetBefore.Value.Y;
 
-                    double multiplicatorX = e.ExtentWidth / grid.Width;
-                    double multiplicatorY = e.ExtentHeight / grid.Height;
+                    double multiplicatorX = e.ExtentWidth / grid.ActualWidth;
+                    double multiplicatorY = e.ExtentHeight / grid.ActualHeight;
 
                     double newOffsetX = sv.HorizontalOffset -
                                         dXInTargetPixels * multiplicatorX;
@@ -152,10 +152,18 @@ namespace NINA.View {
 
         private void ButtonZoomIn_Click(object sender, RoutedEventArgs e) {
             zoom(scaleTransform.ScaleX + 0.25);
+            var centerOfViewport = new Point(sv.ViewportWidth / 2,
+                                                         sv.ViewportHeight / 2);
+            lastCenterPositionOnTarget =
+                  sv.TranslatePoint(centerOfViewport, grid);
+                    
         }
         private void ButtonZoomOut_Click(object sender, RoutedEventArgs e) {
             zoom(scaleTransform.ScaleX - 0.25);
-
+            var centerOfViewport = new Point(sv.ViewportWidth / 2,
+                                                         sv.ViewportHeight / 2);
+            lastCenterPositionOnTarget =
+                  sv.TranslatePoint(centerOfViewport, grid);
         }
         private void ButtonZoomReset_Click(object sender, RoutedEventArgs e) {
             zoom(DEFAULTSCALE);
