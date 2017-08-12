@@ -63,9 +63,9 @@ namespace SetupCygwinInstallAction.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] cygwin {
+        internal static byte[] setup {
             get {
-                object obj = ResourceManager.GetObject("cygwin", resourceCulture);
+                object obj = ResourceManager.GetObject("setup", resourceCulture);
                 return ((byte[])(obj));
             }
         }

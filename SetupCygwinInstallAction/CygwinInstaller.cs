@@ -19,6 +19,8 @@ namespace SetupCygwinInstallAction {
 
 
         static string LOCALAPPDATA = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA";
+        static string CYGWIN_LOC = LOCALAPPDATA + "\\cygwin";
+        static string CYGWIN_SETUP = LOCALAPPDATA + "\\cygwin_setup.exe";
 
         public override void Install(IDictionary stateSaver) {
             base.Install(stateSaver);
@@ -31,12 +33,9 @@ namespace SetupCygwinInstallAction {
                         d.Create();
                     }
 
-                    var zipFile = SetupCygwinInstallAction.Properties.Resources.cygwin;
-                    using (var s = new MemoryStream(zipFile)) {
-                        var a = ZipFile.Read(s);
-                        a.ExtractAll(LOCALAPPDATA);
 
-                    }
+                    var setup = SetupCygwinInstallAction.Properties.Resources.setup;
+                    File.WriteAllBytes(CYGWIN_SETUP, setup);
 
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
@@ -44,13 +43,12 @@ namespace SetupCygwinInstallAction {
                     startInfo.FileName = "cmd.exe";
                     startInfo.UseShellExecute = false;
                     startInfo.RedirectStandardOutput = true;
-                    startInfo.CreateNoWindow = true;
-                    startInfo.Arguments = string.Format("/C {0} --login -c 'mkpasswd -c >> /etc/passwd'", LOCALAPPDATA + "\\cygwin\\bin\\bash.exe");
+                    startInfo.CreateNoWindow = false;
+                    startInfo.Arguments = string.Format("/C {0} -P astrometry.net -K http://astrotortilla.kuntsi.com/tortilla.gpg -s http://astrotortilla.kuntsi.com  -R {1}  -l {2} -O -q", CYGWIN_SETUP, CYGWIN_LOC, LOCALAPPDATA);
                     process.StartInfo = startInfo;
                     process.Start();
-                    while (!process.StandardOutput.EndOfStream) {
-                    }
-
+                    process.WaitForExit();
+                    process.Close();
 
                 } catch (Exception) {
 
