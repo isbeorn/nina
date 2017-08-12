@@ -197,7 +197,7 @@
                               M0.49,0.5 A 0.01,0.01 1 1 1 0.49,0.50001
                               M0.495,0.5 A 0.005,0.005 1 1 1 0.495,0.50001
                               " 
-                              Stretch="Uniform"  Stroke="{StaticResource ButtonBackgroundSelectedBrush}" StrokeThickness="1" />                        
+                              Stretch="Uniform"  Stroke="{StaticResource ButtonBackgroundSelectedBrush}" StrokeThickness="0.5" />                        
                     </Grid>
                     <Grid.LayoutTransform>
                         <ScaleTransform x:Name="scaleTransform" />
