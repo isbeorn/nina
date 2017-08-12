@@ -21,6 +21,7 @@ namespace SetupCygwinInstallAction {
         static string LOCALAPPDATA = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA";
         static string CYGWIN_LOC = LOCALAPPDATA + "\\cygwin";
         static string CYGWIN_SETUP = LOCALAPPDATA + "\\cygwin_setup.exe";
+        static string LOCAL_PACKAGE_DIR = LOCALAPPDATA + "\\cygwincache";
 
         public override void Install(IDictionary stateSaver) {
             base.Install(stateSaver);
@@ -40,16 +41,15 @@ namespace SetupCygwinInstallAction {
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
                     startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-                    startInfo.FileName = "cmd.exe";
+                    startInfo.FileName = CYGWIN_SETUP;
                     startInfo.UseShellExecute = false;
-                    startInfo.RedirectStandardOutput = true;
+                    startInfo.RedirectStandardOutput = false;
                     startInfo.CreateNoWindow = false;
-                    startInfo.Arguments = string.Format("/C {0} -P astrometry.net -K http://astrotortilla.kuntsi.com/tortilla.gpg -s http://astrotortilla.kuntsi.com  -R {1}  -l {2} -O -q", CYGWIN_SETUP, CYGWIN_LOC, LOCALAPPDATA);
+                    startInfo.Arguments = string.Format("-P astrometry.net -K http://astrotortilla.kuntsi.com/tortilla.gpg -s http://astrotortilla.kuntsi.com  -R {1}  -l {2} -O -q", CYGWIN_SETUP, CYGWIN_LOC, LOCAL_PACKAGE_DIR);
                     process.StartInfo = startInfo;
                     process.Start();
                     process.WaitForExit();
                     process.Close();
-
                 } catch (Exception) {
 
                 }

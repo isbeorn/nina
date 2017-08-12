@@ -4533,7 +4533,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:N.I.N.A. - Nighttime Imaging 'N' Astronomy"
         "ProductCode" = "8:{BF9C4BB8-D470-4B9A-B59B-E95D49FEFCB6}"
-        "PackageCode" = "8:{D0EE8953-101B-4224-AEF1-D395DD5DDA01}"
+        "PackageCode" = "8:{8E1F9F0F-4F5D-4F14-830B-53BBC53A7C93}"
         "UpgradeCode" = "8:{5DC025EA-3D24-4E6B-9F82-79718D70896A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -4733,7 +4733,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:Should a local Astrometry Platesolver be installed?"
+                            "Value" = "8:Should a local Astrometry.Net Platesolver be installed? If yes a local cygwin instance including the astrometry.net libraries will be installed. After installation you need to download index files. This can be done in the options menu of the main application. A special thanks to the guys from Astrotortilla that provide a prepared cygwin mirror to use. More info at http://astrotortilla.kuntsi.com/"
                             "DefaultValue" = "8:#1215"
                             "UsePlugInResources" = "11:TRUE"
                             }
