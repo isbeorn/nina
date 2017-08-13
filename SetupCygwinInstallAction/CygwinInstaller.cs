@@ -9,6 +9,8 @@ using System.Windows;
 using System.Threading;
 using Ionic.Zip;
 using System.IO;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 namespace SetupCygwinInstallAction {
     [RunInstaller(true)]
@@ -24,9 +26,7 @@ namespace SetupCygwinInstallAction {
         static string LOCAL_PACKAGE_DIR = LOCALAPPDATA + "\\cygwincache";
 
         public override void Install(IDictionary stateSaver) {
-            base.Install(stateSaver);
             string input = this.Context.Parameters["INSTALLCYGWIN"];
-
             if (input == "1") {
                 try {
                     DirectoryInfo d = new DirectoryInfo(LOCALAPPDATA);
@@ -50,11 +50,35 @@ namespace SetupCygwinInstallAction {
                     process.Start();
                     process.WaitForExit();
                     process.Close();
+
+                    if (Directory.Exists(CYGWIN_LOC)) {
+                        DirectoryInfo dInfo = new DirectoryInfo(CYGWIN_LOC);
+                        DirectorySecurity dSecurity = dInfo.GetAccessControl();
+                        var securityidentifier = new SecurityIdentifier(WellKnownSidType.WorldSid, null);                        
+                        dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.Modify, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+                        dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.Modify, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+                        dInfo.SetAccessControl(dSecurity);
+
+                        GrantAccessToSubFolders(dInfo);
+
+                        foreach (var file in dInfo.GetFiles("*", SearchOption.AllDirectories))
+                            file.Attributes &= ~FileAttributes.ReadOnly;
+                    }
                 } catch (Exception) {
 
                 }
             }
+            base.Install(stateSaver);
+        }
 
+        private void GrantAccessToSubFolders(DirectoryInfo dInfo) {
+            foreach (var dir in dInfo.GetDirectories("*", SearchOption.AllDirectories)) {
+                DirectorySecurity dSecurity = dir.GetAccessControl();
+                var securityidentifier = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+                dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.Modify, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+                dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.Modify, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+                dir.SetAccessControl(dSecurity);                
+            }
         }
 
         public override void Rollback(IDictionary savedState) {
