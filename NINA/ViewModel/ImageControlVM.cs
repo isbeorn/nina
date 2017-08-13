@@ -215,21 +215,24 @@ namespace NINA.ViewModel {
                 string filename = Utility.Utility.GetImageFileString(p);
                 string completefilename = Settings.ImageFilePath + filename;
 
-                
-                if (Settings.FileType == FileTypeEnum.FITS) {
-                    string imagetype = imageType;
-                    if (imagetype == "SNAP") imagetype = "LIGHT";
+                Stopwatch sw = Stopwatch.StartNew();
+                if (Settings.FileType == FileTypeEnum.FITS) {                    
+                    if (imageType == "SNAP") imageType = "LIGHT";
                     SaveFits(completefilename, imageType, exposuretime, filter, binning, ccdtemp);
                 }
                 else if (Settings.FileType == FileTypeEnum.TIFF) {
                     SaveTiff(completefilename);
                 }
                 else if (Settings.FileType == FileTypeEnum.XISF) {
+                    if (imageType == "SNAP") imageType = "LIGHT";
                     SaveXisf(completefilename, imageType, exposuretime, filter, binning, ccdtemp);
                 }
                 else {
                     SaveTiff(completefilename);
                 }
+                sw.Stop();
+                Debug.Print("Time to save: " + sw.Elapsed);
+                sw = null;
 
 
             });
@@ -320,29 +323,32 @@ namespace NINA.ViewModel {
 
         private void SaveXisf(String path, string imagetype, double duration, string filter, string binning, double temp) {
             try {
-                Stopwatch sw = Stopwatch.StartNew();
+                
                                 
                 var header = new XISFHeader();
 
                 header.AddEmbeddedImage(ImgArr, imagetype);
 
-                header.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, binning.Substring(0,1));
-                header.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, binning.Substring(2,1));
-                header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, filter);
+                if (binning != string.Empty && binning.Contains('x')) {
+                    var xbin = binning.Substring(0, 1);
+                    var ybin = binning.Substring(2, 1);
+                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, xbin);                    
+                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, ybin);                    
+                }
+
+                if (!string.IsNullOrEmpty(filter)) {
+                    header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, filter);                    
+                }
 
                 if(!double.IsNaN(temp)) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString());
+                    header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString());                    
                 }                
 
-                header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, duration.ToString());
-                                
+                header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, duration.ToString(System.Globalization.CultureInfo.InvariantCulture));
+
                 XISF img = new XISF(header);
 
-                img.Save(path);
-
-                sw.Stop();
-                Debug.Print("Time to save XISF: " + sw.Elapsed);
-                sw = null;
+                img.Save(path);                
 
                 } catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);

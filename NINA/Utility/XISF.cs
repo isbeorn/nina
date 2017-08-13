@@ -65,21 +65,31 @@ namespace NINA.Utility {
             );
         }
 
-        public void AddMetaDataProperty(string id, string type, string value) {
+        public void AddMetaDataProperty(string id, string type, string value, string comment = "") {
             string[] prop = { id, type };
             AddProperty(MetaData, prop, value);            
         }
 
-        public void AddMetaDataProperty(string[] property, string value) {
-            AddProperty(MetaData, property, value);            
+        public void AddMetaDataProperty(string[] property, string value, string comment = "") {
+            AddProperty(MetaData, property, value, comment);            
         }
 
-        public void AddImageProperty(string[] property, string value) {
+        public void AddImageProperty(string[] property, string value, string comment = "") {
             AddProperty(Image, property, value);
+            if(property.Length > 2) {
+                AddImageFITSKeyword(property[2], value, comment);
+            }
         }
 
-        private void AddProperty(XElement elem, string[] property, string value) {
-            if (property?.Length != 2 || elem == null) {
+        private void AddImageFITSKeyword(string name, string value, string comment = "") {
+            Image.Add(new XElement("FITSKeyword",
+                        new XAttribute("name", name),
+                        new XAttribute("value", value),
+                        new XAttribute("comment", comment)));            
+        }
+
+        private void AddProperty(XElement elem, string[] property, string value, string comment = "") {
+            if (property?.Length < 2 || elem == null) {
                 return;
             }
             var id = property[0];
@@ -89,12 +99,14 @@ namespace NINA.Utility {
                 xelem = new XElement("Property",
                     new XAttribute("id", id),
                     new XAttribute("type", type),
+                    new XAttribute("comment", comment),
                     value
                 );
             } else {
                 xelem = new XElement("Property",
                     new XAttribute("id", id),
                     new XAttribute("type", type),
+                    new XAttribute("comment", comment),
                     new XAttribute("value", value)
                 );
             }
@@ -110,16 +122,19 @@ namespace NINA.Utility {
                     new XAttribute("location", "embedded"),
                     new XAttribute("colorSpace", "Gray")
                     );
-
+            
             byte[] result = new byte[arr.FlatArray.Length * sizeof(ushort)];
             Buffer.BlockCopy(arr.FlatArray, 0, result, 0, result.Length);
-            var s = Convert.ToBase64String(result);
-
-            var data = new XElement("Data", new XAttribute("encoding", "base64"), s);
-
+            
+            var base64 = Convert.ToBase64String(result);
+            
+            var data = new XElement("Data", new XAttribute("encoding", "base64"), base64);
+            
             image.Add(data);
             Image = image;
             Xisf.Add(image);
+
+            AddImageFITSKeyword("IMAGETYP", imageType);            
         }
 
         public void Save(Stream s) {
@@ -135,8 +150,8 @@ namespace NINA.Utility {
             var reserved = new byte[] { 0, 0, 0, 0 };
             s.Write(reserved, 0, reserved.Length);
 
-            using (StreamWriter sw = new StreamWriter(s, Encoding.UTF8)) {
-                sw.Write(Header.ToString());
+            using (System.Xml.XmlWriter sw = System.Xml.XmlWriter.Create(s, new System.Xml.XmlWriterSettings { OmitXmlDeclaration = true, Indent = true, Encoding = Encoding.UTF8 })) {
+                Header.Save(sw);
             }
         }
     }
@@ -218,7 +233,7 @@ namespace NINA.Utility {
 
         public static class Instrument {
             public static readonly string Namespace = "Instrument:";
-            public static readonly string[] ExposureTime = { Namespace + nameof(ExposureTime), "Float32" };
+            public static readonly string[] ExposureTime = { Namespace + nameof(ExposureTime), "Float32", "EXPOSURE" };
 
             public static class Camera {
                 public static readonly string Namespace = Instrument.Namespace + "Camera:";
@@ -228,13 +243,13 @@ namespace NINA.Utility {
                 public static readonly string[] Name = { Namespace + nameof(Name), "String" };
                 public static readonly string[] ReadoutNoise = { Namespace + nameof(ReadoutNoise), "Float32" };
                 public static readonly string[] Rotation = { Namespace + nameof(Rotation), "Float32" };
-                public static readonly string[] XBinning = { Namespace + nameof(XBinning), "Int32" };
-                public static readonly string[] YBinning = { Namespace + nameof(YBinning), "Int32" };
+                public static readonly string[] XBinning = { Namespace + nameof(XBinning), "Int32", "CCDXBIN" };
+                public static readonly string[] YBinning = { Namespace + nameof(YBinning), "Int32", "CCDYBIN" };
             }
 
             public static class Filter {
                 public static readonly string Namespace = Instrument.Namespace + "Filter:";
-                public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+                public static readonly string[] Name = { Namespace + nameof(Name), "String", "FILTER" };
             }
 
             public static class Focuser {
@@ -245,7 +260,7 @@ namespace NINA.Utility {
             public static class Sensor {
                 public static readonly string Namespace = Instrument.Namespace + "Sensor:";
                 public static readonly string[] TargetTemperature = { Namespace + nameof(TargetTemperature), "Float32" };
-                public static readonly string[] Temperature = { Namespace + nameof(Temperature), "Float32" };
+                public static readonly string[] Temperature = { Namespace + nameof(Temperature), "Float32", "TEMPERAT" };
                 public static readonly string[] XPixelSize = { Namespace + nameof(XPixelSize), "Float32" };
                 public static readonly string[] YPixelSize = { Namespace + nameof(YPixelSize), "Float32" };
             }
