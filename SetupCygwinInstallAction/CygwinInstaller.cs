@@ -50,13 +50,17 @@ namespace SetupCygwinInstallAction {
                     process.Start();
                     process.WaitForExit();
                     process.Close();
-
-                    if (Directory.Exists(CYGWIN_LOC)) {
-                        DirectoryInfo dInfo = new DirectoryInfo(CYGWIN_LOC);
+#if DEBUG
+                    int processId = System.Diagnostics.Process.GetCurrentProcess().Id;
+                    string message = string.Format("Please attach the debugger (elevated on Vista or Win 7) to process [{0}].", processId);
+                    System.Windows.Forms.MessageBox.Show(message, "Debug");
+#endif
+                    if (Directory.Exists(LOCALAPPDATA)) {
+                        DirectoryInfo dInfo = new DirectoryInfo(LOCALAPPDATA);
                         DirectorySecurity dSecurity = dInfo.GetAccessControl();
                         var securityidentifier = new SecurityIdentifier(WellKnownSidType.WorldSid, null);                        
-                        dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.Modify, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
-                        dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.Modify, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+                        dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+                        dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.FullControl, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
                         dInfo.SetAccessControl(dSecurity);
 
                         GrantAccessToSubFolders(dInfo);
@@ -75,8 +79,8 @@ namespace SetupCygwinInstallAction {
             foreach (var dir in dInfo.GetDirectories("*", SearchOption.AllDirectories)) {
                 DirectorySecurity dSecurity = dir.GetAccessControl();
                 var securityidentifier = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
-                dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.Modify, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
-                dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.Modify, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+                dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+                dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.FullControl, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
                 dir.SetAccessControl(dSecurity);                
             }
         }
