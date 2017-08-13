@@ -37,10 +37,14 @@ namespace SetupCygwinInstallAction {
 
                     var setup = SetupCygwinInstallAction.Properties.Resources.setup;
                     File.WriteAllBytes(CYGWIN_SETUP, setup);
-
+#if DEBUG
+                    int processId = System.Diagnostics.Process.GetCurrentProcess().Id;
+                    string message = string.Format("Please attach the debugger (elevated on Vista or Win 7) to process [{0}].", processId);
+                    System.Windows.Forms.MessageBox.Show(message, "Debug");
+#endif
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;                                
                     startInfo.FileName = CYGWIN_SETUP;
                     startInfo.UseShellExecute = false;
                     startInfo.RedirectStandardOutput = false;
@@ -50,38 +54,66 @@ namespace SetupCygwinInstallAction {
                     process.Start();
                     process.WaitForExit();
                     process.Close();
-#if DEBUG
-                    int processId = System.Diagnostics.Process.GetCurrentProcess().Id;
-                    string message = string.Format("Please attach the debugger (elevated on Vista or Win 7) to process [{0}].", processId);
-                    System.Windows.Forms.MessageBox.Show(message, "Debug");
-#endif
+
+                    
                     if (Directory.Exists(LOCALAPPDATA)) {
                         DirectoryInfo dInfo = new DirectoryInfo(LOCALAPPDATA);
-                        DirectorySecurity dSecurity = dInfo.GetAccessControl();
-                        var securityidentifier = new SecurityIdentifier(WellKnownSidType.WorldSid, null);                        
-                        dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
-                        dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.FullControl, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
-                        dInfo.SetAccessControl(dSecurity);
-
-                        GrantAccessToSubFolders(dInfo);
-
-                        foreach (var file in dInfo.GetFiles("*", SearchOption.AllDirectories))
-                            file.Attributes &= ~FileAttributes.ReadOnly;
+                        SetAccessControl(dInfo);                        
                     }
-                } catch (Exception) {
+
+                    RebaseCygwinDLLs();
+
+                } catch (Exception ex) {
 
                 }
             }
             base.Install(stateSaver);
         }
 
+        private void RebaseCygwinDLLs() {
+            if(File.Exists(CYGWIN_LOC + "\\bin\\ash.exe")) {
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                startInfo.FileName = CYGWIN_LOC + "\\bin\\ash.exe";
+                startInfo.UseShellExecute = false;
+                startInfo.RedirectStandardOutput = false;
+                startInfo.CreateNoWindow = false;
+                startInfo.Arguments = string.Format("-c /bin/rebaseall -v", CYGWIN_SETUP, CYGWIN_LOC, LOCAL_PACKAGE_DIR);
+                process.StartInfo = startInfo;
+                process.Start();
+                process.WaitForExit();
+                process.Close();
+            }            
+        }
+
+        private void SetAccessControl(DirectoryInfo dInfo) {
+            DirectorySecurity dSecurity = dInfo.GetAccessControl();
+            var securityidentifier = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+            dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+            dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.FullControl, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+            dInfo.SetAccessControl(dSecurity);
+
+            GrantAccessToSubFolders(dInfo);
+
+            foreach (var file in dInfo.GetFiles("*", SearchOption.AllDirectories))
+                file.Attributes &= ~FileAttributes.ReadOnly;
+        }
+
         private void GrantAccessToSubFolders(DirectoryInfo dInfo) {
+            var securityidentifier = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
             foreach (var dir in dInfo.GetDirectories("*", SearchOption.AllDirectories)) {
                 DirectorySecurity dSecurity = dir.GetAccessControl();
-                var securityidentifier = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+                
                 dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
                 dSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.FullControl, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
-                dir.SetAccessControl(dSecurity);                
+                dir.SetAccessControl(dSecurity);                     
+            }
+
+            foreach (var file in dInfo.GetFiles("*", SearchOption.AllDirectories)) {
+                var fileSecurity = File.GetAccessControl(file.FullName);
+                fileSecurity.AddAccessRule(new FileSystemAccessRule(securityidentifier, FileSystemRights.FullControl, AccessControlType.Allow));                
+                File.SetAccessControl(file.FullName, fileSecurity);
             }
         }
 

@@ -4499,7 +4499,7 @@
             "Name" = "8:NINAAppData"
             "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
-            "Transitive" = "11:TRUE"
+            "Transitive" = "11:FALSE"
             "Property" = "8:NINAAPPDATA"
                 "Folders"
                 {
@@ -4533,7 +4533,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:N.I.N.A. - Nighttime Imaging 'N' Astronomy"
         "ProductCode" = "8:{BF9C4BB8-D470-4B9A-B59B-E95D49FEFCB6}"
-        "PackageCode" = "8:{8E1F9F0F-4F5D-4F14-830B-53BBC53A7C93}"
+        "PackageCode" = "8:{E9CA57DD-9641-400B-83A4-84A297A828E9}"
         "UpgradeCode" = "8:{5DC025EA-3D24-4E6B-9F82-79718D70896A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -5460,7 +5460,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1CB6472DBDBF4BD4A442DB7BA216741F"
             {
-            "SourcePath" = "8:..\\SetupCygwinInstallAction\\obj\\Release\\SetupCygwinInstallAction.dll"
+            "SourcePath" = "8:..\\SetupCygwinInstallAction\\obj\\Debug\\SetupCygwinInstallAction.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
@@ -5544,7 +5544,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FF25606544D448558FB12DA74BACB4E5"
             {
-            "SourcePath" = "8:..\\NINA\\obj\\x64\\Release\\NINA.exe"
+            "SourcePath" = "8:..\\NINA\\obj\\x64\\Debug\\NINA.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
