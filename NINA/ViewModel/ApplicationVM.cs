@@ -36,7 +36,7 @@ namespace NINA.ViewModel {
             this.Anchorables.Add(WeatherDataVM);
             this.Anchorables.Add(PHD2VM);
             this.Anchorables.Add(SeqVM);
-            this.Anchorables.Add(CameraVM.FilterWheelVM);
+            this.Anchorables.Add(FilterWheelVM);
             this.Anchorables.Add(ImagingVM);
             this.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
             this.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
@@ -136,6 +136,34 @@ namespace NINA.ViewModel {
             }
             set {
                 _cameraVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private FilterWheelVM _filterWheelVM;
+        public FilterWheelVM FilterWheelVM {
+            get {
+                if (_filterWheelVM == null) {
+                    _filterWheelVM = new FilterWheelVM();
+                }
+                return _filterWheelVM;
+            }
+            set {
+                _filterWheelVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private FocuserVM _focuserVM;
+        public FocuserVM FocuserVM {
+            get {
+                if (_focuserVM == null) {
+                    _focuserVM = new FocuserVM();
+                }
+                return _focuserVM;
+            }
+            set {
+                _focuserVM = value;
                 RaisePropertyChanged();
             }
         }

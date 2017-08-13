@@ -35,7 +35,7 @@ namespace NINA.Model.MyFilterWheel {
                 _id = value;
                 RaisePropertyChanged();
             }
-        }
+        } 
 
         private FilterWheel _filterwheel;
         

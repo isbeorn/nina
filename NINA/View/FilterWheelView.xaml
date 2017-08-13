@@ -8,14 +8,88 @@
              xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Background="{StaticResource BackgroundBrush}" Margin="5">
-        <ListView ItemsSource="{Binding FW.Filters}" SelectedIndex="{Binding FW.Position}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="{ns:Loc LblFilterName}" Width="Auto" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="{ns:Loc LblFocusOffset}" Width="Auto" DisplayMemberBinding="{Binding FocusOffset}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
-    </Grid>
+    <GroupBox>
+        <GroupBox.Header>
+            <UniformGrid Columns="2" >
+                <TextBlock Text="{ns:Loc LblFilterWheel}" VerticalAlignment="Center" FontSize="20"></TextBlock>
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="40" />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox MinHeight="40" 
+                                          IsEnabled="{Binding FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                          ItemsSource="{Binding FilterWheelChooserVM.Devices}" 
+                                          SelectedItem="{Binding FilterWheelChooserVM.SelectedDevice}" 
+                                          SelectedValuePath="Name" 
+                                          DisplayMemberPath="Name"  ></ComboBox>
+                    <Button Grid.Column="1" Width="40" Height="40"  Command="{Binding FilterWheelChooserVM.SetupDialogCommand}"  IsEnabled="{Binding FilterWheelChooserVM.SelectedDevice.HasSetupDialog}">
+                        <Button.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="False">
+                                <TextBlock Text="{ns:Loc LblSettings}" />
+                            </ToolTip>
+                        </Button.ToolTip>
+                        <Grid>
+                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5">
+                            </Path>
+                        </Grid>
+                    </Button>
+                    <Button Grid.Column="2" Height="40" Width="40" Command="{Binding RefreshFWListCommand}">
+                        <Button.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="False">
+                                <TextBlock Text="Rescan devices" />
+                            </ToolTip>
+                        </Button.ToolTip>
+                        <Grid>
+                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
+                            </Path>
+                        </Grid>
+                    </Button>
+                    <Grid Height="40" Width="40" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button Command="{Binding ChooseFWCommand}"  
+                                        IsEnabled="{Binding FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                        Visibility="{Binding FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                            <Button.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="Connect" />
+                                </ToolTip>
+                            </Button.ToolTip>
+                            <Grid>
+                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
+                                </Path>
+                            </Grid>
+                        </Button>
+                        <Grid Visibility="{Binding FW, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Button  Command="{Binding DisconnectCommand}" 
+                                             IsEnabled="{Binding FW.Connected}" 
+                                             Visibility="{Binding FW.Connected, Converter={StaticResource VisibilityConverter}}">
+                                <Button.ToolTip>
+                                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                                        <TextBlock Text="Disconnect" />
+                                    </ToolTip>
+                                </Button.ToolTip>
+                                <Grid>
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
+                                    </Path>
+                                </Grid>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </UniformGrid>
+        </GroupBox.Header>
+        <Grid Grid.Row="1" Background="{StaticResource BackgroundBrush}" Margin="5">
+            <ListView ItemsSource="{Binding FW.Filters}" SelectedIndex="{Binding FW.Position}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="{ns:Loc LblFilterName}" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="{ns:Loc LblFocusOffset}" Width="Auto" DisplayMemberBinding="{Binding FocusOffset}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>        
+    </GroupBox>
+    
 </UserControl>

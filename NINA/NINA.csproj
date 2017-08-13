@@ -223,6 +223,8 @@
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
+    <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
+    <Compile Include="Model\MyFocuser\IFocuser.cs" />
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
@@ -250,6 +252,7 @@
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
+    <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
@@ -341,8 +344,14 @@
     <Compile Include="View\CancellableButtonView.xaml.cs">
       <DependentUpon>CancellableButtonView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\EquipmentView.xaml.cs">
+      <DependentUpon>EquipmentView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FocuserView.xaml.cs">
+      <DependentUpon>FocuserView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FrameFocusView.xaml.cs">
       <DependentUpon>FrameFocusView.xaml</DependentUpon>
@@ -590,7 +599,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\EquipmentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\FilterWheelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FocuserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

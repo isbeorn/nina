@@ -100,20 +100,6 @@ namespace NINA.ViewModel {
             return m * x + b;
         }
 
-        private FilterWheelVM _filterWheelVM;
-        public FilterWheelVM FilterWheelVM {
-            get {
-                if (_filterWheelVM == null) {
-                    _filterWheelVM = new FilterWheelVM();
-                }
-                return _filterWheelVM;
-            }
-            set {
-                _filterWheelVM = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private double GetY(Vector2 point1, Vector2 point2, Vector2 point3, double x) {
             double denom = (point1.X - point2.X) * (point1.X - point3.X) * (point2.X - point3.X);
             double A = (point3.X * (point2.Y - point1.Y) + point2.X * (point1.Y - point3.Y) + point1.X * (point3.Y - point2.Y)) / denom;

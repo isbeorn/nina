@@ -563,5 +563,17 @@ namespace NINA.Properties {
                 this["AlternativeColorSchemaType"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ASCOM.Simulator.Focuser")]
+        public string FocuserId {
+            get {
+                return ((string)(this["FocuserId"]));
+            }
+            set {
+                this["FocuserId"] = value;
+            }
+        }
     }
 }

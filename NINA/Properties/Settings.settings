@@ -137,5 +137,8 @@
     <Setting Name="AlternativeColorSchemaType" Type="System.String" Scope="User">
       <Value Profile="(Default)">Dark</Value>
     </Setting>
+    <Setting Name="FocuserId" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ASCOM.Simulator.Focuser</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -67,4 +67,5 @@
     <s:String x:Key="LblZoomIn">25% hineinzoomen</s:String>
     <s:String x:Key="LblZoomOut">25% herauszoomen</s:String>
     <s:String x:Key="LblZoomStretch">Passe Bildgröße an Fläche an</s:String>
+    <s:String x:Key="LblFocuser">Okularauszug</s:String>
 </ResourceDictionary>

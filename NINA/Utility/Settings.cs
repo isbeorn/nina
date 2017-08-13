@@ -165,6 +165,16 @@ namespace NINA.Utility {
             }
         }
 
+        public static string FocuserId {
+            get {
+                return Properties.Settings.Default.FocuserId;
+            }
+            set {
+                Properties.Settings.Default.FocuserId = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         public static string TelescopeId {
             get {
                 return Properties.Settings.Default.TelescopeId;

@@ -207,7 +207,8 @@
 
 
 
-        <Grid  Grid.Column="1" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+        
+        <Grid Grid.Row="2" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
             <GroupBox Header="{ns:Loc LblCamSettings}" Grid.Column="1" IsEnabled="{Binding Cam.Connected}">
                 <StackPanel>
                     <DockPanel Visibility="{Binding Cam.CanGetGain , Converter={StaticResource VisibilityConverter}}">
@@ -226,85 +227,9 @@
                         <Slider Minimum="{Binding Cam.USBLimitMin}" Maximum="{Binding Cam.USBLimitMax}" SmallChange="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Value="{Binding Cam.USBLimit}" ></Slider>
                     </DockPanel>
                 </StackPanel>
-            </GroupBox>
+            </GroupBox>            
         </Grid>
-        <Grid Grid.Row="2">
-            <GroupBox>
-                <GroupBox.Header>
-                    <UniformGrid Columns="2" >
-                        <TextBlock Text="{ns:Loc LblFilterWheel}" VerticalAlignment="Center" FontSize="20"></TextBlock>
-                        <Grid Margin="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="40" />
-                            </Grid.ColumnDefinitions>
-                            <ComboBox MinHeight="40" 
-                                          IsEnabled="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
-                                          ItemsSource="{Binding FilterWheelVM.FilterWheelChooserVM.Devices}" 
-                                          SelectedItem="{Binding FilterWheelVM.FilterWheelChooserVM.SelectedDevice}" 
-                                          SelectedValuePath="Name" 
-                                          DisplayMemberPath="Name"  ></ComboBox>
-                            <Button Grid.Column="1" Width="40" Height="40"  Command="{Binding FilterWheelVM.FilterWheelChooserVM.SetupDialogCommand}"  IsEnabled="{Binding FilterWheelVM.FilterWheelChooserVM.SelectedDevice.HasSetupDialog}">
-                                <Button.ToolTip>
-                                    <ToolTip ToolTipService.ShowOnDisabled="False">
-                                        <TextBlock Text="{ns:Loc LblSettings}" />
-                                    </ToolTip>
-                                </Button.ToolTip>
-                                <Grid>
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5">
-                                    </Path>
-                                </Grid>
-                            </Button>
-                            <Button Grid.Column="2" Height="40" Width="40" Command="{Binding FilterWheelVM.RefreshFWListCommand}">
-                                <Button.ToolTip>
-                                    <ToolTip ToolTipService.ShowOnDisabled="False">
-                                        <TextBlock Text="Rescan devices" />
-                                    </ToolTip>
-                                </Button.ToolTip>
-                                <Grid>
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource LoopSVG}" Stretch="Uniform" Margin="5">
-                                    </Path>
-                                </Grid>
-                            </Button>
-                            <Grid Height="40" Width="40" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Button Command="{Binding FilterWheelVM.ChooseFWCommand}"  
-                                        IsEnabled="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
-                                        Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                    <Button.ToolTip>
-                                        <ToolTip ToolTipService.ShowOnDisabled="False">
-                                            <TextBlock Text="Connect" />
-                                        </ToolTip>
-                                    </Button.ToolTip>
-                                    <Grid>
-                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
-                                        </Path>
-                                    </Grid>
-                                </Button>
-                                <Grid Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}">
-                                    <Button  Command="{Binding FilterWheelVM.DisconnectCommand}" 
-                                             IsEnabled="{Binding FilterWheelVM.FW.Connected}" 
-                                             Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}">
-                                        <Button.ToolTip>
-                                            <ToolTip ToolTipService.ShowOnDisabled="False">
-                                                <TextBlock Text="Disconnect" />
-                                            </ToolTip>
-                                        </Button.ToolTip>
-                                        <Grid>
-                                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
-                                            </Path>
-                                        </Grid>
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </UniformGrid>
-                </GroupBox.Header>
-                <view:FilterWheelView Grid.Row="1" DataContext="{Binding FilterWheelVM}"></view:FilterWheelView>
-            </GroupBox>
-        </Grid>
-        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+        <Grid Grid.Column="1" Grid.RowSpan="3" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
             <Grid IsEnabled="{Binding Cam.Connected}">
                 <GroupBox Header="{ns:Loc LblTempControl}" IsEnabled="{Binding Cam.CanSetCCDTemperature}" >
                     <Grid>
