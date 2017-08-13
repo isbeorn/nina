@@ -1,0 +1,278 @@
+﻿using NINA.Model.MyCamera;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+
+namespace NINA.Utility {
+    class XISF {
+        XISFHeader Header { get; set; }
+
+        public XISF(XISFHeader header) {
+            this.Header = header;
+        }
+
+        public bool Save(string path) {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+
+
+            using (FileStream fs = new FileStream(path + ".xisf", FileMode.Create)) {
+                /* Header */
+                Header.Save(fs);
+            }
+
+            return true;
+        }
+    }
+
+
+    /**
+     * Specifications: http://pixinsight.com/doc/docs/XISF-1.0-spec/XISF-1.0-spec.html#xisf_header
+     */
+    class XISFHeader {
+        public XDocument Header { get; set; }
+
+        public XElement MetaData { get; set; }
+        public XElement Image { get; set; }
+        private XElement Xisf;
+
+        XNamespace xmlns = XNamespace.Get("http://www.pixinsight.com/xisf");
+        XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
+        XNamespace propertyns = "XISF";
+
+        /* Create Header with embedded Image */
+        public XISFHeader() {
+            Xisf = new XElement(xmlns + "xisf",
+                    new XAttribute("version", "1.0"),
+                    new XAttribute("xmlns", "http://www.pixinsight.com/xisf"),
+                    new XAttribute(XNamespace.Xmlns + "xsi", xsi),
+                    new XAttribute(xsi + "schemaLocation", "http://www.pixinsight.com/xisf http://pixinsight.com/xisf/xisf-1.0.xsd")
+            );
+
+            MetaData = new XElement("Metadata");
+
+            AddMetaDataProperty(XISFMetaDataProperty.XISF.CreationTime, DateTime.UtcNow.ToString("o"));
+            AddMetaDataProperty(XISFMetaDataProperty.XISF.CreatorApplication, "Nighttime Imaging 'N' Astronomy");
+
+            Xisf.Add(MetaData);
+
+            Header = new XDocument(
+                new XDeclaration("1.0", "UTF-8", null),
+                Xisf
+            );
+        }
+
+        public void AddMetaDataProperty(string id, string type, string value) {
+            string[] prop = { id, type };
+            AddProperty(MetaData, prop, value);            
+        }
+
+        public void AddMetaDataProperty(string[] property, string value) {
+            AddProperty(MetaData, property, value);            
+        }
+
+        public void AddImageProperty(string[] property, string value) {
+            AddProperty(Image, property, value);
+        }
+
+        private void AddProperty(XElement elem, string[] property, string value) {
+            if (property?.Length != 2 || elem == null) {
+                return;
+            }
+            var id = property[0];
+            var type = property[1];
+            XElement xelem;
+            if (type == "String") {
+                xelem = new XElement("Property",
+                    new XAttribute("id", id),
+                    new XAttribute("type", type),
+                    value
+                );
+            } else {
+                xelem = new XElement("Property",
+                    new XAttribute("id", id),
+                    new XAttribute("type", type),
+                    new XAttribute("value", value)
+                );
+            }
+            elem.Add(xelem);
+        }
+
+        public void AddEmbeddedImage(ImageArray arr, string imageType) {
+
+            var image = new XElement("Image",
+                    new XAttribute("geometry", arr.Statistics.Width + ":" + arr.Statistics.Height + ":" + "1"),
+                    new XAttribute("sampleFormat", "UInt16"),
+                    new XAttribute("imageType", imageType),
+                    new XAttribute("location", "embedded"),
+                    new XAttribute("colorSpace", "Gray")
+                    );
+
+            byte[] result = new byte[arr.FlatArray.Length * sizeof(ushort)];
+            Buffer.BlockCopy(arr.FlatArray, 0, result, 0, result.Length);
+            var s = Convert.ToBase64String(result);
+
+            var data = new XElement("Data", new XAttribute("encoding", "base64"), s);
+
+            image.Add(data);
+            Image = image;
+            Xisf.Add(image);
+        }
+
+        public void Save(Stream s) {
+            /*XISF0100*/
+            byte[] monolithicsignature = new byte[] { 88, 73, 83, 70, 48, 49, 48, 48 };
+            s.Write(monolithicsignature, 0, monolithicsignature.Length);
+
+            /*Xml header length */
+            var headerlength = BitConverter.GetBytes(System.Text.ASCIIEncoding.UTF8.GetByteCount(Header.ToString()));
+            s.Write(headerlength, 0, headerlength.Length);
+
+            /*reserved space 4 byte must be 0 */
+            var reserved = new byte[] { 0, 0, 0, 0 };
+            s.Write(reserved, 0, reserved.Length);
+
+            using (StreamWriter sw = new StreamWriter(s, Encoding.UTF8)) {
+                sw.Write(Header.ToString());
+            }
+        }
+    }
+
+    class XISFData {
+        public ushort[] Data;
+        public XISFData(ushort[] data) {
+            this.Data = data;
+        }
+    }
+
+    public static class XISFImageProperty {
+        public static class Observer {
+            public static readonly string Namespace = "Observer:";
+            public static readonly string[] EmailAddress = { Namespace + nameof(EmailAddress), "String" };
+            public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+            public static readonly string[] PostalAddress = { Namespace + nameof(PostalAddress), "String" };
+            public static readonly string[] Website = { Namespace + nameof(Website), "String" };
+        }
+
+        public static class Organization {
+            public static readonly string Namespace = "Organization:";
+            public static readonly string[] EmailAddress = { Namespace + nameof(EmailAddress), "String" };
+            public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+            public static readonly string[] PostalAddress = { Namespace + nameof(PostalAddress), "String" };
+            public static readonly string[] Website = { Namespace + nameof(Website), "String" };
+        }
+
+        public static class Observation {
+            public static readonly string Namespace = "Observation:";
+
+            public static readonly string[] CelestialReferenceSystem = { Namespace + nameof(CelestialReferenceSystem), "String" };
+            public static readonly string[] BibliographicReferences = { Namespace + nameof(BibliographicReferences), "String" };
+
+            public static class Center {
+                public static readonly string Namespace = Observation.Namespace + "Center:";
+                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64" };
+                public static readonly string[] RA = { Namespace + nameof(RA), "Float64" };
+                public static readonly string[] X = { Namespace + nameof(X), "Float64" };
+                public static readonly string[] Y = { Namespace + nameof(Y), "Float64" };
+            }
+            public static readonly string[] Description = { Namespace + nameof(Description), "String" };
+            public static readonly string[] Equinox = { Namespace + nameof(Equinox), "Float64" };
+            public static readonly string[] GeodeticReferenceSystem = { Namespace + nameof(GeodeticReferenceSystem), "String" };
+
+            public static class Location {
+                public static readonly string Namespace = Observation.Namespace + "Location:";
+                public static readonly string[] Elevation = { Namespace + nameof(Elevation), "Float64" };
+                public static readonly string[] Latitude = { Namespace + nameof(Latitude), "Float64" };
+                public static readonly string[] Longitude = { Namespace + nameof(Longitude), "Float64" };
+                public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+            }
+
+            public static class Meteorology {
+                public static readonly string Namespace = Observation.Namespace + "Meteorology:";
+                public static readonly string[] AmbientTemperature = { Namespace + nameof(AmbientTemperature), "Float32" };
+                public static readonly string[] AtmosphericPressure = { Namespace + nameof(AtmosphericPressure), "Float32" };
+                public static readonly string[] RelativeHumidity = { Namespace + nameof(RelativeHumidity), "Float32" };
+                public static readonly string[] WindDirection = { Namespace + nameof(WindDirection), "Float32" };
+                public static readonly string[] WindGust = { Namespace + nameof(WindGust), "Float32" };
+                public static readonly string[] WindSpeed = { Namespace + nameof(WindSpeed), "Float32" };
+            }
+
+            public static class Object {
+                public static readonly string Namespace = Observation.Namespace + "Object:";
+                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64" };
+                public static readonly string[] RA = { Namespace + nameof(RA), "Float64" };
+                public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+            }
+
+            public static class Time {
+                public static readonly string Namespace = Observation.Namespace + "Time:";
+                public static readonly string[] End = { Namespace + nameof(End), "TimePoint" };
+                public static readonly string[] Start = { Namespace + nameof(Start), "TimePoint" };
+            }
+
+            public static readonly string[] Title = { Namespace + nameof(Title), "String" };
+        }
+
+        public static class Instrument {
+            public static readonly string Namespace = "Instrument:";
+            public static readonly string[] ExposureTime = { Namespace + nameof(ExposureTime), "Float32" };
+
+            public static class Camera {
+                public static readonly string Namespace = Instrument.Namespace + "Camera:";
+
+                public static readonly string[] Gain = { Namespace + nameof(Gain), "Float32" };
+                public static readonly string[] ISOSpeed = { Namespace + nameof(ISOSpeed), "Int32" };
+                public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+                public static readonly string[] ReadoutNoise = { Namespace + nameof(ReadoutNoise), "Float32" };
+                public static readonly string[] Rotation = { Namespace + nameof(Rotation), "Float32" };
+                public static readonly string[] XBinning = { Namespace + nameof(XBinning), "Int32" };
+                public static readonly string[] YBinning = { Namespace + nameof(YBinning), "Int32" };
+            }
+
+            public static class Filter {
+                public static readonly string Namespace = Instrument.Namespace + "Filter:";
+                public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+            }
+
+            public static class Focuser {
+                public static readonly string Namespace = Instrument.Namespace + "Focuser:";
+                public static readonly string[] Position = { Namespace + nameof(Position), "Float32" };
+            }
+
+            public static class Sensor {
+                public static readonly string Namespace = Instrument.Namespace + "Sensor:";
+                public static readonly string[] TargetTemperature = { Namespace + nameof(TargetTemperature), "Float32" };
+                public static readonly string[] Temperature = { Namespace + nameof(Temperature), "Float32" };
+                public static readonly string[] XPixelSize = { Namespace + nameof(XPixelSize), "Float32" };
+                public static readonly string[] YPixelSize = { Namespace + nameof(YPixelSize), "Float32" };
+            }
+
+            public static class Telescope {
+                public static readonly string Namespace = Instrument.Namespace + "Telescope:";
+                public static readonly string[] Aperture = { Namespace + nameof(Aperture), "Float32" };
+                public static readonly string[] CollectingArea = { Namespace + nameof(CollectingArea), "Float32" };
+                public static readonly string[] FocalLength = { Namespace + nameof(FocalLength), "Float32" };
+                public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+            }
+        }
+
+        public static class Image {
+            public static readonly string Namespace = "Image:";
+            public static readonly string[] FrameNumber = { Namespace + nameof(FrameNumber), "UInt32" };
+            public static readonly string[] GroupId = { Namespace + nameof(GroupId), "String" };
+            public static readonly string[] SubgroupId = { Namespace + nameof(SubgroupId), "String" };
+        }
+    }
+
+    public static class XISFMetaDataProperty {
+
+        public static class XISF {
+            public static readonly string Namespace = "XISF:";
+            public static readonly string[] CreationTime = { Namespace + nameof(CreationTime), "TimePoint" };
+            public static readonly string[] CreatorApplication = { Namespace + nameof(CreatorApplication), "String" };
+        }
+    }
+}

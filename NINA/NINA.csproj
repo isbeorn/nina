@@ -246,6 +246,7 @@
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
     <Compile Include="Utility\EDSDK\EDSDK.cs" />
     <Compile Include="Utility\Mediator.cs" />
+    <Compile Include="Utility\XISF.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
