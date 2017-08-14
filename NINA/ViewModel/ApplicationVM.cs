@@ -26,8 +26,7 @@ namespace NINA.ViewModel {
 
         }  
         
-        public void InitAvalonDockLayout() {
-            //this.Documents.Add(ImagingVM);
+        public void InitAvalonDockLayout() {            
             this.Documents.Add(ImagingVM.ImageControl);
             this.Anchorables.Add(CameraVM);
             this.Anchorables.Add(TelescopeVM);
@@ -37,10 +36,10 @@ namespace NINA.ViewModel {
             this.Anchorables.Add(PHD2VM);
             this.Anchorables.Add(SeqVM);
             this.Anchorables.Add(FilterWheelVM);
+            this.Anchorables.Add(FocuserVM);
             this.Anchorables.Add(ImagingVM);
             this.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
-            this.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
-            //this.Documents.Add();
+            this.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);            
         }
 
         private Xceed.Wpf.AvalonDock.DockingManager _dockmanager;

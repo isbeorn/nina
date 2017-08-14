@@ -393,10 +393,12 @@
                         <Button Grid.Row="2" Grid.Column="3" Height="80" Width="80" Command="{Binding ParkCommand}" HorizontalAlignment="Right" Visibility="{Binding Telescope.AtPark, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                             <TextBlock Text ="PARK" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                         </Button>
-
-                        <Button Grid.Row="2" Grid.Column="3" Height="80" Width="80" Command="{Binding UnparkCommand}" HorizontalAlignment="Right" Visibility="{Binding Telescope.AtPark, Converter={StaticResource VisibilityConverter}}">
-                            <TextBlock Text ="UNPARK" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                        </Button>
+                        <Grid HorizontalAlignment="Right" Grid.Row="2" Grid.Column="3" Height="80" Width="80" Visibility="{Binding Telescope, Converter={StaticResource NullToVisibilityConverter}}" >
+                            <Button Command="{Binding UnparkCommand}"  Visibility="{Binding Telescope.AtPark, Converter={StaticResource VisibilityConverter}}">
+                                <TextBlock Text ="UNPARK" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            </Button>
+                        </Grid>
+                        
                     </Grid>
                 </GroupBox>
             </Grid>

@@ -159,10 +159,13 @@
                                     Visibility="{Binding Focuser.IsMoving, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                                             <TextBlock Text ="Move" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                                         </Button>
-                                        <Button Margin="5" Height="25" Width="50" Command="{Binding HaltFocuserCommand}" HorizontalAlignment="Left"
+                                        <Grid Visibility="{Binding Focuser, Converter={StaticResource NullToVisibilityConverter}}"
+                                              Margin="5" Height="25" Width="50" HorizontalAlignment="Left">
+                                        <Button  Command="{Binding HaltFocuserCommand}" 
                                     Visibility="{Binding Focuser.IsMoving, Converter={StaticResource VisibilityConverter}}">
                                             <TextBlock Text ="Halt" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                                         </Button>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </StackPanel>

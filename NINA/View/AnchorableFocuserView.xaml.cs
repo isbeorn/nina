@@ -15,10 +15,10 @@ using System.Windows.Shapes;
 
 namespace NINA.View {
     /// <summary>
-    /// Interaction logic for EquipmentView.xaml
+    /// Interaction logic for AnchorableFocuserView.xaml
     /// </summary>
-    public partial class EquipmentView : UserControl {
-        public EquipmentView() {
+    public partial class AnchorableFocuserView : UserControl {
+        public AnchorableFocuserView() {
             InitializeComponent();
         }
     }

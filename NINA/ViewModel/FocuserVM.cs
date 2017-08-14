@@ -14,7 +14,7 @@ namespace NINA.ViewModel {
 
         public FocuserVM () {
             Title = "Focuser";
-            ContentId = nameof(FilterWheelVM);
+            ContentId = nameof(FocuserVM);
             CanClose = false;
             ChooseFocuserCommand = new RelayCommand(ChooseFocuser);
             DisconnectCommand = new RelayCommand(DisconnectFocuser);

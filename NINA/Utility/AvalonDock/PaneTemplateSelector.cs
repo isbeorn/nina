@@ -39,6 +39,8 @@ namespace NINA.Utility.AvalonDock {
 
         public DataTemplate WeatherDataTemplate { get; set; }
 
+        public DataTemplate FocuserTemplate { get; set; }
+
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
 
@@ -77,6 +79,9 @@ namespace NINA.Utility.AvalonDock {
 
             if (item is WeatherDataVM)
                 return WeatherDataTemplate;
+
+            if (item is FocuserVM)
+                return FocuserTemplate;
 
             return base.SelectTemplate(item, container);
         }

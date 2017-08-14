@@ -305,6 +305,9 @@
     <Compile Include="View\AnchorableFilterWheelView.xaml.cs">
       <DependentUpon>AnchorableFilterWheelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\AnchorableFocuserView.xaml.cs">
+      <DependentUpon>AnchorableFocuserView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\AnchorableImageHistoryView.xaml.cs">
       <DependentUpon>AnchorableImageHistoryView.xaml</DependentUpon>
     </Compile>
@@ -343,9 +346,6 @@
     </Compile>
     <Compile Include="View\CancellableButtonView.xaml.cs">
       <DependentUpon>CancellableButtonView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\EquipmentView.xaml.cs">
-      <DependentUpon>EquipmentView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
@@ -547,6 +547,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\AnchorableFocuserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AnchorableImageHistoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -596,10 +600,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\CancellableButtonView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\EquipmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -16,62 +16,48 @@
             <TabControl TabStripPlacement="Left">                
                 <TabItem>
                     <TabItem.Header>
-                        <UniformGrid Columns="2" Rows="2">
-                            <Grid>
-                                <Grid  Height="25" Width="25">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5"  >
-                                    </Path>
-                                </Grid>
+                        <Grid>
+                            <Grid  Height="50" Width="50">
+                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5"  >
+                                </Path>
+                            </Grid>
 
-                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
-                                        Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                        Opacity="0.5" 
+                            <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
+                                    Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                    Opacity="0.5" 
+                                    Data="{StaticResource PowerSVG}" 
+                                    Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
+                            </Path>
+
+                            <Grid Visibility="{Binding CameraVM.Cam, Converter={StaticResource NullToVisibilityConverter}}">
+                                <Path Fill="{StaticResource ButtonForegroundBrush}" 
+                                        Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource VisibilityConverter}}"                                          
                                         Data="{StaticResource PowerSVG}" 
                                         Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
                                 </Path>
-
-                                <Grid Visibility="{Binding CameraVM.Cam, Converter={StaticResource NullToVisibilityConverter}}">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" 
-                                            Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource VisibilityConverter}}"                                          
-                                            Data="{StaticResource PowerSVG}" 
-                                            Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                                    </Path>
-                                </Grid>                            
-                            </Grid>
-                            <Grid>
-                                <Grid  Height="25" Width="25">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5" >
-                                    </Path>
-                                </Grid>
-                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
-                                            Visibility="{Binding  TelescopeVM.Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                            Opacity="0.5" 
-                                            Data="{StaticResource PowerSVG}" 
-                                            Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                                </Path>
-
-                                <Grid Visibility="{Binding TelescopeVM.Telescope, Converter={StaticResource NullToVisibilityConverter}}">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" 
-                                                Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource VisibilityConverter}}"                                          
-                                                Data="{StaticResource PowerSVG}" 
-                                                Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                                    </Path>
-                                </Grid>
-                            </Grid>
-
+                            </Grid>                            
+                        </Grid>
+                    </TabItem.Header>
+                    <TabItem.Content>                        
+                        <view:CameraView DataContext="{Binding CameraVM}" ></view:CameraView>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <UniformGrid Columns="2" Height="50">
                             <Grid>
                                 <Grid  Height="25" Width="25">
                                     <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource FWSVG}" Stretch="Uniform" Margin="5" >
                                     </Path>
                                 </Grid>
-                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
+                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Margin="0 0 0 5"
                                             Visibility="{Binding  FilterWheelVM.FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
                                             Opacity="0.5" 
                                             Data="{StaticResource PowerSVG}" 
                                             Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
                                 </Path>
 
-                                <Grid Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}">
+                                <Grid Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}" Margin="0 0 0 5">
                                     <Path Fill="{StaticResource ButtonForegroundBrush}" 
                                                 Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}"                                          
                                                 Data="{StaticResource PowerSVG}" 
@@ -79,20 +65,19 @@
                                     </Path>
                                 </Grid>
                             </Grid>
-
                             <Grid>
                                 <Grid  Height="25" Width="25">
                                     <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource FocusSVG}" Stretch="Uniform" Margin="5" >
                                     </Path>
                                 </Grid>
-                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
+                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}"  Margin="0 0 0 5"
                                             Visibility="{Binding  FocuserVM.Focuser.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
                                             Opacity="0.5" 
                                             Data="{StaticResource PowerSVG}" 
                                             Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
                                 </Path>
 
-                                <Grid Visibility="{Binding FocuserVM.Focuser, Converter={StaticResource NullToVisibilityConverter}}">
+                                <Grid Visibility="{Binding FocuserVM.Focuser, Converter={StaticResource NullToVisibilityConverter}}" Margin="0 0 0 5">
                                     <Path Fill="{StaticResource ButtonForegroundBrush}" 
                                                 Visibility="{Binding FocuserVM.Focuser.Connected, Converter={StaticResource VisibilityConverter}}"                                          
                                                 Data="{StaticResource PowerSVG}" 
@@ -103,8 +88,38 @@
                         </UniformGrid>
                     </TabItem.Header>
                     <TabItem.Content>
-                        <view:EquipmentView DataContext="{Binding}" />
-                        <!--<view:CameraView DataContext="{Binding CameraVM}" ></view:CameraView>-->
+                        <UniformGrid Columns="2">
+                            <view:FilterWheelView DataContext="{Binding FilterWheelVM}" />
+                            <view:FocuserView DataContext="{Binding FocuserVM}" />
+                        </UniformGrid>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <Grid>
+                            <Grid  Height="50" Width="50">
+                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5" >
+                                </Path>
+                            </Grid>
+                            <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
+                                            Visibility="{Binding  TelescopeVM.Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                            Opacity="0.5" 
+                                            Data="{StaticResource PowerSVG}" 
+                                            Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
+                            </Path>
+
+                            <Grid Visibility="{Binding TelescopeVM.Telescope, Converter={StaticResource NullToVisibilityConverter}}">
+                                <Path Fill="{StaticResource ButtonForegroundBrush}" 
+                                                Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource VisibilityConverter}}"                                          
+                                                Data="{StaticResource PowerSVG}" 
+                                                Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
+                                </Path>
+                            </Grid>
+                        </Grid>
+                    </TabItem.Header>
+                    <TabItem.Content>                        
+                        <view:TelescopeView DataContext="{Binding TelescopeVM}" />                            
+                        
                     </TabItem.Content>
                 </TabItem>
                 <TabItem>

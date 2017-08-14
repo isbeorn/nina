@@ -131,6 +131,12 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.WeatherDataTemplate>
 
+                    <util:PaneTemplateSelector.FocuserTemplate>
+                        <DataTemplate>
+                            <view:AnchorableFocuserView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.FocuserTemplate>
+
                 </util:PaneTemplateSelector>
             </dock:DockingManager.LayoutItemTemplateSelector>
 

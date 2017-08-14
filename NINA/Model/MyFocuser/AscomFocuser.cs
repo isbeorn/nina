@@ -41,19 +41,31 @@ namespace NINA.Model.MyFocuser {
         
         public bool IsMoving {
             get {
-                return _focuser.IsMoving;
+                if(Connected) {
+                    return _focuser.IsMoving;
+                } else {
+                    return false;
+                }                
             }
         }
 
         public int MaxIncrement {
             get {
-                return _focuser.MaxIncrement;
+                if(Connected) {
+                    return _focuser.MaxIncrement;
+                } else {
+                    return -1;
+                }                
             }
         }
 
         public int MaxStep {
             get {
-                return _focuser.MaxStep;
+                if(Connected) {
+                    return _focuser.MaxStep;
+                } else {
+                    return -1;
+                }                
             }
         }
 
@@ -150,8 +162,8 @@ namespace NINA.Model.MyFocuser {
             }
             private set {
                 try {
-                    _connected = value;
                     _focuser.Connected = value;
+                    _connected = value;                    
 
                 } catch (Exception ex) {
                     Notification.ShowError(ex.Message + "\n Please reconnect focuser!");
