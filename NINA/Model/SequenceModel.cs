@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Model {
-    class SequenceModel :BaseINPC {
+    public class SequenceModel :BaseINPC {
         public static class ImageTypes {
             public const string LIGHT = "LIGHT";
             public const string FLAT = "FLAT";

@@ -294,10 +294,9 @@ namespace NINA.ViewModel {
         private async Task<bool> Save(SequenceModel seq, ushort framenr,  CancellationTokenSource tokenSource, IProgress<string> progress) {
             progress.Report(ExposureStatus.SAVING);
 
-            var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;            
-            
+            var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
 
-            await ImageControl.SaveToDisk(seq.ExposureTime, filter, seq.ImageType, seq.Binning.Name, Cam.CCDTemperature, framenr, tokenSource, progress);
+            await ImageControl.SaveToDisk(seq, framenr, tokenSource, progress);            
                         
             return true;
         }

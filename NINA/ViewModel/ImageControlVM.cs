@@ -1,4 +1,8 @@
-﻿using NINA.Model.MyCamera;
+﻿using NINA.Model;
+using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
+using NINA.Model.MyFocuser;
+using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.ViewModel;
 using nom.tam.fits;
@@ -39,6 +43,19 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 DetectStars = (bool)o;
             }, MediatorMessages.ChangeDetectStars);
+
+            Mediator.Instance.Register((object o) => {
+                Cam = (ICamera)o;
+            }, MediatorMessages.CameraChanged);
+            Mediator.Instance.Register((object o) => {
+                FW = (IFilterWheel)o;
+            }, MediatorMessages.FilterWheelChanged);
+            Mediator.Instance.Register((object o) => {
+                Focuser = (IFocuser)o;
+            }, MediatorMessages.FocuserChanged);
+            Mediator.Instance.Register((object o) => {
+                Telescope = (ITelescope)o;
+            }, MediatorMessages.TelescopeChanged);
         }
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
@@ -152,6 +169,11 @@ namespace NINA.ViewModel {
             }
         }
 
+        private ICamera Cam { get; set; }
+        private IFilterWheel FW { get; set; }
+        private ITelescope Telescope { get; set; }
+        private IFocuser Focuser { get; set; }
+
         public async Task PrepareImage(IProgress<string> progress, CancellationTokenSource canceltoken) {
             Image = null;
             GC.Collect();
@@ -186,6 +208,14 @@ namespace NINA.ViewModel {
             source = ImageAnalysis.ConvertBitmap(img, System.Windows.Media.PixelFormats.Gray16);
             source.Freeze();
             return source;
+        }
+
+        public async Task<bool> SaveToDisk(SequenceModel sequence, ushort framenr, CancellationTokenSource tokenSource, IProgress<string> progress) {            
+
+            var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
+
+            return await SaveToDisk(sequence.ExposureTime, filter, sequence.ImageType, sequence.Binning.Name, Cam.CCDTemperature, framenr, tokenSource, progress);
+
         }
 
 
