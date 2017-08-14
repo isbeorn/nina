@@ -22,8 +22,6 @@ namespace NINA.ViewModel {
             RegisterMediatorMessages();
 
             InitAvalonDockLayout();
-            Notification.Initialize();
-
         }  
         
         public void InitAvalonDockLayout() {            

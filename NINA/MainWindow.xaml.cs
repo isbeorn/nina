@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -22,6 +23,10 @@ namespace NINA {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
+            SourceInitialized += (s, a) =>
+            {
+                Notification.ShowInformation("Welcome to Nighttime Imaging 'N' Astronomy!");
+            };
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e) {
