@@ -25,7 +25,7 @@
                     </DataGridTextColumn>
                     <DataGridTextColumn Width="*" Header="Time" Binding="{Binding ExposureTime}"></DataGridTextColumn>
                     <DataGridComboBoxColumn Width="*" Header="Type" ItemsSource="{Binding Source={StaticResource AppVM}, Path=SeqVM.ImageTypes}" SelectedItemBinding="{Binding ImageType, Mode=TwoWay}" />
-                    <DataGridComboBoxColumn Width="*" Header="Filter" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters}" DisplayMemberPath="Name" SelectedItemBinding="{Binding FilterType}" SelectedValuePath="Name"></DataGridComboBoxColumn>
+                    <DataGridComboBoxColumn Width="*" Header="Filter" ItemsSource="{Binding Source={StaticResource AppVM}, Path=FilterWheelVM.FW.Filters}" DisplayMemberPath="Name" SelectedItemBinding="{Binding FilterType}" SelectedValuePath="Name"></DataGridComboBoxColumn>
                     <DataGridComboBoxColumn Width="*" Header="Binning" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}" DisplayMemberPath="Name" SelectedItemBinding="{Binding Binning}" SelectedValuePath="Name"></DataGridComboBoxColumn>
                     <DataGridTemplateColumn Width="*" Header="Dither">
                         <DataGridTemplateColumn.CellTemplate>

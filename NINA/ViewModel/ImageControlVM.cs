@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -248,14 +249,14 @@ namespace NINA.ViewModel {
                 Stopwatch sw = Stopwatch.StartNew();
                 if (Settings.FileType == FileTypeEnum.FITS) {                    
                     if (imageType == "SNAP") imageType = "LIGHT";
-                    SaveFits(completefilename, imageType, exposuretime, filter, binning, ccdtemp);
+                    SaveFits(completefilename, imageType, exposuretime);
                 }
                 else if (Settings.FileType == FileTypeEnum.TIFF) {
                     SaveTiff(completefilename);
                 }
                 else if (Settings.FileType == FileTypeEnum.XISF) {
                     if (imageType == "SNAP") imageType = "LIGHT";
-                    SaveXisf(completefilename, imageType, exposuretime, filter, binning, ccdtemp);
+                    SaveXisf(completefilename, imageType, exposuretime);
                 }
                 else {
                     SaveTiff(completefilename);
@@ -271,7 +272,7 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private void SaveFits(string path, string imagetype, double duration, string filter, string binning, double temp) {
+        private void SaveFits(string path, string imagetype, double duration) {
             try {                
                 Header h = new Header();
                 h.AddValue("SIMPLE", "T", "C# FITS");
@@ -282,25 +283,28 @@ namespace NINA.ViewModel {
                 h.AddValue("BZERO", 32768, "");
                 h.AddValue("EXTEND", "T", "Extensions are permitted");
 
+                var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
                 if (!string.IsNullOrEmpty(filter)) {
                     h.AddValue("FILTER", filter, "");
                 }
 
-                if (binning != string.Empty && binning.Contains('x')) {
-                    h.AddValue("CCDXBIN", binning.Split('x')[0], "");
-                    h.AddValue("CCDYBIN", binning.Split('x')[1], "");
-                    h.AddValue("XBINNING", binning.Split('x')[0], "");
-                    h.AddValue("YBINNING", binning.Split('x')[1], "");
+                if(Cam != null) {
+                    if (Cam.BinX > 0) {                        
+                        h.AddValue("XBINNING", Cam.BinX, "");                        
+                    }
+                    if(Cam.BinY > 0) {                        
+                        h.AddValue("YBINNING", Cam.BinY, "");
+                    }                    
                 }
-                h.AddValue("TEMPERAT", temp, "");
+
+                var temp = Cam.CCDTemperature;
+                if (!double.IsNaN(temp)) {
+                    h.AddValue("TEMPERAT", temp, "");
+                }               
 
                 h.AddValue("IMAGETYP", imagetype, "");
-
                 h.AddValue("EXPOSURE", duration, "");
-                /*
-                 
-                 h.AddValue("OBJECT", 32768, "");
-                 */
+                
 
                 short[][] curl = new short[this.ImgArr.Statistics.Height][];
                 int idx = 0;
@@ -351,7 +355,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SaveXisf(String path, string imagetype, double duration, string filter, string binning, double temp) {
+        private void SaveXisf(String path, string imagetype, double duration) {
             try {
                 
                                 
@@ -359,19 +363,56 @@ namespace NINA.ViewModel {
 
                 header.AddEmbeddedImage(ImgArr, imagetype);
 
-                if (binning != string.Empty && binning.Contains('x')) {
-                    var xbin = binning.Substring(0, 1);
-                    var ybin = binning.Substring(2, 1);
-                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, xbin);                    
-                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, ybin);                    
+                header.AddImageProperty(XISFImageProperty.Observation.Time.Start, DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture));
+
+                if (Telescope != null) {
+                    header.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, Telescope.Name);
+
+                    /* Location */
+                    header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, Telescope.SiteLatitude.ToString(CultureInfo.InvariantCulture));
+                    header.AddImageProperty(XISFImageProperty.Observation.Location.Longitude, Telescope.SiteLongitude.ToString(CultureInfo.InvariantCulture));
+                    header.AddImageProperty(XISFImageProperty.Observation.Location.Elevation, Telescope.SiteElevation.ToString(CultureInfo.InvariantCulture));
+                    /* convert to degrees */
+                    var RA = Telescope.RightAscension * 360 / 24;
+                    header.AddImageProperty(XISFImageProperty.Observation.Center.RA, RA.ToString(CultureInfo.InvariantCulture), string.Empty, false);
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Telescope.RightAscensionString);
+
+                    header.AddImageProperty(XISFImageProperty.Observation.Center.Dec, Telescope.Declination.ToString(CultureInfo.InvariantCulture), string.Empty, false);
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Telescope.DeclinationString);
                 }
 
+                if(Cam != null) {
+                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, Cam.Name);
+
+                    if(Cam.Gain > 0) {
+                        header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, Cam.Gain.ToString());
+                    }                   
+
+                    if(Cam.BinX > 0) {
+                        header.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, Cam.BinX.ToString());
+                    }
+                    if(Cam.BinY > 0) {
+                        header.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, Cam.BinY.ToString());
+                    }                    
+
+                    var temp = Cam.CCDTemperature;
+                    if (!double.IsNaN(temp)) {
+                        header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString(CultureInfo.InvariantCulture));
+                    }                    
+
+                    if(Cam.PixelSizeX > 0) {
+                        header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, Cam.PixelSizeX.ToString(CultureInfo.InvariantCulture));
+                    }
+                    
+                    if(Cam.PixelSizeY > 0) {
+                        header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, Cam.PixelSizeY.ToString(CultureInfo.InvariantCulture));
+                    }                    
+                }
+
+
+                var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
                 if (!string.IsNullOrEmpty(filter)) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, filter);                    
-                }
-
-                if(!double.IsNaN(temp)) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString());                    
                 }                
 
                 header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, duration.ToString(System.Globalization.CultureInfo.InvariantCulture));

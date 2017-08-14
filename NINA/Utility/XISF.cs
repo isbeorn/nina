@@ -74,14 +74,14 @@ namespace NINA.Utility {
             AddProperty(MetaData, property, value, comment);            
         }
 
-        public void AddImageProperty(string[] property, string value, string comment = "") {
+        public void AddImageProperty(string[] property, string value, string comment = "", bool autoaddfits = true) {
             AddProperty(Image, property, value);
-            if(property.Length > 2) {
+            if(property.Length > 2 && autoaddfits) {
                 AddImageFITSKeyword(property[2], value, comment);
             }
         }
 
-        private void AddImageFITSKeyword(string name, string value, string comment = "") {
+        public void AddImageFITSKeyword(string name, string value, string comment = "") {
             Image.Add(new XElement("FITSKeyword",
                         new XAttribute("name", name),
                         new XAttribute("value", value),
@@ -188,8 +188,8 @@ namespace NINA.Utility {
 
             public static class Center {
                 public static readonly string Namespace = Observation.Namespace + "Center:";
-                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64" };
-                public static readonly string[] RA = { Namespace + nameof(RA), "Float64" };
+                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64", "OBJCTDEC" };
+                public static readonly string[] RA = { Namespace + nameof(RA), "Float64", "OBJCTRA" };
                 public static readonly string[] X = { Namespace + nameof(X), "Float64" };
                 public static readonly string[] Y = { Namespace + nameof(Y), "Float64" };
             }
@@ -200,8 +200,8 @@ namespace NINA.Utility {
             public static class Location {
                 public static readonly string Namespace = Observation.Namespace + "Location:";
                 public static readonly string[] Elevation = { Namespace + nameof(Elevation), "Float64" };
-                public static readonly string[] Latitude = { Namespace + nameof(Latitude), "Float64" };
-                public static readonly string[] Longitude = { Namespace + nameof(Longitude), "Float64" };
+                public static readonly string[] Latitude = { Namespace + nameof(Latitude), "Float64", "SITELAT" };
+                public static readonly string[] Longitude = { Namespace + nameof(Longitude), "Float64", "SITELONG" };
                 public static readonly string[] Name = { Namespace + nameof(Name), "String" };
             }
 
@@ -225,7 +225,7 @@ namespace NINA.Utility {
             public static class Time {
                 public static readonly string Namespace = Observation.Namespace + "Time:";
                 public static readonly string[] End = { Namespace + nameof(End), "TimePoint" };
-                public static readonly string[] Start = { Namespace + nameof(Start), "TimePoint" };
+                public static readonly string[] Start = { Namespace + nameof(Start), "TimePoint", "DATE-OBS" };
             }
 
             public static readonly string[] Title = { Namespace + nameof(Title), "String" };
@@ -238,13 +238,13 @@ namespace NINA.Utility {
             public static class Camera {
                 public static readonly string Namespace = Instrument.Namespace + "Camera:";
 
-                public static readonly string[] Gain = { Namespace + nameof(Gain), "Float32" };
+                public static readonly string[] Gain = { Namespace + nameof(Gain), "Float32", "EGAIN" };
                 public static readonly string[] ISOSpeed = { Namespace + nameof(ISOSpeed), "Int32" };
                 public static readonly string[] Name = { Namespace + nameof(Name), "String" };
                 public static readonly string[] ReadoutNoise = { Namespace + nameof(ReadoutNoise), "Float32" };
                 public static readonly string[] Rotation = { Namespace + nameof(Rotation), "Float32" };
-                public static readonly string[] XBinning = { Namespace + nameof(XBinning), "Int32", "CCDXBIN" };
-                public static readonly string[] YBinning = { Namespace + nameof(YBinning), "Int32", "CCDYBIN" };
+                public static readonly string[] XBinning = { Namespace + nameof(XBinning), "Int32", "XBINNING" };
+                public static readonly string[] YBinning = { Namespace + nameof(YBinning), "Int32", "YBINNING" };
             }
 
             public static class Filter {
@@ -260,7 +260,7 @@ namespace NINA.Utility {
             public static class Sensor {
                 public static readonly string Namespace = Instrument.Namespace + "Sensor:";
                 public static readonly string[] TargetTemperature = { Namespace + nameof(TargetTemperature), "Float32" };
-                public static readonly string[] Temperature = { Namespace + nameof(Temperature), "Float32", "TEMPERAT" };
+                public static readonly string[] Temperature = { Namespace + nameof(Temperature), "Float32", "CCD-TEMP" };
                 public static readonly string[] XPixelSize = { Namespace + nameof(XPixelSize), "Float32" };
                 public static readonly string[] YPixelSize = { Namespace + nameof(YPixelSize), "Float32" };
             }
