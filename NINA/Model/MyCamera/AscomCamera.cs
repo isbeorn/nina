@@ -952,6 +952,24 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int Offset {
+            get {
+                return -1;
+            }
+            set {
+
+            }
+        }
+
+        public int USBLimit {
+            get {
+                return -1;
+            }
+            set {
+
+            }
+        }
+
         public void SetupDialog() {
             if(HasSetupDialog) {
                 try {

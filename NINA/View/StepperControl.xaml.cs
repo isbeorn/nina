@@ -83,5 +83,14 @@ namespace NINA.View {
                 Value = MinValue;
             }
         }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e) {
+            if (Value < MinValue) {
+                Value = MinValue;
+            }
+            if (Value > MaxValue) {
+                Value = MaxValue;
+            }
+        }
     }
 }

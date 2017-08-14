@@ -385,7 +385,12 @@ namespace NINA.ViewModel {
                     header.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, Cam.Name);
 
                     if(Cam.Gain > 0) {
-                        header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, Cam.Gain.ToString());
+                        /* Add offset as a comment. There is no dedicated keyword for this */
+                        string offset = string.Empty;
+                        if(Cam.Offset > 0) {
+                            offset = Cam.Offset.ToString();
+                        }                        
+                        header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, Cam.Gain.ToString(), offset);
                     }                   
 
                     if(Cam.BinX > 0) {

@@ -563,7 +563,23 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int Offset {
+            get {
+                return -1;
+            }
+            set {
 
+            }
+        }
+
+        public int USBLimit {
+            get {
+                return -1;
+            }
+            set {
+
+            }
+        }
 
         public void StopExposure() {
             var err = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);

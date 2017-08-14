@@ -35,6 +35,8 @@ namespace NINA.Model.MyCamera {
         double CoolerPower { get; }
         string CameraState { get; }
 
+        int Offset { get; set; }
+        int USBLimit { get; set; }
         bool CanSetOffset { get; }
         bool CanSetUSBLimit { get; }
         bool CanGetGain { get; }

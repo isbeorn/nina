@@ -67,7 +67,7 @@ namespace NINA.Utility {
 
         public void AddMetaDataProperty(string id, string type, string value, string comment = "") {
             string[] prop = { id, type };
-            AddProperty(MetaData, prop, value);            
+            AddProperty(MetaData, prop, value, comment);            
         }
 
         public void AddMetaDataProperty(string[] property, string value, string comment = "") {
@@ -75,7 +75,7 @@ namespace NINA.Utility {
         }
 
         public void AddImageProperty(string[] property, string value, string comment = "", bool autoaddfits = true) {
-            AddProperty(Image, property, value);
+            AddProperty(Image, property, value, comment);
             if(property.Length > 2 && autoaddfits) {
                 AddImageFITSKeyword(property[2], value, comment);
             }
