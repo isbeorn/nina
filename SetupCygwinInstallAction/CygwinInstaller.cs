@@ -140,11 +140,16 @@ namespace SetupCygwinInstallAction {
 
             try {
                 System.IO.DirectoryInfo di = new DirectoryInfo(LOCALAPPDATA);
-
+                
                 foreach (FileInfo file in di.GetFiles()) {
                     file.Delete();
                 }
                 foreach (DirectoryInfo dir in di.GetDirectories()) {
+                    if(dir.FullName == CYGWIN_LOC) {
+                        if( System.Windows.Forms.MessageBox.Show("Local Astrometry.Net Client detected. Uninstall?", "", System.Windows.Forms.MessageBoxButtons.YesNo) != System.Windows.Forms.DialogResult.Yes) {
+                            continue;
+                        }
+                    }
                     dir.Delete(true);
                 }
                 di.Delete();

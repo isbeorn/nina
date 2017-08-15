@@ -29,13 +29,13 @@
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" IsEnabled="{Binding Focuser.TempCompAvailable}" MinHeight="30">                    
                         <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="Temperature Compensation" VerticalAlignment="Center"></TextBlock>
+                            <TextBlock Text="Temp Comp:" VerticalAlignment="Center"></TextBlock>
                             <CheckBox IsChecked="{Binding Focuser.TempComp}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                         </UniformGrid>                    
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">                    
                         <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Temperature :"/></TextBlock>
+                            <TextBlock><Run Text="Temperature:"/></TextBlock>
                             <TextBlock Text="{Binding Focuser.Temperature }" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>                    
                 </Border>
