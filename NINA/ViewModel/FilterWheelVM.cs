@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -18,6 +19,32 @@ namespace NINA.ViewModel {
             ChooseFWCommand = new RelayCommand(ChooseFW);
             DisconnectCommand = new RelayCommand(DisconnectFW);
             RefreshFWListCommand = new RelayCommand(RefreshFWList);
+
+            RegisterMediatorMessages();
+        }
+
+        private void RegisterMediatorMessages() {
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                var args = (object[])o;                
+                if(args[0] != null) {
+                    CancellationTokenSource token = null;
+                    if (args.Length > 1) { token = (CancellationTokenSource)args[1]; }
+                    short filter = (short)args[0];
+                    await ChangeFilter(filter, token);                    
+                }                              
+            }, AsyncMediatorMessages.ChangeFilterWheelPosition);
+        }
+
+        private async Task ChangeFilter(short position, CancellationTokenSource token = null) {
+            if (FW?.Connected == true && FW?.Position != position) {
+                FW.Position = position;
+                await Task.Run(async () => {
+                    while (FW.Position == -1) {
+                        await Task.Delay(100);
+                        token?.Token.ThrowIfCancellationRequested();
+                    }
+                });
+            }
         }
 
         private void RefreshFWList(object obj) {

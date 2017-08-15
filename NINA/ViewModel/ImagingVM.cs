@@ -76,9 +76,6 @@ namespace NINA.ViewModel {
                 Telescope = (ITelescope)o;
             }, MediatorMessages.TelescopeChanged);
             
-            Mediator.Instance.Register((object o) => {
-                FW = (IFilterWheel)o;
-            }, MediatorMessages.FilterWheelChanged);
         }
 
         private string _status;
@@ -146,18 +143,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private IFilterWheel _fW;
-        public IFilterWheel FW {
-            get {
-                return _fW;
-            } set {
-                _fW = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
-
         private double _snapExposureDuration;
         public double SnapExposureDuration {
             get {
@@ -221,21 +206,9 @@ namespace NINA.ViewModel {
         
 
         private async Task ChangeFilter(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
-            if (seq.FilterType != null && FW != null && FW.Connected && FW.Position != seq.FilterType.Position) {
-                await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    FW.Position = seq.FilterType.Position;
-                }));
 
-
-                progress.Report(ExposureStatus.FILTERCHANGE);
-                await Task.Run(() => {
-                    while (FW.Position == -1) {
-                        //Wait for filter change;                        
-                        tokenSource.Token.ThrowIfCancellationRequested();
-                    }
-                });
-                tokenSource.Token.ThrowIfCancellationRequested();                
-            }
+            progress.Report(ExposureStatus.FILTERCHANGE);
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ChangeFilterWheelPosition, new object[] { seq.FilterType?.Position, tokenSource });            
         }
 
         private void SetBinning(SequenceModel seq) {
@@ -292,9 +265,7 @@ namespace NINA.ViewModel {
 
 
         private async Task<bool> Save(SequenceModel seq, ushort framenr,  CancellationTokenSource tokenSource, IProgress<string> progress) {
-            progress.Report(ExposureStatus.SAVING);
-
-            var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
+            progress.Report(ExposureStatus.SAVING);           
 
             await ImageControl.SaveToDisk(seq, framenr, tokenSource, progress);            
                         
