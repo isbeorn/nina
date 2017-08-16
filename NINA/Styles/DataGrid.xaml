@@ -79,7 +79,7 @@
                 </MultiTrigger.Conditions>
 
                 <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}"/>
-                <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}"/>
+                <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
             </MultiTrigger>
 
             <MultiTrigger>
@@ -89,7 +89,7 @@
                 </MultiTrigger.Conditions>
 
                 <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}"/>
-                <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}"/>
+                <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
             </MultiTrigger>
             <Trigger Property="SortDirection" Value="Ascending">
                 <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
@@ -160,7 +160,7 @@
                              Value="True">
                             <Setter TargetName="DGR_Border"
                                 Property="Background"
-                                Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                Value="{StaticResource SecondaryBrush}" />
                         </Trigger>
                         <Trigger Property="IsSelected"
                              Value="True">
@@ -179,7 +179,7 @@
         <Setter Property="TextBlock.TextAlignment" Value="Center" />
         <Style.Triggers>
             <Trigger Property="DataGridCell.IsSelected" Value="True">
-                <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
                 <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
             </Trigger>
         </Style.Triggers>
