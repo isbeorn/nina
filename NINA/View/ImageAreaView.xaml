@@ -21,6 +21,7 @@
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="40" />
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0"  Margin="2.5" Click="ButtonZoomIn_Click">
                 <Button.ToolTip>
@@ -56,7 +57,15 @@
                 </Grid>
             </Button>
 
-            <ToggleButton Grid.Column="4" IsChecked="{Binding ShowCrossHair}"  Margin="2.5">
+
+            <local:CancellableButtonView  Grid.Column="4" Margin="2.5"
+                                          MyCommand="{Binding PlateSolveImageCommand}" 
+                                          MyCancelCommand="{Binding CancelPlateSolveImageCommand}" 
+                                          MyButtonImage="{StaticResource  PlatesolveSVG}" 
+                                          MyCancelButtonImage="{StaticResource CancelSVG}"                                            
+                                          MyButtonTooltip="{ns:Loc LblPlateSolveImage}"/>            
+
+            <ToggleButton Grid.Column="5" IsChecked="{Binding ShowCrossHair}"  Margin="2.5">
                 <ToggleButton.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc LblTooltipCrossHair}" />
@@ -86,7 +95,7 @@
                 </ToggleButton.Style>
             </ToggleButton>
             
-            <ToggleButton Grid.Column="5" IsChecked="{Binding AutoStretch}"  Margin="2.5">
+            <ToggleButton Grid.Column="6" IsChecked="{Binding AutoStretch}"  Margin="2.5">
                 <ToggleButton.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc LblTooltipAutoStretch}" />
@@ -116,7 +125,7 @@
                 </ToggleButton.Style>
             </ToggleButton>            
 
-            <ToggleButton Grid.Column="6" IsChecked="{Binding DetectStars}"  Margin="2.5">
+            <ToggleButton Grid.Column="7" IsChecked="{Binding DetectStars}"  Margin="2.5">
                 <ToggleButton.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc LblTooltipDetectStars}" />

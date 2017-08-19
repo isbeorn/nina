@@ -71,6 +71,15 @@ namespace NINA.ViewModel {
                 await BlindSolveWithCapture(duration, progress, token, filter, binning);
             }, AsyncMediatorMessages.BlindSolveWithCapture);
 
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                var args = (object[])o;                
+                IProgress<string> progress = (IProgress<string>)args[0];
+                CancellationTokenSource token = (CancellationTokenSource)args[1];                
+                await BlindSolve(progress, token);
+            }, AsyncMediatorMessages.BlindSolve);
+
+
+            
             Mediator.Instance.Register((object o) => {
                 sync();
             }, MediatorMessages.Sync);
@@ -265,68 +274,71 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> BlindSolve(IProgress<string> progress, CancellationTokenSource canceltoken) {
-            bool fullresolution = true;
-            if (Settings.PlateSolverType == PlateSolverEnum.ASTROMETRY_NET) {
-                fullresolution = Settings.UseFullResolutionPlateSolve;
-                Platesolver = new AstrometryPlateSolver(ASTROMETRYNETURL, Settings.AstrometryAPIKey);
-            } else if (Settings.PlateSolverType == PlateSolverEnum.LOCAL) {
+            if(Image != null) {
+                bool fullresolution = true;
+                if (Settings.PlateSolverType == PlateSolverEnum.ASTROMETRY_NET) {
+                    fullresolution = Settings.UseFullResolutionPlateSolve;
+                    Platesolver = new AstrometryPlateSolver(ASTROMETRYNETURL, Settings.AstrometryAPIKey);
+                } else if (Settings.PlateSolverType == PlateSolverEnum.LOCAL) {
 
-                if (Settings.AnsvrSearchRadius > 0 && Telescope?.Connected == true) {
-                    Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * Cam.BinX, Settings.AnsvrSearchRadius, new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours));
+                    if (Settings.AnsvrSearchRadius > 0 && Telescope?.Connected == true) {
+                        Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * Cam.BinX, Settings.AnsvrSearchRadius, new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours));
+                    } else {
+                        Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * Cam.BinX);
+                    }
+
+                }
+
+
+                BitmapSource source = Image;
+                BitmapFrame image = null;
+                /* Resize Image */
+                if (!fullresolution && source.Width > 1400) {
+                    var factor = 1400 / source.Width;
+                    int width = (int)(source.Width * factor);
+                    int height = (int)(source.Height * factor);
+                    var margin = 0;
+                    var rect = new Rect(margin, margin, width - margin * 2, height - margin * 2);
+
+                    var group = new DrawingGroup();
+                    RenderOptions.SetBitmapScalingMode(group, BitmapScalingMode.HighQuality);
+                    group.Children.Add(new ImageDrawing(source, rect));
+
+                    var drawingVisual = new DrawingVisual();
+                    using (var drawingContext = drawingVisual.RenderOpen())
+                        drawingContext.DrawDrawing(group);
+
+                    var resizedImage = new RenderTargetBitmap(
+                        width, height,         // Resized dimensions
+                        96, 96,                // Default DPI values
+                        PixelFormats.Default); // Default pixel format
+                    resizedImage.Render(drawingVisual);
+
+                    image = BitmapFrame.Create(resizedImage);
                 } else {
-                    Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * Cam.BinX);
+                    image = BitmapFrame.Create(source);
                 }
 
-            }
 
 
-            BitmapSource source = Image;
-            BitmapFrame image = null;
-            /* Resize Image */
-            if (!fullresolution && source.Width > 1400) {
-                var factor = 1400 / source.Width;
-                int width = (int)(source.Width * factor);
-                int height = (int)(source.Height * factor);
-                var margin = 0;
-                var rect = new Rect(margin, margin, width - margin * 2, height - margin * 2);
+                /* Read image into memorystream */
+                var ms = new MemoryStream();
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(image);
 
-                var group = new DrawingGroup();
-                RenderOptions.SetBitmapScalingMode(group, BitmapScalingMode.HighQuality);
-                group.Children.Add(new ImageDrawing(source, rect));
+                encoder.Save(ms);
+                ms.Seek(0, SeekOrigin.Begin);
 
-                var drawingVisual = new DrawingVisual();
-                using (var drawingContext = drawingVisual.RenderOpen())
-                    drawingContext.DrawDrawing(group);
-
-                var resizedImage = new RenderTargetBitmap(
-                    width, height,         // Resized dimensions
-                    96, 96,                // Default DPI values
-                    PixelFormats.Default); // Default pixel format
-                resizedImage.Render(drawingVisual);
-
-                image = BitmapFrame.Create(resizedImage);
+                return await Task<bool>.Run(async () => {
+                    PlateSolveResult = await Platesolver.BlindSolve(ms, progress, canceltoken);
+                    if (!PlateSolveResult.Success) {
+                        Notification.ShowWarning("Platesolve failed");
+                    }
+                    return PlateSolveResult.Success;
+                });
             } else {
-                image = BitmapFrame.Create(source);
+                return false;
             }
-
-
-
-            /* Read image into memorystream */
-            var ms = new MemoryStream();
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(image);
-
-            encoder.Save(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-
-            return await Task<bool>.Run(async () => {
-                PlateSolveResult = await Platesolver.BlindSolve(ms, progress, canceltoken);
-                if (!PlateSolveResult.Success) {
-                    Notification.ShowWarning("Platesolve failed");
-                }
-                return PlateSolveResult.Success;
-            });
-
         }
 
         private CancellationTokenSource _blindeSolveCancelToken;

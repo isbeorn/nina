@@ -79,7 +79,8 @@ namespace NINA.Utility {
         BlindSolveWithCapture = 3,
         Sync = 4,
         SyncTelescopeAndReslew = 5,
-        ChangeFilterWheelPosition = 6
+        ChangeFilterWheelPosition = 6,
+        BlindSolve = 7
     }
 
 }

@@ -63,7 +63,7 @@
             
                 <local:CameraControlView                             
                                 MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes, Mode=TwoWay}"
-                                MyFilters="{Binding Source={StaticResource AppVM}, Path=CameraVM.FilterWheelVM.FW.Filters, Mode=TwoWay}"
+                                MyFilters="{Binding Source={StaticResource AppVM}, Path=FilterWheelVM.FW.Filters, Mode=TwoWay}"
                                 MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
                                 MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
                                 MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />

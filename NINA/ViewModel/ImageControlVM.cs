@@ -34,8 +34,33 @@ namespace NINA.ViewModel {
             ShowCrossHair = false;
             AutoStretchFactor = 0.20;
 
+            PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage());
+            CancelPlateSolveImageCommand = new RelayCommand(CancelPlateSolveImage);
+
             RegisterMediatorMessages();
         }
+
+        private async Task<bool> PlateSolveImage() {
+            if (Image != null) {
+
+
+                _plateSolveToken = new CancellationTokenSource();
+                if (!AutoStretch) {
+                    AutoStretch = true;                    
+                }
+                var args = new object[] { new Progress<string>(p => Status = p), _plateSolveToken };
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.BlindSolve, args);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        private void CancelPlateSolveImage(object o) {
+            _plateSolveToken?.Cancel();
+        }
+
+        private CancellationTokenSource _plateSolveToken;
 
         private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
@@ -69,14 +94,14 @@ namespace NINA.ViewModel {
             set {
                 _imgArr = value;
                 RaisePropertyChanged();
-                ImgStatisticsVM.Add(ImgArr.Statistics);                
+                ImgStatisticsVM.Add(ImgArr.Statistics);
             }
         }
-        
+
         private ImageHistoryVM _imgHistoryVM;
         public ImageHistoryVM ImgHistoryVM {
             get {
-                if(_imgHistoryVM == null) {
+                if (_imgHistoryVM == null) {
                     _imgHistoryVM = new ImageHistoryVM();
                 }
                 return _imgHistoryVM;
@@ -90,7 +115,7 @@ namespace NINA.ViewModel {
         private ImageStatisticsVM _imgStatisticsVM;
         public ImageStatisticsVM ImgStatisticsVM {
             get {
-                if(_imgStatisticsVM == null) {
+                if (_imgStatisticsVM == null) {
                     _imgStatisticsVM = new ImageStatisticsVM();
                 }
                 return _imgStatisticsVM;
@@ -120,7 +145,7 @@ namespace NINA.ViewModel {
             }
             set {
                 _autoStretch = value;
-                RaisePropertyChanged();                
+                RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, _autoStretch);
                 PrepareImageHelper();
             }
@@ -169,7 +194,7 @@ namespace NINA.ViewModel {
             }
             set {
                 _detectStars = value;
-                if(_detectStars) { _autoStretch = true; RaisePropertyChanged(nameof(AutoStretch)); }
+                if (_detectStars) { _autoStretch = true; RaisePropertyChanged(nameof(AutoStretch)); }
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.DetectStarsChanged, _detectStars);
                 PrepareImageHelper();
@@ -180,10 +205,11 @@ namespace NINA.ViewModel {
         public string Status {
             get {
                 return _status;
-            } 
+            }
             set {
                 _status = value;
                 RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.StatusUpdate, _status);
             }
         }
 
@@ -191,9 +217,11 @@ namespace NINA.ViewModel {
         private IFilterWheel FW { get; set; }
         private ITelescope Telescope { get; set; }
         private IFocuser Focuser { get; set; }
+        public AsyncCommand<bool> PlateSolveImageCommand { get; private set; }
+        public ICommand CancelPlateSolveImageCommand { get; private set; }
 
-        public async Task PrepareImage(IProgress<string> progress, CancellationTokenSource canceltoken) {            
-            if(ImgArr != null) {
+        public async Task PrepareImage(IProgress<string> progress, CancellationTokenSource canceltoken) {
+            if (ImgArr != null) {
                 BitmapSource source = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
 
                 if (DetectStars) {
@@ -202,7 +230,7 @@ namespace NINA.ViewModel {
                     source = await StretchAsync(source);
                 }
 
-                await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {                    
+                await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                     Image = null;
                     GC.Collect();
                     Image = source;
@@ -228,7 +256,7 @@ namespace NINA.ViewModel {
             return source;
         }
 
-        public async Task<bool> SaveToDisk(SequenceModel sequence, ushort framenr, CancellationTokenSource tokenSource, IProgress<string> progress) {            
+        public async Task<bool> SaveToDisk(SequenceModel sequence, ushort framenr, CancellationTokenSource tokenSource, IProgress<string> progress) {
 
             var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
 
@@ -244,7 +272,7 @@ namespace NINA.ViewModel {
                 List<OptionsVM.ImagePattern> p = new List<OptionsVM.ImagePattern>();
 
                 p.Add(new OptionsVM.ImagePattern("$$FILTER$$", "Filtername", filter));
-               
+
                 p.Add(new OptionsVM.ImagePattern("$$EXPOSURETIME$$", "Exposure Time in seconds", string.Format("{0:0.00}", exposuretime)));
                 p.Add(new OptionsVM.ImagePattern("$$DATE$$", "Date with format YYYY-MM-DD", DateTime.Now.ToString("yyyy-MM-dd")));
                 p.Add(new OptionsVM.ImagePattern("$$DATETIME$$", "Date with format YYYY-MM-DD_HH-mm-ss", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")));
@@ -253,8 +281,7 @@ namespace NINA.ViewModel {
 
                 if (binning == string.Empty) {
                     p.Add(new OptionsVM.ImagePattern("$$BINNING$$", "Binning of the camera", "1x1"));
-                }
-                else {
+                } else {
                     p.Add(new OptionsVM.ImagePattern("$$BINNING$$", "Binning of the camera", binning));
                 }
 
@@ -264,18 +291,15 @@ namespace NINA.ViewModel {
                 string completefilename = Settings.ImageFilePath + filename;
 
                 Stopwatch sw = Stopwatch.StartNew();
-                if (Settings.FileType == FileTypeEnum.FITS) {                    
+                if (Settings.FileType == FileTypeEnum.FITS) {
                     if (imageType == "SNAP") imageType = "LIGHT";
                     SaveFits(completefilename, imageType, exposuretime);
-                }
-                else if (Settings.FileType == FileTypeEnum.TIFF) {
+                } else if (Settings.FileType == FileTypeEnum.TIFF) {
                     SaveTiff(completefilename);
-                }
-                else if (Settings.FileType == FileTypeEnum.XISF) {
+                } else if (Settings.FileType == FileTypeEnum.XISF) {
                     if (imageType == "SNAP") imageType = "LIGHT";
                     SaveXisf(completefilename, imageType, exposuretime);
-                }
-                else {
+                } else {
                     SaveTiff(completefilename);
                 }
                 sw.Stop();
@@ -290,7 +314,7 @@ namespace NINA.ViewModel {
         }
 
         private void SaveFits(string path, string imagetype, double duration) {
-            try {                
+            try {
                 Header h = new Header();
                 h.AddValue("SIMPLE", "T", "C# FITS");
                 h.AddValue("BITPIX", 16, "");
@@ -305,23 +329,23 @@ namespace NINA.ViewModel {
                     h.AddValue("FILTER", filter, "");
                 }
 
-                if(Cam != null) {
-                    if (Cam.BinX > 0) {                        
-                        h.AddValue("XBINNING", Cam.BinX, "");                        
+                if (Cam != null) {
+                    if (Cam.BinX > 0) {
+                        h.AddValue("XBINNING", Cam.BinX, "");
                     }
-                    if(Cam.BinY > 0) {                        
+                    if (Cam.BinY > 0) {
                         h.AddValue("YBINNING", Cam.BinY, "");
-                    }                    
+                    }
                 }
 
                 var temp = Cam.CCDTemperature;
                 if (!double.IsNaN(temp)) {
                     h.AddValue("TEMPERAT", temp, "");
-                }               
+                }
 
                 h.AddValue("IMAGETYP", imagetype, "");
                 h.AddValue("EXPOSURE", duration, "");
-                
+
 
                 short[][] curl = new short[this.ImgArr.Statistics.Height][];
                 int idx = 0;
@@ -343,8 +367,7 @@ namespace NINA.ViewModel {
                     fits.Write(fs);
                 }
 
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
                 Logger.Error(ex.Message, ex.StackTrace);
 
@@ -364,8 +387,7 @@ namespace NINA.ViewModel {
                     encoder.Frames.Add(BitmapFrame.Create(bmpSource));
                     encoder.Save(fs);
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
                 Logger.Error(ex.Message, ex.StackTrace);
 
@@ -374,8 +396,8 @@ namespace NINA.ViewModel {
 
         private void SaveXisf(String path, string imagetype, double duration) {
             try {
-                
-                                
+
+
                 var header = new XISFHeader();
 
                 header.AddEmbeddedImage(ImgArr, imagetype);
@@ -398,52 +420,52 @@ namespace NINA.ViewModel {
                     header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Telescope.DeclinationString);
                 }
 
-                if(Cam != null) {
+                if (Cam != null) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, Cam.Name);
 
-                    if(Cam.Gain > 0) {
+                    if (Cam.Gain > 0) {
                         /* Add offset as a comment. There is no dedicated keyword for this */
                         string offset = string.Empty;
-                        if(Cam.Offset > 0) {
+                        if (Cam.Offset > 0) {
                             offset = Cam.Offset.ToString();
-                        }                        
+                        }
                         header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, Cam.Gain.ToString(), offset);
-                    }                   
+                    }
 
-                    if(Cam.BinX > 0) {
+                    if (Cam.BinX > 0) {
                         header.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, Cam.BinX.ToString());
                     }
-                    if(Cam.BinY > 0) {
+                    if (Cam.BinY > 0) {
                         header.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, Cam.BinY.ToString());
-                    }                    
+                    }
 
                     var temp = Cam.CCDTemperature;
                     if (!double.IsNaN(temp)) {
                         header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString(CultureInfo.InvariantCulture));
-                    }                    
+                    }
 
-                    if(Cam.PixelSizeX > 0) {
+                    if (Cam.PixelSizeX > 0) {
                         header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, Cam.PixelSizeX.ToString(CultureInfo.InvariantCulture));
                     }
-                    
-                    if(Cam.PixelSizeY > 0) {
+
+                    if (Cam.PixelSizeY > 0) {
                         header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, Cam.PixelSizeY.ToString(CultureInfo.InvariantCulture));
-                    }                    
+                    }
                 }
 
 
                 var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
                 if (!string.IsNullOrEmpty(filter)) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, filter);                    
-                }                
+                    header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, filter);
+                }
 
                 header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, duration.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
                 XISF img = new XISF(header);
 
-                img.Save(path);                
+                img.Save(path);
 
-                } catch (Exception ex) {
+            } catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
                 Logger.Error(ex.Message, ex.StackTrace);
 
