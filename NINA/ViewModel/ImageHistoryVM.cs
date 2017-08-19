@@ -30,7 +30,7 @@ namespace NINA.ViewModel {
         }
 
         public void Add(ImageStatistics stats) {
-            if(stats?.DetectedStars > 0) {
+            if(stats?.DetectedStars > 0 && stats.Id == 0) {
                 if (this.ImgStatHistory.Count > 25) {
                     this.ImgStatHistory.RemoveAt(0);
                 }

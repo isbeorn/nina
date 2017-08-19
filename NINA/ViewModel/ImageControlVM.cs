@@ -1,4 +1,5 @@
-﻿using NINA.Model;
+﻿using Microsoft.Win32;
+using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
@@ -31,8 +32,7 @@ namespace NINA.ViewModel {
             AutoStretch = false;
             DetectStars = false;
             ShowCrossHair = false;
-            AutoStretchFactor = 0.25;
-
+            AutoStretchFactor = 0.20;
 
             RegisterMediatorMessages();
         }
@@ -69,7 +69,7 @@ namespace NINA.ViewModel {
             set {
                 _imgArr = value;
                 RaisePropertyChanged();
-                ImgStatisticsVM.Add(ImgArr.Statistics);
+                ImgStatisticsVM.Add(ImgArr.Statistics);                
             }
         }
         
@@ -120,10 +120,25 @@ namespace NINA.ViewModel {
             }
             set {
                 _autoStretch = value;
-                RaisePropertyChanged();
+                RaisePropertyChanged();                
                 Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, _autoStretch);
+                PrepareImageHelper();
             }
         }
+
+        private void PrepareImageHelper() {
+            _prepImageCancellationSource?.Cancel();
+            try {
+                _prepImageTask?.Wait(_prepImageCancellationSource.Token);
+            } catch (OperationCanceledException) {
+
+            }
+            _prepImageCancellationSource = new CancellationTokenSource();
+            _prepImageTask = Task.Run(() => PrepareImage(null, _prepImageCancellationSource));
+        }
+
+        private Task _prepImageTask;
+        private CancellationTokenSource _prepImageCancellationSource;
 
         private double _autoStretchFactor;
         public double AutoStretchFactor {
@@ -154,8 +169,10 @@ namespace NINA.ViewModel {
             }
             set {
                 _detectStars = value;
+                if(_detectStars) { _autoStretch = true; RaisePropertyChanged(nameof(AutoStretch)); }
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.DetectStarsChanged, _detectStars);
+                PrepareImageHelper();
             }
         }
 
@@ -175,23 +192,23 @@ namespace NINA.ViewModel {
         private ITelescope Telescope { get; set; }
         private IFocuser Focuser { get; set; }
 
-        public async Task PrepareImage(IProgress<string> progress, CancellationTokenSource canceltoken) {
-            Image = null;
-            GC.Collect();
-            BitmapSource source = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
-            
-            if (DetectStars) {
-                source = await ImageAnalysis.DetectStarsAsync(source, ImgArr, progress, canceltoken);
-            } else if (AutoStretch) {
-                source = await StretchAsync(source);
-            }
-            
-            await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                ImgHistoryVM.Add(ImgStatisticsVM.Statistics);                
-                Image = source;
-            }));
+        public async Task PrepareImage(IProgress<string> progress, CancellationTokenSource canceltoken) {            
+            if(ImgArr != null) {
+                BitmapSource source = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
 
-            
+                if (DetectStars) {
+                    source = await ImageAnalysis.DetectStarsAsync(source, ImgArr, progress, canceltoken);
+                } else if (AutoStretch) {
+                    source = await StretchAsync(source);
+                }
+
+                await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {                    
+                    Image = null;
+                    GC.Collect();
+                    Image = source;
+                    ImgHistoryVM.Add(ImgArr.Statistics);
+                }));
+            }
         }
 
         private async Task<BitmapSource> StretchAsync(BitmapSource source) {

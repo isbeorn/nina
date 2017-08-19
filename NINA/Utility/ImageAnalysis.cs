@@ -137,7 +137,7 @@ namespace NINA.Utility {
             try {
 
                 Stopwatch overall = Stopwatch.StartNew();
-                progress.Report("Preparing image for star detection");
+                progress?.Report("Preparing image for star detection");
 
                 Stopwatch sw = Stopwatch.StartNew();                
 
@@ -153,7 +153,7 @@ namespace NINA.Utility {
 
                 Bitmap bmp = orig.Clone(new Rectangle(0, 0, orig.Width, orig.Height), System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
                 
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken?.Token.ThrowIfCancellationRequested();
 
 
                 Debug.Print("Time for image conversion and stretch: " + sw.Elapsed);
@@ -176,17 +176,17 @@ namespace NINA.Utility {
                 /* prepare image for structure detection */
                 
                 new CannyEdgeDetector().ApplyInPlace(bmp);
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken?.Token.ThrowIfCancellationRequested();
                 new SISThreshold().ApplyInPlace(bmp);
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken?.Token.ThrowIfCancellationRequested();
                 new BinaryDilatation3x3().ApplyInPlace(bmp);
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken?.Token.ThrowIfCancellationRequested();
                 
 
                 Debug.Print("Time for image preparation: " + sw.Elapsed);
                 sw.Restart();
 
-                progress.Report("Detecting structures");
+                progress?.Report("Detecting structures");
 
                 /* detect structures */
                 int minStarSize = (int)Math.Floor( 5 * resizefactor);
@@ -196,7 +196,7 @@ namespace NINA.Utility {
                 BlobCounter blobCounter = new BlobCounter();
                 blobCounter.ProcessImage(bmp);
 
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken?.Token.ThrowIfCancellationRequested();
                 Debug.Print("Time for structure detection: " + sw.Elapsed);
                 sw.Restart();
 
@@ -210,10 +210,10 @@ namespace NINA.Utility {
                 List<Star> starlist = new List<Star>();
 
 
-                progress.Report("Analyzing stars");
+                progress?.Report("Analyzing stars");
                 double value;
                 foreach (Blob blob in blobs) {
-                    canceltoken.Token.ThrowIfCancellationRequested();
+                    canceltoken?.Token.ThrowIfCancellationRequested();
 
                     if (blob.Rectangle.Width > maxStarSize || blob.Rectangle.Height > maxStarSize || blob.Rectangle.Width < minStarSize || blob.Rectangle.Height < minStarSize) {
                         continue;
@@ -241,36 +241,37 @@ namespace NINA.Utility {
                     starlist.Add(s);
 
                 }
-                canceltoken.Token.ThrowIfCancellationRequested();
-                progress.Report("Annotating image");
+                canceltoken?.Token.ThrowIfCancellationRequested();
+                progress?.Report("Annotating image");
                 Bitmap newBitmap = new Bitmap(orig.Width, orig.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
                 Graphics graphics = Graphics.FromImage(newBitmap);
 
                 graphics.DrawImage(orig, 0, 0);
 
+                if(starlist.Count > 0) { 
+                    int r, offset = 10;
+                    float textposx, textposy;
+                    var m = (from star in starlist select star.HFR).Average();
+                    iarr.Statistics.HFR = m;
+                    iarr.Statistics.DetectedStars = starlist.Count;
+                    Debug.Print("Mean HFR: " + m);
+                    var threshhold = 200;
+                    if (starlist.Count > threshhold) {
+                        starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
+                        starlist = starlist.GetRange(0, threshhold);
+                    }
 
-                int r, offset = 10;
-                float textposx, textposy;
-                var m = (from star in starlist select star.HFR).Average();
-                iarr.Statistics.HFR = m;
-                iarr.Statistics.DetectedStars = starlist.Count;
-                Debug.Print("Mean HFR: " + m);
-                var threshhold = 200;
-                if (starlist.Count > threshhold) {
-                    starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
-                    starlist = starlist.GetRange(0, threshhold);
+                    foreach (Star star in starlist) {
+                        canceltoken?.Token.ThrowIfCancellationRequested();
+                        r = (int)Math.Ceiling(star.radius);
+                        textposx = star.Position.X - offset;
+                        textposy = star.Position.Y - offset;
+                        graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width , star.Rectangle.Height ));
+                        graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
+                    }
                 }
 
-                foreach (Star star in starlist) {
-                    canceltoken.Token.ThrowIfCancellationRequested();
-                    r = (int)Math.Ceiling(star.radius);
-                    textposx = star.Position.X - offset;
-                    textposy = star.Position.Y - offset;
-                    graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width , star.Rectangle.Height ));
-                    graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
-                }
-                
                 result = ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
 
                 Debug.Print("Time to annotate image: " + sw.Elapsed);
@@ -287,7 +288,7 @@ namespace NINA.Utility {
 
             }
             catch (OperationCanceledException) {
-                progress.Report("Operation cancelled");
+                progress?.Report("Operation cancelled");
             }
             result.Freeze();
             return result;
