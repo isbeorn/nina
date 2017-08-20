@@ -17,24 +17,24 @@
             </Grid.RowDefinitions>
             <DataGrid ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="*" Header="Remaining #" Binding="{Binding ExposureCount}" IsReadOnly="True">
+                    <DataGridTextColumn Width="*" Header="Remaining #" Binding="{Binding ExposureCount}" IsReadOnly="True" CanUserSort="False">
 
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="*" Header="Total #" Binding="{Binding TotalExposureCount}">
+                    <DataGridTextColumn Width="*" Header="Total #" Binding="{Binding TotalExposureCount}" CanUserSort="False">
 
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="*" Header="Time" Binding="{Binding ExposureTime}"></DataGridTextColumn>
-                    <DataGridComboBoxColumn Width="*" Header="Type" ItemsSource="{Binding Source={StaticResource AppVM}, Path=SeqVM.ImageTypes}" SelectedItemBinding="{Binding ImageType, Mode=TwoWay}" />
-                    <DataGridComboBoxColumn Width="*" Header="Filter" ItemsSource="{Binding Source={StaticResource AppVM}, Path=FilterWheelVM.FW.Filters}" DisplayMemberPath="Name" SelectedItemBinding="{Binding FilterType}" SelectedValuePath="Name"></DataGridComboBoxColumn>
-                    <DataGridComboBoxColumn Width="*" Header="Binning" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}" DisplayMemberPath="Name" SelectedItemBinding="{Binding Binning}" SelectedValuePath="Name"></DataGridComboBoxColumn>
-                    <DataGridTemplateColumn Width="*" Header="Dither">
+                    <DataGridTextColumn Width="*" Header="Time" Binding="{Binding ExposureTime}" CanUserSort="False"></DataGridTextColumn>
+                    <DataGridComboBoxColumn Width="*" Header="Type" ItemsSource="{Binding Source={StaticResource AppVM}, Path=SeqVM.ImageTypes}" SelectedItemBinding="{Binding ImageType, Mode=TwoWay}" CanUserSort="False" />
+                    <DataGridComboBoxColumn Width="*" Header="Filter" ItemsSource="{Binding Source={StaticResource AppVM}, Path=FilterWheelVM.FW.Filters}" DisplayMemberPath="Name" SelectedItemBinding="{Binding FilterType}" SelectedValuePath="Name" CanUserSort="False"></DataGridComboBoxColumn>
+                    <DataGridComboBoxColumn Width="*" Header="Binning" ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}" DisplayMemberPath="Name" SelectedItemBinding="{Binding Binning}" SelectedValuePath="Name" CanUserSort="False"></DataGridComboBoxColumn>
+                    <DataGridTemplateColumn Width="*" Header="Dither" CanUserSort="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Width="*" Header="Dither Every # Frame" Binding="{Binding DitherAmount}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Dither Every # Frame" Binding="{Binding DitherAmount}" CanUserSort="False"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0 5 0 5">
