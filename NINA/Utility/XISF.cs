@@ -65,15 +65,35 @@ namespace NINA.Utility {
             );
         }
 
+        /// <summary>
+        /// Add meta data property to file
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <param name="type">datatype</param>
+        /// <param name="value">value of that specific property</param>
+        /// <param name="comment">optional comment</param>
         public void AddMetaDataProperty(string id, string type, string value, string comment = "") {
             string[] prop = { id, type };
             AddProperty(MetaData, prop, value, comment);            
         }
 
+        /// <summary>
+        /// Add meta data property to file
+        /// </summary>
+        /// <param name="property">array of strings as [id, datatype]</param>
+        /// <param name="value">value of that specific property</param>
+        /// <param name="comment">optional comment</param>
         public void AddMetaDataProperty(string[] property, string value, string comment = "") {
             AddProperty(MetaData, property, value, comment);            
         }
 
+        /// <summary>
+        /// Add an image property to file
+        /// </summary>
+        /// <param name="property">array of strings as [id, datatype, fitskey (optional)]</param>
+        /// <param name="value">value of that specific property</param>
+        /// <param name="comment">optional comment</param>
+        /// <param name="autoaddfits">default: true; if fitskey available automatically add FITSHeader</param>
         public void AddImageProperty(string[] property, string value, string comment = "", bool autoaddfits = true) {
             AddProperty(Image, property, value, comment);
             if(property.Length > 2 && autoaddfits) {

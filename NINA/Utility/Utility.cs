@@ -33,6 +33,12 @@ namespace NINA.Utility {
             }
         }
         
+        /// <summary>
+        /// Replaces makros from Settings.ImageFilePattern into actual values based on input
+        /// e.g.: $$Filter$$ -> "Red"
+        /// </summary>
+        /// <param name="patterns">KeyValue Collection of Makro -> Makrovalue</param>
+        /// <returns></returns>
         public static string GetImageFileString(ICollection<ViewModel.OptionsVM.ImagePattern> patterns) {
             string s = Settings.ImageFilePattern;
             foreach(ViewModel.OptionsVM.ImagePattern p in patterns) {
@@ -82,7 +88,13 @@ namespace NINA.Utility {
             return HttpUtility.UrlEncode(s);
         }
 
-
+        /// <summary>
+        /// Get Image from url
+        /// </summary>
+        /// <param name="canceltoken"></param>
+        /// <param name="url"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public static async Task<BitmapImage> HttpGetImage(CancellationTokenSource canceltoken, string url, params object[] parameters) {
             BitmapImage bitmap = null;
 
@@ -124,6 +136,14 @@ namespace NINA.Utility {
             return bitmap;
         }
 
+
+        /// <summary>
+        /// Send a post request that is encoded in application/x-www-form-urlencoded
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="body"></param>
+        /// <param name="canceltoken"></param>
+        /// <returns>result body of post request</returns>
         public static async Task<string> HttpPostRequest(string url, string body, CancellationTokenSource canceltoken) {
             string result = string.Empty;
             
@@ -163,6 +183,17 @@ namespace NINA.Utility {
 
         }
 
+
+        /// <summary>
+        /// Upload a multipart file that is expected from astrometry.net
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="file"></param>
+        /// <param name="paramName"></param>
+        /// <param name="contentType"></param>
+        /// <param name="nvc"></param>
+        /// <param name="canceltoken"></param>
+        /// <returns></returns>
         public static async Task<string> HttpUploadFile(string url, MemoryStream file, string paramName, string contentType, NameValueCollection nvc, CancellationTokenSource canceltoken) {
             string result = string.Empty;            
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
@@ -227,6 +258,11 @@ namespace NINA.Utility {
             return result;
         }
 
+        /// <summary>
+        /// Convert unix timestamp to datetime
+        /// </summary>
+        /// <param name="unixTimeStamp">Milliseconds after 1970</param>
+        /// <returns>DateTime</returns>
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp) {
             // Unix timestamp is seconds past epoch
             System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
@@ -234,10 +270,20 @@ namespace NINA.Utility {
             return dtDateTime;
         }
 
+        /// <summary>
+        /// Convert degree to radians
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
         public static double ToRadians(double val) {
             return (Math.PI / 180) * val;
         }
 
+        /// <summary>
+        /// Convert radians to degree
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <returns></returns>
         public static double ToDegree(double angle) {
             return angle * (180.0 / Math.PI);
         }
