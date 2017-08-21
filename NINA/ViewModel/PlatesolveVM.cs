@@ -30,7 +30,7 @@ namespace NINA.ViewModel {
             SlewToTarget = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
 
-            SolveCommand = new AsyncCommand<bool>(() => CaputureAndSolve(new Progress<string>(p => Status = p)));
+            SolveCommand = new AsyncCommand<bool>(() => CaptureSolveSyncAndReslew(new Progress<string>(p => Status = p)));
 
             CancelSolveCommand = new RelayCommand(CancelSolve);
 
@@ -168,6 +168,10 @@ namespace NINA.ViewModel {
             }
         }
 
+        /// <summary>
+        /// Syncs telescope to solved coordinates
+        /// </summary>
+        /// <returns></returns>
         public bool sync() {
             var success = false;
 
@@ -179,7 +183,7 @@ namespace NINA.ViewModel {
             if (PlateSolveResult != null) {
 
                 Coordinates solved = new Coordinates(PlateSolveResult.Ra, PlateSolveResult.Dec, PlateSolveResult.Epoch, Coordinates.RAType.Degrees);
-                solved = solved.Transform(Settings.EpochType);
+                solved = solved.Transform(Settings.EpochType);  //Transform to JNow if required
 
                 if (Telescope.Sync(solved.RA, solved.Dec) == true) {
                     Notification.ShowSuccess("Telescope synced to coordinates");
@@ -219,6 +223,15 @@ namespace NINA.ViewModel {
             }
         }
 
+        /// <summary>
+        /// Captures an image and solves it
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <param name="progress"></param>
+        /// <param name="canceltoken"></param>
+        /// <param name="filter"></param>
+        /// <param name="binning"></param>
+        /// <returns></returns>
         public async Task<bool> SolveWithCapture(double duration, IProgress<string> progress, CancellationTokenSource canceltoken, Model.MyFilterWheel.FilterInfo filter = null, Model.MyCamera.BinningMode binning = null) {
             var oldAutoStretch = AutoStretch;
             var oldDetectStars = DetectStars;
@@ -235,8 +248,12 @@ namespace NINA.ViewModel {
             return await Solve(progress, canceltoken); ;
         }
 
-
-        private async Task<bool> CaputureAndSolve(IProgress<string> progress) {
+        /// <summary>
+        /// Calls "SolveWithCaputre" and syncs + reslews afterwards if set
+        /// </summary>
+        /// <param name="progress"></param>
+        /// <returns></returns>
+        private async Task<bool> CaptureSolveSyncAndReslew(IProgress<string> progress) {
             _solveCancelToken = new CancellationTokenSource();
             var solvesuccess = await SolveWithCapture(SnapExposureDuration, progress, _solveCancelToken, SnapFilter, SnapBin);
             
@@ -260,6 +277,9 @@ namespace NINA.ViewModel {
             return solvesuccess;
         }
 
+        /// <summary>
+        /// Calculates the error based on the solved coordinates and the actual telescope coordinates and puts them into the PlateSolveResult
+        /// </summary>
         private void CalculateError() {
             if (Telescope?.Connected == true) {
 
@@ -273,6 +293,12 @@ namespace NINA.ViewModel {
             }
         }
 
+        /// <summary>
+        /// Creates an instance of IPlatesolver, reads the image into memory and calls solve logic of platesolver
+        /// </summary>
+        /// <param name="progress"></param>
+        /// <param name="canceltoken"></param>
+        /// <returns>true: success; false: fail</returns>
         public async Task<bool> Solve(IProgress<string> progress, CancellationTokenSource canceltoken) {
             if(Image != null) {
 
@@ -330,8 +356,6 @@ namespace NINA.ViewModel {
             }
 
         }
-
-        
 
         private ITelescope _telescope;
         public ITelescope Telescope {
