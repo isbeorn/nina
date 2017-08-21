@@ -49,7 +49,7 @@ namespace NINA.ViewModel {
                     AutoStretch = true;                    
                 }
                 var args = new object[] { new Progress<string>(p => Status = p), _plateSolveToken };
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.BlindSolve, args);
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.Solve, args);
                 return true;
             } else {
                 return false;

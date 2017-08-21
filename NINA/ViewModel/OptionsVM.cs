@@ -21,6 +21,7 @@ namespace NINA.ViewModel {
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
+            OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
 
@@ -61,6 +62,15 @@ namespace NINA.ViewModel {
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 CygwinLocation = dialog.SelectedPath;                
             }            
+        }
+
+        private void OpenPS2FileDiag(object o) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.FileName = Settings.PS2Location;
+
+            if (dialog.ShowDialog() == true) {
+                PS2Location = dialog.FileName;
+            }
         }
 
         private void ScanForIndexFiles() {
@@ -110,6 +120,17 @@ namespace NINA.ViewModel {
             }
             set {
                 _openCygwinFileDiagCommand = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ICommand _openPS2FileDiagCommand;
+        public ICommand OpenPS2FileDiagCommand {
+            get {
+                return _openPS2FileDiagCommand;
+            }
+            set {
+                _openPS2FileDiagCommand = value;
                 RaisePropertyChanged();
             }
         }
@@ -212,6 +233,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        public int PS2FocalLength {
+            get {
+                return Settings.PS2FocalLength;
+            }
+            set {
+                Settings.PS2FocalLength = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public string CygwinLocation {
             get {
                 return Settings.CygwinLocation;
@@ -219,6 +250,16 @@ namespace NINA.ViewModel {
             set {
                 Settings.CygwinLocation = value;
                 ScanForIndexFiles();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string PS2Location {
+            get {
+                return Settings.PS2Location;
+            }
+            set {
+                Settings.PS2Location = value;                
                 RaisePropertyChanged();
             }
         }
@@ -233,12 +274,32 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double PS2PixelSize {
+            get {
+                return Settings.PS2PixelSize;
+            }
+            set {
+                Settings.PS2PixelSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public double AnsvrSearchRadius {
             get {
                 return Settings.AnsvrSearchRadius;
             }
             set {
                 Settings.AnsvrSearchRadius = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int PS2Regions {
+            get {
+                return Settings.PS2Regions;
+            }
+            set {
+                Settings.PS2Regions = value;
                 RaisePropertyChanged();
             }
         }
@@ -291,17 +352,7 @@ namespace NINA.ViewModel {
                 Settings.AstrometryAPIKey = value;
                 RaisePropertyChanged();
             }
-        }
-
-        public bool UseFullResolutionPlateSolve {
-            get {
-                return Settings.UseFullResolutionPlateSolve;
-            }
-            set {
-                Settings.UseFullResolutionPlateSolve = value;
-                RaisePropertyChanged();
-            }
-        }
+        }        
 
         public int PHD2ServerPort {
             get {

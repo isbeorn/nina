@@ -69,8 +69,8 @@
                                 MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />
             
                 <local:CancellableButtonView  Width="50" Height="50" Margin="5,0,5,0" 
-                                              MyCommand="{Binding BlindSolveCommand}" 
-                                              MyCancelCommand="{Binding CancelBlindSolveCommand}" 
+                                              MyCommand="{Binding SolveCommand}" 
+                                              MyCancelCommand="{Binding CancelSolveCommand}" 
                                               MyButtonImage="{StaticResource PlatesolveSVG}" 
                                               MyCancelButtonImage="{StaticResource CancelSVG}" 
                                               MyButtonTooltip="Capture image and platesolve"/>

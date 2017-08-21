@@ -234,6 +234,13 @@ namespace NINA.Utility {
             return dtDateTime;
         }
 
+        public static double ToRadians(double val) {
+            return (Math.PI / 180) * val;
+        }
+
+        public static double ToDegree(double angle) {
+            return angle * (180.0 / Math.PI);
+        }
     }
     public enum FileTypeEnum {
         TIFF,
@@ -246,7 +253,9 @@ namespace NINA.Utility {
         [Description("Astrometry.net")]
         ASTROMETRY_NET,
         [Description("Local")]
-        LOCAL
+        LOCAL,
+        [Description("Platesolve2")]
+        PLATESOLVE2
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]

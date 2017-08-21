@@ -233,6 +233,8 @@
     <Compile Include="MyMessageBox\MyMessageBoxView.xaml.cs">
       <DependentUpon>MyMessageBoxView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PlateSolving\Platesolve2Solver.cs" />
+    <Compile Include="PlateSolving\PlateSolverFactory.cs" />
     <Compile Include="Utility\ASISDK\ASICameraDll.cs" />
     <Compile Include="Utility\ASISDK\ASICameraDll2.cs" />
     <Compile Include="Model\MyFilterWheel\AscomFilterWheel.cs" />

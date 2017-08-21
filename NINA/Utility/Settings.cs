@@ -44,6 +44,17 @@ namespace NINA.Utility {
 
         }
 
+        public static string PS2Location {
+            get {
+                return Environment.ExpandEnvironmentVariables(Properties.Settings.Default.PS2Location);
+            }
+            set {
+                Properties.Settings.Default.PS2Location = value;
+                Properties.Settings.Default.Save();
+            }
+
+        }
+
         public static PlateSolverEnum PlateSolverType {
             get {
                 return (PlateSolverEnum)Properties.Settings.Default.PlateSolverType;
@@ -124,12 +135,32 @@ namespace NINA.Utility {
             }
         }
 
+        public static int PS2FocalLength {
+            get {
+                return Properties.Settings.Default.PS2FocalLength;
+            }
+            set {
+                Properties.Settings.Default.PS2FocalLength = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         public static double AnsvrPixelSize {
             get {
                 return Properties.Settings.Default.AnsvrPixelSize;
             }
             set {
                 Properties.Settings.Default.AnsvrPixelSize = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static double PS2PixelSize {
+            get {
+                return Properties.Settings.Default.PS2PixelSize;
+            }
+            set {
+                Properties.Settings.Default.PS2PixelSize = value;
                 Properties.Settings.Default.Save();
             }
         }
@@ -144,17 +175,16 @@ namespace NINA.Utility {
             }
         }
 
-
-        public static bool UseFullResolutionPlateSolve {
+        public static int PS2Regions {
             get {
-                return Properties.Settings.Default.UseFullResolutionPlateSolve;
+                return Properties.Settings.Default.PS2Regions;
             }
             set {
-                Properties.Settings.Default.UseFullResolutionPlateSolve = value;
+                Properties.Settings.Default.PS2Regions = value;
                 Properties.Settings.Default.Save();
             }
         }
-
+        
         public static string CameraId {
             get {
                 return Properties.Settings.Default.CameraId;

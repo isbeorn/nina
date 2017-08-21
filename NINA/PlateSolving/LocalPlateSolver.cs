@@ -65,7 +65,7 @@ namespace NINA.PlateSolving {
                      
             PlateSolveResult result = new PlateSolveResult();
             try {                
-                string filepath = TMPIMGFILEPATH + "\\tmp.png";
+                string filepath = TMPIMGFILEPATH + "\\tmp.jpg";
                 
                 using (FileStream fs = new FileStream(filepath, FileMode.Create)) {
                     image.CopyTo(fs);
@@ -149,7 +149,7 @@ namespace NINA.PlateSolving {
             return result;
         }
 
-        public async Task<PlateSolveResult> BlindSolve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
             return await Task<PlateSolveResult>.Run(() => Solve(image, progress, canceltoken));
         }
     }

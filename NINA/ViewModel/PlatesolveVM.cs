@@ -30,9 +30,9 @@ namespace NINA.ViewModel {
             SlewToTarget = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
 
-            BlindSolveCommand = new AsyncCommand<bool>(() => CaputureAndSolve(new Progress<string>(p => Status = p)));
+            SolveCommand = new AsyncCommand<bool>(() => CaputureAndSolve(new Progress<string>(p => Status = p)));
 
-            CancelBlindSolveCommand = new RelayCommand(CancelBlindSolve);
+            CancelSolveCommand = new RelayCommand(CancelSolve);
 
             SnapExposureDuration = 2;
 
@@ -68,15 +68,15 @@ namespace NINA.ViewModel {
                 CancellationTokenSource token = (CancellationTokenSource)args[2];
                 Model.MyFilterWheel.FilterInfo filter = args[3] == null ? this.SnapFilter : (Model.MyFilterWheel.FilterInfo)args[3];
                 BinningMode binning = args[4] == null ? this.SnapBin : (BinningMode)args[4];
-                await BlindSolveWithCapture(duration, progress, token, filter, binning);
-            }, AsyncMediatorMessages.BlindSolveWithCapture);
+                await SolveWithCapture(duration, progress, token, filter, binning);
+            }, AsyncMediatorMessages.SolveWithCapture);
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;                
                 IProgress<string> progress = (IProgress<string>)args[0];
                 CancellationTokenSource token = (CancellationTokenSource)args[1];                
-                await BlindSolve(progress, token);
-            }, AsyncMediatorMessages.BlindSolve);
+                await Solve(progress, token);
+            }, AsyncMediatorMessages.Solve);
 
 
             
@@ -219,7 +219,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<bool> BlindSolveWithCapture(double duration, IProgress<string> progress, CancellationTokenSource canceltoken, Model.MyFilterWheel.FilterInfo filter = null, Model.MyCamera.BinningMode binning = null) {
+        public async Task<bool> SolveWithCapture(double duration, IProgress<string> progress, CancellationTokenSource canceltoken, Model.MyFilterWheel.FilterInfo filter = null, Model.MyCamera.BinningMode binning = null) {
             var oldAutoStretch = AutoStretch;
             var oldDetectStars = DetectStars;
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
@@ -232,13 +232,13 @@ namespace NINA.ViewModel {
 
             canceltoken.Token.ThrowIfCancellationRequested();
 
-            return await BlindSolve(progress, canceltoken); ;
+            return await Solve(progress, canceltoken); ;
         }
 
 
         private async Task<bool> CaputureAndSolve(IProgress<string> progress) {
-            _blindeSolveCancelToken = new CancellationTokenSource();
-            var solvesuccess = await BlindSolveWithCapture(SnapExposureDuration, progress, _blindeSolveCancelToken, SnapFilter, SnapBin);
+            _solveCancelToken = new CancellationTokenSource();
+            var solvesuccess = await SolveWithCapture(SnapExposureDuration, progress, _solveCancelToken, SnapFilter, SnapBin);
             
             PlateSolveResultList.Add(PlateSolveResult);
             if(solvesuccess) {
@@ -273,64 +273,37 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<bool> BlindSolve(IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public async Task<bool> Solve(IProgress<string> progress, CancellationTokenSource canceltoken) {
             if(Image != null) {
-                bool fullresolution = true;
-                if (Settings.PlateSolverType == PlateSolverEnum.ASTROMETRY_NET) {
-                    fullresolution = Settings.UseFullResolutionPlateSolve;
-                    Platesolver = new AstrometryPlateSolver(ASTROMETRYNETURL, Settings.AstrometryAPIKey);
-                } else if (Settings.PlateSolverType == PlateSolverEnum.LOCAL) {
 
-                    if (Settings.AnsvrSearchRadius > 0 && Telescope?.Connected == true) {
-                        Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * Cam.BinX, Settings.AnsvrSearchRadius, new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours));
-                    } else {
-                        Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * Cam.BinX);
-                    }
-
+                
+                Coordinates coords = null;                
+                if (Telescope?.Connected == true) {
+                    coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
                 }
+                var binning = Cam?.BinX ?? 1;
 
-
+                Platesolver = PlateSolverFactory.CreateInstance(binning, Image.Width, Image.Height, coords);
+                
+                if(Platesolver == null) {
+                    return false;
+                }
+                
                 BitmapSource source = Image;
                 BitmapFrame image = null;
-                /* Resize Image */
-                if (!fullresolution && source.Width > 1400) {
-                    var factor = 1400 / source.Width;
-                    int width = (int)(source.Width * factor);
-                    int height = (int)(source.Height * factor);
-                    var margin = 0;
-                    var rect = new Rect(margin, margin, width - margin * 2, height - margin * 2);
-
-                    var group = new DrawingGroup();
-                    RenderOptions.SetBitmapScalingMode(group, BitmapScalingMode.HighQuality);
-                    group.Children.Add(new ImageDrawing(source, rect));
-
-                    var drawingVisual = new DrawingVisual();
-                    using (var drawingContext = drawingVisual.RenderOpen())
-                        drawingContext.DrawDrawing(group);
-
-                    var resizedImage = new RenderTargetBitmap(
-                        width, height,         // Resized dimensions
-                        96, 96,                // Default DPI values
-                        PixelFormats.Default); // Default pixel format
-                    resizedImage.Render(drawingVisual);
-
-                    image = BitmapFrame.Create(resizedImage);
-                } else {
-                    image = BitmapFrame.Create(source);
-                }
-
-
+                
+                image = BitmapFrame.Create(source);
 
                 /* Read image into memorystream */
                 var ms = new MemoryStream();
-                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder() { QualityLevel = 100 };
                 encoder.Frames.Add(image);
 
                 encoder.Save(ms);
                 ms.Seek(0, SeekOrigin.Begin);
 
                 return await Task<bool>.Run(async () => {
-                    PlateSolveResult = await Platesolver.BlindSolve(ms, progress, canceltoken);
+                    PlateSolveResult = await Platesolver.SolveAsync(ms, progress, canceltoken);
                     if (!PlateSolveResult.Success) {
                         Notification.ShowWarning("Platesolve failed");
                     }
@@ -341,9 +314,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private CancellationTokenSource _blindeSolveCancelToken;
-        private void CancelBlindSolve(object o) {
-            _blindeSolveCancelToken?.Cancel();
+        private CancellationTokenSource _solveCancelToken;
+        private void CancelSolve(object o) {
+            _solveCancelToken?.Cancel();
         }
 
         IPlateSolver _platesolver;
@@ -382,24 +355,24 @@ namespace NINA.ViewModel {
             }
         }
 
-        private IAsyncCommand _blindSolveCommand;
-        public IAsyncCommand BlindSolveCommand {
+        private IAsyncCommand _solveCommand;
+        public IAsyncCommand SolveCommand {
             get {
-                return _blindSolveCommand;
+                return _solveCommand;
             }
             set {
-                _blindSolveCommand = value;
+                _solveCommand = value;
                 RaisePropertyChanged();
             }
         }
 
-        private ICommand _cancelBlindSolveCommand;
-        public ICommand CancelBlindSolveCommand {
+        private ICommand _cancelSolveCommand;
+        public ICommand CancelSolveCommand {
             get {
-                return _cancelBlindSolveCommand;
+                return _cancelSolveCommand;
             }
             set {
-                _cancelBlindSolveCommand = value;
+                _cancelSolveCommand = value;
                 RaisePropertyChanged();
             }
         }

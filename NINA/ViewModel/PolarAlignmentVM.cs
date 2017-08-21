@@ -651,7 +651,7 @@ namespace NINA.ViewModel {
 
                 progress.Report("Solving image...");
 
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.BlindSolveWithCapture, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });
 
                 canceltoken.Token.ThrowIfCancellationRequested();
 
@@ -683,7 +683,7 @@ namespace NINA.ViewModel {
                 canceltoken.Token.ThrowIfCancellationRequested();
 
 
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.BlindSolveWithCapture, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });                
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });                
 
                 canceltoken.Token.ThrowIfCancellationRequested();
 
@@ -698,7 +698,7 @@ namespace NINA.ViewModel {
 
                 var decError = startSolve.Dec - targetSolve.Dec;
                 // Calculate pole error
-                poleError = 3.81 * 3600.0 * decError / (4 * movementdeg * Math.Cos(ToRadians(startPosition.Dec)));
+                poleError = 3.81 * 3600.0 * decError / (4 * movementdeg * Math.Cos(Utility.Utility.ToRadians(startPosition.Dec)));
                 // Convert pole error from arcminutes to degrees
                 poleError = poleError / 60.0;
             }
@@ -715,9 +715,7 @@ namespace NINA.ViewModel {
         }
 
 
-        public static double ToRadians(double val) {
-            return (Math.PI / 180) * val;
-        }
+        
 
 
 

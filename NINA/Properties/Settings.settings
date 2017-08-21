@@ -86,9 +86,6 @@
     <Setting Name="AstrometryAPIKey" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="UseFullResolutionPlateSolve" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="PlateSolverType" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
@@ -139,6 +136,18 @@
     </Setting>
     <Setting Name="FocuserId" Type="System.String" Scope="User">
       <Value Profile="(Default)">ASCOM.Simulator.Focuser</Value>
+    </Setting>
+    <Setting Name="PS2FocalLength" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">750</Value>
+    </Setting>
+    <Setting Name="PS2PixelSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">3.8</Value>
+    </Setting>
+    <Setting Name="PS2Regions" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">500</Value>
+    </Setting>
+    <Setting Name="PS2Location" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

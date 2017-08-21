@@ -270,6 +270,9 @@
                                     <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="1">
                                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                                     </DataTrigger>
+                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="2">
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
@@ -277,10 +280,6 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock   VerticalAlignment="Center" Width="130">API Key:</TextBlock>
                                 <TextBox  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AstrometryAPIKey}" MinWidth="130"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock VerticalAlignment="Center" Width="130">Use full resolution:</TextBlock>
-                                <CheckBox  Width="75" Height="25" HorizontalAlignment="Left" IsChecked="{Binding UseFullResolutionPlateSolve}" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -295,6 +294,9 @@
                             <Style TargetType="{x:Type Grid}">
                                 <Style.Triggers>
                                     <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="2">
                                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -355,6 +357,63 @@
 
                             </Button>
                         </Grid>
+
+                    </Grid>
+
+                    <!-- Platesolve2 -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.Style>
+                            <Style TargetType="{x:Type Grid}">
+                                <Style.Triggers>
+                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="1">
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <StackPanel Orientation="Vertical">
+                            <Grid Margin="0 6 0 6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock   HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Platesolve2 location:</TextBlock>
+                                <TextBox  Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2Location}" MinWidth="130" />
+
+
+                                <Button Margin="5 0 0 0" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" Width="30" Command="{Binding OpenPS2FileDiagCommand}">
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
+                                </Button>
+                            </Grid>
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" Width="130">Focal Length:</TextBlock>
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2FocalLength}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Pixel Size:</TextBlock>
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2PixelSize}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                            <UniformGrid Columns="2" >
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Regions:</TextBlock>
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2Regions}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </StackPanel>
 
                     </Grid>
                 </Grid>

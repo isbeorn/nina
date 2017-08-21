@@ -362,18 +362,6 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool UseFullResolutionPlateSolve {
-            get {
-                return ((bool)(this["UseFullResolutionPlateSolve"]));
-            }
-            set {
-                this["UseFullResolutionPlateSolve"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public int PlateSolverType {
             get {
@@ -573,6 +561,54 @@ namespace NINA.Properties {
             }
             set {
                 this["FocuserId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("750")]
+        public int PS2FocalLength {
+            get {
+                return ((int)(this["PS2FocalLength"]));
+            }
+            set {
+                this["PS2FocalLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3.8")]
+        public double PS2PixelSize {
+            get {
+                return ((double)(this["PS2PixelSize"]));
+            }
+            set {
+                this["PS2PixelSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public int PS2Regions {
+            get {
+                return ((int)(this["PS2Regions"]));
+            }
+            set {
+                this["PS2Regions"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PS2Location {
+            get {
+                return ((string)(this["PS2Location"]));
+            }
+            set {
+                this["PS2Location"] = value;
             }
         }
     }

@@ -78,7 +78,7 @@ namespace NINA.PlateSolving {
             return await Utility.Utility.HttpGetImage(canceltoken, _domain + ANNOTATEDIMAGEURL, jobid);
         }
 
-        public async Task<PlateSolveResult> BlindSolve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
             PlateSolveResult result = new PlateSolveResult();
 
             try {

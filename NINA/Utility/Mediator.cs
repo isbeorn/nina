@@ -76,11 +76,11 @@ namespace NINA.Utility {
     public enum AsyncMediatorMessages {
         StartSequence = 1,
         CaptureImage = 2,
-        BlindSolveWithCapture = 3,
+        SolveWithCapture = 3,
         Sync = 4,
         SyncTelescopeAndReslew = 5,
         ChangeFilterWheelPosition = 6,
-        BlindSolve = 7
+        Solve = 7
     }
 
 }
