@@ -304,10 +304,10 @@ namespace NINA.ViewModel {
 
                 return await Task<bool>.Run(async () => {
                     PlateSolveResult = await Platesolver.SolveAsync(ms, progress, canceltoken);
-                    if (!PlateSolveResult.Success) {
+                    if (!PlateSolveResult?.Success == true) {
                         Notification.ShowWarning("Platesolve failed");
                     }
-                    return PlateSolveResult.Success;
+                    return PlateSolveResult?.Success ?? false;
                 });
             } else {
                 return false;
