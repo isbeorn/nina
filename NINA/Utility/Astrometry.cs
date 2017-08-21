@@ -28,7 +28,25 @@ namespace NINA.Utility.Astrometry {
                 return _nOVAS31;
 
             }
-        }        
+        }
+
+        /// <summary>
+        /// Convert degree to radians
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public static double ToRadians(double val) {
+            return (Math.PI / 180) * val;
+        }
+
+        /// <summary>
+        /// Convert radians to degree
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <returns></returns>
+        public static double ToDegree(double angle) {
+            return angle * (180.0 / Math.PI);
+        }
     }
 
     public class Coordinates {
@@ -38,25 +56,49 @@ namespace NINA.Utility.Astrometry {
             Hours
         }
 
-        public double RA;
-        public double Dec;
+        /// <summary>
+        /// Right Ascension in hours
+        /// </summary>
+        public double RA { get; private set; }
+
         public string RAString {
             get {
                 return Utility.AscomUtil.DegreesToHMS(RADegrees);
             }
         }
+
+        /// <summary>
+        /// Right Ascension in degrees
+        /// </summary>
         public double RADegrees {
             get {
                 return RA * 360 / 24;
             }
         }
+
+        /// <summary>
+        /// Declination in Degrees
+        /// </summary>
+        public double Dec { get; private set; }
+
         public string DecString {
             get {
                 return Utility.AscomUtil.DegreesToDMS(Dec);
             }
         }
-        public Epoch Epoch;
 
+        /// <summary>
+        /// Epoch the coordinates are stored in. Either J2000 or JNOW
+        /// </summary>
+        public Epoch Epoch { get; private set; }
+
+        /// <summary>
+        /// Creates new coordinates
+        /// </summary>
+        /// <param name="ra">Right Ascension in degrees or hours. RAType has to be set accordingly</param>
+        /// <param name="dec">Declination in degrees</param>
+        /// <param name="epoch">J2000|JNOW</param>
+        /// <param name="ratype">Degrees|Hours</param>
         public Coordinates(double ra, double dec, Epoch epoch, RAType ratype) {
             this.RA = ra;
             this.Dec = dec;
@@ -68,7 +110,7 @@ namespace NINA.Utility.Astrometry {
         }
 
         /// <summary>
-        /// Converts from one Epoch into another. Currently only from J2000 -> JNOW
+        /// Converts from one Epoch into another.
         /// </summary>
         /// <param name="targetEpoch"></param>
         /// <returns></returns>
@@ -76,10 +118,34 @@ namespace NINA.Utility.Astrometry {
             if (Epoch == targetEpoch) {
                 return this;
             }
+
+            if(targetEpoch == Epoch.JNOW) {
+                return TransformToJNOW();
+            } else if (targetEpoch == Epoch.J2000) {
+                return TransformToJ2000();
+            } else {
+                throw new NotSupportedException();
+            }
+        }
+
+        /// <summary>
+        /// Transforms coordinates from J2000 to JNOW
+        /// </summary>
+        /// <returns></returns>
+        private Coordinates TransformToJNOW() {
             var transform = new ASCOM.Astrometry.Transform.Transform();
             transform.SetJ2000(RA, Dec);
-
             return new Coordinates(transform.RAApparent, transform.DECApparent, Epoch.JNOW, RAType.Hours);
+        }
+
+        /// <summary>
+        /// Transforms coordinates from JNOW to J2000
+        /// </summary>
+        /// <returns></returns>
+        private Coordinates TransformToJ2000() {
+            var transform = new ASCOM.Astrometry.Transform.Transform();
+            transform.SetApparent(RA, Dec);
+            return new Coordinates(transform.RAJ2000, transform.DecJ2000, Epoch.J2000, RAType.Hours);
         }
 
     }

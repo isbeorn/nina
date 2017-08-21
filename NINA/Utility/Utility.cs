@@ -268,25 +268,7 @@ namespace NINA.Utility {
             System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
-        }
-
-        /// <summary>
-        /// Convert degree to radians
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public static double ToRadians(double val) {
-            return (Math.PI / 180) * val;
-        }
-
-        /// <summary>
-        /// Convert radians to degree
-        /// </summary>
-        /// <param name="angle"></param>
-        /// <returns></returns>
-        public static double ToDegree(double angle) {
-            return angle * (180.0 / Math.PI);
-        }
+        }        
     }
     public enum FileTypeEnum {
         TIFF,

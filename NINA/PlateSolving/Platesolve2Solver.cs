@@ -36,13 +36,15 @@ namespace NINA.PlateSolving
         /// </summary>
         /// <returns></returns>
         private string GetArguments() {
-            var args = new string[] { Utility.Utility.ToRadians(_target.RADegrees).ToString(CultureInfo.InvariantCulture),
-                    Utility.Utility.ToRadians(_target.Dec).ToString(CultureInfo.InvariantCulture),
-                    Utility.Utility.ToRadians(_arcdegwidth).ToString(CultureInfo.InvariantCulture),
-                    Utility.Utility.ToRadians(_arcdegheight).ToString(CultureInfo.InvariantCulture),
+            var args = new string[] {
+                    Astrometry.ToRadians(_target.RADegrees).ToString(CultureInfo.InvariantCulture),
+                    Astrometry.ToRadians(_target.Dec).ToString(CultureInfo.InvariantCulture),
+                    Astrometry.ToRadians(_arcdegwidth).ToString(CultureInfo.InvariantCulture),
+                    Astrometry.ToRadians(_arcdegheight).ToString(CultureInfo.InvariantCulture),
                     _regions.ToString(),
                     TMPIMGFILEPATH,
-                    "0"};
+                    "0"
+            };
             return string.Join(",", args);
         }
 
@@ -103,8 +105,8 @@ namespace NINA.PlateSolving
                                 result.Success = true;
                                 double RARad = double.Parse(resultArr[0], CultureInfo.InvariantCulture);
                                 double DecRad = double.Parse(resultArr[1], CultureInfo.InvariantCulture);
-                                result.Ra = Utility.Utility.ToDegree(RARad);
-                                result.Dec = Utility.Utility.ToDegree(DecRad);
+                                result.Ra = Astrometry.ToDegree(RARad);
+                                result.Dec = Astrometry.ToDegree(DecRad);
 
                             }
 

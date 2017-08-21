@@ -698,7 +698,7 @@ namespace NINA.ViewModel {
 
                 var decError = startSolve.Dec - targetSolve.Dec;
                 // Calculate pole error
-                poleError = 3.81 * 3600.0 * decError / (4 * movementdeg * Math.Cos(Utility.Utility.ToRadians(startPosition.Dec)));
+                poleError = 3.81 * 3600.0 * decError / (4 * movementdeg * Math.Cos(Astrometry.ToRadians(startPosition.Dec)));
                 // Convert pole error from arcminutes to degrees
                 poleError = poleError / 60.0;
             }
