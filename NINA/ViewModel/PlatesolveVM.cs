@@ -61,12 +61,12 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;
-
                 double duration = args[0] == null ? this.SnapExposureDuration : (double)args[0];
                 IProgress<string> progress = (IProgress<string>)args[1];
                 CancellationTokenSource token = (CancellationTokenSource)args[2];
                 Model.MyFilterWheel.FilterInfo filter = args[3] == null ? this.SnapFilter : (Model.MyFilterWheel.FilterInfo)args[3];
                 BinningMode binning = args[4] == null ? this.SnapBin : (BinningMode)args[4];
+
                 await SolveWithCapture(duration, progress, token, filter, binning);
             }, AsyncMediatorMessages.SolveWithCapture);
 
@@ -76,8 +76,6 @@ namespace NINA.ViewModel {
                 CancellationTokenSource token = (CancellationTokenSource)args[1];                
                 await Solve(progress, token);
             }, AsyncMediatorMessages.Solve);
-
-
             
             Mediator.Instance.Register((object o) => {
                 sync();
@@ -256,7 +254,6 @@ namespace NINA.ViewModel {
             _solveCancelToken = new CancellationTokenSource();
             var solvesuccess = await SolveWithCapture(SnapExposureDuration, progress, _solveCancelToken, SnapFilter, SnapBin);
             
-            PlateSolveResultList.Add(PlateSolveResult);
             if(solvesuccess) {
                 CalculateError();
                 if (SyncScope) {
@@ -298,45 +295,32 @@ namespace NINA.ViewModel {
         /// <param name="progress"></param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
-        public async Task<bool> Solve(IProgress<string> progress, CancellationTokenSource canceltoken) {
-            if(Image != null) {
+        public async Task<bool> Solve(IProgress<string> progress, CancellationTokenSource canceltoken) {                
+            if(Platesolver == null) {
+                return false;
+            }
+                
+            BitmapSource source = Image;
+            BitmapFrame image = null;
+                
+            image = BitmapFrame.Create(source);
 
-                
-                Coordinates coords = null;                
-                if (Telescope?.Connected == true) {
-                    coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
-                }
-                var binning = Cam?.BinX ?? 1;
-
-                Platesolver = PlateSolverFactory.CreateInstance(binning, Image.Width, Image.Height, coords);
-                
-                if(Platesolver == null) {
-                    return false;
-                }
-                
-                BitmapSource source = Image;
-                BitmapFrame image = null;
-                
-                image = BitmapFrame.Create(source);
-
-                /* Read image into memorystream */
-                var ms = new MemoryStream();
+            /* Read image into memorystream */
+            using (var ms = new MemoryStream()) {
                 JpegBitmapEncoder encoder = new JpegBitmapEncoder() { QualityLevel = 100 };
                 encoder.Frames.Add(image);
 
                 encoder.Save(ms);
                 ms.Seek(0, SeekOrigin.Begin);
 
-                return await Task<bool>.Run(async () => {
-                    PlateSolveResult = await Platesolver.SolveAsync(ms, progress, canceltoken);
-                    if (!PlateSolveResult?.Success == true) {
-                        Notification.ShowWarning("Platesolve failed");
-                    }
-                    return PlateSolveResult?.Success ?? false;
-                });
-            } else {
-                return false;
+                PlateSolveResult = await Platesolver.SolveAsync(ms, progress, canceltoken);                
             }
+
+            if (!PlateSolveResult?.Success == true) {
+                Notification.ShowWarning("Platesolve failed");
+            }
+
+            return PlateSolveResult?.Success ?? false;
         }
 
         private CancellationTokenSource _solveCancelToken;
@@ -347,13 +331,19 @@ namespace NINA.ViewModel {
         IPlateSolver _platesolver;
         IPlateSolver Platesolver {
             get {
+                _platesolver = null;
+                if(Image != null) {
+                    Coordinates coords = null;
+                    if (Telescope?.Connected == true) {
+                        coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+                    }
+                    var binning = Cam?.BinX ?? 1;
+
+                    _platesolver = PlateSolverFactory.CreateInstance(binning, Image.Width, Image.Height, coords);
+                }
+
                 return _platesolver;
             }
-            set {
-                _platesolver = value;
-                RaisePropertyChanged();
-            }
-
         }
 
         private ITelescope _telescope;
@@ -404,6 +394,10 @@ namespace NINA.ViewModel {
 
             set {
                 _plateSolveResult = value;
+
+                CalculateError();
+                PlateSolveResultList.Add(_plateSolveResult);
+
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.PlateSolveResultChanged, _plateSolveResult);
             }
