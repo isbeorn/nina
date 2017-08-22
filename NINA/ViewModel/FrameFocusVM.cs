@@ -165,46 +165,17 @@ namespace NINA.ViewModel {
             }
 
         }
-
-        private AsyncCommand<bool> _snapCommand;
-        public AsyncCommand<bool> SnapCommand {
-            get {
-                return _snapCommand;
-            }
-            set {
-                _snapCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        
+                
         private CancellationTokenSource _captureImageToken;
-
-        
-        private AsyncCommand<bool> _autoStretchCommand;
-        public AsyncCommand<bool> AutoStretchCommand {
-            get {
-                return _autoStretchCommand;
-            } set {
-                _autoStretchCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private RelayCommand _cancelSnapCommand;
-        public RelayCommand CancelSnapCommand {
-            get {
-                return _cancelSnapCommand;
-            }
-
-            set {
-                _cancelSnapCommand = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private void CancelCaptureImage(object o) {
             _captureImageToken?.Cancel();
         }
+
+        public IAsyncCommand SnapCommand { get; private set; }
+
+        public IAsyncCommand AutoStretchCommand { get; private set; }
+                
+        public ICommand CancelSnapCommand { get; private set; }        
     }
 }

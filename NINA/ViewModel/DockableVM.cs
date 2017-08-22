@@ -55,15 +55,8 @@ namespace NINA.ViewModel {
 
             }
         }
-
-        private ICommand _CloseCommand;
-        public ICommand CloseCommand {
-            get {
-                if (_CloseCommand == null)
-                    _CloseCommand = new RelayCommand(call => Close());
-                return _CloseCommand;
-            }
-        }
+        
+        public ICommand CloseCommand { get; private set; }
 
         public DockableVM() {
             this.CanClose = true;

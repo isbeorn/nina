@@ -100,28 +100,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private AsyncCommand<bool> _connectPHDClientCommand;
-        public AsyncCommand<bool> ConnectPHDClientCommand {
-            get {
-                return _connectPHDClientCommand;
-            }
-
-            set {
-                _connectPHDClientCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private Utility.AsyncCommand<bool> _disconnectPHDClientCommand;
-        public Utility.AsyncCommand<bool> DisconnectPHDClientCommand {
-            get {
-                return _disconnectPHDClientCommand;
-            }
-
-            set {
-                _disconnectPHDClientCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        
+        public IAsyncCommand ConnectPHDClientCommand { get; private set; }
+        
+        public IAsyncCommand DisconnectPHDClientCommand { get; private set; }
     }
 }

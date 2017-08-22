@@ -36,16 +36,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-        private AsyncCommand<bool> _updateWeatherDataCommand;
-        public AsyncCommand<bool> UpdateWeatherDataCommand {
-            get {
-                return _updateWeatherDataCommand;
-            }
-            set {
-                _updateWeatherDataCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        
+        public IAsyncCommand UpdateWeatherDataCommand { get; private set; }
     }
 }

@@ -220,117 +220,26 @@ namespace NINA.ViewModel {
             var targetDeclination = Utility.Utility.AscomUtil.HMSToHours(TargetDeclinationDegrees + ":" + TargetDeclinationMinutes + ":" + TargetDeclinationSeconds);
             Telescope.SlewToCoordinatesAsync(targetRightAscencion, targetDeclination);
         }
+        
+        public ICommand SlewToCoordinatesCommand { get; private set; }
 
-        private ICommand _slewToCoordinatesCommand;
-        public ICommand SlewToCoordinatesCommand {
-            get {
-                return _slewToCoordinatesCommand;
-            }
-            set {
-                _slewToCoordinatesCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _chooseTelescopeCommand;
-        public ICommand ChooseTelescopeCommand {
-            get {
-                return _chooseTelescopeCommand;
-            }
-            set {
-                _chooseTelescopeCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _disconnectCommand;
-        public ICommand DisconnectCommand {
-            get {
-                return _disconnectCommand;
-            }
-            set {
-                _disconnectCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _moveCommand;
-        public ICommand MoveCommand {
-            get {
-                return _moveCommand;
-            }
-            set {
-                _moveCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _stopMoveCommand;
-        public ICommand StopMoveCommand {
-            get {
-                return _stopMoveCommand;
-            }
-            set {
-                _stopMoveCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private AsyncCommand<bool> _parkCommand;
-        public AsyncCommand<bool> ParkCommand {
-            get {
-                return _parkCommand;
-            }
-            set {
-                _parkCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _unparkCommand;
-        public ICommand UnparkCommand {
-            get {
-                return _unparkCommand;
-            }
-            set {
-                _unparkCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _stopSlewCommand;
-        public ICommand StopSlewCommand {
-            get {
-                return _stopSlewCommand;
-            }
-            set {
-                _stopSlewCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _stepperMoveRateCommand;
-        public ICommand StepperMoveRateCommand {
-            get {
-                return _stepperMoveRateCommand;
-            }
-            set {
-                _stepperMoveRateCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        ICommand _refreshTelescopeListCommand;
-        public ICommand RefreshTelescopeListCommand {
-            get {
-                return _refreshTelescopeListCommand;
-            }
-            set {
-                _refreshTelescopeListCommand = value;
-            }
-        }
-
-
+        public ICommand ChooseTelescopeCommand { get; private set; }
+        
+        public ICommand DisconnectCommand { get; private set; }
+        
+        public ICommand MoveCommand { get; private set; }
+        
+        public ICommand StopMoveCommand { get; private set; }
+        
+        public IAsyncCommand ParkCommand { get; private set; }
+        
+        public ICommand UnparkCommand { get; private set; }
+        
+        public ICommand StopSlewCommand { get; private set; }
+        
+        public ICommand StepperMoveRateCommand { get; private set; }
+        
+        public ICommand RefreshTelescopeListCommand { get; private set; }
     }
 
     class TelescopeChooserVM : EquipmentChooserVM {

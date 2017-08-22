@@ -188,22 +188,17 @@ namespace NINA.ViewModel {
 
                 Mediator.Instance.Notify(MediatorMessages.IsExposingUpdate, _isExposing);
             }
-        }
+        }        
         
-        private IAsyncCommand _snapCommand;
-        public IAsyncCommand SnapCommand {
-            get {
-                return _snapCommand;
-            }
-            set {
-                _snapCommand = value;
-                RaisePropertyChanged();
-            }
+        public IAsyncCommand SnapCommand { get; private set; }
+
+        public ICommand CancelSnapCommand { get; private set; }
+
+        private void CancelCaptureImage(object o) {
+            _captureImageToken?.Cancel();
         }
 
-
-
-        
+        CancellationTokenSource _captureImageToken;
 
         private async Task ChangeFilter(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
 
@@ -487,24 +482,7 @@ namespace NINA.ViewModel {
             set { _imageControl = value; RaisePropertyChanged(); }
         }
 
-        public RelayCommand CancelSnapCommand {
-            get {
-                return _cancelSnapCommand;
-            }
-
-            set {
-                _cancelSnapCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
-        private void CancelCaptureImage(object o) {
-                _captureImageToken?.Cancel();
-        }
-
-        CancellationTokenSource _captureImageToken;
-        private RelayCommand _cancelSnapCommand;
+        
 
         private Model.MyFilterWheel.FilterInfo _snapFilter;
         public Model.MyFilterWheel.FilterInfo SnapFilter {

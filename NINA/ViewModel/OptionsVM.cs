@@ -87,17 +87,8 @@ namespace NINA.ViewModel {
             }
             
         }
-
-        private ICommand _downloadIndexesCommand;
-        public ICommand DownloadIndexesCommand {
-            get {
-                return _downloadIndexesCommand;
-            }
-            set {
-                _downloadIndexesCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        
+        
 
         private ObservableCollection<string> _indexfiles;
         public ObservableCollection<string> IndexFiles {
@@ -113,55 +104,23 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ICommand _openCygwinFileDiagCommand;
-        public ICommand OpenCygwinFileDiagCommand {
-            get {
-                return _openCygwinFileDiagCommand;
-            }
-            set {
-                _openCygwinFileDiagCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        public ICommand DownloadIndexesCommand { get; private set; }
 
-        private ICommand _openPS2FileDiagCommand;
-        public ICommand OpenPS2FileDiagCommand {
-            get {
-                return _openPS2FileDiagCommand;
-            }
-            set {
-                _openPS2FileDiagCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        public ICommand OpenCygwinFileDiagCommand { get; private set; }
+        
+        public ICommand OpenPS2FileDiagCommand { get; private set; }
+        
+        public ICommand OpenImageFileDiagCommand { get; private set; }
 
-        private ICommand _openFileDiagCommand;
-        public ICommand OpenImageFileDiagCommand {
-            get {
-                return _openFileDiagCommand;
-            }
-            set {
-                _openFileDiagCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        public ICommand PreviewFileCommand { get; private set; }
+
+        public ICommand ToggleColorsCommand { get; private set; }
 
         private void PreviewFile(object o) {
             System.Windows.MessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), "Example File Name", System.Windows.MessageBoxButton.OK);
         }
 
-                private ICommand _previewFileCommand;
-        public ICommand PreviewFileCommand {
-            get {
-                return _previewFileCommand;
-            }
-            set {
-                _previewFileCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-     public string ImageFilePath {
+        public string ImageFilePath {
             get {
                 return Settings.ImageFilePath;
             }
@@ -546,19 +505,6 @@ namespace NINA.ViewModel {
             }
             set {
                 _imagePatterns = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
-        private RelayCommand _toggleColorsCommand;
-        public RelayCommand ToggleColorsCommand {
-            get {
-                return _toggleColorsCommand;
-            }
-
-            set {
-                _toggleColorsCommand = value;
                 RaisePropertyChanged();
             }
         }

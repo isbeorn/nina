@@ -102,64 +102,18 @@ namespace NINA.ViewModel {
                 _focuserChooserVM = value;
             }
         }
-
-
-        ICommand _refreshFocuserListCommand;
-        public ICommand RefreshFocuserListCommand {
-            get {
-                return _refreshFocuserListCommand;
-            }
-            set {
-                _refreshFocuserListCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        ICommand _chooseFocuserCommand;
-        public ICommand ChooseFocuserCommand {
-            get {
-                return _chooseFocuserCommand;
-            }
-            private set {
-                _chooseFocuserCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        ICommand _disconnectCommand;
+        
         private DispatcherTimer _updateFocuser;
 
-        public ICommand DisconnectCommand {
-            get {
-                return _disconnectCommand;
-            }
-            private set {
-                _disconnectCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        public ICommand RefreshFocuserListCommand { get; private set; }
 
-        private ICommand _moveFocuserCommand;
-        public ICommand MoveFocuserCommand {
-            get {
-                return _moveFocuserCommand;
-            }
-            private set {
-                _moveFocuserCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        public ICommand ChooseFocuserCommand { get; private set; }
 
-        private ICommand _haltFocuserCommand;
-        public ICommand HaltFocuserCommand {
-            get {
-                return _haltFocuserCommand;
-            }
-            private set {
-                _haltFocuserCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        public ICommand DisconnectCommand { get; private set; }
+                
+        public ICommand MoveFocuserCommand { get; private set; }
+        
+        public ICommand HaltFocuserCommand { get; private set; }
     }
 
     class FocuserChooserVM : EquipmentChooserVM {

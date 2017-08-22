@@ -31,7 +31,6 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
 
             SolveCommand = new AsyncCommand<bool>(() => CaptureSolveSyncAndReslew(new Progress<string>(p => Status = p)));
-
             CancelSolveCommand = new RelayCommand(CancelSolve);
 
             SnapExposureDuration = 2;
@@ -378,28 +377,10 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-        private IAsyncCommand _solveCommand;
-        public IAsyncCommand SolveCommand {
-            get {
-                return _solveCommand;
-            }
-            set {
-                _solveCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _cancelSolveCommand;
-        public ICommand CancelSolveCommand {
-            get {
-                return _cancelSolveCommand;
-            }
-            set {
-                _cancelSolveCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+                
+        public IAsyncCommand SolveCommand { get; private set; }
+        
+        public ICommand CancelSolveCommand { get; private set; }
 
         private AsyncObservableCollection<PlateSolveResult> _plateSolveResultList;
         public AsyncObservableCollection<PlateSolveResult> PlateSolveResultList {

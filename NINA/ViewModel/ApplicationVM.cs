@@ -289,58 +289,16 @@ namespace NINA.ViewModel {
                 _frameFocusVM = value;
                 RaisePropertyChanged();
             }
-        }
+        }       
+                
+        public ICommand MinimizeWindowCommand { get; private set; }
 
-       
+        public ICommand MaximizeWindowCommand { get; private set; }
 
-        private ICommand _minimizeWindowCommand;
-        private ICommand _maximizeWindowCommand;
-        private ICommand _exitCommand;
-        public ICommand MinimizeWindowCommand {
-            get {
-                return _minimizeWindowCommand;
-            }
+        public ICommand ExitCommand { get; private set; }
+                
+        public ICommand LoadAvalonDockLayoutCommand { get; private set; }
 
-            set {
-                _minimizeWindowCommand = value;
-                RaisePropertyChanged();
-            }
-        }
 
-        public ICommand MaximizeWindowCommand {
-            get {
-                return _maximizeWindowCommand;
-            }
-
-            set {
-                _maximizeWindowCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public ICommand ExitCommand {
-            get {
-                return _exitCommand;
-            }
-
-            set {
-                _exitCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _loadAvalonDockLayoutCommand;
-        public ICommand LoadAvalonDockLayoutCommand {
-            get {
-                return _loadAvalonDockLayoutCommand;
-            }
-
-            set {
-                _loadAvalonDockLayoutCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        
     }
 }

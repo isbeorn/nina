@@ -217,7 +217,9 @@ namespace NINA.ViewModel {
         private IFilterWheel FW { get; set; }
         private ITelescope Telescope { get; set; }
         private IFocuser Focuser { get; set; }
-        public AsyncCommand<bool> PlateSolveImageCommand { get; private set; }
+
+        public IAsyncCommand PlateSolveImageCommand { get; private set; }
+
         public ICommand CancelPlateSolveImageCommand { get; private set; }
 
         public async Task PrepareImage(IProgress<string> progress, CancellationTokenSource canceltoken) {

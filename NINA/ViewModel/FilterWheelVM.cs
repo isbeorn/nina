@@ -82,28 +82,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ICommand _chooseFWCommand;
-        public ICommand ChooseFWCommand {
-            get {
-                return _chooseFWCommand;
-            }
-            set {
-                _chooseFWCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _disconnectCommand;
-        public ICommand DisconnectCommand {
-            get {
-                return _disconnectCommand;
-            }
-            set {
-                _disconnectCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private FilterWheelChooserVM _filterWheelChooserVM;
         public FilterWheelChooserVM FilterWheelChooserVM {
             get {
@@ -117,15 +95,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        ICommand _refreshFWListCommand;
-        public ICommand RefreshFWListCommand {
-            get {
-                return _refreshFWListCommand;
-            }
-            set {
-                _refreshFWListCommand = value;
-            }
-        }
+        public ICommand ChooseFWCommand { get; private set; }
+
+        public ICommand DisconnectCommand { get; private set; }
+
+        public ICommand RefreshFWListCommand { get; private set; }
     }
 
     class FilterWheelChooserVM : EquipmentChooserVM {

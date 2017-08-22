@@ -147,75 +147,22 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-        private IAsyncCommand _measureAzimuthErrorCommand;
-        public IAsyncCommand MeasureAzimuthErrorCommand {
-            get {
-                return _measureAzimuthErrorCommand;
-            }
-            private set {
-                _measureAzimuthErrorCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _cancelMeasureAzimuthErrorCommand;
-        public ICommand CancelMeasureAzimuthErrorCommand {
-            get {
-                return _cancelMeasureAzimuthErrorCommand;
-            }
-            private set {
-                _cancelMeasureAzimuthErrorCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
+                
+        public IAsyncCommand MeasureAzimuthErrorCommand { get; private set; }
+        
+        public ICommand CancelMeasureAzimuthErrorCommand { get; private set; }
+        
         private CancellationTokenSource _cancelMeasureErrorToken;
-        private IAsyncCommand _measureAltitudeErrorCommand;
-        public IAsyncCommand MeasureAltitudeErrorCommand {
-            get {
-                return _measureAltitudeErrorCommand;
-            }
-            private set {
-                _measureAltitudeErrorCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _cancelMeasureAltitudeErrorCommand;
-        public ICommand CancelMeasureAltitudeErrorCommand {
-            get {
-                return _cancelMeasureAltitudeErrorCommand;
-            }
-            private set {
-                _cancelMeasureAltitudeErrorCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private IAsyncCommand _dARVSlewCommand;
-        public IAsyncCommand DARVSlewCommand {
-            get {
-                return _dARVSlewCommand;
-            }
-            private set {
-                _dARVSlewCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        
+        public IAsyncCommand MeasureAltitudeErrorCommand { get; private set; }
+        
+        public ICommand CancelMeasureAltitudeErrorCommand { get; private set; }
+        
+        public IAsyncCommand DARVSlewCommand { get; private set; }
 
         private CancellationTokenSource _cancelDARVSlewToken;
-        private ICommand _cancelDARVSlewCommand;
-        public ICommand CancelDARVSlewCommand {
-            get {
-                return _cancelDARVSlewCommand;
-            }
-            private set {
-                _cancelDARVSlewCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+        
+        public ICommand CancelDARVSlewCommand { get; private set; }
 
         private double _dARVSlewRate;
         public double DARVSlewRate {
@@ -227,19 +174,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-
-
-        private ICommand _slewToMeridianOffsetCommand;
-        public ICommand SlewToMeridianOffsetCommand {
-            get {
-                return _slewToMeridianOffsetCommand;
-            }
-            set {
-                _slewToMeridianOffsetCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+                
+        public ICommand SlewToMeridianOffsetCommand { get; private set; }
 
         private double _meridianOffset;
         private double _declination;
@@ -714,12 +650,6 @@ namespace NINA.ViewModel {
             return poleError;
         }
 
-
-        
-
-
-
-
         public void SlewToMeridianOffset(object o) {
             double curSiderealTime = Telescope.SiderealTime;
 
@@ -732,12 +662,7 @@ namespace NINA.ViewModel {
             }
 
             Telescope.SlewToCoordinatesAsync(slew_ra, Declination);
-
-
-
         }
-
-
 
         private void UpdateValues_Tick(object sender, EventArgs e) {
             if (Telescope?.Connected == true) {

@@ -41,7 +41,7 @@ namespace NINA.ViewModel {
             CoolingRunning = false;
             CoolerPowerHistory = new AsyncObservableCollection<KeyValuePair<DateTime, double>>();
             CCDTemperatureHistory = new AsyncObservableCollection<KeyValuePair<DateTime, double>>();
-            
+
         }
 
         private void RefreshCameraList(object obj) {
@@ -73,7 +73,7 @@ namespace NINA.ViewModel {
         private CameraChooserVM _cameraChooserVM;
         public CameraChooserVM CameraChooserVM {
             get {
-                if(_cameraChooserVM == null) {
+                if (_cameraChooserVM == null) {
                     _cameraChooserVM = new CameraChooserVM();
                 }
                 return _cameraChooserVM;
@@ -226,7 +226,7 @@ namespace NINA.ViewModel {
         }
 
         private void ChooseCamera(object obj) {
-            Cam = (ICamera)CameraChooserVM.SelectedDevice; 
+            Cam = (ICamera)CameraChooserVM.SelectedDevice;
             if (Cam?.Connect() == true) {
                 _updateCamera.Start();
                 Settings.CameraId = Cam.Id;
@@ -236,7 +236,7 @@ namespace NINA.ViewModel {
         }
 
         private void DisconnectCamera(object obj) {
-            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);            
+            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
                 _updateCamera.Stop();
                 _cancelCoolCameraSource?.Cancel();
@@ -269,61 +269,15 @@ namespace NINA.ViewModel {
         public AsyncObservableCollection<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }
         public AsyncObservableCollection<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
 
+        public ICommand CoolCamCommand { get; private set; }
 
+        public ICommand ChooseCameraCommand { get; private set; }
 
+        public ICommand DisconnectCommand { get; private set; }
 
+        public ICommand CancelCoolCamCommand { get; private set; }
 
-
-
-        private ICommand _coolCamCommand;
-        public ICommand CoolCamCommand {
-            get {
-                return _coolCamCommand;
-            }
-            set {
-                _coolCamCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _chooseCameraCommand;
-        public ICommand ChooseCameraCommand {
-            get {
-                return _chooseCameraCommand;
-            }
-            set {
-                _chooseCameraCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _disconnectCommand;
-        public ICommand DisconnectCommand {
-            get {
-                return _disconnectCommand;
-            }
-            set {
-                _disconnectCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _cancelCoolCommand;
-        public ICommand CancelCoolCamCommand {
-            get { return _cancelCoolCommand; }
-            private set { _cancelCoolCommand = value; RaisePropertyChanged(); }
-        }
-
-
-        ICommand _refreshCameraListCommand;
-        public ICommand RefreshCameraListCommand {
-            get {
-                return _refreshCameraListCommand;
-            }
-            set {
-                _refreshCameraListCommand = value;
-            }
-        }
+        public ICommand RefreshCameraListCommand { get; private set; }
     }
 
     class CameraChooserVM : EquipmentChooserVM {
@@ -357,7 +311,7 @@ namespace NINA.ViewModel {
                 int count;
                 err = EDSDK.EdsGetChildCount(cameraList, out count);
 
-                for(int i = 0; i < count; i++) {
+                for (int i = 0; i < count; i++) {
                     IntPtr cam;
                     err = EDSDK.EdsGetChildAtIndex(cameraList, i, out cam);
 
@@ -365,17 +319,11 @@ namespace NINA.ViewModel {
                     err = EDSDK.EdsGetDeviceInfo(cam, out info);
 
 
-                    Devices.Add(new EDCamera(cam, info));          
-             }
+                    Devices.Add(new EDCamera(cam, info));
+                }
 
 
-         }
-
-
-
-
-
-
+            }
 
             if (Devices.Count > 0) {
                 var items = (from device in Devices where device.Id == Settings.CameraId select device);

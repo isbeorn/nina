@@ -140,40 +140,13 @@ namespace NINA.ViewModel{
                 }
             }
         }
-
-        private ICommand _addSequenceCommand;
-        public ICommand AddSequenceCommand {
-            get { return _addSequenceCommand; }
-            set { _addSequenceCommand = value;  RaisePropertyChanged(); }
-        }
-
-        private ICommand _removeSequenceCommand;
-        public ICommand RemoveSequenceCommand {
-            get { return _removeSequenceCommand; }
-            set { _removeSequenceCommand = value; RaisePropertyChanged(); }
-        }
-
-        private IAsyncCommand _startSequenceCommand;
-        public IAsyncCommand StartSequenceCommand {
-            get {
-                return _startSequenceCommand;
-            }
-            set {
-                _startSequenceCommand = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICommand _cancelSequenceCommand;
-        public ICommand CancelSequenceCommand {
-            get {
-                return _cancelSequenceCommand;
-            }
-
-            set {
-                _cancelSequenceCommand = value;
-                RaisePropertyChanged();
-            }
-        }
+                
+        public ICommand AddSequenceCommand { get; private set; }
+        
+        public ICommand RemoveSequenceCommand { get; private set; }
+        
+        public IAsyncCommand StartSequenceCommand { get; private set; }
+        
+        public ICommand CancelSequenceCommand { get; private set; }
     }
 }
