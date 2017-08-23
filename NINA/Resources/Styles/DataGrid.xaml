@@ -162,12 +162,6 @@
                                 Property="Background"
                                 Value="{StaticResource SecondaryBrush}" />
                         </Trigger>
-                        <Trigger Property="IsSelected"
-                             Value="True">
-                            <Setter TargetName="DGR_Border"
-                                Property="Background"
-                                Value="HotPink" />
-                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -176,7 +170,7 @@
     
 
     <Style TargetType="{x:Type DataGridCell}">
-        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+        <Setter Property="TextBlock.TextAlignment" Value="Center" />        
         <Style.Triggers>
             <Trigger Property="DataGridCell.IsSelected" Value="True">
                 <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />

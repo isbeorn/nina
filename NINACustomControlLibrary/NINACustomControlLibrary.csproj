@@ -58,6 +58,7 @@
     <Compile Include="CancellableButton.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="IntStepperControl.cs" />
     <Compile Include="StepperControl.cs">
       <SubType>Code</SubType>
     </Compile>
