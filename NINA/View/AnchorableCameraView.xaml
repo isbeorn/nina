@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
@@ -47,18 +48,39 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center">
                         <TextBlock Text="{ns:Loc LblTargetTempShort}" VerticalAlignment="Center"></TextBlock>
-                        <local:StepperControl Value="{Binding TargetTemp, Mode=TwoWay}" MinValue="-50" MaxValue="20" StepSize="0.5" />
+                        <ninactrl:StepperControl                             
+                            Value="{Binding TargetTemp, Mode=TwoWay}" 
+                            MinValue="-50" 
+                            MaxValue="20" 
+                            StepSize="0.5" 
+                            AddSVG="{StaticResource AddSVG}"
+                            SubstractSVG="{StaticResource SubstractSVG}"
+                            ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"/>
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center">
                         <TextBlock Text="{ns:Loc LblDuration}" VerticalAlignment="Center"></TextBlock>
-                        <local:StepperControl Value="{Binding Duration, Mode=TwoWay}" MinValue="0" />                        
+                        <ninactrl:StepperControl                             
+                            Value="{Binding Duration, Mode=TwoWay}" 
+                            MinValue="0" 
+                            StepSize="0.5" 
+                            AddSVG="{StaticResource AddSVG}"
+                            SubstractSVG="{StaticResource SubstractSVG}"
+                            ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"/>                      
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Rows="2" VerticalAlignment="Center">
-                        <local:CancellableButtonView MyCommand="{Binding CoolCamCommand}" MyCancelCommand="{Binding CancelCoolCamCommand}" MyButtonImage="{StaticResource ThermometerSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" VerticalAlignment="Center" Height="35" Margin="10 10 10 0" />
+
+                        <ninactrl:CancellableButton 
+                            Command="{Binding CoolCamCommand}" 
+                            CancelCommand="{Binding CancelCoolCamCommand}" 
+                            ButtonImage="{StaticResource ThermometerSVG}" 
+                            CancelButtonImage="{StaticResource CancelSVG}"                             
+                            VerticalAlignment="Center" Height="35" Margin="10 10 10 0"
+                            />
+                        
                         <Grid Visibility="{Binding CoolingRunning, Converter={StaticResource BooleanToVisibilityHiddenConverter}}" Margin="10 0 10 0" Height="35">
                             <ProgressBar Minimum="0" Maximum="1" Value="{Binding CoolingProgress}"/>
                             <TextBlock Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}" HorizontalAlignment="Center" VerticalAlignment="Center"   />

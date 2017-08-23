@@ -13,31 +13,35 @@
                 <ResourceDictionary Source="/NINA;component/Resources/SVGDictionary.xaml" />
                 
                 <!-- Static Resources -->
-                <ResourceDictionary Source="StaticResources\ViewModels.xaml" />
-                <ResourceDictionary Source="StaticResources\Brushes.xaml" />
-                <ResourceDictionary Source="StaticResources\Converters.xaml" />
+                <ResourceDictionary Source="Resources\StaticResources\ViewModels.xaml" />
+                <ResourceDictionary Source="Resources\StaticResources\Brushes.xaml" />
+                <ResourceDictionary Source="Resources\StaticResources\Converters.xaml" />
                 
                 <!-- UI Styles -->
-                <ResourceDictionary Source="Styles\Window.xaml" />
-                <ResourceDictionary Source="Styles\TextBlock.xaml" />
-                <ResourceDictionary Source="Styles\TextBox.xaml" />
-                <ResourceDictionary Source="Styles\TabControl.xaml" />
-                <ResourceDictionary Source="Styles\CheckBox.xaml" />
-                <ResourceDictionary Source="Styles\DataGrid.xaml" />
-                <ResourceDictionary Source="Styles\ListView.xaml" />
-                <ResourceDictionary Source="Styles\GroupBox.xaml" />
-                <ResourceDictionary Source="Styles\Button.xaml" />
-                <ResourceDictionary Source="Styles\RepeatButton.xaml" />
-                <ResourceDictionary Source="Styles\ToggleButton.xaml" />
-                <ResourceDictionary Source="Styles\Slider.xaml" />
-                <ResourceDictionary Source="Styles\Expander.xaml" />
-                <ResourceDictionary Source="Styles\ScrollViewer.xaml" />
-                <ResourceDictionary Source="Styles\ComboBox.xaml" />
-                <ResourceDictionary Source="Styles\GridSplitter.xaml" />
-                <ResourceDictionary Source="Styles\ProgressBar.xaml" />
-                <ResourceDictionary Source="Styles\AvalonDock.xaml" />
-                <ResourceDictionary Source="Styles\Tooltip.xaml" />
+                <ResourceDictionary Source="Resources\Styles\Window.xaml" />
+                <ResourceDictionary Source="Resources\Styles\TextBlock.xaml" />
+                <ResourceDictionary Source="Resources\Styles\TextBox.xaml" />
+                <ResourceDictionary Source="Resources\Styles\TabControl.xaml" />
+                <ResourceDictionary Source="Resources\Styles\CheckBox.xaml" />
+                <ResourceDictionary Source="Resources\Styles\DataGrid.xaml" />
+                <ResourceDictionary Source="Resources\Styles\ListView.xaml" />
+                <ResourceDictionary Source="Resources\Styles\GroupBox.xaml" />
+                <ResourceDictionary Source="Resources\Styles\Button.xaml" />
+                <ResourceDictionary Source="Resources\Styles\RepeatButton.xaml" />
+                <ResourceDictionary Source="Resources\Styles\ToggleButton.xaml" />
+                <ResourceDictionary Source="Resources\Styles\Slider.xaml" />
+                <ResourceDictionary Source="Resources\Styles\Expander.xaml" />
+                <ResourceDictionary Source="Resources\Styles\ScrollViewer.xaml" />
+                <ResourceDictionary Source="Resources\Styles\ComboBox.xaml" />
+                <ResourceDictionary Source="Resources\Styles\GridSplitter.xaml" />
+                <ResourceDictionary Source="Resources\Styles\ProgressBar.xaml" />
+                <ResourceDictionary Source="Resources\Styles\AvalonDock.xaml" />
+                <ResourceDictionary Source="Resources\Styles\Tooltip.xaml" />
+                <ResourceDictionary Source="Resources\Styles\CancellableButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
+                
+                <!-- DataTemplates-->
+                <ResourceDictionary Source="Resources\DataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -117,7 +117,7 @@ namespace NINA.ViewModel {
         public ICommand ToggleColorsCommand { get; private set; }
 
         private void PreviewFile(object o) {
-            System.Windows.MessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), "Example File Name", System.Windows.MessageBoxButton.OK);
+            MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), "Example File Name", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
         }
 
         public string ImageFilePath {

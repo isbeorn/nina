@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarDataImport", "StarDataI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetupCygwinInstallAction", "SetupCygwinInstallAction\SetupCygwinInstallAction.csproj", "{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NINACustomControlLibrary", "NINACustomControlLibrary\NINACustomControlLibrary.csproj", "{39FEFC1E-7A69-440D-B38A-5B9469353491}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,18 @@ Global
 		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Release|x64.Build.0 = Release|Any CPU
 		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Release|x86.ActiveCfg = Release|Any CPU
 		{1FC3522C-8845-44FA-8E7D-7E4CB47EA8A3}.Release|x86.Build.0 = Release|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Debug|x64.Build.0 = Debug|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Debug|x86.Build.0 = Debug|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Release|x64.ActiveCfg = Release|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Release|x64.Build.0 = Release|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Release|x86.ActiveCfg = Release|Any CPU
+		{39FEFC1E-7A69-440D-B38A-5B9469353491}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

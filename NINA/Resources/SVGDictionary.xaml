@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"                                    
-                    xmlns:local="clr-namespace:NINA.Utility">
+                    >
 
     <GeometryGroup x:Key="CameraSVG">
         <PathGeometry Figures="M 18.1613,34.8547L 4.53067,12.2307C 1.672,16.46 0,21.5533 0,27.032C 0,29.7507 0.412,32.3813 1.18267,34.8547" />

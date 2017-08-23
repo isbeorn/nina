@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -67,13 +68,15 @@
                                 MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
                                 MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
                                 MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />
-            
-                <local:CancellableButtonView  Width="50" Height="50" Margin="5,0,5,0" 
-                                              MyCommand="{Binding SolveCommand}" 
-                                              MyCancelCommand="{Binding CancelSolveCommand}" 
-                                              MyButtonImage="{StaticResource PlatesolveSVG}" 
-                                              MyCancelButtonImage="{StaticResource CancelSVG}" 
-                                              MyButtonTooltip="Capture image and platesolve"/>
+
+                <ninactrl:CancellableButton 
+                    Width="50" Height="50" Margin="5,0,5,0" 
+                    Command="{Binding SolveCommand}" 
+                    CancelCommand="{Binding CancelSolveCommand}" 
+                    ButtonImage="{StaticResource PlatesolveSVG}" 
+                    CancelButtonImage="{StaticResource CancelSVG}" 
+                    ToolTip="Capture image and platesolve"
+                    />
            
                 <Button  Width="50" Height="50" Command="{Binding SyncCommand}" Margin="5,0,5,0">
                     <Button.ToolTip>

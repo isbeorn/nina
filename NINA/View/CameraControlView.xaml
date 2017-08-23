@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -67,8 +68,15 @@
 
             </ToggleButton>
 
-
-            <local:CancellableButtonView  Width="45" Height="45" MyCommand="{Binding MyCommand}" MyCancelCommand="{Binding MyCancelCommand}" MyButtonImage="{Binding MyButtonImage}" MyCancelButtonImage="{Binding MyCancelButtonImage}"  Margin="5,0,5,0" HorizontalAlignment="Left" MyButtonTooltip="{ns:Loc LblTooltipTakeExposure}"/>
+            <ninactrl:CancellableButton 
+                Width="45" Height="45" 
+                Command="{Binding MyCommand}" 
+                CancelCommand="{Binding MyCancelCommand}" 
+                ButtonImage="{Binding MyButtonImage}" 
+                CancelButtonImage="{Binding MyCancelButtonImage}"  
+                ToolTip="{ns:Loc LblTooltipTakeExposure}"
+                Margin="5,0,5,0" HorizontalAlignment="Left"                 
+                />            
         </StackPanel>
     </StackPanel>
 </UserControl>

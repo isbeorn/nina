@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
-               xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              xmlns:astrometry="clr-namespace:NINA.Utility.Astrometry"
              
              mc:Ignorable="d" 
@@ -52,13 +53,16 @@
                                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="0,20,0,0">
                                     <TextBlock VerticalAlignment="Center">Altitude measurement side</TextBlock>
                                     <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:AltitudeSite} }}" SelectedItem="{Binding AltitudeSiteType}" />
-                                    <local:CancellableButtonView Height="35" 
-                                                                 MyCommand="{Binding MeasureAltitudeErrorCommand}" 
-                                                                 MyCancelCommand="{Binding CancelMeasureAltitudeErrorCommand}" 
-                                                                 MyButtonImage="{StaticResource ArrowTwoSidesRotated}" 
-                                                                 MyCancelButtonImage="{StaticResource CancelSVG}" 
-                                                                 MyButtonTooltip="Measure Altitude Error&#10;Point Scope East or West and adjust Side of Pier combobox accordingly"
-                                                                 Margin="10,10,10,0"/>
+
+                                    <ninactrl:CancellableButton 
+                                        Height="35" 
+                                        Command="{Binding MeasureAltitudeErrorCommand}" 
+                                        CancelCommand="{Binding CancelMeasureAltitudeErrorCommand}" 
+                                        ButtonImage="{StaticResource ArrowTwoSidesRotated}" 
+                                        CancelButtonImage="{StaticResource CancelSVG}" 
+                                        ToolTip="Measure Altitude Error&#10;Point Scope East or West and adjust Side of Pier combobox accordingly"
+                                        Margin="10,10,10,0"
+                                        />
                                     <TextBlock Text="{Binding AltitudePolarErrorStatus}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </StackPanel>
@@ -68,12 +72,14 @@
                             <StackPanel Orientation="Vertical">
                                 <TextBlock>Point telescope near meridian.</TextBlock>
                                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10,10,10,0">
-                                    <local:CancellableButtonView Height="35"
-                                                                 MyCommand="{Binding MeasureAzimuthErrorCommand}" 
-                                                                 MyCancelCommand="{Binding CancelMeasureAzimuthErrorCommand}" 
-                                                                 MyButtonImage="{StaticResource ArrowTwoSides}" 
-                                                                 MyCancelButtonImage="{StaticResource CancelSVG}" 
-                                                                 MyButtonTooltip="Measure Azimuth Error&#10;Point Scope South near Meridian"/>
+                                    <ninactrl:CancellableButton 
+                                        Height="35"
+                                        Command="{Binding MeasureAzimuthErrorCommand}" 
+                                        CancelCommand="{Binding CancelMeasureAzimuthErrorCommand}" 
+                                        ButtonImage="{StaticResource ArrowTwoSides}" 
+                                        CancelButtonImage="{StaticResource CancelSVG}" 
+                                        ToolTip="Measure Azimuth Error&#10;Point Scope South near Meridian"
+                                        />
                                     <TextBlock Text="{Binding AzimuthPolarErrorStatus}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                                 </StackPanel>
 
@@ -111,19 +117,17 @@
                             <TextBlock Text="{Binding DarvStatus}"></TextBlock>
                         </StackPanel>
 
-                        <local:CancellableButtonView Height="35" Margin="10,10,10,0" 
-                                                     MyCommand="{Binding DARVSlewCommand}" 
-                                                     MyCancelCommand="{Binding CancelDARVSlewCommand}" 
-                                                     MyButtonText="Slew"  
-                                                     MyCancelButtonImage="{StaticResource CancelSVG}"
-                                                     MyButtonTooltip="This will take an exposure while slewing the scope slowly to one side and back&#10;when the lines are not aligned there is some PA error"/>
-
+                        <ninactrl:CancellableButton 
+                            Height="35" Margin="10,10,10,0" 
+                            Command="{Binding DARVSlewCommand}" 
+                            CancelCommand="{Binding CancelDARVSlewCommand}" 
+                            ButtonText="Slew"  
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            ToolTip="This will take an exposure while slewing the scope slowly to one side and back&#10;when the lines are not aligned there is some PA error"
+                            />
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
-
-
-
         </Grid>
     </ScrollViewer>
 </UserControl>

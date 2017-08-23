@@ -1,0 +1,45 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:NINACustomControlLibrary"
+                    >
+    
+
+    <Style TargetType="{x:Type local:StepperControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:StepperControl}">
+                    <Grid x:Name="LayoutRoot" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="25"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Name="PART_Increment" Height="25">
+                            <Path Fill="{TemplateBinding ButtonForegroundBrush}" 
+                                  Data="{TemplateBinding AddSVG}" 
+                                  Stretch="Uniform" 
+                                  Margin="5">
+                            </Path>
+                        </Button>
+                        <TextBox Name="PART_Textbox" 
+                                 Grid.Column="1"
+                                 HorizontalAlignment="Stretch" 
+                                 VerticalAlignment="Center" 
+                                 TextAlignment="Center"    
+                                 Text="{Binding Value, 
+                                                StringFormat=\{0:#.0\}, 
+                                                UpdateSourceTrigger=PropertyChanged,
+                                                RelativeSource={RelativeSource AncestorType={x:Type local:StepperControl}}}"/>
+                        <Button Name="PART_Decrement" Height="25" Grid.Column="2">
+                            <Path Fill="{TemplateBinding ButtonForegroundBrush}" 
+                                  Data="{TemplateBinding SubstractSVG}" 
+                                  Stretch="Uniform" 
+                                  Margin="5">
+                            </Path>
+                        </Button>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

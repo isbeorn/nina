@@ -250,6 +250,7 @@
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
     <Compile Include="Utility\EDSDK\EDSDK.cs" />
     <Compile Include="Utility\Mediator.cs" />
+    <Compile Include="Utility\WindowService.cs" />
     <Compile Include="Utility\XISF.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
@@ -291,6 +292,7 @@
     <Compile Include="ViewModel\ImageHistoryVM.cs" />
     <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
+    <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\PHD2VM.cs" />
     <Compile Include="ViewModel\PlatesolveVM.cs" />
@@ -346,9 +348,6 @@
     <Compile Include="View\CameraView.xaml.cs">
       <DependentUpon>CameraView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CancellableButtonView.xaml.cs">
-      <DependentUpon>CancellableButtonView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
     </Compile>
@@ -379,6 +378,9 @@
     <Compile Include="View\LoadingAnimation.xaml.cs">
       <DependentUpon>LoadingAnimation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MeridianFlipView.xaml.cs">
+      <DependentUpon>MeridianFlipView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MinimalisticPHD2Graph.xaml.cs">
       <DependentUpon>MinimalisticPHD2Graph.xaml</DependentUpon>
     </Compile>
@@ -405,9 +407,6 @@
     </Compile>
     <Compile Include="View\SequenceView.xaml.cs">
       <DependentUpon>SequenceView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\StepperControl.xaml.cs">
-      <DependentUpon>StepperControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TelescopeView.xaml.cs">
       <DependentUpon>TelescopeView.xaml</DependentUpon>
@@ -446,94 +445,102 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\DataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\CancellableButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\SVGDictionary.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="StaticResources\ViewModels.xaml">
+    <Page Include="Resources\StaticResources\ViewModels.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="StaticResources\Brushes.xaml">
+    <Page Include="Resources\StaticResources\Brushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="StaticResources\Converters.xaml">
+    <Page Include="Resources\StaticResources\Converters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\AvalonDock.xaml">
+    <Page Include="Resources\Styles\AvalonDock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\Button.xaml">
+    <Page Include="Resources\Styles\Button.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\CheckBox.xaml">
+    <Page Include="Resources\Styles\CheckBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\ComboBox.xaml">
+    <Page Include="Resources\Styles\ComboBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\DataGrid.xaml">
+    <Page Include="Resources\Styles\DataGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\Expander.xaml">
+    <Page Include="Resources\Styles\Expander.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\GridSplitter.xaml">
+    <Page Include="Resources\Styles\GridSplitter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\GroupBox.xaml">
+    <Page Include="Resources\Styles\GroupBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\ListView.xaml">
+    <Page Include="Resources\Styles\ListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\ProgressBar.xaml">
+    <Page Include="Resources\Styles\ProgressBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\RepeatButton.xaml">
+    <Page Include="Resources\Styles\RepeatButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\ScrollViewer.xaml">
+    <Page Include="Resources\Styles\ScrollViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\Slider.xaml">
+    <Page Include="Resources\Styles\Slider.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\TabControl.xaml">
+    <Page Include="Resources\Styles\TabControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\TextBlock.xaml">
+    <Page Include="Resources\Styles\TextBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\TextBox.xaml">
+    <Page Include="Resources\Styles\TextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\ToggleButton.xaml">
+    <Page Include="Resources\Styles\ToggleButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\Tooltip.xaml">
+    <Page Include="Resources\Styles\Tooltip.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\Window.xaml">
+    <Page Include="Resources\Styles\Window.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -601,10 +608,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CancellableButtonView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\FilterWheelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -645,6 +648,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\MeridianFlipView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MinimalisticPHD2Graph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -681,10 +688,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\StepperControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\TelescopeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -699,6 +702,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Content Include="External\ASICamera.dll" />
+    <Content Include="External\ASICamera2.dll" />
+    <Content Include="External\ASICamera_x64.dll" />
     <Content Include="Utility\ColorSchema\ColorSchemas.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -708,6 +714,9 @@
     <Content Include="Utility\EDSDK\EDSDK.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="External\ASICamera.lib" />
+    <None Include="External\ASICamera2.lib" />
+    <None Include="External\ASICamera_x64.lib" />
     <None Include="packages.config" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />
@@ -758,7 +767,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="External\" />
+    <ProjectReference Include="..\NINACustomControlLibrary\NINACustomControlLibrary.csproj">
+      <Project>{39fefc1e-7a69-440d-b38a-5b9469353491}</Project>
+      <Name>NINACustomControlLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

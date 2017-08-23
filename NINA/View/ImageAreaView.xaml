@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -57,13 +58,14 @@
                 </Grid>
             </Button>
 
-
-            <local:CancellableButtonView  Grid.Column="4" Margin="2.5"
-                                          MyCommand="{Binding PlateSolveImageCommand}" 
-                                          MyCancelCommand="{Binding CancelPlateSolveImageCommand}" 
-                                          MyButtonImage="{StaticResource  PlatesolveSVG}" 
-                                          MyCancelButtonImage="{StaticResource CancelSVG}"                                            
-                                          MyButtonTooltip="{ns:Loc LblPlateSolveImage}"/>            
+            <ninactrl:CancellableButton 
+                Grid.Column="4" Margin="2.5"
+                Command="{Binding PlateSolveImageCommand}" 
+                CancelCommand="{Binding CancelPlateSolveImageCommand}" 
+                ButtonImage="{StaticResource  PlatesolveSVG}" 
+                CancelButtonImage="{StaticResource CancelSVG}"                                            
+                ToolTip="{ns:Loc LblPlateSolveImage}"
+                />      
 
             <ToggleButton Grid.Column="5" IsChecked="{Binding ShowCrossHair}"  Margin="2.5">
                 <ToggleButton.ToolTip>

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d" 
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              d:DesignHeight="300" d:DesignWidth="300">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" x:Name="grid">
@@ -70,7 +71,7 @@
                             <CheckBox IsChecked="{Binding SlewToTarget}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                         </UniformGrid>
                     </Border>
-                
+
                     <local:CameraControlView          
                                     MyOrientation="Vertical"
                                     MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}"
@@ -78,15 +79,15 @@
                                     MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
                                     MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
                                     MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />
-                
-                    
 
-                    <local:CancellableButtonView Height="35" Margin="10,10,10,0" 
-                                                MyCommand="{Binding SolveCommand}" 
-                                                MyCancelCommand="{Binding CancelSolveCommand}" 
-                                                MyButtonImage="{StaticResource PlatesolveSVG}" 
-                                                MyCancelButtonImage="{StaticResource CancelSVG}" 
-                                                MyButtonTooltip="Capture image and platesolve"/>
+                    <ninactrl:CancellableButton 
+                        Height="35" Margin="10,10,10,0" 
+                        Command="{Binding SolveCommand}" 
+                        CancelCommand="{Binding CancelSolveCommand}" 
+                        ButtonImage="{StaticResource PlatesolveSVG}" 
+                        CancelButtonImage="{StaticResource CancelSVG}" 
+                        ToolTip="Capture image and platesolve"
+                        />
 
                     <DataGrid ItemsSource="{Binding PlateSolveResultList}" AutoGenerateColumns="False"  CanUserAddRows="False" Width="{Binding ElementName=grid, Path=ActualWidth}">
                         <DataGrid.Columns>
@@ -98,9 +99,6 @@
                             <DataGridTextColumn Width="*" Header="Ra Pix Error" Binding="{Binding RaPixError, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
                             <DataGridTextColumn Width="*" Header="Dec Pix Error" Binding="{Binding DecPixError, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
                             <DataGridTextColumn Width="*" Header="Orientation" Binding="{Binding Orientation, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
-                            
-
-
                         </DataGrid.Columns>
                     </DataGrid>
 

@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"                    
+                    >
+    
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.PrimaryColor}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.SecondaryColor}"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.BorderColor}"/>
+    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ButtonBackgroundColor}"/>
+    <SolidColorBrush x:Key="ButtonBackgroundSelectedBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ButtonBackgroundSelectedColor}"/>
+    <SolidColorBrush x:Key="ButtonForegroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ButtonForegroundColor}"/>
+    <SolidColorBrush x:Key="ButtonForegroundDisabledBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ButtonForegroundDisabledColor}"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.BackgroundColor}"/>
+
+    <SolidColorBrush x:Key="AltPrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltPrimaryColor}"/>
+    <SolidColorBrush x:Key="AltSecondaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltSecondaryColor}"/>
+    <SolidColorBrush x:Key="AltBorderBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltBorderColor}"/>
+    <SolidColorBrush x:Key="AltButtonBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltButtonBackgroundColor}"/>
+    <SolidColorBrush x:Key="AltButtonBackgroundSelectedBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltButtonBackgroundSelectedColor}"/>
+    <SolidColorBrush x:Key="AltButtonForegroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltButtonForegroundColor}"/>
+    <SolidColorBrush x:Key="AltButtonForegroundDisabledBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltButtonForegroundDisabledColor}"/>
+    <SolidColorBrush x:Key="AltBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltBackgroundColor}"/>
+    
+</ResourceDictionary>

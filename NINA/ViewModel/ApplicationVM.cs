@@ -98,7 +98,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void MinimizeWindow(object obj) {
+        private void MinimizeWindow(object obj) {            
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
 

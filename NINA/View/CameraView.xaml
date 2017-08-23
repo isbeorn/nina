@@ -7,6 +7,7 @@
              xmlns:view="clr-namespace:NINA.View"
              xmlns:util="clr-namespace:NINA.Utility" x:Class="NINA.View.CameraView"        
              xmlns:ns="clr-namespace:NINA.Locale"
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid >
@@ -304,7 +305,13 @@
 
                                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
                                     <TextBlock Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}"  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" Visibility="{Binding CoolingRunning, Converter={StaticResource VisibilityConverter}}"/>
-                                    <local:CancellableButtonView MyCommand="{Binding CoolCamCommand}" MyCancelCommand="{Binding CancelCoolCamCommand}" MyButtonImage="{StaticResource ThermometerSVG}" MyCancelButtonImage="{StaticResource CancelSVG}" HorizontalAlignment="Right" Width="40" Height="40" />
+                                    <ninactrl:CancellableButton 
+                                        Command="{Binding CoolCamCommand}" 
+                                        CancelCommand="{Binding CancelCoolCamCommand}" 
+                                        ButtonImage="{StaticResource ThermometerSVG}" 
+                                        CancelButtonImage="{StaticResource CancelSVG}" 
+                                        HorizontalAlignment="Right" Width="40" Height="40"
+                                        />
                                 </StackPanel>
 
                             </Grid>

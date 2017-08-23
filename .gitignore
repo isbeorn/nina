@@ -4,6 +4,8 @@ NINA/bin/
 NINA/obj/
 NINASetup/Debug/
 NINASetup/Release/
+NINACustomControlLibrary/bin/
+NINACustomControlLibrary/obj/
 NINATest/bin/
 NINATest/obj/
 StarDataImport/bin/

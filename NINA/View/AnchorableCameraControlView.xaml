@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
@@ -42,18 +43,15 @@
                     </UniformGrid>
                 </Border>
             </StackPanel>
-
-              
-
-
-            <local:CancellableButtonView  Height="35" MyCommand="{Binding SnapCommand}" 
-                                            MyCancelCommand="{Binding CancelSnapCommand}" 
-                                            Visibility="{Binding SnapCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" 
-                                            MyButtonImage="{StaticResource PictureSVG}" 
-                                            MyCancelButtonImage="{StaticResource CancelSVG}"  
-                                            Margin="10,10,10,0" 
-                                            MyButtonTooltip="{ns:Loc LblTooltipTakeExposure}"/>
-
+            
+            <ninactrl:CancellableButton 
+                Height="35" Margin="10,10,10,0" 
+                Visibility="{Binding SnapCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" 
+                Command="{Binding SnapCommand}" 
+                CancelCommand="{Binding CancelSnapCommand}"                 
+                ButtonImage="{StaticResource PictureSVG}" 
+                CancelButtonImage="{StaticResource CancelSVG}" 
+                ToolTip="{ns:Loc LblTooltipTakeExposure}" />
         </StackPanel>
     </Grid>
 </UserControl>
