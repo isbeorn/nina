@@ -83,7 +83,7 @@ namespace NINA.ViewModel {
                     }
                 }
             } catch(Exception ex) {
-             
+                Logger.Error(ex.Message, ex.StackTrace);
             }
             
         }

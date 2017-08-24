@@ -103,6 +103,7 @@ namespace NINA.AstrometryIndexDownloader {
                     await client.DownloadFileTaskAsync(url, _destinationfolder + file.Name);
                     success = true;
                 } catch(Exception ex) {
+                    Logger.Error(ex.Message, ex.StackTrace);
                     System.Windows.MessageBox.Show(ex.Message);
                 }
                 
