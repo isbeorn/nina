@@ -144,7 +144,7 @@
       <Value Profile="(Default)">3.8</Value>
     </Setting>
     <Setting Name="PS2Regions" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">500</Value>
+      <Value Profile="(Default)">5000</Value>
     </Setting>
     <Setting Name="PS2Location" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
