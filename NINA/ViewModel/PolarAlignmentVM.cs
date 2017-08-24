@@ -299,11 +299,11 @@ namespace NINA.ViewModel {
             if (Math.Abs(deg) > 1) {
                 return deg.ToString("N" + precision) + "° (degree)";
             }
-            var amin = deg * 60;
+            var amin = Astrometry.DegreeToArcmin(deg);
             if (Math.Abs(amin) > 1) {
                 return amin.ToString("N" + precision) + "' (arcmin)";
             }
-            var asec = deg * 3600;
+            var asec = Astrometry.DegreeToArcsec(deg);
             return asec.ToString("N" + precision) + "'' (arcsec)";
         }
 
@@ -636,7 +636,7 @@ namespace NINA.ViewModel {
                 // Calculate pole error
                 poleError = 3.81 * 3600.0 * decError / (4 * movementdeg * Math.Cos(Astrometry.ToRadians(startPosition.Dec)));
                 // Convert pole error from arcminutes to degrees
-                poleError = poleError / 60.0;
+                poleError = Astrometry.ArcminToDegree(poleError);
             }
             catch (OperationCanceledException ex) {
                 Logger.Trace(ex.Message);

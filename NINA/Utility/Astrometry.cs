@@ -47,6 +47,31 @@ namespace NINA.Utility.Astrometry {
         public static double ToDegree(double angle) {
             return angle * (180.0 / Math.PI);
         }
+        
+
+        public static double DegreeToArcmin(double degree) {
+            return degree * 60;
+        }
+
+        public static double DegreeToArcsec(double degree) {
+            return degree * 60 * 60;
+        }
+
+        public static double ArcminToArcsec(double arcmin) {
+            return arcmin * 60;
+        }
+
+        public static double ArcminToDegree(double arcmin) {
+            return arcmin / 60;
+        }
+
+        public static double ArcsecToArcmin(double arcsec) {
+            return arcsec / 60;
+        }
+
+        public static double ArcsecToDegree(double arcsec) {
+            return arcsec / 60 / 60;
+        }
     }
 
     public class Coordinates {

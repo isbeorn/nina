@@ -71,6 +71,21 @@
                             <CheckBox IsChecked="{Binding SlewToTarget}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                         </UniformGrid>
                     </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="60">
+                        <UniformGrid Rows="2">
+                            <UniformGrid Columns="2" >
+                                <TextBlock Text="Repeat until" VerticalAlignment="Center"></TextBlock>
+                                <CheckBox IsChecked="{Binding Repeat}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
+                            </UniformGrid>                    
+                            <UniformGrid Columns="2" IsEnabled="{Binding Repeat}">
+                                <TextBlock Text="error &lt;" VerticalAlignment="Center"></TextBlock>
+                                <UniformGrid Columns="2">                                
+                                    <TextBox Text="{Binding RepeatThreshold}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0" />
+                                    <TextBlock Text="arcmin" VerticalAlignment="Center"></TextBlock>
+                                </UniformGrid>
+                            </UniformGrid>
+                        </UniformGrid>
+                    </Border>
 
                     <local:CameraControlView          
                                     MyOrientation="Vertical"

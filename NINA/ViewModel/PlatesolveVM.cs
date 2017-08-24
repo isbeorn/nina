@@ -34,7 +34,8 @@ namespace NINA.ViewModel {
             CancelSolveCommand = new RelayCommand(CancelSolve);
 
             SnapExposureDuration = 2;
-
+            Repeat = false;
+            RepeatThreshold = 1.0d;
 
             RegisterMediatorMessages();
         }
@@ -116,6 +117,31 @@ namespace NINA.ViewModel {
                 if (_slewToTarget && !SyncScope) {
                     SyncScope = true;
                 }
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _repeat;
+        public bool Repeat {
+            get {
+                return _repeat;
+            }
+            set {
+                _repeat = value;
+                if(_repeat && !SlewToTarget) {
+                    SlewToTarget = true;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _repeatThreshold;
+        public double RepeatThreshold {
+            get {
+                return _repeatThreshold;
+            }
+            set {
+                _repeatThreshold = value;
                 RaisePropertyChanged();
             }
         }
@@ -252,23 +278,26 @@ namespace NINA.ViewModel {
         /// <returns></returns>
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<string> progress) {
             _solveCancelToken = new CancellationTokenSource();
-            var solvesuccess = await SolveWithCapture(SnapExposureDuration, progress, _solveCancelToken, SnapFilter, SnapBin);
-            
-            if(solvesuccess) {
-                CalculateError();
-                if (SyncScope) {
-                    if (Telescope?.Connected != true) {
-                        Notification.ShowWarning("Unable to sync. Telescope is not connected!");
-                        return false;
+            bool solvesuccess = false;
+            do {
+
+                solvesuccess = await SolveWithCapture(SnapExposureDuration, progress, _solveCancelToken, SnapFilter, SnapBin);
+
+                if (solvesuccess) {
+                    CalculateError();
+                    if (SyncScope) {
+                        if (Telescope?.Connected != true) {
+                            Notification.ShowWarning("Unable to sync. Telescope is not connected!");
+                            return false;
+                        }
+                        var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+                        if (sync() && SlewToTarget) {
+                            Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
+                        }
                     }
-                    var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
-                    if (sync() && SlewToTarget) {
-                        Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
-                    }
-                }
-            }
-           
-            
+                } 
+            } while (solvesuccess && Repeat && Math.Abs(Astrometry.DegreeToArcmin(PlateSolveResult.RaError)) > RepeatThreshold);
+
             RaiseAllPropertiesChanged();
             return solvesuccess;
         }

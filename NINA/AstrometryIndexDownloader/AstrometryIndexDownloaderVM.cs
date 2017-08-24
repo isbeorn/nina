@@ -1,4 +1,5 @@
 ﻿using NINA.Utility;
+using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -247,7 +248,7 @@ namespace NINA.AstrometryIndexDownloader {
 
         public double FieldOfView {
             get {
-                return ArcsecPerPixel * Math.Max(CamWidth, CamHeight) / 60;
+                return Astrometry.ArcsecToArcmin(ArcsecPerPixel * Math.Max(CamWidth, CamHeight));
             }
         }
 

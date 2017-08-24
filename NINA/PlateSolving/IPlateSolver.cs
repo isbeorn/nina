@@ -129,14 +129,14 @@ namespace NINA.PlateSolving {
         }
         public double RaPixError {
             get {
-                return (RaError * 60 * 60) / Pixscale;
+                return Astrometry.DegreeToArcsec(RaError) / Pixscale;
             }
         }
 
         public double DecError { get; set; }
         public double DecPixError {
             get {
-                return (DecError * 60 * 60) / Pixscale;
+                return Astrometry.DegreeToArcsec(DecError) / Pixscale;
             }
         }
         public string DecErrorString {

@@ -24,8 +24,8 @@ namespace NINA.PlateSolving
         public Platesolve2Solver(int focallength, double pixelsize, double width, double height, int regions, Coordinates target) {
             double arcsecperpixel = (pixelsize / focallength) * 206.3;
 
-            _arcdegwidth = (arcsecperpixel * width) / 60 / 60;
-            _arcdegheight = (arcsecperpixel * height) / 60 / 60;
+            _arcdegwidth = Astrometry.ArcsecToDegree(arcsecperpixel * width);
+            _arcdegheight = Astrometry.ArcsecToDegree(arcsecperpixel * height);
 
             _regions = regions;
             _target = target;
