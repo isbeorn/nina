@@ -9,7 +9,7 @@ namespace NINATest {
     [TestClass]
     public class ImageArrayTest {
         [TestMethod]
-        public async Task createInstance2dArray() {
+        public async Task CreateInstance2dArray() {
             //Arrange
             int[,] arr = new int[4, 5];
             arr[0, 0] = 100; arr[1, 0] = 200; arr[2, 0] = 300; arr[3, 0] = 400;
@@ -32,7 +32,7 @@ namespace NINATest {
         }
 
         [TestMethod]
-        public async Task createInstanceFlatArrArray() {
+        public async Task CreateInstanceFlatArrArray() {
             //Arrange
             ushort[] arr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
             ushort width = 4;

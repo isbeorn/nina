@@ -32,7 +32,7 @@ namespace NINA.Utility {
     /**
      * Specifications: http://pixinsight.com/doc/docs/XISF-1.0-spec/XISF-1.0-spec.html#xisf_header
      */
-    class XISFHeader {
+    public class XISFHeader {
         public XDocument Header { get; set; }
 
         public XElement MetaData { get; set; }
@@ -176,7 +176,7 @@ namespace NINA.Utility {
         }
     }
 
-    class XISFData {
+    public class XISFData {
         public ushort[] Data;
         public XISFData(ushort[] data) {
             this.Data = data;
