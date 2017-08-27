@@ -276,7 +276,7 @@ namespace NINA.ViewModel {
                 var time = 0;
                 await Task.Run<bool>(async () => {
                     while (PHD2Client.IsDithering) {                        
-                        await Task.Delay(100);
+                        await Task.Delay(100, tokenSource.Token);
                         time += 100;
 
                         if(time > 20000) {
@@ -439,10 +439,15 @@ namespace NINA.ViewModel {
 
                         progress.Report("Executing Meridian Flip");
                         var flipsuccess = Telescope.MeridianFlip();
-                        
+
+                        //Let scope settle 
+                        await Task.Delay(TimeSpan.FromSeconds(Settings.MeridianFlipSettleTime), tokenSource.Token);
+
                         if (flipsuccess) {
                             if(Settings.RecenterAfterFlip) { 
                                 progress.Report("Initializing Platesolve");
+
+                                //todo needs to be solve until error < x                                
 
                                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { null , progress, tokenSource, null, null });
 
@@ -462,10 +467,12 @@ namespace NINA.ViewModel {
                                 time += 500;
                                 if (time > 20000) {
                                     //Failsafe when phd is not sending resume message
-                                    Notification.ShowWarning("PHD2 did not send Resume message in time. Caputre Sequence will be resumed, but make sure PHD2 is guiding again!"/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);                            
+                                    Notification.ShowWarning("PHD2 did not send Resume message in time. Capture Sequence will be resumed, but make sure PHD2 is guiding again!"/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);                            
                                     tokenSource.Token.ThrowIfCancellationRequested();
                                 }
                             }
+
+                            await Task.Delay(TimeSpan.FromSeconds(Settings.MeridianFlipSettleTime), tokenSource.Token);
                         }
                     }
                 }

@@ -611,5 +611,17 @@ namespace NINA.Properties {
                 this["PS2Location"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int MeridianFlipSettleTime {
+            get {
+                return ((int)(this["MeridianFlipSettleTime"]));
+            }
+            set {
+                this["MeridianFlipSettleTime"] = value;
+            }
+        }
     }
 }

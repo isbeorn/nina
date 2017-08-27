@@ -653,6 +653,17 @@ namespace NINA.ViewModel {
             }
         }
 
+        public int MeridianFlipSettleTime {
+            get {
+                return Settings.MeridianFlipSettleTime;
+            }
+            set {
+                Settings.MeridianFlipSettleTime = value;
+                RaisePropertyChanged();
+            }
+        }
+        
+
         public bool RecenterAfterFlip {
             get {
                 return Settings.RecenterAfterFlip;

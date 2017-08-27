@@ -222,12 +222,12 @@
                 <GroupBox Header="Auto Meridian Flip">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20" MinWidth="150"  VerticalAlignment="Center" >Enabled:</TextBlock>
+                            <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" >Enabled:</TextBlock>
                             <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding AutoMeridianFlip}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20" MinWidth="150" VerticalAlignment="Center" >Minutes after Meridian:</TextBlock>
-                            <TextBox MinHeight="20" MinWidth="20" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <TextBlock MinHeight="20" MinWidth="200" VerticalAlignment="Center" >Minutes after meridian:</TextBlock>
+                            <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                 <TextBox.Text>
                                     <Binding Path="MinutesAfterMeridian" UpdateSourceTrigger="LostFocus" >
                                         <Binding.ValidationRules>
@@ -238,9 +238,23 @@
                             </TextBox>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20"  MinWidth="150" VerticalAlignment="Center" >Recenter after Flip:</TextBlock>
+                            <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" >Recenter after flip:</TextBlock>
                             <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding RecenterAfterFlip}" />
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                            <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" >Scope settle time after flip (seconds):</TextBlock>
+                            <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="MeridianFlipSettleTime" UpdateSourceTrigger="LostFocus" >
+                                        <Binding.ValidationRules>
+                                            <StaticResource ResourceKey="GreaterZeroRule" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+
+                        
                     </StackPanel>
                 </GroupBox>
             </UniformGrid>

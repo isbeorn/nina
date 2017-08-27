@@ -583,6 +583,16 @@ namespace NINA.Utility {
             }
         }
 
+        public static int MeridianFlipSettleTime {
+            get {
+                return Properties.Settings.Default.MeridianFlipSettleTime;
+            }
+            set {
+                Properties.Settings.Default.MeridianFlipSettleTime = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         public static bool RecenterAfterFlip {
             get {
                 return Properties.Settings.Default.RecenterAfterFlip;

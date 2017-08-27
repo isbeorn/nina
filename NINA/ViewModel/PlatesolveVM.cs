@@ -279,6 +279,7 @@ namespace NINA.ViewModel {
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<string> progress) {
             _solveCancelToken = new CancellationTokenSource();
             bool solvesuccess = false;
+            bool repeat = false;
             do {
 
                 solvesuccess = await SolveWithCapture(SnapExposureDuration, progress, _solveCancelToken, SnapFilter, SnapBin);
@@ -292,11 +293,18 @@ namespace NINA.ViewModel {
                         }
                         var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
                         if (sync() && SlewToTarget) {
-                            Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
+                            Telescope.SlewToCoordinates(coords.RA, coords.Dec);
                         }
                     }
                 } 
-            } while (solvesuccess && Repeat && Math.Abs(Astrometry.DegreeToArcmin(PlateSolveResult.RaError)) > RepeatThreshold);
+
+                if(solvesuccess && Repeat && Math.Abs(Astrometry.DegreeToArcmin(PlateSolveResult.RaError)) > RepeatThreshold) {
+                    repeat = true;
+                    //Let the scope settle
+                    await Task.Delay(2000);
+                }
+
+            } while (repeat);
 
             RaiseAllPropertiesChanged();
             return solvesuccess;
