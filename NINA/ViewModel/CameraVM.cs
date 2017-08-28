@@ -59,7 +59,8 @@ namespace NINA.ViewModel {
 
             Duration = Duration - ((double)delta.TotalMilliseconds / (1000 * 60));
 
-            //double newTemp = GetY(_startPoint, _endPoint, Duration);
+            if(Duration < 0) { Duration = 0; }
+                        
             double newTemp = GetY(_startPoint, _endPoint, new Vector2(-_startPoint.X, _startPoint.Y), Duration);
             Cam.SetCCDTemperature = newTemp;
 
@@ -157,15 +158,13 @@ namespace NINA.ViewModel {
                     _endPoint = new Vector2(0, TargetTemp);
                     Cam.SetCCDTemperature = currentTemp;
                     _initalDuration = Duration;
-
-                    //CoolCameraTimer.Start();
-
+                    
                     CoolingRunning = true;
                     do {
                         CoolCamera_Tick(progress);
-                        await Task.Delay(TimeSpan.FromMilliseconds(300));
+                        await Task.Delay(TimeSpan.FromMilliseconds(300), _cancelCoolCameraSource.Token);
                         _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
-                    } while (Duration >= 0);
+                    } while (Duration > 0);
 
 
                 } catch (OperationCanceledException ex) {
