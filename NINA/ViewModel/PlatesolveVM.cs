@@ -278,14 +278,13 @@ namespace NINA.ViewModel {
         /// <returns></returns>
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<string> progress) {
             _solveCancelToken = new CancellationTokenSource();
-            bool solvesuccess = false;
+            bool solvedSuccessfully = false;
             bool repeat = false;
             do {
 
-                solvesuccess = await SolveWithCapture(SnapExposureDuration, progress, _solveCancelToken, SnapFilter, SnapBin);
+                solvedSuccessfully = await SolveWithCapture(SnapExposureDuration, progress, _solveCancelToken, SnapFilter, SnapBin);
 
-                if (solvesuccess) {
-                    CalculateError();
+                if (solvedSuccessfully) {                    
                     if (SyncScope) {
                         if (Telescope?.Connected != true) {
                             Notification.ShowWarning("Unable to sync. Telescope is not connected!");
@@ -298,7 +297,7 @@ namespace NINA.ViewModel {
                     }
                 } 
 
-                if(solvesuccess && Repeat && Math.Abs(Astrometry.DegreeToArcmin(PlateSolveResult.RaError)) > RepeatThreshold) {
+                if(solvedSuccessfully && Repeat && Math.Abs(Astrometry.DegreeToArcmin(PlateSolveResult.RaError)) > RepeatThreshold) {
                     repeat = true;
                     //Let the scope settle
                     await Task.Delay(2000);
@@ -307,7 +306,7 @@ namespace NINA.ViewModel {
             } while (repeat);
 
             RaiseAllPropertiesChanged();
-            return solvesuccess;
+            return solvedSuccessfully;
         }
 
         /// <summary>

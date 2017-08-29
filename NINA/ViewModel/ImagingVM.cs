@@ -459,6 +459,7 @@ namespace NINA.ViewModel {
 
                             progress.Report("Resuming PHD2");
                             await PHD2Client.AutoSelectStar();
+                            await Task.Delay(TimeSpan.FromSeconds(5), tokenSource.Token);
                             await PHD2Client.Pause(false);
 
                             var time = 0;
@@ -467,9 +468,10 @@ namespace NINA.ViewModel {
                                 time += 500;
                                 if (time > 20000) {
                                     //Failsafe when phd is not sending resume message
-                                    Notification.ShowWarning("PHD2 did not send Resume message in time. Capture Sequence will be resumed, but make sure PHD2 is guiding again!"/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);                            
-                                    tokenSource.Token.ThrowIfCancellationRequested();
+                                    Notification.ShowWarning("PHD2 did not send Resume message in time. Capture Sequence will be resumed, but make sure PHD2 is guiding again!"/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);                                                                
+                                    break;
                                 }
+                                tokenSource.Token.ThrowIfCancellationRequested();
                             }
 
                             await Task.Delay(TimeSpan.FromSeconds(Settings.MeridianFlipSettleTime), tokenSource.Token);
@@ -553,7 +555,7 @@ namespace NINA.ViewModel {
             public const string PREPARING = "Preparing...";
             public const string CALCHFR = "Calculating HFR...";
             public const string SAVING = "Saving...";
-            public const string IDLE = "Idle";
+            public const string IDLE = "";
             public const string DITHERING = "Dithering...";
             public const string SETTLING = "Settling...";
         }
