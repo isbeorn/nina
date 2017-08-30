@@ -66,7 +66,7 @@ namespace NINA.Utility {
         AutoStrechChanged = 7,
         DetectStarsChanged = 8,
         PlateSolveResultChanged = 9,
-        Sync = 13,
+        SyncronizeTelescope = 13,
         ChangeAutoStretch = 14,
         ChangeDetectStars = 15,
         ActiveSequenceChanged = 16,

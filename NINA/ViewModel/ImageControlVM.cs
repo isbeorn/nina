@@ -258,7 +258,7 @@ namespace NINA.ViewModel {
             return source;
         }
 
-        public async Task<bool> SaveToDisk(SequenceModel sequence, ushort framenr, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        public async Task<bool> SaveToDisk(CaptureSequence sequence, ushort framenr, CancellationTokenSource tokenSource, IProgress<string> progress) {
 
             var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
 

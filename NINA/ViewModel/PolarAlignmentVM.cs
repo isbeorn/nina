@@ -418,7 +418,8 @@ namespace NINA.ViewModel {
                         Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
                         Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
-                        var capture = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { DARVSlewDuration + 5, false, cameraprogress, _cancelDARVSlewToken });                        
+                        var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, null, null, 1);
+                        var capture = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, cameraprogress, _cancelDARVSlewToken });                        
                         var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken);
 
                         await Task.WhenAll(capture, slew);
@@ -587,7 +588,8 @@ namespace NINA.ViewModel {
 
                 progress.Report("Solving image...");
 
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });
+                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { seq, progress, canceltoken });
 
                 canceltoken.Token.ThrowIfCancellationRequested();
 
@@ -617,9 +619,8 @@ namespace NINA.ViewModel {
                 progress.Report("Solving image...");
 
                 canceltoken.Token.ThrowIfCancellationRequested();
-
-
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { SnapExposureDuration, progress, canceltoken, SnapFilter, SnapBin });                
+                                
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { seq, progress, canceltoken});                
 
                 canceltoken.Token.ThrowIfCancellationRequested();
 

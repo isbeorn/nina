@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -149,14 +150,35 @@ namespace NINA.Model.MyFilterWheel {
             set {
                 if(Connected) {
                     try {                        
-                        _filterwheel.Position = value;                                                
+                        _filterwheel.Position = value;
+                        WaitForFilterChangeAndNotify();
                     } catch(ASCOM.DriverAccessCOMException ex) {
                         Notification.ShowWarning(ex.Message);
-                    }                    
+                    }
                 }
                 
                 RaisePropertyChanged();
             }
+        }
+
+        private Task _waitForFilterChangeAndNotifyTask;
+        private CancellationTokenSource _waitForFilterChangeAndNotifyToken;
+
+        private void WaitForFilterChangeAndNotify() {
+            _waitForFilterChangeAndNotifyToken?.Cancel();
+            try {
+                _waitForFilterChangeAndNotifyTask?.Wait(_waitForFilterChangeAndNotifyToken.Token);
+            } catch (OperationCanceledException) {
+
+            }
+            _waitForFilterChangeAndNotifyToken = new CancellationTokenSource();
+            _waitForFilterChangeAndNotifyTask = Task.Run(async () => {
+                await Task.Delay(1000, _waitForFilterChangeAndNotifyToken.Token);
+                while (Connected && _filterwheel?.Position == -1) {
+                    await Task.Delay(1000, _waitForFilterChangeAndNotifyToken.Token);
+                }
+                RaisePropertyChanged(nameof(Position));
+            });
         }
 
         public ArrayList SupportedActions {

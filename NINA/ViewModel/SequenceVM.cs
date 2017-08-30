@@ -51,16 +51,16 @@ namespace NINA.ViewModel{
 
         private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
-                ActiveSequence = (SequenceModel)o;
+                ActiveSequence = (CaptureSequence)o;
             }, MediatorMessages.ActiveSequenceChanged);
         }
 
-        private ObservableCollection<SequenceModel> _sequence;
-        public ObservableCollection<SequenceModel> Sequence {
+        private ObservableCollection<CaptureSequence> _sequence;
+        public ObservableCollection<CaptureSequence> Sequence {
             get {
                 if(_sequence == null) {
-                    _sequence = new ObservableCollection<SequenceModel>();
-                    var seq = new SequenceModel();
+                    _sequence = new ObservableCollection<CaptureSequence>();
+                    var seq = new CaptureSequence();
                     _sequence.Add(seq);
                     SelectedSequenceIdx = _sequence.Count - 1;                    
                 }
@@ -72,8 +72,8 @@ namespace NINA.ViewModel{
             }
         }
 
-        private SequenceModel _activeSequence;
-        public SequenceModel ActiveSequence { 
+        private CaptureSequence _activeSequence;
+        public CaptureSequence ActiveSequence { 
             get {
                 return _activeSequence;
             }
@@ -111,10 +111,10 @@ namespace NINA.ViewModel{
             get {
                 if(_imageTypes == null) {
                     _imageTypes = new ObservableCollection<string>();
-                    _imageTypes.Add(Model.SequenceModel.ImageTypes.LIGHT);
-                    _imageTypes.Add(Model.SequenceModel.ImageTypes.DARK);
-                    _imageTypes.Add(Model.SequenceModel.ImageTypes.FLAT);
-                    _imageTypes.Add(Model.SequenceModel.ImageTypes.BIAS);
+                    _imageTypes.Add(Model.CaptureSequence.ImageTypes.LIGHT);
+                    _imageTypes.Add(Model.CaptureSequence.ImageTypes.DARK);
+                    _imageTypes.Add(Model.CaptureSequence.ImageTypes.FLAT);
+                    _imageTypes.Add(Model.CaptureSequence.ImageTypes.BIAS);
                 }
                 return _imageTypes;
             }
@@ -125,7 +125,7 @@ namespace NINA.ViewModel{
         }
 
         public void AddSequence(object o) {
-            Sequence.Add(new SequenceModel());
+            Sequence.Add(new CaptureSequence());
             SelectedSequenceIdx = Sequence.Count - 1;
         }
 

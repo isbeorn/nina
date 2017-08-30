@@ -62,13 +62,11 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;
-                double duration = args[0] == null ? this.SnapExposureDuration : (double)args[0];
+                CaptureSequence seq = args[0] == null ? new CaptureSequence(this.SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, this.SnapFilter, this.SnapBin,1) : (CaptureSequence)args[0];
                 IProgress<string> progress = (IProgress<string>)args[1];
-                CancellationTokenSource token = (CancellationTokenSource)args[2];
-                Model.MyFilterWheel.FilterInfo filter = args[3] == null ? this.SnapFilter : (Model.MyFilterWheel.FilterInfo)args[3];
-                BinningMode binning = args[4] == null ? this.SnapBin : (BinningMode)args[4];
+                CancellationTokenSource token = (CancellationTokenSource)args[2];                
 
-                await SolveWithCapture(duration, progress, token, filter, binning);
+                await SolveWithCapture(seq, progress, token);
             }, AsyncMediatorMessages.SolveWithCapture);
 
             Mediator.Instance.RegisterAsync(async (object o) => {
@@ -79,8 +77,8 @@ namespace NINA.ViewModel {
             }, AsyncMediatorMessages.Solve);
             
             Mediator.Instance.Register((object o) => {
-                sync();
-            }, MediatorMessages.Sync);
+                SyncronizeTelescope();
+            }, MediatorMessages.SyncronizeTelescope);
         }
 
         private string _status;
@@ -195,7 +193,7 @@ namespace NINA.ViewModel {
         /// Syncs telescope to solved coordinates
         /// </summary>
         /// <returns></returns>
-        public bool sync() {
+        private bool SyncronizeTelescope() {
             var success = false;
 
             if (Telescope?.Connected != true) {
@@ -255,13 +253,14 @@ namespace NINA.ViewModel {
         /// <param name="filter"></param>
         /// <param name="binning"></param>
         /// <returns></returns>
-        public async Task<bool> SolveWithCapture(double duration, IProgress<string> progress, CancellationTokenSource canceltoken, Model.MyFilterWheel.FilterInfo filter = null, Model.MyCamera.BinningMode binning = null) {
+        private async Task<bool> SolveWithCapture(CaptureSequence seq, IProgress<string> progress, CancellationTokenSource canceltoken) {
             var oldAutoStretch = AutoStretch;
             var oldDetectStars = DetectStars;
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { duration, false, progress, canceltoken, filter, binning });
+            
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, progress, canceltoken });
 
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
@@ -282,7 +281,8 @@ namespace NINA.ViewModel {
             bool repeat = false;
             do {
 
-                solvedSuccessfully = await SolveWithCapture(SnapExposureDuration, progress, _solveCancelToken, SnapFilter, SnapBin);
+                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                solvedSuccessfully = await SolveWithCapture(seq, progress, _solveCancelToken);
 
                 if (solvedSuccessfully) {                    
                     if (SyncScope) {
@@ -291,7 +291,7 @@ namespace NINA.ViewModel {
                             return false;
                         }
                         var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
-                        if (sync() && SlewToTarget) {
+                        if (SyncronizeTelescope() && SlewToTarget) {
                             Telescope.SlewToCoordinates(coords.RA, coords.Dec);
                         }
                     }

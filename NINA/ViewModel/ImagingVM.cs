@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using static NINA.Model.SequenceModel;
+using static NINA.Model.CaptureSequence;
 using System.ComponentModel;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
@@ -43,7 +43,7 @@ namespace NINA.ViewModel {
         private void RegisterMediatorMessages() {
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;                
-                ICollection<SequenceModel> seq = (ICollection<SequenceModel>)args[0];
+                ICollection<CaptureSequence> seq = (ICollection<CaptureSequence>)args[0];
                 bool save = (bool)args[1];
                 CancellationTokenSource token = (CancellationTokenSource)args[2];
                 IProgress<string> progress = (IProgress<string>)args[3];
@@ -52,20 +52,12 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;
-                double duration = (double)args[0];
+                CaptureSequence seq = (CaptureSequence)args[0];
                 bool save = (bool)args[1];
                 IProgress<string> progress = (IProgress<string>)args[2];
                 CancellationTokenSource token = (CancellationTokenSource)args[3];
-                FilterInfo filter = null;
-                if(args.Length > 4) {
-                    filter = (FilterInfo)args[4];
-                }
-                BinningMode binning = null;
-                if (args.Length > 5) {
-                    binning = (BinningMode)args[5];
-                }                
                 
-                await CaptureImage(duration, save, progress, token, filter, binning);
+                await CaptureImage(seq, save, progress, token);
             }, AsyncMediatorMessages.CaptureImage);
 
             Mediator.Instance.Register((object o) => {
@@ -200,13 +192,13 @@ namespace NINA.ViewModel {
 
         CancellationTokenSource _captureImageToken;
 
-        private async Task ChangeFilter(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task ChangeFilter(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
 
             progress.Report(ExposureStatus.FILTERCHANGE);
             await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ChangeFilterWheelPosition, new object[] { seq.FilterType?.Position, tokenSource });            
         }
 
-        private void SetBinning(SequenceModel seq) {
+        private void SetBinning(CaptureSequence seq) {
             if (seq.Binning == null) {
                 Cam.SetBinning(1, 1);
             }
@@ -215,7 +207,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task Capture(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task Capture(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
             IsExposing = true;
             try {
                 double duration = seq.ExposureTime;
@@ -259,7 +251,7 @@ namespace NINA.ViewModel {
 
 
 
-        private async Task<bool> Save(SequenceModel seq, ushort framenr,  CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> Save(CaptureSequence seq, ushort framenr,  CancellationTokenSource tokenSource, IProgress<string> progress) {
             progress.Report(ExposureStatus.SAVING);           
 
             await ImageControl.SaveToDisk(seq, framenr, tokenSource, progress);            
@@ -267,7 +259,7 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private async Task<bool> Dither(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> Dither(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
             if (seq.Dither && ((seq.ExposureCount % seq.DitherAmount) == 0)) {
                 progress.Report(ExposureStatus.DITHERING);
                 await PHD2Client.Dither();
@@ -293,7 +285,7 @@ namespace NINA.ViewModel {
             return true;
         }
                 
-        public  async Task<bool> StartSequence(ICollection<SequenceModel> sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        public  async Task<bool> StartSequence(ICollection<CaptureSequence> sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
             if (Cam?.Connected != true) {
                 Notification.ShowWarning("No Camera connected");
                 return false;
@@ -310,7 +302,7 @@ namespace NINA.ViewModel {
 
 
                     ushort framenr = 1;
-                    foreach (SequenceModel seq in sequence) {
+                    foreach (CaptureSequence seq in sequence) {
 
                         Mediator.Instance.Notify(MediatorMessages.ActiveSequenceChanged, seq);                        
 
@@ -418,7 +410,7 @@ namespace NINA.ViewModel {
         /// <param name="tokenSource">cancel token</param>
         /// <param name="progress">progress reporter</param>
         /// <returns></returns>
-        private async Task CheckMeridianFlip(SequenceModel seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task CheckMeridianFlip(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
             if(Settings.AutoMeridianFlip) {
                 if(Telescope?.Connected == true) {
 
@@ -449,11 +441,11 @@ namespace NINA.ViewModel {
 
                                 //todo needs to be solve until error < x                                
 
-                                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { null , progress, tokenSource, null, null });
+                                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { null , progress, tokenSource });
 
                                 
                                 progress.Report("Sync and Reslew");
-                                Mediator.Instance.Notify(MediatorMessages.Sync, null);
+                                Mediator.Instance.Notify(MediatorMessages.SyncronizeTelescope, null);
                                 Telescope.SlewToCoordinates(coords.RA, coords.Dec);                                
                             }
 
@@ -527,8 +519,8 @@ namespace NINA.ViewModel {
                 return false;
             } else {
                 do {
-                    List<SequenceModel> seq = new List<SequenceModel>();
-                    seq.Add(new SequenceModel(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
+                    List<CaptureSequence> seq = new List<CaptureSequence>();
+                    seq.Add(new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
                     await StartSequence(seq,  SnapSave, _captureImageToken, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop);
@@ -536,15 +528,14 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<bool> CaptureImage(double duration, bool bsave, IProgress<string> progress, CancellationTokenSource token, Model.MyFilterWheel.FilterInfo filter = null, BinningMode binning = null) {
+        public async Task<bool> CaptureImage(CaptureSequence seq, bool bsave, IProgress<string> progress, CancellationTokenSource token) {
             if (IsExposing) {
                 Notification.ShowWarning("Camera is busy");
                 return false;
             }
             else {
-                List<SequenceModel> seq = new List<SequenceModel>();
-                seq.Add(new SequenceModel(duration, ImageTypes.SNAP, filter, binning, 1));
-                return await StartSequence(seq, bsave, token, progress);
+                var list = new List<CaptureSequence>() { seq };
+                return await StartSequence(list, bsave, token, progress);
             }
         }
 

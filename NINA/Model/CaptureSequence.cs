@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Model {
-    public class SequenceModel :BaseINPC {
+    public class CaptureSequence :BaseINPC {
         public static class ImageTypes {
             public const string LIGHT = "LIGHT";
             public const string FLAT = "FLAT";
@@ -15,7 +15,7 @@ namespace NINA.Model {
             public const string SNAP = "SNAP";
         }
 
-        public SequenceModel() {
+        public CaptureSequence() {
             ExposureTime = 1;
             ImageType = ImageTypes.LIGHT;
             TotalExposureCount = 1;            
@@ -27,7 +27,7 @@ namespace NINA.Model {
             return "Model";
         }
 
-        public SequenceModel(double exposureTime, string imageType, MyFilterWheel.FilterInfo filterType, MyCamera.BinningMode binning, int exposureCount) {
+        public CaptureSequence(double exposureTime, string imageType, MyFilterWheel.FilterInfo filterType, MyCamera.BinningMode binning, int exposureCount) {
             ExposureTime = exposureTime;
             ImageType = imageType;
             FilterType = filterType;

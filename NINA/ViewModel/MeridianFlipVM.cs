@@ -95,11 +95,11 @@ namespace NINA.ViewModel
                             if (Settings.RecenterAfterFlip) {
                                 progress.Report("Initializing Platesolve");
 
-                                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { null, progress, tokenSource, null, null });
+                                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { null, progress, tokenSource});
 
 
                                 progress.Report("Sync and Reslew");
-                                Mediator.Instance.Notify(MediatorMessages.Sync, null);
+                                Mediator.Instance.Notify(MediatorMessages.SyncronizeTelescope, null);
                                 Telescope.SlewToCoordinates(coords.RA, coords.Dec);
                             }
 
