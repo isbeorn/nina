@@ -294,7 +294,15 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock   VerticalAlignment="Center" Width="130">API Key:</TextBlock>
                                 <TextBox  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AstrometryAPIKey}" MinWidth="130"/>
-                            </StackPanel>
+                            </StackPanel>                            
+                            <StackPanel Margin="0 5 0 5" MaxHeight="150">
+                                <TextBlock Text="Platesolve service provided by" />
+                                <TextBlock MaxHeight="73" HorizontalAlignment="Left">
+                                    <Hyperlink NavigateUri="http://www.astrometry.net/" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform"  />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>                            
                         </StackPanel>
                     </Grid>
 
@@ -351,6 +359,19 @@
                                     <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrSearchRadius}" />
                                 </UniformGrid>
                             </UniformGrid>
+                            
+                            
+                            <StackPanel Margin="0 5 0 5" MaxHeight="150">
+                                <TextBlock Text="Platesolve service provided by" />
+                                <TextBlock MaxHeight="73" HorizontalAlignment="Left">
+                                    <Hyperlink NavigateUri="http://www.astrometry.net/" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform"  />
+                                    </Hyperlink>
+                                </TextBlock>                                    
+                            </StackPanel>
+                            
+                            
+
                         </StackPanel>
                         <Grid Grid.Column="1">
                             <Grid.RowDefinitions >

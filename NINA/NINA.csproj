@@ -705,6 +705,7 @@
     <Content Include="External\ASICamera.dll" />
     <Content Include="External\ASICamera2.dll" />
     <Content Include="External\ASICamera_x64.dll" />
+    <Resource Include="Resources\astrometry.net.png" />
     <Content Include="Utility\ColorSchema\ColorSchemas.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
