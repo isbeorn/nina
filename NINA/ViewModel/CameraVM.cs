@@ -85,8 +85,8 @@ namespace NINA.ViewModel {
         }
 
         private class Vector2 {
-            public double X;
-            public double Y;
+            public double X { get; private set; }
+            public double Y { get; private set; }
 
             public Vector2(double x, double y) {
                 X = x;
