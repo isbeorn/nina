@@ -99,7 +99,7 @@
                         Height="35" Margin="10,10,10,0" 
                         Command="{Binding SolveCommand}" 
                         CancelCommand="{Binding CancelSolveCommand}" 
-                        ButtonImage="{StaticResource PlatesolveSVG}" 
+                        ButtonImage="{StaticResource PlaySVG}" 
                         CancelButtonImage="{StaticResource CancelSVG}" 
                         ToolTip="Capture image and platesolve"
                         />

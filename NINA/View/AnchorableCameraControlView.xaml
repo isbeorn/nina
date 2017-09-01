@@ -49,7 +49,7 @@
                 Visibility="{Binding SnapCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" 
                 Command="{Binding SnapCommand}" 
                 CancelCommand="{Binding CancelSnapCommand}"                 
-                ButtonImage="{StaticResource PictureSVG}" 
+                ButtonImage="{StaticResource PlaySVG}" 
                 CancelButtonImage="{StaticResource CancelSVG}" 
                 ToolTip="{ns:Loc LblTooltipTakeExposure}" />
         </StackPanel>
