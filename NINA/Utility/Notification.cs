@@ -20,9 +20,9 @@ namespace NINA.Utility {
         {
             cfg.PositionProvider = new WindowPositionProvider(
                 parentWindow: Application.Current.MainWindow,
-                corner: Corner.TopRight,
+                corner: Corner.BottomRight,
                 offsetX: 10,
-                offsetY: 40);
+                offsetY: 0);
 
             cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
                 notificationLifetime: TimeSpan.FromSeconds(3),
@@ -30,25 +30,25 @@ namespace NINA.Utility {
 
             cfg.Dispatcher = dispatcher;
         });
-
-        public static void Initialize() {
-
-        }
-
+        
         public static void ShowInformation(string message) {
-            notifier.ShowInformation(message);         
+            ShowInformation(message, TimeSpan.FromSeconds(3));
         }
 
         public static void ShowInformation(string message, TimeSpan lifetime) {
-            notifier.ShowInformation(message);
+            var options = new ToastNotifications.Core.MessageOptions();
+            options.FreezeOnMouseEnter = false;
+            notifier.ShowInformation(message, options);
         }
 
         public static void ShowSuccess(string message) {
-            notifier.ShowSuccess(message);
+            var options = new ToastNotifications.Core.MessageOptions();
+            options.FreezeOnMouseEnter = false; 
+            notifier.ShowSuccess(message, options);
         }
 
         public static void ShowWarning(string message) {
-            notifier.ShowWarning(message);
+            ShowWarning(message, TimeSpan.FromSeconds(3));
         }
 
         public static void ShowWarning(string message, TimeSpan lifetime) {
@@ -58,8 +58,5 @@ namespace NINA.Utility {
         public static void ShowError(string message) {
             notifier.ShowError(message);            
         }
-
-        
-
     }
 }
