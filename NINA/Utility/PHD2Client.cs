@@ -25,7 +25,7 @@ namespace NINA.Utility {
             new Lazy<PHD2Client>(() => new PHD2Client());
 
         public static PHD2Client Instance { get { return lazy.Value; } }
-        
+
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private PhdEventVersion _version;
@@ -40,10 +40,11 @@ namespace NINA.Utility {
         }
 
         private ImageSource _image;
-        public ImageSource Image { 
+        public ImageSource Image {
             get {
                 return _image;
-            } set {
+            }
+            set {
                 _image = value;
                 RaisePropertyChanged();
             }
@@ -165,23 +166,22 @@ namespace NINA.Utility {
         }
 
         public async Task<bool> Connect() {
-            
-            try {                
+
+            try {
                 _client = new TcpClient();
                 await _client.ConnectAsync(Settings.PHD2ServerUrl, Settings.PHD2ServerPort);
                 _stream = _client.GetStream();
                 RaisePropertyChanged(nameof(Connected));
                 _tokenSource = new CancellationTokenSource();
-                
+
                 Notification.ShowSuccess("Connected to PHD2 Server");
-               
-                
+
+
 
                 StartListener(_tokenSource.Token);
-            }
-            catch (SocketException e) {
-                
-                 Notification.ShowError("PHD2 Error: " + e.Message);
+            } catch (SocketException e) {
+
+                Notification.ShowError("PHD2 Error: " + e.Message);
 
                 //System.Windows.MessageBox.Show(e.Message);
             }
@@ -189,7 +189,7 @@ namespace NINA.Utility {
         }
 
         public async Task<bool> Dither() {
-            if(Connected) {
+            if (Connected) {
                 IsDithering = true;
                 await SendMessage(String.Format(PHD2Methods.DITHER, Settings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), Settings.DitherRAOnly.ToString().ToLower()));
             }
@@ -212,7 +212,7 @@ namespace NINA.Utility {
         }
 
         private async Task<bool> SendMessage(string msg) {
-            if(Connected) {
+            if (Connected) {
                 // Translate the passed message into ASCII and store it as a byte array.
                 Byte[] data = new Byte[10240];
                 data = System.Text.Encoding.ASCII.GetBytes(msg);
@@ -222,13 +222,13 @@ namespace NINA.Utility {
 
                 // Send the message to the connected TcpServer. 
                 await _stream.WriteAsync(data, 0, data.Length);
-                
+
             }
-            return true;            
+            return true;
         }
 
         public bool Disconnect() {
-            
+
             if (Connected) {
                 _tokenSource.Cancel();
                 _stream.Close();
@@ -238,9 +238,9 @@ namespace NINA.Utility {
             }
             return !Connected;
         }
-        
+
         private async void StartListener(CancellationToken token) {
-            while(Connected) {
+            while (Connected) {
                 try {
                     if (_stream.DataAvailable) {
                         token.ThrowIfCancellationRequested();
@@ -257,19 +257,19 @@ namespace NINA.Utility {
                                 rows.Add(line);
                             }
                         }
-                        
-                        foreach(string row in rows) {
-                            if(!string.IsNullOrEmpty(row)) {
 
-                            
-                                JObject o  = JObject.Parse(row);                            
+                        foreach (string row in rows) {
+                            if (!string.IsNullOrEmpty(row)) {
+
+
+                                JObject o = JObject.Parse(row);
                                 JToken t = o.GetValue("Event");
                                 string phdevent = "";
                                 if (t != null) {
                                     phdevent = t.ToString();
                                 } else {
                                     t = o.GetValue("id");
-                                    if(t!= null) {
+                                    if (t != null) {
                                         phdevent = t.ToString();
                                     }
                                 }
@@ -278,18 +278,18 @@ namespace NINA.Utility {
                                     case PHD2EventId.DITHER: {
                                             PhdMethodResponse phdresp = o.ToObject<PhdMethodResponse>();
                                             if (phdresp.error != null) {
-                                                    IsDithering = false;
-                                                }
-                                        
-                                        
+                                                IsDithering = false;
+                                            }
+
+
                                             break;
                                         }
                                     case PHD2EventId.GET_APP_STATE: {
                                             PhdMethodResponse phdresp = o.ToObject<PhdMethodResponse>();
                                             if (phdresp.error == null) {
-                                                AppState.State = phdresp.result.ToString() ;
+                                                AppState.State = phdresp.result.ToString();
                                             }
-                                        
+
                                             break;
                                         }
                                     case PHD2EventId.GET_STAR_IMAGE: {
@@ -304,19 +304,19 @@ namespace NINA.Utility {
                                                     Image = bmp;
                                                 }));                                            
                                             }*/
-                                        
-                                        
+
+
                                             break;
                                         }
                                     case PHD2EventId.PAUSE: {
                                             break;
-                                    }
+                                        }
                                     case "Resumed": {
                                             Paused = false;
                                             break;
                                         }
                                     case "Version": {
-                                            Version = o.ToObject<PhdEventVersion>();                                        
+                                            Version = o.ToObject<PhdEventVersion>();
                                             break;
                                         }
                                     case "AppState": {
@@ -343,7 +343,7 @@ namespace NINA.Utility {
                                             Settling = null;
                                             IsDithering = false;
                                             SettleDone = o.ToObject<PhdEventSettleDone>();
-                                            if(SettleDone.Error != null) {
+                                            if (SettleDone.Error != null) {
                                                 Notification.ShowError("PHD2 Error: " + SettleDone.Error);
                                             }
                                             break;
@@ -371,48 +371,44 @@ namespace NINA.Utility {
                                             break;
                                         }
                                 }
-                            }                            
+                            }
                         }
                         await Task.Delay(500);
-                    }
-                    else {
+                    } else {
                         await Task.Delay(1000);
-                       
+
                     }
 
-                    
+
                     await SendMessage(PHD2Methods.GET_APP_STATE);
                     //await sendMessage(PHD2Methods.GET_STAR_IMAGE); 
-                }
-                catch(System.IO.IOException ex) {
+                } catch (System.IO.IOException ex) {
                     Logger.Trace(ex.Message);
                     _stream.Close();
                     _client.Close();
                     IsDithering = false;
                     Notification.ShowError("PHD2 Error: " + ex.Message);
                     RaisePropertyChanged(nameof(Connected));
-                }
-                catch(OperationCanceledException ex) {
+                } catch (OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
                     _stream.Close();
                     _client.Close();
                     IsDithering = false;
                     Notification.ShowError("PHD2 Error: " + ex.Message);
                     RaisePropertyChanged(nameof(Connected));
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     Logger.Error(ex.Message, ex.StackTrace);
                     Notification.ShowError("PHD2 Error: " + ex.Message);
                 }
-                
+
             }
         }
 
-        
+
     }
 
 
-   
+
 
     public class PhdMethodResponse {
         public string jsonrpc;
@@ -777,6 +773,6 @@ namespace NINA.Utility {
     }
 
 
-    
+
 
 }

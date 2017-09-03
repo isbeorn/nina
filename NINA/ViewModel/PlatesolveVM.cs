@@ -278,7 +278,7 @@ namespace NINA.ViewModel {
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<string> progress) {
             _solveCancelToken = new CancellationTokenSource();
             bool solvedSuccessfully = false;
-            bool repeat = false;
+            bool repeatPlateSolve = false;
             do {
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
@@ -298,12 +298,15 @@ namespace NINA.ViewModel {
                 } 
 
                 if(solvedSuccessfully && Repeat && Math.Abs(Astrometry.DegreeToArcmin(PlateSolveResult.RaError)) > RepeatThreshold) {
-                    repeat = true;
+                    repeatPlateSolve = true;
+                    progress.Report("Telescope not inside tolerance. Repeating...");
                     //Let the scope settle
                     await Task.Delay(2000);
+                } else {
+                    repeatPlateSolve = false;
                 }
 
-            } while (repeat);
+            } while (repeatPlateSolve);
 
             RaiseAllPropertiesChanged();
             return solvedSuccessfully;

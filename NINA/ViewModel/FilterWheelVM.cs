@@ -40,7 +40,7 @@ namespace NINA.ViewModel {
                 FW.Position = position;
                 await Task.Run(async () => {
                     while (FW.Position == -1) {
-                        await Task.Delay(100);
+                        await Task.Delay(1000);
                         token?.Token.ThrowIfCancellationRequested();
                     }
                 });

@@ -391,7 +391,6 @@ namespace NINA.ViewModel {
                     }
                 } finally {
                     progress.Report(ExposureStatus.IDLE);
-                    Mediator.Instance.Notify(MediatorMessages.ActiveSequenceChanged, null);
                 }
                 return true;
             });

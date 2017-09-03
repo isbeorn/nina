@@ -34,7 +34,7 @@ namespace NINA.Utility {
 
         public static string LOOP = "{{\"method\": \"loop\", \"id\": " + PHD2EventId.LOOP + "}}\r\n";
 
-        public static string AUTO_SELECT_STAR = "{{\"method\": \"find_star\", \"params\": [], \"id\": " + PHD2EventId.AUTO_SELECT_STAR + "}}\r\n";
+        public static string AUTO_SELECT_STAR = "{{\"method\": \"find_star\", \"id\": " + PHD2EventId.AUTO_SELECT_STAR + "}}\r\n";
 
         /// <summary>
         /// 0: RECALIBRATE: true/false
