@@ -19,7 +19,7 @@ namespace NINA.Utility {
                 }
             }
             catch (Exception ex) {
-                Notification.ShowError(ex.Message);
+                Notification.Notification.ShowError(ex.Message);
             }
 
 

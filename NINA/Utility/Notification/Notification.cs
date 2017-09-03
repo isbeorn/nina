@@ -1,16 +1,20 @@
-﻿using System;
+﻿using NINA.Utility.Notification;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using ToastNotifications;
+using ToastNotifications.Core;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
 using ToastNotifications.Position;
 
-namespace NINA.Utility {
+namespace NINA.Utility.Notification {
     static class Notification {
 
         
@@ -36,15 +40,18 @@ namespace NINA.Utility {
         }
 
         public static void ShowInformation(string message, TimeSpan lifetime) {
+            notifier.Notify<CustomNotification>(() => new CustomNotification(message));
+            /*
             var options = new ToastNotifications.Core.MessageOptions();
             options.FreezeOnMouseEnter = false;
-            notifier.ShowInformation(message, options);
+            notifier.ShowInformation(message, options);*/
         }
 
         public static void ShowSuccess(string message) {
-            var options = new ToastNotifications.Core.MessageOptions();
+            notifier.Notify<CustomNotification>(() => new CustomNotification(message));
+            /*var options = new ToastNotifications.Core.MessageOptions();
             options.FreezeOnMouseEnter = false; 
-            notifier.ShowSuccess(message, options);
+            notifier.ShowSuccess(message, options);*/
         }
 
         public static void ShowWarning(string message) {
@@ -57,6 +64,34 @@ namespace NINA.Utility {
 
         public static void ShowError(string message) {
             notifier.ShowError(message);            
+        }
+    }
+
+    public class CustomNotification : NotificationBase, INotifyPropertyChanged {
+        private CustomDisplayPart _displayPart;
+
+        public override NotificationDisplayPart DisplayPart => _displayPart ?? (_displayPart = new CustomDisplayPart(this));
+
+        public CustomNotification(string message) {
+            Message = message;
+        }
+
+        private string _message;
+        public string Message {
+            get {
+                return _message;
+            }
+            set {
+                _message = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) {
+            var handler = PropertyChanged;
+            if (handler != null)
+                handler.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -3,6 +3,7 @@ using ASCOM.DeviceInterface;
 using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Notification;
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -20,6 +20,7 @@ using static NINA.Model.CaptureSequence;
 using System.ComponentModel;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
+using NINA.Utility.Notification;
 
 namespace NINA.ViewModel {
     class ImagingVM : DockableVM {

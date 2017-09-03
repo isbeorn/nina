@@ -10,6 +10,7 @@ using nom.tam.fits;
 using NINA.Utility;
 using System.Globalization;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Notification;
 
 namespace NINA.PlateSolving {
     class LocalPlateSolver : IPlateSolver {
@@ -74,7 +75,7 @@ namespace NINA.PlateSolving {
                 var cygwinbashpath = Path.GetFullPath(Settings.CygwinLocation + "\\bin\\bash.exe");                
 
                 if (!File.Exists(cygwinbashpath)) {
-                    Utility.Notification.ShowError(string.Format("cygwin bash not found at {0}", cygwinbashpath));
+                    Notification.ShowError(string.Format("cygwin bash not found at {0}", cygwinbashpath));
                     result.Success = false;
                     return result;
                 }

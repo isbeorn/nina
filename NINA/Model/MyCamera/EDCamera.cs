@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using System.Windows.Media;
 using System.Diagnostics;
+using NINA.Utility.Notification;
 
 namespace NINA.Model.MyCamera {
     class EDCamera : BaseINPC, ICamera {

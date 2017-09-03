@@ -249,6 +249,9 @@
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
     <Compile Include="Utility\EDSDK\EDSDK.cs" />
+    <Compile Include="Utility\Notification\CustomDisplayPart.xaml.cs">
+      <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
     <Compile Include="Utility\Mediator.cs" />
     <Compile Include="Utility\WindowService.cs" />
@@ -279,7 +282,7 @@
     <Compile Include="Utility\ImageArray\ImageArray.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\TabControlEx.cs" />
-    <Compile Include="Utility\Notification.cs" />
+    <Compile Include="Utility\Notification\Notification.cs" />
     <Compile Include="Utility\NotifyTaskCompletion.cs" />
     <Compile Include="Utility\PHD2Client.cs" />
     <Compile Include="Utility\PHD2Methods.cs" />
@@ -545,6 +548,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Utility\Notification\CustomDisplayPart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

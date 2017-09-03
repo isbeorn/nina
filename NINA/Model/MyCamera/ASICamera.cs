@@ -9,6 +9,7 @@ using System.Threading;
 using ZWOptical.ASISDK;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using NINA.Utility.Notification;
 
 namespace NINA.Model.MyCamera {
     public class ASICamera : BaseINPC, ICamera{

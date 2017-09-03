@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -56,7 +57,7 @@ namespace NINA.PlateSolving
             var ps2locaction = Path.GetFullPath(Settings.PS2Location);
 
             if (!File.Exists(ps2locaction)) {
-                Utility.Notification.ShowError(string.Format("platesolve2 not found at {0}", ps2locaction));
+                Notification.ShowError(string.Format("platesolve2 not found at {0}", ps2locaction));
                 return false;
             }
 

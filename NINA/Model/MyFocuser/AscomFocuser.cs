@@ -1,6 +1,7 @@
 ﻿using ASCOM;
 using ASCOM.DriverAccess;
 using NINA.Utility;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;

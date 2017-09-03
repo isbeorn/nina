@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

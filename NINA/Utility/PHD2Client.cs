@@ -174,14 +174,14 @@ namespace NINA.Utility {
                 RaisePropertyChanged(nameof(Connected));
                 _tokenSource = new CancellationTokenSource();
 
-                Notification.ShowSuccess("Connected to PHD2 Server");
+                Notification.Notification.ShowSuccess("Connected to PHD2 Server");
 
 
 
                 StartListener(_tokenSource.Token);
             } catch (SocketException e) {
 
-                Notification.ShowError("PHD2 Error: " + e.Message);
+                Notification.Notification.ShowError("PHD2 Error: " + e.Message);
 
                 //System.Windows.MessageBox.Show(e.Message);
             }
@@ -344,7 +344,7 @@ namespace NINA.Utility {
                                             IsDithering = false;
                                             SettleDone = o.ToObject<PhdEventSettleDone>();
                                             if (SettleDone.Error != null) {
-                                                Notification.ShowError("PHD2 Error: " + SettleDone.Error);
+                                                Notification.Notification.ShowError("PHD2 Error: " + SettleDone.Error);
                                             }
                                             break;
                                         }
@@ -387,18 +387,18 @@ namespace NINA.Utility {
                     _stream.Close();
                     _client.Close();
                     IsDithering = false;
-                    Notification.ShowError("PHD2 Error: " + ex.Message);
+                    Notification.Notification.ShowError("PHD2 Error: " + ex.Message);
                     RaisePropertyChanged(nameof(Connected));
                 } catch (OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
                     _stream.Close();
                     _client.Close();
                     IsDithering = false;
-                    Notification.ShowError("PHD2 Error: " + ex.Message);
+                    Notification.Notification.ShowError("PHD2 Error: " + ex.Message);
                     RaisePropertyChanged(nameof(Connected));
                 } catch (Exception ex) {
                     Logger.Error(ex.Message, ex.StackTrace);
-                    Notification.ShowError("PHD2 Error: " + ex.Message);
+                    Notification.Notification.ShowError("PHD2 Error: " + ex.Message);
                 }
 
             }

@@ -5,6 +5,7 @@ using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
+using NINA.Utility.Notification;
 using NINA.ViewModel;
 using nom.tam.fits;
 using System;

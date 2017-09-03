@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using NINA.Utility.Astrometry;
 using NINA.Model.MyCamera;
 using NINA.Model.MyTelescope;
+using NINA.Utility.Notification;
 
 namespace NINA.ViewModel {
     class PolarAlignmentVM : DockableVM {
