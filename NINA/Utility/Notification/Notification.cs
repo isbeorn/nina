@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 using ToastNotifications;
 using ToastNotifications.Core;
@@ -39,19 +40,13 @@ namespace NINA.Utility.Notification {
             ShowInformation(message, TimeSpan.FromSeconds(3));
         }
 
-        public static void ShowInformation(string message, TimeSpan lifetime) {
+        public static void ShowInformation(string message, TimeSpan lifetime) {            
             notifier.Notify<CustomNotification>(() => new CustomNotification(message));
-            /*
-            var options = new ToastNotifications.Core.MessageOptions();
-            options.FreezeOnMouseEnter = false;
-            notifier.ShowInformation(message, options);*/
         }
 
         public static void ShowSuccess(string message) {
-            notifier.Notify<CustomNotification>(() => new CustomNotification(message));
-            /*var options = new ToastNotifications.Core.MessageOptions();
-            options.FreezeOnMouseEnter = false; 
-            notifier.ShowSuccess(message, options);*/
+            var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CheckedCircledSVG"];
+            notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol));         
         }
 
         public static void ShowWarning(string message) {
@@ -59,11 +54,13 @@ namespace NINA.Utility.Notification {
         }
 
         public static void ShowWarning(string message, TimeSpan lifetime) {
-            notifier.ShowWarning(message);
+            var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
+            notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#f5a300"))));
         }
 
         public static void ShowError(string message) {
-            notifier.ShowError(message);            
+            var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
+            notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, new SolidColorBrush(Colors.Red)));            
         }
     }
 
@@ -74,6 +71,19 @@ namespace NINA.Utility.Notification {
 
         public CustomNotification(string message) {
             Message = message;
+            Color = (Brush)System.Windows.Application.Current.Resources["ButtonBackgroundBrush"];
+        }
+
+        public CustomNotification(string message, Geometry symbol) {
+            Message = message;
+            Symbol = symbol;
+            Color = (Brush)System.Windows.Application.Current.Resources["ButtonBackgroundBrush"];
+        }
+
+        public CustomNotification(string message, Geometry symbol, Brush color) {
+            Message = message;
+            Symbol = symbol;
+            Color = color;
         }
 
         private string _message;
@@ -83,15 +93,35 @@ namespace NINA.Utility.Notification {
             }
             set {
                 _message = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
+            }
+        }
+
+        private Geometry _symbol;
+        public Geometry Symbol {
+            get {
+                return _symbol;
+            }
+            set {
+                _symbol = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Brush _color;
+        public Brush Color {
+            get {
+                return _color;
+            }
+            set {
+                _color = value;
+                RaisePropertyChanged();
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) {
-            var handler = PropertyChanged;
-            if (handler != null)
-                handler.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected virtual void RaisePropertyChanged([CallerMemberName]string propertyName = null) {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

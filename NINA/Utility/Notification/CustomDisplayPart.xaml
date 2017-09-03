@@ -3,12 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:NINA.Utility.Notification"
+             xmlns:local="clr-namespace:NINA.Utility.Notification"    
              xmlns:core="clr-namespace:ToastNotifications.Core;assembly=ToastNotifications"
-             mc:Ignorable="d"  Background="Gray"
+             mc:Ignorable="d"  Background="{Binding Color}"
              d:DesignHeight="60" d:DesignWidth="250"
              d:DataContext="{d:DesignInstance local:CustomNotification, IsDesignTimeCreatable=False}" >
-    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Background="{StaticResource ButtonBackgroundBrush}">
-        <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding Message}" TextWrapping="Wrap" Foreground="{StaticResource ButtonForegroundBrush}" />
+    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
+        <Grid Margin="5" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Path Margin="5" Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding Symbol}" Stretch="Uniform" />
+            <TextBlock VerticalAlignment="Center" Grid.Column="1"  Text="{Binding Message}" TextWrapping="Wrap" Foreground="{StaticResource ButtonForegroundBrush}" />
+        </Grid>
+        
     </Border>
 </core:NotificationDisplayPart>
