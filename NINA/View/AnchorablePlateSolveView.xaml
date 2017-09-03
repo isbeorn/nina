@@ -4,10 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              d:DesignHeight="300" d:DesignWidth="300">
-
+    <UserControl.Resources>
+        <CollectionViewSource Source="{Binding PlateSolveResultList}" x:Key="GridItems">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="SolveTime" Direction="Descending"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" x:Name="grid">
         <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}" >
             <Grid  IsEnabled="{Binding Cam.Connected}" >
@@ -103,9 +110,10 @@
                         CancelButtonImage="{StaticResource CancelSVG}" 
                         ToolTip="Capture image and platesolve"
                         />
-
-                    <DataGrid ItemsSource="{Binding PlateSolveResultList}" AutoGenerateColumns="False"  CanUserAddRows="False" Width="{Binding ElementName=grid, Path=ActualWidth}">
+                    
+                    <DataGrid Margin="0 10 0 0" ItemsSource="{Binding Source={StaticResource GridItems}}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Hidden" CanUserAddRows="False" Width="{Binding ElementName=grid, Path=ActualWidth}">
                         <DataGrid.Columns>
+                            <DataGridTextColumn Width="*" Header="Time" Binding="{Binding SolveTime, StringFormat=\{0:HH:mm:ss\}}" SortDirection="Ascending" IsReadOnly="True" />
                             <DataGridTextColumn Width="*" Header="Success" Binding="{Binding Success}" IsReadOnly="True" />
                             <DataGridTextColumn Width="*" Header="Ra" Binding="{Binding RaString}" IsReadOnly="True"/>
                             <DataGridTextColumn Width="*" Header="Dec" Binding="{Binding DecString}" IsReadOnly="True"/>

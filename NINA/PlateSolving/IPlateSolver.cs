@@ -19,66 +19,28 @@ namespace NINA.PlateSolving {
         public PlateSolveResult() {
             Success = true;
             Epoch = Epoch.J2000;
+            SolveTime = DateTime.Now;
         }
 
-        BitmapSource _solvedImage;
-        double _orientation;
-        double _pixscale;
-        double _radius;
-        double _ra;
-        double _dec;
-        bool _success;
-        Epoch _epoch;
+        public DateTime SolveTime { get; private set; }        
 
-        public double Orientation {
-            get {
-                return _orientation;
-            }
+        public double Orientation { get; set; }
 
-            set {
-                _orientation = value;
-            }
-        }
+        public double Pixscale { get; set; }
 
-        public double Pixscale {
-            get {
-                return _pixscale;
-            }
+        public double Radius { get; set; }
 
-            set {
-                _pixscale = value;
-            }
-        }
+        public double Ra { get; set; }
 
-        public double Radius {
-            get {
-                return _radius;
-            }
+        public double Dec { get; set; }
 
-            set {
-                _radius = value;
-            }
-        }
+        public Epoch Epoch { get; set; }
 
-        public double Ra {
-            get {
-                return _ra;
-            }
+        public bool Success { get; set; }
 
-            set {
-                _ra = value;
-            }
-        }
+        public double RaError { get; set; }
 
-        public double Dec {
-            get {
-                return _dec;
-            }
-
-            set {
-                _dec = value;
-            }
-        }
+        public double DecError { get; set; }
 
         public string RaString {
             get {
@@ -92,36 +54,6 @@ namespace NINA.PlateSolving {
             }
         }
 
-        public BitmapSource SolvedImage {
-            get {
-                return _solvedImage;
-            }
-
-            set {
-                _solvedImage = value;
-            }
-        }
-
-        public bool Success {
-            get {
-                return _success;
-            }
-
-            set {
-                _success = value;
-            }
-        }
-
-        public Epoch Epoch {
-            get {
-                return _epoch;
-            }
-            set {
-                _epoch = value;
-            }
-        }
-
-        public double RaError { get; set; }
         public string RaErrorString {
             get {
                 return Utility.Utility.AscomUtil.DegreesToHMS(RaError);
@@ -132,8 +64,7 @@ namespace NINA.PlateSolving {
                 return Astrometry.DegreeToArcsec(RaError) / Pixscale;
             }
         }
-
-        public double DecError { get; set; }
+        
         public double DecPixError {
             get {
                 return Astrometry.DegreeToArcsec(DecError) / Pixscale;

@@ -144,8 +144,7 @@ namespace NINA.PlateSolving {
                                 result.Pixscale = jobinfo.calibration.pixscale;
                                 result.Ra = jobinfo.calibration.ra;
                                 result.Radius = jobinfo.calibration.radius;
-
-                                result.SolvedImage = await GetJobImage(jobid, canceltoken);
+                                                                
                                 progress.Report("Solved");
                             }
                             else {

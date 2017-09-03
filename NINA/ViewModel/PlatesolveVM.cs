@@ -329,8 +329,9 @@ namespace NINA.ViewModel {
         /// <param name="progress"></param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
-        public async Task<bool> Solve(IProgress<string> progress, CancellationTokenSource canceltoken) {                
-            if(Platesolver == null) {
+        public async Task<bool> Solve(IProgress<string> progress, CancellationTokenSource canceltoken) {
+            var solver = GetPlateSolver();
+            if(solver == null) {
                 return false;
             }
                 
@@ -347,7 +348,7 @@ namespace NINA.ViewModel {
                 encoder.Save(ms);
                 ms.Seek(0, SeekOrigin.Begin);
 
-                PlateSolveResult = await Platesolver.SolveAsync(ms, progress, canceltoken);                
+                PlateSolveResult = await solver.SolveAsync(ms, progress, canceltoken);                
             }
 
             if (!PlateSolveResult?.Success == true) {
@@ -362,22 +363,19 @@ namespace NINA.ViewModel {
             _solveCancelToken?.Cancel();
         }
 
-        IPlateSolver _platesolver;
-        IPlateSolver Platesolver {
-            get {
-                _platesolver = null;
-                if(Image != null) {
-                    Coordinates coords = null;
-                    if (Telescope?.Connected == true) {
-                        coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
-                    }
-                    var binning = Cam?.BinX ?? 1;
-
-                    _platesolver = PlateSolverFactory.CreateInstance(binning, Image.Width, Image.Height, coords);
+        private IPlateSolver GetPlateSolver() {
+            IPlateSolver solver = null;
+            if (Image != null) {
+                Coordinates coords = null;
+                if (Telescope?.Connected == true) {
+                    coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
                 }
+                var binning = Cam?.BinX ?? 1;
 
-                return _platesolver;
+                solver = PlateSolverFactory.CreateInstance(binning, Image.Width, Image.Height, coords);
             }
+
+            return solver;
         }
 
         private ITelescope _telescope;
@@ -406,11 +404,11 @@ namespace NINA.ViewModel {
         
         public ICommand CancelSolveCommand { get; private set; }
 
-        private AsyncObservableCollection<PlateSolveResult> _plateSolveResultList;
-        public AsyncObservableCollection<PlateSolveResult> PlateSolveResultList {
+        private AsyncObservableLimitedSizedStack<PlateSolveResult> _plateSolveResultList;
+        public AsyncObservableLimitedSizedStack<PlateSolveResult> PlateSolveResultList {
             get {
                 if(_plateSolveResultList == null) {
-                    _plateSolveResultList = new AsyncObservableCollection<PlateSolveResult>();
+                    _plateSolveResultList = new AsyncObservableLimitedSizedStack<PlateSolveResult>(15);
                 }
                 return _plateSolveResultList;
             }
@@ -429,7 +427,9 @@ namespace NINA.ViewModel {
             set {
                 _plateSolveResult = value;
 
-                CalculateError();
+                if(_plateSolveResult.Success) { 
+                    CalculateError();
+                }
                 PlateSolveResultList.Add(_plateSolveResult);
 
                 RaisePropertyChanged();
