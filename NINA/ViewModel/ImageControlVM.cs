@@ -145,6 +145,7 @@ namespace NINA.ViewModel {
             }
             set {
                 _autoStretch = value;
+                if (!_autoStretch && _detectStars) { _detectStars = false; RaisePropertyChanged(nameof(DetectStars)); }
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, _autoStretch);
                 PrepareImageHelper();

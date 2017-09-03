@@ -39,8 +39,8 @@ namespace NINA.ViewModel {
             _updateCamera.Tick += UpdateCamera_Tick;
 
             CoolingRunning = false;
-            CoolerPowerHistory = new AsyncObservableCollection<KeyValuePair<DateTime, double>>();
-            CCDTemperatureHistory = new AsyncObservableCollection<KeyValuePair<DateTime, double>>();
+            CoolerPowerHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
+            CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
 
         }
 
@@ -250,14 +250,7 @@ namespace NINA.ViewModel {
                 Cam.UpdateValues();
 
                 DateTime x = DateTime.Now;
-                if (CoolerPowerHistory.Count > 100) {
-                    CoolerPowerHistory.RemoveAt(0);
-                }
                 CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, Cam.CoolerPower));
-
-                if (CCDTemperatureHistory.Count > 100) {
-                    CCDTemperatureHistory.RemoveAt(0);
-                }
                 CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, Cam.CCDTemperature));
 
             }
@@ -265,8 +258,8 @@ namespace NINA.ViewModel {
         }
 
 
-        public AsyncObservableCollection<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }
-        public AsyncObservableCollection<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
+        public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }
+        public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
 
         public ICommand CoolCamCommand { get; private set; }
 

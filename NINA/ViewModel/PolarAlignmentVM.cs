@@ -33,8 +33,7 @@ namespace NINA.ViewModel {
             CancelDARVSlewCommand = new RelayCommand(Canceldarvslew);
             CancelMeasureAltitudeErrorCommand = new RelayCommand(CancelMeasurePolarError);
             CancelMeasureAzimuthErrorCommand = new RelayCommand(CancelMeasurePolarError);
-
-            Zoom = 1;
+            
             MeridianOffset = 0;
             Declination = 0;
             DARVSlewDuration = 60;
@@ -213,18 +212,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private double _zoom;
-        public double Zoom {
-            get {
-                return _zoom;
-            }
-
-            set {
-                _zoom = value;
-                RaisePropertyChanged();
-            }
-        }
-
 
         private string _hourAngleTime;
 
@@ -327,38 +314,28 @@ namespace NINA.ViewModel {
                     await Task.Delay(TimeSpan.FromSeconds(5), canceltoken.Token);
 
                     double rate = DARVSlewRate;
-                    canceltoken.Token.ThrowIfCancellationRequested();
                     progress.Report("Slewing...");
 
                     //duration = half of user input minus 2 seconds for settle time
                     TimeSpan duration = TimeSpan.FromSeconds((int)(DARVSlewDuration / 2) - 2);
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, rate);
-
-                    canceltoken.Token.ThrowIfCancellationRequested();
+                    
                     await Task.Delay(duration, canceltoken.Token);
-                    canceltoken.Token.ThrowIfCancellationRequested();
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
-
-                    canceltoken.Token.ThrowIfCancellationRequested();
+                                        
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken.Token);
-                    canceltoken.Token.ThrowIfCancellationRequested();
 
                     progress.Report("Slewing back...");
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -rate);
-
-                    canceltoken.Token.ThrowIfCancellationRequested();
+                                        
                     await Task.Delay(duration, canceltoken.Token);
-                    canceltoken.Token.ThrowIfCancellationRequested();
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
-
-                    canceltoken.Token.ThrowIfCancellationRequested();
+                                        
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken.Token);
-                    canceltoken.Token.ThrowIfCancellationRequested();
-
                 }
                 catch (OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
@@ -368,53 +345,22 @@ namespace NINA.ViewModel {
                     Telescope.SlewToCoordinates(startPosition.RA, startPosition.Dec);
                 }
 
-
-
-
-                progress.Report("");
-                /*double movement = DARVSlewDuration / 60;
-
-                Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination);
-                var targetRA = startPosition.RA - movement;
-                if (targetRA < 0) {
-                    targetRA += 24;
-                }
-                else if (targetRA > 24) {
-                    targetRA -= 24;
-                }
-                Coordinates targetPosition = new Coordinates(targetRA, startPosition.Dec);
-
-                Telescope.slewToCoordinates(targetPosition.RA, targetPosition.Dec);
-
-                await Task.Delay(TimeSpan.FromSeconds((int)(DARVSlewDuration/ 2)));
-
-                Telescope.slewToCoordinates(startPosition.RA, startPosition.Dec);*/
+                progress.Report(string.Empty);
 
                 return true;
             });
         }
 
         private bool _autoStretch;
-        public bool AutoStretch {
-            get {
-                return _autoStretch;
-            }
-        }
-
         private bool _detectStars;
-        public bool DetectStars {
-            get {
-                return _detectStars;
-            }
-        }
 
         private async Task<bool> Darvslew(IProgress<string> cameraprogress, IProgress<string> slewprogress) {
             if (Cam?.Connected == true) {
                 if (!IsExposing) {
                     _cancelDARVSlewToken = new CancellationTokenSource();
                     try {
-                        var oldAutoStretch = AutoStretch;
-                        var oldDetectStars = DetectStars;
+                        var oldAutoStretch = _autoStretch;
+                        var oldDetectStars = _detectStars;
                         Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
                         Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 

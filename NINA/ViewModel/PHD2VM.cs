@@ -27,8 +27,8 @@ namespace NINA.ViewModel {
 
             MaxY = 4;
 
-            GuideStepsHistory = new AsyncObservableCollection<PhdEventGuideStep>();
-            GuideStepsHistoryMinimal = new AsyncObservableCollection<PhdEventGuideStep>();
+            GuideStepsHistory = new AsyncObservableLimitedSizedStack<PhdEventGuideStep>(100);
+            GuideStepsHistoryMinimal = new AsyncObservableLimitedSizedStack<PhdEventGuideStep>(10);
         }
 
         private static Dispatcher Dispatcher = Dispatcher.CurrentDispatcher;
@@ -45,28 +45,15 @@ namespace NINA.ViewModel {
         
         private void PHD2Client_PropertyChanged(object sender, PropertyChangedEventArgs e) {        
             if (e.PropertyName == "GuideStep") {
-
-                
-                if(GuideStepsHistory.Count > 100) {
-                    GuideStepsHistory.RemoveAt(0);
-                }
-                if (GuideStepsHistoryMinimal.Count > 10) {
-                    GuideStepsHistoryMinimal.RemoveAt(0);
-                }
-
                 GuideStepsHistoryMinimal.Add(PHD2Client.GuideStep);
-                RaisePropertyChanged(nameof(GuideStepsHistoryMinimal));
-
-                GuideStepsHistory.Add(PHD2Client.GuideStep);
-                RaisePropertyChanged(nameof(GuideStepsHistory));
-              
+                GuideStepsHistory.Add(PHD2Client.GuideStep);              
             }
         }
 
         
 
-        public AsyncObservableCollection<PhdEventGuideStep> GuideStepsHistory { get; set; }
-        public AsyncObservableCollection<PhdEventGuideStep> GuideStepsHistoryMinimal { get; set; }
+        public AsyncObservableLimitedSizedStack<PhdEventGuideStep> GuideStepsHistory { get; set; }
+        public AsyncObservableLimitedSizedStack<PhdEventGuideStep> GuideStepsHistoryMinimal { get; set; }
 
         public PHD2Client PHD2Client {
             get {

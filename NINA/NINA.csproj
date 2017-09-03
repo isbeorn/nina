@@ -249,6 +249,7 @@
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
     <Compile Include="Utility\EDSDK\EDSDK.cs" />
+    <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
     <Compile Include="Utility\Mediator.cs" />
     <Compile Include="Utility\WindowService.cs" />
     <Compile Include="Utility\XISF.cs" />

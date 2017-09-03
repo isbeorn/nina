@@ -14,12 +14,12 @@ namespace NINA.ViewModel {
             ContentId = nameof(ImageHistoryVM);
             CanClose = false;
             _nextStatHistoryId = 1;
-            ImgStatHistory = new AsyncObservableCollection<ImageStatistics>();
+            ImgStatHistory = new AsyncObservableLimitedSizedStack<ImageStatistics>(25);
         }
 
         private int _nextStatHistoryId;
-        private AsyncObservableCollection<ImageStatistics> _imgStatHistory;
-        public AsyncObservableCollection<ImageStatistics> ImgStatHistory {
+        private AsyncObservableLimitedSizedStack<ImageStatistics> _imgStatHistory;
+        public AsyncObservableLimitedSizedStack<ImageStatistics> ImgStatHistory {
             get {
                 return _imgStatHistory;
             }
@@ -31,9 +31,6 @@ namespace NINA.ViewModel {
 
         public void Add(ImageStatistics stats) {
             if(stats?.DetectedStars > 0 && stats.Id == 0) {
-                if (this.ImgStatHistory.Count > 25) {
-                    this.ImgStatHistory.RemoveAt(0);
-                }
                 stats.Id = _nextStatHistoryId;
                 _nextStatHistoryId++;
                 this.ImgStatHistory.Add(stats);

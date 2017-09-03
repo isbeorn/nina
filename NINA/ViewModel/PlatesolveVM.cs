@@ -101,6 +101,9 @@ namespace NINA.ViewModel {
             }
             set {
                 _syncScope = value;
+                if(!_syncScope && SlewToTarget) {
+                    SlewToTarget = false;
+                }
                 RaisePropertyChanged();
             }
         }
@@ -114,6 +117,9 @@ namespace NINA.ViewModel {
                 _slewToTarget = value;
                 if (_slewToTarget && !SyncScope) {
                     SyncScope = true;
+                }
+                if(!_slewToTarget && Repeat) {
+                    Repeat = false;
                 }
                 RaisePropertyChanged();
             }
@@ -231,18 +237,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _autoStretch;
-        public bool AutoStretch {
-            get {
-                return _autoStretch;
-            }
-        }
-
         private bool _detectStars;
-        public bool DetectStars {
-            get {
-                return _detectStars;
-            }
-        }
 
         /// <summary>
         /// Captures an image and solves it
@@ -254,8 +249,8 @@ namespace NINA.ViewModel {
         /// <param name="binning"></param>
         /// <returns></returns>
         private async Task<bool> SolveWithCapture(CaptureSequence seq, IProgress<string> progress, CancellationTokenSource canceltoken) {
-            var oldAutoStretch = AutoStretch;
-            var oldDetectStars = DetectStars;
+            var oldAutoStretch = _autoStretch;
+            var oldDetectStars = _detectStars;
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
