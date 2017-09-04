@@ -93,7 +93,7 @@ namespace NINA.Model.MyFilterWheel {
 
         public string Description {
             get {
-                return _filterwheel.Description;
+                return _filterwheel?.Description ?? string.Empty;
             }
         }
 
@@ -110,13 +110,13 @@ namespace NINA.Model.MyFilterWheel {
 
         public string DriverInfo {
             get {
-                return _filterwheel.DriverInfo;
+                return Connected ? _filterwheel?.DriverInfo ?? string.Empty : string.Empty;
             }
         }
 
         public string DriverVersion {
             get {
-                return _filterwheel.DriverVersion;
+                return Connected ? _filterwheel?.DriverVersion ?? string.Empty : string.Empty;
             }
         }
 

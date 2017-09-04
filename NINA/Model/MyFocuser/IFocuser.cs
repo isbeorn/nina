@@ -9,6 +9,8 @@ namespace NINA.Model.MyFocuser {
         bool Connected { get; }
         bool Connect();
         string Description { get; }
+        string DriverInfo { get; }
+        string DriverVersion { get; }
         void Disconnect();
         bool IsMoving { get; }
         int MaxIncrement { get; }

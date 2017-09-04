@@ -101,6 +101,18 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                            <TextBlock><Run Text="Driver Info:"/></TextBlock>
+                            <TextBlock Text="{Binding Focuser.DriverInfo}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                            <TextBlock><Run Text="Driver Version:"/></TextBlock>
+                            <TextBlock Text="{Binding Focuser.DriverVersion}" Margin="5,0,0,0" />
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                    <UniformGrid Columns="2" >
+                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                             <TextBlock><Run Text="Is Moving:"/></TextBlock>
                             <TextBlock Text="{Binding Focuser.IsMoving}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>

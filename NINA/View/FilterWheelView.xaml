@@ -80,15 +80,45 @@
                 </Grid>
             </UniformGrid>
         </GroupBox.Header>
-        <Grid Grid.Row="1" Background="{StaticResource BackgroundBrush}" Margin="5">
-            <ListView ItemsSource="{Binding FW.Filters}" SelectedIndex="{Binding FW.Position}">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="{ns:Loc LblFilterName}" Width="Auto" DisplayMemberBinding="{Binding Name}" />
-                        <GridViewColumn Header="{ns:Loc LblFocusOffset}" Width="Auto" DisplayMemberBinding="{Binding FocusOffset}" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
+        <Grid Background="{StaticResource BackgroundBrush}" >
+            <StackPanel>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                    <UniformGrid Columns="2" >
+                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                            <TextBlock><Run Text="Name:"/></TextBlock>
+                            <TextBlock Text="{Binding FW.Name}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                    <UniformGrid Columns="2" >
+                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                            <TextBlock><Run Text="Description:"/></TextBlock>
+                            <TextBlock Text="{Binding FW.Description}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                    <UniformGrid Columns="2" >
+                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                            <TextBlock><Run Text="Driver Info:"/></TextBlock>
+                            <TextBlock Text="{Binding FW.DriverInfo}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                            <TextBlock><Run Text="Driver Version:"/></TextBlock>
+                            <TextBlock Text="{Binding FW.DriverVersion}" Margin="5,0,0,0" />
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+                <ListView Margin="0 10 0 0" ItemsSource="{Binding FW.Filters}" SelectedIndex="{Binding FW.Position}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="{ns:Loc LblFilterName}" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="{ns:Loc LblFocusOffset}" Width="Auto" DisplayMemberBinding="{Binding FocusOffset}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>            
         </Grid>        
     </GroupBox>
     

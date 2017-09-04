@@ -210,6 +210,18 @@ namespace NINA.Model.MyFocuser {
             }
         }
 
+        public string DriverInfo {
+            get {
+                return Connected ? _focuser?.DriverInfo ?? string.Empty : string.Empty;
+            }
+        }
+
+        public string DriverVersion {
+            get {
+                return Connected ? _focuser?.DriverVersion ?? string.Empty : string.Empty;
+            }
+        }
+
         public void UpdateValues() {
             RaisePropertyChanged(nameof(Position));
             RaisePropertyChanged(nameof(Temperature));
