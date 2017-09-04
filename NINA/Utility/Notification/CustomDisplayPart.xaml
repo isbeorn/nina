@@ -11,10 +11,10 @@
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
         <Grid Margin="5" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Path Margin="5" Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding Symbol}" Stretch="Uniform" />
+            <Path Margin="5" Width="40" Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding Symbol}" Stretch="Uniform" Visibility="{Binding Symbol, Converter={StaticResource NullToVisibilityCollapsedConverter}}"/>
             <TextBlock VerticalAlignment="Center" Grid.Column="1"  Text="{Binding Message}" TextWrapping="Wrap" Foreground="{StaticResource ButtonForegroundBrush}" />
         </Grid>
         
