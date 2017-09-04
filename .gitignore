@@ -14,3 +14,4 @@ SetupCygwinInstallAction/obj/
 SetupCygwinInstallAction/bin/
 packages/
 NINA/Utility/EDSDK/EDSDK.dll
+/.vs/NINA/v15/sqlite3/storage.ide

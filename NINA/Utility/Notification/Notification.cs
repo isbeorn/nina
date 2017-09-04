@@ -18,11 +18,10 @@ using ToastNotifications.Position;
 namespace NINA.Utility.Notification {
     static class Notification {
 
-        
+
         private static Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
 
-        static Notifier notifier = new Notifier(cfg =>
-        {
+        static Notifier notifier = new Notifier(cfg => {
             cfg.PositionProvider = new WindowPositionProvider(
                 parentWindow: Application.Current.MainWindow,
                 corner: Corner.BottomRight,
@@ -35,18 +34,22 @@ namespace NINA.Utility.Notification {
 
             cfg.Dispatcher = dispatcher;
         });
-        
+
         public static void ShowInformation(string message) {
             ShowInformation(message, TimeSpan.FromSeconds(3));
         }
 
-        public static void ShowInformation(string message, TimeSpan lifetime) {            
-            notifier.Notify<CustomNotification>(() => new CustomNotification(message));
+        public static void ShowInformation(string message, TimeSpan lifetime) {
+            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                notifier.Notify<CustomNotification>(() => new CustomNotification(message));
+            }));
         }
 
         public static void ShowSuccess(string message) {
-            var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CheckedCircledSVG"];
-            notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol));         
+            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CheckedCircledSVG"];
+                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol));
+            }));
         }
 
         public static void ShowWarning(string message) {
@@ -54,13 +57,17 @@ namespace NINA.Utility.Notification {
         }
 
         public static void ShowWarning(string message, TimeSpan lifetime) {
-            var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
-            notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#f5a300"))));
+            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
+                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#f5a300"))));
+            }));
         }
 
         public static void ShowError(string message) {
-            var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
-            notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, new SolidColorBrush(Colors.Red)));            
+            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
+                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, new SolidColorBrush(Colors.Red)));
+            }));
         }
     }
 
