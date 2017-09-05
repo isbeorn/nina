@@ -121,8 +121,7 @@ namespace NINA.ViewModel {
             MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), "Example File Name", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
         }
 
-        private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
-            new CultureInfo(""),
+        private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {            
             new CultureInfo("en-GB"),
             new CultureInfo("en-US"),
             new CultureInfo("de-DE")
