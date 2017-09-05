@@ -34,10 +34,11 @@ namespace NINA.Locale {
                 tmp.Add(l.Key, "##" + l.Value + "##");
             }
             _locale = tmp;
-            RaiseAllPropertiesChanged();
-
-            Mediator.Instance.Notify(MediatorMessages.LocaleChanged, null);
 #endif
+
+            RaiseAllPropertiesChanged();
+            Mediator.Instance.Notify(MediatorMessages.LocaleChanged, null);
+
         }
 
         private static readonly Lazy<Loc> lazy =
