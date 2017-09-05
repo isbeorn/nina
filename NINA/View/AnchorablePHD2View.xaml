@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -12,23 +13,23 @@
             <RowDefinition Height="30" />
             <RowDefinition />
         </Grid.RowDefinitions>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" >
-                <UniformGrid Columns="2" VerticalAlignment="Center">
-                    
-                        <TextBlock><Run Text="Connected"/></TextBlock>
-                        <TextBlock Text="{Binding PHD2Client.Connected}" Margin="5,0,0,0" />
-                    
-                </UniformGrid>
-            </Border>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" Grid.Row="1">
-                <UniformGrid Columns="2" VerticalAlignment="Center">
-                    
-                        <TextBlock><Run Text="State"/></TextBlock>
-                        <TextBlock Text="{Binding PHD2Client.AppState.State}" Margin="5,0,0,0" />
-                    
-                </UniformGrid>
-            </Border>
-            <local:MinimalisticPHD2Graph Grid.Row="2" DataContext="{Binding}" IsEnabled="{Binding PHD2Client.Connected }" />
-        
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" >
+            <UniformGrid Columns="2" VerticalAlignment="Center">
+
+                <TextBlock Text="{ns:Loc LblConnected}"></TextBlock>
+                <TextBlock Text="{Binding PHD2Client.Connected}" Margin="5,0,0,0" />
+
+            </UniformGrid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" Grid.Row="1">
+            <UniformGrid Columns="2" VerticalAlignment="Center">
+
+                <TextBlock Text="{ns:Loc LblState}"></TextBlock>
+                <TextBlock Text="{Binding PHD2Client.AppState.State}" Margin="5,0,0,0" />
+
+            </UniformGrid>
+        </Border>
+        <local:MinimalisticPHD2Graph Grid.Row="2" DataContext="{Binding}" IsEnabled="{Binding PHD2Client.Connected }" />
+
     </Grid>
 </UserControl>

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
@@ -11,37 +12,37 @@
             <StackPanel Orientation="Vertical">
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center">
-                        <TextBlock><Run Text="Connected"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblConnected}"></TextBlock>
                         <TextBlock Text="{Binding Focuser.Connected, FallbackValue=False}" Margin="5,0,0,0" />
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">                    
                         <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Is Moving:"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblIsMoving}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.IsMoving}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>                    
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">                    
                         <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Position:"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblPosition}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.Position}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>                    
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" IsEnabled="{Binding Focuser.TempCompAvailable}" MinHeight="30">                    
                         <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="Temp Comp:" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="{ns:Loc LblTempComp}" VerticalAlignment="Center"></TextBlock>
                             <CheckBox IsChecked="{Binding Focuser.TempComp}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                         </UniformGrid>                    
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">                    
                         <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Temperature:"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblTemperature}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.Temperature }" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>                    
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">                    
                         <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="Target Position:" VerticalAlignment="Center"/>
+                        <TextBlock Text="{ns:Loc LblTargetPosition}" VerticalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
                             <TextBox Height="25" MinWidth="90" Text="{Binding TargetPosition}" VerticalContentAlignment="Center" Margin="5 0 0 0" />                                
                             </StackPanel>
@@ -52,13 +53,13 @@
                     <Grid IsEnabled="{Binding Focuser.TempComp, Converter={StaticResource InverseBooleanConverter}}">
                         <Button  VerticalAlignment="Center" Height="35" Margin="10 10 10 0" Command="{Binding MoveFocuserCommand}"
                             Visibility="{Binding Focuser.IsMoving, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                            <TextBlock Text ="Move" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <TextBlock Text ="{ns:Loc LblMove}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                         </Button>
                         <Grid Visibility="{Binding Focuser, Converter={StaticResource NullToVisibilityConverter}}"
                                 VerticalAlignment="Center" Height="35" Margin="10 10 10 0">
                         <Button   Command="{Binding HaltFocuserCommand}"
                             Visibility="{Binding Focuser.IsMoving, Converter={StaticResource VisibilityConverter}}">
-                            <TextBlock Text ="Halt" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                                <TextBlock Text ="{ns:Loc LblHalt}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                         </Button>
                         </Grid>
                     </Grid>

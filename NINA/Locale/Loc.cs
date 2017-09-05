@@ -15,6 +15,13 @@ namespace NINA.Locale {
 
         private Loc() {
             locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };
+#if DEBUG
+            var tmp = new ResourceDictionary();
+            foreach(System.Collections.DictionaryEntry l in locale) {
+                tmp.Add(l.Key, "##" + l.Value + "##");
+            }
+            locale = tmp;
+#endif
         }
 
         private static readonly Lazy<Loc> lazy =
@@ -26,7 +33,7 @@ namespace NINA.Locale {
                         
         public string this[string key] {
             get {
-                return (string)locale[key];                
+                return locale[key]?.ToString() ?? "MISSING LABEL " + key ;                
             }
         }
         

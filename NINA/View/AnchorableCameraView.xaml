@@ -13,7 +13,7 @@
             <StackPanel Orientation="Vertical" IsEnabled="{Binding Cam.CanSetCCDTemperature}">
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center">
-                        <TextBlock><Run Text="Connected"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblConnected}"></TextBlock>
                         <TextBlock Text="{Binding Cam.Connected, FallbackValue=False}" Margin="5,0,0,0" />
                     </UniformGrid>
                 </Border>

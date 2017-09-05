@@ -23,7 +23,7 @@
             <GroupBox>
                 <GroupBox.Header>
                     <UniformGrid Columns="2" >
-                        <TextBlock Text="Telescope" VerticalAlignment="Center" FontSize="20"></TextBlock>
+                        <TextBlock Text="{ns:Loc LblTelescope}" VerticalAlignment="Center" FontSize="20"></TextBlock>
                         <Grid Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -98,7 +98,7 @@
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock><Run Text="Name:"/></TextBlock>
+                                    <TextBlock Text="{ns:Loc LblName}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.Name}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                                 </UniformGrid>
                             </UniformGrid>
@@ -106,7 +106,7 @@
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock><Run Text="Description:"/></TextBlock>
+                                    <TextBlock Text="{ns:Loc LblDescription}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.Description}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                                 </UniformGrid>
                             </UniformGrid>
@@ -114,11 +114,11 @@
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock><Run Text="Driver Info:"/></TextBlock>
+                                    <TextBlock Text="{ns:Loc LblDriverInfo}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.DriverInfo}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow" />
                                 </UniformGrid>
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock><Run Text="Driver Version:"/></TextBlock>
+                                    <TextBlock Text="{ns:Loc LblDriverVersion}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.DriverVersion}" Margin="5,0,0,0" />
                                 </UniformGrid>
                             </UniformGrid>
@@ -126,11 +126,11 @@
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock>Site Latitude</TextBlock>
+                                    <TextBlock Text="{ns:Loc LblSiteLatitude}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.SiteLatitude}" Margin="5,0,0,0" />
                                 </UniformGrid>
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock>Site Longitude</TextBlock>
+                                    <TextBlock Text="{ns:Loc LblSiteLongitude}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.SiteLongitude}" Margin="5,0,0,0" />
                                 </UniformGrid>
 
@@ -139,7 +139,7 @@
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock>Site Elevation</TextBlock>
+                                    <TextBlock Text="{ns:Loc LblSiteElevation}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.SiteElevation}" Margin="5,0,0,0" />
                                 </UniformGrid>
                             </UniformGrid>
@@ -147,11 +147,11 @@
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock><Run Text="Sidereal Time:"/></TextBlock>
+                                    <TextBlock Text="{ns:Loc LblSiderealTime}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.SiderealTimeString}" Margin="5,0,0,0" />
                                 </UniformGrid>
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock><Run Text="Meridian in:"/></TextBlock>
+                                    <TextBlock Text="{ns:Loc LblMeridianIn}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.HoursToMeridianString}" Margin="5,0,0,0" />
                                 </UniformGrid>
                             </UniformGrid>
@@ -159,11 +159,11 @@
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock><Run Text="Right Ascension:"/></TextBlock>
+                                    <TextBlock Text="{ns:Loc LblRightAscension}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.RightAscensionString}" Margin="5,0,0,0" />
                                 </UniformGrid>
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock><Run Text="Declination:"/></TextBlock>
+                                    <TextBlock Text="{ns:Loc LblDeclination}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.DeclinationString}" Margin="5,0,0,0" />
                                 </UniformGrid>
                             </UniformGrid>
@@ -171,11 +171,11 @@
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock><Run Text="Altitude:"/></TextBlock>
+                                    <TextBlock Text="{ns:Loc LblAltitude}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.AltitudeString}" Margin="5,0,0,0" />
                                 </UniformGrid>
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock><Run Text="Azimuth:"/></TextBlock>
+                                    <TextBlock Text="{ns:Loc LblAzimuth}"></TextBlock>
                                     <TextBlock Text="{Binding Telescope.AzimuthString}" Margin="5,0,0,0" />
                                 </UniformGrid>
                             </UniformGrid>
@@ -187,11 +187,11 @@
 
         <Grid Grid.Row="1" IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
             <Grid  IsEnabled="{Binding Telescope.Connected}">
-                <GroupBox Header="Manual Coordinates">
+                <GroupBox Header="{ns:Loc LblManualCoordinates}">
                     <StackPanel>
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                             <StackPanel Orientation="Horizontal" Margin="0 6 0 6">
-                                <TextBlock Width="60">Target RA</TextBlock>
+                                <TextBlock Width="60" Text="{ns:Loc LblTargetRA}"></TextBlock>
                                 <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
                                     <TextBox.Text>
                                         <Binding Path="TargetRightAscencionHours" UpdateSourceTrigger="LostFocus" >
@@ -226,7 +226,7 @@
                         </Border>
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                             <StackPanel Orientation="Horizontal" Margin="0 6 0 6">
-                                <TextBlock Width="60">Target Dec</TextBlock>
+                                <TextBlock Width="60" Text="{ns:Loc LblTargetDec}"></TextBlock>
                                 <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right">
                                     <TextBox.Text>
                                         <Binding Path="TargetDeclinationDegrees" UpdateSourceTrigger="LostFocus" >
@@ -260,7 +260,7 @@
                             </StackPanel>
                         </Border>
                         <Button Margin="5" Height="50" Width="50" Command="{Binding SlewToCoordinatesCommand}" HorizontalAlignment="Left">
-                            <TextBlock Text ="Slew" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <TextBlock Text ="{ns:Loc LblSlew}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                         </Button>
                     </StackPanel>
 
@@ -270,7 +270,7 @@
 
         <Grid Grid.Row="1" Grid.Column="1" IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
             <Grid  IsEnabled="{Binding Telescope.Connected}">
-                <GroupBox Grid.Row="1" Header="Manual Control" IsEnabled="{Binding Telescope.CanSlew}">
+                <GroupBox Grid.Row="1" Header="{ns:Loc LblManualControl}" IsEnabled="{Binding Telescope.CanSlew}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -284,7 +284,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal">
-                            <TextBlock Margin="0,0,5,0" VerticalAlignment="Center"><Run Text="Rate:"/></TextBlock>
+                            <TextBlock Margin="0,0,5,0" VerticalAlignment="Center" Text="{ns:Loc LblRate}"></TextBlock>
                             <RepeatButton Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding StepperMoveRateCommand}" CommandParameter="-">
                                 <TextBlock Text ="&#x25BC;" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                             </RepeatButton>
@@ -294,7 +294,7 @@
                             </RepeatButton>
                         </StackPanel>
                         <Button Grid.Row="1" Grid.Column="0" Height="80" Width="80" HorizontalAlignment="Right"   >
-                            <TextBlock Text ="W" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <TextBlock Text="{ns:Loc LblAbbrWest}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewStylusDown">
                                     <i:InvokeCommandAction CommandParameter="W" Command="{Binding MoveCommand}"/>
@@ -317,7 +317,7 @@
                             </i:Interaction.Triggers>
                         </Button>
                         <Button Grid.Row="1" Grid.Column="2" Height="80" Width="80" HorizontalAlignment="Left"  >
-                            <TextBlock Text ="O" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <TextBlock Text="{ns:Loc LblAbbrEast}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewStylusDown">
                                     <i:InvokeCommandAction CommandParameter="O" Command="{Binding MoveCommand}"/>
@@ -340,7 +340,7 @@
                             </i:Interaction.Triggers>
                         </Button>
                         <Button Grid.Row="0" Grid.Column="1" Height="80" Width="80" VerticalAlignment="Bottom" >
-                            <TextBlock Text ="N" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <TextBlock Text="{ns:Loc LblAbbrNorth}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewStylusDown">
                                     <i:InvokeCommandAction CommandParameter="N" Command="{Binding MoveCommand}"/>
@@ -363,7 +363,7 @@
                             </i:Interaction.Triggers>
                         </Button>
                         <Button Grid.Row="2" Grid.Column="1" Height="80" Width="80" VerticalAlignment="Top">
-                            <TextBlock Text ="S" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <TextBlock Text="{ns:Loc LblAbbrSouth}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewStylusDown">
                                     <i:InvokeCommandAction CommandParameter="S" Command="{Binding MoveCommand}"/>
@@ -387,15 +387,15 @@
                             </i:Interaction.Triggers>
                         </Button>
                         <Button Grid.Row="1" Grid.Column="1" Height="80" Width="80" Command="{Binding StopSlewCommand}">
-                            <TextBlock Text ="STOP" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <TextBlock Text="{ns:Loc LblStop}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                         </Button>
 
                         <Button Grid.Row="2" Grid.Column="3" Height="80" Width="80" Command="{Binding ParkCommand}" HorizontalAlignment="Right" Visibility="{Binding Telescope.AtPark, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                            <TextBlock Text ="PARK" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <TextBlock Text="{ns:Loc LblPark}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                         </Button>
                         <Grid HorizontalAlignment="Right" Grid.Row="2" Grid.Column="3" Height="80" Width="80" Visibility="{Binding Telescope, Converter={StaticResource NullToVisibilityConverter}}" >
                             <Button Command="{Binding UnparkCommand}"  Visibility="{Binding Telescope.AtPark, Converter={StaticResource VisibilityConverter}}">
-                                <TextBlock Text ="UNPARK" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                                <TextBlock Text="{ns:Loc LblUnpark}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                             </Button>
                         </Grid>
                         

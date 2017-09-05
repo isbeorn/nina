@@ -16,117 +16,117 @@
                 <TextBlock Text="{ns:Loc LblGeneral}" Foreground="{StaticResource ButtonForegroundBrush}" />
             </TabItem.Header>
             <UniformGrid Columns="2" Rows="3">
-                <GroupBox Header="Current UI Color Schema">
+                <GroupBox Header="{ns:Loc LblCurrentUIColorSchema}">
                     <UniformGrid Columns="2">
                         <ComboBox ItemsSource="{Binding ColorSchemas.Items}" DisplayMemberPath="Name" SelectedValue="{Binding ColorSchemaName}" SelectedValuePath="Name" Grid.ColumnSpan="2"/>
                         <Grid />
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Primary:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblPrimary}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding PrimaryColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource PrimaryBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" >
-                            <TextBlock VerticalAlignment="Center" Width="155">Secondary:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblSecondary}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding SecondaryColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource SecondaryBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Border:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblBorder}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding BorderColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource BorderBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Background:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblBackground}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding BackgroundColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource BackgroundBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Button Background:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonBackground}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding ButtonBackgroundColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonBackgroundBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Button Highlight:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonHighlight}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding ButtonBackgroundSelectedColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonBackgroundSelectedBrush}"></Button>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Button Foreground:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonForeground}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding ButtonForegroundColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonForegroundBrush}"></Button>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Button Foreground Disabled:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonForegroundDisabled}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding ButtonForegroundDisabledColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonForegroundDisabledBrush}"></Button>
                         </StackPanel>
                     </UniformGrid>
 
                 </GroupBox>
-                <GroupBox Header="Alternative UI Color Schema">
+                <GroupBox Header="{ns:Loc LblAlternativeUIColorSchema}">
                     <UniformGrid Columns="2">
                         <ComboBox ItemsSource="{Binding ColorSchemas.Items}" DisplayMemberPath="Name" SelectedValue="{Binding AlternativeColorSchemaName}" SelectedValuePath="Name" Grid.ColumnSpan="2"/>                        
                         <Grid />
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Primary:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblPrimary}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltPrimaryColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltPrimaryBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" >
-                            <TextBlock VerticalAlignment="Center" Width="155">Secondary:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblSecondary}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltSecondaryColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltSecondaryBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Border:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblBorder}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltBorderColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltBorderBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Background:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblBackground}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltBackgroundColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltBackgroundBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Button Background:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonBackground}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonBackgroundColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonBackgroundBrush}"></Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Button Highlight:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonHighlight}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonBackgroundSelectedColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonBackgroundSelectedBrush}"></Button>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Button Foreground:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonForeground}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonForegroundColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonForegroundBrush}"></Button>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155">Button Foreground Disabled:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonForegroundDisabled}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonForegroundDisabledColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonForegroundDisabledBrush}"></Button>
                         </StackPanel>
                     </UniformGrid>
                 </GroupBox>
-                <GroupBox Header="Astrometry">
+                <GroupBox Header="{ns:Loc LblAstrometry}">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="100">Epoch:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblEpoch}"></TextBlock>
                             <ComboBox Name="epochcombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Epoch} }}" SelectedItem="{Binding EpochType}" Margin="10,0,0,0"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="100">Hemisphere:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblHemisphere}"></TextBlock>
                             <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Hemisphere} }}" SelectedItem="{Binding HemisphereType}" Margin="10,0,0,0"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="PHD2 Settings">
+                <GroupBox Header="{ns:Loc LblPHD2Settings}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />
@@ -138,37 +138,34 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <TextBlock  VerticalAlignment="Center" Width="100">PHD2 Server Url:</TextBlock>
+                        <TextBlock  VerticalAlignment="Center" Width="100" Text="{ns:Loc LblPHD2ServerUrl}"></TextBlock>
                         <TextBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PHD2ServerUrl}" />
 
 
-                        <TextBlock Grid.Row="1" VerticalAlignment="Center" Width="100">PHD2 Server Port:</TextBlock>
+                        <TextBlock Grid.Row="1" VerticalAlignment="Center" Width="100" Text="{ns:Loc LblPHD2ServerPort}"></TextBlock>
                         <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PHD2ServerPort}" />
 
-                        <TextBlock Grid.Row="1" VerticalAlignment="Center" Width="100">PHD2 Server Port:</TextBlock>
-                        <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PHD2ServerPort}" />
-
-                        <TextBlock Grid.Row="2" VerticalAlignment="Center" Width="100">Dither Pixels:</TextBlock>
+                        <TextBlock Grid.Row="2" VerticalAlignment="Center" Width="100" Text="{ns:Loc LblDitherPixels}"></TextBlock>
                         <TextBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding DitherPixels}" />
 
-                        <TextBlock Grid.Row="3" VerticalAlignment="Center" Width="100">Dither RA Only:</TextBlock>
+                        <TextBlock Grid.Row="3" VerticalAlignment="Center" Width="100" Text="{ns:Loc LblDitherRAOnly}"></TextBlock>
                         <CheckBox Grid.Row="3" Grid.Column="1" Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding DitherRAOnly}" />
 
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Weather Data">
+                <GroupBox Header="{ns:Loc LblWeatherData}">
                     <StackPanel>
                         <ComboBox Name="weatherdatacombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:WeatherDataEnum}}}" SelectedItem="{Binding WeatherDataType}" />
                         <UniformGrid Columns="2" Margin="0 5 0 0">
-                            <TextBlock Text="URL" />
+                            <TextBlock Text="{ns:Loc LblURL}" />
                             <TextBox Text="{Binding OpenWeatherMapUrl}" HorizontalAlignment="Stretch" />
                         </UniformGrid>
                         <UniformGrid Columns="2"  Margin="0 5 0 0">
-                            <TextBlock Text="API Key" />
+                            <TextBlock Text="{ns:Loc LblAPIKey}" />
                             <TextBox Text="{Binding OpenWeatherMapAPIKey}" HorizontalAlignment="Stretch" />
                         </UniformGrid>
                         <UniformGrid Columns="2"  Margin="0 5 0 0">
-                            <TextBlock Text="Location" />
+                            <TextBlock Text="{ns:Loc LblLocation}" />
                             <TextBox Text="{Binding OpenWeatherMapLocation}" HorizontalAlignment="Stretch" />
                         </UniformGrid>
                     </StackPanel>
@@ -177,10 +174,10 @@
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Text="Imaging" Foreground="{StaticResource ButtonForegroundBrush}" />
+                <TextBlock Text="{ns:Loc LblImaging}" Foreground="{StaticResource ButtonForegroundBrush}" />
             </TabItem.Header>
             <UniformGrid Columns="2">
-                <GroupBox Header="File Settings">
+                <GroupBox Header="{ns:Loc LblFileSettings}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100"/>
@@ -194,16 +191,16 @@
                             <RowDefinition Height="40" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <TextBlock VerticalAlignment="Center" Grid.Column="0">Save Image As:</TextBlock>
+                        <TextBlock VerticalAlignment="Center" Grid.Column="0" Text="{ns:Loc LblSaveImageAs}"></TextBlock>
                         <ComboBox Grid.Column="1" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:FileTypeEnum}}}" SelectedItem="{Binding FileType}"/>
 
-                        <TextBlock Grid.Row="1" VerticalAlignment="Center" Grid.Column="0">Image File Path:</TextBlock>
+                        <TextBlock Grid.Row="1" VerticalAlignment="Center" Grid.Column="0" Text="{ns:Loc LblImageFilePath}"></TextBlock>
                         <TextBox Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Text="{Binding ImageFilePath}"></TextBox>
                         <Button Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Grid.Column="2" Command="{Binding OpenImageFileDiagCommand}">
                             <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
                         </Button>
 
-                        <TextBlock VerticalAlignment="Center" Grid.Column="0" Grid.Row="3">Image File Pattern:</TextBlock>
+                        <TextBlock VerticalAlignment="Center" Grid.Column="0" Grid.Row="3" Text="{ns:Loc LblImageFilePattern}"></TextBlock>
                         <TextBox Text="{Binding ImageFilePattern}" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3"></TextBox>
                         <Button VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Grid.Column="2" Grid.Row="3" Command="{Binding PreviewFileCommand}">
                             <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PreviewSVG}" Stretch="Uniform" Margin="5"/>
@@ -212,21 +209,21 @@
                         <ListView Grid.Row="4" Grid.ColumnSpan="3" Margin="0 5 0 0" ItemsSource="{Binding ImagePatterns}">
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="PatternName" Width="Auto" DisplayMemberBinding="{Binding Key}" />
-                                    <GridViewColumn Header="Description" Width="Auto" DisplayMemberBinding="{Binding Description}" />
+                                    <GridViewColumn Header="{ns:Loc LblPatternName}" Width="Auto" DisplayMemberBinding="{Binding Key}" />
+                                    <GridViewColumn Header="{ns:Loc LblDescription}" Width="Auto" DisplayMemberBinding="{Binding Description}" />
                                 </GridView>
                             </ListView.View>
                         </ListView>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Auto Meridian Flip">
+                <GroupBox Header="{ns:Loc LblAutoMeridianFlip}">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" >Enabled:</TextBlock>
+                            <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblEnabled}"></TextBlock>
                             <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding AutoMeridianFlip}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20" MinWidth="200" VerticalAlignment="Center" >Minutes after meridian:</TextBlock>
+                            <TextBlock MinHeight="20" MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblMinutesAfterMeridian}"></TextBlock>
                             <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                 <TextBox.Text>
                                     <Binding Path="MinutesAfterMeridian" UpdateSourceTrigger="LostFocus" >
@@ -238,11 +235,11 @@
                             </TextBox>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" >Recenter after flip:</TextBlock>
+                            <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblRecenterAfterFlip}"></TextBlock>
                             <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding RecenterAfterFlip}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" >Scope settle time after flip (seconds):</TextBlock>
+                            <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblScopeSettleTimeAfterFlip}"></TextBlock>
                             <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                 <TextBox.Text>
                                     <Binding Path="MeridianFlipSettleTime" UpdateSourceTrigger="LostFocus" >
@@ -261,9 +258,9 @@
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Text="Plate Solver" Foreground="{StaticResource ButtonForegroundBrush}" />
+                <TextBlock Text="{ns:Loc LblPlateSolving}" Foreground="{StaticResource ButtonForegroundBrush}" />
             </TabItem.Header>
-            <GroupBox Header="Plate Solving">
+            <GroupBox Header="{ns:Loc LblPlateSolving}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50" />
@@ -292,11 +289,11 @@
                         </Grid.Style>
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130">API Key:</TextBlock>
+                                <TextBlock   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblAPIKey}"></TextBlock>
                                 <TextBox  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AstrometryAPIKey}" MinWidth="130"/>
                             </StackPanel>                            
                             <StackPanel Margin="0 5 0 5" MaxHeight="150">
-                                <TextBlock Text="Platesolve service provided by" />
+                                <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
                                 <TextBlock MaxHeight="73" HorizontalAlignment="Left">
                                     <Hyperlink NavigateUri="http://www.astrometry.net/" RequestNavigate="Hyperlink_RequestNavigate">
                                         <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform"  />
@@ -333,7 +330,7 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock   HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Cygwin location:</TextBlock>
+                                <TextBlock   HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblCygwinDirectory}"></TextBlock>
                                 <TextBox  Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding CygwinLocation}" MinWidth="130" />
 
 
@@ -343,26 +340,26 @@
                             </Grid>
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" Width="130">Focal Length:</TextBlock>
+                                    <TextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Text="{ns:Loc LblFocalLength}"></TextBlock>
                                     <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrFocalLength}" />
                                 </UniformGrid>
                             </UniformGrid>
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Pixel Size:</TextBlock>
+                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblPixelSize}"></TextBlock>
                                     <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrPixelSize}" />
                                 </UniformGrid>
                             </UniformGrid>
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Search Radius:</TextBlock>
+                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblSearchRadius}"></TextBlock>
                                     <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrSearchRadius}" />
                                 </UniformGrid>
                             </UniformGrid>
                             
                             
                             <StackPanel Margin="0 5 0 5" MaxHeight="150">
-                                <TextBlock Text="Platesolve service provided by" />
+                                <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
                                 <TextBlock MaxHeight="73" HorizontalAlignment="Left">
                                     <Hyperlink NavigateUri="http://www.astrometry.net/" RequestNavigate="Hyperlink_RequestNavigate">
                                         <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform"  />
@@ -381,13 +378,13 @@
                             <ListView ItemsSource="{Binding IndexFiles}">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="Index File" Width="Auto" DisplayMemberBinding="{Binding}" />
+                                        <GridViewColumn Header="{ns:Loc LblIndexFile}" Width="Auto" DisplayMemberBinding="{Binding}" />
                                     </GridView>
                                 </ListView.View>
                             </ListView>
                             <Button Grid.Row="1" Command="{Binding DownloadIndexesCommand}">
                                 <Button.Content>
-                                    <TextBlock Text="Download more Index files" Foreground="{StaticResource ButtonForegroundBrush}" />
+                                    <TextBlock Text="{ns:Loc LblDownloadMoreIndexFiles}" Foreground="{StaticResource ButtonForegroundBrush}" />
                                 </Button.Content>
 
                             </Button>
@@ -422,7 +419,7 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock   HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Platesolve2 location:</TextBlock>
+                                <TextBlock   HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblPlatesolve2Directory}"></TextBlock>
                                 <TextBox  Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2Location}" MinWidth="130" />
 
 
@@ -432,19 +429,19 @@
                             </Grid>
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" Width="130">Focal Length:</TextBlock>
+                                    <TextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Text="{ns:Loc LblFocalLength}"></TextBlock>
                                     <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2FocalLength}" />
                                 </UniformGrid>
                             </UniformGrid>
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Pixel Size:</TextBlock>
+                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblPixelSize}"></TextBlock>
                                     <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2PixelSize}" />
                                 </UniformGrid>
                             </UniformGrid>
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130">Regions:</TextBlock>
+                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblRegions}"></TextBlock>
                                     <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2Regions}" />
                                 </UniformGrid>
                             </UniformGrid>

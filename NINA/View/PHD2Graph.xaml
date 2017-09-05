@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:NINA.ViewModel"
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"      
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -14,7 +15,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <TextBlock Text="Y-Axis-Scale"></TextBlock>
+            <TextBlock Text="{ns:Loc LblYAxisScale}"></TextBlock>
             <ComboBox             
                                 SelectedValue="{Binding MaxY}"
                                 SelectedValuePath="Content">
@@ -58,17 +59,17 @@
                                 DataFieldX="Time" 
                                 DataFieldY="RADistanceRaw" 
                                 Color="Blue"
-                                Title="RA"/>
+                                Title="{ns:Loc LblRA}"/>
                 <oxy:LineSeries ItemsSource="{Binding GuideStepsHistory}" 
                                 DataFieldX="Time" 
                                 DataFieldY="DecDistanceRaw" 
                                 Color="Red"
-                                Title="Dec"/>
+                                Title="{ns:Loc LblDec}"/>
                 <oxy:LinearBarSeries ItemsSource="{Binding GuideStepsHistory}"    
                                      DataFieldX="TimeRA" 
                                      DataFieldY="RADistanceGuide" 
                                      Color="Blue"
-                                     Title="RA Corrections"
+                                     Title="{ns:Loc LblRACorrections}"
                                      StrokeColor="Blue"
                                      StrokeThickness="1"
                                      BarWidth="3"
@@ -78,7 +79,7 @@
                                      DataFieldX="TimeDec" 
                                      DataFieldY="DecDistanceGuide" 
                                      Color="Red"
-                                     Title="Dec Corrections"
+                                     Title="{ns:Loc LblDecCorrections}"
                                      StrokeColor="Red"
                                      StrokeThickness="1"
                                      BarWidth="3"

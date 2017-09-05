@@ -20,7 +20,7 @@
         </Grid>
         
         
-        <GroupBox Header="Active Sequence Details">
+        <GroupBox Header="{ns:Loc LblActiveSequenceDetails}">
             <StackPanel Orientation="Vertical" DataContext="{Binding ActiveSequence}">
                 <Grid Height="25" Margin="5" >
                     <ProgressBar x:Name="pbActiveSequence" Minimum="0" Maximum="{Binding TotalExposureCount}" Value="{Binding ProgressExposureCount, Mode=OneWay}" />
@@ -33,31 +33,31 @@
                 
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center" >
-                        <TextBlock><Run Text="Remaining"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblRemaining}"></TextBlock>
                         <TextBlock Text="{Binding ExposureCount}" Margin="5,0,0,0" />
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center" >
-                        <TextBlock><Run Text="Exposure Time"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblExposureTime}"></TextBlock>
                         <TextBlock Text="{Binding ExposureTime}" Margin="5,0,0,0" />
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center" >
-                        <TextBlock><Run Text="Image Type"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblType}"></TextBlock>
                         <TextBlock Text="{Binding ImageType}" Margin="5,0,0,0" />
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center" >
-                        <TextBlock><Run Text="Filter"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblFilter}"></TextBlock>
                         <TextBlock Text="{Binding FilterType}" Margin="5,0,0,0" />
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center" >
-                        <TextBlock><Run Text="Binning"/></TextBlock>
+                        <TextBlock Text="{ns:Loc LblBinning}"></TextBlock>
                         <TextBlock Text="{Binding Binning}" Margin="5,0,0,0" />
                     </UniformGrid>
                 </Border>

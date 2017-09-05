@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:ns="clr-namespace:NINA.Locale"
              
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -20,7 +21,7 @@
                 <GroupBox >
                     <GroupBox.Header>
                         <UniformGrid Columns="2" >
-                            <TextBlock Text="PHD2 Status" VerticalAlignment="Center" FontSize="20"></TextBlock>
+                            <TextBlock Text="{ns:Loc LblPHD2Status}" VerticalAlignment="Center" FontSize="20"></TextBlock>
                             <Grid Margin="5" Height="40" Width="40" HorizontalAlignment="Right">
                                 <Button  Command="{Binding ConnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" >
                                     <Button.ToolTip>
@@ -60,7 +61,7 @@
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                                 <UniformGrid Columns="2" >
                                     <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                        <TextBlock><Run Text="Connected:"/></TextBlock>
+                                        <TextBlock Text="{ns:Loc LblConnected}"></TextBlock>
                                         <TextBlock Text="{Binding PHD2Client.Connected}" Margin="5,0,0,0" />
                                     </UniformGrid>
                                 </UniformGrid>
@@ -68,7 +69,7 @@
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                                 <UniformGrid Columns="2" >
                                     <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                        <TextBlock><Run Text="State:"/></TextBlock>
+                                        <TextBlock Text="{ns:Loc LblState}"></TextBlock>
                                         <TextBlock Text="{Binding PHD2Client.AppState.State}" Margin="5,0,0,0" />
                                     </UniformGrid>
                                 </UniformGrid>

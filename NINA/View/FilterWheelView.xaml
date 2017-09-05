@@ -85,7 +85,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Name:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblName}"></TextBlock>
                             <TextBlock Text="{Binding FW.Name}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
@@ -93,7 +93,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Description:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblDescription}"></TextBlock>
                             <TextBlock Text="{Binding FW.Description}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
@@ -101,11 +101,11 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Driver Info:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblDriverInfo}"></TextBlock>
                             <TextBlock Text="{Binding FW.DriverInfo}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Driver Version:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblDriverVersion}"></TextBlock>
                             <TextBlock Text="{Binding FW.DriverVersion}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </UniformGrid>

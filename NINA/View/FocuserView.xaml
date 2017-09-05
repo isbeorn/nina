@@ -85,7 +85,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Name:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblName}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.Name}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
@@ -93,7 +93,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Description:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblDescription}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.Description}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
@@ -101,11 +101,11 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Driver Info:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblDriverInfo}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.DriverInfo}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Driver Version:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblDriverVersion}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.DriverVersion}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </UniformGrid>
@@ -113,7 +113,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Is Moving:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblIsMoving}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.IsMoving}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
@@ -121,7 +121,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Max Increment:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblMaxIncrement}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.MaxIncrement}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
@@ -129,7 +129,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Max Step:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblMaxStep}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.MaxStep}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
@@ -137,7 +137,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Position:"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblPosition}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.Position}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
@@ -145,7 +145,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" IsEnabled="{Binding Focuser.TempCompAvailable}">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock Text="Temperature Compensation" VerticalAlignment="Center"></TextBlock>
+                            <TextBlock Text="{ns:Loc LblTemperatureCompensation}" VerticalAlignment="Center"></TextBlock>
                             <CheckBox IsChecked="{Binding Focuser.TempComp}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                         </UniformGrid>
                     </UniformGrid>
@@ -153,7 +153,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock><Run Text="Temperature :"/></TextBlock>
+                            <TextBlock Text="{ns:Loc LblTemperature}"></TextBlock>
                             <TextBlock Text="{Binding Focuser.Temperature }" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
@@ -162,20 +162,20 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock Text="Target Position:" VerticalAlignment="Center"/>
+                            <TextBlock Text="{ns:Loc LblTargetPosition}" VerticalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal">
                                 <TextBox Height="25" MinWidth="90" Text="{Binding TargetPosition}" Margin="5 0 0 0" />
                                 <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                                     <Grid IsEnabled="{Binding Focuser.TempComp, Converter={StaticResource InverseBooleanConverter}}">
                                         <Button Margin="5" Height="25" Width="50" Command="{Binding MoveFocuserCommand}" HorizontalAlignment="Left"
                                     Visibility="{Binding Focuser.IsMoving, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                            <TextBlock Text ="Move" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                                            <TextBlock Text ="{ns:Loc LblMove}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                                         </Button>
                                         <Grid Visibility="{Binding Focuser, Converter={StaticResource NullToVisibilityConverter}}"
                                               Margin="5" Height="25" Width="50" HorizontalAlignment="Left">
                                         <Button  Command="{Binding HaltFocuserCommand}" 
                                     Visibility="{Binding Focuser.IsMoving, Converter={StaticResource VisibilityConverter}}">
-                                            <TextBlock Text ="Halt" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                                            <TextBlock Text="{ns:Loc LblHalt}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
                                         </Button>
                                         </Grid>
                                     </Grid>

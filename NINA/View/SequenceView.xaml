@@ -18,10 +18,10 @@
             </Grid.RowDefinitions>
             <DataGrid ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="*" Header="Remaining #" Binding="{Binding ExposureCount}" IsReadOnly="True" CanUserSort="False">
+                    <DataGridTextColumn Width="*" Header="{ns:Loc LblRemainingNo}" Binding="{Binding ExposureCount}" IsReadOnly="True" CanUserSort="False">
 
                     </DataGridTextColumn>
-                    <DataGridTemplateColumn Width="*" Header="Total #" CanUserSort="False">
+                    <DataGridTemplateColumn Width="*" Header="{ns:Loc LblTotalNo}" CanUserSort="False">
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <ninactrl:IntStepperControl 
@@ -40,7 +40,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="*" Header="Time" CanUserSort="False">
+                    <DataGridTemplateColumn Width="*" Header="{ns:Loc LblTime}" CanUserSort="False">
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <ninactrl:StepperControl 
@@ -58,9 +58,9 @@
                                 <TextBlock Text="{Binding ExposureTime}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>                    
-                    
-                    <DataGridTemplateColumn Width="*" Header="Type" CanUserSort="False">
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="*" Header="{ns:Loc LblType}" CanUserSort="False">
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <ComboBox
@@ -76,7 +76,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Width="*" Header="Filter" CanUserSort="False">
+                    <DataGridTemplateColumn Width="*" Header="{ns:Loc LblFilter}" CanUserSort="False">
                         <DataGridTemplateColumn.CellEditingTemplate>                            
                             <DataTemplate>
                                 <ComboBox
@@ -93,7 +93,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Width="*" Header="Binning" CanUserSort="False">
+                    <DataGridTemplateColumn Width="*" Header="{ns:Loc LblBinning}" CanUserSort="False">
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <ComboBox 
@@ -109,16 +109,16 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    
-                    <DataGridTemplateColumn Width="*" Header="Dither" CanUserSort="False">
+
+                    <DataGridTemplateColumn Width="*" Header="{ns:Loc LblDither}" CanUserSort="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    
-                    <DataGridTemplateColumn Width="*" Header="Dither Every # Frame" CanUserSort="False">
+
+                    <DataGridTemplateColumn Width="*" Header="{ns:Loc LblDitherEveryNoFrame}" CanUserSort="False">
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <ninactrl:IntStepperControl 
