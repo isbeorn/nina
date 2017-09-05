@@ -177,33 +177,33 @@ namespace NINA.Utility.Astrometry {
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum Epoch {
-        [Description("J2000")]
+        [Description("LblJ2000")]
         J2000,
-        [Description("JNOW")]
+        [Description("LblJNOW")]
         JNOW
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum Hemisphere {
-        [Description("Northern")]
+        [Description("LblNorthern")]
         NORTHERN,
-        [Description("Southern")]
+        [Description("LblSouthern")]
         SOUTHERN
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum Direction {
-        [Description("Altitude")]
+        [Description("LblAltitude")]
         ALTITUDE,
-        [Description("Azimuth")]
+        [Description("LblAzimuth")]
         AZIMUTH
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum AltitudeSite {
-        [Description("East")]
+        [Description("LblEast")]
         EAST,
-        [Description("West")]
+        [Description("LblWest")]
         WEST
     }
 

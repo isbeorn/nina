@@ -57,7 +57,9 @@ namespace NINA.Utility {
                 FieldInfo fi = value?.GetType().GetField(value.ToString());
                 if (fi != null) {
                     var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                    return ((attributes.Length > 0) && (!String.IsNullOrEmpty(attributes[0].Description))) ? attributes[0].Description : value.ToString();
+                    var label = ((attributes.Length > 0) && (!String.IsNullOrEmpty(attributes[0].Description))) ? attributes[0].Description : value.ToString();
+                    var s = Locale.Loc.Instance[label];
+                    return s;
                 }
                 
 

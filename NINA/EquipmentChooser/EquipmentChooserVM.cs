@@ -207,11 +207,11 @@ namespace NINA.EquipmentChooser {
 
         [TypeConverter(typeof(EnumDescriptionTypeConverter))]
         public enum EquipmentType {
-            [Description("Camera")]
+            [Description("LblCamera")]
             Camera,
-            [Description("Telescope")]
+            [Description("LblTelescope")]
             Telescope,
-            [Description("FilterWheel")]
+            [Description("LblFilterWheel")]
             FilterWheel
         }
 

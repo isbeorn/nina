@@ -152,7 +152,6 @@
     <s:String x:Key="LblMinutesAfterMeridian">Minutes after Meridian</s:String>
     <s:String x:Key="LblRecenterAfterFlip">Recenter after Flip</s:String>
     <s:String x:Key="LblScopeSettleTimeAfterFlip">Scope settle time after flip (seconds)</s:String>
-
     <s:String x:Key="LblPlateSolving">Plate Solving</s:String>
     <s:String x:Key="LblPlatesolve2Directory">Platesolve2 Directory</s:String>
     <s:String x:Key="LblFocalLength">Focal Length</s:String>
@@ -163,9 +162,20 @@
     <s:String x:Key="LblSearchRadius">Search Radius</s:String>
     <s:String x:Key="LblIndexFile">Index File</s:String>
     <s:String x:Key="LblDownloadMoreIndexFiles">Download more index files</s:String>
-
     <s:String x:Key="LblActiveSequenceDetails">Active Sequence Details</s:String>
     <s:String x:Key="LblRemaining">Remaining</s:String>
+
+    <s:String x:Key="LblAstrometryNet">Astrometry.Net</s:String>
+    <s:String x:Key="LblLocalPlatesolver">Local Platesolver</s:String>
+    <s:String x:Key="LblPlatesolve2">Platesolve2</s:String>
+    <s:String x:Key="LblOpenWeatherMapOrg">openweathermap.org</s:String>
+
+    <s:String x:Key="LblEast">East</s:String>
+    <s:String x:Key="LblWest">West</s:String>
+    <s:String x:Key="LblNorthern">Northern</s:String>
+    <s:String x:Key="LblSouthern">Southern</s:String>
+    <s:String x:Key="LblJ2000">J200</s:String>
+    <s:String x:Key="LblJNOW">JNOW</s:String>
 
 
 </ResourceDictionary>

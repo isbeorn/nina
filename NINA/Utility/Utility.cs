@@ -278,17 +278,17 @@ namespace NINA.Utility {
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum PlateSolverEnum {
-        [Description("Astrometry.net")]
+        [Description("LblAstrometryNet")]
         ASTROMETRY_NET,
-        [Description("Local")]
+        [Description("LblLocalPlatesolver")]
         LOCAL,
-        [Description("Platesolve2")]
+        [Description("LblPlatesolve2")]
         PLATESOLVE2
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum WeatherDataEnum {
-        [Description("openweathermap.org")]
+        [Description("LblOpenWeatherMapOrg")]
         OPENWEATHERMAP
     }
 
