@@ -17,7 +17,7 @@ namespace NINA.ViewModel {
     class PolarAlignmentVM : DockableVM {
 
         public PolarAlignmentVM() : base() {
-            Title = "Polar alignment";
+            Title = Locale.Loc.Instance["LblPolarAlignment"];
             ContentId = nameof(PolarAlignmentVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PolarAlignSVG"];

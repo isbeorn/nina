@@ -13,7 +13,7 @@ using System.Windows.Threading;
 namespace NINA.ViewModel {
     class TelescopeVM : DockableVM {
         public TelescopeVM() : base() {
-            Title = "Telescope";
+            Title = Locale.Loc.Instance["LblTelescope"];
             ContentId = nameof(TelescopeVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];

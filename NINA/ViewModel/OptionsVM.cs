@@ -14,7 +14,7 @@ using System.Windows.Media;
 namespace NINA.ViewModel {
     public  class OptionsVM : DockableVM {
         public OptionsVM() {
-            Title = "Options";
+            Title = Locale.Loc.Instance["LblOptions"];
             ContentId = nameof(OptionsVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];

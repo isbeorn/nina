@@ -22,7 +22,7 @@ namespace NINA.ViewModel {
     class CameraVM : DockableVM {
 
         public CameraVM() : base() {
-            Title = "Camera";
+            Title = Locale.Loc.Instance["LblCamera"];
             ContentId = nameof(CameraVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];

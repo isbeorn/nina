@@ -19,7 +19,7 @@
     <s:String x:Key="LblPixelSizeX">Pixel Size X</s:String>
     <s:String x:Key="LblPixelSizeY">Pixel Size Y</s:String>
     <s:String x:Key="LblCamInfo">Camera Info</s:String>
-    <s:String x:Key="LblCam">Camera</s:String>
+    <s:String x:Key="LblCamera">Camera</s:String>
     <s:String x:Key="LblFilterWheel">Filter Wheel</s:String>
     <s:String x:Key="LblCamSettings">Camera Settings</s:String>
     <s:String x:Key="LblGain">Gain</s:String>
@@ -164,18 +164,24 @@
     <s:String x:Key="LblDownloadMoreIndexFiles">Download more index files</s:String>
     <s:String x:Key="LblActiveSequenceDetails">Active Sequence Details</s:String>
     <s:String x:Key="LblRemaining">Remaining</s:String>
-
     <s:String x:Key="LblAstrometryNet">Astrometry.Net</s:String>
     <s:String x:Key="LblLocalPlatesolver">Local Platesolver</s:String>
     <s:String x:Key="LblPlatesolve2">Platesolve2</s:String>
     <s:String x:Key="LblOpenWeatherMapOrg">openweathermap.org</s:String>
-
     <s:String x:Key="LblEast">East</s:String>
     <s:String x:Key="LblWest">West</s:String>
     <s:String x:Key="LblNorthern">Northern</s:String>
     <s:String x:Key="LblSouthern">Southern</s:String>
     <s:String x:Key="LblJ2000">J200</s:String>
     <s:String x:Key="LblJNOW">JNOW</s:String>
-
+    
+    <s:String x:Key="LblStatistics">Statistics</s:String>
+    <s:String x:Key="LblFrameNFocus">Frame &amp; Focus</s:String>
+    <s:String x:Key="LblOptions">Options</s:String>
+    <s:String x:Key="LblImageHistory">Image History</s:String>
+    <s:String x:Key="LblWeather">Weather</s:String>    
+    <s:String x:Key="LblPolarAlignment">Polar Alignment</s:String>
+    <s:String x:Key="LblImageArea">Image Area</s:String>
+    <s:String x:Key="LblPHD2">PHD2</s:String>
 
 </ResourceDictionary>

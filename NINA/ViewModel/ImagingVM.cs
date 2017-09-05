@@ -27,7 +27,7 @@ namespace NINA.ViewModel {
 
         public ImagingVM() : base() {
 
-            Title = "Imaging";
+            Title = Locale.Loc.Instance["LblImaging"];
             ContentId = nameof(ImagingVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];

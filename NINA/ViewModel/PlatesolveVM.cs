@@ -24,7 +24,7 @@ namespace NINA.ViewModel {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
         public PlatesolveVM() : base() {
-            Title = "Plate Solving";
+            Title = Locale.Loc.Instance["LblPlateSolving"];
             ContentId = nameof(PlatesolveVM);
             CanClose = false;
             SyncScope = false;

@@ -10,7 +10,7 @@ namespace NINA.ViewModel {
     public class ImageHistoryVM :DockableVM {
 
         public ImageHistoryVM() {
-            Title = "Image History";
+            Title = Locale.Loc.Instance["LblImageHistory"];
             ContentId = nameof(ImageHistoryVM);
             CanClose = false;
             _nextStatHistoryId = 1;

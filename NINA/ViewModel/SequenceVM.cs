@@ -13,7 +13,7 @@ namespace NINA.ViewModel{
     class SequenceVM : DockableVM {
 
         public SequenceVM() {
-            Title = "Sequence";
+            Title = Locale.Loc.Instance["LblSequence"];
             CanClose = false;
             ContentId = nameof(SequenceVM);
             AddSequenceCommand = new RelayCommand(AddSequence);

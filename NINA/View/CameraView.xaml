@@ -26,7 +26,7 @@
             <GroupBox >
                 <GroupBox.Header>
                     <UniformGrid Columns="2" >
-                        <TextBlock Text="{ns:Loc LblCam}" VerticalAlignment="Center" FontSize="20"></TextBlock>
+                        <TextBlock Text="{ns:Loc LblCamera}" VerticalAlignment="Center" FontSize="20"></TextBlock>
                         <Grid Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
