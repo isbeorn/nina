@@ -173,8 +173,7 @@
     <s:String x:Key="LblNorthern">Northern</s:String>
     <s:String x:Key="LblSouthern">Southern</s:String>
     <s:String x:Key="LblJ2000">J200</s:String>
-    <s:String x:Key="LblJNOW">JNOW</s:String>
-    
+    <s:String x:Key="LblJNOW">JNOW</s:String>    
     <s:String x:Key="LblStatistics">Statistics</s:String>
     <s:String x:Key="LblFrameNFocus">Frame &amp; Focus</s:String>
     <s:String x:Key="LblOptions">Options</s:String>
@@ -183,5 +182,51 @@
     <s:String x:Key="LblPolarAlignment">Polar Alignment</s:String>
     <s:String x:Key="LblImageArea">Image Area</s:String>
     <s:String x:Key="LblPHD2">PHD2</s:String>
+    <s:String x:Key="LblHumidity">Humidity</s:String>
+    <s:String x:Key="LblDewpoint">Dewpoint</s:String>
+    <s:String x:Key="LblPressure">Pressure</s:String>
+    <s:String x:Key="LblWindSpeed">Wind Speed</s:String>
+    <s:String x:Key="LblWindDirection">Wind Direction</s:String>
+    <s:String x:Key="LblCloudCoverage">Cloud Coverage</s:String>
+    <s:String x:Key="LblSunrise">Sunrise</s:String>
+    <s:String x:Key="LblSunset">Sunset</s:String>
+    <s:String x:Key="LblLatitude">Latitude</s:String>
+    <s:String x:Key="LblLongitude">Longitude</s:String>
+    <s:String x:Key="LblRefresh">Refresh</s:String>
+    <s:String x:Key="LblCenterRA">Center RA</s:String>
+    <s:String x:Key="LblCenterRAhms">Center RA hms</s:String>
+    <s:String x:Key="LblCenterDec">Center Dec</s:String>
+    <s:String x:Key="LblCenterDecdms">Center Dec dms</s:String>
+    <s:String x:Key="LblRadius">Radius</s:String>
+    <s:String x:Key="LblPixelScale">Pixel Scale</s:String>
+    <s:String x:Key="LblOrientation">Orientation</s:String>
+    <s:String x:Key="LblSync">Sync</s:String>
+    <s:String x:Key="LblReslewToTarget">Reslew to Target</s:String>
+    <s:String x:Key="LblRepeatUntil">Repeat until</s:String>
+    <s:String x:Key="LblErrorLT">error &lt;</s:String>
+    <s:String x:Key="LblArcmin">arcmin</s:String>    
+    <s:String x:Key="LblSuccess">Success</s:String>    
+    <s:String x:Key="LblRAError">RA Error</s:String>
+    <s:String x:Key="LblDecError">Dec Error</s:String>
+    <s:String x:Key="LblRAPixError">RA Pix Error</s:String>
+    <s:String x:Key="LblDecPixError">Dec Pix Error</s:String>
+    <s:String x:Key="LblCaptureImageAndPlatesolve">Capture Image and Platesolve</s:String>
+
+    <s:String x:Key="LblMeridianOffset">Meridian Offset</s:String>
+    <s:String x:Key="LblPlateSolvedPolarAlignment">Plate Solved Polar Alignment</s:String>
+    <s:String x:Key="LblAltitudeMeasurement">Altitude Measurement</s:String>
+    <s:String x:Key="LblAltitudeMeasurementDescription" xml:space="preserve">Point telescope east or west.
+Adjust combobox value accordingly</s:String>
+    <s:String x:Key="LblAltitudeMeasurementSide">Altitude Measurement side</s:String>
+    <s:String x:Key="LblAltitudeMeasurementButtonTooltip">Measure Altitude Error. Point Scope East or West and adjust Side of Pier combobox accordingly</s:String>    
+    <s:String x:Key="LblAzimuthMeasurement">Azimuth Measurement</s:String>
+    <s:String x:Key="LblAzimuthMeasurementDescription">Point Telescope South near meridian</s:String>
+    <s:String x:Key="LblAzimuthMeasurementButtonTooltip">Measure Azimuth Error. Point Scope South near Meridian</s:String>
+    <s:String x:Key="LblDARVSlew">D.A.R.V. Slew</s:String>
+    <s:String x:Key="LblDARVSlewDescription">Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back. In case of no Polar Alignment error it will display as a straight line. Otherwise a V shaped line</s:String>
+    <s:String x:Key="LblSlewRateDegSec">Slew Rate (deg/sec)</s:String>
+    <s:String x:Key="LblSlewDuration">Slew Duration</s:String>
+    <s:String x:Key="LblDARVSlewButtonTooltip" xml:space="preserve">This will take an exposure while slewing the scope slowly to one side and back
+when the lines are not aligned there is some Polar Alignment error</s:String>
 
 </ResourceDictionary>

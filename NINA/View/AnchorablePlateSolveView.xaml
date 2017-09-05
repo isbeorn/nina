@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -21,43 +22,43 @@
                 <StackPanel Orientation="Vertical">
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
-                            <TextBlock>Center RA</TextBlock>
+                            <TextBlock Text="{ns:Loc LblCenterRA}"></TextBlock>
                             <TextBlock Text="{Binding PlateSolveResult.Ra, StringFormat=\{0:#.000\}}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
-                            <TextBlock>Center RA hms</TextBlock>
+                            <TextBlock Text="{ns:Loc LblCenterRAhms}"></TextBlock>
                             <TextBlock Text="{Binding PlateSolveResult.RaString}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
-                            <TextBlock>Center Dec</TextBlock>
+                            <TextBlock Text="{ns:Loc LblCenterDec}"></TextBlock>
                             <TextBlock Text="{Binding PlateSolveResult.Dec, StringFormat=\{0:#.000\}}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
-                            <TextBlock>Center Dec dms</TextBlock>
+                            <TextBlock Text="{ns:Loc LblCenterDecdms}"></TextBlock>
                             <TextBlock Text="{Binding PlateSolveResult.DecString}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
-                            <TextBlock>Radius</TextBlock>
+                            <TextBlock Text="{ns:Loc LblRadius}"></TextBlock>
                             <TextBlock Text="{Binding PlateSolveResult.Radius, StringFormat=\{0:#.000 deg\}}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
-                            <TextBlock>Pixel scale</TextBlock>
+                            <TextBlock Text="{ns:Loc LblPixelScale}"></TextBlock>
                             <TextBlock Text="{Binding PlateSolveResult.Pixscale, StringFormat=\{0:#.00 arcsec/pixel\}}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
-                            <TextBlock>Orientation</TextBlock>
+                            <TextBlock Text="{ns:Loc LblOrientation}"></TextBlock>
                             <TextBlock Text="{Binding PlateSolveResult.Orientation, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
@@ -68,27 +69,27 @@
 
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" >
-                            <TextBlock Text="Sync" VerticalAlignment="Center"></TextBlock>
+                            <TextBlock Text="{ns:Loc LblSync}" VerticalAlignment="Center"></TextBlock>
                             <CheckBox IsChecked="{Binding SyncScope}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" >
-                            <TextBlock Text="Reslew to Target" VerticalAlignment="Center"></TextBlock>
+                            <TextBlock Text="{ns:Loc LblReslewToTarget}" VerticalAlignment="Center"></TextBlock>
                             <CheckBox IsChecked="{Binding SlewToTarget}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="60">
                         <UniformGrid Rows="2">
                             <UniformGrid Columns="2" >
-                                <TextBlock Text="Repeat until" VerticalAlignment="Center"></TextBlock>
+                                <TextBlock Text="{ns:Loc LblRepeatUntil}" VerticalAlignment="Center"></TextBlock>
                                 <CheckBox IsChecked="{Binding Repeat}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                             </UniformGrid>                    
                             <UniformGrid Columns="2" IsEnabled="{Binding Repeat}">
-                                <TextBlock Text="error &lt;" VerticalAlignment="Center"></TextBlock>
+                                <TextBlock Text="{ns:Loc LblErrorLT}" VerticalAlignment="Center"></TextBlock>
                                 <UniformGrid Columns="2">                                
                                     <TextBox Text="{Binding RepeatThreshold}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0" />
-                                    <TextBlock Text="arcmin" VerticalAlignment="Center"></TextBlock>
+                                    <TextBlock Text="{ns:Loc LblArcmin}" VerticalAlignment="Center"></TextBlock>
                                 </UniformGrid>
                             </UniformGrid>
                         </UniformGrid>
@@ -108,20 +109,20 @@
                         CancelCommand="{Binding CancelSolveCommand}" 
                         ButtonImage="{StaticResource PlaySVG}" 
                         CancelButtonImage="{StaticResource CancelSVG}" 
-                        ToolTip="Capture image and platesolve"
+                        ToolTip="{ns:Loc LblCaptureImageAndPlatesolve}"
                         />
                     
                     <DataGrid Margin="0 10 0 0" ItemsSource="{Binding Source={StaticResource GridItems}}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Hidden" CanUserAddRows="False" Width="{Binding ElementName=grid, Path=ActualWidth}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Width="*" Header="Time" Binding="{Binding SolveTime, StringFormat=\{0:HH:mm:ss\}}" SortDirection="Ascending" IsReadOnly="True" />
-                            <DataGridTextColumn Width="*" Header="Success" Binding="{Binding Success}" IsReadOnly="True" />
-                            <DataGridTextColumn Width="*" Header="Ra" Binding="{Binding RaString}" IsReadOnly="True"/>
-                            <DataGridTextColumn Width="*" Header="Dec" Binding="{Binding DecString}" IsReadOnly="True"/>
-                            <DataGridTextColumn Width="*" Header="Ra Error" Binding="{Binding RaErrorString}" IsReadOnly="True"/>
-                            <DataGridTextColumn Width="*" Header="Dec Error" Binding="{Binding DecErrorString}" IsReadOnly="True"/>
-                            <DataGridTextColumn Width="*" Header="Ra Pix Error" Binding="{Binding RaPixError, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
-                            <DataGridTextColumn Width="*" Header="Dec Pix Error" Binding="{Binding DecPixError, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
-                            <DataGridTextColumn Width="*" Header="Orientation" Binding="{Binding Orientation, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="{ns:Loc LblTime}" Binding="{Binding SolveTime, StringFormat=\{0:HH:mm:ss\}}" SortDirection="Ascending" IsReadOnly="True" />
+                            <DataGridTextColumn Width="*" Header="{ns:Loc LblSuccess}" Binding="{Binding Success}" IsReadOnly="True" />
+                            <DataGridTextColumn Width="*" Header="{ns:Loc LblRA}" Binding="{Binding RaString}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="{ns:Loc LblDec}" Binding="{Binding DecString}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="{ns:Loc LblRAError}" Binding="{Binding RaErrorString}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="{ns:Loc LblDecError}" Binding="{Binding DecErrorString}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="{ns:Loc LblRAPixError}" Binding="{Binding RaPixError, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="{ns:Loc LblDecPixError}" Binding="{Binding DecPixError, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="{ns:Loc LblOrientation}" Binding="{Binding Orientation, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
                         </DataGrid.Columns>
                     </DataGrid>
 

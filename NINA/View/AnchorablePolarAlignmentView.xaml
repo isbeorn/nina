@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:util="clr-namespace:NINA.Utility"
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              xmlns:astrometry="clr-namespace:NINA.Utility.Astrometry"
@@ -15,24 +16,24 @@
             <StackPanel IsEnabled="{Binding Telescope.Connected}">
 
                 <local:PolarScopeView MinHeight="200" />
-                <GroupBox Grid.Column="1" Header="Plate Solved PA">
+                <GroupBox Grid.Column="1" Header="{ns:Loc LblPlateSolvedPolarAlignment}">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Vertical">
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                                 <UniformGrid Columns="2" VerticalAlignment="Center">
-                                    <TextBlock>Meridian Offset</TextBlock>
+                                    <TextBlock Text="{ns:Loc LblMeridianOffset}"></TextBlock>
                                     <TextBox Margin="0,0,10,0" Text="{Binding MeridianOffset}"></TextBox>
                                 </UniformGrid>
                             </Border>
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                                 <UniformGrid Columns="2" VerticalAlignment="Center">
-                                    <TextBlock>Declination</TextBlock>
+                                    <TextBlock Text="{ns:Loc LblDeclination}"></TextBlock>
                                     <TextBox Margin="0,0,10,0" Text="{Binding Declination}"></TextBox>
                                 </UniformGrid>
                             </Border>
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                                 <Button Command="{Binding SlewToMeridianOffsetCommand}" MinWidth="60" Height="35" Margin="10,10,10,10"  VerticalAlignment="Center" >
-                                        <TextBlock Text ="Slew" Foreground="{StaticResource ButtonForegroundBrush}" VerticalAlignment="Center"></TextBlock>                                </Button>
+                                    <TextBlock Text="{ns:Loc LblSlew}" Foreground="{StaticResource ButtonForegroundBrush}" VerticalAlignment="Center"></TextBlock>                                </Button>
                             
                             </Border>
                         </StackPanel>
@@ -47,11 +48,11 @@
                                 MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}" />
                         </Grid>
 
-                        <GroupBox Header="Altitude Measurement" Grid.Row="2" Margin="-20,10,-20,0">
+                        <GroupBox Header="{ns:Loc LblAltitudeMeasurement}" Grid.Row="2" Margin="-20,10,-20,0">
                             <StackPanel Orientation="Vertical">
-                                <TextBlock TextWrapping="WrapWithOverflow">Point telescope east or west. <LineBreak /> Adjust combobox value accordingly</TextBlock>
+                                <TextBlock TextWrapping="WrapWithOverflow" Text="{ns:Loc LblAltitudeMeasurementDescription}"></TextBlock>
                                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="0,20,0,0">
-                                    <TextBlock VerticalAlignment="Center">Altitude measurement side</TextBlock>
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAltitudeMeasurementSide}"></TextBlock>
                                     <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:AltitudeSite} }}" SelectedItem="{Binding AltitudeSiteType}" />
 
                                     <ninactrl:CancellableButton 
@@ -60,7 +61,7 @@
                                         CancelCommand="{Binding CancelMeasureAltitudeErrorCommand}" 
                                         ButtonImage="{StaticResource ArrowTwoSidesRotated}" 
                                         CancelButtonImage="{StaticResource CancelSVG}" 
-                                        ToolTip="Measure Altitude Error&#10;Point Scope East or West and adjust Side of Pier combobox accordingly"
+                                        ToolTip="{ns:Loc LblAltitudeMeasurementButtonTooltip}"
                                         Margin="10,10,10,0"
                                         />
                                     <TextBlock Text="{Binding AltitudePolarErrorStatus}" Margin="10,0,0,0" VerticalAlignment="Center"/>
@@ -68,9 +69,9 @@
                             </StackPanel>
 
                         </GroupBox>
-                        <GroupBox Header="Azimuth Measurement" Margin="-20,0,-20,0">
+                        <GroupBox Header="{ns:Loc LblAzimuthMeasurement}" Margin="-20,0,-20,0">
                             <StackPanel Orientation="Vertical">
-                                <TextBlock>Point telescope near meridian.</TextBlock>
+                                <TextBlock Text="{ns:Loc LblAzimuthMeasurementDescription}"></TextBlock>
                                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10,10,10,0">
                                     <ninactrl:CancellableButton 
                                         Height="35"
@@ -78,7 +79,7 @@
                                         CancelCommand="{Binding CancelMeasureAzimuthErrorCommand}" 
                                         ButtonImage="{StaticResource ArrowTwoSides}" 
                                         CancelButtonImage="{StaticResource CancelSVG}" 
-                                        ToolTip="Measure Azimuth Error&#10;Point Scope South near Meridian"
+                                        ToolTip="{ns:Loc LblAzimuthMeasurementButtonTooltip}"
                                         />
                                     <TextBlock Text="{Binding AzimuthPolarErrorStatus}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                                 </StackPanel>
@@ -87,12 +88,12 @@
                         </GroupBox>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="D.A.R.V. Slew">
+                <GroupBox Header="{ns:Loc LblDARVSlew}">
                     <StackPanel>
-                        <TextBlock TextWrapping="Wrap">Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back.</TextBlock>
+                        <TextBlock TextWrapping="Wrap" Text="{ns:Loc LblDARVSlewDescription}"></TextBlock>
                         <StackPanel VerticalAlignment="Bottom">
 
-                            <TextBlock>Slew Rate (deg/sec)</TextBlock>
+                            <TextBlock Text="{ns:Loc LblSlewRateDegSec}"></TextBlock>
                             <TextBox >
                                 <TextBox.Text>
                                     <Binding Path="DARVSlewRate" UpdateSourceTrigger="LostFocus" >
@@ -103,7 +104,7 @@
                                 </TextBox.Text>
 
                             </TextBox>
-                            <TextBlock>Slew Duration:</TextBlock>
+                            <TextBlock Text="{ns:Loc LblSlewDuration}"></TextBlock>
                             <TextBox >
                                 <TextBox.Text>
                                     <Binding Path="DARVSlewDuration" UpdateSourceTrigger="LostFocus" >
@@ -121,9 +122,9 @@
                             Height="35" Margin="10,10,10,0" 
                             Command="{Binding DARVSlewCommand}" 
                             CancelCommand="{Binding CancelDARVSlewCommand}" 
-                            ButtonText="Slew"  
+                            ButtonText="{ns:Loc LblSlew}"  
                             CancelButtonImage="{StaticResource CancelSVG}"
-                            ToolTip="This will take an exposure while slewing the scope slowly to one side and back&#10;when the lines are not aligned there is some PA error"
+                            ToolTip="{ns:Loc LblDARVSlewButtonTooltip}"
                             />
                     </StackPanel>
                 </GroupBox>
