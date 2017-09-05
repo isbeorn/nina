@@ -106,6 +106,8 @@
     <s:String x:Key="LblPark">Park</s:String>
     <s:String x:Key="LblUnpark">Unpark</s:String>
     <s:String x:Key="LblPHD2Status">PHD2 Status</s:String>
+    <s:String x:Key="LblConnect">Connect</s:String>
+    <s:String x:Key="LblDisconnect">Disconnect</s:String>    
     <s:String x:Key="LblConnected">Connected</s:String>
     <s:String x:Key="LblState">State</s:String>    
     <s:String x:Key="LblYAxisScale">Y-Axis Scale</s:String>
@@ -211,7 +213,6 @@
     <s:String x:Key="LblRAPixError">RA Pix Error</s:String>
     <s:String x:Key="LblDecPixError">Dec Pix Error</s:String>
     <s:String x:Key="LblCaptureImageAndPlatesolve">Capture Image and Platesolve</s:String>
-
     <s:String x:Key="LblMeridianOffset">Meridian Offset</s:String>
     <s:String x:Key="LblPlateSolvedPolarAlignment">Plate Solved Polar Alignment</s:String>
     <s:String x:Key="LblAltitudeMeasurement">Altitude Measurement</s:String>
@@ -228,5 +229,7 @@ Adjust combobox value accordingly</s:String>
     <s:String x:Key="LblSlewDuration">Slew Duration</s:String>
     <s:String x:Key="LblDARVSlewButtonTooltip" xml:space="preserve">This will take an exposure while slewing the scope slowly to one side and back
 when the lines are not aligned there is some Polar Alignment error</s:String>
+    <s:String x:Key="LblRescanDevices">Rescan Devices</s:String>
+    
 
 </ResourceDictionary>

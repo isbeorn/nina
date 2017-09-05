@@ -26,7 +26,7 @@
                                 <Button  Command="{Binding ConnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" >
                                     <Button.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="False">
-                                            <TextBlock Text="Connect" />
+                                            <TextBlock Text="{ns:Loc LblConnect}" />
                                         </ToolTip>
                                     </Button.ToolTip>
                                     <Grid>
@@ -41,7 +41,7 @@
                                 <Button Command="{Binding DisconnectPHDClientCommand}" Visibility="{Binding PHD2Client.Connected, Converter={StaticResource VisibilityConverter}}">
                                     <Button.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="False">
-                                            <TextBlock Text="Disconnect" />
+                                            <TextBlock Text="{ns:Loc LblDisconnect}" />
                                         </ToolTip>
                                     </Button.ToolTip>
                                     <Grid>

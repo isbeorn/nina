@@ -38,7 +38,7 @@
                     <Button Grid.Column="2" Height="40" Width="40" Command="{Binding RefreshFocuserListCommand}">
                         <Button.ToolTip>
                             <ToolTip ToolTipService.ShowOnDisabled="False">
-                                <TextBlock Text="Rescan devices" />
+                                <TextBlock Text="{ns:Loc LblRescanDevices}" />
                             </ToolTip>
                         </Button.ToolTip>
                         <Grid>
@@ -52,7 +52,7 @@
                                         Visibility="{Binding Focuser.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                             <Button.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
-                                    <TextBlock Text="Connect" />
+                                    <TextBlock Text="{ns:Loc LblConnect}" />
                                 </ToolTip>
                             </Button.ToolTip>
                             <Grid>
@@ -66,7 +66,7 @@
                                              Visibility="{Binding Focuser.Connected, Converter={StaticResource VisibilityConverter}}">
                                 <Button.ToolTip>
                                     <ToolTip ToolTipService.ShowOnDisabled="False">
-                                        <TextBlock Text="Disconnect" />
+                                        <TextBlock Text="{ns:Loc LblDisconnect}" />
                                     </ToolTip>
                                 </Button.ToolTip>
                                 <Grid>
