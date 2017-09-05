@@ -11,7 +11,7 @@ namespace NINA.ViewModel {
     public class ImageStatisticsVM : DockableVM {
 
         public ImageStatisticsVM() {
-            Title = Locale.Loc.Instance["LblStatistics"];
+            Title = "LblStatistics";
             ContentId = nameof(ImageStatisticsVM);
             CanClose = false;
             Statistics = new ImageStatistics { };

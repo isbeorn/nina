@@ -16,6 +16,24 @@
                 <TextBlock Text="{ns:Loc LblGeneral}" Foreground="{StaticResource ButtonForegroundBrush}" />
             </TabItem.Header>
             <UniformGrid Columns="2" Rows="3">
+                <GroupBox Header="{ns:Loc LblGeneral}">
+                    <StackPanel Orientation="Vertical" Margin="0 5 0 0">
+                        <ComboBox ItemsSource="{Binding AvailableLanguages}" DisplayMemberPath="DisplayName" SelectedItem="{Binding Language}"/>
+                    </StackPanel>                    
+                </GroupBox>
+                <GroupBox Header="{ns:Loc LblAstrometry}">
+                    <StackPanel Margin="0 5 0 0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblEpoch}"></TextBlock>
+                            <ComboBox Name="epochcombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Epoch} }}" SelectedItem="{Binding EpochType}" Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblHemisphere}"></TextBlock>
+                            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Hemisphere} }}" SelectedItem="{Binding HemisphereType}" Margin="10,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
                 <GroupBox Header="{ns:Loc LblCurrentUIColorSchema}">
                     <UniformGrid Columns="2">
                         <ComboBox ItemsSource="{Binding ColorSchemas.Items}" DisplayMemberPath="Name" SelectedValue="{Binding ColorSchemaName}" SelectedValuePath="Name" Grid.ColumnSpan="2"/>
@@ -112,20 +130,7 @@
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonForegroundDisabledBrush}"></Button>
                         </StackPanel>
                     </UniformGrid>
-                </GroupBox>
-                <GroupBox Header="{ns:Loc LblAstrometry}">
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblEpoch}"></TextBlock>
-                            <ComboBox Name="epochcombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Epoch} }}" SelectedItem="{Binding EpochType}" Margin="10,0,0,0"/>
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblHemisphere}"></TextBlock>
-                            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Hemisphere} }}" SelectedItem="{Binding HemisphereType}" Margin="10,0,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-                </GroupBox>
+                </GroupBox>                
                 <GroupBox Header="{ns:Loc LblPHD2Settings}">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -154,7 +159,7 @@
                     </Grid>
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblWeatherData}">
-                    <StackPanel>
+                    <StackPanel Margin="0 5 0 0">
                         <ComboBox Name="weatherdatacombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:WeatherDataEnum}}}" SelectedItem="{Binding WeatherDataType}" />
                         <UniformGrid Columns="2" Margin="0 5 0 0">
                             <TextBlock Text="{ns:Loc LblURL}" />
@@ -261,16 +266,16 @@
                 <TextBlock Text="{ns:Loc LblPlateSolving}" Foreground="{StaticResource ButtonForegroundBrush}" />
             </TabItem.Header>
             <GroupBox Header="{ns:Loc LblPlateSolving}">
-                <Grid>
+                <Grid Margin="0 5 0 0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="50" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
                     <ComboBox Name="platesolvecombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:PlateSolverEnum}}}" SelectedItem="{Binding PlateSolverType}" Grid.ColumnSpan="2"/>
 
                     <!-- Astrometry.Net -->
-                    <Grid Grid.Row="1">
+                    <Grid Grid.Row="1" Margin="0 10 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -304,7 +309,7 @@
                     </Grid>
 
                     <!-- Local -->
-                    <Grid Grid.Row="1">
+                    <Grid Grid.Row="1" Margin="0 5 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -393,7 +398,7 @@
                     </Grid>
 
                     <!-- Platesolve2 -->
-                    <Grid Grid.Row="1">
+                    <Grid Grid.Row="1" Margin="0 5 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />

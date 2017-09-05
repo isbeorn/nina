@@ -1,8 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:NINA.Resources"
+                    xmlns:local="clr-namespace:NINA.Locale"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
-    
     <s:String x:Key="LblName">Name</s:String>
     <s:String x:Key="LblCameraState">Camera State</s:String>
     <s:String x:Key="LblDescription">Description</s:String>
@@ -47,7 +46,7 @@
     <s:String x:Key="LblTooltipAutoStretch">Toggles an automatic autostretch to image on/off (display only)</s:String>
     <s:String x:Key="LblTooltipDetectStars">Toggles automatic star detection and analysis (Half-Flus-Radius) on/off</s:String>
     <s:String x:Key="LblTooltipCrossHair">Toggles crosshair on/off</s:String>
-    <s:String x:Key="LblPlateSolveImage">Plate solve current image</s:String>    
+    <s:String x:Key="LblPlateSolveImage">Plate solve current image</s:String>
     <s:String x:Key="LblHFR">HFR</s:String>
     <s:String x:Key="LblDetectedStars">Detected Stars</s:String>
     <s:String x:Key="LblImage">Image</s:String>
@@ -59,7 +58,7 @@
     <s:String x:Key="LblHistory">History</s:String>
     <s:String x:Key="LblSequence">Sequence</s:String>
     <s:String x:Key="LblTooltipAddSequence">Add new row to sequence list</s:String>
-    <s:String x:Key="LblTooltipRemoveSequence">Remove selected row from sequence list</s:String>    
+    <s:String x:Key="LblTooltipRemoveSequence">Remove selected row from sequence list</s:String>
     <s:String x:Key="LblTooltipStartSequence">Starts sequences</s:String>
     <s:String x:Key="LblGeneral">General</s:String>
     <s:String x:Key="LblDownload">Download</s:String>
@@ -107,9 +106,9 @@
     <s:String x:Key="LblUnpark">Unpark</s:String>
     <s:String x:Key="LblPHD2Status">PHD2 Status</s:String>
     <s:String x:Key="LblConnect">Connect</s:String>
-    <s:String x:Key="LblDisconnect">Disconnect</s:String>    
+    <s:String x:Key="LblDisconnect">Disconnect</s:String>
     <s:String x:Key="LblConnected">Connected</s:String>
-    <s:String x:Key="LblState">State</s:String>    
+    <s:String x:Key="LblState">State</s:String>
     <s:String x:Key="LblYAxisScale">Y-Axis Scale</s:String>
     <s:String x:Key="LblRA">RA</s:String>
     <s:String x:Key="LblDec">Dec</s:String>
@@ -130,14 +129,14 @@
     <s:String x:Key="LblButtonBackground">Button Background</s:String>
     <s:String x:Key="LblButtonHighlight">Button Highlight</s:String>
     <s:String x:Key="LblButtonForeground">Button Foreground</s:String>
-    <s:String x:Key="LblButtonForegroundDisabled">Button Foreground Disabled</s:String>    
+    <s:String x:Key="LblButtonForegroundDisabled">Button Foreground Disabled</s:String>
     <s:String x:Key="LblAstrometry">Astrometry</s:String>
     <s:String x:Key="LblEpoch">Epoch</s:String>
-    <s:String x:Key="LblHemisphere">Hemisphere</s:String>    
+    <s:String x:Key="LblHemisphere">Hemisphere</s:String>
     <s:String x:Key="LblWeatherData">Weather Data</s:String>
     <s:String x:Key="LblURL">Url</s:String>
     <s:String x:Key="LblAPIKey">API Key</s:String>
-    <s:String x:Key="LblLocation">Location</s:String>    
+    <s:String x:Key="LblLocation">Location</s:String>
     <s:String x:Key="LblPHD2Settings">PHD2 Settings</s:String>
     <s:String x:Key="LblPHD2ServerUrl">PHD2 Server Url</s:String>
     <s:String x:Key="LblPHD2ServerPort">PHD2 Server Port</s:String>
@@ -148,7 +147,7 @@
     <s:String x:Key="LblSaveImageAs">Save Image as</s:String>
     <s:String x:Key="LblImageFilePath">Image File Path</s:String>
     <s:String x:Key="LblImageFilePattern">Image File Pattern</s:String>
-    <s:String x:Key="LblPatternName">Pattern Name</s:String>    
+    <s:String x:Key="LblPatternName">Pattern Name</s:String>
     <s:String x:Key="LblAutoMeridianFlip">Auto Meridian Flip</s:String>
     <s:String x:Key="LblEnabled">Enabled</s:String>
     <s:String x:Key="LblMinutesAfterMeridian">Minutes after Meridian</s:String>
@@ -175,12 +174,12 @@
     <s:String x:Key="LblNorthern">Northern</s:String>
     <s:String x:Key="LblSouthern">Southern</s:String>
     <s:String x:Key="LblJ2000">J200</s:String>
-    <s:String x:Key="LblJNOW">JNOW</s:String>    
+    <s:String x:Key="LblJNOW">JNOW</s:String>
     <s:String x:Key="LblStatistics">Statistics</s:String>
     <s:String x:Key="LblFrameNFocus">Frame &amp; Focus</s:String>
     <s:String x:Key="LblOptions">Options</s:String>
     <s:String x:Key="LblImageHistory">Image History</s:String>
-    <s:String x:Key="LblWeather">Weather</s:String>    
+    <s:String x:Key="LblWeather">Weather</s:String>
     <s:String x:Key="LblPolarAlignment">Polar Alignment</s:String>
     <s:String x:Key="LblImageArea">Image Area</s:String>
     <s:String x:Key="LblPHD2">PHD2</s:String>
@@ -206,8 +205,8 @@
     <s:String x:Key="LblReslewToTarget">Reslew to Target</s:String>
     <s:String x:Key="LblRepeatUntil">Repeat until</s:String>
     <s:String x:Key="LblErrorLT">error &lt;</s:String>
-    <s:String x:Key="LblArcmin">arcmin</s:String>    
-    <s:String x:Key="LblSuccess">Success</s:String>    
+    <s:String x:Key="LblArcmin">arcmin</s:String>
+    <s:String x:Key="LblSuccess">Success</s:String>
     <s:String x:Key="LblRAError">RA Error</s:String>
     <s:String x:Key="LblDecError">Dec Error</s:String>
     <s:String x:Key="LblRAPixError">RA Pix Error</s:String>
@@ -219,7 +218,7 @@
     <s:String x:Key="LblAltitudeMeasurementDescription" xml:space="preserve">Point telescope east or west.
 Adjust combobox value accordingly</s:String>
     <s:String x:Key="LblAltitudeMeasurementSide">Altitude Measurement side</s:String>
-    <s:String x:Key="LblAltitudeMeasurementButtonTooltip">Measure Altitude Error. Point Scope East or West and adjust Side of Pier combobox accordingly</s:String>    
+    <s:String x:Key="LblAltitudeMeasurementButtonTooltip">Measure Altitude Error. Point Scope East or West and adjust Side of Pier combobox accordingly</s:String>
     <s:String x:Key="LblAzimuthMeasurement">Azimuth Measurement</s:String>
     <s:String x:Key="LblAzimuthMeasurementDescription">Point Telescope South near meridian</s:String>
     <s:String x:Key="LblAzimuthMeasurementButtonTooltip">Measure Azimuth Error. Point Scope South near Meridian</s:String>
@@ -230,6 +229,4 @@ Adjust combobox value accordingly</s:String>
     <s:String x:Key="LblDARVSlewButtonTooltip" xml:space="preserve">This will take an exposure while slewing the scope slowly to one side and back
 when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblRescanDevices">Rescan Devices</s:String>
-    
-    
 </ResourceDictionary>

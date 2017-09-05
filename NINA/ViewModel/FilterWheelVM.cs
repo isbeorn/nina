@@ -13,7 +13,7 @@ using System.Windows.Input;
 namespace NINA.ViewModel {
     class FilterWheelVM: DockableVM {
         public FilterWheelVM() :base() {
-            Title = Locale.Loc.Instance["LblFilterWheel"];
+            Title = "LblFilterWheel";
             ContentId = nameof(FilterWheelVM);
             CanClose = false;
             ChooseFWCommand = new RelayCommand(ChooseFW);

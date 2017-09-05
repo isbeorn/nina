@@ -14,13 +14,29 @@ namespace NINA.Locale {
     class Loc : BaseINPC {
 
         private Loc() {
-            locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };
+
+
+            ReloadLocale();
+
+
+        }
+
+        public void ReloadLocale() {            
+            try {
+                _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + Settings.Language.Name + ".xaml", UriKind.Relative) };
+            } catch (System.IO.IOException) {
+                // Fallback to default locale if setting is invalid
+                _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };
+            }
 #if DEBUG
             var tmp = new ResourceDictionary();
-            foreach(System.Collections.DictionaryEntry l in locale) {
+            foreach (System.Collections.DictionaryEntry l in _locale) {
                 tmp.Add(l.Key, "##" + l.Value + "##");
             }
-            locale = tmp;
+            _locale = tmp;
+            RaiseAllPropertiesChanged();
+
+            Mediator.Instance.Notify(MediatorMessages.LocaleChanged, null);
 #endif
         }
 
@@ -29,15 +45,14 @@ namespace NINA.Locale {
 
         public static Loc Instance { get { return lazy.Value; } }
         
-        ResourceDictionary locale = null;
+        ResourceDictionary _locale = null;
                         
         public string this[string key] {
             get {
-                return locale[key]?.ToString() ?? "MISSING LABEL " + key ;                
+                return _locale[key]?.ToString() ?? "MISSING LABEL " + key ;                
             }
         }
         
-
     }
 
     public class LocExtension : Binding {

@@ -18,7 +18,7 @@ namespace NINA.ViewModel {
     class FrameFocusVM : DockableVM {
         public FrameFocusVM() : base() {
 
-            Title = Locale.Loc.Instance["LblFrameNFocus"];
+            Title = "LblFrameNFocus";
             ContentId = nameof(FrameFocusVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];

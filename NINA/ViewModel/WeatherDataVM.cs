@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace NINA.ViewModel {
     class WeatherDataVM : DockableVM {
         public WeatherDataVM() {
-            this.Title = Locale.Loc.Instance["LblWeather"];
+            this.Title = "LblWeather";
             this.ContentId = nameof(WeatherDataVM);
             this.CanClose = false;
 

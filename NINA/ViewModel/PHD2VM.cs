@@ -14,7 +14,7 @@ using System.Windows.Threading;
 namespace NINA.ViewModel {
     class PHD2VM : DockableVM {
         public PHD2VM() : base() {
-            Title = Locale.Loc.Instance["LblPHD2"];
+            Title = "LblPHD2";
             ContentId = nameof(PHD2VM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PHD2SVG"];            

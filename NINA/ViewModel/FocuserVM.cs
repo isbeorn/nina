@@ -13,7 +13,7 @@ namespace NINA.ViewModel {
     class FocuserVM : DockableVM {
 
         public FocuserVM () {
-            Title = Locale.Loc.Instance["LblFocuser"];
+            Title = "LblFocuser";
             ContentId = nameof(FocuserVM);
             CanClose = false;
             ChooseFocuserCommand = new RelayCommand(ChooseFocuser);

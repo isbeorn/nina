@@ -8,6 +8,15 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
     public class DockableVM : BaseVM {
+        public DockableVM() : base() {
+            this.CanClose = true;
+            this.IsClosed = false;
+
+            Mediator.Instance.Register((object o) => {
+                RaisePropertyChanged(nameof(Title));
+            }, MediatorMessages.LocaleChanged);
+        }
+
         private bool _isClosed;
         public bool IsClosed {
             get {
@@ -44,24 +53,19 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string _title;
+        private string _titleLabel;
         public string Title {
             get {
-                return _title;
+                return Locale.Loc.Instance[_titleLabel]; ;
             }
             set {
-                _title = value;
+                _titleLabel = value;
                 RaisePropertyChanged();
 
             }
         }
         
         public ICommand CloseCommand { get; private set; }
-
-        public DockableVM() {
-            this.CanClose = true;
-            this.IsClosed = false;
-        }
 
         public void Close() {
             this.IsClosed = true;

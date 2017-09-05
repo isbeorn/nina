@@ -2,6 +2,7 @@
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Media;
 
@@ -10,6 +11,17 @@ namespace NINA.Utility {
         
         static Settings() {
             ColorSchemas = ColorSchemas.ReadColorSchemas();            
+        }
+
+        public static CultureInfo Language {
+            get {
+                return (CultureInfo)Properties.Settings.Default.Language;
+            }
+            set {
+                Properties.Settings.Default.Language = (CultureInfo)value;
+                Properties.Settings.Default.Save();
+                Locale.Loc.Instance.ReloadLocale();
+            }
         }
 
         public static FileTypeEnum FileType {

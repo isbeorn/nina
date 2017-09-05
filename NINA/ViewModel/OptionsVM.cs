@@ -4,6 +4,7 @@ using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ using System.Windows.Media;
 namespace NINA.ViewModel {
     public  class OptionsVM : DockableVM {
         public OptionsVM() {
-            Title = Locale.Loc.Instance["LblOptions"];
+            Title = "LblOptions";
             ContentId = nameof(OptionsVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
@@ -118,6 +119,32 @@ namespace NINA.ViewModel {
 
         private void PreviewFile(object o) {
             MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), "Example File Name", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
+        }
+
+        private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
+            new CultureInfo(""),
+            new CultureInfo("en-GB"),
+            new CultureInfo("en-US"),
+            new CultureInfo("de-DE")
+        };
+        public ObservableCollection<CultureInfo> AvailableLanguages {
+            get {
+                return _availableLanguages;
+            }
+            set {
+                _availableLanguages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public CultureInfo Language {
+            get {
+                return Settings.Language;
+            }
+            set {
+                Settings.Language = value;
+                RaisePropertyChanged();
+            }
         }
 
         public string ImageFilePath {

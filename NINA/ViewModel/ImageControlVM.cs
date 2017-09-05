@@ -27,7 +27,7 @@ namespace NINA.ViewModel {
     public class ImageControlVM : DockableVM {
 
         public ImageControlVM() {
-            Title = Locale.Loc.Instance["LblImageArea"];
+            Title = "LblImageArea";
             ContentId = nameof(ImageControlVM);
             CanClose = false;
             AutoStretch = false;
