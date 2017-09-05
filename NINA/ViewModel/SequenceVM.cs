@@ -51,7 +51,10 @@ namespace NINA.ViewModel{
 
         private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
-                ActiveSequence = (CaptureSequence)o;
+                var seq = (CaptureSequence)o;
+                if(seq.ImageType != Model.CaptureSequence.ImageTypes.SNAP) {
+                    ActiveSequence = seq;
+                }                
             }, MediatorMessages.ActiveSequenceChanged);
         }
 
