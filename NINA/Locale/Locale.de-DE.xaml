@@ -107,8 +107,8 @@
     <s:String x:Key="LblAbbrEast">O</s:String>
     <s:String x:Key="LblAbbrWest">W</s:String>
     <s:String x:Key="LblAbbrSouth">S</s:String>
-    <s:String x:Key="LblPark">Park</s:String>
-    <s:String x:Key="LblUnpark">Unpark</s:String>
+    <s:String x:Key="LblPark">Parken</s:String>
+    <s:String x:Key="LblUnpark">Ausparken</s:String>
     <s:String x:Key="LblPHD2Status">PHD2 Status</s:String>
     <s:String x:Key="LblConnect">Verbinden</s:String>
     <s:String x:Key="LblDisconnect">Trennen</s:String>
