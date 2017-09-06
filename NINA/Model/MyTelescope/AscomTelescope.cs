@@ -857,7 +857,7 @@ namespace NINA.Model.MyTelescope {
                     try {
                         val = _telescope.Connected;
                         if (_connected != val) {
-                            Notification.ShowWarning("Telescope connection lost! Please reconnect telescope!");
+                            Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeConnectionLost"]);
                             Disconnect();
                         }
                     } catch (Exception) {
@@ -890,7 +890,7 @@ namespace NINA.Model.MyTelescope {
                 if (Connected) {
                     init();
                     RaiseAllPropertiesChanged();
-                    Notification.ShowSuccess("Telescope connected");
+                    Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
                 }
             } catch (ASCOM.DriverAccessCOMException ex) {
                 Notification.ShowError(ex.Message);
@@ -934,13 +934,13 @@ namespace NINA.Model.MyTelescope {
                             Notification.ShowError(e.Message);
                         }
                     } else {
-                        Notification.ShowWarning("Telescope is parked. Cannot slew while parked");
+                        Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeParkedWarn"]);
                     }
                 } else {
-                    Notification.ShowWarning("Telescope cannot slew");
+                    Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeCannotSlew"]);
                 }
             } else {
-                Notification.ShowWarning("Telescope not connected");
+                Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeNotConnected"]);
             }
         }
 

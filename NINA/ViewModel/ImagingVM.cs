@@ -274,7 +274,7 @@ namespace NINA.ViewModel {
 
                         if(time > 20000) {
                             //Failsafe when phd is not sending settlingdone message
-                            Notification.ShowWarning("PHD2 did not send SettleDone message in time. Skipping settle manually."/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);
+                            Notification.ShowWarning(Locale.Loc.Instance["LblPHD2NoSettleDone"]);
                             PHD2Client.IsDithering = false;
                         }
                         tokenSource.Token.ThrowIfCancellationRequested();
@@ -288,11 +288,11 @@ namespace NINA.ViewModel {
                 
         public  async Task<bool> StartSequence(ICollection<CaptureSequence> sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
             if (Cam?.Connected != true) {
-                Notification.ShowWarning("No Camera connected");
+                Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
                 return false;
             }
             if (IsExposing) {
-                Notification.ShowWarning("Camera is busy");
+                Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
                 return false;
             }
 
@@ -308,7 +308,7 @@ namespace NINA.ViewModel {
                         Mediator.Instance.Notify(MediatorMessages.ActiveSequenceChanged, seq);                        
 
                         if (seq.Dither && !PHD2Client.Connected) {
-                            Notification.ShowWarning("PHD2 Dither is enabled, but not connected!");
+                            Notification.ShowWarning(Locale.Loc.Instance["LblPHD2DitherButNotConnected"]);
                         }
 
                         while (seq.ExposureCount > 0) {
@@ -416,7 +416,7 @@ namespace NINA.ViewModel {
 
                     if(Telescope.TimeToMeridianFlip < (seq.ExposureTime / 60 / 60)) {
                         int remainingtime = (int)(Telescope.TimeToMeridianFlip * 60 * 60);
-                        Notification.ShowInformation("Meridian flip procedure initiated", TimeSpan.FromSeconds(remainingtime));
+                        Notification.ShowInformation(Locale.Loc.Instance["LblMeridianFlipInit"], TimeSpan.FromSeconds(remainingtime));
                         do {
                             progress.Report(string.Format("Next exposure paused until passing meridian. Remaining time: {0} seconds", remainingtime));
                             await Task.Delay(1000, tokenSource.Token);
@@ -460,7 +460,7 @@ namespace NINA.ViewModel {
                                 time += 500;
                                 if (time > 20000) {
                                     //Failsafe when phd is not sending resume message
-                                    Notification.ShowWarning("PHD2 did not send Resume message in time. Capture Sequence will be resumed, but make sure PHD2 is guiding again!"/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);                                                                
+                                    Notification.ShowWarning(Locale.Loc.Instance["LblPHD2NoResume"]/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);                                                                
                                     break;
                                 }
                                 tokenSource.Token.ThrowIfCancellationRequested();
@@ -515,7 +515,7 @@ namespace NINA.ViewModel {
         public async Task<bool> CaptureImage(IProgress<string> progress) {
             _captureImageToken = new CancellationTokenSource();
             if (IsExposing) {
-                Notification.ShowWarning("Camera is busy");
+                Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
                 return false;
             } else {
                 do {
@@ -530,7 +530,7 @@ namespace NINA.ViewModel {
 
         public async Task<bool> CaptureImage(CaptureSequence seq, bool bsave, IProgress<string> progress, CancellationTokenSource token) {
             if (IsExposing) {
-                Notification.ShowWarning("Camera is busy");
+                Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
                 return false;
             }
             else {

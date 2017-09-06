@@ -174,7 +174,7 @@ namespace NINA.Utility {
                 RaisePropertyChanged(nameof(Connected));
                 _tokenSource = new CancellationTokenSource();
 
-                Notification.Notification.ShowSuccess("Connected to PHD2 Server");
+                Notification.Notification.ShowSuccess(Locale.Loc.Instance["LblPHD2Connected"]);
 
 
 

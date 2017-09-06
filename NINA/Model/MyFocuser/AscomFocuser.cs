@@ -149,7 +149,7 @@ namespace NINA.Model.MyFocuser {
                     try {
                         val = _focuser.Connected;
                         if (_connected != val) {
-                            Notification.ShowWarning("Filter wheel connection lost! Please reconnect focuser!");
+                            Notification.ShowWarning(Locale.Loc.Instance["LblFocuserConnectionLost"]);
                             Disconnect();
                         }
                     } catch (Exception) {
@@ -258,7 +258,7 @@ namespace NINA.Model.MyFocuser {
                 if (Connected) {
                     init();
                     RaiseAllPropertiesChanged();
-                    Notification.ShowSuccess("Focuser connected");
+                    Notification.ShowSuccess(Locale.Loc.Instance["LblFocuserConnected"]);
                 }
             } catch (ASCOM.DriverAccessCOMException ex) {
                 Notification.ShowError(ex.Message);

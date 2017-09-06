@@ -263,7 +263,7 @@ namespace NINA.Model.MyCamera {
                 this.CaptureAreaInfo = new CaptureAreaInfo(this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
                 RaisePropertyChanged(nameof(Connected));
                 RaiseAllPropertiesChanged();
-                Notification.ShowSuccess("Camera connected");
+                Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
             }

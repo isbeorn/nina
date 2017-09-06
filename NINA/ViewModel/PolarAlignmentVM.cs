@@ -380,7 +380,7 @@ namespace NINA.ViewModel {
 
                 }
                 else {
-                    Notification.ShowWarning("Camera is busy - Cannot start DARV alignment!");
+                    Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
                 }
             }
             else {
@@ -512,7 +512,7 @@ namespace NINA.ViewModel {
                      */
                 }
                 else {
-                    Notification.ShowWarning("Camera is busy - Cannot measure alignment error!");
+                    Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
                 }
 
             }

@@ -76,7 +76,7 @@ namespace NINA.ViewModel
 
                     if (Telescope.TimeToMeridianFlip < (exposureTime / 60 / 60)) {
                         int remainingtime = (int)(Telescope.TimeToMeridianFlip * 60 * 60);
-                        Notification.ShowInformation("Meridian flip procedure initiated", TimeSpan.FromSeconds(remainingtime));
+                        Notification.ShowInformation(Locale.Loc.Instance["LblMeridianFlipInit"], TimeSpan.FromSeconds(remainingtime));
                         do {
                             progress.Report(string.Format("Next exposure paused until passing meridian. Remaining time: {0} seconds", remainingtime));
                             await Task.Delay(1000, tokenSource.Token);
@@ -114,7 +114,7 @@ namespace NINA.ViewModel
                                 time += 500;
                                 if (time > 20000) {
                                     //Failsafe when phd is not sending resume message
-                                    Notification.ShowWarning("PHD2 did not send Resume message in time. Caputre Sequence will be resumed, but make sure PHD2 is guiding again!"/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);
+                                    Notification.ShowWarning(Locale.Loc.Instance["LblPHD2NoResume"]);
                                     tokenSource.Token.ThrowIfCancellationRequested();
                                 }
                             }

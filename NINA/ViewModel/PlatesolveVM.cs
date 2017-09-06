@@ -204,7 +204,7 @@ namespace NINA.ViewModel {
             var success = false;
 
             if (Telescope?.Connected != true) {
-                Notification.ShowWarning("Unable to sync. Telescope is not connected!");
+                Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
                 return false;
             }
 
@@ -214,14 +214,14 @@ namespace NINA.ViewModel {
                 solved = solved.Transform(Settings.EpochType);  //Transform to JNow if required
 
                 if (Telescope.Sync(solved.RA, solved.Dec) == true) {
-                    Notification.ShowSuccess("Telescope synced to coordinates");
+                    Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeSynced"]);
                     success = true;
                 } else {
-                    Notification.ShowWarning("Telescope sync failed!");
+                    Notification.ShowWarning(Locale.Loc.Instance["LblSyncFailed"]);
                 }
 
             } else {
-                Notification.ShowWarning("No coordinates available to sync telescope!");
+                Notification.ShowWarning(Locale.Loc.Instance["LblNoCoordinatesForSync"]);
             }
             return success;
         }
@@ -283,7 +283,7 @@ namespace NINA.ViewModel {
                 if (solvedSuccessfully) {                    
                     if (SyncScope) {
                         if (Telescope?.Connected != true) {
-                            Notification.ShowWarning("Unable to sync. Telescope is not connected!");
+                            Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
                             return false;
                         }
                         var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
@@ -353,7 +353,7 @@ namespace NINA.ViewModel {
             }
 
             if (!PlateSolveResult?.Success == true) {
-                Notification.ShowWarning("Platesolve failed");
+                Notification.ShowWarning(Locale.Loc.Instance["LblPlatesolveFailed"]);
             }
 
             return PlateSolveResult?.Success ?? false;

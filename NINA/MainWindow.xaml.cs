@@ -26,7 +26,7 @@ namespace NINA {
             InitializeComponent();
             SourceInitialized += (s, a) =>
             {
-                Notification.ShowInformation("Welcome to Nighttime Imaging 'N' Astronomy!");
+                Notification.ShowInformation(Locale.Loc.Instance["LblWelcome"]);
             };
         }
 

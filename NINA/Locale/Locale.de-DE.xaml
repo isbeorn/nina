@@ -206,8 +206,7 @@
     <s:String x:Key="LblRadius">Radius</s:String>
     <s:String x:Key="LblPixelScale">Pixel Maßstab</s:String>
     <s:String x:Key="LblOrientation">Orientierung</s:String>
-    <s:String x:Key="LblSync">Sync</s:String>
-    
+    <s:String x:Key="LblSync">Sync</s:String>    
     <s:String x:Key="LblRepeatUntil">Wiederholen bis</s:String>
     <s:String x:Key="LblErrorLT">Fehler &lt;</s:String>
     <s:String x:Key="LblArcmin">Winkelminuten</s:String>
@@ -235,4 +234,28 @@ Combobox Wert entsprechend anpassen</s:String>
 when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblRescanDevices">Geräte erneut suchen</s:String>
     <s:String x:Key="LblReslewToTarget">Erneut zum Ziel schwenken</s:String>
+    <s:String x:Key="LblWelcome">Willkommen bei Nighttime Imaging 'N' Astronomy!</s:String>
+    <s:String x:Key="LblMeridianFlipInit">Meridian flip initialisiert</s:String>
+    <s:String x:Key="LblCameraConnected">Kamera verbunden</s:String>
+    <s:String x:Key="LblFilterwheelConnected">Filterrad verbunden</s:String>
+    <s:String x:Key="LblFocuserConnected">Okularauszug verbunden</s:String>
+    <s:String x:Key="LblTelescopeConnected">Teleskop verbunden</s:String>
+    <s:String x:Key="LblPHD2Connected">PHD2 verbunden</s:String>
+    <s:String x:Key="LblTelescopeSynced">Teleskop zu Koordinaten synchronisiert</s:String>
+    <s:String x:Key="LblCameraConnectionLost">Verbindung zur Kamera verloren! Bitte Kamera erneut verbinden!</s:String>
+    <s:String x:Key="LblFilterwheelConnectionLost">Verbindung zum Filterrad verloren! Bitte Filterrad erneut verbinden!</s:String>
+    <s:String x:Key="LblFocuserConnectionLost">Verbindung zum Okularauszug verloren! Bitte Okularauszug erneut verbinden!</s:String>
+    <s:String x:Key="LblTelescopeConnectionLost">Verbindung zum Teleskop verloren! Bitte Teleskop erneut verbinden!</s:String>
+    <s:String x:Key="LblTelescopeParkedWarn">Teleskop ist geparkt und kann dadurch nicht geschwenkt werden.</s:String>
+    <s:String x:Key="LblTelescopeCannotSlew">Teleskop kann nicht schwenken</s:String>
+    <s:String x:Key="LblTelescopeNotConnected">Teleskop nicht verbunden</s:String>
+    <s:String x:Key="LblCameraBusy">Kamera ist beschäftigt</s:String>
+    <s:String x:Key="LblPHD2NoSettleDone">PHD2 hat keine SettleDone Nachricht geschickt. Überspringe.</s:String>
+    <s:String x:Key="LblNoCameraConnected">Keine Kamera verbunden</s:String>
+    <s:String x:Key="LblPHD2DitherButNotConnected">PHD2 Dither ist aktiviert, aber die Applikation ist nicht mit PHD2 verbunden</s:String>
+    <s:String x:Key="LblPHD2NoResume">PHD2 hat keine Resume Nachricht geschickt. Sequenz wird fortgeführt, aber bitte sicherstellen dass die Nachführung wieder aktiv ist!</s:String>
+    <s:String x:Key="LblUnableToSync">Synchronization ist nicht möglich, da kein Teleskop verbunden ist.</s:String>
+    <s:String x:Key="LblSyncFailed">Synchronization des Teleskops fehlgeschlagen</s:String>
+    <s:String x:Key="LblNoCoordinatesForSync">Keine Koordinaten verfügbar zum Synchronisieren des Teleskops</s:String>
+    <s:String x:Key="LblPlatesolveFailed">Platesolve fehlgeschlagen</s:String>
 </ResourceDictionary>

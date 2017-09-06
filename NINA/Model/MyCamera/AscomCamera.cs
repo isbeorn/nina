@@ -246,7 +246,7 @@ namespace NINA.Model.MyCamera {
                     try {
                         val = _camera.Connected;
                         if (_connected != val) {
-                            Notification.ShowWarning("Camera connection lost! Please reconnect camera!");
+                            Notification.ShowWarning(Locale.Loc.Instance["LblCameraConnectionLost"]);
                             Disconnect();
                         }
                     } catch (Exception) {
@@ -841,7 +841,7 @@ namespace NINA.Model.MyCamera {
                 if(Connected) { 
                     init();
                     RaiseAllPropertiesChanged();
-                    Notification.ShowSuccess("Camera connected");
+                    Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
                 }
             } catch (ASCOM.DriverAccessCOMException ex) {
                 Notification.ShowError(ex.Message);

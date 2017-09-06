@@ -150,7 +150,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> Snap(IProgress<string> progress) {
             if (IsExposing) {
-                Notification.ShowWarning("Camera is busy");
+                Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
                 return false;
             } else {
                 do {

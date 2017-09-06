@@ -48,7 +48,7 @@ namespace NINA.Model.MyFilterWheel {
                 if(Connected) {
                     init();
                     RaiseAllPropertiesChanged();
-                    Notification.ShowSuccess("Filter wheel connected");                    
+                    Notification.ShowSuccess(Locale.Loc.Instance["LblFilterwheelConnected"]);                    
                 }
             } catch (ASCOM.DriverAccessCOMException ex) {
                 Notification.ShowError(ex.Message);
@@ -66,7 +66,7 @@ namespace NINA.Model.MyFilterWheel {
                     try {
                         val = _filterwheel.Connected;
                         if (_connected != val) {
-                            Notification.ShowWarning("Filter wheel connection lost! Please reconnect filter wheel!");
+                            Notification.ShowWarning(Locale.Loc.Instance["LblFilterwheelConnectionLost"]);
                             Disconnect();
                         }
                     } catch (Exception) {
