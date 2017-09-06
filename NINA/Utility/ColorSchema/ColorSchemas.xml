@@ -2,7 +2,7 @@
 <ColorSchemas>
   <ColorSchema Name="Light">
     <PrimaryColor Color="#FF000000" />
-    <SecondaryColor Color="#FF1D2731" />
+    <SecondaryColor Color="#FF54748c" />
     <BorderColor Color="#AABCBCBC" />
     <BackgroundColor Color="#FFFFFFFF" />
     <ButtonBackgroundColor Color="#FF0B3C5D" />
@@ -19,6 +19,16 @@
     <ButtonBackgroundSelectedColor Color="#FF96031A" />
     <ButtonForegroundColor Color="#FF02010A" />
     <ButtonForegroundDisabledColor Color="#FF443730" />
+  </ColorSchema>
+  <ColorSchema Name="Seance">
+    <PrimaryColor Color="#FF000000" />
+    <SecondaryColor Color="#FFBE90D4" />
+    <BorderColor Color="#AAAEA8D3" />
+    <BackgroundColor Color="#FFFFFFFF" />
+    <ButtonBackgroundColor Color="#FF663399" />
+    <ButtonBackgroundSelectedColor Color="#FF9A12B3" />
+    <ButtonForegroundColor Color="#FFFFFFFF" />
+    <ButtonForegroundDisabledColor Color="#FF674172" />
   </ColorSchema>
   <ColorSchema Name="Persian">
     <PrimaryColor Color="#FFFFFFFF" />
@@ -63,7 +73,7 @@
   <ColorSchema Name="Arsenic">
     <PrimaryColor Color="#FFFFFFFF" />
     <SecondaryColor Color="#FF82A3A1" />
-    <BorderColor Color="#FF6F8D9E" />
+    <BorderColor Color="#AA495963" />
     <BackgroundColor Color="#FF394648" />
     <ButtonBackgroundColor Color="#FF406A79" />
     <ButtonBackgroundSelectedColor Color="#FF64A6BD" />
@@ -85,9 +95,19 @@
     <SecondaryColor Color="#FFA9AAAC" />
     <BorderColor Color="#AA3E4146" />
     <BackgroundColor Color="#FF36393E" />
-    <ButtonBackgroundColor Color="#FF36393E" />
+    <ButtonBackgroundColor Color="#FF2a2c31" />
     <ButtonBackgroundSelectedColor Color="#FF24252A" />
     <ButtonForegroundColor Color="#FFA9AAAC" />
     <ButtonForegroundDisabledColor Color="#FF1D2731" />
+  </ColorSchema>
+  <ColorSchema Name="Wisteria">
+    <PrimaryColor Color="#FFECF0F1" />
+    <SecondaryColor Color="#FF6644AD" />
+    <BorderColor Color="#AA3F4141" />
+    <BackgroundColor Color="#FF2D0D25" />
+    <ButtonBackgroundColor Color="#FF8E44AD" />
+    <ButtonBackgroundSelectedColor Color="#FF9B59B6" />
+    <ButtonForegroundColor Color="#FFECF0F1" />
+    <ButtonForegroundDisabledColor Color="#FF371F68" />
   </ColorSchema>
 </ColorSchemas>
