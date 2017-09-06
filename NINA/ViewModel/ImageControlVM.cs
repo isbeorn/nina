@@ -35,6 +35,7 @@ namespace NINA.ViewModel {
             ShowCrossHair = false;
             AutoStretchFactor = 0.20;
 
+            PrepareImageCommand = new AsyncCommand<bool>(() => PrepareImageHelper());
             PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage());
             CancelPlateSolveImageCommand = new RelayCommand(CancelPlateSolveImage);
 
@@ -149,11 +150,10 @@ namespace NINA.ViewModel {
                 if (!_autoStretch && _detectStars) { _detectStars = false; RaisePropertyChanged(nameof(DetectStars)); }
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, _autoStretch);
-                PrepareImageHelper();
             }
         }
 
-        private void PrepareImageHelper() {
+        private async Task<bool> PrepareImageHelper() {
             _prepImageCancellationSource?.Cancel();
             try {
                 _prepImageTask?.Wait(_prepImageCancellationSource.Token);
@@ -161,8 +161,12 @@ namespace NINA.ViewModel {
 
             }
             _prepImageCancellationSource = new CancellationTokenSource();
-            _prepImageTask = Task.Run(() => PrepareImage(null, _prepImageCancellationSource));
+            _prepImageTask = PrepareImage(null, _prepImageCancellationSource);
+            await _prepImageTask;
+            return true;
         }
+
+        public AsyncCommand<bool> PrepareImageCommand { get; private set; }
 
         private Task _prepImageTask;
         private CancellationTokenSource _prepImageCancellationSource;
@@ -199,7 +203,6 @@ namespace NINA.ViewModel {
                 if (_detectStars) { _autoStretch = true; RaisePropertyChanged(nameof(AutoStretch)); }
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.DetectStarsChanged, _detectStars);
-                PrepareImageHelper();
             }
         }
 

@@ -96,8 +96,8 @@
                     </Style>
                 </ToggleButton.Style>
             </ToggleButton>
-            
-            <ToggleButton Grid.Column="6" IsChecked="{Binding AutoStretch}"  Margin="2.5">
+
+            <ToggleButton Grid.Column="6" IsChecked="{Binding AutoStretch}" Command="{Binding PrepareImageCommand}"  Margin="2.5">
                 <ToggleButton.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc LblTooltipAutoStretch}" />
@@ -125,9 +125,9 @@
                         </Style.Triggers>
                     </Style>
                 </ToggleButton.Style>
-            </ToggleButton>            
+            </ToggleButton>
 
-            <ToggleButton Grid.Column="7" IsChecked="{Binding DetectStars}"  Margin="2.5">
+            <ToggleButton Grid.Column="7" IsChecked="{Binding DetectStars}" Command="{Binding PrepareImageCommand}" Margin="2.5">
                 <ToggleButton.ToolTip>
                     <ToolTip ToolTipService.ShowOnDisabled="True">
                         <TextBlock Text="{ns:Loc LblTooltipDetectStars}" />
