@@ -160,7 +160,7 @@
                         <view:SequenceView DataContext="{Binding SeqVM}" ></view:SequenceView>
                     </TabItem.Content>
                 </TabItem>
-                <TabItem Visibility="Collapsed">
+                <TabItem >
                     <TabItem.Header>
                         <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MapSVG}" Stretch="Uniform" Margin="10" Height="50" Width="50" >
                         </Path>

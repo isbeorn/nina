@@ -22,8 +22,8 @@ namespace NINA.ViewModel {
             RegisterMediatorMessages();
 
             InitAvalonDockLayout();
-        }  
-        
+        }
+
         public void InitAvalonDockLayout() {            
             this.Documents.Add(ImagingVM.ImageControl);
             this.Anchorables.Add(CameraVM);
@@ -98,7 +98,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void MinimizeWindow(object obj) {            
+        private void MinimizeWindow(object obj) {
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
 

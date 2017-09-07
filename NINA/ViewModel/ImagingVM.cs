@@ -411,7 +411,8 @@ namespace NINA.ViewModel {
         /// <param name="progress">progress reporter</param>
         /// <returns></returns>
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
-            if(Settings.AutoMeridianFlip) {
+            await new MeridianFlipVM(Telescope).CheckMeridianFlip(seq, tokenSource);
+            /*if(Settings.AutoMeridianFlip) {
                 if(Telescope?.Connected == true) {
 
                     if(Telescope.TimeToMeridianFlip < (seq.ExposureTime / 60 / 60)) {
@@ -460,7 +461,7 @@ namespace NINA.ViewModel {
                                 time += 500;
                                 if (time > 20000) {
                                     //Failsafe when phd is not sending resume message
-                                    Notification.ShowWarning(Locale.Loc.Instance["LblPHD2NoResume"]/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);                                                                
+                                    Notification.ShowWarning(Locale.Loc.Instance["LblPHD2NoResume"]);                                                                
                                     break;
                                 }
                                 tokenSource.Token.ThrowIfCancellationRequested();
@@ -470,7 +471,7 @@ namespace NINA.ViewModel {
                         }
                     }
                 }
-            }
+            }*/
             
         }
 

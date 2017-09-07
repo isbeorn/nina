@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace NINA.Utility
 {
@@ -11,16 +12,46 @@ namespace NINA.Utility
     /// A window should be associated to a viewmodel by the DataTemplates.xaml
     /// </summary>
     class WindowService : IWindowService {
+        private Dispatcher dispatcher = Application.Current.Dispatcher;
+
         public void ShowWindow(object viewModel) {
             var win = new Window();
             win.Content = viewModel;
             win.Show();
         }
 
-        public void ShowDialog(object viewModel) {
-            var win = new Window();
-            win.Content = viewModel;
-            win.ShowDialog();
+        private Window _win;
+
+        public void ShowDialog(object viewModel, string title = "") {
+            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                _win = new Window() {
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    Title = title,
+                    ResizeMode = ResizeMode.NoResize,
+                    WindowStyle = WindowStyle.None
+                };
+                _win.SizeChanged += Win_SizeChanged;
+                _win.Content = viewModel;
+                var mainwindow = System.Windows.Application.Current.MainWindow;
+                mainwindow.Opacity = 0.8;
+                _win.ShowDialog();
+                mainwindow.Opacity = 1;
+                
+            }));            
+        }  
+        
+        public async Task Close() {
+            await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                _win?.Close();
+            }));
+        }
+
+        private static void Win_SizeChanged(object sender, SizeChangedEventArgs e) {
+            var mainwindow = System.Windows.Application.Current.MainWindow;
+
+            var win = (System.Windows.Window)sender;
+            win.Left = mainwindow.Left + (mainwindow.Width - win.ActualWidth) / 2; ;
+            win.Top = mainwindow.Top + (mainwindow.Height - win.ActualHeight) / 2;
         }
     }
 

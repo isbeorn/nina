@@ -25,4 +25,38 @@ namespace NINA.View
             InitializeComponent();
         }
     }
+
+    public class MeridianFlipDataTemplateSelector : DataTemplateSelector {
+        public DataTemplate RecenterTemplate { get; set; }
+        public DataTemplate PassMeridianTemplate { get; set; }
+        public DataTemplate EnumDataTemplate { get; set; }
+        public DataTemplate FlipDataTemplate { get; set; }
+        public DataTemplate SettleTemplate { get; set; }
+        
+
+        public override DataTemplate SelectTemplate(object item,
+                   DependencyObject container) {
+            ViewModel.WorkflowStep step = item as ViewModel.WorkflowStep;
+            if (step.Id == "PassMeridian") {
+                return PassMeridianTemplate;
+            }
+            if (step.Id == "StopAutoguider") {
+                return EnumDataTemplate;
+            }
+            if (step.Id == "Flip") {
+                return FlipDataTemplate;
+            }
+            if (step.Id == "Recenter") {
+                return RecenterTemplate;
+            }
+            if (step.Id == "ResumeAutoguider") {
+                return EnumDataTemplate;
+            }
+            if (step.Id == "Settle") {
+                return SettleTemplate;
+            }
+
+            return RecenterTemplate;
+        }
+    }
 }
