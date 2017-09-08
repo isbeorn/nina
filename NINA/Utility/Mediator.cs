@@ -82,7 +82,8 @@ namespace NINA.Utility {
         SyncTelescopeAndReslew = 5,
         ChangeFilterWheelPosition = 6,
         Solve = 7,
-        CheckMeridianFlip = 8
+        CheckMeridianFlip = 8,
+        CaputureSolveSyncAndReslew = 9
     }
 
 }

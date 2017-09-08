@@ -595,6 +595,16 @@ namespace NINA.Utility {
             }
         }
 
+        public static double PauseTimeBeforeMeridian {
+            get {
+                return Properties.Settings.Default.PauseTimeBeforeMeridian;
+            }
+            set {
+                Properties.Settings.Default.PauseTimeBeforeMeridian = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         public static int MeridianFlipSettleTime {
             get {
                 return Properties.Settings.Default.MeridianFlipSettleTime;

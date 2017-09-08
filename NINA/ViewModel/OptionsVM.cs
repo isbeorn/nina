@@ -679,6 +679,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double PauseTimeBeforeMeridian {
+            get {
+                return Settings.PauseTimeBeforeMeridian;
+            }
+            set {
+                Settings.PauseTimeBeforeMeridian = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public int MeridianFlipSettleTime {
             get {
                 return Settings.MeridianFlipSettleTime;

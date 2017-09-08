@@ -155,5 +155,8 @@
     <Setting Name="Language" Type="System.Globalization.CultureInfo" Scope="User">
       <Value Profile="(Default)">en-GB</Value>
     </Setting>
+    <Setting Name="PauseTimeBeforeMeridian" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -29,7 +29,7 @@ namespace NINA.View
     public class MeridianFlipDataTemplateSelector : DataTemplateSelector {
         public DataTemplate RecenterTemplate { get; set; }
         public DataTemplate PassMeridianTemplate { get; set; }
-        public DataTemplate EnumDataTemplate { get; set; }
+        public DataTemplate DefaultTemplate { get; set; }
         public DataTemplate FlipDataTemplate { get; set; }
         public DataTemplate SettleTemplate { get; set; }
         
@@ -41,7 +41,7 @@ namespace NINA.View
                 return PassMeridianTemplate;
             }
             if (step.Id == "StopAutoguider") {
-                return EnumDataTemplate;
+                return DefaultTemplate;
             }
             if (step.Id == "Flip") {
                 return FlipDataTemplate;
@@ -50,13 +50,13 @@ namespace NINA.View
                 return RecenterTemplate;
             }
             if (step.Id == "ResumeAutoguider") {
-                return EnumDataTemplate;
+                return DefaultTemplate;
             }
             if (step.Id == "Settle") {
                 return SettleTemplate;
             }
 
-            return RecenterTemplate;
+            return DefaultTemplate;
         }
     }
 }

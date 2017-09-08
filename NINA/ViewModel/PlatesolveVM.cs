@@ -72,6 +72,14 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;                
+                CancellationTokenSource token = (CancellationTokenSource)args[0];
+                IProgress<string> progress = (IProgress<string>)args[1];
+                Repeat = true;
+                await CaptureSolveSyncAndReslew(token, progress);
+            }, AsyncMediatorMessages.CaputureSolveSyncAndReslew);
+
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                var args = (object[])o;                
                 IProgress<string> progress = (IProgress<string>)args[0];
                 CancellationTokenSource token = (CancellationTokenSource)args[1];                
                 await Solve(progress, token);
@@ -208,11 +216,11 @@ namespace NINA.ViewModel {
                 return false;
             }
 
-            if (PlateSolveResult != null) {
+            if (PlateSolveResult != null && PlateSolveResult.Success) {
 
                 Coordinates solved = new Coordinates(PlateSolveResult.Ra, PlateSolveResult.Dec, PlateSolveResult.Epoch, Coordinates.RAType.Degrees);
                 solved = solved.Transform(Settings.EpochType);  //Transform to JNow if required
-
+                                
                 if (Telescope.Sync(solved.RA, solved.Dec) == true) {
                     Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeSynced"]);
                     success = true;
@@ -266,19 +274,23 @@ namespace NINA.ViewModel {
             return await Solve(progress, canceltoken); ;
         }
 
+        private async Task<bool> CaptureSolveSyncAndReslew(IProgress<string> progress) {
+            _solveCancelToken = new CancellationTokenSource();
+            return await this.CaptureSolveSyncAndReslew(_solveCancelToken, progress);
+        }
+
         /// <summary>
         /// Calls "SolveWithCaputre" and syncs + reslews afterwards if set
         /// </summary>
         /// <param name="progress"></param>
         /// <returns></returns>
-        private async Task<bool> CaptureSolveSyncAndReslew(IProgress<string> progress) {
-            _solveCancelToken = new CancellationTokenSource();
+        private async Task<bool> CaptureSolveSyncAndReslew(CancellationTokenSource tokensource, IProgress<string> progress) {            
             bool solvedSuccessfully = false;
             bool repeatPlateSolve = false;
             do {
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
-                solvedSuccessfully = await SolveWithCapture(seq, progress, _solveCancelToken);
+                solvedSuccessfully = await SolveWithCapture(seq, progress, tokensource);
 
                 if (solvedSuccessfully) {                    
                     if (SyncScope) {
