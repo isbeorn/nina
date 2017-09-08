@@ -231,12 +231,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_58DA2E876176E288F841B5AC23B581A9"
-        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_5992E25C036C6D41FEF290C0581ABDC5"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -339,6 +333,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6861F5114B6BE2AF752480ECCF7A5ACF"
+        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6908462DCB5B43A2B2E6E034345E7427"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -437,6 +437,18 @@
         {
         "MsmKey" = "8:_90CA16DA03B294672E8F2C83D7A48BD5"
         "OwnerKey" = "8:_81121AB0A2142047E4616AA55B1C329D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_925C447A81428469E3E68A93112343FD"
+        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_925C447A81428469E3E68A93112343FD"
+        "OwnerKey" = "8:_E9DF431233E2C1703C582570275829D2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -633,6 +645,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E9DF431233E2C1703C582570275829D2"
+        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_EC9B128B7C57936D3106D0B74CBF97AB"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -653,18 +671,6 @@
         {
         "MsmKey" = "8:_EE06DF86318B53042D579EBF8FD56EA5"
         "OwnerKey" = "8:_A83A91C8B60FCF79007077AB390E87AD"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EFB484529A093925DB30478210C8C355"
-        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EFB484529A093925DB30478210C8C355"
-        "OwnerKey" = "8:_58DA2E876176E288F841B5AC23B581A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -838,13 +844,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_58DA2E876176E288F841B5AC23B581A9"
+        "OwnerKey" = "8:_E9DF431233E2C1703C582570275829D2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EFB484529A093925DB30478210C8C355"
+        "OwnerKey" = "8:_925C447A81428469E3E68A93112343FD"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -965,6 +971,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_619F5FEFF5B45105158046AD1AF395A5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_6861F5114B6BE2AF752480ECCF7A5ACF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2338,37 +2350,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_58DA2E876176E288F841B5AC23B581A9"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ToastNotifications.Messages, Version=2.2.0.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_58DA2E876176E288F841B5AC23B581A9"
-                    {
-                    "Name" = "8:ToastNotifications.Messages.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:ToastNotifications.Messages.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5992E25C036C6D41FEF290C0581ABDC5"
             {
             "AssemblyRegister" = "3:1"
@@ -2713,6 +2694,37 @@
                     }
                 }
             "SourcePath" = "8:System.Threading.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6861F5114B6BE2AF752480ECCF7A5ACF"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:NINACustomControlLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_6861F5114B6BE2AF752480ECCF7A5ACF"
+                    {
+                    "Name" = "8:NINACustomControlLibrary.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:NINACustomControlLibrary.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
@@ -3085,6 +3097,37 @@
                     }
                 }
             "SourcePath" = "8:ASCOM.DeviceInterfaces.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_925C447A81428469E3E68A93112343FD"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ToastNotifications, Version=2.2.2.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_925C447A81428469E3E68A93112343FD"
+                    {
+                    "Name" = "8:ToastNotifications.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ToastNotifications.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
@@ -4019,6 +4062,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E9DF431233E2C1703C582570275829D2"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ToastNotifications.Messages, Version=2.2.2.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_E9DF431233E2C1703C582570275829D2"
+                    {
+                    "Name" = "8:ToastNotifications.Messages.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ToastNotifications.Messages.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EC9B128B7C57936D3106D0B74CBF97AB"
             {
             "AssemblyRegister" = "3:1"
@@ -4095,37 +4169,6 @@
                     }
                 }
             "SourcePath" = "8:System.Reflection.Extensions.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EFB484529A093925DB30478210C8C355"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ToastNotifications, Version=2.2.0.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_EFB484529A093925DB30478210C8C355"
-                    {
-                    "Name" = "8:ToastNotifications.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:ToastNotifications.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
@@ -4532,15 +4575,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:N.I.N.A. - Nighttime Imaging 'N' Astronomy"
-        "ProductCode" = "8:{B4D0F10A-4237-4624-84BA-03DCDE5AF99A}"
-        "PackageCode" = "8:{11967623-7167-4F5A-A6DB-2B6CF6B71277}"
+        "ProductCode" = "8:{8D62AAF2-ECA7-4EA3-AC24-AF9BC8FCFA32}"
+        "PackageCode" = "8:{7527910A-3D5F-4215-8225-36EDD5C01B3F}"
         "UpgradeCode" = "8:{5DC025EA-3D24-4E6B-9F82-79718D70896A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.0"
+        "ProductVersion" = "8:1.1.1"
         "Manufacturer" = "8: "
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -5460,7 +5503,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1CB6472DBDBF4BD4A442DB7BA216741F"
             {
-            "SourcePath" = "8:..\\SetupCygwinInstallAction\\obj\\Debug\\SetupCygwinInstallAction.dll"
+            "SourcePath" = "8:..\\SetupCygwinInstallAction\\obj\\Release\\SetupCygwinInstallAction.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
@@ -5544,7 +5587,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FF25606544D448558FB12DA74BACB4E5"
             {
-            "SourcePath" = "8:..\\NINA\\obj\\x64\\Debug\\NINA.exe"
+            "SourcePath" = "8:..\\NINA\\obj\\x64\\Release\\NINA.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
