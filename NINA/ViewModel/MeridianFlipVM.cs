@@ -127,12 +127,18 @@ namespace NINA.ViewModel
         private Coordinates _targetCoordinates;
 
         private async Task<bool> PassMeridian(CancellationTokenSource tokenSource, IProgress<string> progress) {
-            do {
-                RemainingTime = TimeSpan.FromSeconds(Telescope.TimeToMeridianFlip * 60 * 60);
+            var timeToFlip = Telescope.TimeToMeridianFlip * 60 * 60;
+            progress.Report("Stop Scope tracking");
+            Telescope.Tracking = false;
+            do {                                
+                RemainingTime = TimeSpan.FromSeconds(timeToFlip );
                 //progress.Report(string.Format("Next exposure paused until passing meridian. Remaining time: {0} seconds", RemainingTime));
-                await Task.Delay(500, tokenSource.Token);
+                await Task.Delay(1000, tokenSource.Token);
+                timeToFlip -= 1;
 
             } while (RemainingTime.TotalSeconds >= 1);
+            progress.Report("Resume Scope tracking");
+            Telescope.Tracking = true;
             return true;
         }
 
@@ -202,8 +208,8 @@ namespace NINA.ViewModel
         private async Task<bool> DoMeridianFlip() {
             try {
                 Steps = new AutomatedWorkflow() {
-                    new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(_tokensource, _progress)),
                     new WorkflowStep("StopAutoguider", Locale.Loc.Instance["LblStopAutoguider"], () => StopAutoguider(_tokensource, _progress)),
+                    new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(_tokensource, _progress)),                    
                     new WorkflowStep("Flip", Locale.Loc.Instance["LblFlip"], () => DoFilp(_tokensource, _progress)),
                     new WorkflowStep("Recenter", Locale.Loc.Instance["LblRecenter"], () => Recenter(_tokensource, _progress)),
                     new WorkflowStep("ResumeAutoguider", Locale.Loc.Instance["LblResumeAutoguider"], () => ResumeAutoguider(_tokensource, _progress)),
