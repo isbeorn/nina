@@ -50,7 +50,7 @@ namespace NINA.Utility {
         }
     }
 
-    public class ObservableLimitedSizedStack<T> : INotifyCollectionChanged, INotifyPropertyChanged, IEnumerable {
+    public class ObservableLimitedSizedStack<T> : ICollection<T>, INotifyCollectionChanged, INotifyPropertyChanged, IEnumerable {
 
         private readonly int _maxSize;
         public ObservableLimitedSizedStack(int maxSize) {
@@ -79,6 +79,16 @@ namespace NINA.Utility {
         
         public int Count {
             get { return _underLyingLinkedList.Count; }
+        }
+
+        public bool IsReadOnly {
+            get {
+                return false;
+            }
+        }
+
+        public LinkedListNode<T> First() {
+            return _underLyingLinkedList.First;
         }
 
         public void Clear() {
@@ -134,6 +144,13 @@ namespace NINA.Utility {
         IEnumerator IEnumerable.GetEnumerator() {
             return (_underLyingLinkedList as IEnumerable).GetEnumerator();
         }
-        
+
+        public bool Remove(T item) {
+            return _underLyingLinkedList.Remove(item);            
+        }
+
+        public IEnumerator<T> GetEnumerator() {
+            return _underLyingLinkedList.GetEnumerator();
+        }
     }
 }

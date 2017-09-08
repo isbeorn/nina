@@ -64,11 +64,7 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 Cam = (ICamera)o;
             }, MediatorMessages.CameraChanged);
-
-            Mediator.Instance.Register((object o) => {
-                Telescope = (ITelescope)o;
-            }, MediatorMessages.TelescopeChanged);
-            
+                        
         }
 
         private string _status;
@@ -122,16 +118,6 @@ namespace NINA.ViewModel {
                 return _cam;
             } set {
                 _cam = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ITelescope _telescope;
-        public ITelescope Telescope {
-            get {
-                return _telescope;
-            } set {
-                _telescope = value;
                 RaisePropertyChanged();
             }
         }
@@ -411,72 +397,9 @@ namespace NINA.ViewModel {
         /// <param name="progress">progress reporter</param>
         /// <returns></returns>
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
-            await new MeridianFlipVM(Telescope).CheckMeridianFlip(seq, tokenSource);
-            /*if(Settings.AutoMeridianFlip) {
-                if(Telescope?.Connected == true) {
-
-                    if(Telescope.TimeToMeridianFlip < (seq.ExposureTime / 60 / 60)) {
-                        int remainingtime = (int)(Telescope.TimeToMeridianFlip * 60 * 60);
-                        Notification.ShowInformation(Locale.Loc.Instance["LblMeridianFlipInit"], TimeSpan.FromSeconds(remainingtime));
-                        do {
-                            progress.Report(string.Format("Next exposure paused until passing meridian. Remaining time: {0} seconds", remainingtime));
-                            await Task.Delay(1000, tokenSource.Token);
-                            remainingtime = remainingtime - 1;
-                        } while (remainingtime > 0);
-                        
-                    
-                        progress.Report("Pausing PHD2");
-                        await PHD2Client.Pause(true);
-
-                        var coords = Telescope.Coordinates;
-
-                        progress.Report("Executing Meridian Flip");
-                        var flipsuccess = Telescope.MeridianFlip();
-
-                        //Let scope settle 
-                        await Task.Delay(TimeSpan.FromSeconds(Settings.MeridianFlipSettleTime), tokenSource.Token);
-
-                        if (flipsuccess) {
-                            if(Settings.RecenterAfterFlip) { 
-                                progress.Report("Initializing Platesolve");
-
-                                //todo needs to be solve until error < x                                
-
-                                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { null , progress, tokenSource });
-
-                                
-                                progress.Report("Sync and Reslew");
-                                Mediator.Instance.Notify(MediatorMessages.SyncronizeTelescope, null);
-                                Telescope.SlewToCoordinates(coords.RA, coords.Dec);                                
-                            }
-
-                            progress.Report("Resuming PHD2");
-                            await PHD2Client.AutoSelectStar();
-                            await Task.Delay(TimeSpan.FromSeconds(5), tokenSource.Token);
-                            await PHD2Client.Pause(false);
-
-                            var time = 0;
-                            while (PHD2Client.Paused) {
-                                await Task.Delay(500, tokenSource.Token);
-                                time += 500;
-                                if (time > 20000) {
-                                    //Failsafe when phd is not sending resume message
-                                    Notification.ShowWarning(Locale.Loc.Instance["LblPHD2NoResume"]);                                                                
-                                    break;
-                                }
-                                tokenSource.Token.ThrowIfCancellationRequested();
-                            }
-
-                            await Task.Delay(TimeSpan.FromSeconds(Settings.MeridianFlipSettleTime), tokenSource.Token);
-                        }
-                    }
-                }
-            }*/
-            
+            progress.Report("Check Meridian Flip");
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CheckMeridianFlip, new object[] { seq, tokenSource });
         }
-
-        
-
 
         ImageControlVM _imageControl;
         public ImageControlVM ImageControl {

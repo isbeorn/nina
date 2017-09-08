@@ -23,8 +23,8 @@
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblPlateSolving}" Width="600">
                     <StackPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext}">
-                        <TextBlock Text="{Binding Status}" />
-                        <DataGrid  ItemsSource="{Binding Source={StaticResource GridItems}}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Hidden" CanUserAddRows="False">
+                        <TextBlock Text="{Binding Status}" FontSize="36" VerticalAlignment="Center"/>
+                        <!--<DataGrid  ItemsSource="{Binding Source={StaticResource GridItems}}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Hidden" CanUserAddRows="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Width="*" Header="{ns:Loc LblTime}" Binding="{Binding SolveTime, StringFormat=\{0:HH:mm:ss\}}" SortDirection="Ascending" IsReadOnly="True" />
                                 <DataGridTextColumn Width="*" Header="{ns:Loc LblSuccess}" Binding="{Binding Success}" IsReadOnly="True" />
@@ -36,7 +36,7 @@
                                 <DataGridTextColumn Width="*" Header="{ns:Loc LblDecPixError}" Binding="{Binding DecPixError, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
                                 <DataGridTextColumn Width="*" Header="{ns:Loc LblOrientation}" Binding="{Binding Orientation, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>
                             </DataGrid.Columns>
-                        </DataGrid>
+                        </DataGrid>-->
                     </StackPanel>
                 </GroupBox>                
             </StackPanel>
@@ -57,12 +57,11 @@
 
         <DataTemplate x:Key="SettleDataTemplate">
             <StackPanel Orientation="Vertical" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext}">
-                <TextBlock Text="Settled in " 
+                <TextBlock Text="{ns:Loc LblSettle}" 
                        HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36"/>
                 <TextBlock Text="{Binding RemainingTime, StringFormat={}{0:hh}:{0:mm}:{0:ss}, FallbackValue=00:00}" 
                        HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36"/>
-            </StackPanel>
-           
+            </StackPanel>           
         </DataTemplate>
 
         
@@ -82,7 +81,7 @@
     </UserControl.Resources>
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
         <Grid>
-            <TabControl ItemsSource="{Binding Steps}" SelectedItem="{Binding ActiveStep}" ContentTemplateSelector="{StaticResource templateSelector}" Margin="-5 0 0 0" >            
+            <TabControl ItemsSource="{Binding Steps}" SelectedItem="{Binding Steps.ActiveStep}" ContentTemplateSelector="{StaticResource templateSelector}" Margin="-5 0 0 0" >            
                 <TabControl.Style>                
                     <Style TargetType="TabControl">
                         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />

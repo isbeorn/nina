@@ -254,4 +254,10 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblSyncFailed">Telescope sync failed</s:String>
     <s:String x:Key="LblNoCoordinatesForSync">No coordinates available to sync telescope to</s:String>
     <s:String x:Key="LblPlatesolveFailed">Platesolve failed</s:String>
+    <s:String x:Key="LblPassMeridian">Pass Meridian</s:String>
+    <s:String x:Key="LblStopAutoguider">Pause Autoguider</s:String>
+    <s:String x:Key="LblFlip">Do the flip</s:String>
+    <s:String x:Key="LblRecenter">Recenter</s:String>
+    <s:String x:Key="LblResumeAutoguider">Resume Autoguider</s:String>
+    <s:String x:Key="LblSettle">Settle</s:String>
 </ResourceDictionary>

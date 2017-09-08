@@ -22,6 +22,8 @@ namespace NINA.ViewModel {
             RegisterMediatorMessages();
 
             InitAvalonDockLayout();
+
+            MeridianFlipVM = new MeridianFlipVM();
         }
 
         public void InitAvalonDockLayout() {            
@@ -121,6 +123,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        private MeridianFlipVM _meridianFlipVM;
+        public MeridianFlipVM MeridianFlipVM {
+            get {
+                return _meridianFlipVM;
+            }
+            set {
+                _meridianFlipVM = value;
+                RaisePropertyChanged();
+            }
+        }
         
         private CameraVM _cameraVM;
         public CameraVM CameraVM {

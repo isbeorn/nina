@@ -54,7 +54,7 @@ namespace NINA.Utility {
                 }
             }
         }
-
+        
     }
     public enum MediatorMessages {
         StatusUpdate = 1,
@@ -81,7 +81,8 @@ namespace NINA.Utility {
         Sync = 4,
         SyncTelescopeAndReslew = 5,
         ChangeFilterWheelPosition = 6,
-        Solve = 7
+        Solve = 7,
+        CheckMeridianFlip = 8
     }
 
 }
