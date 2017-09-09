@@ -18,9 +18,13 @@
             </Grid.RowDefinitions>
             <DataGrid ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="*" Header="{ns:Loc LblRemainingNo}" Binding="{Binding ExposureCount}" IsReadOnly="True" CanUserSort="False">
-
-                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Width="*" Header="{ns:Loc LblRemainingNo}" CanUserSort="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ExposureCount}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTemplateColumn Width="*" Header="{ns:Loc LblTotalNo}" CanUserSort="False">
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
