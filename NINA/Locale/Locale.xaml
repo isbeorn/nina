@@ -92,7 +92,7 @@
     <s:String x:Key="LblAltitude">Altitude</s:String>
     <s:String x:Key="LblAzimuth">Azimuth</s:String>
     <s:String x:Key="LblTracking">Tracking</s:String>
-    <s:String x:Key="LblManualCoordinates">Manual Coordinates</s:String>
+    <s:String x:Key="LblManualCoordinates">Manual Coordinates (J2000)</s:String>
     <s:String x:Key="LblTargetRA">TargetRA</s:String>
     <s:String x:Key="LblTargetDec">TargetDec</s:String>
     <s:String x:Key="LblSlew">Slew</s:String>

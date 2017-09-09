@@ -2,6 +2,7 @@
 using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
+using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -217,8 +218,12 @@ namespace NINA.ViewModel {
 
         private void SlewToCoordinates(object obj) {
             var targetRightAscencion = Utility.Utility.AscomUtil.HMSToHours(TargetRightAscencionHours + ":" + TargetRightAscencionMinutes + ":" + TargetRightAscencionSeconds);
-            var targetDeclination = Utility.Utility.AscomUtil.HMSToHours(TargetDeclinationDegrees + ":" + TargetDeclinationMinutes + ":" + TargetDeclinationSeconds);
-            Telescope.SlewToCoordinatesAsync(targetRightAscencion, targetDeclination);
+            var targetDeclination = Utility.Utility.AscomUtil.DMSToDegrees(TargetDeclinationDegrees + ":" + TargetDeclinationMinutes + ":" + TargetDeclinationSeconds);
+
+            var coords = new Coordinates(targetRightAscencion, targetDeclination, Epoch.J2000, Coordinates.RAType.Hours);
+            coords = coords.Transform(Settings.EpochType);
+            
+            Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
         }
         
         public ICommand SlewToCoordinatesCommand { get; private set; }

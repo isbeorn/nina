@@ -96,7 +96,7 @@
     <s:String x:Key="LblAltitude">Höhe</s:String>
     <s:String x:Key="LblAzimuth">Azimut</s:String>
     <s:String x:Key="LblTracking">Nachführung</s:String>
-    <s:String x:Key="LblManualCoordinates">Manuelle Koordinaten</s:String>
+    <s:String x:Key="LblManualCoordinates">Manuelle Koordinaten (J2000)</s:String>
     <s:String x:Key="LblTargetRA">ZielRA</s:String>
     <s:String x:Key="LblTargetDec">ZielDek</s:String>
     <s:String x:Key="LblSlew">Schwenken</s:String>
