@@ -11,7 +11,7 @@
     <StackPanel Orientation="Vertical">
 
         <Grid  Height="25" Margin="5" >
-            <ProgressBar x:Name="pbSequences" Minimum="0" Maximum="{Binding Sequence.Count}" Value="{Binding ActiveSequenceIndex, Mode=OneWay}" />
+            <ProgressBar x:Name="pbSequences" Minimum="0" Maximum="{Binding Sequence.Count}" Value="{Binding Sequence.ActiveSequenceIndex, Mode=OneWay}" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock  Text="{Binding ElementName=pbSequences, Path=Value}" />
                 <TextBlock  Text=" / " />
@@ -21,7 +21,7 @@
         
         
         <GroupBox Header="{ns:Loc LblActiveSequenceDetails}">
-            <StackPanel Orientation="Vertical" DataContext="{Binding ActiveSequence}">
+            <StackPanel Orientation="Vertical" DataContext="{Binding Sequence.ActiveSequence}">
                 <Grid Height="25" Margin="5" >
                     <ProgressBar x:Name="pbActiveSequence" Minimum="0" Maximum="{Binding TotalExposureCount}" Value="{Binding ProgressExposureCount, Mode=OneWay}" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">

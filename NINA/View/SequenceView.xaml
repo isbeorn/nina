@@ -13,10 +13,21 @@
     <GroupBox Header="{ns:Loc LblSequence}">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition />
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            <DataGrid ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}">
+            <StackPanel>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                    <UniformGrid Columns="2">
+                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                            <TextBlock Text="{ns:Loc LblTargetName}"></TextBlock>
+                            <TextBox Text="{Binding Sequence.TargetName}" Margin="5,0,0,0" />
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+            </StackPanel>
+            <DataGrid Grid.Row="1" Margin="0 10 0 0" ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Width="*" Header="{ns:Loc LblRemainingNo}" CanUserSort="False">
                         <DataGridTemplateColumn.CellTemplate>
@@ -143,7 +154,7 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0 5 0 5">
+            <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0 5 0 5">
                 <Button Width="40"    Command="{Binding AddSequenceCommand}"  >
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">

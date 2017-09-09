@@ -263,16 +263,16 @@ namespace NINA.ViewModel {
             return source;
         }
 
-        public async Task<bool> SaveToDisk(CaptureSequence sequence, ushort framenr, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        public async Task<bool> SaveToDisk(CaptureSequenceList sequence, ushort framenr, CancellationTokenSource tokenSource, IProgress<string> progress) {
 
             var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
-
-            return await SaveToDisk(sequence.ExposureTime, filter, sequence.ImageType, sequence.Binning.Name, Cam.CCDTemperature, framenr, tokenSource, progress);
+            var activeCaptureSequence = sequence.ActiveSequence;
+            return await SaveToDisk(activeCaptureSequence.ExposureTime, filter, activeCaptureSequence.ImageType, activeCaptureSequence.Binning.Name, Cam.CCDTemperature, framenr, tokenSource, progress, sequence.TargetName);
 
         }
 
 
-        public async Task<bool> SaveToDisk(double exposuretime, string filter, string imageType, string binning, double ccdtemp, ushort framenr, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        public async Task<bool> SaveToDisk(double exposuretime, string filter, string imageType, string binning, double ccdtemp, ushort framenr, CancellationTokenSource tokenSource, IProgress<string> progress, string targetname = "") {
             progress.Report("Saving...");
             await Task.Run(() => {
 
@@ -293,6 +293,8 @@ namespace NINA.ViewModel {
                 }
 
                 p.Add(new OptionsVM.ImagePattern("$$SENSORTEMP$$", "Temperature of the Camera", string.Format("{0:00}", ccdtemp)));
+
+                p.Add(new OptionsVM.ImagePattern("$$TARGETNAME$$", "Target Name if available", targetname));
 
                 string filename = Utility.Utility.GetImageFileString(p);
                 string completefilename = Settings.ImageFilePath + filename;

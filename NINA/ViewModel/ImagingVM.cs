@@ -43,8 +43,8 @@ namespace NINA.ViewModel {
 
         private void RegisterMediatorMessages() {
             Mediator.Instance.RegisterAsync(async (object o) => {
-                var args = (object[])o;                
-                ICollection<CaptureSequence> seq = (ICollection<CaptureSequence>)args[0];
+                var args = (object[])o;
+                CaptureSequenceList seq = (CaptureSequenceList)args[0];
                 bool save = (bool)args[1];
                 CancellationTokenSource token = (CancellationTokenSource)args[2];
                 IProgress<string> progress = (IProgress<string>)args[3];
@@ -238,7 +238,7 @@ namespace NINA.ViewModel {
 
 
 
-        private async Task<bool> Save(CaptureSequence seq, ushort framenr,  CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> Save(CaptureSequenceList seq, ushort framenr,  CancellationTokenSource tokenSource, IProgress<string> progress) {
             progress.Report(ExposureStatus.SAVING);           
 
             await ImageControl.SaveToDisk(seq, framenr, tokenSource, progress);            
@@ -272,7 +272,7 @@ namespace NINA.ViewModel {
             return true;
         }
                 
-        public  async Task<bool> StartSequence(ICollection<CaptureSequence> sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        public  async Task<bool> StartSequence(CaptureSequenceList sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
             if (Cam?.Connected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
                 return false;
@@ -291,7 +291,7 @@ namespace NINA.ViewModel {
                     ushort framenr = 1;
                     foreach (CaptureSequence seq in sequence) {
 
-                        Mediator.Instance.Notify(MediatorMessages.ActiveSequenceChanged, seq);                        
+                        sequence.SetActiveSequence(seq);                                             
 
                         if (seq.Dither && !PHD2Client.Connected) {
                             Notification.ShowWarning(Locale.Loc.Instance["LblPHD2DitherButNotConnected"]);
@@ -351,7 +351,7 @@ namespace NINA.ViewModel {
 
                             /*Save to disk*/
                             if (bSave) {
-                                await Save(seq, framenr, tokenSource, progress);
+                                await Save(sequence, framenr, tokenSource, progress);
                             }
 
                             /*Dither*/
@@ -443,8 +443,7 @@ namespace NINA.ViewModel {
                 return false;
             } else {
                 do {
-                    List<CaptureSequence> seq = new List<CaptureSequence>();
-                    seq.Add(new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
+                    CaptureSequenceList seq = new CaptureSequenceList(new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));                    
                     await StartSequence(seq,  SnapSave, _captureImageToken, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop);
@@ -458,7 +457,7 @@ namespace NINA.ViewModel {
                 return false;
             }
             else {
-                var list = new List<CaptureSequence>() { seq };
+                var list = new CaptureSequenceList(seq);
                 return await StartSequence(list, bsave, token, progress);
             }
         }

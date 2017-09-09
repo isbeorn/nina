@@ -260,4 +260,5 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblResumeAutoguider">Resume Autoguider</s:String>
     <s:String x:Key="LblSettle">Settle</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian">Pause before Meridian (minutes)</s:String>
+    <s:String x:Key="LblTargetName">Target Name</s:String>
 </ResourceDictionary>

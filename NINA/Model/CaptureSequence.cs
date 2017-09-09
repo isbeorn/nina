@@ -4,8 +4,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace NINA.Model {
+
+    public class CaptureSequenceList : AsyncObservableCollection<CaptureSequence> {
+
+        public CaptureSequenceList() {
+            
+        }
+
+        public CaptureSequenceList(CaptureSequence seq) : this() {
+            this.Add(seq);
+        }
+
+        private string _targetName;
+        public string TargetName {
+            get {
+                return _targetName;
+            }
+            set {
+                _targetName = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(TargetName)));
+            }
+        }
+
+        public bool SetActiveSequence(CaptureSequence seq) {
+            if(this.Contains(seq)) {
+                ActiveSequence = seq;
+                return true;
+            } else {
+                return false;
+            }            
+        }
+
+        private CaptureSequence _activeSequence;
+        public CaptureSequence ActiveSequence {
+            get {
+                return _activeSequence;
+            }
+            private set {
+                _activeSequence = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(ActiveSequence)));
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(ActiveSequenceIndex)));
+            }
+        }
+
+        public int ActiveSequenceIndex {
+            get {
+                return this.IndexOf(_activeSequence);
+            }
+        }
+    }
+
     public class CaptureSequence :BaseINPC {
         public static class ImageTypes {
             public const string LIGHT = "LIGHT";
@@ -24,7 +75,7 @@ namespace NINA.Model {
         }
 
         public override string ToString() {
-            return "Model";
+            return ExposureCount.ToString() + "x" + ExposureTime.ToString() + " " + ImageType;
         }
 
         public CaptureSequence(double exposureTime, string imageType, MyFilterWheel.FilterInfo filterType, MyCamera.BinningMode binning, int exposureCount) {

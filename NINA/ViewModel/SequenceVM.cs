@@ -49,22 +49,15 @@ namespace NINA.ViewModel{
             return true;
         }
 
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((object o) => {
-                var seq = (CaptureSequence)o;
-                if(seq.ImageType != Model.CaptureSequence.ImageTypes.SNAP) {
-                    ActiveSequence = seq;
-                }                
-            }, MediatorMessages.ActiveSequenceChanged);
+        private void RegisterMediatorMessages() {            
         }
 
-        private ObservableCollection<CaptureSequence> _sequence;
-        public ObservableCollection<CaptureSequence> Sequence {
+        private CaptureSequenceList _sequence;
+        public CaptureSequenceList Sequence {
             get {
                 if(_sequence == null) {
-                    _sequence = new ObservableCollection<CaptureSequence>();
                     var seq = new CaptureSequence();
-                    _sequence.Add(seq);
+                    _sequence = new CaptureSequenceList(seq);                    
                     SelectedSequenceIdx = _sequence.Count - 1;                    
                 }
                 return _sequence;
@@ -72,18 +65,6 @@ namespace NINA.ViewModel{
             set {
                 _sequence = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        private CaptureSequence _activeSequence;
-        public CaptureSequence ActiveSequence { 
-            get {
-                return _activeSequence;
-            }
-            set {
-                _activeSequence = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(ActiveSequenceIndex));
             }
         }
 
@@ -95,17 +76,6 @@ namespace NINA.ViewModel{
             set {
                 _selectedSequenceIdx = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        public int ActiveSequenceIndex {
-            get {
-                var idx = Sequence.IndexOf(ActiveSequence);
-                if (idx == -1) {
-                    return Sequence.Count;
-                } else {
-                    return idx;
-                }
             }
         }
 

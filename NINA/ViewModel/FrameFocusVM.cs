@@ -155,8 +155,7 @@ namespace NINA.ViewModel {
             } else {
                 do {
                     _captureImageToken = new CancellationTokenSource();
-                    List<CaptureSequence> seq = new List<CaptureSequence>();
-                    seq.Add(new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1));
+                    CaptureSequenceList seq = new CaptureSequenceList(new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1));                    
 
                     await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartSequence, new object[] { seq, false, _captureImageToken, progress });
 

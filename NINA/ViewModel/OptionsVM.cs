@@ -37,6 +37,7 @@ namespace NINA.ViewModel {
             p.Add(new ImagePattern("$$BINNING$$", "Binning of the camera", "1x1"));
             p.Add(new ImagePattern("$$SENSORTEMP$$", "Temperature of the Camera", "-15"));
             p.Add(new ImagePattern("$$EXPOSURETIME$$", "Exposure Time in seconds", string.Format("{0:0.00}", 10.21234)));
+            p.Add(new ImagePattern("$$TARGETNAME$$", "Target Name if available", "M33"));
             ImagePatterns = p;
 
             ScanForIndexFiles();
