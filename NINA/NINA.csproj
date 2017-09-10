@@ -203,6 +203,10 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>AvalonDockDLLs\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -791,26 +795,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AvalonDock\Xceed.Wpf.AvalonDock.Themes.Aero\Xceed.Wpf.AvalonDock.Themes.Aero.csproj">
-      <Project>{ba72cce0-a9fb-4995-b496-7fec5c87b85b}</Project>
-      <Name>Xceed.Wpf.AvalonDock.Themes.Aero</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AvalonDock\Xceed.Wpf.AvalonDock.Themes.Expression\Xceed.Wpf.AvalonDock.Themes.Expression.csproj">
-      <Project>{488dd8f7-9d3c-4f53-bd1f-84a095d9bc10}</Project>
-      <Name>Xceed.Wpf.AvalonDock.Themes.Expression</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AvalonDock\Xceed.Wpf.AvalonDock.Themes.Metro\Xceed.Wpf.AvalonDock.Themes.Metro.csproj">
-      <Project>{89286eb4-b4a1-418c-839a-067b00f442d8}</Project>
-      <Name>Xceed.Wpf.AvalonDock.Themes.Metro</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AvalonDock\Xceed.Wpf.AvalonDock.Themes.VS2010\Xceed.Wpf.AvalonDock.Themes.VS2010.csproj">
-      <Project>{b3fc3e21-5f2d-4581-aea2-59f671cffc21}</Project>
-      <Name>Xceed.Wpf.AvalonDock.Themes.VS2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AvalonDock\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
-      <Project>{db81988f-e0f2-45a0-a1fd-8c37f3d35244}</Project>
-      <Name>Xceed.Wpf.AvalonDock</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NINACustomControlLibrary\NINACustomControlLibrary.csproj">
       <Project>{39fefc1e-7a69-440d-b38a-5b9469353491}</Project>
       <Name>NINACustomControlLibrary</Name>
