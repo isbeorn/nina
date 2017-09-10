@@ -308,6 +308,9 @@ namespace NINA.ViewModel {
                                 throw new OperationCanceledException();
                             }
 
+                            /*Set Camera Gain */
+                            SetGain(seq);
+
                             /*Set Camera Binning*/
                             SetBinning(seq);
 
@@ -382,6 +385,14 @@ namespace NINA.ViewModel {
                 return true;
             });
                      
+        }
+
+        private void SetGain(CaptureSequence seq) {
+            if (seq.Gain != -1) {
+                Cam.Gain = seq.Gain;
+            } else {
+                
+            }
         }
 
         /// <summary>

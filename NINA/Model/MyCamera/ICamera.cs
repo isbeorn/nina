@@ -46,6 +46,8 @@ namespace NINA.Model.MyCamera {
         short GainMin { get; }
         short Gain { get; set; }
 
+        ArrayList Gains { get; }
+
         AsyncObservableCollection<BinningMode> BinningModes { get; }
 
         bool Connect();

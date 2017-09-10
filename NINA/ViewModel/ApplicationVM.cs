@@ -109,14 +109,24 @@ namespace NINA.ViewModel {
             if (CameraVM?.Cam?.Connected == true) {
                 var diag = MyMessageBox.MyMessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);                
                 if(diag == MessageBoxResult.OK) {
+                    DisconnectEquipment();
                     Application.Current.Shutdown();
                 }
             } else {
+                DisconnectEquipment();
                 Application.Current.Shutdown();
             }
             
-        }               
-        
+        }
+
+        private void DisconnectEquipment() {
+            CameraVM?.Cam?.Disconnect();
+            TelescopeVM?.Telescope?.Disconnect();
+            FilterWheelVM?.FW?.Disconnect();
+            FocuserVM?.Focuser?.Disconnect();
+            PHD2Client.Disconnect();
+        }
+
         public PHD2Client PHD2Client {
             get {
                 return Utility.Utility.PHDClient;

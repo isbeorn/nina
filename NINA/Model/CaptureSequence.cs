@@ -71,7 +71,8 @@ namespace NINA.Model {
             ImageType = ImageTypes.LIGHT;
             TotalExposureCount = 1;            
             Dither = false;
-            DitherAmount = 1; 
+            DitherAmount = 1;
+            Gain = -1;
         }
 
         public override string ToString() {
@@ -149,6 +150,17 @@ namespace NINA.Model {
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(ProgressExposureCount));
 
+            }
+        }
+
+        private short _gain;
+        public short Gain {
+            get {
+                return _gain;
+            }
+            set {
+                _gain = value;
+                RaisePropertyChanged();
             }
         }
 

@@ -61,6 +61,12 @@
                         <TextBlock Text="{Binding Binning}" Margin="5,0,0,0" />
                     </UniformGrid>
                 </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                    <UniformGrid Columns="2" VerticalAlignment="Center" >
+                        <TextBlock Text="{ns:Loc LblGain}"></TextBlock>
+                        <TextBlock Text="{Binding Gain}" Margin="5,0,0,0" />
+                    </UniformGrid>
+                </Border>
                                 
             </StackPanel>
             

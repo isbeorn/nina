@@ -8,7 +8,7 @@
              xmlns:model="clr-namespace:NINA.Model"
              xmlns:util="clr-namespace:NINA.Utility"
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" xmlns:s="clr-namespace:System;assembly=mscorlib"
              d:DesignHeight="300" d:DesignWidth="300">
     <GroupBox Header="{ns:Loc LblSequence}">
         <Grid>
@@ -92,7 +92,7 @@
                     </DataGridTemplateColumn>
 
                     <DataGridTemplateColumn Width="*" Header="{ns:Loc LblFilter}" CanUserSort="False">
-                        <DataGridTemplateColumn.CellEditingTemplate>                            
+                        <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <ComboBox
                                     ItemsSource="{Binding Source={StaticResource AppVM}, Path=FilterWheelVM.FW.Filters}" 
@@ -152,6 +152,70 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+
+                    <!-- List of ISOs -->
+                    <DataGridTemplateColumn Width="*" Header="{ns:Loc LblGain}" CanUserSort="False">
+                        <DataGridTemplateColumn.Visibility>
+                            <PriorityBinding>
+                                <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam.Gains" Converter="{StaticResource GainsArrayContainsItemsConverter}" />
+                                <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam" Converter="{StaticResource NullToVisibilityConverter}" />                                
+                            </PriorityBinding>
+                        </DataGridTemplateColumn.Visibility>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox SelectedItem="{Binding Gain, Mode=TwoWay}">
+                                    <ComboBox.ItemsSource>
+                                        <CompositeCollection>
+                                            <s:Int16>-1</s:Int16>
+                                            <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains}" />
+                                        </CompositeCollection>
+                                    </ComboBox.ItemsSource>
+                                </ComboBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Gain}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Free Gain Setting -->
+                    <DataGridTemplateColumn Width="*" Header="{ns:Loc LblGain}" CanUserSort="False">
+                        <DataGridTemplateColumn.Visibility>
+                            <PriorityBinding>
+                                <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam.Gains" Converter="{StaticResource InverseGainsArrayContainsItemsConverter}" />
+                                <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam" Converter="{StaticResource NullToVisibilityConverter}" />                                
+                            </PriorityBinding>
+                        </DataGridTemplateColumn.Visibility>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate >
+                                <TextBox>
+                                    <TextBox.Text>
+                                        <Binding Path="Gain" 
+                                                 UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <util:ShortRangeRule >
+                                                    <util:ShortRangeRule.ValidRange>
+                                                        <util:ShortRangeChecker
+                                                            Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}" 
+                                                            Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}" />
+                                                    </util:ShortRangeRule.ValidRange>
+                                                </util:ShortRangeRule>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Gain}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0 5 0 5">
@@ -180,7 +244,7 @@
                     CancelButtonImage="{StaticResource CancelSVG}" 
                     ToolTip="{ns:Loc LblTooltipStartSequence}"
                     />
-            </StackPanel>            
-        </Grid>       
+            </StackPanel>
+        </Grid>
     </GroupBox>
 </UserControl>

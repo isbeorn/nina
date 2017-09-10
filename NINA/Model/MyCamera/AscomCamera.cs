@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,7 +40,7 @@ namespace NINA.Model.MyCamera {
             CanSetGain = true;
             CanGetGain = true;
             _canGetGainMinMax = true;
-        _hasLastExposureInfo = true;
+            _hasLastExposureInfo = true;
             _hasPercentCompleted = true;
             BinningModes = new AsyncObservableCollection<BinningMode>();
             for (short i = 1; i <= MaxBinX; i++) {
@@ -53,6 +54,20 @@ namespace NINA.Model.MyCamera {
 
 
             }
+
+            Gains.Clear();
+            try {
+                var gains = _camera.Gains;
+                foreach (object o in _camera.Gains) {
+                    if(o.GetType() == typeof(string)) {
+                        var gain = Regex.Match(o.ToString(), @"\d+").Value;
+                        Gains.Add(short.Parse(gain));
+                    }
+                }
+            } catch(Exception) {
+
+            }
+            
         }
 
         private bool _hasBayerOffset;
@@ -442,8 +457,13 @@ namespace NINA.Model.MyCamera {
             get {
                 short val = -1;
                 if (Connected && CanGetGain) {
-                    try { 
-                        val = _camera.Gain;
+                    try {
+                        if (Gains.Count > 0) {
+                            val = (short)Gains[_camera.Gain];
+                        } else {
+                            val = _camera.Gain;
+                        }
+                            
                     } catch(PropertyNotImplementedException) {
                         CanGetGain = false;
                     }
@@ -453,7 +473,11 @@ namespace NINA.Model.MyCamera {
             set {
                 if(Connected && CanSetGain) {
                     try { 
-                        _camera.Gain = value;
+                        if(Gains.Count > 0) {
+                            _camera.Gain = (short)Gains.IndexOf(value);
+                        } else {
+                            _camera.Gain = value;
+                        }                        
                     } catch (PropertyNotImplementedException) {
                         CanSetGain = false;
                     } catch (InvalidValueException ex) {
@@ -493,17 +517,13 @@ namespace NINA.Model.MyCamera {
                 return val;
             }
         }
+        private ArrayList _gains;
         public ArrayList Gains {
             get {
-                ArrayList val = new ArrayList();
-                if (Connected && CanGetGain) {
-                    try {
-                        val = _camera.Gains;
-                    } catch (PropertyNotImplementedException) {
-                        CanGetGain = false;
-                    }
+                if (_gains == null) {
+                    _gains = new ArrayList();
                 }
-                return val;
+                return _gains;
             }
         }
 

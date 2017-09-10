@@ -10,6 +10,7 @@ using ZWOptical.ASISDK;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using NINA.Utility.Notification;
+using System.Collections;
 
 namespace NINA.Model.MyCamera {
     public class ASICamera : BaseINPC, ICamera{
@@ -507,6 +508,12 @@ namespace NINA.Model.MyCamera {
         public string CameraState {
             get {
                 return ExposureStatus.ToString();
+            }
+        }
+
+        public ArrayList Gains {
+            get {
+                return new ArrayList();
             }
         }
 

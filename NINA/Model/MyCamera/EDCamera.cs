@@ -14,6 +14,7 @@ using System.IO;
 using System.Windows.Media;
 using System.Diagnostics;
 using NINA.Utility.Notification;
+using System.Collections;
 
 namespace NINA.Model.MyCamera {
     class EDCamera : BaseINPC, ICamera {
@@ -254,7 +255,16 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public DoubleCollection GainTicks { get; set; } = new DoubleCollection();
+
+        private ArrayList _gains;
+        public ArrayList Gains {
+            get {
+                if(_gains == null) {
+                    _gains = new ArrayList();
+                }
+                return _gains;
+            }
+        }        
 
         private AsyncObservableCollection<BinningMode> _binningModes;
         public AsyncObservableCollection<BinningMode> BinningModes {
@@ -300,17 +310,22 @@ namespace NINA.Model.MyCamera {
                 return false;
             } else {
                 Connected = true;
-                Initialize();
+                if(!Initialize()) { Disconnect(); }
                 RaiseAllPropertiesChanged();
                 return true;
             }
         }
 
-        private void Initialize() {
-            GetShutterSpeeds();
-            GetISOSpeeds();
-            SetSaveLocation();
-            SubscribeEvents();
+        private bool Initialize() {
+            if(IsManualMode()) {
+                GetShutterSpeeds();
+                GetISOSpeeds();
+                SetSaveLocation();
+                SubscribeEvents();
+                return true;
+            } else {
+                return false;
+            }          
         }
 
         protected event EDSDK.EdsObjectEventHandler SDKObjectEvent;
@@ -359,10 +374,21 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private bool IsManualMode() {
+            UInt32 mode;
+            EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_AEModeSelect, 0, out mode);
+            bool isManual = (mode == 3);
+            if(!isManual) {
+                Notification.ShowError("Camera is not set to manual mode! Please set it to manual mode before connecting");
+            }
+            return isManual;
+        }
+
         private Dictionary<short, int> ISOSpeeds = new Dictionary<short, int>();
 
         private void GetISOSpeeds() {
             ISOSpeeds.Clear();
+            Gains.Clear();
             EDSDK.EdsPropertyDesc prop;
             EDSDK.EdsGetPropertyDesc(_cam, EDSDK.PropID_ISOSpeed, out prop);
 
@@ -374,14 +400,15 @@ namespace NINA.Model.MyCamera {
                 var item = EDSDK.ISOSpeeds.FirstOrDefault((x) => x.Value == elem);
                 if (item.Value != 0) {
                     ISOSpeeds.Add(item.Key, item.Value);
-                    GainTicks.Add(item.Key);
+                    Gains.Add(item.Key);
                 }
-
             }
         }
 
-        public void Disconnect() {
+        public void Disconnect() {            
             uint err = EDSDK.EdsCloseSession(_cam);
+           
+            Connected = false;
         }
 
         public async Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource) {
