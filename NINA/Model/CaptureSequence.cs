@@ -84,7 +84,8 @@ namespace NINA.Model {
             ImageType = imageType;
             FilterType = filterType;
             Binning = binning;
-            ExposureCount = exposureCount;
+            TotalExposureCount = exposureCount;
+            DitherAmount = 1;
             Gain = -1;
         }
 
@@ -141,6 +142,10 @@ namespace NINA.Model {
             }
         }
 
+        
+        /// <summary>
+        /// Remaining Exposure Count
+        /// </summary>
         public int ExposureCount {
             get {
                 return _exposureCount;
@@ -165,7 +170,10 @@ namespace NINA.Model {
             }
         }
 
-        private int _totalExposureCount;
+        private int _totalExposureCount;        
+        /// <summary>
+        /// Total exposures of a sequence
+        /// </summary>
         public int TotalExposureCount {
             get {
                 return _totalExposureCount;
@@ -178,6 +186,9 @@ namespace NINA.Model {
             }
         }
 
+        /// <summary>
+        /// Number of exposures already taken
+        /// </summary>
         public int ProgressExposureCount {
             get {
                 return TotalExposureCount - ExposureCount;
