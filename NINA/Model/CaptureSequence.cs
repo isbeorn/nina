@@ -85,6 +85,7 @@ namespace NINA.Model {
             FilterType = filterType;
             Binning = binning;
             ExposureCount = exposureCount;
+            Gain = -1;
         }
 
         private double _exposureTime;
