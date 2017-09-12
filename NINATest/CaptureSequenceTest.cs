@@ -9,6 +9,87 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINATest {
+    [TestClass] 
+    public class CaptureSequenceListTest {
+        [TestMethod]
+        public void DefaultConstructor_ValueTest() {
+            //Arrange
+            var l = new CaptureSequenceList();
+            //Act
+
+            //Assert
+            Assert.AreEqual(string.Empty, l.TargetName, "Targetname");
+            Assert.AreEqual(0, l.Count);
+            Assert.AreEqual(null, l.ActiveSequence);
+            Assert.AreEqual(-1, l.ActiveSequenceIndex);
+        }
+
+        [TestMethod]
+        public void SequenceConstructor_ValueTest() {
+            //Arrange
+            var seq = new CaptureSequence();
+            var l = new CaptureSequenceList(seq);
+            //Act
+
+            //Assert
+            Assert.AreEqual(string.Empty, l.TargetName, "Targetname");
+            Assert.AreEqual(1, l.Count);
+            Assert.AreEqual(null, l.ActiveSequence);
+            Assert.AreEqual(-1, l.ActiveSequenceIndex);
+        }
+
+        [TestMethod]
+        public void SetActiveSequence_ValueTest() {
+            //Arrange
+            var seq = new CaptureSequence();
+            var seq2 = new CaptureSequence();
+            var l = new CaptureSequenceList();
+            l.Add(seq);
+            l.Add(seq2);
+
+            //Act
+            var success = l.SetActiveSequence(seq2);
+
+            //Assert
+            Assert.IsTrue(success);
+            Assert.AreEqual(string.Empty, l.TargetName, "Targetname");
+            Assert.AreEqual(2, l.Count);
+            Assert.AreSame(seq2, l.ActiveSequence);
+            Assert.AreEqual(1, l.ActiveSequenceIndex);
+        }
+
+        [TestMethod]
+        public void SetActiveSequence_DoesNotExist_ReturnFalse() {
+            //Arrange
+            var seq = new CaptureSequence();
+            var seq2 = new CaptureSequence();
+            var seq3 = new CaptureSequence();
+            var l = new CaptureSequenceList();
+            l.Add(seq);
+            l.Add(seq2);
+
+            //Act
+            var success = l.SetActiveSequence(seq3);
+
+            //Assert
+            Assert.IsFalse(success);
+            Assert.AreEqual(null, l.ActiveSequence);
+            Assert.AreEqual(-1, l.ActiveSequenceIndex);
+        }
+
+        [TestMethod]
+        public void SetTargetName_ValueTest() {
+            //Arrange
+            var l = new CaptureSequenceList();
+            var target = "Messier 31";
+            //Act
+            l.TargetName = target;
+
+            //Assert
+            Assert.AreEqual(target, l.TargetName);
+        }
+    }
+
     [TestClass]
     public class CaptureSequenceTest {
         [TestMethod]

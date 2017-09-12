@@ -11,7 +11,7 @@ namespace NINA.Model {
     public class CaptureSequenceList : AsyncObservableCollection<CaptureSequence> {
 
         public CaptureSequenceList() {
-            
+            TargetName = string.Empty;
         }
 
         public CaptureSequenceList(CaptureSequence seq) : this() {

@@ -266,4 +266,6 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblSettle">Finalisieren</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian">Pausieren vor Meridian (minutes)</s:String>
     <s:String x:Key="LblTargetName">Zielname</s:String>
+    <s:String x:Key="LblCoolCamBtnTooltip" xml:space="preserve">Kühlt Kamera bis zur Zieltemperatur.
+Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegebenen Zeitraum, bis die Zieltemperatur erreicht ist.</s:String>
 </ResourceDictionary>

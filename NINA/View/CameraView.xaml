@@ -319,6 +319,7 @@
                                         ButtonImage="{StaticResource ThermometerSVG}" 
                                         CancelButtonImage="{StaticResource CancelSVG}" 
                                         HorizontalAlignment="Right" Width="40" Height="40"
+                                        ToolTip="{ns:Loc LblCoolCamBtnTooltip}"
                                         />
                                 </StackPanel>
 

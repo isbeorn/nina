@@ -79,6 +79,7 @@
                             ButtonImage="{StaticResource ThermometerSVG}" 
                             CancelButtonImage="{StaticResource CancelSVG}"                             
                             VerticalAlignment="Center" Height="35" Margin="10 10 10 0"
+                            ToolTip="{ns:Loc LblCoolCamBtnTooltip}"
                             />
                         
                         <Grid Visibility="{Binding CoolingRunning, Converter={StaticResource BooleanToVisibilityHiddenConverter}}" Margin="10 0 10 0" Height="35">
