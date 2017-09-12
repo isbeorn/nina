@@ -22,6 +22,7 @@ namespace NINATest {
             Assert.AreEqual(0, l.Count);
             Assert.AreEqual(null, l.ActiveSequence);
             Assert.AreEqual(-1, l.ActiveSequenceIndex);
+            Assert.AreEqual(0, l.Delay);
         }
 
         [TestMethod]
@@ -36,6 +37,7 @@ namespace NINATest {
             Assert.AreEqual(1, l.Count);
             Assert.AreEqual(null, l.ActiveSequence);
             Assert.AreEqual(-1, l.ActiveSequenceIndex);
+            Assert.AreEqual(0, l.Delay);
         }
 
         [TestMethod]
@@ -56,6 +58,7 @@ namespace NINATest {
             Assert.AreEqual(2, l.Count);
             Assert.AreSame(seq2, l.ActiveSequence);
             Assert.AreEqual(1, l.ActiveSequenceIndex);
+            Assert.AreEqual(0, l.Delay);
         }
 
         [TestMethod]
@@ -87,6 +90,18 @@ namespace NINATest {
 
             //Assert
             Assert.AreEqual(target, l.TargetName);
+        }
+
+        [TestMethod]
+        public void SetDelay_ValueTest() {
+            //Arrange
+            var l = new CaptureSequenceList();
+            var delay = 5213;
+            //Act
+            l.Delay = delay;
+
+            //Assert
+            Assert.AreEqual(delay, l.Delay);
         }
     }
 

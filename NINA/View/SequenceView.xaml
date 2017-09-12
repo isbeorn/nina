@@ -6,6 +6,7 @@
              xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:local="clr-namespace:NINA.View"
              xmlns:model="clr-namespace:NINA.Model"
+             xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
              xmlns:util="clr-namespace:NINA.Utility"
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              mc:Ignorable="d" xmlns:s="clr-namespace:System;assembly=mscorlib"
@@ -23,6 +24,22 @@
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblTargetName}"></TextBlock>
                             <TextBox Text="{Binding Sequence.TargetName}" Margin="5,0,0,0" />
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                    <UniformGrid Columns="2">
+                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                            <TextBlock Text="{ns:Loc LblSequenceDelay}"></TextBlock>
+                            <TextBox Margin="5,0,0,0">
+                                <TextBox.Text>
+                                    <Binding Path="Sequence.Delay" UpdateSourceTrigger="LostFocus" >
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                         </UniformGrid>
                     </UniformGrid>
                 </Border>

@@ -287,6 +287,14 @@ namespace NINA.ViewModel {
 
                 try {
 
+                    /* delay sequence start by given amount */
+                    var delay = sequence.Delay;
+                    while (delay > 0) {
+                        await Task.Delay(TimeSpan.FromSeconds(1), tokenSource.Token);
+                        delay--;
+                        progress.Report(string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay));
+                    }
+                    
 
                     ushort framenr = 1;
                     foreach (CaptureSequence seq in sequence) {

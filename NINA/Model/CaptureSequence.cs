@@ -55,6 +55,17 @@ namespace NINA.Model {
                 return this.IndexOf(_activeSequence);
             }
         }
+
+        private int _delay;
+        public int Delay {
+            get {
+                return _delay;
+            }
+            set {
+                _delay = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(Delay)));
+            }
+        }
     }
 
     public class CaptureSequence :BaseINPC {
