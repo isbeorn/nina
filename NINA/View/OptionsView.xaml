@@ -152,7 +152,15 @@
                         <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PHD2ServerPort}" />
 
                         <TextBlock Grid.Row="2" VerticalAlignment="Center" Width="100" Text="{ns:Loc LblDitherPixels}"></TextBlock>
-                        <TextBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding DitherPixels}" />
+                        <TextBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="DitherPixels" UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
 
                         <TextBlock Grid.Row="3" VerticalAlignment="Center" Width="100" Text="{ns:Loc LblDitherRAOnly}"></TextBlock>
                         <CheckBox Grid.Row="3" Grid.Column="1" Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding DitherRAOnly}" />
@@ -349,7 +357,15 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock   HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblCygwinDirectory}"></TextBlock>
-                                <TextBox  Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding CygwinLocation}" MinWidth="130" />
+                                <TextBox  Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" MinWidth="130" >
+                                    <TextBox.Text>
+                                        <Binding Path="CygwinLocation" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <rules:DirectoryExistsRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
 
 
                                 <Button Margin="5 0 0 0" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" Width="30" Command="{Binding OpenCygwinFileDiagCommand}">
@@ -359,19 +375,43 @@
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                                     <TextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Text="{ns:Loc LblFocalLength}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrFocalLength}" />
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                        <TextBox.Text>
+                                            <Binding Path="AnsvrFocalLength" UpdateSourceTrigger="LostFocus" >
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                                     <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblPixelSize}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrPixelSize}" />
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                        <TextBox.Text>
+                                            <Binding Path="AnsvrPixelSize" UpdateSourceTrigger="LostFocus" >
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                                     <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblSearchRadius}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AnsvrSearchRadius}" />
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                        <TextBox.Text>
+                                            <Binding Path="AnsvrSearchRadius" UpdateSourceTrigger="LostFocus" >
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
                             
@@ -438,7 +478,15 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock   HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblPlatesolve2Directory}"></TextBlock>
-                                <TextBox  Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2Location}" MinWidth="130" />
+                                <TextBox  Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" MinWidth="130">
+                                    <TextBox.Text>
+                                        <Binding Path="PS2Location" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <rules:FileExistsRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
 
 
                                 <Button Margin="5 0 0 0" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" Width="30" Command="{Binding OpenPS2FileDiagCommand}">
@@ -448,19 +496,43 @@
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                                     <TextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Text="{ns:Loc LblFocalLength}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2FocalLength}" />
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                        <TextBox.Text>
+                                            <Binding Path="PS2FocalLength" UpdateSourceTrigger="LostFocus" >
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                                     <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblPixelSize}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2PixelSize}" />
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                        <TextBox.Text>
+                                            <Binding Path="PS2PixelSize" UpdateSourceTrigger="LostFocus" >
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                                     <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblRegions}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PS2Regions}" />
+                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                        <TextBox.Text>
+                                            <Binding Path="PS2Regions" UpdateSourceTrigger="LostFocus" >
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
                         </StackPanel>

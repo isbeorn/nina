@@ -27,7 +27,7 @@
                                  VerticalAlignment="Center" 
                                  TextAlignment="Center"    
                                  Text="{Binding Value, 
-                                                StringFormat=\{0:#.0\}, 
+                                                StringFormat=\{0:#.00\}, 
                                                 UpdateSourceTrigger=PropertyChanged,
                                                 RelativeSource={RelativeSource AncestorType={x:Type local:StepperControl}}}"/>
                         <Button Name="PART_Decrement" Height="25" Grid.Column="2">

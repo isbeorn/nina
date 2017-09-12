@@ -155,7 +155,7 @@
     <s:String x:Key="LblRecenterAfterFlip">Recenter after Flip</s:String>
     <s:String x:Key="LblScopeSettleTimeAfterFlip">Scope settle time after flip (seconds)</s:String>
     <s:String x:Key="LblPlateSolving">Plate Solving</s:String>
-    <s:String x:Key="LblPlatesolve2Directory">Platesolve2 Directory</s:String>
+    <s:String x:Key="LblPlatesolve2Directory">Platesolve2 Location</s:String>
     <s:String x:Key="LblFocalLength">Focal Length</s:String>
     <s:String x:Key="LblPixelSize">Pixel Size</s:String>
     <s:String x:Key="LblRegions">Regions</s:String>

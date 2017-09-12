@@ -279,6 +279,8 @@
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
     <Compile Include="Utility\Mediator.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
+    <Compile Include="Utility\ValidationRules\DirectoryExistsRule.cs" />
+    <Compile Include="Utility\ValidationRules\FileExistsRule.cs" />
     <Compile Include="Utility\ValidationRules\GreaterZeroRule.cs" />
     <Compile Include="Utility\ValidationRules\HoursRule.cs" />
     <Compile Include="Utility\ValidationRules\MinutesRule.cs" />

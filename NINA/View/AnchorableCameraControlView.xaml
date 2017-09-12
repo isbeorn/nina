@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -15,7 +16,15 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                     <UniformGrid Columns="2" VerticalAlignment="Center">
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblExposureTime}"></TextBlock>
-                        <TextBox Margin="5" MinWidth="50"  Text="{Binding SnapExposureDuration, Mode=TwoWay}"></TextBox>
+                        <TextBox Margin="5" MinWidth="50">
+                            <TextBox.Text>
+                                <Binding Path="SnapExposureDuration" Mode="TwoWay">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:NINA.View"
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              xmlns:ns="clr-namespace:NINA.Locale"
+             xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel x:Name="LayoutRoot" Orientation="{Binding MyOrientation}">
@@ -18,7 +19,15 @@
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                 <UniformGrid Columns="2" VerticalAlignment="Center">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblExposureTime}"></TextBlock>
-                    <TextBox Margin="5" MinWidth="50"  Text="{Binding MyExposureDuration}"></TextBox>
+                    <TextBox Margin="5" MinWidth="50" >
+                        <TextBox.Text>
+                            <Binding Path="MyExposureDuration" Mode="TwoWay">
+                                <Binding.ValidationRules>
+                                    <rules:GreaterZeroRule />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </UniformGrid>
             </Border>
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">

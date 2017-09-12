@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:NINA.View"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:ns="clr-namespace:NINA.Locale"
+             xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
              mc:Ignorable="d" 
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -87,8 +88,16 @@
                             </UniformGrid>                    
                             <UniformGrid Columns="2" IsEnabled="{Binding Repeat}">
                                 <TextBlock Text="{ns:Loc LblErrorLT}" VerticalAlignment="Center"></TextBlock>
-                                <UniformGrid Columns="2">                                
-                                    <TextBox Text="{Binding RepeatThreshold}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0" />
+                                <UniformGrid Columns="2">
+                                    <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0">
+                                        <TextBox.Text>
+                                            <Binding Path="RepeatThreshold" Mode="TwoWay">
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                     <TextBlock Text="{ns:Loc LblArcmin}" VerticalAlignment="Center"></TextBlock>
                                 </UniformGrid>
                             </UniformGrid>
