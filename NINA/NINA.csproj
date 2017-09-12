@@ -259,12 +259,13 @@
     <Compile Include="Utility\Converters\BooleanToVisibilityHiddenConverter.cs" />
     <Compile Include="Utility\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DatabindingDebugConverter.cs" />
-    <Compile Include="Utility\Converters\GainsArrayContainsItemsConverter.cs" />
+    <Compile Include="Utility\Converters\CollectionContainsItemsToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\InverseBooleanConverter.cs" />
     <Compile Include="Utility\Converters\InverseBoolToVisibilityConverter.cs" />
-    <Compile Include="Utility\Converters\InverseGainsArrayContainsItemsConverter.cs" />
+    <Compile Include="Utility\Converters\InverseCollectionContainsItemsToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\InverseNullToBooleanConverter.cs" />
     <Compile Include="Utility\Converters\InverseNullToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\MinusOneToEmptyStringConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />

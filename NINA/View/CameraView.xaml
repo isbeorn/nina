@@ -221,8 +221,8 @@
                                     TickPlacement="BottomRight" 
                                     IsSnapToTickEnabled="True" 
                                     Value="{Binding Cam.Gain}" 
-                                    IsEnabled="{Binding Cam.CanSetGain}" Visibility="{Binding Cam.Gains, Converter={StaticResource InverseGainsArrayContainsItemsConverter}}" />
-                            <ComboBox ItemsSource="{Binding Cam.Gains}" SelectedItem="{Binding Cam.Gain}" Visibility="{Binding Cam.Gains, Converter={StaticResource GainsArrayContainsItemsConverter}}" />
+                                    IsEnabled="{Binding Cam.CanSetGain}" Visibility="{Binding Cam.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}" />
+                            <ComboBox ItemsSource="{Binding Cam.Gains}" SelectedItem="{Binding Cam.Gain}" Visibility="{Binding Cam.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}" />
                         </Grid>
                     </DockPanel>
                     <DockPanel  Visibility="{Binding Cam.CanSetOffset , Converter={StaticResource VisibilityConverter}}">

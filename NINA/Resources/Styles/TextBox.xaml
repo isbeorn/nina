@@ -2,13 +2,48 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     >
     
+    <ControlTemplate x:Key="validationTemplate">
+        <DockPanel>
+            <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
+            <AdornedElementPlaceholder/>
+        </DockPanel>
+    </ControlTemplate>
+    
     <Style TargetType="{x:Type TextBox}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <DockPanel LastChildFill="True">
+                        <ItemsControl ItemsSource="{Binding (Validation.Errors), RelativeSource={RelativeSource Mode=TemplatedParent}}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="!" Foreground="Red" Margin="5"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Border Grid.Column="0" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0" Padding="2">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="False" 
+                                    ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                    ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                    Background="{TemplateBinding Background}" />
+                        </Border>                        
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="false">
                 <Setter Property="Opacity" Value="0.6" />
+            </Trigger>
+            <Trigger Property="Validation.HasError" Value="true">
+                <Setter Property="ToolTip" 
+                        Value="{Binding RelativeSource={RelativeSource Self}, 
+                            Path=(Validation.Errors)[0].ErrorContent}">
+                </Setter>
+                <Setter Property="BorderBrush" Value="Red" />
             </Trigger>
         </Style.Triggers>
     </Style>
