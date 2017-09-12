@@ -256,6 +256,18 @@
     <Compile Include="Utility\AvalonDock\PaneStyleSelector.cs" />
     <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
     <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
+    <Compile Include="Utility\Converters\BooleanToVisibilityHiddenConverter.cs" />
+    <Compile Include="Utility\Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\DatabindingDebugConverter.cs" />
+    <Compile Include="Utility\Converters\GainsArrayContainsItemsConverter.cs" />
+    <Compile Include="Utility\Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Utility\Converters\InverseBoolToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\InverseGainsArrayContainsItemsConverter.cs" />
+    <Compile Include="Utility\Converters\InverseNullToBooleanConverter.cs" />
+    <Compile Include="Utility\Converters\InverseNullToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\NullToVisibilityCollapsedConverter.cs" />
+    <Compile Include="Utility\Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
@@ -265,6 +277,12 @@
     </Compile>
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
     <Compile Include="Utility\Mediator.cs" />
+    <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
+    <Compile Include="Utility\ValidationRules\GreaterZeroRule.cs" />
+    <Compile Include="Utility\ValidationRules\HoursRule.cs" />
+    <Compile Include="Utility\ValidationRules\MinutesRule.cs" />
+    <Compile Include="Utility\ValidationRules\SecondsRule.cs" />
+    <Compile Include="Utility\ValidationRules\ShortRangeRule.cs" />
     <Compile Include="Utility\WindowService.cs" />
     <Compile Include="Utility\XISF.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
@@ -287,7 +305,6 @@
     <Compile Include="Utility\AsyncCommand.cs" />
     <Compile Include="Utility\AsyncObservableCollection.cs" />
     <Compile Include="Utility\BaseINPC.cs" />
-    <Compile Include="Utility\Converters.cs" />
     <Compile Include="Utility\EnumBindingSourceExtension.cs" />
     <Compile Include="Utility\ImageAnalysis.cs" />
     <Compile Include="Utility\ImageArray\ImageArray.cs" />

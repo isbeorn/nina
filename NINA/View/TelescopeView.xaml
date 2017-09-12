@@ -7,6 +7,7 @@
              xmlns:util="clr-namespace:NINA.Utility"
              xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -196,7 +197,7 @@
                                     <TextBox.Text>
                                         <Binding Path="TargetRightAscencionHours" UpdateSourceTrigger="LostFocus" >
                                             <Binding.ValidationRules>
-                                                <StaticResource ResourceKey="HoursRule" />
+                                                <rules:HoursRule />
                                             </Binding.ValidationRules>
                                         </Binding>
                                     </TextBox.Text>
@@ -206,7 +207,7 @@
                                     <TextBox.Text>
                                         <Binding Path="TargetRightAscencionMinutes" UpdateSourceTrigger="LostFocus" >
                                             <Binding.ValidationRules>
-                                                <StaticResource ResourceKey="MinutesRule" />
+                                                <rules:MinutesRule />
                                             </Binding.ValidationRules>
                                         </Binding>
                                     </TextBox.Text>
@@ -216,7 +217,7 @@
                                     <TextBox.Text>
                                         <Binding Path="TargetRightAscencionSeconds" UpdateSourceTrigger="LostFocus" >
                                             <Binding.ValidationRules>
-                                                <StaticResource ResourceKey="SecondsRule" />
+                                                <rules:SecondsRule />
                                             </Binding.ValidationRules>
                                         </Binding>
                                     </TextBox.Text>
@@ -231,7 +232,7 @@
                                     <TextBox.Text>
                                         <Binding Path="TargetDeclinationDegrees" UpdateSourceTrigger="LostFocus" >
                                             <Binding.ValidationRules>
-                                                <StaticResource ResourceKey="DegreesRule" />
+                                                <rules:DegreesRule />
                                             </Binding.ValidationRules>
                                         </Binding>
                                     </TextBox.Text>
@@ -241,7 +242,7 @@
                                     <TextBox.Text>
                                         <Binding Path="TargetDeclinationMinutes" UpdateSourceTrigger="LostFocus" >
                                             <Binding.ValidationRules>
-                                                <StaticResource ResourceKey="MinutesRule" />
+                                                <rules:MinutesRule />
                                             </Binding.ValidationRules>
                                         </Binding>
                                     </TextBox.Text>
@@ -251,7 +252,7 @@
                                     <TextBox.Text>
                                         <Binding Path="TargetDeclinationSeconds" UpdateSourceTrigger="LostFocus" >
                                             <Binding.ValidationRules>
-                                                <StaticResource ResourceKey="SecondsRule" />
+                                                <rules:SecondsRule />
                                             </Binding.ValidationRules>
                                         </Binding>
                                     </TextBox.Text>

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:NINA.View"
              xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              xmlns:astrometry="clr-namespace:NINA.Utility.Astrometry"
              
@@ -98,7 +99,7 @@
                                 <TextBox.Text>
                                     <Binding Path="DARVSlewRate" UpdateSourceTrigger="LostFocus" >
                                         <Binding.ValidationRules>
-                                            <StaticResource ResourceKey="GreaterZeroRule" />
+                                            <rules:GreaterZeroRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
@@ -109,7 +110,7 @@
                                 <TextBox.Text>
                                     <Binding Path="DARVSlewDuration" UpdateSourceTrigger="LostFocus" >
                                         <Binding.ValidationRules>
-                                            <StaticResource ResourceKey="GreaterZeroRule" />
+                                            <rules:GreaterZeroRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
