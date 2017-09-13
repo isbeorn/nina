@@ -270,4 +270,5 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
 Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegebenen Zeitraum, bis die Zieltemperatur erreicht ist.</s:String>
     <s:String x:Key="LblSequenceDelay">Delay start (seconds)</s:String>
     <s:String x:Key="LblSequenceDelayStatus">Sequenz startet in {0} Sekunden</s:String>
+    <s:String x:Key="LblSelectNewGuideStar">Selektiere neuen Leitstern</s:String>
 </ResourceDictionary>

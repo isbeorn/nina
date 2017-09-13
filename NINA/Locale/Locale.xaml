@@ -266,4 +266,5 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
 When duration is set, the application will slowly decrease the temperature during the timeframe until the target temperature is reached.</s:String>
     <s:String x:Key="LblSequenceDelay">Delay start (seconds)</s:String>
     <s:String x:Key="LblSequenceDelayStatus">Sequence starting in {0} seconds</s:String>
+    <s:String x:Key="LblSelectNewGuideStar">Select new Guidestar</s:String>
 </ResourceDictionary>

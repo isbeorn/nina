@@ -177,11 +177,17 @@ namespace NINA.ViewModel
             return true;
         }
 
+        private async Task<bool> SelectNewGuideStar(CancellationTokenSource tokenSource, IProgress<string> progress) {
+            if (PHD2Client?.Connected == true) {
+                progress.Report("Select new Guidestar");
+                await Task.Delay(TimeSpan.FromSeconds(5), tokenSource.Token);
+            }
+            return true;
+        }
+
         private async Task<bool> ResumeAutoguider(CancellationTokenSource tokenSource, IProgress<string> progress) {
             if (PHD2Client?.Connected == true) {
                 progress.Report("Resuming autoguider");
-                await PHD2Client.AutoSelectStar();
-                await Task.Delay(TimeSpan.FromSeconds(5), tokenSource.Token);
                 await PHD2Client.Pause(false);
 
                 var time = 0;
@@ -213,16 +219,26 @@ namespace NINA.ViewModel
 
         private async Task<bool> DoMeridianFlip() {
             try {
-                Steps = new AutomatedWorkflow() {
-                    new WorkflowStep("StopAutoguider", Locale.Loc.Instance["LblStopAutoguider"], () => StopAutoguider(_tokensource, _progress)),
-                    new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(_tokensource, _progress)),                    
-                    new WorkflowStep("Flip", Locale.Loc.Instance["LblFlip"], () => DoFilp(_tokensource, _progress)),
-                    new WorkflowStep("Recenter", Locale.Loc.Instance["LblRecenter"], () => Recenter(_tokensource, _progress)),
-                    new WorkflowStep("ResumeAutoguider", Locale.Loc.Instance["LblResumeAutoguider"], () => ResumeAutoguider(_tokensource, _progress)),
-                    new WorkflowStep("Settle", Locale.Loc.Instance["LblSettle"], () => Settle(_tokensource, _progress))
-                };
+                Steps = new AutomatedWorkflow();
+                var guiderConnected = PHD2Client?.Connected == true;
+                if(guiderConnected) {
+                    Steps.Add(new WorkflowStep("StopAutoguider", Locale.Loc.Instance["LblStopAutoguider"], () => StopAutoguider(_tokensource, _progress)));
+                }                
+                Steps.Add(new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(_tokensource, _progress)));
+                Steps.Add(new WorkflowStep("Flip", Locale.Loc.Instance["LblFlip"], () => DoFilp(_tokensource, _progress)));
+                if (Settings.RecenterAfterFlip) {
+                    Steps.Add(new WorkflowStep("Recenter", Locale.Loc.Instance["LblRecenter"], () => Recenter(_tokensource, _progress)));
+                }
+
+                if (guiderConnected) {
+                    Steps.Add(new WorkflowStep("SelectNewGuideStar", Locale.Loc.Instance["LblSelectNewGuideStar"], () => SelectNewGuideStar(_tokensource, _progress)));
+                    Steps.Add(new WorkflowStep("ResumeAutoguider", Locale.Loc.Instance["LblResumeAutoguider"], () => ResumeAutoguider(_tokensource, _progress)));
+                }                
+                Steps.Add(new WorkflowStep("Settle", Locale.Loc.Instance["LblSettle"], () => Settle(_tokensource, _progress)));
+
                 await Steps.Process();
             } catch (Exception) {
+                await ResumeAutoguider(new CancellationTokenSource(), _progress);
                 return false;
             }
             return true;
