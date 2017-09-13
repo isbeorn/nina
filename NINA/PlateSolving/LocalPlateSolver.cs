@@ -65,7 +65,8 @@ namespace NINA.PlateSolving {
         private PlateSolveResult Solve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
                      
             PlateSolveResult result = new PlateSolveResult();
-            try {                
+            try {
+                progress.Report("Solving...");
                 string filepath = TMPIMGFILEPATH + "\\tmp.jpg";
                 
                 using (FileStream fs = new FileStream(filepath, FileMode.Create)) {

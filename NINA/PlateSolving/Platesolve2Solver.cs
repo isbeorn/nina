@@ -157,7 +157,8 @@ namespace NINA.PlateSolving
         /// <returns></returns>
         private PlateSolveResult Solve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
             PlateSolveResult result = new PlateSolveResult() { Success = false };
-            try {                
+            try {
+                progress.Report("Solving...");
                 //Copy Image to local app data
                 using (FileStream fs = new FileStream(TMPIMGFILEPATH, FileMode.Create)) {
                     image.CopyTo(fs);
@@ -174,7 +175,7 @@ namespace NINA.PlateSolving
 
                 //Extract solution coordinates
                 result = ExtractResult();
-
+                progress.Report("Solved");
             } catch (OperationCanceledException ex) {
                 progress.Report("Cancelled");
                 Logger.Trace(ex.Message);
