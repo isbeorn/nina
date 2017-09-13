@@ -58,7 +58,25 @@
     </UserControl.Resources>
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
         <Grid>
-            <TabControl ItemsSource="{Binding Steps}" SelectedItem="{Binding Steps.ActiveStep}" ContentTemplateSelector="{StaticResource templateSelector}" Margin="-5 0 0 0" >            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <TextBlock VerticalAlignment="Center" Margin="5 0 0 0" Text="{ns:Loc LblAutoMeridianFlip}" />
+                <Button HorizontalAlignment="Right" Command="{Binding CancelCommand}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                            <TextBlock Text="{ns:Loc LblCancel}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Grid>
+                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="5">
+                        </Path>
+                    </Grid>
+                </Button>
+            </Grid>
+            <TabControl Grid.Row="1" ItemsSource="{Binding Steps}" SelectedItem="{Binding Steps.ActiveStep}" ContentTemplateSelector="{StaticResource templateSelector}" Margin="-5 0 0 0" >            
                 <TabControl.Style>                
                     <Style TargetType="TabControl">
                         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />

@@ -11,13 +11,19 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace NINA.ViewModel
 {
     class MeridianFlipVM : BaseVM
     {
-        public MeridianFlipVM() {           
+        public MeridianFlipVM() {
+            CancelCommand = new RelayCommand(Cancel);
             RegisterMediatorMessages();
+        }
+
+        private void Cancel(object obj) {
+            _tokensource?.Cancel();
         }
 
         private void RegisterMediatorMessages() {
@@ -220,6 +226,17 @@ namespace NINA.ViewModel
                 return false;
             }
             return true;
+        }
+
+        private ICommand _cancelCommand;
+        public ICommand CancelCommand {
+            get {
+                return _cancelCommand;
+            }
+            set {
+                _cancelCommand = value;
+            }
+
         }
     }
 
