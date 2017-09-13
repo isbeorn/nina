@@ -138,11 +138,10 @@ namespace NINA.PlateSolving {
                                 progress.Report("Getting plate solve result ...");
                                 JObject job = await GetJobInfo(jobid, canceltoken);
                                 JobResult jobinfo = job.ToObject<JobResult>();
-
-                                result.Dec = jobinfo.calibration.dec;
+                                
                                 result.Orientation = jobinfo.calibration.orientation;
                                 result.Pixscale = jobinfo.calibration.pixscale;
-                                result.Ra = jobinfo.calibration.ra;
+                                result.Coordinates = new Utility.Astrometry.Coordinates(jobinfo.calibration.ra, jobinfo.calibration.dec, Utility.Astrometry.Epoch.J2000, Utility.Astrometry.Coordinates.RAType.Degrees);
                                 result.Radius = jobinfo.calibration.radius;
                                                                 
                                 progress.Report("Solved");

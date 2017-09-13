@@ -218,7 +218,7 @@ namespace NINA.ViewModel {
 
             if (PlateSolveResult != null && PlateSolveResult.Success) {
 
-                Coordinates solved = new Coordinates(PlateSolveResult.Ra, PlateSolveResult.Dec, PlateSolveResult.Epoch, Coordinates.RAType.Degrees);
+                Coordinates solved = PlateSolveResult.Coordinates;
                 solved = solved.Transform(Settings.EpochType);  //Transform to JNow if required
                                 
                 if (Telescope.Sync(solved.RA, solved.Dec) == true) {
@@ -326,7 +326,7 @@ namespace NINA.ViewModel {
         private void CalculateError() {
             if (Telescope?.Connected == true) {
 
-                Coordinates solved = new Coordinates(PlateSolveResult.Ra, PlateSolveResult.Dec, PlateSolveResult.Epoch, Coordinates.RAType.Degrees);
+                Coordinates solved = PlateSolveResult.Coordinates;
                 solved = solved.Transform(Settings.EpochType);
 
                 var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);

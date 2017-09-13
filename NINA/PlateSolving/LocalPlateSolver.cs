@@ -111,12 +111,13 @@ namespace NINA.PlateSolving {
                             }                                                      
                         }
                     }
-                    
+
+                    double ra = 0, dec = 0;
                     if(wcsinfo.ContainsKey("ra_center")) {
-                        result.Ra = double.Parse(wcsinfo["ra_center"], CultureInfo.InvariantCulture);
+                        ra = double.Parse(wcsinfo["ra_center"], CultureInfo.InvariantCulture);
                     }
                     if(wcsinfo.ContainsKey("dec_center")) {
-                        result.Dec = double.Parse(wcsinfo["dec_center"], CultureInfo.InvariantCulture);
+                        dec = double.Parse(wcsinfo["dec_center"], CultureInfo.InvariantCulture);
                     }
                     if (wcsinfo.ContainsKey("orientation_center")) {
                         result.Orientation = double.Parse(wcsinfo["orientation_center"], CultureInfo.InvariantCulture);
@@ -125,7 +126,8 @@ namespace NINA.PlateSolving {
                         result.Pixscale = double.Parse(wcsinfo["pixscale"], CultureInfo.InvariantCulture);
                     }
 
-                    result.Epoch = Utility.Astrometry.Epoch.J2000;
+                    result.Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
+                                        
                     progress.Report("Solved");
 
                     /* This info does not get the center info. - removed

@@ -24,25 +24,25 @@
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
                             <TextBlock Text="{ns:Loc LblCenterRA}"></TextBlock>
-                            <TextBlock Text="{Binding PlateSolveResult.Ra, StringFormat=\{0:#.000\}}" Margin="5,0,0,0" />
+                            <TextBlock Text="{Binding PlateSolveResult.Coordinates.RA, StringFormat=\{0:#.000\}}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
                             <TextBlock Text="{ns:Loc LblCenterRAhms}"></TextBlock>
-                            <TextBlock Text="{Binding PlateSolveResult.RaString}" Margin="5,0,0,0" />
+                            <TextBlock Text="{Binding PlateSolveResult.Coordinates.RAString}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
                             <TextBlock Text="{ns:Loc LblCenterDec}"></TextBlock>
-                            <TextBlock Text="{Binding PlateSolveResult.Dec, StringFormat=\{0:#.000\}}" Margin="5,0,0,0" />
+                            <TextBlock Text="{Binding PlateSolveResult.Coordinates.Dec, StringFormat=\{0:#.000\}}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
                             <TextBlock Text="{ns:Loc LblCenterDecdms}"></TextBlock>
-                            <TextBlock Text="{Binding PlateSolveResult.DecString}" Margin="5,0,0,0" />
+                            <TextBlock Text="{Binding PlateSolveResult.Coordinates.DecString}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
@@ -61,6 +61,12 @@
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
                             <TextBlock Text="{ns:Loc LblOrientation}"></TextBlock>
                             <TextBlock Text="{Binding PlateSolveResult.Orientation, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                        <UniformGrid Columns="2" VerticalAlignment="Center" >
+                            <TextBlock Text="{ns:Loc LblEpoch}"></TextBlock>
+                            <TextBlock Text="{Binding PlateSolveResult.Coordinates.Epoch}" Margin="5,0,0,0" />
                         </UniformGrid>
                     </Border>
 
@@ -125,8 +131,8 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblTime}" Binding="{Binding SolveTime, StringFormat=\{0:HH:mm:ss\}}" SortDirection="Ascending" IsReadOnly="True" />
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblSuccess}" Binding="{Binding Success}" IsReadOnly="True" />
-                            <DataGridTextColumn Width="*" Header="{ns:Loc LblRA}" Binding="{Binding RaString}" IsReadOnly="True"/>
-                            <DataGridTextColumn Width="*" Header="{ns:Loc LblDec}" Binding="{Binding DecString}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="{ns:Loc LblRA}" Binding="{Binding Coordinates.RAString}" IsReadOnly="True"/>
+                            <DataGridTextColumn Width="*" Header="{ns:Loc LblDec}" Binding="{Binding Coordinates.DecString}" IsReadOnly="True"/>
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblRAError}" Binding="{Binding RaErrorString}" IsReadOnly="True"/>
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblDecError}" Binding="{Binding DecErrorString}" IsReadOnly="True"/>
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblRAPixError}" Binding="{Binding RaPixError, StringFormat=\{0:#.00\}}" IsReadOnly="True"/>

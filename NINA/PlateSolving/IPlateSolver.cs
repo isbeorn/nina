@@ -18,7 +18,6 @@ namespace NINA.PlateSolving {
     public class PlateSolveResult {
         public PlateSolveResult() {
             Success = true;
-            Epoch = Epoch.J2000;
             SolveTime = DateTime.Now;
         }
 
@@ -30,30 +29,14 @@ namespace NINA.PlateSolving {
 
         public double Radius { get; set; }
 
-        public double Ra { get; set; }
-
-        public double Dec { get; set; }
-
-        public Epoch Epoch { get; set; }
+        public Coordinates Coordinates { get; set; }
 
         public bool Success { get; set; }
 
         public double RaError { get; set; }
 
         public double DecError { get; set; }
-
-        public string RaString {
-            get {
-                return Utility.Utility.AscomUtil.DegreesToHMS(Ra);
-            }
-        }
-
-        public string DecString {
-            get {
-                return Utility.Utility.AscomUtil.DegreesToDMS(Dec);
-            }
-        }
-
+        
         public string RaErrorString {
             get {
                 return Utility.Utility.AscomUtil.DegreesToHMS(RaError);

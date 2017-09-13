@@ -546,7 +546,7 @@ namespace NINA.ViewModel {
                     return double.NaN;
                 }
 
-                Coordinates startSolve = new Coordinates(startSolveResult.Ra, startSolveResult.Dec, startSolveResult.Epoch, Coordinates.RAType.Degrees);
+                Coordinates startSolve = PlateSolveResult.Coordinates;
                 startSolve = startSolve.Transform(Settings.EpochType);
 
 
@@ -578,7 +578,7 @@ namespace NINA.ViewModel {
                     return double.NaN;
                 }
 
-                Coordinates targetSolve = new Coordinates(targetSolveResult.Ra, targetSolveResult.Dec, targetSolveResult.Epoch, Coordinates.RAType.Degrees);
+                Coordinates targetSolve = PlateSolveResult.Coordinates;
                 targetSolve = targetSolve.Transform(Settings.EpochType);
 
                 var decError = startSolve.Dec - targetSolve.Dec;

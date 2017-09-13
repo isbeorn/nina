@@ -28,20 +28,20 @@
                 <UniformGrid Columns="1">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock>Center RA:</TextBlock>
-                        <TextBlock Text="{Binding PlateSolveResult.Ra, StringFormat=\{0:#.000\}}" Margin="5,0,0,0" />
+                        <TextBlock Text="{Binding PlateSolveResult.Coordinates.RA, StringFormat=\{0:#.000\}}" Margin="5,0,0,0" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock>Center RA hms:</TextBlock>
-                        <TextBlock Text="{Binding PlateSolveResult.RaString}" Margin="5,0,0,0" />
+                        <TextBlock Text="{Binding PlateSolveResult.Coordinates.RAString}" Margin="5,0,0,0" />
                     </StackPanel>
                 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock>Center Dec:</TextBlock>
-                        <TextBlock Text="{Binding PlateSolveResult.Dec, StringFormat=\{0:#.000\}}" Margin="5,0,0,0" />
+                        <TextBlock Text="{Binding PlateSolveResult.Coordinates.Dec, StringFormat=\{0:#.000\}}" Margin="5,0,0,0" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock>Center Dec dms:</TextBlock>
-                        <TextBlock Text="{Binding PlateSolveResult.DecString}" Margin="5,0,0,0" />
+                        <TextBlock Text="{Binding PlateSolveResult.Coordinates.DecString}" Margin="5,0,0,0" />
                     </StackPanel>
 
 

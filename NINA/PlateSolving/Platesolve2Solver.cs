@@ -123,8 +123,7 @@ namespace NINA.PlateSolving
 
                                 /* success */
                                 result.Success = true;
-                                result.Ra = Astrometry.ToDegree(ra);
-                                result.Dec = Astrometry.ToDegree(dec);
+                                result.Coordinates = new Coordinates(Astrometry.ToDegree(ra), Astrometry.ToDegree(dec), Epoch.J2000, Coordinates.RAType.Degrees);
 
                             }
 
