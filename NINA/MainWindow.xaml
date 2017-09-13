@@ -160,7 +160,7 @@
                         <view:SequenceView DataContext="{Binding SeqVM}" ></view:SequenceView>
                     </TabItem.Content>
                 </TabItem>
-                <TabItem >
+                <!--<TabItem >
                     <TabItem.Header>
                         <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MapSVG}" Stretch="Uniform" Margin="10" Height="50" Width="50" >
                         </Path>
@@ -168,7 +168,7 @@
                     <TabItem.Content>
                         <view:SkyMapView DataContext="{Binding }" ></view:SkyMapView>
                     </TabItem.Content>
-                </TabItem>
+                </TabItem>-->
                 <TabItem>
                     <TabItem.Header>
                         <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PictureSVG}" Stretch="Uniform"  Margin="5" Height="50" Width="50" >
