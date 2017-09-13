@@ -94,28 +94,52 @@ namespace NINA.PlateSolving
                         string[] resultArr = line.Split(',');
                         if (linenr == 0) {
                             if (resultArr.Length > 2) {
-                                int statusCode = int.Parse(resultArr[2]);
 
-                                if (statusCode != 1) {
-                                    /* error */
-                                    result.Success = false;
-                                    break;
+                                double ra, dec;
+                                int status;
+                                if(resultArr.Length == 5) {
+                                    /* workaround for when decimal separator is comma instead of point. 
+                                     won't work when result contains even numbers tho... */
+                                    status = int.Parse(resultArr[4]);
+                                    if (status != 1) {
+                                        /* error */
+                                        result.Success = false;
+                                        break;
+                                    }
+
+                                    ra = double.Parse(resultArr[0] + "." + resultArr[1], CultureInfo.InvariantCulture);
+                                    dec = double.Parse(resultArr[2] + "." + resultArr[3], CultureInfo.InvariantCulture);                                    
+                                } else {
+                                    status = int.Parse(resultArr[2]);
+                                    if (status != 1) {
+                                        /* error */
+                                        result.Success = false;
+                                        break;
+                                    }
+
+                                    ra = double.Parse(resultArr[0], CultureInfo.InvariantCulture);
+                                    dec = double.Parse(resultArr[1], CultureInfo.InvariantCulture);
                                 }
 
                                 /* success */
                                 result.Success = true;
-                                double RARad = double.Parse(resultArr[0], CultureInfo.InvariantCulture);
-                                double DecRad = double.Parse(resultArr[1], CultureInfo.InvariantCulture);
-                                result.Ra = Astrometry.ToDegree(RARad);
-                                result.Dec = Astrometry.ToDegree(DecRad);
+                                result.Ra = Astrometry.ToDegree(ra);
+                                result.Dec = Astrometry.ToDegree(dec);
 
                             }
 
                         }
                         if (linenr == 1) {
                             if (resultArr.Length > 2) {
-                                result.Pixscale = double.Parse(resultArr[0], CultureInfo.InvariantCulture);
-                                result.Orientation = double.Parse(resultArr[1], CultureInfo.InvariantCulture);
+                                if (resultArr.Length > 5) {
+                                    /* workaround for when decimal separator is comma instead of point. 
+                                     won't work when result contains even numbers tho... */
+                                    result.Pixscale = double.Parse(resultArr[0] + "." + resultArr[1], CultureInfo.InvariantCulture);
+                                    result.Orientation = double.Parse(resultArr[2] + "." + resultArr[3], CultureInfo.InvariantCulture);
+                                } else {
+                                    result.Pixscale = double.Parse(resultArr[0], CultureInfo.InvariantCulture);
+                                    result.Orientation = double.Parse(resultArr[1], CultureInfo.InvariantCulture);
+                                }                                
                             }
                         }
                         linenr++;
