@@ -4,6 +4,7 @@ using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -45,6 +46,22 @@ namespace StarDataImport {
                 }
                 
             }
+
+            public void BulkInsert(ICollection<string> queries) {
+                _connection.Open(); int i = 0;
+                using (SQLiteCommand cmd = _connection.CreateCommand()) {
+                    using (var transaction = _connection.BeginTransaction()) {
+                    
+                        foreach (var q in queries) {                            
+                            cmd.CommandText = q;
+                            cmd.ExecuteNonQuery();
+                        }
+                        transaction.Commit();
+                    }
+
+                }
+                _connection.Close();
+            }
         }
         
 
@@ -59,7 +76,7 @@ namespace StarDataImport {
             
 
             db.GenericQuery(@"CREATE TABLE IF NOT EXISTS dsodetail (
-                id integer NOT NULL,
+                id TEXT NOT NULL,
                 ra REAL,
                 dec REAL,
                 magnitude REAL,
@@ -77,14 +94,14 @@ namespace StarDataImport {
             );");
 
             db.GenericQuery(@"CREATE TABLE IF NOT EXISTS visualdescription (                                
-                dsodetailid INT,
+                dsodetailid TEXT,
                 description TEXT,
                 PRIMARY KEY (dsodetailid, description),
                 FOREIGN KEY (dsodetailid) REFERENCES dsodetail (id)
             );");
 
             db.GenericQuery(@"CREATE TABLE IF NOT EXISTS cataloguenr (                                
-                dsodetailid INT,
+                dsodetailid TEXT,
                 catalogue TEXT,
                 designation TEXT,
                 PRIMARY KEY (dsodetailid, catalogue, designation),
@@ -92,10 +109,10 @@ namespace StarDataImport {
             );");
 
 
-            
 
 
 
+            List<string> queries = new List<string>();
 
             using (TextFieldParser parser = new TextFieldParser(@"SAC_DeepSky_ver81_Excel.csv")) {
                 parser.TextFieldType = FieldType.Delimited;
@@ -118,15 +135,24 @@ namespace StarDataImport {
                     if(dso.cataloguenr.First().catalogue != null) {
                         l.Add(dso);
                     }
-                    Console.WriteLine(i);
-                    dso.insert(db);
+                    
+                    queries.Add(dso.getDSOQuery());
+                    queries.Add(dso.getCatalogueQuery());
+                    queries.Add(dso.getVisualDescriptionQuery());                    
                     
                 }
 
-                var err = l.Where((x) => x.cataloguenr.Count == 0);
+                var duplicates = l.Where(s => s.Id == string.Empty);
+                    
+
             }
 
+            
 
+            db.BulkInsert(queries);
+
+            Console.WriteLine("Done");
+            Console.ReadLine();
         }
 
        
@@ -144,12 +170,21 @@ namespace StarDataImport {
             }
 
             private string[] catalogues = {
-                "3C","Abell","ADS","AM","Antalova","Ap","Arp","Bark","B","Basel","BD","Berk","Be","Biur","Blanco","Bochum","Ced","CGCG","Cr","Czernik","DDO","Do","DoDz","Dun","ESO","Fein","Frolov","Gum","H","Haffner","Harvard","Hav-Moffat","He","Hogg","Ho","HP","Hu","IC","Isk","J","K","Kemble","King","Kr","Lac","Loden","LBN","LDN","NPM1G","Lynga","M","MCG","Me","Mrk","Mel","M1 thru M4","New","NGC","Pal","PB","PC","Pismis","PK","RCW","Roslund","Ru","Sa","Sher","Sh","SL","SL","Steph","Stock","Ter","Tombaugh","Ton","Tr","UGC","UGCA","UKS","Upgren","V V","vdB","vdBH","vdB-Ha","Vy","Waterloo","Winnecke","ZwG"
+                "3C","Archinal", "Abell","ADS","AM","Antalova", "Auner", "Av-Hunter", "AND","Ap","Arp","Bark","Basel","BD","Berk","Be","Biur","Blanco","Bochum","B","Ced","CGCG","Cr", "Coalsack","Czernik","Danks", "DDO","DoDz","Do","Dun","ESO", "Eridanus Cluster","Fein","Frolov","Graham", "Gum","Haffner","Harvard","Hav-Moffat","He","Hogg","Ho","HP","Hu","H","IC","Isk","J","Kemble","King","Kr","K","Latysev","Lg Magellanic Cl", "Le Gentil", "Lac","Loden","LBN","LDN","NPM1G","Lynga","MCG","Me","Mrk","Mel","M1 thru M4","M","New","NGC","Pal","PB","PC","Pismis","PK","RCW","Roslund","Ru","Sa","Sher","Sh","SL","Steph","Stock","Ter","Tombaugh","Ton","Tr","UGC","UGCA","UKS","Upgren","V V","vdB-Ha","vdBH","vdB","Vy", "VY","Waterloo","Winnecke","ZwG"
             };
 
             public override string ToString() {
-                return catalogue + " " + designation;
+                return catalogue + designation;
             }
+        }
+
+        public class visualdescription {
+            public string description;
+
+            public visualdescription(string field) {
+                description = field;
+            }
+
         }
 
 
@@ -158,7 +193,7 @@ namespace StarDataImport {
             public List<cataloguenr> cataloguenr;
             //public string obj;
             //public string other;
-            public int Id;
+            public string Id;
             public string type;
             public string constellation;
             public double RA;
@@ -174,7 +209,7 @@ namespace StarDataImport {
             public string NSTS;
             public string brighteststar;
             public string CHM;
-            public string NGC_Descr;
+            public List<visualdescription> visualdescription;
             public string Notes;
 
             public override string ToString() {
@@ -186,10 +221,14 @@ namespace StarDataImport {
             }
 
             public DSO(int id, string[] fields) {
-                this.Id = id;
+                
                 cataloguenr = new List<Program.cataloguenr>();
-
-                cataloguenr.Add(new cataloguenr(fields[0]));
+                var ident = new cataloguenr(fields[0]);
+                this.Id = ident.ToString();
+                if(this.Id == string.Empty) {
+                    Debugger.Break();
+                }
+                cataloguenr.Add(ident);
 
                 foreach (var field in fields[1].Split(';')) {
                     if(field != string.Empty) {
@@ -256,12 +295,58 @@ namespace StarDataImport {
                 NSTS = fields[14];
                 brighteststar = fields[15];
                 CHM = fields[16];
-                NGC_Descr = fields[17];
+
+                visualdescription = new List<visualdescription>();
+                if (fields[17] != string.Empty) {                    
+                    foreach (var s in fields[17].Split(';')) {
+                        visualdescription.Add(new visualdescription(s));
+                    }
+                }                
+                
                 Notes = fields[18];
             }
 
+
+            public string getDSOQuery() {
+                return $@"INSERT INTO dsodetail 
+                (id, ra, dec, magnitude, surfacebrightness,sizemin,sizemax,positionangle,nrofstars,brighteststar,constellation,dsotype,dsoclass,notes)  VALUES
+                (""{Id}"", 
+                {RA.ToString(CultureInfo.InvariantCulture)}, 
+                {DEC.ToString(CultureInfo.InvariantCulture)}, 
+                {magnitude.ToString(CultureInfo.InvariantCulture)}, 
+                {subr.ToString(CultureInfo.InvariantCulture)}, 
+                {size_min?.ToString(CultureInfo.InvariantCulture) ?? "null"}, 
+                {size_max?.ToString(CultureInfo.InvariantCulture) ?? "null"}, 
+                ""{positionangle}"", 
+                ""{NSTS}"", 
+                ""{brighteststar}"", 
+                ""{constellation}"", 
+                ""{type}"", 
+                ""{classification}"", 
+                ""{Notes}"" ); ";
+            }
+
+            public string getCatalogueQuery() {
+                var q = "";
+                foreach (var cat in cataloguenr) {
+                    if(cat.catalogue != null && cat.catalogue.Trim() != string.Empty) { 
+                        q += $@"INSERT INTO cataloguenr (dsodetailid, catalogue, designation) VALUES (""{Id}"", ""{cat.catalogue}"", ""{cat.designation}""); ";
+                    }
+                }
+                return q;
+            }
+
+            public string getVisualDescriptionQuery() {
+                var q = "";
+                foreach (var desc in visualdescription) {
+                    if (desc.description != null && desc.description.Trim() != string.Empty) {
+                        q += $@"INSERT INTO visualdescription (dsodetailid, description) VALUES (""{Id}"", ""{desc.description}""); ";
+                    }
+                }
+                return q;
+            }
             
-            internal void insert(DatabaseInteraction db) {
+            /*internal void insert(DatabaseInteraction db) {
                 var q = $@"INSERT INTO dsodetail 
                 (id, ra, dec, magnitude, surfacebrightness,sizemin,sizemax,positionangle,nrofstars,brighteststar,constellation,dsotype,dsoclass,notes)  VALUES
                 ({Id}, 
@@ -285,7 +370,15 @@ namespace StarDataImport {
                     q += $@"INSERT INTO cataloguenr (dsodetailid, catalogue, designation) VALUES ({Id}, ""{cat.catalogue}"", ""{cat.designation}""); ";
                 }
                 db.GenericQuery(q);
-            }
+
+                q = "";
+                foreach (var desc in visualdescription) {
+                    q += $@"INSERT INTO visualdescription (dsodetailid, description) VALUES ({Id}, ""{desc.description}""); ";
+                }
+                db.GenericQuery(q);
+            }*/
         }
     }
+
+    
 }
