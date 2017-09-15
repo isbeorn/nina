@@ -311,8 +311,22 @@ namespace NINA.ViewModel {
                 _frameFocusVM = value;
                 RaisePropertyChanged();
             }
-        }       
-                
+        }
+
+        private SkyMapVM _skyMapVM;
+        public SkyMapVM SkyMapVM {
+            get {
+                if (_skyMapVM == null) {
+                    _skyMapVM = new SkyMapVM();
+                }
+                return _skyMapVM;
+            }
+            set {
+                _skyMapVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public ICommand MinimizeWindowCommand { get; private set; }
 
         public ICommand MaximizeWindowCommand { get; private set; }

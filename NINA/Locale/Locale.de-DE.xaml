@@ -271,4 +271,16 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblSequenceDelay">Delay start (seconds)</s:String>
     <s:String x:Key="LblSequenceDelayStatus">Sequenz startet in {0} Sekunden</s:String>
     <s:String x:Key="LblSelectNewGuideStar">Selektiere neuen Leitstern</s:String>
+    <s:String x:Key="LblObjectType">Objekttyp</s:String>
+    <s:String x:Key="LblConstellation">Konstellation</s:String>
+    <s:String x:Key="LblCoordinates">Koordinaten</s:String>
+    <s:String x:Key="LblSurfaceBrightness">Oberflächenhelligkeit</s:String>
+    <s:String x:Key="LblApparentSize">Scheinbare Größe</s:String>
+    <s:String x:Key="LblApparentMagnitude">Scheinbare Helligkeit</s:String>
+    <s:String x:Key="LblFrom">Von</s:String>
+    <s:String x:Key="LblThrough">Bis</s:String>
+    <s:String x:Key="LblSearch">Suche</s:String>
+    <s:String x:Key="LblObjectNameHint">Objektname (z.B. M31)</s:String>
+    <s:String x:Key="LblDegree">Grad</s:String>
+    <s:String x:Key="LblArcsec">Winkelsekunden</s:String>
 </ResourceDictionary>

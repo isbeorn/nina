@@ -26,12 +26,7 @@
                             <Polygon x:Name="icon" Points="0,0 12,7.5, 0,15" Width="15" Height="15" 
                                      HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2"
                                      Fill="{StaticResource ButtonBackgroundBrush}" RenderTransformOrigin="0.5,0.5">
-                                <Polygon.RenderTransform>
-                                    <TransformGroup>
-                                        <RotateTransform Angle="90"></RotateTransform>
-                                    </TransformGroup>
-
-                                </Polygon.RenderTransform>
+                               
                             </Polygon>
                             <ContentPresenter Grid.Column="1" HorizontalAlignment="Left" Margin="4,0,0,0" RecognizesAccessKey="True" SnapsToDevicePixels="True" VerticalAlignment="Center"/>
                         </Grid>
@@ -41,7 +36,7 @@
                             <Setter Property="RenderTransform"  TargetName="icon">
                                 <Setter.Value>
                                     <TransformGroup>
-                                        <RotateTransform Angle="0"></RotateTransform>
+                                        <RotateTransform Angle="90"></RotateTransform>
                                     </TransformGroup>
                                 </Setter.Value>
                             </Setter>

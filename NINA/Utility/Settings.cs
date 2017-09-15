@@ -625,6 +625,16 @@ namespace NINA.Utility {
             }
         }
 
+        public static string DatabaseLocation {
+            get {                
+                return Environment.ExpandEnvironmentVariables(Properties.Settings.Default.DatabaseLocation);
+            }
+            set {
+                Properties.Settings.Default.DatabaseLocation = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
 
     }
 

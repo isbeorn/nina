@@ -58,10 +58,15 @@
     <Compile Include="CancellableButton.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="HintTextBox.cs" />
     <Compile Include="IntStepperControl.cs" />
     <Compile Include="StepperControl.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Themes\HintTextBox.Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\StepperControl.Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

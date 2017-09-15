@@ -72,6 +72,10 @@ namespace NINA.Utility.Astrometry {
         public static double ArcsecToDegree(double arcsec) {
             return arcsec / 60 / 60;
         }
+
+        public static double HoursToDegrees(double hours) {
+            return hours * 15;
+        }
     }
 
     public class Coordinates {

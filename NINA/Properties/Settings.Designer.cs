@@ -647,5 +647,17 @@ namespace NINA.Properties {
                 this["PauseTimeBeforeMeridian"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("%localappdata%\\NINA\\NINA.sqlite")]
+        public string DatabaseLocation {
+            get {
+                return ((string)(this["DatabaseLocation"]));
+            }
+            set {
+                this["DatabaseLocation"] = value;
+            }
+        }
     }
 }

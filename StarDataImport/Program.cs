@@ -48,7 +48,7 @@ namespace StarDataImport {
             }
 
             public void BulkInsert(ICollection<string> queries) {
-                _connection.Open(); int i = 0;
+                _connection.Open();
                 using (SQLiteCommand cmd = _connection.CreateCommand()) {
                     using (var transaction = _connection.BeginTransaction()) {
                     

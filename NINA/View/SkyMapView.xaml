@@ -4,9 +4,132 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:ns ="clr-namespace:NINA.Locale"
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <!-- Filter area -->
+        <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{StaticResource RightSideScrollbar}" >
+                <StackPanel Margin="5">
+                    <ninactrl:HintTextBox Text="{Binding SearchObjectName}" HintText="{ns:Loc LblObjectNameHint}" 
+                                      Foreground="{StaticResource PrimaryBrush}"
+                                      VerticalContentAlignment="Center" 
+                                      HorizontalAlignment="Stretch" />
+                    <Expander Header="{ns:Loc LblObjectType}">
+                        <ListView ItemsSource="{Binding ObjectTypes}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding Selected}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="{ns:Loc LblName}" DisplayMemberBinding="{Binding Name}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Expander>
+                    <Expander Header="{ns:Loc LblConstellation}">
+                        <ComboBox ItemsSource="{Binding Constellations}" SelectedItem="{Binding SelectedConstellation}" />
+                    </Expander>
+                    <Expander Header="{ns:Loc LblCoordinates}">
+                        <StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="{ns:Loc LblRightAscension}"/>
+                                <UniformGrid Columns="2">
+                                    <TextBlock Text="{ns:Loc LblFrom}" />
+                                    <ComboBox ItemsSource="{Binding RAFrom}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedRAFrom}" SelectedValuePath="Key" />
+                                </UniformGrid>
+                                <UniformGrid Columns="2">
+                                    <TextBlock Text="{ns:Loc LblThrough}" />
+                                    <ComboBox ItemsSource="{Binding RAThrough}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedRAThrough}" SelectedValuePath="Key"  />
+                                </UniformGrid>
+                            </StackPanel>
+
+                            <StackPanel>
+                                <TextBlock Text="{ns:Loc LblDeclination}" />
+                                <UniformGrid Columns="2">
+                                    <TextBlock Text="{ns:Loc LblFrom}" />
+                                    <ComboBox ItemsSource="{Binding DecFrom}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedDecFrom}" SelectedValuePath="Key" />
+                                </UniformGrid>
+                                <UniformGrid Columns="2">
+                                    <TextBlock Text="{ns:Loc LblThrough}" />
+                                    <ComboBox ItemsSource="{Binding DecThrough}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedDecThrough}" SelectedValuePath="Key" />
+                                </UniformGrid>
+                            </StackPanel>
+                        </StackPanel>
+                    </Expander>
+                    <Expander Header="{ns:Loc LblSurfaceBrightness }">
+                        <StackPanel>
+                            <UniformGrid Columns="2">
+                                <TextBlock Text="{ns:Loc LblFrom}" />
+                                <ComboBox ItemsSource="{Binding BrightnessFrom}" SelectedItem="{Binding SelectedBrightnessFrom}" />
+                            </UniformGrid>
+                            <UniformGrid Columns="2">
+                                <TextBlock Text="{ns:Loc LblThrough}" />
+                                <ComboBox ItemsSource="{Binding BrightnessThrough}" SelectedItem="{Binding SelectedBrightnessThrough}" />
+                            </UniformGrid>
+                        </StackPanel>
+                    </Expander>
+                    <Expander Header="{ns:Loc LblApparentSize}">
+                        <StackPanel>
+                            <UniformGrid Columns="2">
+                                <TextBlock Text="{ns:Loc LblFrom}" />
+                                <ComboBox ItemsSource="{Binding SizesFrom}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedSizeFrom}" SelectedValuePath="Key" />
+                            </UniformGrid>
+                            <UniformGrid Columns="2">
+                                <TextBlock Text="{ns:Loc LblThrough}" />
+                                <ComboBox ItemsSource="{Binding SizesThrough}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedSizeThrough}" SelectedValuePath="Key" />
+                            </UniformGrid>
+                        </StackPanel>
+                    </Expander>
+                    <Expander Header="{ns:Loc LblApparentMagnitude}">
+                        <StackPanel>
+                            <UniformGrid Columns="2">
+                                <TextBlock Text="{ns:Loc LblFrom}" />
+                                <ComboBox ItemsSource="{Binding MagnitudesFrom}" SelectedItem="{Binding SelectedMagnitudeFrom}" />
+                            </UniformGrid>
+                            <UniformGrid Columns="2">
+                                <TextBlock Text="{ns:Loc LblThrough}" />
+                                <ComboBox ItemsSource="{Binding MagnitudesThrough}" SelectedItem="{Binding SelectedMagnitudeThrough}" />
+                            </UniformGrid>
+                        </StackPanel>
+                    </Expander>
+
+
+                    <ninactrl:CancellableButton 
+                        Height="40" Margin="5" 
+                        Visibility="{Binding SearchCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" 
+                        Command="{Binding SearchCommand}" 
+                        CancelCommand="{Binding CancelSearchCommand}"                 
+                        ButtonText="{ns:Loc LblSearch}" 
+                        CancelButtonImage="{StaticResource CancelSVG}" 
+                         />
+                    
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+        
+        <!-- Search result area -->
+        <Grid Grid.Column="1">
+            <ListView ItemsSource="{Binding SearchResult}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="{ns:Loc LblName}" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="{ns:Loc LblRA}" DisplayMemberBinding="{Binding Coordinates.RAString}" />
+                        <GridViewColumn Header="{ns:Loc LblDec}" DisplayMemberBinding="{Binding Coordinates.DecString}" />
+                        <GridViewColumn Header="{ns:Loc LblDec}" DisplayMemberBinding="{Binding DSOType}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
     </Grid>
 </UserControl>

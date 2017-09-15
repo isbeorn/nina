@@ -6,5 +6,6 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/StepperControl.Generic.xaml" />
         <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/CancellableButton.Generic.xaml" />
+        <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/HintTextBox.Generic.xaml" />
     </ResourceDictionary.MergedDictionaries>    
 </ResourceDictionary>
