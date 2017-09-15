@@ -78,7 +78,7 @@ namespace NINA.Utility {
             string magnitudefrom = null,
             string magnitudethru = null) {
 
-            string query = "SELECT id, ra, dec, dsotype FROM dsodetail WHERE (1=1) ";
+            string query = "SELECT id, ra, dec, dsotype, magnitude, sizemax FROM dsodetail WHERE (1=1) ";
 
             if(constellation != null && constellation != string.Empty) {
                 query += " AND constellation = $constellation ";
@@ -170,6 +170,15 @@ namespace NINA.Utility {
                         var coords = new Coordinates(reader.GetDouble(1),reader.GetDouble(2),Epoch.J2000,Coordinates.RAType.Degrees);
                         dso.Coordinates = coords;
                         dso.DSOType = reader.GetString(3);
+
+                        if(!reader.IsDBNull(4)) {
+                            dso.Magnitude = reader.GetDouble(4);
+                        }
+
+                        if (!reader.IsDBNull(5)) {
+                            dso.Size = reader.GetDouble(5);
+                        }
+                         
                         dsos.Add(dso);
                     }
                 }

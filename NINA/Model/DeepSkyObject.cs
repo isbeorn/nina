@@ -45,5 +45,26 @@ namespace NINA.Model {
                 RaisePropertyChanged();
             }
         }
+
+        private double? _magnitude;
+        public double? Magnitude {
+            get {
+                return _magnitude;
+            }
+            set {
+                _magnitude = value;
+                RaisePropertyChanged();
+            }
+        }
+        private double? _size;
+        public double? Size {
+            get {
+                return _size;
+            }
+            set {
+                _size = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

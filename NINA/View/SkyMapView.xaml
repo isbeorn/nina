@@ -126,7 +126,9 @@
                         <GridViewColumn Header="{ns:Loc LblName}" DisplayMemberBinding="{Binding Name}" />
                         <GridViewColumn Header="{ns:Loc LblRA}" DisplayMemberBinding="{Binding Coordinates.RAString}" />
                         <GridViewColumn Header="{ns:Loc LblDec}" DisplayMemberBinding="{Binding Coordinates.DecString}" />
-                        <GridViewColumn Header="{ns:Loc LblDec}" DisplayMemberBinding="{Binding DSOType}" />
+                        <GridViewColumn Header="{ns:Loc LblType}" DisplayMemberBinding="{Binding DSOType}" />
+                        <GridViewColumn Header="{ns:Loc LblMagnitude}" DisplayMemberBinding="{Binding Magnitude}" />
+                        <GridViewColumn Header="{ns:Loc LblSize}" DisplayMemberBinding="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" />
                     </GridView>
                 </ListView.View>
             </ListView>

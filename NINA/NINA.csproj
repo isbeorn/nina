@@ -272,6 +272,7 @@
     <Compile Include="Utility\AvalonDock\PaneStyleSelector.cs" />
     <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
     <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
+    <Compile Include="Utility\Converters\ArcsecToLabelConverter.cs" />
     <Compile Include="Utility\Converters\BooleanToVisibilityHiddenConverter.cs" />
     <Compile Include="Utility\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DatabindingDebugConverter.cs" />

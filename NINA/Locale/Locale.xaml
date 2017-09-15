@@ -279,4 +279,6 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblObjectNameHint">Object name (e.g. M31)</s:String>
     <s:String x:Key="LblDegree">degree</s:String>
     <s:String x:Key="LblArcsec">arcsec</s:String>
+    <s:String x:Key="LblMagnitude">Magnitude</s:String>
+    <s:String x:Key="LblSize">Size</s:String>
 </ResourceDictionary>

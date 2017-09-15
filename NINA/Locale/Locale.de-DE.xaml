@@ -283,4 +283,6 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblObjectNameHint">Objektname (z.B. M31)</s:String>
     <s:String x:Key="LblDegree">Grad</s:String>
     <s:String x:Key="LblArcsec">Winkelsekunden</s:String>
+    <s:String x:Key="LblMagnitude">Helligkeit</s:String>
+    <s:String x:Key="LblSize">Größe</s:String>
 </ResourceDictionary>
