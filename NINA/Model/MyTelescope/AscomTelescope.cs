@@ -909,6 +909,10 @@ namespace NINA.Model.MyTelescope {
         public bool MeridianFlip() {
             var success = false;
             try {
+                if(!Tracking) {
+                    Tracking = true;
+                }
+
                 if (CanSetPierSide) {
                     var pierside = SideOfPier;
                     var flippedside = pierside == PierSide.pierEast ? PierSide.pierWest : PierSide.pierEast;

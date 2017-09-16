@@ -17,26 +17,31 @@ namespace NINA.Utility {
 
         public DatabaseInteraction() {
             _connectionString = string.Format(@"Data Source={0};foreign keys=true;",Settings.DatabaseLocation);
-        }       
+        }
 
         public async Task<ICollection<string>> GetConstellations(CancellationToken token) {
             const string query = "SELECT DISTINCT(constellation) FROM dsodetail;";
             var constellations = new List<string>() { string.Empty };
 
-            using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
-                connection.Open();
-                using (SQLiteCommand command = connection.CreateCommand()) {
-                    command.CommandText = query;
-                    
-                    var reader = await command.ExecuteReaderAsync(token);
+            try {
+                using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand()) {
+                        command.CommandText = query;
 
-                    
-                    while (reader.Read()) {
+                        var reader = await command.ExecuteReaderAsync(token);
 
-                        constellations.Add(reader["constellation"].ToString());
+
+                        while (reader.Read()) {
+
+                            constellations.Add(reader["constellation"].ToString());
+                        }
                     }
                 }
-            }            
+            } catch (Exception ex) {
+                Logger.Error(ex.Message,ex.StackTrace);
+                Notification.Notification.ShowError(ex.Message);
+            }
 
             return constellations;
         }
@@ -44,20 +49,27 @@ namespace NINA.Utility {
         public async Task<ICollection<string>> GetObjectTypes(CancellationToken token) {
             const string query = "SELECT DISTINCT(dsotype) FROM dsodetail;";
             var dsotypes = new List<string>() { string.Empty };
+            try {
+                using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand()) {
+                        command.CommandText = query;
 
-            using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
-                connection.Open();
-                using (SQLiteCommand command = connection.CreateCommand()) {
-                    command.CommandText = query;
-
-                    var reader = await command.ExecuteReaderAsync(token);
+                        var reader = await command.ExecuteReaderAsync(token);
 
 
-                    while (reader.Read()) {
+                        while (reader.Read()) {
 
-                        dsotypes.Add(reader["dsotype"].ToString());
+                            dsotypes.Add(reader["dsotype"].ToString());
+                        }
                     }
                 }
+
+
+
+            } catch (Exception ex) {
+                Logger.Error(ex.Message,ex.StackTrace);
+                Notification.Notification.ShowError(ex.Message);
             }
 
             return dsotypes;
@@ -80,11 +92,11 @@ namespace NINA.Utility {
 
             string query = "SELECT id, ra, dec, dsotype, magnitude, sizemax FROM dsodetail WHERE (1=1) ";
 
-            if(constellation != null && constellation != string.Empty) {
+            if (constellation != null && constellation != string.Empty) {
                 query += " AND constellation = $constellation ";
             }
 
-            if(rafrom != null) {
+            if (rafrom != null) {
                 query += " AND ra > $rafrom ";
             }
 
@@ -108,9 +120,9 @@ namespace NINA.Utility {
                 query += " AND sizemax < $sizethru ";
             }
 
-            if(dsotypes != null && dsotypes.Count > 0) {
+            if (dsotypes != null && dsotypes.Count > 0) {
                 query += " AND dsotype IN (";
-                for (int i = 0; i < dsotypes.Count; i++) {
+                for (int i = 0;i < dsotypes.Count;i++) {
                     query += "$dsotype" + i.ToString() + ",";
                 }
                 query = query.Remove(query.Length - 1);
@@ -135,53 +147,59 @@ namespace NINA.Utility {
 
             query += " ORDER BY Id asc;";
 
-            var dsos = new AsyncObservableCollection<DeepSkyObject>() ;
-
-            using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
-                connection.Open();
-                using (SQLiteCommand command = connection.CreateCommand()) {
-                    command.CommandText = query;
-
-                    command.Parameters.AddWithValue("$constellation",constellation);
-                    command.Parameters.AddWithValue("$rafrom",rafrom);
-                    command.Parameters.AddWithValue("$rathru",rathru);
-                    command.Parameters.AddWithValue("$decfrom",decfrom);
-                    command.Parameters.AddWithValue("$decthru",decthru);
-                    command.Parameters.AddWithValue("$sizefrom",sizefrom);
-                    command.Parameters.AddWithValue("$sizethru",sizethru);
-                    command.Parameters.AddWithValue("$brightnessfrom",brightnessfrom);
-                    command.Parameters.AddWithValue("$brightnessthru",brightnessthru);
-                    command.Parameters.AddWithValue("$magnitudefrom",magnitudefrom);
-                    command.Parameters.AddWithValue("$magnitudethru",magnitudethru);
-
-                    if (dsotypes != null && dsotypes.Count > 0) {
-                        for (int i = 0;i < dsotypes.Count;i++) {
-                            command.Parameters.AddWithValue("$dsotype" + i.ToString(),dsotypes[i]);
-                        }
-                    }
-
-                    var reader = await command.ExecuteReaderAsync(token);
+            var dsos = new AsyncObservableCollection<DeepSkyObject>();
+            try {
 
 
-                    while (reader.Read()) {
+                using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand()) {
+                        command.CommandText = query;
 
-                        var dso = new DeepSkyObject(reader.GetString(0));
+                        command.Parameters.AddWithValue("$constellation",constellation);
+                        command.Parameters.AddWithValue("$rafrom",rafrom);
+                        command.Parameters.AddWithValue("$rathru",rathru);
+                        command.Parameters.AddWithValue("$decfrom",decfrom);
+                        command.Parameters.AddWithValue("$decthru",decthru);
+                        command.Parameters.AddWithValue("$sizefrom",sizefrom);
+                        command.Parameters.AddWithValue("$sizethru",sizethru);
+                        command.Parameters.AddWithValue("$brightnessfrom",brightnessfrom);
+                        command.Parameters.AddWithValue("$brightnessthru",brightnessthru);
+                        command.Parameters.AddWithValue("$magnitudefrom",magnitudefrom);
+                        command.Parameters.AddWithValue("$magnitudethru",magnitudethru);
 
-                        var coords = new Coordinates(reader.GetDouble(1),reader.GetDouble(2),Epoch.J2000,Coordinates.RAType.Degrees);
-                        dso.Coordinates = coords;
-                        dso.DSOType = reader.GetString(3);
-
-                        if(!reader.IsDBNull(4)) {
-                            dso.Magnitude = reader.GetDouble(4);
+                        if (dsotypes != null && dsotypes.Count > 0) {
+                            for (int i = 0;i < dsotypes.Count;i++) {
+                                command.Parameters.AddWithValue("$dsotype" + i.ToString(),dsotypes[i]);
+                            }
                         }
 
-                        if (!reader.IsDBNull(5)) {
-                            dso.Size = reader.GetDouble(5);
+                        var reader = await command.ExecuteReaderAsync(token);
+
+
+                        while (reader.Read()) {
+
+                            var dso = new DeepSkyObject(reader.GetString(0));
+
+                            var coords = new Coordinates(reader.GetDouble(1),reader.GetDouble(2),Epoch.J2000,Coordinates.RAType.Degrees);
+                            dso.Coordinates = coords;
+                            dso.DSOType = reader.GetString(3);
+
+                            if (!reader.IsDBNull(4)) {
+                                dso.Magnitude = reader.GetDouble(4);
+                            }
+
+                            if (!reader.IsDBNull(5)) {
+                                dso.Size = reader.GetDouble(5);
+                            }
+
+                            dsos.Add(dso);
                         }
-                         
-                        dsos.Add(dso);
                     }
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex.Message,ex.StackTrace);
+                Notification.Notification.ShowError(ex.Message);
             }
 
             return dsos;

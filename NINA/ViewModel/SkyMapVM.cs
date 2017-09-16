@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,9 @@ namespace NINA.ViewModel {
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
 
+            
             InitializeFilters();
+            
         }
 
         private CancellationTokenSource _searchTokenSource;
