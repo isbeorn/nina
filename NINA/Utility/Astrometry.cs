@@ -77,13 +77,26 @@ namespace NINA.Utility.Astrometry {
             return hours * 15;
         }
 
+        public static double DegreesToHours(double deg) {
+            return deg / 15;
+        }
+
         public static double GetLocalSiderealTime(double longitude) {
-            var util = AstroUtils;
-            var jd = util.JulianDateUtc;
-            var d = (jd - 2451545.0);
+
+            var jd = AstroUtils.JulianDateUtc;
+            /*var d = (jd - 2451545.0);
             var UT = DateTime.UtcNow.ToUniversalTime();
-            var lst = 100.46 + 0.985647 * d + longitude + 15 * (UT.Hour + UT.Minute / 60.0 + UT.Second / 60.0 / 60.0);
-            return (lst % 360) / 15;
+            var lst2 = 100.46 + 0.985647 * d + longitude + 15 * (UT.Hour + UT.Minute / 60.0 + UT.Second / 60.0 / 60.0);
+            lst2 = (lst2 % 360) / 15;*/
+            
+            long jd_high = (long)jd;
+            double jd_low = jd - jd_high;
+            
+            double lst = 0;
+            NOVAS31.SiderealTime(jd_high,jd_low, NOVAS31.DeltaT(jd) ,ASCOM.Astrometry.GstType.GreenwichApparentSiderealTime,ASCOM.Astrometry.Method.CIOBased,ASCOM.Astrometry.Accuracy.Full,ref lst);
+            lst = lst + DegreesToHours(longitude);
+
+            return lst;
         }
 
         public static double GetHourAngle(double siderealTime, double rightAscension) {
@@ -92,7 +105,7 @@ namespace NINA.Utility.Astrometry {
             return hourAngle;
         }
 
-        public static double GetAltitude(double hourAngle,double latitude, double declination) {
+        public static double GetAltitude(double hourAngle, double latitude, double declination) {
             var radX = ToRadians(HoursToDegrees(hourAngle));
             var sinAlt = Math.Sin(ToRadians(declination))
                          * Math.Sin(ToRadians(latitude))
