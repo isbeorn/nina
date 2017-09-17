@@ -81,21 +81,27 @@ namespace NINA.Utility.Astrometry {
             return deg / 15;
         }
 
-        public static double GetLocalSiderealTime(double longitude) {
+        public static double GetLocalSiderealTimeNow(double longitude) {
+            return GetLocalSiderealTime(DateTime.UtcNow,longitude);            
+        }
 
-            var jd = AstroUtils.JulianDateUtc;
-            /*var d = (jd - 2451545.0);
+        public static double GetLocalSiderealTime(DateTime date, double longitude) {
+            var utcdate = date.ToUniversalTime();
+            var jd = NOVAS31.JulianDate((short)utcdate.Year,(short)utcdate.Month,(short)utcdate.Day,utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0 );
+
+            /*
+            var jd = AstroUtils.JulianDateUtc; 
+            var d = (jd - 2451545.0);
             var UT = DateTime.UtcNow.ToUniversalTime();
             var lst2 = 100.46 + 0.985647 * d + longitude + 15 * (UT.Hour + UT.Minute / 60.0 + UT.Second / 60.0 / 60.0);
             lst2 = (lst2 % 360) / 15;*/
-            
+
             long jd_high = (long)jd;
             double jd_low = jd - jd_high;
-            
-            double lst = 0;
-            NOVAS31.SiderealTime(jd_high,jd_low, NOVAS31.DeltaT(jd) ,ASCOM.Astrometry.GstType.GreenwichApparentSiderealTime,ASCOM.Astrometry.Method.CIOBased,ASCOM.Astrometry.Accuracy.Full,ref lst);
-            lst = lst + DegreesToHours(longitude);
 
+            double lst = 0;
+            NOVAS31.SiderealTime(jd_high,jd_low,NOVAS31.DeltaT(jd),ASCOM.Astrometry.GstType.GreenwichApparentSiderealTime,ASCOM.Astrometry.Method.CIOBased,ASCOM.Astrometry.Accuracy.Full,ref lst);
+            lst = lst + DegreesToHours(longitude);
             return lst;
         }
 
@@ -111,8 +117,61 @@ namespace NINA.Utility.Astrometry {
                          * Math.Sin(ToRadians(latitude))
                          + Math.Cos(ToRadians(declination))
                          * Math.Cos(ToRadians(latitude))
-                         * Math.Cos(radX);
+                         * Math.Cos(radX); 
             return Astrometry.ToDegree(Math.Asin(sinAlt));
+        }
+
+        public static AstronomicalTwilight GetNightTimes(DateTime date) {            
+            var d = date.Day;
+            var m = date.Month;
+            var y = date.Year;
+
+            /*The returned zero based arraylist has the following values: 
+             * Arraylist(0) - Boolean - True if the body is above the event limit at midnight (the beginning of the 24 hour day), false if it is below the event limit
+             * Arraylist(1) - Integer - Number of rise events in this 24 hour period
+             * Arraylist(2) - Integer - Number of set events in this 24 hour period
+             * Arraylist(3) onwards - Double - Values of rise events in hours Arraylist
+             * (3 + NumberOfRiseEvents) onwards - Double - Values of set events in hours*/
+            var times = AstroUtils.EventTimes(ASCOM.Astrometry.EventType.AstronomicalTwilight,d,m,y,Settings.Latitude,Settings.Longitude,Settings.TimeZone.GetUtcOffset(date).Hours + Settings.TimeZone.GetUtcOffset(date).Minutes / 60.0);
+
+            if(times.Count > 3) {
+                int nrOfRiseEvents = (int)times[1];
+                int nrOfSetEvents = (int)times[2];
+
+                double[] rises = new double[nrOfRiseEvents];
+                double[] sets = new double[nrOfSetEvents];
+
+                for (int i = 0;i < nrOfRiseEvents;i++) {
+                    rises[i] = (double)times[i + 3];
+                }
+
+                for (int i = 0;i < nrOfSetEvents;i++) {
+                    sets[i] = (double)times[i + 3 + nrOfRiseEvents];
+                }
+
+                return new AstronomicalTwilight(date, (double)rises[0],(double)sets[0]);
+            }
+            return null;
+        }
+
+        public class AstronomicalTwilight {
+            public AstronomicalTwilight(DateTime referenceDate, double rise, double set) {
+                RiseDate = new DateTime(referenceDate.Year,referenceDate.Month,referenceDate.Day, referenceDate.Hour, referenceDate.Minute, referenceDate.Second);
+                if(RiseDate.Hour > rise) {
+                    RiseDate = RiseDate.AddDays(1);
+                }
+                RiseDate = RiseDate.Date;
+                RiseDate = RiseDate.AddHours(rise);
+
+                SetDate = new DateTime(referenceDate.Year,referenceDate.Month,referenceDate.Day,referenceDate.Hour,referenceDate.Minute,referenceDate.Second);
+                if (SetDate.Hour > set) {
+                    SetDate = SetDate.AddDays(1);
+                }
+                SetDate = SetDate.Date;
+                SetDate = SetDate.AddHours(set);
+            }
+            public DateTime RiseDate { get; private set; }
+            public DateTime SetDate { get; private set; }
         }
     }
 

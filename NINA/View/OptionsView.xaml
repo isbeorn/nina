@@ -42,6 +42,10 @@
                             <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblLongitude}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" MinWidth="120" VerticalAlignment="Center" Text="{Binding Longitude}" Margin="10,0,0,0"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+                            <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblTimeZone}"></TextBlock>
+                            <ComboBox ItemsSource="{Binding TimeZones}" DisplayMemberPath="DisplayName" SelectedItem="{Binding TimeZone}" Margin="10,0,0,0"/>
+                        </StackPanel>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblCurrentUIColorSchema}">

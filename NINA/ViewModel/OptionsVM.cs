@@ -206,6 +206,7 @@ namespace NINA.ViewModel {
             set {
                 Settings.HemisphereType = value;
                 RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.HemisphereChanged,Settings.HemisphereType);
             }
         }
 
@@ -731,6 +732,20 @@ namespace NINA.ViewModel {
             }
         }
 
+        public ReadOnlyCollection<TimeZoneInfo> TimeZones {
+            get {
+                return TimeZoneInfo.GetSystemTimeZones();
+            }
+        }
 
+       public TimeZoneInfo TimeZone {
+            get {
+                return Settings.TimeZone;
+            }
+            set {
+                Settings.TimeZone = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

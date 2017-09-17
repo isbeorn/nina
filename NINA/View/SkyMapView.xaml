@@ -201,10 +201,10 @@
                                     >
                                 <oxy:Plot.Axes>
                                     <oxy:LinearAxis  Position="Left"  IsZoomEnabled="False" IsPanEnabled="False"
-                                                    Maximum="{Binding AltitudeMaximum}" 
-                                                    Minimum="{Binding AltitudeMinimum}"   
-                                                    StartPosition="{Binding AltitudeStartPosition}"
-                                                    EndPosition="{Binding AltitudeEndPosition}"
+                                                    Maximum="{Binding Source={StaticResource AppVM}, Path=SkyMapVM.AltitudeMaximum}" 
+                                                    Minimum="{Binding Source={StaticResource AppVM}, Path=SkyMapVM.AltitudeMinimum}"   
+                                                    StartPosition="{Binding Source={StaticResource AppVM}, Path=SkyMapVM.AltitudeStartPosition}"
+                                                    EndPosition="{Binding Source={StaticResource AppVM}, Path=SkyMapVM.AltitudeEndPosition}"
                                                     IntervalLength = "30"
                                                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                                                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
@@ -227,10 +227,16 @@
                                                 IsPanEnabled="False" />
                                 </oxy:Plot.Axes>
                                 <oxy:Plot.Series>
-                                    <oxy:LineSeries ItemsSource="{Binding Altitudes}" 
-                                                DataFieldX="Key" 
-                                                DataFieldY="Value" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
-                                                />
+                                    <oxy:LineSeries 
+                                        ItemsSource="{Binding Altitudes}"                                                 
+                                        DataFieldX="Key"                                                 
+                                        DataFieldY="Value" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"  />
+                                    <oxy:AreaSeries 
+                                        ItemsSource="{Binding Source={StaticResource AppVM}, 
+                                        Path=SkyMapVM.NightDuration}"  
+                                        DataFieldX="Key" 
+                                        DataFieldY="Value" 
+                                        Color="Black" />
                                 </oxy:Plot.Series>
                             </oxy:Plot>
                         </DataTemplate>
@@ -238,66 +244,5 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <!--<Grid Grid.Column="1">
-            <ListView ItemsSource="{Binding SearchResult}" >
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="{ns:Loc LblName}" DisplayMemberBinding="{Binding Name}" />
-                        <GridViewColumn Header="{ns:Loc LblRA}" DisplayMemberBinding="{Binding Coordinates.RAString}" />
-                        <GridViewColumn Header="{ns:Loc LblDec}" DisplayMemberBinding="{Binding Coordinates.DecString}" />
-                        <GridViewColumn Header="{ns:Loc LblType}" DisplayMemberBinding="{Binding DSOType}" />
-                        <GridViewColumn Header="{ns:Loc LblMagnitude}" DisplayMemberBinding="{Binding Magnitude}" />
-                        <GridViewColumn Header="{ns:Loc LblSize}" DisplayMemberBinding="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" />
-                        <GridViewColumn Header="{ns:Loc LblAltitude}">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>                                    
-                                    <oxy:Plot Width="300" Height="150"
-                                        Background="{StaticResource BackgroundBrush}"
-                                        PlotAreaBackground="{StaticResource BackgroundBrush}" 
-                                        PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
-                                       
-                                        >
-                                        <oxy:Plot.Axes>
-                                            <oxy:LinearAxis  Position="Left"  IsZoomEnabled="False" IsPanEnabled="False"
-                                                    Maximum="{Binding AltitudeMaximum}" 
-                                                    Minimum="{Binding AltitudeMinimum}"   
-                                                    StartPosition="{Binding AltitudeStartPosition}"
-                                                    EndPosition="{Binding AltitudeEndPosition}"
-                                                    IntervalLength = "30"
-                                                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
-                                 
-                                                    MajorStep="30"
-                                                    MajorGridlineStyle="LongDash"
-                                                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
-                                                   
-                                                    />
-                                            <oxy:DateTimeAxis 
-                                                TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
-                                                StringFormat="HH" 
-                                                IntervalType="Hours" 
-                                                MajorStep="0.125" 
-                                                Position="Bottom" 
-                                                IsZoomEnabled="False" 
-                                                IsPanEnabled="False" />
-                                        </oxy:Plot.Axes>
-                                        <oxy:Plot.Series>
-                                            <oxy:LineSeries ItemsSource="{Binding Altitudes}" 
-                                                DataFieldX="Key" 
-                                                DataFieldY="Value" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
-                                                />
-                                        </oxy:Plot.Series>
-                                    </oxy:Plot>
-                                    
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </Grid>-->
     </Grid>
 </UserControl>

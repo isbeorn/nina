@@ -285,4 +285,5 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblArcsec">Winkelsekunden</s:String>
     <s:String x:Key="LblMagnitude">Helligkeit</s:String>
     <s:String x:Key="LblSize">Größe</s:String>
+    <s:String x:Key="LblTimeZone">Zeitzone</s:String>
 </ResourceDictionary>

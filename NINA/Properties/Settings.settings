@@ -167,5 +167,8 @@
     <Setting Name="Longitude" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
+    <Setting Name="TimeZone" Type="System.String" Scope="User">
+      <Value Profile="(Default)">UTC</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -683,5 +683,17 @@ namespace NINA.Properties {
                 this["Longitude"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("UTC")]
+        public string TimeZone {
+            get {
+                return ((string)(this["TimeZone"]));
+            }
+            set {
+                this["TimeZone"] = value;
+            }
+        }
     }
 }

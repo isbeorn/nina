@@ -18,6 +18,10 @@ namespace NINA.ViewModel {
 
             
             InitializeFilters();
+
+            Mediator.Instance.Register((object o) => {
+                _nightDuration = null; //Clear cache
+            },MediatorMessages.HemisphereChanged);
             
         }
 
@@ -25,6 +29,81 @@ namespace NINA.ViewModel {
 
         private void CancelSearch(object obj) {
             _searchTokenSource?.Cancel();
+        }
+
+
+        private AsyncObservableCollection<KeyValuePair<DateTime,double>> _nightDuration;
+        public AsyncObservableCollection<KeyValuePair<DateTime,double>> NightDuration {
+            get {
+                if(_nightDuration == null) {
+
+                    DateTime d;
+                    if (DateTime.UtcNow.Hour > 12) {
+                        d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,12,0,0);
+                    }
+                    else {
+                        d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day - 1,12,0,0);
+                    }
+
+                    var twilight = Astrometry.GetNightTimes(d);
+
+                    var degrees = 90;
+                    if(Settings.HemisphereType == Hemisphere.SOUTHERN) {
+                        degrees = -90;
+                    }
+
+                    _nightDuration = new AsyncObservableCollection<KeyValuePair<DateTime,double>>() {
+                    new KeyValuePair<DateTime,double>(twilight.RiseDate, degrees),
+                    new KeyValuePair<DateTime,double>(twilight.SetDate, degrees) };
+                }
+                return _nightDuration;
+            }
+        }
+
+
+
+        public double AltitudeMaximum {
+            get {
+                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
+                    return 90;
+                }
+                else {
+                    return 0;
+                }
+            }
+        }
+
+        public double AltitudeMinimum {
+            get {
+                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
+                    return 0;
+                }
+                else {
+                    return -90;
+                }
+            }
+        }
+
+        public double AltitudeStartPosition {
+            get {
+                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
+                    return 0;
+                }
+                else {
+                    return 1;
+                }
+            }
+        }
+
+        public double AltitudeEndPosition {
+            get {
+                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            }
         }
 
         private async Task<bool> Search() {
@@ -49,9 +128,17 @@ namespace NINA.ViewModel {
             var longitude = Settings.Longitude;
             var latitude = Settings.Latitude;
 
-            
+            DateTime d;
+            if (DateTime.Now.Hour > 12) {
+                d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,12,0,0);
+            }
+            else {
+                d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day - 1,12,0,0);
+            }
+
             foreach (var obj in SearchResult) {
-                obj.CalculateElevation(latitude,longitude);
+                var cloneDate = d;
+                obj.CalculateElevation(cloneDate, latitude,longitude);
             }
             
 

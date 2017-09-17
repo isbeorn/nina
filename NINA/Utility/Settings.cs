@@ -655,7 +655,15 @@ namespace NINA.Utility {
             }
         }
 
-
+        public static TimeZoneInfo TimeZone {
+            get {
+                return TimeZoneInfo.FindSystemTimeZoneById(Properties.Settings.Default.TimeZone);
+            }
+            set {
+                Properties.Settings.Default.TimeZone = value.Id;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 
 }

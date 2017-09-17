@@ -86,50 +86,6 @@ namespace NINA.Model {
             }
         }
 
-        public double AltitudeMaximum {
-            get {
-                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
-                    return 90;
-                }
-                else {
-                    return 0;
-                }
-            }
-        }
-
-        public double AltitudeMinimum {
-            get {
-                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
-                    return 0;
-                }
-                else {
-                    return -90;
-                }
-            }
-        }
-
-        public double AltitudeStartPosition {
-            get {
-                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
-                    return 0;
-                }
-                else {
-                    return 1;
-                }
-            }
-        }
-
-        public double AltitudeEndPosition {
-            get {
-                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
-                    return 1;
-                }
-                else {
-                    return 0;
-                }
-            }
-        }
-
         private AsyncObservableCollection<string> _alsoKnownAs;
         public AsyncObservableCollection<string> AlsoKnownAs {
             get {
@@ -144,16 +100,16 @@ namespace NINA.Model {
             }
         }
 
-        public void CalculateElevation(double latitude,double longitude) {
-            var d = DateTime.Now;
-            var siderealTime = Astrometry.GetLocalSiderealTime(longitude);            
+        public void CalculateElevation(DateTime start, double latitude,double longitude) {
+
+            var siderealTime = Astrometry.GetLocalSiderealTime(start, longitude);            
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
 
             for (double angle = hourAngle;angle < hourAngle + 24;angle += 0.1) {
                 var altitude = Astrometry.GetAltitude(angle,latitude, this.Coordinates.Dec);
-                Altitudes.Add(new KeyValuePair<DateTime,double>(d,altitude));
-                d = d.AddHours(0.1);
+                Altitudes.Add(new KeyValuePair<DateTime,double>(start,altitude));
+                start = start.AddHours(0.1);
             }
         }
-    }
+    }    
 }

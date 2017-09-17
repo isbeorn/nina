@@ -71,7 +71,8 @@ namespace NINA.Utility {
         ChangeDetectStars = 15,
         ActiveSequenceChanged = 16,
         FocuserChanged = 17,
-        LocaleChanged = 18
+        LocaleChanged = 18,
+        HemisphereChanged = 19
     };
 
     public enum AsyncMediatorMessages {
