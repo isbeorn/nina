@@ -124,20 +124,15 @@
         <!-- Search result area -->
         <DataGrid Grid.Column="1" ItemsSource="{Binding SearchResult}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled">
             <DataGrid.Columns>
-                <!--<DataGridTemplateColumn Width="*" Header="{ns:Loc LblName}" CanUserSort="False">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
-
                 <DataGridTemplateColumn Width="2*" Header="{ns:Loc LblName}" CanUserSort="False" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <DataGrid ItemsSource="{Binding AlsoKnownAs}" 
                                       AutoGenerateColumns="False" 
                                       HorizontalScrollBarVisibility="Hidden" 
+                                      BorderBrush="Transparent" BorderThickness="0"
+                                      HorizontalGridLinesBrush="Transparent"
+                                      VerticalGridLinesBrush="Transparent"
                                       IsHitTestVisible="False" HeadersVisibility="None"
                                       VerticalAlignment="Center"
                                      >
@@ -151,21 +146,6 @@
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
-                            <!--<ListView ItemsSource="{Binding AlsoKnownAs}">
-                                <ListView.Resources>
-                                    <Style TargetType="GridViewColumnHeader">
-                                        
-                                    </Style>
-                                </ListView.Resources>
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn>
-                                            <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
-                                        </GridViewColumn>                                        
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>-->
-                            <!--<TextBlock Text="{Binding AlsoKnownAs}" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>-->
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
