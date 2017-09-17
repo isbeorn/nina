@@ -72,7 +72,9 @@ namespace NINA.Utility {
         ActiveSequenceChanged = 16,
         FocuserChanged = 17,
         LocaleChanged = 18,
-        HemisphereChanged = 19
+        LocationChanged = 19,
+        SetSequenceCoordinates = 20,
+        SlewToCoordinates = 21
     };
 
     public enum AsyncMediatorMessages {

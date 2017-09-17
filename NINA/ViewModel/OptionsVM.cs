@@ -206,7 +206,7 @@ namespace NINA.ViewModel {
             set {
                 Settings.HemisphereType = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.HemisphereChanged,Settings.HemisphereType);
+                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 
@@ -719,6 +719,7 @@ namespace NINA.ViewModel {
             set {
                 Settings.Latitude = value;
                 RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.LocationChanged,null);
             }
         }
 
@@ -729,6 +730,7 @@ namespace NINA.ViewModel {
             set {
                 Settings.Longitude = value;
                 RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.LocationChanged,null);
             }
         }
 
@@ -745,6 +747,7 @@ namespace NINA.ViewModel {
             set {
                 Settings.TimeZone = value;
                 RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.LocationChanged,null);
             }
         }
     }

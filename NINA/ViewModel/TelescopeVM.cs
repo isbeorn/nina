@@ -34,6 +34,13 @@ namespace NINA.ViewModel {
             _updateTelescope = new DispatcherTimer();
             _updateTelescope.Interval = TimeSpan.FromMilliseconds(300);
             _updateTelescope.Tick += UpdateTelescope_Tick;
+
+            Mediator.Instance.Register((object o) => {
+                if(o != null) {
+                    SlewToCoordinates((Coordinates)o);
+                }
+                
+            },MediatorMessages.SlewToCoordinates);
         }
 
         private void RefreshTelescopeList(object obj) {
@@ -216,14 +223,19 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void SlewToCoordinates(Coordinates coords) {
+            coords = coords.Transform(Settings.EpochType);
+            if(Telescope?.Connected == true) {
+                Telescope.SlewToCoordinatesAsync(coords.RA,coords.Dec);
+            }            
+        }
+
         private void SlewToCoordinates(object obj) {
             var targetRightAscencion = Utility.Utility.AscomUtil.HMSToHours(TargetRightAscencionHours + ":" + TargetRightAscencionMinutes + ":" + TargetRightAscencionSeconds);
             var targetDeclination = Utility.Utility.AscomUtil.DMSToDegrees(TargetDeclinationDegrees + ":" + TargetDeclinationMinutes + ":" + TargetDeclinationSeconds);
 
             var coords = new Coordinates(targetRightAscencion, targetDeclination, Epoch.J2000, Coordinates.RAType.Hours);
-            coords = coords.Transform(Settings.EpochType);
-            
-            Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
+            SlewToCoordinates(coords);
         }
         
         public ICommand SlewToCoordinatesCommand { get; private set; }

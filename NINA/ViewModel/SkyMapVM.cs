@@ -15,15 +15,19 @@ namespace NINA.ViewModel {
         public SkyMapVM() {
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
-
             
+
+
+
             InitializeFilters();
 
             Mediator.Instance.Register((object o) => {
                 _nightDuration = null; //Clear cache
-            },MediatorMessages.HemisphereChanged);
+            },MediatorMessages.LocationChanged);
             
         }
+
+        
 
         private CancellationTokenSource _searchTokenSource;
 
@@ -540,7 +544,7 @@ namespace NINA.ViewModel {
         public ICommand SearchCommand { get; private set; }
 
         public ICommand CancelSearchCommand { get; private set; }
-
+        
         public AsyncObservableCollection<DeepSkyObject> SearchResult {
             get {
                 return _searchResult;

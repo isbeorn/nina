@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using NINA.Utility.Astrometry;
 
 namespace NINA.Model {
 
@@ -12,6 +13,13 @@ namespace NINA.Model {
 
         public CaptureSequenceList() {
             TargetName = string.Empty;
+            Mediator.Instance.Register((object o) => {
+                var args = (object[])o;
+                if(args.Length == 2) {
+                    TargetName = (string)args[0];
+                    Coordinates = (Coordinates)args[1];
+                }                
+            },MediatorMessages.SetSequenceCoordinates);
         }
 
         public CaptureSequenceList(CaptureSequence seq) : this() {
@@ -36,6 +44,16 @@ namespace NINA.Model {
             } else {
                 return false;
             }            
+        }
+
+        private Coordinates _coordinates;
+        public Coordinates Coordinates {
+            get {
+                return _coordinates;
+            }
+            set {
+                _coordinates = value;
+            }
         }
 
         private CaptureSequence _activeSequence;

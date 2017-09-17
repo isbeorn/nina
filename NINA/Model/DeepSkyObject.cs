@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NINA.Model {
@@ -16,6 +17,8 @@ namespace NINA.Model {
 
         public DeepSkyObject(string name) {
             Name = name;
+            SetSequenceCoordinatesCommand = new RelayCommand(SetSequenceCoordinates);
+            SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
         }
 
         private string _name;
@@ -100,6 +103,14 @@ namespace NINA.Model {
             }
         }
 
+        private void SetSequenceCoordinates(object obj) {
+            Mediator.Instance.Notify(MediatorMessages.SetSequenceCoordinates,new object[] { AlsoKnownAs.FirstOrDefault(), Coordinates });
+        }
+
+        private void SlewToCoordinates(object obj) {
+            Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates,Coordinates);
+        }
+
         public void CalculateElevation(DateTime start, double latitude,double longitude) {
 
             var siderealTime = Astrometry.GetLocalSiderealTime(start, longitude);            
@@ -111,5 +122,9 @@ namespace NINA.Model {
                 start = start.AddHours(0.1);
             }
         }
+
+        public ICommand SetSequenceCoordinatesCommand { get; private set; }
+
+        public ICommand SlewToCoordinatesCommand { get; private set; }
     }    
 }

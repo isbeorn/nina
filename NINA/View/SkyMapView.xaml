@@ -174,7 +174,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblMagnitude}" CanUserSort="False">
+                <DataGridTemplateColumn Width="0.5*" Header="{ns:Loc LblMagnitude}" CanUserSort="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Magnitude}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
@@ -182,7 +182,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblSize}" CanUserSort="False">
+                <DataGridTemplateColumn Width="0.5*" Header="{ns:Loc LblSize}" CanUserSort="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
@@ -239,6 +239,23 @@
                                         Color="Black" />
                                 </oxy:Plot.Series>
                             </oxy:Plot>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Width="1.5*" Header="" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <UniformGrid Rows="2" Columns="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                <Button Margin="5" MinHeight="50" HorizontalAlignment="Stretch" Command="{Binding SetSequenceCoordinatesCommand}" >
+                                    <TextBlock Text ="{ns:Loc LblSetAsSequenceTarget}" TextWrapping="Wrap" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                                </Button>
+
+                                <Button Margin="5" MinHeight="50" HorizontalAlignment="Stretch" Command="{Binding SlewToCoordinatesCommand}" >
+                                    <TextBlock Text ="{ns:Loc LblSlew}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                                </Button>
+                            </UniformGrid>
+                            
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
