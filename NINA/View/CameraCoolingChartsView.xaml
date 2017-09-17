@@ -32,13 +32,15 @@
                                  IntervalLength = "50"
                                  TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                                  AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                 
+                                 TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
                                  MajorGridlineStyle="LongDash"
                                  MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                                  MinorGridlineStyle="Dash"
                                  MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
                                  />
-                <oxy:DateTimeAxis Position="Bottom" IsZoomEnabled="False" IsPanEnabled="False" />
+                <oxy:DateTimeAxis  TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" 
+                                   TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                                   Position="Bottom" IsZoomEnabled="False" IsPanEnabled="False" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries ItemsSource="{Binding CoolerPowerHistory}" 
@@ -73,7 +75,9 @@
                                  MinorGridlineStyle="Dash"
                                  MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
                                  />
-                <oxy:DateTimeAxis Position="Bottom" IsZoomEnabled="False" IsPanEnabled="False" />
+                <oxy:DateTimeAxis  TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" 
+                                   TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                                   Position="Bottom" IsZoomEnabled="False" IsPanEnabled="False" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries ItemsSource="{Binding CCDTemperatureHistory}" 

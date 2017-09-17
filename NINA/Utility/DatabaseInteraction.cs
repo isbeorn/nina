@@ -90,7 +90,10 @@ namespace NINA.Utility {
             string magnitudefrom = null,
             string magnitudethru = null) {
 
-            string query = "SELECT id, ra, dec, dsotype, magnitude, sizemax FROM dsodetail WHERE (1=1) ";
+            string query = @"SELECT id, ra, dec, dsotype, magnitude, sizemax, group_concat(cataloguenr.catalogue || ' ' || cataloguenr.designation) aka 
+                             FROM dsodetail 
+                                INNER JOIN cataloguenr on dsodetail.id = cataloguenr.dsodetailid
+                             WHERE (1=1) ";
 
             if (constellation != null && constellation != string.Empty) {
                 query += " AND constellation = $constellation ";
@@ -145,7 +148,8 @@ namespace NINA.Utility {
                 query += " AND magnitude < $magnitudethru ";
             }
 
-            query += " ORDER BY Id asc;";
+            query += " GROUP BY id ";
+            query += " ORDER BY id asc;";
 
             var dsos = new AsyncObservableCollection<DeepSkyObject>();
             try {
@@ -191,6 +195,15 @@ namespace NINA.Utility {
 
                             if (!reader.IsDBNull(5)) {
                                 dso.Size = reader.GetDouble(5);
+                            }
+
+                            if(!reader.IsDBNull(6)) {
+                                var akas = reader.GetString(6);
+                                if(akas != string.Empty) {
+                                    foreach(var name in akas.Split(',')) {
+                                        dso.AlsoKnownAs.Add(name);
+                                    }
+                                }
                             }
 
                             dsos.Add(dso);

@@ -711,6 +711,26 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double Latitude {
+            get {
+                return Settings.Latitude;
+            }
+            set {
+                Settings.Latitude = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double Longitude {
+            get {
+                return Settings.Longitude;
+            }
+            set {
+                Settings.Longitude = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
     }
 }

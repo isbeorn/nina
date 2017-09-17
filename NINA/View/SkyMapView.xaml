@@ -6,21 +6,24 @@
              xmlns:local="clr-namespace:NINA.View"
              xmlns:ns ="clr-namespace:NINA.Locale"
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"   
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
         <!-- Filter area -->
         <Border Grid.Column="0" BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{StaticResource RightSideScrollbar}" >
                 <StackPanel Margin="5">
+                    <!--
+                    Not yet functional
                     <ninactrl:HintTextBox Text="{Binding SearchObjectName}" HintText="{ns:Loc LblObjectNameHint}" 
                                       Foreground="{StaticResource PrimaryBrush}"
                                       VerticalContentAlignment="Center" 
-                                      HorizontalAlignment="Stretch" />
+                                      HorizontalAlignment="Stretch" /> -->
                     <Expander Header="{ns:Loc LblObjectType}">
                         <ListView ItemsSource="{Binding ObjectTypes}">
                             <ListView.View>
@@ -28,7 +31,7 @@
                                     <GridViewColumn Header="">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <CheckBox IsChecked="{Binding Selected}" />
+                                                <CheckBox IsChecked="{Binding Selected}" Style="{StaticResource CheckmarkCheckbox}" Width="20" Height="20"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
@@ -119,8 +122,144 @@
         </Border>
         
         <!-- Search result area -->
-        <Grid Grid.Column="1">
-            <ListView ItemsSource="{Binding SearchResult}">
+        <DataGrid Grid.Column="1" ItemsSource="{Binding SearchResult}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled">
+            <DataGrid.Columns>
+                <!--<DataGridTemplateColumn Width="*" Header="{ns:Loc LblName}" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+
+                <DataGridTemplateColumn Width="2*" Header="{ns:Loc LblName}" CanUserSort="False" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DataGrid ItemsSource="{Binding AlsoKnownAs}" 
+                                      AutoGenerateColumns="False" 
+                                      HorizontalScrollBarVisibility="Hidden" 
+                                      IsHitTestVisible="False" HeadersVisibility="None"
+                                      VerticalAlignment="Center"
+                                     >
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Width="*" Header="" CanUserSort="False">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <!--<ListView ItemsSource="{Binding AlsoKnownAs}">
+                                <ListView.Resources>
+                                    <Style TargetType="GridViewColumnHeader">
+                                        
+                                    </Style>
+                                </ListView.Resources>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn>
+                                            <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                                        </GridViewColumn>                                        
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>-->
+                            <!--<TextBlock Text="{Binding AlsoKnownAs}" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>-->
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblRA}" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Coordinates.RAString}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblDec}" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Coordinates.DecString}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblType}" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DSOType}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblMagnitude}" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Magnitude}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblSize}" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Width="3*" Header="{ns:Loc LblAltitude}" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <oxy:Plot Height="180"
+                                    Background="{StaticResource BackgroundBrush}"
+                                    PlotAreaBackground="{StaticResource BackgroundBrush}" 
+                                    PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
+                                       
+                                    >
+                                <oxy:Plot.Axes>
+                                    <oxy:LinearAxis  Position="Left"  IsZoomEnabled="False" IsPanEnabled="False"
+                                                    Maximum="{Binding AltitudeMaximum}" 
+                                                    Minimum="{Binding AltitudeMinimum}"   
+                                                    StartPosition="{Binding AltitudeStartPosition}"
+                                                    EndPosition="{Binding AltitudeEndPosition}"
+                                                    IntervalLength = "30"
+                                                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                                 
+                                                    MajorStep="30"
+                                                    MajorGridlineStyle="LongDash"
+                                                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
+                                                   
+                                                    />
+                                    <oxy:DateTimeAxis 
+                                                TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                                AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                                TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                                                StringFormat="HH" 
+                                                IntervalType="Hours" 
+                                                MajorStep="0.125" 
+                                                Position="Bottom" 
+                                                IsZoomEnabled="False" 
+                                                IsPanEnabled="False" />
+                                </oxy:Plot.Axes>
+                                <oxy:Plot.Series>
+                                    <oxy:LineSeries ItemsSource="{Binding Altitudes}" 
+                                                DataFieldX="Key" 
+                                                DataFieldY="Value" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                                                />
+                                </oxy:Plot.Series>
+                            </oxy:Plot>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <!--<Grid Grid.Column="1">
+            <ListView ItemsSource="{Binding SearchResult}" >
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="{ns:Loc LblName}" DisplayMemberBinding="{Binding Name}" />
@@ -129,9 +268,56 @@
                         <GridViewColumn Header="{ns:Loc LblType}" DisplayMemberBinding="{Binding DSOType}" />
                         <GridViewColumn Header="{ns:Loc LblMagnitude}" DisplayMemberBinding="{Binding Magnitude}" />
                         <GridViewColumn Header="{ns:Loc LblSize}" DisplayMemberBinding="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" />
+                        <GridViewColumn Header="{ns:Loc LblAltitude}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>                                    
+                                    <oxy:Plot Width="300" Height="150"
+                                        Background="{StaticResource BackgroundBrush}"
+                                        PlotAreaBackground="{StaticResource BackgroundBrush}" 
+                                        PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
+                                       
+                                        >
+                                        <oxy:Plot.Axes>
+                                            <oxy:LinearAxis  Position="Left"  IsZoomEnabled="False" IsPanEnabled="False"
+                                                    Maximum="{Binding AltitudeMaximum}" 
+                                                    Minimum="{Binding AltitudeMinimum}"   
+                                                    StartPosition="{Binding AltitudeStartPosition}"
+                                                    EndPosition="{Binding AltitudeEndPosition}"
+                                                    IntervalLength = "30"
+                                                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                                 
+                                                    MajorStep="30"
+                                                    MajorGridlineStyle="LongDash"
+                                                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
+                                                   
+                                                    />
+                                            <oxy:DateTimeAxis 
+                                                TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                                AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                                TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                                                StringFormat="HH" 
+                                                IntervalType="Hours" 
+                                                MajorStep="0.125" 
+                                                Position="Bottom" 
+                                                IsZoomEnabled="False" 
+                                                IsPanEnabled="False" />
+                                        </oxy:Plot.Axes>
+                                        <oxy:Plot.Series>
+                                            <oxy:LineSeries ItemsSource="{Binding Altitudes}" 
+                                                DataFieldX="Key" 
+                                                DataFieldY="Value" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                                                />
+                                        </oxy:Plot.Series>
+                                    </oxy:Plot>
+                                    
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>
-        </Grid>
+        </Grid>-->
     </Grid>
 </UserControl>

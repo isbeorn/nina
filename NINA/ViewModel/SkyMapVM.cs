@@ -44,6 +44,17 @@ namespace NINA.ViewModel {
                 SelectedBrightnessThrough,
                 SelectedMagnitudeFrom,
                 SelectedMagnitudeThrough);
+
+            
+            var longitude = Settings.Longitude;
+            var latitude = Settings.Latitude;
+
+            
+            foreach (var obj in SearchResult) {
+                obj.CalculateElevation(latitude,longitude);
+            }
+            
+
             return true;
         }
 

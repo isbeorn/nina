@@ -635,6 +635,26 @@ namespace NINA.Utility {
             }
         }
 
+        public static double Latitude {
+            get {
+                return Properties.Settings.Default.Latitude;
+            }
+            set {
+                Properties.Settings.Default.Latitude = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static double Longitude {
+            get {
+                return Properties.Settings.Default.Longitude;
+            }
+            set {
+                Properties.Settings.Default.Longitude = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
 
     }
 

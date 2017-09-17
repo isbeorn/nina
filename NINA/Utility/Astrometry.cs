@@ -76,6 +76,31 @@ namespace NINA.Utility.Astrometry {
         public static double HoursToDegrees(double hours) {
             return hours * 15;
         }
+
+        public static double GetLocalSiderealTime(double longitude) {
+            var util = AstroUtils;
+            var jd = util.JulianDateUtc;
+            var d = (jd - 2451545.0);
+            var UT = DateTime.UtcNow.ToUniversalTime();
+            var lst = 100.46 + 0.985647 * d + longitude + 15 * (UT.Hour + UT.Minute / 60.0 + UT.Second / 60.0 / 60.0);
+            return (lst % 360) / 15;
+        }
+
+        public static double GetHourAngle(double siderealTime, double rightAscension) {
+            double hourAngle = siderealTime - rightAscension;
+            if (hourAngle < 0) { hourAngle += 360; }
+            return hourAngle;
+        }
+
+        public static double GetAltitude(double hourAngle,double latitude, double declination) {
+            var radX = ToRadians(HoursToDegrees(hourAngle));
+            var sinAlt = Math.Sin(ToRadians(declination))
+                         * Math.Sin(ToRadians(latitude))
+                         + Math.Cos(ToRadians(declination))
+                         * Math.Cos(ToRadians(latitude))
+                         * Math.Cos(radX);
+            return Astrometry.ToDegree(Math.Asin(sinAlt));
+        }
     }
 
     public class Coordinates {
