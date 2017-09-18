@@ -287,4 +287,5 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblSize">Größe</s:String>
     <s:String x:Key="LblTimeZone">Zeitzone</s:String>
     <s:String x:Key="LblSetAsSequenceTarget">Als Sequenzziel setzen</s:String>
+    <s:String x:Key="LblDetails">Details</s:String>
 </ResourceDictionary>

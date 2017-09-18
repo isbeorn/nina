@@ -20,6 +20,9 @@
                             DataContext="{Binding}"
                             DocumentsSource="{Binding Documents}"
                             AnchorablesSource="{Binding Anchorables}">
+            <!--<dock:DockingManager.Theme>
+                <dock:MetroTheme/>
+            </dock:DockingManager.Theme>-->
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Loaded">
                     <i:InvokeCommandAction Command="{Binding LoadAvalonDockLayoutCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type dock:DockingManager}}}" />

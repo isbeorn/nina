@@ -90,7 +90,7 @@ namespace NINA.Utility {
             string magnitudefrom = null,
             string magnitudethru = null) {
 
-            string query = @"SELECT id, ra, dec, dsotype, magnitude, sizemax, group_concat(cataloguenr.catalogue || ' ' || cataloguenr.designation) aka 
+            string query = @"SELECT id, ra, dec, dsotype, magnitude, sizemax, group_concat(cataloguenr.catalogue || ' ' || cataloguenr.designation) aka, constellation  
                              FROM dsodetail 
                                 INNER JOIN cataloguenr on dsodetail.id = cataloguenr.dsodetailid
                              WHERE (1=1) ";
@@ -204,6 +204,10 @@ namespace NINA.Utility {
                                         dso.AlsoKnownAs.Add(name);
                                     }
                                 }
+                            }
+
+                            if (!reader.IsDBNull(7)) {
+                                dso.Constellation = reader.GetString(7);
                             }
 
                             dsos.Add(dso);

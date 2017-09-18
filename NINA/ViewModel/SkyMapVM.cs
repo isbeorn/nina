@@ -42,7 +42,7 @@ namespace NINA.ViewModel {
                 if(_nightDuration == null) {
 
                     DateTime d;
-                    if (DateTime.UtcNow.Hour > 12) {
+                    if (DateTime.Now.Hour > 12) {
                         d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,12,0,0);
                     }
                     else {

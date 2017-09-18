@@ -54,6 +54,17 @@ namespace NINA.Model {
             }
         }
 
+        private string _constellation;
+        public string Constellation {
+            get {
+                return _constellation;
+            }
+            set {
+                _constellation = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private double? _magnitude;
         public double? Magnitude {
             get {

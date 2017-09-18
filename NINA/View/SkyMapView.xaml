@@ -124,7 +124,7 @@
         <!-- Search result area -->
         <DataGrid Grid.Column="1" ItemsSource="{Binding SearchResult}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Width="2*" Header="{ns:Loc LblName}" CanUserSort="False" >
+                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblName}" CanUserSort="False" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <DataGrid ItemsSource="{Binding AlsoKnownAs}" 
@@ -150,46 +150,51 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblRA}" CanUserSort="False">
+                <DataGridTemplateColumn Width="3*" Header="{ns:Loc LblDetails}" CanUserSort="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Coordinates.RAString}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                            <StackPanel>
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                                    <UniformGrid Columns="2" >
+                                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                            <TextBlock Text="{ns:Loc LblRA}"></TextBlock>
+                                            <TextBlock Text="{Binding Coordinates.RAString}" Margin="5,0,0,0" />
+                                        </UniformGrid>
+                                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                            <TextBlock Text="{ns:Loc LblType}"></TextBlock>
+                                            <TextBlock Text="{Binding DSOType}" Margin="5,0,0,0" />
+                                        </UniformGrid>
+                                    </UniformGrid>
+                                </Border>
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                                    <UniformGrid Columns="2" >
+                                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                            <TextBlock Text="{ns:Loc LblDec}"></TextBlock>
+                                            <TextBlock Text="{Binding Coordinates.DecString}" Margin="5,0,0,0" />
+                                        </UniformGrid>
+                                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                            <TextBlock Text="{ns:Loc LblConstellation}"></TextBlock>
+                                            <TextBlock Text="{Binding Constellation}" Margin="5,0,0,0" />
+                                        </UniformGrid>
+                                    </UniformGrid>
+                                </Border>
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                                    <UniformGrid Columns="2" >
+                                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                            <Path Width="20" Height="20" Fill="{StaticResource ButtonForegroundBrush}"  Data="{StaticResource LightBulbSVG}" Stretch="Uniform" ToolTip="{ns:Loc LblMagnitude}" />                                            
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding Magnitude}" Margin="5,0,0,0" />
+                                        </UniformGrid>
+                                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                            <Path Width="20" Height="20" Fill="{StaticResource ButtonForegroundBrush}"  Data="{StaticResource Stretch}" Stretch="Uniform" ToolTip="{ns:Loc LblSize}" Margin="5" />
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" Margin="5,0,0,0" />
+                                        </UniformGrid>
+                                    </UniformGrid>
+                                </Border>                                
+                            </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblDec}" CanUserSort="False">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Coordinates.DecString}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblType}" CanUserSort="False">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding DSOType}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Width="0.5*" Header="{ns:Loc LblMagnitude}" CanUserSort="False">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Magnitude}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Width="0.5*" Header="{ns:Loc LblSize}" CanUserSort="False">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
+                
                 <DataGridTemplateColumn Width="3*" Header="{ns:Loc LblAltitude}" CanUserSort="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -230,12 +235,15 @@
                                     <oxy:LineSeries 
                                         ItemsSource="{Binding Altitudes}"                                                 
                                         DataFieldX="Key"                                                 
-                                        DataFieldY="Value" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"  />
+                                        DataFieldY="Value" 
+                                        TrackerFormatString="X: {2:HH:mm}h&#x0a;Y: {4:0.00}°" 
+                                        Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"  />
                                     <oxy:AreaSeries 
                                         ItemsSource="{Binding Source={StaticResource AppVM}, 
                                         Path=SkyMapVM.NightDuration}"  
                                         DataFieldX="Key" 
                                         DataFieldY="Value" 
+                                        TrackerFormatString="X: {2:HH:mm}h"
                                         Color="Black" />
                                 </oxy:Plot.Series>
                             </oxy:Plot>
