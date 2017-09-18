@@ -24,7 +24,7 @@
                                       Foreground="{StaticResource PrimaryBrush}"
                                       VerticalContentAlignment="Center" 
                                       HorizontalAlignment="Stretch" /> -->
-                    <Expander Header="{ns:Loc LblObjectType}">
+                    <Expander Header="{ns:Loc LblObjectType}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                         <ListView ItemsSource="{Binding ObjectTypes}">
                             <ListView.View>
                                 <GridView>
@@ -40,10 +40,10 @@
                             </ListView.View>
                         </ListView>
                     </Expander>
-                    <Expander Header="{ns:Loc LblConstellation}">
+                    <Expander Header="{ns:Loc LblConstellation}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                         <ComboBox ItemsSource="{Binding Constellations}" SelectedItem="{Binding SelectedConstellation}" />
                     </Expander>
-                    <Expander Header="{ns:Loc LblCoordinates}">
+                    <Expander Header="{ns:Loc LblCoordinates}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                         <StackPanel>
                             <StackPanel>
                                 <TextBlock Text="{ns:Loc LblRightAscension}"/>
@@ -70,7 +70,7 @@
                             </StackPanel>
                         </StackPanel>
                     </Expander>
-                    <Expander Header="{ns:Loc LblSurfaceBrightness }">
+                    <Expander Header="{ns:Loc LblSurfaceBrightness }" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                         <StackPanel>
                             <UniformGrid Columns="2">
                                 <TextBlock Text="{ns:Loc LblFrom}" />
@@ -82,7 +82,7 @@
                             </UniformGrid>
                         </StackPanel>
                     </Expander>
-                    <Expander Header="{ns:Loc LblApparentSize}">
+                    <Expander Header="{ns:Loc LblApparentSize}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                         <StackPanel>
                             <UniformGrid Columns="2">
                                 <TextBlock Text="{ns:Loc LblFrom}" />
@@ -94,7 +94,7 @@
                             </UniformGrid>
                         </StackPanel>
                     </Expander>
-                    <Expander Header="{ns:Loc LblApparentMagnitude}">
+                    <Expander Header="{ns:Loc LblApparentMagnitude}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                         <StackPanel>
                             <UniformGrid Columns="2">
                                 <TextBlock Text="{ns:Loc LblFrom}" />
@@ -103,6 +103,23 @@
                             <UniformGrid Columns="2">
                                 <TextBlock Text="{ns:Loc LblThrough}" />
                                 <ComboBox ItemsSource="{Binding MagnitudesThrough}" SelectedItem="{Binding SelectedMagnitudeThrough}" />
+                            </UniformGrid>
+                        </StackPanel>
+                    </Expander>
+
+                    <Expander Header="{ns:Loc LblMinimumAltitude}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <UniformGrid Columns="2">
+                                <TextBlock Text="{ns:Loc LblFrom}" />
+                                <ComboBox ItemsSource="{Binding AltitudeTimesFrom}" ItemStringFormat="yyyy-MM-dd HH:mm" SelectedItem="{Binding SelectedAltitudeTimeFrom}" />
+                            </UniformGrid>
+                            <UniformGrid Columns="2">
+                                <TextBlock Text="{ns:Loc LblThrough}" />
+                                <ComboBox ItemsSource="{Binding AltitudeTimesThrough}" ItemStringFormat="yyyy-MM-dd HH:mm" SelectedItem="{Binding SelectedAltitudeTimeThrough}" />
+                            </UniformGrid>
+                            <UniformGrid Columns="2">
+                                <TextBlock Text="{ns:Loc LblAltitude}" />
+                                <ComboBox ItemsSource="{Binding MinimumAltitudeDegrees}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedMinimumAltitudeDegrees}" SelectedValuePath="Key" />                                
                             </UniformGrid>
                         </StackPanel>
                     </Expander>
@@ -123,6 +140,17 @@
         
         <!-- Search result area -->
         <DataGrid Grid.Column="1" ItemsSource="{Binding SearchResult}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled">
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                    <Style.Triggers>
+                        <Trigger Property="DataGridCell.IsSelected" Value="True">
+                            <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="*" Header="{ns:Loc LblName}" CanUserSort="False" >
                     <DataGridTemplateColumn.CellTemplate>
