@@ -14,16 +14,9 @@ namespace NINA.Utility {
         public XISF(XISFHeader header) {
             this.Header = header;
         }
-
-        public bool Save(string path) {
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-
-
-            using (FileStream fs = new FileStream(path + ".xisf", FileMode.Create)) {
-                /* Header */
-                Header.Save(fs);
-            }
-
+        
+        public bool Save(Stream s) {
+            Header.Save(s);
             return true;
         }
     }

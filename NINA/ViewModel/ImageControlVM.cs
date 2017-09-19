@@ -372,7 +372,9 @@ namespace NINA.ViewModel {
                 fits.AddHDU(hdu);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
-                using (FileStream fs = new FileStream(path + ".fits", FileMode.Create)) {
+                var uniquePath = GetUniqueFilePath(path + ".fits");
+
+                using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     fits.Write(fs);
                 }
 
@@ -383,14 +385,30 @@ namespace NINA.ViewModel {
             }
         }
 
+        private string GetUniqueFilePath(string fullPath) {
+            int count = 1;
+
+            string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
+            string extension = Path.GetExtension(fullPath);
+            string path = Path.GetDirectoryName(fullPath);
+            string newFullPath = fullPath;
+
+            while (File.Exists(newFullPath)) {
+                string tempFileName = string.Format("{0}({1})",fileNameOnly,count++);
+                newFullPath = Path.Combine(path,tempFileName + extension);
+            }
+            return newFullPath;
+        }
+
         private void SaveTiff(String path) {
 
             try {
                 BitmapSource bmpSource = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
-
-                using (FileStream fs = new FileStream(path + ".tif", FileMode.Create)) {
+                var uniquePath = GetUniqueFilePath(path + ".tif");
+                
+                using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     TiffBitmapEncoder encoder = new TiffBitmapEncoder();
                     encoder.Compression = TiffCompressOption.None;
                     encoder.Frames.Add(BitmapFrame.Create(bmpSource));
@@ -471,8 +489,13 @@ namespace NINA.ViewModel {
                 header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, duration.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
                 XISF img = new XISF(header);
+                
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                var uniquePath = GetUniqueFilePath(path + ".xisf");
 
-                img.Save(path);
+                using (FileStream fs = new FileStream(uniquePath,FileMode.Create)) {
+                    img.Save(fs);
+                }
 
             } catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
