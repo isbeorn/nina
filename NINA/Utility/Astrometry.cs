@@ -148,8 +148,16 @@ namespace NINA.Utility.Astrometry {
                 for (int i = 0;i < nrOfSetEvents;i++) {
                     sets[i] = (double)times[i + 3 + nrOfRiseEvents];
                 }
+                
+                if(rises.Count() > 0 && sets.Count() > 0) {
+                    var rise = rises[0];
+                    var set = sets[0];
+                    return new AstronomicalTwilight(date,rise,set);
+                } else {
+                    return null;
+                }
 
-                return new AstronomicalTwilight(date, (double)rises[0],(double)sets[0]);
+                
             }
             return null;
         }
@@ -157,14 +165,14 @@ namespace NINA.Utility.Astrometry {
         public class AstronomicalTwilight {
             public AstronomicalTwilight(DateTime referenceDate, double rise, double set) {
                 RiseDate = new DateTime(referenceDate.Year,referenceDate.Month,referenceDate.Day, referenceDate.Hour, referenceDate.Minute, referenceDate.Second);
-                if(RiseDate.Hour > rise) {
+                if(RiseDate.Hour + RiseDate.Minute / 60.0 + RiseDate.Second / 60.0 / 60.0 > rise) {
                     RiseDate = RiseDate.AddDays(1);
                 }
                 RiseDate = RiseDate.Date;
                 RiseDate = RiseDate.AddHours(rise);
 
                 SetDate = new DateTime(referenceDate.Year,referenceDate.Month,referenceDate.Day,referenceDate.Hour,referenceDate.Minute,referenceDate.Second);
-                if (SetDate.Hour > set) {
+                if (SetDate.Hour + SetDate.Minute / 60.0 + SetDate.Second / 60.0 / 60.0 > set) {
                     SetDate = SetDate.AddDays(1);
                 }
                 SetDate = SetDate.Date;

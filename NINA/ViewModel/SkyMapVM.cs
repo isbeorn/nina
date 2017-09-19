@@ -4,6 +4,7 @@ using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -42,13 +43,7 @@ namespace NINA.ViewModel {
             get {
                 if(_nightDuration == null) {
 
-                    DateTime d;
-                    if (DateTime.Now.Hour > 12) {
-                        d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,12,0,0);
-                    }
-                    else {
-                        d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day - 1,12,0,0);
-                    }
+                    DateTime d = GetChartReferenceStartDate();
 
                     var twilight = Astrometry.GetNightTimes(d);
 
@@ -57,9 +52,13 @@ namespace NINA.ViewModel {
                         degrees = -90;
                     }
 
-                    _nightDuration = new AsyncObservableCollection<KeyValuePair<DateTime,double>>() {
-                    new KeyValuePair<DateTime,double>(twilight.RiseDate, degrees),
-                    new KeyValuePair<DateTime,double>(twilight.SetDate, degrees) };
+                    if(twilight != null) { 
+                        _nightDuration = new AsyncObservableCollection<KeyValuePair<DateTime,double>>() {
+                        new KeyValuePair<DateTime,double>(twilight.RiseDate, degrees),
+                        new KeyValuePair<DateTime,double>(twilight.SetDate, degrees) };
+                    } else {
+                        _nightDuration = new AsyncObservableCollection<KeyValuePair<DateTime,double>>();
+                    }
                 }
                 return _nightDuration;
             }
@@ -111,6 +110,17 @@ namespace NINA.ViewModel {
             }
         }
 
+        private DateTime GetChartReferenceStartDate() {
+            DateTime d;
+            if (DateTime.Now.Hour > 12) {
+                d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,12,0,0);
+            }
+            else {
+                d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day - 1,12,0,0);
+            }
+            return d;
+        }
+
         private async Task<bool> Search() {
             _searchTokenSource = new CancellationTokenSource();
             var db = new DatabaseInteraction();
@@ -133,18 +143,14 @@ namespace NINA.ViewModel {
             var longitude = Settings.Longitude;
             var latitude = Settings.Latitude;
 
-            DateTime d;
-            if (DateTime.Now.Hour > 12) {
-                d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,12,0,0);
-            }
-            else {
-                d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day - 1,12,0,0);
-            }
+            DateTime d = GetChartReferenceStartDate();
 
-            foreach (var obj in SearchResult) {
+            var siderealTime = Astrometry.GetLocalSiderealTime(d,longitude);
+
+            Parallel.ForEach(SearchResult,(obj) => {
                 var cloneDate = d;
-                obj.CalculateElevation(cloneDate, latitude,longitude);
-            }
+                obj.CalculateElevation(cloneDate,siderealTime,latitude,longitude);
+            });
             
             /* Check if Altitude Filter is not default */
             if (!(SelectedAltitudeTimeFrom == DateTime.MinValue && SelectedAltitudeTimeThrough == DateTime.MaxValue && SelectedMinimumAltitudeDegrees == 0 )) {
@@ -161,8 +167,6 @@ namespace NINA.ViewModel {
                     });
                 }));
             }
-            
-            
 
             return true;
         }

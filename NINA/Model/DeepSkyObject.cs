@@ -5,12 +5,14 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Model {
     public class DeepSkyObject:BaseINPC {
@@ -122,9 +124,9 @@ namespace NINA.Model {
             Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates,Coordinates);
         }
 
-        public void CalculateElevation(DateTime start, double latitude,double longitude) {
+        public void CalculateElevation(DateTime start, double siderealTime, double latitude,double longitude) {
 
-            var siderealTime = Astrometry.GetLocalSiderealTime(start, longitude);            
+                    
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
 
             for (double angle = hourAngle;angle < hourAngle + 24;angle += 0.1) {
@@ -133,6 +135,26 @@ namespace NINA.Model {
                 start = start.AddHours(0.1);
             }
         }
+
+        /*const string DSS_URL = "https://archive.stsci.edu/cgi-bin/dss_search";
+
+        public BitmapImage Image {
+            get {
+                var size = Astrometry.ArcsecToArcmin(this.Size ?? 300);
+                if(size > 20) { size = 20; }
+                var path = string.Format(
+                    "{0}?r={1}&d={2}&e=J2000&h={3}&w={4}&v=1&format=GIF",
+                    DSS_URL,
+                    this.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture),
+                    this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
+                    size.ToString(CultureInfo.InvariantCulture),
+                    size.ToString(CultureInfo.InvariantCulture));
+
+                var img = new BitmapImage(new Uri(path));
+
+                return img;
+            }
+        }*/
 
         public ICommand SetSequenceCoordinatesCommand { get; private set; }
 
