@@ -664,6 +664,16 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Save();
             }
         }
+
+        public static string SkyMapImageRepository {
+            get {
+                return Properties.Settings.Default.SkyMapImageRepository;
+            }
+            set {
+                Properties.Settings.Default.SkyMapImageRepository = value;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 
 }

@@ -695,5 +695,17 @@ namespace NINA.Properties {
                 this["TimeZone"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SkyMapImageRepository {
+            get {
+                return ((string)(this["SkyMapImageRepository"]));
+            }
+            set {
+                this["SkyMapImageRepository"] = value;
+            }
+        }
     }
 }

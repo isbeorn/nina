@@ -170,5 +170,8 @@
     <Setting Name="TimeZone" Type="System.String" Scope="User">
       <Value Profile="(Default)">UTC</Value>
     </Setting>
+    <Setting Name="SkyMapImageRepository" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

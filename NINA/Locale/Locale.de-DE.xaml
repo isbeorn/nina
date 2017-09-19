@@ -289,4 +289,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblSetAsSequenceTarget">Als Sequenzziel setzen</s:String>
     <s:String x:Key="LblDetails">Details</s:String>
     <s:String x:Key="LblMinimumAltitude">Minimale Höhe</s:String>
+    <s:String x:Key="LblNoImage">Kein Bild vorhanden</s:String>
+    <s:String x:Key="LblSkyMapImageDirectory">Sternkartenbilder Ordner</s:String>
+    <s:String x:Key="LblLanguage">Sprache</s:String>
 </ResourceDictionary>

@@ -6,13 +6,16 @@ using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace NINA.Model {
     public class DeepSkyObject:BaseINPC {
@@ -20,7 +23,7 @@ namespace NINA.Model {
         public DeepSkyObject(string name) {
             Name = name;
             SetSequenceCoordinatesCommand = new RelayCommand(SetSequenceCoordinates);
-            SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
+            SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);            
         }
 
         private string _name;
@@ -134,26 +137,68 @@ namespace NINA.Model {
                 Altitudes.Add(new KeyValuePair<DateTime,double>(start,altitude));
                 start = start.AddHours(0.1);
             }
+
+            //var img = Image;
         }
 
-        /*const string DSS_URL = "https://archive.stsci.edu/cgi-bin/dss_search";
+        //const string DSS_URL = "https://archive.stsci.edu/cgi-bin/dss_search";
 
-        public BitmapImage Image {
+        private static string _imageDirectory = Settings.SkyMapImageRepository;
+
+        Dispatcher _dispatcher = Application.Current.Dispatcher;
+
+        private BitmapSource _image;
+        public BitmapSource Image {
             get {
-                var size = Astrometry.ArcsecToArcmin(this.Size ?? 300);
-                if(size > 20) { size = 20; }
-                var path = string.Format(
-                    "{0}?r={1}&d={2}&e=J2000&h={3}&w={4}&v=1&format=GIF",
-                    DSS_URL,
-                    this.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture),
-                    this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
-                    size.ToString(CultureInfo.InvariantCulture),
-                    size.ToString(CultureInfo.InvariantCulture));
+                if(_image == null) {                    
+                    /*var size = Astrometry.ArcsecToArcmin(this.Size ?? 300);
+                    if (size > 25) { size = 25; }
+                    size = Math.Max(15,size);
+                    var path = string.Format(
+                        "{0}?r={1}&d={2}&e=J2000&h={3}&w={4}&v=1&format=GIF",
+                        DSS_URL,
+                        this.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture),
+                        this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
+                        (size * 9.0 / 16.0).ToString(CultureInfo.InvariantCulture),
+                        size.ToString(CultureInfo.InvariantCulture));*/
+                    var file = _imageDirectory + "\\" + this.Name +".gif";
+                    if(File.Exists(file)) {
+                        _dispatcher.BeginInvoke(DispatcherPriority.Normal,new Action(() => {
+                            //var img = new BitmapImage(new Uri(file));                            
+                            _image = new BitmapImage(new Uri(file));
+                            _image.Freeze();
+                            RaisePropertyChanged(nameof(Image));
+                        }));
+                    }
 
-                var img = new BitmapImage(new Uri(path));
-
-                return img;
+                    
+                }
+                return _image;
+                
             }
+        }
+
+        /*private Brush _imageBrush;
+        public Brush ImageBrush {
+            get {
+                if(_imageBrush == null) {
+                    _imageBrush = new ImageBrush(Image);
+                }
+                return _imageBrush;
+            }
+        }*/
+
+        /*private void Img_DownloadCompleted(object sender,EventArgs e) {
+
+
+            var path = "D:\\img\\";
+            using (FileStream fs = new FileStream(path + this.Name + ".gif",FileMode.Create)) {
+                var encoder = new GifBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(Image));
+                encoder.Save(fs);
+            }
+
+            RaisePropertyChanged(nameof(Image));
         }*/
 
         public ICommand SetSequenceCoordinatesCommand { get; private set; }

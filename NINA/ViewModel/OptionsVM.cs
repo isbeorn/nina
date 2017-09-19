@@ -25,8 +25,8 @@ namespace NINA.ViewModel {
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
+            OpenSkyMapImageRepositoryDiagCommand = new RelayCommand(OpenSkyMapImageRepositoryDiag);
 
-            
 
             HashSet<ImagePattern> p = new HashSet<ImagePattern>();
             p.Add(new ImagePattern("$$FILTER$$", "Filtername", "L"));
@@ -41,6 +41,15 @@ namespace NINA.ViewModel {
             ImagePatterns = p;
 
             ScanForIndexFiles();
+        }
+
+        private void OpenSkyMapImageRepositoryDiag(object obj) {
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.SelectedPath = Settings.SkyMapImageRepository;
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                SkyMapImageRepository = dialog.SelectedPath;
+            }
         }
 
         private void DownloadIndexes(object obj) {
@@ -117,6 +126,8 @@ namespace NINA.ViewModel {
         public ICommand PreviewFileCommand { get; private set; }
 
         public ICommand ToggleColorsCommand { get; private set; }
+
+        public ICommand OpenSkyMapImageRepositoryDiagCommand { get; private set; }
 
         private void PreviewFile(object o) {
             MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), "Example File Name", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
@@ -750,5 +761,17 @@ namespace NINA.ViewModel {
                 Mediator.Instance.Notify(MediatorMessages.LocationChanged,null);
             }
         }
+
+        public string SkyMapImageRepository {
+            get {
+                return Settings.SkyMapImageRepository;
+            }
+            set {
+                Settings.SkyMapImageRepository = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        
     }
 }

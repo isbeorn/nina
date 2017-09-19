@@ -17,10 +17,39 @@
                 <TextBlock Text="{ns:Loc LblGeneral}" Foreground="{StaticResource ButtonForegroundBrush}" />
             </TabItem.Header>
             <UniformGrid Columns="2" Rows="3">
-                <GroupBox Header="{ns:Loc LblGeneral}">
-                    <StackPanel Orientation="Vertical" Margin="0 5 0 0">
-                        <ComboBox ItemsSource="{Binding AvailableLanguages}" DisplayMemberPath="DisplayName" SelectedItem="{Binding Language}"/>
-                    </StackPanel>                    
+                <GroupBox Header="{ns:Loc LblGeneral}">                    
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+                            <TextBlock VerticalAlignment="Center" Width="140" Text="{ns:Loc LblLanguage}" />
+                            <ComboBox Margin="10,0,0,0" ItemsSource="{Binding AvailableLanguages}" DisplayMemberPath="DisplayName" SelectedItem="{Binding Language}"/>
+                        </StackPanel>
+                        
+                        <Grid Margin="0 5 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSkyMapImageDirectory}"></TextBlock>
+
+                            <TextBox Margin="10,0,0,0" Grid.Column="1" VerticalContentAlignment="Center" >
+                                <TextBox.Text>
+                                    <Binding Path="SkyMapImageRepository" UpdateSourceTrigger="LostFocus" >
+                                        <Binding.ValidationRules>
+                                            <rules:DirectoryExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+
+                            <Button Grid.Column="2" Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Command="{Binding OpenSkyMapImageRepositoryDiagCommand}">
+                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
+                            </Button>
+                            
+                        </Grid>
+                    </StackPanel>
+                                     
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblAstrometry}">
                     <StackPanel Margin="0 5 0 0">
@@ -45,7 +74,7 @@
                         <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
                             <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblTimeZone}"></TextBlock>
                             <ComboBox ItemsSource="{Binding TimeZones}" DisplayMemberPath="DisplayName" SelectedItem="{Binding TimeZone}" Margin="10,0,0,0"/>
-                        </StackPanel>
+                        </StackPanel>                        
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblCurrentUIColorSchema}">

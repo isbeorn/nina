@@ -178,53 +178,77 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Width="3*" Header="{ns:Loc LblDetails}" CanUserSort="False">
+                <DataGridTemplateColumn Width="320" Header="{ns:Loc LblDetails}" CanUserSort="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <!--<Border.Background>
-                                    <ImageBrush Stretch="Uniform" ImageSource="{Binding Image}" />
-                                </Border.Background>-->
-                            
-                                <StackPanel>
-                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
-                                        <UniformGrid Columns="2" >
-                                            <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                <Border.Background>
+                                    <ImageBrush x:Name="PART_Image" Stretch="Uniform" ImageSource="{Binding Image}" />
+                                    
+                                </Border.Background>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+
+                                    <!-- will be displayed when no image is available -->
+                                    <TextBlock x:Name="PART_Textblock" 
+                                               Text="{ns:Loc LblNoImage}" 
+                                               HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                               Grid.RowSpan="2" 
+                                               Visibility="Collapsed" />
+
+                                    <StackPanel VerticalAlignment="Top">
+                                        
+                                        <Grid>
+                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                 <TextBlock Text="{ns:Loc LblRA}"></TextBlock>
-                                                <TextBlock Text="{Binding Coordinates.RAString}" Margin="5,0,0,0" />
-                                            </UniformGrid>
-                                            <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding Coordinates.RAString}" Margin="5,0,0,0" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Right">
                                                 <TextBlock Text="{ns:Loc LblType}"></TextBlock>
-                                                <TextBlock Text="{Binding DSOType}" Margin="5,0,0,0" />
-                                            </UniformGrid>
-                                        </UniformGrid>
-                                    </Border>
-                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
-                                        <UniformGrid Columns="2" >
-                                            <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding DSOType}" Margin="5,0,0,0" />
+                                            </StackPanel>
+                                        </Grid>
+
+
+                                        <Grid>
+                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                 <TextBlock Text="{ns:Loc LblDec}"></TextBlock>
-                                                <TextBlock Text="{Binding Coordinates.DecString}" Margin="5,0,0,0" />
-                                            </UniformGrid>
-                                            <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding Coordinates.DecString}" Margin="5,0,0,0" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Right">
                                                 <TextBlock Text="{ns:Loc LblConstellation}"></TextBlock>
-                                                <TextBlock Text="{Binding Constellation}" Margin="5,0,0,0" />
-                                            </UniformGrid>
-                                        </UniformGrid>
-                                    </Border>
-                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
-                                        <UniformGrid Columns="2" >
-                                            <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                                <Path Width="20" Height="20" Fill="{StaticResource ButtonForegroundBrush}"  Data="{StaticResource LightBulbSVG}" Stretch="Uniform" ToolTip="{ns:Loc LblMagnitude}" />                                            
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding Magnitude}" Margin="5,0,0,0" />
-                                            </UniformGrid>
-                                            <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding Constellation}" Margin="5,0,0,0" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                                                        
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+                                        
+                                        <Grid>
+                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                <Path Width="20" Height="20" Fill="{StaticResource ButtonForegroundBrush}"  Data="{StaticResource LightBulbSVG}" Stretch="Uniform" ToolTip="{ns:Loc LblMagnitude}" />
+                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding Magnitude}" Margin="5,0,0,0" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Right">
                                                 <Path Width="20" Height="20" Fill="{StaticResource ButtonForegroundBrush}"  Data="{StaticResource Stretch}" Stretch="Uniform" ToolTip="{ns:Loc LblSize}" Margin="5" />
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" Margin="5,0,0,0" />
-                                            </UniformGrid>
-                                        </UniformGrid>
-                                    </Border>                                
-                                </StackPanel>
+                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" Margin="5,0,0,0" />
+                                            </StackPanel>
+                                        </Grid>
+                                        
+                                    </StackPanel>
+                                </Grid>
                             </Border>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding ImageSource, ElementName=PART_Image}" Value="{x:Null}">
+                                    <Setter TargetName="PART_Textblock" Property="Visibility" Value="Visible" />
+                                    <!-- Here is the 'override' content -->
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
