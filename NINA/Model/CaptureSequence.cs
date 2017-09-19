@@ -188,6 +188,12 @@ namespace NINA.Model {
             }
         }
 
+        public int ExposureNr {
+            get {
+                return TotalExposureCount - ExposureCount + 1;
+            }
+        }
+
         private short _gain;
         public short Gain {
             get {

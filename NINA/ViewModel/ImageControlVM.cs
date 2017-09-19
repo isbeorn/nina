@@ -263,16 +263,17 @@ namespace NINA.ViewModel {
             return source;
         }
 
-        public async Task<bool> SaveToDisk(CaptureSequenceList sequence, ushort framenr, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        public async Task<bool> SaveToDisk(CaptureSequenceList sequence, CancellationTokenSource tokenSource, IProgress<string> progress) {
 
             var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
             var activeCaptureSequence = sequence.ActiveSequence;
+            var framenr = sequence.ActiveSequence.ExposureNr;
             return await SaveToDisk(activeCaptureSequence.ExposureTime, filter, activeCaptureSequence.ImageType, activeCaptureSequence.Binning.Name, Cam.CCDTemperature, framenr, tokenSource, progress, sequence.TargetName);
 
         }
 
 
-        public async Task<bool> SaveToDisk(double exposuretime, string filter, string imageType, string binning, double ccdtemp, ushort framenr, CancellationTokenSource tokenSource, IProgress<string> progress, string targetname = "") {
+        public async Task<bool> SaveToDisk(double exposuretime, string filter, string imageType, string binning, double ccdtemp, int framenr, CancellationTokenSource tokenSource, IProgress<string> progress, string targetname = "") {
             progress.Report("Saving...");
             await Task.Run(() => {
 

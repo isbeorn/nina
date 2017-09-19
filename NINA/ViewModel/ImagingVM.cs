@@ -238,10 +238,10 @@ namespace NINA.ViewModel {
 
 
 
-        private async Task<bool> Save(CaptureSequenceList seq, ushort framenr,  CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> Save(CaptureSequenceList seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
             progress.Report(ExposureStatus.SAVING);           
 
-            await ImageControl.SaveToDisk(seq, framenr, tokenSource, progress);            
+            await ImageControl.SaveToDisk(seq, tokenSource, progress);            
                         
             return true;
         }
@@ -294,9 +294,7 @@ namespace NINA.ViewModel {
                         delay--;
                         progress.Report(string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay));
                     }
-                    
 
-                    ushort framenr = 1;
                     foreach (CaptureSequence seq in sequence) {
 
                         sequence.SetActiveSequence(seq);                                             
@@ -362,7 +360,7 @@ namespace NINA.ViewModel {
 
                             /*Save to disk*/
                             if (bSave) {
-                                await Save(sequence, framenr, tokenSource, progress);
+                                await Save(sequence, tokenSource, progress);
                             }
 
                             /*Dither*/
@@ -374,7 +372,6 @@ namespace NINA.ViewModel {
                             }
 
                             seq.ExposureCount -= 1;
-                            framenr++;
                         }
                     }
                 } catch (System.OperationCanceledException ex) {
