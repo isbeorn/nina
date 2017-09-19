@@ -8,8 +8,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace StarDataImport {
     class Program {
@@ -67,13 +70,196 @@ namespace StarDataImport {
 
 
         static void Main(string[] args) {
+            //GenerateDatabase();
+            //UpdateStarData();
+        }
+
+        public static void UpdateStarData() {
+            List<SimpleDSO> objects = new List<SimpleDSO>();
+            var connectionString = string.Format(@"Data Source={0};foreign keys=true;",@"D:\Projects\NINA.sqlite");
+            var query = "select dsodetailid, catalogue, designation  from cataloguenr INNER JOIN dsodetail ON dsodetail.id = cataloguenr.dsodetailid WHERE syncedfrom is null group by dsodetailid order by catalogue;";
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                connection.Open();
+                using (SQLiteCommand command = connection.CreateCommand()) {
+                    command.CommandText = query;
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read()) {
+                        objects.Add(new SimpleDSO() { id = reader.GetString(0),name = reader.GetString(1) + " " + reader.GetString(2) });
+                    }
+                }
+            }
+
+            var sw = Stopwatch.StartNew();
+
+            Parallel.ForEach(objects,obj => {
+                var _url = "http://cdsws.u-strasbg.fr/axis/services/Sesame";
+                var _action = "";
+
+                XmlDocument soapEnvelopeXml = CreateSoapEnvelope(obj.name);
+                HttpWebRequest webRequest = CreateWebRequest(_url,_action);
+                webRequest.Timeout = -1;
+                InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml,webRequest);
+
+                // begin async call to web request.
+                IAsyncResult asyncResult = webRequest.BeginGetResponse(null,null);
+
+                // suspend this thread until call is complete. You might want to
+                // do something usefull here like update your UI.
+                asyncResult.AsyncWaitHandle.WaitOne();
+
+                // get the response from the completed web request.
+
+                using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult)) {
+                    var soap = XElement.Load(webResponse.GetResponseStream());
+
+                    var xmlstring = (from c in soap.Descendants("return") select c).FirstOrDefault()?.Value;
+                    var xml = XElement.Parse(xmlstring);
+                    var resolvername = "Simbad";
+                    var resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                    var ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                    var dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+
+                    if (ra == null) {
+                        resolvername = "NED";
+                        resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                        ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                        dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+                    }
+
+                    if (ra == null) {
+                        resolvername = "VizieR";
+                        resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                        ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                        dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+                    }
+
+                    Console.WriteLine(obj.ToString());
+                    if (ra == null) {
+                        Console.WriteLine("NO ENTRY");
+                    }
+                    else {
+                        Console.WriteLine("Found " + " RA:" + ra + " DEC:" + dec);
+                    }
+
+                    if (ra != null && dec != null) {
+                        using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                            connection.Open();
+                            using (SQLiteCommand command = connection.CreateCommand()) {
+                                command.CommandText = "UPDATE dsodetail SET ra = $ra, dec = $dec, syncedfrom = '" + resolvername + "' WHERE id = $id;";
+                                command.Parameters.AddWithValue("$id",obj.id);
+                                command.Parameters.AddWithValue("$ra",ra);
+                                command.Parameters.AddWithValue("$dec",dec);
+
+                                var rows = command.ExecuteNonQuery();
+                                Console.WriteLine(string.Format("Inserted {0} row(s)",rows));
+
+                            }
+                        }
+                    }
+                }
+            });
+
+            /*foreach(var obj in objects) {                
+                var _url = "http://cdsws.u-strasbg.fr/axis/services/Sesame";
+                var _action = "";
+
+                XmlDocument soapEnvelopeXml = CreateSoapEnvelope(obj.name);
+                HttpWebRequest webRequest = CreateWebRequest(_url,_action);
+                InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml,webRequest);
+
+                // begin async call to web request.
+                IAsyncResult asyncResult = webRequest.BeginGetResponse(null,null);
+
+                // suspend this thread until call is complete. You might want to
+                // do something usefull here like update your UI.
+                asyncResult.AsyncWaitHandle.WaitOne();
+
+                // get the response from the completed web request.
+
+                using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult)) {
+                    var soap = XElement.Load(webResponse.GetResponseStream());
+
+                    var xmlstring = (from c in soap.Descendants("return") select c).FirstOrDefault()?.Value;
+                    var xml = XElement.Parse(xmlstring);
+                    var simbad = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains("Simbad")).FirstOrDefault();
+
+                    var ra = simbad.Descendants("jradeg").FirstOrDefault()?.Value;
+                    var dec = simbad.Descendants("jdedeg").FirstOrDefault()?.Value;
+
+                    Console.WriteLine(obj.ToString());
+                    if (ra == null) {
+                        Console.WriteLine("NO ENTRY");
+                    }
+                    else {
+                        Console.WriteLine("Found " + " RA:" + ra + " DEC:" + dec);
+                    }
+
+                    if(ra != null && dec != null) {
+                        using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                            connection.Open();
+                            using (SQLiteCommand command = connection.CreateCommand()) {
+                                command.CommandText = "UPDATE dsodetail SET ra = $ra, dec = $dec WHERE id = $id;";
+                                command.Parameters.AddWithValue("$id",obj.id);
+                                command.Parameters.AddWithValue("$ra",ra);
+                                command.Parameters.AddWithValue("$dec",dec);
+
+                                var rows = command.ExecuteNonQuery();
+                                Console.WriteLine(string.Format("Inserted {0} row(s)",rows));
+
+                            }
+                        }
+                    }
+                }              
+            }*/
+
+            Console.WriteLine(sw.Elapsed);
+
+
+            Console.ReadLine();
+        }
+
+        private static HttpWebRequest CreateWebRequest(string url,string action) {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
+            webRequest.Headers.Add("SOAPAction",action);
+            webRequest.ContentType = "text/xml;charset=\"utf-8\"";
+            webRequest.Accept = "text/xml";
+            webRequest.Method = "POST";
+            return webRequest;
+        }
+
+        private static XmlDocument CreateSoapEnvelope(string target) {
+            XmlDocument soapEnvelopeDocument = new XmlDocument();
+
+            soapEnvelopeDocument.LoadXml(string.Format(@"<?xml version=""1.0"" encoding=""UTF-8"" standalone=""no"" ?> 
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:apachesoap=""http://xml.apache.org/xml-soap"" xmlns:impl=""http://cdsws.u-strasbg.fr/axis/services/Sesame"" xmlns:intf=""http://cdsws.u-strasbg.fr/axis/services/Sesame"" xmlns:soapenc=""http://schemas.xmlsoap.org/soap/encoding/"" xmlns:wsdl=""http://schemas.xmlsoap.org/wsdl/"" xmlns:wsdlsoap=""http://schemas.xmlsoap.org/wsdl/soap/"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""> 
+	                                            <SOAP-ENV:Body> 
+		                                            <mns:SesameXML xmlns:mns=""http://cdsws.u-strasbg.fr/axis/services/Sesame"" SOAP-ENV:encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/""> 
+			                                            <name xsi:type=""xsd:string"">{0}</name> 
+		                                            </mns:SesameXML> 
+	                                            </SOAP-ENV:Body> 
+                                            </SOAP-ENV:Envelope>
+            ",target));
+            return soapEnvelopeDocument;
+        }
+
+        private static void InsertSoapEnvelopeIntoWebRequest(XmlDocument soapEnvelopeXml,HttpWebRequest webRequest) {
+            using (Stream stream = webRequest.GetRequestStream()) {
+                soapEnvelopeXml.Save(stream);
+            }
+        }
+
+        public static void GenerateDatabase() {
             var db = new DatabaseInteraction();
             db.CreateDatabase();
 
             db.GenericQuery("DROP TABLE IF EXISTS visualdescription");
             db.GenericQuery("DROP TABLE IF EXISTS cataloguenr");
             db.GenericQuery("DROP TABLE IF EXISTS dsodetail;");
-            
+
 
             db.GenericQuery(@"CREATE TABLE IF NOT EXISTS dsodetail (
                 id TEXT NOT NULL,
@@ -117,11 +303,11 @@ namespace StarDataImport {
             using (TextFieldParser parser = new TextFieldParser(@"SAC_DeepSky_ver81_Excel.csv")) {
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(",");
-               
+
 
                 HashSet<string> types = new HashSet<string>();
                 var isFirst = true;
-                List<DSO> l = new List<DSO>();
+                List<DatabaseDSO> l = new List<DatabaseDSO>();
                 var i = 1;
                 while (!parser.EndOfData) {
                     string[] fields = parser.ReadFields();
@@ -130,24 +316,24 @@ namespace StarDataImport {
                         isFirst = false;
                         continue;
                     }
-                  
-                    DSO dso = new DSO(i++, fields);
-                    if(dso.cataloguenr.First().catalogue != null) {
+
+                    DatabaseDSO dso = new DatabaseDSO(i++,fields);
+                    if (dso.cataloguenr.First().catalogue != null) {
                         l.Add(dso);
                     }
-                    
+
                     queries.Add(dso.getDSOQuery());
                     queries.Add(dso.getCatalogueQuery());
-                    queries.Add(dso.getVisualDescriptionQuery());                    
-                    
+                    queries.Add(dso.getVisualDescriptionQuery());
+
                 }
 
                 var duplicates = l.Where(s => s.Id == string.Empty);
-                    
+
 
             }
 
-            
+
 
             db.BulkInsert(queries);
 
@@ -187,9 +373,16 @@ namespace StarDataImport {
 
         }
 
+        class SimpleDSO {
+            public string id;
+            public string name;
 
+            public override string ToString() {
+                return name;
+            }
+        }
 
-        class DSO {
+        class DatabaseDSO {
             public List<cataloguenr> cataloguenr;
             //public string obj;
             //public string other;
@@ -220,7 +413,7 @@ namespace StarDataImport {
                 return s;
             }
 
-            public DSO(int id, string[] fields) {
+            public DatabaseDSO(int id, string[] fields) {
                 
                 cataloguenr = new List<Program.cataloguenr>();
                 var ident = new cataloguenr(fields[0]);
