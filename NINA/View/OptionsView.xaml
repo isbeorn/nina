@@ -33,7 +33,7 @@
                             
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSkyMapImageDirectory}"></TextBlock>
 
-                            <TextBox Margin="10,0,0,0" Grid.Column="1" VerticalContentAlignment="Center" >
+                            <TextBox Margin="10,0,0,0" Grid.Column="1" VerticalAlignment="Center" VerticalContentAlignment="Center" >
                                 <TextBox.Text>
                                     <Binding Path="SkyMapImageRepository" UpdateSourceTrigger="LostFocus" >
                                         <Binding.ValidationRules>
