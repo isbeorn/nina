@@ -25,7 +25,7 @@
                                       VerticalContentAlignment="Center" 
                                       HorizontalAlignment="Stretch" /> -->
                     <Expander Header="{ns:Loc LblObjectType}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                        <ListView ItemsSource="{Binding ObjectTypes}">
+                        <ListView ItemsSource="{Binding ObjectTypes}" MaxHeight="300">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="">
