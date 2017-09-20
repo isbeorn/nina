@@ -72,48 +72,58 @@ namespace NINA.ViewModel {
 
         private async Task<bool> Search() {
             _searchTokenSource = new CancellationTokenSource();
-            var db = new DatabaseInteraction();
-            var types = ObjectTypes.Where((x) => x.Selected).Select((x) => x.Name).ToList();
-            SearchResult = await db.GetDeepSkyObjects(_searchTokenSource.Token, 
-                SelectedConstellation,
-                SelectedRAFrom,
-                SelectedRAThrough,
-                SelectedDecFrom,
-                SelectedDecThrough,
-                SelectedSizeFrom,
-                SelectedSizeThrough,
-                types,
-                SelectedBrightnessFrom,
-                SelectedBrightnessThrough,
-                SelectedMagnitudeFrom,
-                SelectedMagnitudeThrough);
+            return await Task.Run(async () => {
+                try {
+                    SearchResult = null;
+                    var db = new DatabaseInteraction();
+                    var types = ObjectTypes.Where((x) => x.Selected).Select((x) => x.Name).ToList();
+                    var result = await db.GetDeepSkyObjects(_searchTokenSource.Token,
+                        SelectedConstellation,
+                        SelectedRAFrom,
+                        SelectedRAThrough,
+                        SelectedDecFrom,
+                        SelectedDecThrough,
+                        SelectedSizeFrom,
+                        SelectedSizeThrough,
+                        types,
+                        SelectedBrightnessFrom,
+                        SelectedBrightnessThrough,
+                        SelectedMagnitudeFrom,
+                        SelectedMagnitudeThrough);
 
-            
-            var longitude = Settings.Longitude;
-            var latitude = Settings.Latitude;
 
-            DateTime d = GetChartReferenceStartDate();
+                    var longitude = Settings.Longitude;
+                    var latitude = Settings.Latitude;
 
-            var siderealTime = Astrometry.GetLocalSiderealTime(d,longitude);
+                    DateTime d = GetChartReferenceStartDate();
 
-            Parallel.ForEach(SearchResult,(obj) => {
-                var cloneDate = d;
-                obj.CalculateAltitude(cloneDate,siderealTime,latitude,longitude);
-            });
-            
-            /* Check if Altitude Filter is not default */
-            if (!(SelectedAltitudeTimeFrom == DateTime.MinValue && SelectedAltitudeTimeThrough == DateTime.MaxValue && SelectedMinimumAltitudeDegrees == 0 )) {
-                /* Apply Altitude Filter */
-                SearchResult = new AsyncObservableCollection<DeepSkyObject>(SearchResult.Where((x) => {
-                    return x.Altitudes.Where((y) => {
-                        return (y.Key > SelectedAltitudeTimeFrom && y.Key < SelectedAltitudeTimeThrough);
-                    }).All((z) => {                        
-                        return z.Value > SelectedMinimumAltitudeDegrees;                        
+                    var siderealTime = Astrometry.GetLocalSiderealTime(d,longitude);
+
+                    Parallel.ForEach(result,(obj) => {
+                        var cloneDate = d;
+                        obj.CalculateAltitude(cloneDate,siderealTime,latitude,longitude);
+                        _searchTokenSource.Token.ThrowIfCancellationRequested();
                     });
-                }));
-            }
 
-            return true;
+                    /* Check if Altitude Filter is not default */
+                    if (!(SelectedAltitudeTimeFrom == DateTime.MinValue && SelectedAltitudeTimeThrough == DateTime.MaxValue && SelectedMinimumAltitudeDegrees == 0)) {
+                        /* Apply Altitude Filter */
+                        SearchResult = new AsyncObservableCollection<DeepSkyObject>(result.Where((x) => {
+                            return x.Altitudes.Where((y) => {
+                                return (y.Key > SelectedAltitudeTimeFrom && y.Key < SelectedAltitudeTimeThrough);
+                            }).All((z) => {
+                                return z.Value > SelectedMinimumAltitudeDegrees;
+                            });
+                        }));
+                    }
+                    else {
+                        SearchResult = result;
+                    }
+                } catch(OperationCanceledException) {
+
+                }                
+                return true;
+            });
         }
 
         private void InitializeFilters() {
