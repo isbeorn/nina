@@ -15,10 +15,10 @@ using System.Windows.Shapes;
 
 namespace NINA.View {
     /// <summary>
-    /// Interaction logic for SkyMapView.xaml
+    /// Interaction logic for SkyAtlasView.xaml
     /// </summary>
-    public partial class SkyMapView : UserControl {
-        public SkyMapView() {
+    public partial class SkyAtlasView: UserControl {
+        public SkyAtlasView() {
             InitializeComponent();
         }
     }

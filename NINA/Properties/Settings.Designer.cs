@@ -699,12 +699,12 @@ namespace NINA.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SkyMapImageRepository {
+        public string SkyAtlasImageRepository {
             get {
-                return ((string)(this["SkyMapImageRepository"]));
+                return ((string)(this["SkyAtlasImageRepository"]));
             }
             set {
-                this["SkyMapImageRepository"] = value;
+                this["SkyAtlasImageRepository"] = value;
             }
         }
     }

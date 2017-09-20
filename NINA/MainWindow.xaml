@@ -157,7 +157,7 @@
                         </Path>
                     </TabItem.Header>
                     <TabItem.Content>
-                        <view:SkyMapView DataContext="{Binding SkyMapVM}" ></view:SkyMapView>
+                        <view:SkyAtlasView DataContext="{Binding SkyAtlasVM}" ></view:SkyAtlasView>
                     </TabItem.Content>
                 </TabItem>
                 

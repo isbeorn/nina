@@ -25,7 +25,7 @@ namespace NINA.ViewModel {
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
-            OpenSkyMapImageRepositoryDiagCommand = new RelayCommand(OpenSkyMapImageRepositoryDiag);
+            OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
 
 
             HashSet<ImagePattern> p = new HashSet<ImagePattern>();
@@ -43,12 +43,12 @@ namespace NINA.ViewModel {
             ScanForIndexFiles();
         }
 
-        private void OpenSkyMapImageRepositoryDiag(object obj) {
+        private void OpenSkyAtlasImageRepositoryDiag(object obj) {
             System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.SelectedPath = Settings.SkyMapImageRepository;
+            dialog.SelectedPath = Settings.SkyAtlasImageRepository;
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                SkyMapImageRepository = dialog.SelectedPath;
+                SkyAtlasImageRepository = dialog.SelectedPath;
             }
         }
 
@@ -127,7 +127,7 @@ namespace NINA.ViewModel {
 
         public ICommand ToggleColorsCommand { get; private set; }
 
-        public ICommand OpenSkyMapImageRepositoryDiagCommand { get; private set; }
+        public ICommand OpenSkyAtlasImageRepositoryDiagCommand { get; private set; }
 
         private void PreviewFile(object o) {
             MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), "Example File Name", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
@@ -762,12 +762,12 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SkyMapImageRepository {
+        public string SkyAtlasImageRepository {
             get {
-                return Settings.SkyMapImageRepository;
+                return Settings.SkyAtlasImageRepository;
             }
             set {
-                Settings.SkyMapImageRepository = value;
+                Settings.SkyAtlasImageRepository = value;
                 RaisePropertyChanged();
             }
         }

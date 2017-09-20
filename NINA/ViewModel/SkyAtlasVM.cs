@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
-    public class SkyMapVM : BaseVM {
-        public SkyMapVM() {
+    public class SkyAtlasVM : BaseVM {
+        public SkyAtlasVM() {
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
             

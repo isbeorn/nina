@@ -351,7 +351,7 @@
     <Compile Include="ViewModel\PlatesolveVM.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
-    <Compile Include="ViewModel\SkyMapVM.cs" />
+    <Compile Include="ViewModel\SkyAtlasVM.cs" />
     <Compile Include="ViewModel\TelescopeVM.cs" />
     <Compile Include="ViewModel\WeatherDataVM.cs" />
     <Compile Include="View\AnchorableCameraControlView.xaml.cs">
@@ -462,8 +462,8 @@
     <Compile Include="View\SequenceView.xaml.cs">
       <DependentUpon>SequenceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SkyMapView.xaml.cs">
-      <DependentUpon>SkyMapView.xaml</DependentUpon>
+    <Compile Include="View\SkyAtlasView.xaml.cs">
+      <DependentUpon>SkyAtlasView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TelescopeView.xaml.cs">
       <DependentUpon>TelescopeView.xaml</DependentUpon>
@@ -761,7 +761,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\SkyMapView.xaml">
+    <Page Include="View\SkyAtlasView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

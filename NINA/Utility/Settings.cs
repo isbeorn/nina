@@ -665,12 +665,12 @@ namespace NINA.Utility {
             }
         }
 
-        public static string SkyMapImageRepository {
+        public static string SkyAtlasImageRepository {
             get {
-                return Properties.Settings.Default.SkyMapImageRepository;
+                return Properties.Settings.Default.SkyAtlasImageRepository;
             }
             set {
-                Properties.Settings.Default.SkyMapImageRepository = value;
+                Properties.Settings.Default.SkyAtlasImageRepository = value;
                 Properties.Settings.Default.Save();
             }
         }

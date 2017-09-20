@@ -31,11 +31,11 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSkyMapImageDirectory}"></TextBlock>
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSkyAtlasImageDirectory}"></TextBlock>
 
                             <TextBox Margin="10,0,0,0" Grid.Column="1" VerticalAlignment="Center" VerticalContentAlignment="Center" >
                                 <TextBox.Text>
-                                    <Binding Path="SkyMapImageRepository" UpdateSourceTrigger="LostFocus" >
+                                    <Binding Path="SkyAtlasImageRepository" UpdateSourceTrigger="LostFocus" >
                                         <Binding.ValidationRules>
                                             <rules:DirectoryExistsRule />
                                         </Binding.ValidationRules>
@@ -43,7 +43,7 @@
                                 </TextBox.Text>
                             </TextBox>
 
-                            <Button Grid.Column="2" Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Command="{Binding OpenSkyMapImageRepositoryDiagCommand}">
+                            <Button Grid.Column="2" Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Command="{Binding OpenSkyAtlasImageRepositoryDiagCommand}">
                                 <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
                             </Button>
                             

@@ -286,6 +286,6 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblDetails">Details</s:String>
     <s:String x:Key="LblMinimumAltitude">Minimum Altitude</s:String>
     <s:String x:Key="LblNoImage">No Image available</s:String>
-    <s:String x:Key="LblSkyMapImageDirectory">Skymap Image Directory</s:String>
+    <s:String x:Key="LblSkyAtlasImageDirectory">Sky Atlas Image Directory</s:String>
     <s:String x:Key="LblLanguage">Language</s:String>
 </ResourceDictionary>

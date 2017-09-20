@@ -143,7 +143,7 @@ namespace NINA.Model {
 
         //const string DSS_URL = "https://archive.stsci.edu/cgi-bin/dss_search";
 
-        private static string _imageDirectory = Settings.SkyMapImageRepository;
+        private static string _imageDirectory = Settings.SkyAtlasImageRepository;
 
         Dispatcher _dispatcher = Application.Current.Dispatcher;
 

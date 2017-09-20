@@ -313,16 +313,16 @@ namespace NINA.ViewModel {
             }
         }
 
-        private SkyMapVM _skyMapVM;
-        public SkyMapVM SkyMapVM {
+        private SkyAtlasVM _skyAtlasVM;
+        public SkyAtlasVM SkyAtlasVM {
             get {
-                if (_skyMapVM == null) {
-                    _skyMapVM = new SkyMapVM();
+                if (_skyAtlasVM == null) {
+                    _skyAtlasVM = new SkyAtlasVM();
                 }
-                return _skyMapVM;
+                return _skyAtlasVM;
             }
             set {
-                _skyMapVM = value;
+                _skyAtlasVM = value;
                 RaisePropertyChanged();
             }
         }
