@@ -17,19 +17,19 @@
                   
                   >
             <oxy:Plot.Axes>
-                <oxy:LinearAxis  Position="Left"    IsZoomEnabled="False" IsPanEnabled="False"                                
+                <oxy:LinearAxis  Position="Left"    IsZoomEnabled="False" IsPanEnabled="False" IsAxisVisible="False"                    
                                  IntervalLength = "50"
                                  TextColor="Transparent"
                                  AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"                                                                  
                                  />
-                <oxy:LinearAxis Position="Bottom"  Minimum="0" IsZoomEnabled="False" IsPanEnabled="False"
+                <oxy:LinearAxis Position="Bottom"  Minimum="0" IsZoomEnabled="False" IsPanEnabled="False" IsAxisVisible="False"
                                 MajorGridlineStyle="Solid"
                                  MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                                  MinorGridlineStyle="Solid"
                                  MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
                                 MajorStep="{x:Static cam:ImageStatistics.HistogramMajorStep}" MinorStep="{x:Static cam:ImageStatistics.HistogramMinorStep}"
                                 TextColor="Transparent"
-                                 Maximum="{x:Static cam:ImageStatistics.HistogramResolution}" />
+                                 Maximum="{x:Static cam:ImageStatistics.HistogramResolution}" />                
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LinearBarSeries ItemsSource="{Binding Histogram}"
