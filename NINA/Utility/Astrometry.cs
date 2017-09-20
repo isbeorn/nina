@@ -127,8 +127,12 @@ namespace NINA.Utility.Astrometry {
                          * Math.Sin(ToRadians(latitude))
                          + Math.Cos(ToRadians(declination))
                          * Math.Cos(ToRadians(latitude))
-                         * Math.Cos(radX); 
-            return Astrometry.ToDegree(Math.Asin(sinAlt));
+                         * Math.Cos(radX);
+            var altitude = Astrometry.ToDegree(Math.Asin(sinAlt));
+            if(Settings.HemisphereType == Hemisphere.SOUTHERN) {
+                altitude = -altitude;
+            }
+            return altitude;
         }
 
         /// <summary>

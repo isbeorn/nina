@@ -46,67 +46,16 @@ namespace NINA.ViewModel {
                     DateTime d = GetChartReferenceStartDate();
 
                     var twilight = Astrometry.GetNightTimes(d);
-
-                    var degrees = 90;
-                    if(Settings.HemisphereType == Hemisphere.SOUTHERN) {
-                        degrees = -90;
-                    }
-
+                    
                     if(twilight != null) { 
                         _nightDuration = new AsyncObservableCollection<KeyValuePair<DateTime,double>>() {
-                        new KeyValuePair<DateTime,double>(twilight.RiseDate, degrees),
-                        new KeyValuePair<DateTime,double>(twilight.SetDate, degrees) };
+                        new KeyValuePair<DateTime,double>(twilight.RiseDate, 90),
+                        new KeyValuePair<DateTime,double>(twilight.SetDate, 90) };
                     } else {
                         _nightDuration = new AsyncObservableCollection<KeyValuePair<DateTime,double>>();
                     }
                 }
                 return _nightDuration;
-            }
-        }
-
-
-
-        public double AltitudeMaximum {
-            get {
-                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
-                    return 90;
-                }
-                else {
-                    return 0;
-                }
-            }
-        }
-
-        public double AltitudeMinimum {
-            get {
-                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
-                    return 0;
-                }
-                else {
-                    return -90;
-                }
-            }
-        }
-
-        public double AltitudeStartPosition {
-            get {
-                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
-                    return 0;
-                }
-                else {
-                    return 1;
-                }
-            }
-        }
-
-        public double AltitudeEndPosition {
-            get {
-                if (Settings.HemisphereType == Hemisphere.NORTHERN) {
-                    return 1;
-                }
-                else {
-                    return 0;
-                }
             }
         }
 
@@ -158,12 +107,8 @@ namespace NINA.ViewModel {
                 SearchResult = new AsyncObservableCollection<DeepSkyObject>(SearchResult.Where((x) => {
                     return x.Altitudes.Where((y) => {
                         return (y.Key > SelectedAltitudeTimeFrom && y.Key < SelectedAltitudeTimeThrough);
-                    }).All((z) => {
-                        if(Settings.HemisphereType == Hemisphere.NORTHERN) {
-                            return z.Value > SelectedMinimumAltitudeDegrees;
-                        } else {
-                            return z.Value < SelectedMinimumAltitudeDegrees;
-                        }                        
+                    }).All((z) => {                        
+                        return z.Value > SelectedMinimumAltitudeDegrees;                        
                     });
                 }));
             }
@@ -205,16 +150,9 @@ namespace NINA.ViewModel {
                 AltitudeTimesThrough.Add(d);
                 d = d.AddHours(1);
             }
-            
-            if (Settings.HemisphereType == Hemisphere.NORTHERN) {
-                
-                for(int i = 0; i <= 90; i += 10) {
-                    MinimumAltitudeDegrees.Add(new KeyValuePair<double,string>(i, i + "°"));
-                }
-            } else {                
-                for (int i = 0;i >= -90;i -= 10) {
-                    MinimumAltitudeDegrees.Add(new KeyValuePair<double,string>(i,i + "°"));
-                }
+
+            for (int i = 0;i <= 90;i += 10) {
+                MinimumAltitudeDegrees.Add(new KeyValuePair<double,string>(i,i + "°"));
             }
         }
 

@@ -264,10 +264,10 @@
                                     >
                                 <oxy:Plot.Axes>
                                     <oxy:LinearAxis  Position="Left"  IsZoomEnabled="False" IsPanEnabled="False"
-                                                    Maximum="{Binding Source={StaticResource AppVM}, Path=SkyAtlasVM.AltitudeMaximum}" 
-                                                    Minimum="{Binding Source={StaticResource AppVM}, Path=SkyAtlasVM.AltitudeMinimum}"   
-                                                    StartPosition="{Binding Source={StaticResource AppVM}, Path=SkyAtlasVM.AltitudeStartPosition}"
-                                                    EndPosition="{Binding Source={StaticResource AppVM}, Path=SkyAtlasVM.AltitudeEndPosition}"
+                                                    Maximum="90" 
+                                                    Minimum="0"   
+                                                    StartPosition="0"
+                                                    EndPosition="1"
                                                     IntervalLength = "30"
                                                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                                                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
