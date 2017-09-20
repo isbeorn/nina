@@ -17,4 +17,5 @@
     <converters:InverseCollectionContainsItemsToVisibilityConverter x:Key="InverseCollectionContainsItemsToVisibilityConverter" />
     <converters:MinusOneToEmptyStringConverter x:Key="MinusOneToEmptyStringConverter" />
     <converters:ArcsecToLabelConverter x:Key="ArcsecToLabelConverter" />
+    <converters:BoolToLabelConverter x:Key="BoolToLabelConverter" />
 </ResourceDictionary>

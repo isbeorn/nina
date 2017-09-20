@@ -129,17 +129,40 @@ namespace NINA.Model {
 
         public void CalculateAltitude(DateTime start, double siderealTime, double latitude,double longitude) {
 
-                    
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
-
+            
             for (double angle = hourAngle;angle < hourAngle + 24;angle += 0.1) {
                 var degAngle = Astrometry.HoursToDegrees(angle);
                 var altitude = Astrometry.GetAltitude(degAngle,latitude, this.Coordinates.Dec);
                 Altitudes.Add(new KeyValuePair<DateTime,double>(start,altitude));                
-                start = start.AddHours(0.1);
+                start = start.AddHours(0.1);                
             }
 
-            //var img = Image;
+            CalculateTransit(latitude);            
+        }
+
+        private void CalculateTransit(double latitude) {
+            var alt0 = Astrometry.GetAltitude(0,latitude,this.Coordinates.Dec);
+            var alt180 = Astrometry.GetAltitude(180,latitude,this.Coordinates.Dec);
+            double transit;
+            if (alt0 > alt180) {
+                transit = Astrometry.GetAzimuth(0,alt0,latitude,this.Coordinates.Dec);
+            }
+            else {
+                transit = Astrometry.GetAzimuth(180,alt180,latitude,this.Coordinates.Dec);
+            }
+            DoesTransitSouth = Convert.ToInt32(transit) == 180;            
+        }
+
+        private bool _doesTransitSouth;
+        public bool DoesTransitSouth {
+            get {
+                return _doesTransitSouth;
+            }
+            private set {
+                _doesTransitSouth = value;
+                RaisePropertyChanged();
+            }
         }
 
         //const string DSS_URL = "https://archive.stsci.edu/cgi-bin/dss_search";

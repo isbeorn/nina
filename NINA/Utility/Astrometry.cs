@@ -153,6 +153,9 @@ namespace NINA.Utility.Astrometry {
             var cosA = (Math.Sin(radDec) - Math.Sin(radAlt) * Math.Sin(radLat)) /
                         (Math.Cos(radAlt) * Math.Cos(radLat));
 
+            //fix double precision issues
+            if (cosA < -1) { cosA = -1; }
+            if (cosA > 1) { cosA = 1; }
 
             if (Math.Sin(radHA) < 0) {
                 return ToDegree(Math.Acos(cosA));

@@ -274,6 +274,7 @@
     <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
     <Compile Include="Utility\Converters\ArcsecToLabelConverter.cs" />
     <Compile Include="Utility\Converters\BooleanToVisibilityHiddenConverter.cs" />
+    <Compile Include="Utility\Converters\BoolToLabelConverter.cs" />
     <Compile Include="Utility\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DatabindingDebugConverter.cs" />
     <Compile Include="Utility\Converters\CollectionContainsItemsToVisibilityConverter.cs" />
