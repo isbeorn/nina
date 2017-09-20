@@ -104,7 +104,7 @@ namespace NINA.Model {
                 RaisePropertyChanged();
             }
         }
-
+        
         private AsyncObservableCollection<string> _alsoKnownAs;
         public AsyncObservableCollection<string> AlsoKnownAs {
             get {
@@ -127,14 +127,15 @@ namespace NINA.Model {
             Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates,Coordinates);
         }
 
-        public void CalculateElevation(DateTime start, double siderealTime, double latitude,double longitude) {
+        public void CalculateAltitude(DateTime start, double siderealTime, double latitude,double longitude) {
 
                     
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
 
             for (double angle = hourAngle;angle < hourAngle + 24;angle += 0.1) {
-                var altitude = Astrometry.GetAltitude(angle,latitude, this.Coordinates.Dec);
-                Altitudes.Add(new KeyValuePair<DateTime,double>(start,altitude));
+                var degAngle = Astrometry.HoursToDegrees(angle);
+                var altitude = Astrometry.GetAltitude(degAngle,latitude, this.Coordinates.Dec);
+                Altitudes.Add(new KeyValuePair<DateTime,double>(start,altitude));                
                 start = start.AddHours(0.1);
             }
 

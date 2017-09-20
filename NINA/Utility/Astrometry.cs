@@ -111,14 +111,50 @@ namespace NINA.Utility.Astrometry {
             return hourAngle;
         }
 
+        /*
+         * some handy formulas: http://www.stargazing.net/kepler/altaz.html
+         */
+        /// <summary>
+        /// Calculates Altitude based on given input
+        /// </summary>
+        /// <param name="hourAngle">in degrees</param>
+        /// <param name="latitude">in degrees</param>
+        /// <param name="declination">in degrees</param>
+        /// <returns></returns>
         public static double GetAltitude(double hourAngle, double latitude, double declination) {
-            var radX = ToRadians(HoursToDegrees(hourAngle));
+            var radX = ToRadians(hourAngle);
             var sinAlt = Math.Sin(ToRadians(declination))
                          * Math.Sin(ToRadians(latitude))
                          + Math.Cos(ToRadians(declination))
                          * Math.Cos(ToRadians(latitude))
                          * Math.Cos(radX); 
             return Astrometry.ToDegree(Math.Asin(sinAlt));
+        }
+
+        /// <summary>
+        /// Calculates Azimuth based on given input
+        /// </summary>
+        /// <param name="hourAngle">in degrees</param>
+        /// <param name="altitude">in degrees</param>
+        /// <param name="latitude">in degrees</param>
+        /// <param name="declination">in degrees</param>
+        /// <returns></returns>
+        public static double GetAzimuth(double hourAngle, double altitude, double latitude, double declination) {
+
+            var radHA = ToRadians(hourAngle);
+            var radAlt = ToRadians(altitude);
+            var radLat = ToRadians(latitude);
+            var radDec = ToRadians(declination);
+
+            var cosA = (Math.Sin(radDec) - Math.Sin(radAlt) * Math.Sin(radLat)) /
+                        (Math.Cos(radAlt) * Math.Cos(radLat));
+
+
+            if (Math.Sin(radHA) < 0) {
+                return ToDegree(Math.Acos(cosA));
+            } else {
+                return 360 - ToDegree(Math.Acos(cosA));
+            }
         }
 
         public static AstronomicalTwilight GetNightTimes(DateTime date) {            
@@ -132,7 +168,7 @@ namespace NINA.Utility.Astrometry {
              * Arraylist(2) - Integer - Number of set events in this 24 hour period
              * Arraylist(3) onwards - Double - Values of rise events in hours Arraylist
              * (3 + NumberOfRiseEvents) onwards - Double - Values of set events in hours*/
-            var times = AstroUtils.EventTimes(ASCOM.Astrometry.EventType.AstronomicalTwilight,d,m,y,Settings.Latitude,Settings.Longitude,Settings.TimeZone.GetUtcOffset(date).Hours + Settings.TimeZone.GetUtcOffset(date).Minutes / 60.0);
+        var times = AstroUtils.EventTimes(ASCOM.Astrometry.EventType.AstronomicalTwilight,d,m,y,Settings.Latitude,Settings.Longitude,Settings.TimeZone.GetUtcOffset(date).Hours + Settings.TimeZone.GetUtcOffset(date).Minutes / 60.0);
 
             if(times.Count > 3) {
                 int nrOfRiseEvents = (int)times[1];

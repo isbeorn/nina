@@ -149,7 +149,7 @@ namespace NINA.ViewModel {
 
             Parallel.ForEach(SearchResult,(obj) => {
                 var cloneDate = d;
-                obj.CalculateElevation(cloneDate,siderealTime,latitude,longitude);
+                obj.CalculateAltitude(cloneDate,siderealTime,latitude,longitude);
             });
             
             /* Check if Altitude Filter is not default */
