@@ -56,16 +56,24 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type CheckBox}">
-                    <Border x:Name="PART_Border" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Background="{StaticResource BackgroundBrush}">
-                        <Path x:Name="PART_Symbol" 
-                                Fill="{StaticResource ButtonForegroundBrush}" 
-                                Data="{StaticResource CheckedCircledSVG}" 
-                                Stretch="Uniform" Margin="2" Visibility="Visible">
-                        </Path>
+                    <Border x:Name="PART_Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{StaticResource BackgroundBrush}">
+                        <Grid>
+                            <Path x:Name="PART_CheckedSymbol" 
+                                    Fill="{StaticResource ButtonForegroundBrush}" 
+                                    Data="{StaticResource CheckedCircledSVG}" 
+                                    Stretch="Uniform" Margin="2" Visibility="Visible">
+                            </Path>
+                            <Path x:Name="PART_NotCheckedSymbol" 
+                                    Fill="{StaticResource ButtonForegroundBrush}" 
+                                    Data="{StaticResource CancelCircledSVG}" 
+                                    Stretch="Uniform" Margin="2" Visibility="Collapsed">
+                            </Path>
+                        </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="False">
-                            <Setter TargetName="PART_Symbol" Property="Visibility" Value="Hidden" />
+                            <Setter TargetName="PART_CheckedSymbol" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PART_NotCheckedSymbol" Property="Visibility" Value="Visible" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />

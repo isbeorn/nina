@@ -61,8 +61,8 @@
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                                 <UniformGrid Columns="2" >
                                     <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                        <TextBlock Text="{ns:Loc LblConnected}"></TextBlock>
-                                        <TextBlock Text="{Binding PHD2Client.Connected}" Margin="5,0,0,0" />
+                                        <TextBlock Text="{ns:Loc LblConnected}" VerticalAlignment="Center"></TextBlock>
+                                        <CheckBox IsChecked="{Binding PHD2Client.Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="30" Width="30" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />                                        
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
