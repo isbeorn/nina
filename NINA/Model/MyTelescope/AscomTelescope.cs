@@ -906,7 +906,7 @@ namespace NINA.Model.MyTelescope {
             _telescope = null;
         }
 
-        public bool MeridianFlip() {
+        public bool MeridianFlip(Coordinates targetCoordinates) {
             var success = false;
             try {
                 if(!Tracking) {
@@ -919,7 +919,7 @@ namespace NINA.Model.MyTelescope {
                     SideOfPier = flippedside;
                 }
 
-                SlewToCoordinates(RightAscension, Declination);
+                SlewToCoordinates(targetCoordinates.RA, targetCoordinates.Dec);
                 success = true;
 
             } catch (Exception) {

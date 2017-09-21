@@ -135,6 +135,7 @@ namespace NINA.ViewModel
         private async Task<bool> PassMeridian(CancellationTokenSource tokenSource, IProgress<string> progress) {
             var timeToFlip = Telescope.TimeToMeridianFlip * 60 * 60;
             progress.Report("Stop Scope tracking");
+            _targetCoordinates = Telescope.Coordinates;
             Telescope.Tracking = false;
             do {                                
                 RemainingTime = TimeSpan.FromSeconds(timeToFlip );
@@ -149,13 +150,10 @@ namespace NINA.ViewModel
         }
 
         private async Task<bool> DoFilp(CancellationTokenSource tokenSource, IProgress<string> progress) {
-            _targetCoordinates = Telescope.Coordinates;
-
             progress.Report("Flipping Scope");
-            var flipsuccess = Telescope.MeridianFlip();
+            var flipsuccess = Telescope.MeridianFlip(_targetCoordinates);
 
             await Settle(tokenSource, progress);
-
 
             return flipsuccess;
         }

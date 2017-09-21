@@ -33,7 +33,7 @@ namespace NINA.Model.MyTelescope {
 
         bool Connect();
         void Disconnect();
-        bool MeridianFlip();
+        bool MeridianFlip(Coordinates targetCoordinates);
         void MoveAxis(TelescopeAxes axis, double rate);
         void Park();
         void Setpark();
