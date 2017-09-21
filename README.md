@@ -14,7 +14,7 @@
 
 * All Equipment connected via ASCOM
 
-* ASCOM camera control
+* ASCOM camera control or ASI Native Driver (tested with ZWO ASI 1600 MMC)
 
 * Temperature control (including a cool down routine for a set amount of time)
 
@@ -44,17 +44,18 @@
 
 * Polar alignment assistant 
      * Polaris position in polar scope 
-     * PA Error calculation using platesolving 
+     * Precise PA Error calculation using platesolving 
      * DARV alignment procedure
 
 * Experimental
-     * ASI Native Driver
      * Canon Cameras 
      * Auto Meridian Flip
 
 ** Feedback**
 
-Mail to: isbeorn86+NINA@googlemail.com
+Through the issue tracker
+
+a mail to: isbeorn86+NINA@googlemail.com
 
 or directly via Discord: @[]()Isbeorn#1882 
 
