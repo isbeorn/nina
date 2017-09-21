@@ -34,22 +34,29 @@
 
 * Supported Image formats: FITS, TIFF, XISF
 
-* Fully customizable UI colors for both Night mode and Daylight mode
+* Fully customizable UI colors together with a bunch of preset Themes
 
 * Star detection and HFR calculation, including stats history during imaging session
 
-* Platesolving using Astrometry.Net or a local instance via cygwin
+* Platesolving using Platesolve2 by Planewave, Astrometry.net or a local instance via cygwin
 
 * Weather data by OpenWeatherMap 
+
+* Automatic Meridian Flip
 
 * Polar alignment assistant 
      * Polaris position in polar scope 
      * Precise PA Error calculation using platesolving 
      * DARV alignment procedure
 
+* Sky Atlas
+     * Detailed info for over 10000 Deep Sky Objects
+     * Advanced filtering to get just the Deep Sky Objects that are relevant for you
+     * Calculated altitude chart for each object based on your position
+     * Night time duration based on your position
+
 * Experimental
      * Canon Cameras 
-     * Auto Meridian Flip
 
 ** Feedback**
 
