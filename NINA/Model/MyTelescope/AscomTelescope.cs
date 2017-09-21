@@ -902,7 +902,7 @@ namespace NINA.Model.MyTelescope {
 
         public void Disconnect() {
             Connected = false;
-            _telescope.Dispose();
+            _telescope?.Dispose();
             _telescope = null;
         }
 
