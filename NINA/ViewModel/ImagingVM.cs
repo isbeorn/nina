@@ -305,6 +305,7 @@ namespace NINA.ViewModel {
 
                         while (seq.ExposureCount > 0) {
 
+                            await CheckMeridianFlip(seq,tokenSource,progress);
 
                             /*Change Filter*/
                             await ChangeFilter(seq, tokenSource, progress);
@@ -324,11 +325,6 @@ namespace NINA.ViewModel {
                                 tokenSource.Cancel();
                                 throw new OperationCanceledException();
                             }
-
-
-
-                            await CheckMeridianFlip(seq, tokenSource, progress);
-
 
                             /*Capture*/
                             await Capture(seq, tokenSource, progress);
