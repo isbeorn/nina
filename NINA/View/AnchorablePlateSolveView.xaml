@@ -130,6 +130,13 @@
                     <DataGrid Margin="0 10 0 0" ItemsSource="{Binding Source={StaticResource GridItems}}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Hidden" CanUserAddRows="False" Width="{Binding ElementName=grid, Path=ActualWidth}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblTime}" Binding="{Binding SolveTime, StringFormat=\{0:HH:mm:ss\}}" SortDirection="Ascending" IsReadOnly="True" />
+                            <DataGridTemplateColumn Width="*" Header="{ns:Loc LblSuccess}" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding Success, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Center" Height="15" Width="15" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblSuccess}" Binding="{Binding Success}" IsReadOnly="True" />
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblRA}" Binding="{Binding Coordinates.RAString}" IsReadOnly="True"/>
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblDec}" Binding="{Binding Coordinates.DecString}" IsReadOnly="True"/>
