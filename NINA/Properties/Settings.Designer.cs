@@ -638,7 +638,7 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public double PauseTimeBeforeMeridian {
             get {
                 return ((double)(this["PauseTimeBeforeMeridian"]));
