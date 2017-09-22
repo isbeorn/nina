@@ -23,7 +23,7 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PolarAlignSVG"];
 
             _updateValues = new DispatcherTimer();
-            _updateValues.Interval = TimeSpan.FromSeconds(1);
+            _updateValues.Interval = TimeSpan.FromSeconds(10);
             _updateValues.Tick += UpdateValues_Tick;
             _updateValues.Start();
 
@@ -613,37 +613,20 @@ namespace NINA.ViewModel {
             Telescope.SlewToCoordinatesAsync(slew_ra, Declination);
         }
 
-        private void UpdateValues_Tick(object sender, EventArgs e) {
-            if (Telescope?.Connected == true) {
+        private void UpdateValues_Tick(object sender, EventArgs e) {            
 
-                var ascomutil = Utility.Utility.AscomUtil;
+            var ascomutil = Utility.Utility.AscomUtil;
+            
+            var polaris = new Coordinates(ascomutil.HMSToHours("02:31:49.09456"), ascomutil.DMSToDegrees("89:15:50.7923"), Epoch.J2000, Coordinates.RAType.Hours);
+            polaris = polaris.Transform(Epoch.JNOW);
+            
+            var lst = Astrometry.GetLocalSiderealTimeNow(Settings.Longitude);
+            var hour_angle = Astrometry.GetHourAngle(lst, polaris.RA);
+            
+            Rotation = -Astrometry.HoursToDegrees(hour_angle);
+            HourAngleTime = ascomutil.HoursToHMS(hour_angle);
 
-
-                var polaris = new Coordinates(ascomutil.HMSToHours("02:31:49.09"), ascomutil.DMSToDegrees("89:15:50.8"), Epoch.J2000, Coordinates.RAType.Hours);
-                polaris = polaris.Transform(Epoch.JNOW);
-
-                /*var NOVAS31 = Astrometry.NOVAS31;
-                
-                double[] vector = new double[4];
-                NOVAS31.RaDec2Vector(polaris.RA, polaris.Dec, 1000, ref vector);
-                double[] translatedvector = new double [4];
-
-                var util = Astrometry.AstroUtils;
-                var jd = util.JulianDateUtc;
-
-                NOVAS31.Precession(2451545.0, vector, jd, ref translatedvector);
-                double newRA = 0.0, newDec = 0.0;
-                NOVAS31.Vector2RaDec(translatedvector, ref newRA, ref newDec);
-                polaris = new Coordinates(newRA, newDec, Epoch.JNOW);*/
-
-                var hour_angle = Math.Abs(Telescope.SiderealTime - polaris.RA);
-                if (hour_angle < 0) {
-                    hour_angle += 24;
-                }
-                Rotation = -(hour_angle / 24) * 360;
-                HourAngleTime = ascomutil.HoursToHMS(hour_angle);
-
-            }
+            
         }
     }
 }

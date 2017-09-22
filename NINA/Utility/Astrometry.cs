@@ -82,9 +82,15 @@ namespace NINA.Utility.Astrometry {
         }
 
         public static double GetLocalSiderealTimeNow(double longitude) {
-            return GetLocalSiderealTime(DateTime.UtcNow,longitude);            
+            return GetLocalSiderealTime(DateTime.Now,longitude);            
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="longitude"></param>
+        /// <returns>Sidereal Time in hours</returns>
         public static double GetLocalSiderealTime(DateTime date, double longitude) {
             var utcdate = date.ToUniversalTime();
             var jd = NOVAS31.JulianDate((short)utcdate.Year,(short)utcdate.Month,(short)utcdate.Day,utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0 );
@@ -105,9 +111,15 @@ namespace NINA.Utility.Astrometry {
             return lst;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="siderealTime"></param>
+        /// <param name="rightAscension"></param>
+        /// <returns>Hour Angle in hours</returns>
         public static double GetHourAngle(double siderealTime, double rightAscension) {
             double hourAngle = siderealTime - rightAscension;
-            if (hourAngle < 0) { hourAngle += 360; }
+            if (hourAngle < 0) { hourAngle += 24; }
             return hourAngle;
         }
 
