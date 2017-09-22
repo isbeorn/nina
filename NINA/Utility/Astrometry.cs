@@ -106,7 +106,7 @@ namespace NINA.Utility.Astrometry {
             double jd_low = jd - jd_high;
 
             double lst = 0;
-            NOVAS31.SiderealTime(jd_high,jd_low,NOVAS31.DeltaT(jd),ASCOM.Astrometry.GstType.GreenwichApparentSiderealTime,ASCOM.Astrometry.Method.CIOBased,ASCOM.Astrometry.Accuracy.Full,ref lst);
+            NOVAS31.SiderealTime(jd_high,jd_low,NOVAS31.DeltaT(jd),ASCOM.Astrometry.GstType.GreenwichApparentSiderealTime,ASCOM.Astrometry.Method.EquinoxBased,ASCOM.Astrometry.Accuracy.Full,ref lst);
             lst = lst + DegreesToHours(longitude);
             return lst;
         }
