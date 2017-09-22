@@ -16,20 +16,24 @@ namespace NINA.ViewModel {
         public SkyAtlasVM() {
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
-            
-
-
-
+                        
             InitializeFilters();
 
             Mediator.Instance.Register((object o) => {
                 _nightDuration = null; //Clear cache
                 InitializeElevationFilters();
+                ResetRiseAndSetTimes();
             },MediatorMessages.LocationChanged);
             
         }
 
-        
+        private void ResetRiseAndSetTimes() {
+            MoonPhase = Astrometry.MoonPhase.Unknown;
+            Illumination = null;
+            MoonRiseAndSet = null;
+            SunRiseAndSet = null;
+            TwilightRiseAndSet = null;
+        }
 
         private CancellationTokenSource _searchTokenSource;
 
@@ -43,7 +47,7 @@ namespace NINA.ViewModel {
             get {
                 if(_nightDuration == null) {
 
-                    DateTime d = GetChartReferenceStartDate();
+                    DateTime d = GetReferenceDate();
 
                     var twilight = Astrometry.GetNightTimes(d);
                     
@@ -59,7 +63,83 @@ namespace NINA.ViewModel {
             }
         }
 
-        private DateTime GetChartReferenceStartDate() {
+        private Astrometry.RiseAndSetAstroEvent _twilightRiseAndSet;
+        public Astrometry.RiseAndSetAstroEvent TwilightRiseAndSet {
+            get {
+                if (_twilightRiseAndSet == null) {
+                    var d = GetReferenceDate();
+                    _twilightRiseAndSet = Astrometry.GetNightTimes(d);
+                }
+                return _twilightRiseAndSet;
+            }
+            private set {
+                _twilightRiseAndSet = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Astrometry.RiseAndSetAstroEvent _moonRiseAndSet;
+        public Astrometry.RiseAndSetAstroEvent MoonRiseAndSet {
+            get {
+                if(_moonRiseAndSet == null) {
+                    var d = GetReferenceDate();
+                    _moonRiseAndSet = Astrometry.GetMoonRiseAndSet(d);
+                }
+                return _moonRiseAndSet;
+            }
+            private set {
+                _moonRiseAndSet = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double? _illumination;
+        public double? Illumination {
+            get {
+                if(_illumination == null) {
+                    var d = GetReferenceDate();
+                    _illumination = Astrometry.GetMoonIllumination(d);
+                }
+                return _illumination.Value;
+            }
+            private set {
+                _illumination = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Astrometry.MoonPhase _moonPhase;
+        public Astrometry.MoonPhase MoonPhase {
+            get {
+                if(_moonPhase == Astrometry.MoonPhase.Unknown) {
+                    var d = GetReferenceDate();
+                    _moonPhase = Astrometry.GetMoonPhase(d);                    
+                }
+                return _moonPhase;
+            }
+            private set {
+                _moonPhase = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Astrometry.RiseAndSetAstroEvent _sunRiseAndSet;
+        public Astrometry.RiseAndSetAstroEvent SunRiseAndSet {
+            get {
+                if (_sunRiseAndSet == null) {
+                    var d = GetReferenceDate();
+                    _sunRiseAndSet = Astrometry.GetSunRiseAndSet(d);
+                }
+                return _sunRiseAndSet;
+            }
+            private set {
+                _sunRiseAndSet = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private DateTime GetReferenceDate() {
             DateTime d;
             if (DateTime.Now.Hour > 12) {
                 d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,12,0,0);
@@ -95,7 +175,7 @@ namespace NINA.ViewModel {
                     var longitude = Settings.Longitude;
                     var latitude = Settings.Latitude;
 
-                    DateTime d = GetChartReferenceStartDate();
+                    DateTime d = GetReferenceDate();
 
                     var siderealTime = Astrometry.GetLocalSiderealTime(d,longitude);
 
@@ -106,7 +186,7 @@ namespace NINA.ViewModel {
                     });
 
                     /* Check if Altitude Filter is not default */
-                    if (!(SelectedAltitudeTimeFrom == DateTime.MinValue && SelectedAltitudeTimeThrough == DateTime.MaxValue && SelectedMinimumAltitudeDegrees == 0)) {
+            if (!(SelectedAltitudeTimeFrom == DateTime.MinValue && SelectedAltitudeTimeThrough == DateTime.MaxValue && SelectedMinimumAltitudeDegrees == 0)) {
                         /* Apply Altitude Filter */
                         SearchResult = new AsyncObservableCollection<DeepSkyObject>(result.Where((x) => {
                             return x.Altitudes.Where((y) => {
@@ -143,14 +223,8 @@ namespace NINA.ViewModel {
             SelectedAltitudeTimeFrom = DateTime.MinValue;
             SelectedAltitudeTimeThrough = DateTime.MaxValue;
             SelectedMinimumAltitudeDegrees = 0;
-
-            DateTime d;
-            if (DateTime.Now.Hour > 12) {
-                d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,12,0,0);
-            }
-            else {
-                d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day - 1,12,0,0);
-            }
+            
+            var d = GetReferenceDate();
 
             AltitudeTimesFrom.Add(DateTime.MinValue);
             AltitudeTimesThrough.Add(DateTime.MaxValue);

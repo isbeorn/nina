@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ASCOM.Astrometry;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Utility.Astrometry {
-    class Astrometry {       
+    public class Astrometry {       
 
         private static ASCOM.Astrometry.AstroUtils.AstroUtils _astroUtils;
         public static ASCOM.Astrometry.AstroUtils.AstroUtils AstroUtils {
@@ -85,15 +86,19 @@ namespace NINA.Utility.Astrometry {
             return GetLocalSiderealTime(DateTime.Now,longitude);            
         }
 
+        public static double GetJulianDate(DateTime date) {
+            var utcdate = date.ToUniversalTime();
+            return NOVAS31.JulianDate((short)utcdate.Year,(short)utcdate.Month,(short)utcdate.Day,utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0);
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="date"></param>
         /// <param name="longitude"></param>
         /// <returns>Sidereal Time in hours</returns>
-        public static double GetLocalSiderealTime(DateTime date, double longitude) {
-            var utcdate = date.ToUniversalTime();
-            var jd = NOVAS31.JulianDate((short)utcdate.Year,(short)utcdate.Month,(short)utcdate.Day,utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0 );
+        public static double GetLocalSiderealTime(DateTime date, double longitude) {            
+            var jd = GetJulianDate(date);
 
             /*
             var jd = AstroUtils.JulianDateUtc; 
@@ -176,7 +181,7 @@ namespace NINA.Utility.Astrometry {
             }
         }
 
-        public static AstronomicalTwilight GetNightTimes(DateTime date) {            
+        public static RiseAndSetAstroEvent GetRiseAndSetEvent(DateTime date, EventType type) {
             var d = date.Day;
             var m = date.Month;
             var y = date.Year;
@@ -187,9 +192,9 @@ namespace NINA.Utility.Astrometry {
              * Arraylist(2) - Integer - Number of set events in this 24 hour period
              * Arraylist(3) onwards - Double - Values of rise events in hours Arraylist
              * (3 + NumberOfRiseEvents) onwards - Double - Values of set events in hours*/
-        var times = AstroUtils.EventTimes(ASCOM.Astrometry.EventType.AstronomicalTwilight,d,m,y,Settings.Latitude,Settings.Longitude,Settings.TimeZone.GetUtcOffset(date).Hours + Settings.TimeZone.GetUtcOffset(date).Minutes / 60.0);
+            var times = AstroUtils.EventTimes(type,d,m,y,Settings.Latitude,Settings.Longitude,Settings.TimeZone.GetUtcOffset(date).Hours + Settings.TimeZone.GetUtcOffset(date).Minutes / 60.0);
 
-            if(times.Count > 3) {
+            if (times.Count > 3) {
                 int nrOfRiseEvents = (int)times[1];
                 int nrOfSetEvents = (int)times[2];
 
@@ -203,22 +208,75 @@ namespace NINA.Utility.Astrometry {
                 for (int i = 0;i < nrOfSetEvents;i++) {
                     sets[i] = (double)times[i + 3 + nrOfRiseEvents];
                 }
-                
-                if(rises.Count() > 0 && sets.Count() > 0) {
+
+                if (rises.Count() > 0 && sets.Count() > 0) {
                     var rise = rises[0];
                     var set = sets[0];
-                    return new AstronomicalTwilight(date,rise,set);
-                } else {
+                    return new RiseAndSetAstroEvent(date,rise,set);
+                }
+                else {
                     return null;
                 }
 
-                
+
             }
             return null;
         }
 
-        public class AstronomicalTwilight {
-            public AstronomicalTwilight(DateTime referenceDate, double rise, double set) {
+        public static RiseAndSetAstroEvent GetNightTimes(DateTime date) {
+            return GetRiseAndSetEvent(date,EventType.AstronomicalTwilight);
+        }
+
+        public static RiseAndSetAstroEvent GetMoonRiseAndSet(DateTime date) {
+            return GetRiseAndSetEvent(date,EventType.MoonRiseMoonSet);
+        }
+
+        public static RiseAndSetAstroEvent GetSunRiseAndSet(DateTime date) {
+            return GetRiseAndSetEvent(date,EventType.SunRiseSunset);
+        }
+
+        public static MoonPhase GetMoonPhase(DateTime date) {
+            var phase = AstroUtils.MoonPhase(GetJulianDate(date));
+            
+            if((phase >= -180.0 && phase < -135.0) || phase == 180.0) {
+                return MoonPhase.FullMoon;
+            } else if (phase >= -135.0 && phase < -90.0) {
+                return MoonPhase.WaningGibbous;
+            } else if (phase >= -90.0 && phase < -45.0) {
+                return MoonPhase.LastQuarter;
+            } else if (phase >= -45 && phase < 0.0) {
+                return MoonPhase.WaningCrescent;
+            } else if (phase >= 0.0 && phase < 45.0) {
+                return MoonPhase.NewMoon;
+            } else if (phase >= 45.0 && phase < 90.0) {
+                return MoonPhase.WaxingCrescent;
+            } else if (phase >= 90.0 && phase < 135.0) {
+                return MoonPhase.FirstQuarter;
+            } else if (phase >= 135.0 && phase < 180.0) {
+                return MoonPhase.WaxingGibbous;
+            } else {
+                return MoonPhase.Unknown;
+            }
+        }
+
+        public static double GetMoonIllumination(DateTime date) {
+            return AstroUtils.MoonIllumination(Astrometry.GetJulianDate(date));
+        }
+
+        public enum MoonPhase {
+            Unknown,
+            FullMoon,
+            WaningGibbous,
+            LastQuarter,
+            WaningCrescent,
+            NewMoon,
+            WaxingCrescent,
+            FirstQuarter,
+            WaxingGibbous
+        }
+
+        public class RiseAndSetAstroEvent {
+            public RiseAndSetAstroEvent(DateTime referenceDate, double rise, double set) {
                 RiseDate = new DateTime(referenceDate.Year,referenceDate.Month,referenceDate.Day, referenceDate.Hour, referenceDate.Minute, referenceDate.Second);
                 if(RiseDate.Hour + RiseDate.Minute / 60.0 + RiseDate.Second / 60.0 / 60.0 > rise) {
                     RiseDate = RiseDate.AddDays(1);

@@ -289,4 +289,11 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblLanguage">Language</s:String>
     <s:String x:Key="LblTransitSouth">Transit South</s:String>
     <s:String x:Key="LblTransitNorth">Transit North</s:String>
+    <s:String x:Key="LblIllumination">Illumination</s:String>
+    <s:String x:Key="LblMoonRise">Moonrise</s:String>
+    <s:String x:Key="LblMoonSet">Moonset</s:String>
+    <s:String x:Key="LblDawn">Dawn</s:String>
+    <s:String x:Key="LblSunRise">Sunrise</s:String>
+    <s:String x:Key="LblSunSet">Sunset</s:String>
+    <s:String x:Key="LblDusk">Dusk</s:String>
 </ResourceDictionary>

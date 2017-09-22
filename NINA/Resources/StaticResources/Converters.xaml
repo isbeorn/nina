@@ -18,4 +18,5 @@
     <converters:MinusOneToEmptyStringConverter x:Key="MinusOneToEmptyStringConverter" />
     <converters:ArcsecToLabelConverter x:Key="ArcsecToLabelConverter" />
     <converters:BoolToLabelConverter x:Key="BoolToLabelConverter" />
+    <converters:MoonPhaseToGeometryConverter x:Key="MoonPhaseToGeometryConverter" />
 </ResourceDictionary>
