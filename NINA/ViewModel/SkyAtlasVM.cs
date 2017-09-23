@@ -169,7 +169,8 @@ namespace NINA.ViewModel {
                         SelectedBrightnessFrom,
                         SelectedBrightnessThrough,
                         SelectedMagnitudeFrom,
-                        SelectedMagnitudeThrough);
+                        SelectedMagnitudeThrough,
+                        SearchObjectName);
 
 
                     var longitude = Settings.Longitude;

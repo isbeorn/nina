@@ -7,7 +7,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:HintTextBox}">
                     <Grid>
-                        <TextBox x:Name="PART_TextBox" Text="{TemplateBinding Text}" 
+                        <TextBox x:Name="PART_TextBox" 
+                                 Text="{Binding Text, RelativeSource={RelativeSource AncestorType={x:Type local:HintTextBox}}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"                                 
                                  Background="{TemplateBinding Background}"
                                  Width="{TemplateBinding Width}" 
                                  Height="{TemplateBinding Height}"

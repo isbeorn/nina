@@ -88,7 +88,8 @@ namespace NINA.Utility {
             string brightnessfrom = null,
             string brightnessthru = null,
             string magnitudefrom = null,
-            string magnitudethru = null) {
+            string magnitudethru = null,
+            string searchobjectname = null) {
 
             string query = @"SELECT id, ra, dec, dsotype, magnitude, sizemax, group_concat(cataloguenr.catalogue || ' ' || cataloguenr.designation) aka, constellation  
                              FROM dsodetail 
@@ -149,6 +150,12 @@ namespace NINA.Utility {
             }
 
             query += " GROUP BY id ";
+            
+            if (searchobjectname != null && searchobjectname != string.Empty) {
+                searchobjectname = "%" + searchobjectname + "%";
+                query += " HAVING aka LIKE $searchobjectname OR group_concat(cataloguenr.catalogue || cataloguenr.designation) LIKE $searchobjectname";
+            }
+
             query += " ORDER BY id asc;";
 
             var dsos = new AsyncObservableCollection<DeepSkyObject>();
@@ -171,6 +178,7 @@ namespace NINA.Utility {
                         command.Parameters.AddWithValue("$brightnessthru",brightnessthru);
                         command.Parameters.AddWithValue("$magnitudefrom",magnitudefrom);
                         command.Parameters.AddWithValue("$magnitudethru",magnitudethru);
+                        command.Parameters.AddWithValue("$searchobjectname",searchobjectname);
 
                         if (dsotypes != null && dsotypes.Count > 0) {
                             for (int i = 0;i < dsotypes.Count;i++) {
