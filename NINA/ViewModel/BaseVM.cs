@@ -10,30 +10,10 @@ namespace NINA.ViewModel {
     public class BaseVM :BaseINPC {
 
         public BaseVM() {
-            Visibility = false;
+            
         }
-
-        protected bool _visibility;
-        public bool Visibility {
-            get {
-                return _visibility;
-            }
-            set {
-                _visibility = value;
-                RaisePropertyChanged();
-            }
-        }
-        
-        private GeometryGroup _imageGeometry;
-        public GeometryGroup ImageGeometry {
-            get {
-                return _imageGeometry;
-            }
-            set {
-                _imageGeometry = value;
-                RaisePropertyChanged();
-            }
-        }
+                
+       
 
         
 

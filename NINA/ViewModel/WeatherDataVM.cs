@@ -10,8 +10,9 @@ namespace NINA.ViewModel {
     class WeatherDataVM : DockableVM {
         public WeatherDataVM() {
             this.Title = "LblWeather";
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CloudSVG"];
+
             this.ContentId = nameof(WeatherDataVM);
-            this.CanClose = false;
 
             this.UpdateWeatherDataCommand = new AsyncCommand<bool>(() => UpdateWeatherData());
         }

@@ -16,7 +16,6 @@ namespace NINA.ViewModel {
         public TelescopeVM() : base() {
             Title = "LblTelescope";
             ContentId = nameof(TelescopeVM);
-            CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
             
             ChooseTelescopeCommand = new RelayCommand(ChooseTelescope);

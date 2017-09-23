@@ -16,7 +16,6 @@ namespace NINA.ViewModel {
         public PHD2VM() : base() {
             Title = "LblPHD2";
             ContentId = nameof(PHD2VM);
-            CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PHD2SVG"];            
             ConnectPHDClientCommand = new AsyncCommand<bool>(async () => await Task.Run<bool>(() => Connect()));
             DisconnectPHDClientCommand = new AsyncCommand<bool>(async () => await Task.Run<bool>(() => PHD2Client.Disconnect()));

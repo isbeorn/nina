@@ -11,8 +11,9 @@ namespace NINA.ViewModel {
 
         public ImageHistoryVM() {
             Title = "LblImageHistory";
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistorySVG"];
+
             ContentId = nameof(ImageHistoryVM);
-            CanClose = false;
             _nextStatHistoryId = 1;
             ImgStatHistory = new AsyncObservableLimitedSizedStack<ImageStatistics>(25);
         }

@@ -24,7 +24,6 @@ namespace NINA.ViewModel {
         public CameraVM() : base() {
             Title = "LblCamera";
             ContentId = nameof(CameraVM);
-            CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
 
             //ConnectCameraCommand = new RelayCommand(connectCamera);

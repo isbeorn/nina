@@ -29,7 +29,6 @@ namespace NINA.ViewModel {
 
             Title = "LblImaging";
             ContentId = nameof(ImagingVM);
-            CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
 
             SnapExposureDuration = 1;

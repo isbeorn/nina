@@ -12,10 +12,51 @@
             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    
-    
-    
+
+    <UserControl.Resources>
+        <dock:BoolToVisibilityConverter x:Key="btvc"/>
+    </UserControl.Resources>
+
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="40"/>
+        </Grid.ColumnDefinitions>
+
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Anchorables}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <ToggleButton IsChecked="{Binding IsVisible, Mode=OneWay}" Command="{Binding HideCommand}" Height="40" Margin="2.5">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding ImageGeometry}" Stretch="Uniform" Margin="5">
+                                                </Path>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{Binding ImageGeometry}" Stretch="Uniform" Margin="5">
+                                                </Path>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
+        
         <dock:DockingManager x:Name="dockManager"
                             DataContext="{Binding}"
                             DocumentsSource="{Binding Documents}"
@@ -147,9 +188,9 @@
                 <util:PaneStyleSelector>
                     <util:PaneStyleSelector.AnchorableStyle>
                         <Style TargetType="{x:Type dock:LayoutAnchorableItem}" >
-                            <Setter Property="Title" Value="{Binding Model.Title}" />                            
-                            <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
-                            <Setter Property="Visibility" Value="Visible" />
+                            <Setter Property="Title" Value="{Binding Model.Title}" />
+                            <Setter Property="HideCommand" Value="{Binding Model.HideCommand}" />
+                            <Setter Property="Visibility" Value="{Binding Model.IsVisible, ConverterParameter={x:Static Visibility.Hidden}, Converter={StaticResource btvc}, Mode=TwoWay}"/>
                             <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
                             <Setter Property="ContentId" Value="{Binding Model.ContentId}" />
                         </Style>

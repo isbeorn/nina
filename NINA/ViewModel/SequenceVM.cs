@@ -14,7 +14,8 @@ namespace NINA.ViewModel{
 
         public SequenceVM() {
             Title = "LblSequence";
-            CanClose = false;
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SequenceSVG"];
+            
             ContentId = nameof(SequenceVM);
             AddSequenceCommand = new RelayCommand(AddSequence);
             RemoveSequenceCommand = new RelayCommand(RemoveSequence);

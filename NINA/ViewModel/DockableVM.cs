@@ -5,12 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace NINA.ViewModel {
     public class DockableVM : BaseVM {
         public DockableVM() : base() {
             this.CanClose = true;
             this.IsClosed = false;
+            IsVisible = true;
+
+            HideCommand = new RelayCommand(Hide);
 
             Mediator.Instance.Register((object o) => {
                 RaisePropertyChanged(nameof(Title));
@@ -64,11 +68,33 @@ namespace NINA.ViewModel {
 
             }
         }
-        
-        public ICommand CloseCommand { get; private set; }
 
-        public void Close() {
-            this.IsClosed = true;
+        protected bool _isVisible;
+        public bool IsVisible {
+            get {
+                return _isVisible;
+            }
+            set {
+                _isVisible = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private GeometryGroup _imageGeometry;
+        public GeometryGroup ImageGeometry {
+            get {
+                return _imageGeometry;
+            }
+            set {
+                _imageGeometry = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ICommand HideCommand { get; private set; }
+
+        public void Hide(object o) {
+            this.IsVisible = !IsVisible;
         }
 
     }

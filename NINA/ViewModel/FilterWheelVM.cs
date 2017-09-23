@@ -14,8 +14,9 @@ namespace NINA.ViewModel {
     class FilterWheelVM: DockableVM {
         public FilterWheelVM() :base() {
             Title = "LblFilterWheel";
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FWSVG"];
+
             ContentId = nameof(FilterWheelVM);
-            CanClose = false;
             ChooseFWCommand = new RelayCommand(ChooseFW);
             DisconnectCommand = new RelayCommand(DisconnectFW);
             RefreshFWListCommand = new RelayCommand(RefreshFWList);

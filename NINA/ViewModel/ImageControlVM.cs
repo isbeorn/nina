@@ -28,6 +28,7 @@ namespace NINA.ViewModel {
 
         public ImageControlVM() {
             Title = "LblImageArea";
+
             ContentId = nameof(ImageControlVM);
             CanClose = false;
             AutoStretch = false;

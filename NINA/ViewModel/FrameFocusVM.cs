@@ -20,7 +20,6 @@ namespace NINA.ViewModel {
 
             Title = "LblFrameNFocus";
             ContentId = nameof(FrameFocusVM);
-            CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
             CancelSnapCommand = new RelayCommand(CancelCaptureImage);
             SnapCommand = new AsyncCommand<bool>(() => Snap(new Progress<string>(p => Status = p)));            

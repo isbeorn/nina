@@ -14,8 +14,9 @@ namespace NINA.ViewModel {
 
         public FocuserVM () {
             Title = "LblFocuser";
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
+
             ContentId = nameof(FocuserVM);
-            CanClose = false;
             ChooseFocuserCommand = new RelayCommand(ChooseFocuser);
             DisconnectCommand = new RelayCommand(DisconnectFocuser);
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList);
