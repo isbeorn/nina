@@ -27,6 +27,9 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <ToggleButton IsChecked="{Binding IsVisible, Mode=OneWay}" Command="{Binding HideCommand}" Height="40" Margin="2.5">
+                        <ToggleButton.ToolTip>
+                            <TextBlock Text="{Binding Title}" />
+                        </ToggleButton.ToolTip>
                         <ToggleButton.Style>
                             <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
                                 <Style.Triggers>
