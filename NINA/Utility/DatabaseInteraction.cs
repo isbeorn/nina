@@ -48,7 +48,7 @@ namespace NINA.Utility {
 
         public async Task<ICollection<string>> GetObjectTypes(CancellationToken token) {
             const string query = "SELECT DISTINCT(dsotype) FROM dsodetail;";
-            var dsotypes = new List<string>() { string.Empty };
+            var dsotypes = new List<string>() { };
             try {
                 using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
                     connection.Open();

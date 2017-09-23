@@ -83,4 +83,30 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="{x:Type CheckBox}" x:Key="CheckmarkAndEmptyCheckbox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Border x:Name="PART_Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{StaticResource BackgroundBrush}">
+                        <Grid>
+                            <Path x:Name="PART_CheckedSymbol" 
+                                    Fill="{StaticResource ButtonForegroundBrush}" 
+                                    Data="{StaticResource CheckedCircledSVG}" 
+                                    Stretch="Uniform" Margin="2" Visibility="Visible">
+                            </Path>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="PART_CheckedSymbol" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

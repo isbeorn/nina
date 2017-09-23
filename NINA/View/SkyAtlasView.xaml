@@ -31,20 +31,18 @@
                                       VerticalContentAlignment="Center" 
                                       HorizontalAlignment="Stretch" /> -->
                         <Expander Header="{ns:Loc LblObjectType}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                            <ListView ItemsSource="{Binding ObjectTypes}" MaxHeight="300">
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn Header="">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <CheckBox IsChecked="{Binding Selected}" Style="{StaticResource CheckmarkCheckbox}" Width="20" Height="20"/>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                        <GridViewColumn Header="{ns:Loc LblName}" DisplayMemberBinding="{Binding Name}" />
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
+                            <ScrollViewer  Grid.Column="1" MaxHeight="300">
+                                <ItemsControl ItemsSource="{Binding ObjectTypes}" >
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>                                        
+                                            <StackPanel Orientation="Horizontal">
+                                                <CheckBox IsChecked="{Binding Selected}" Style="{StaticResource CheckmarkAndEmptyCheckbox}" Width="20" Height="20"/>
+                                                <TextBlock Text="{Binding Name}"  Margin="10 0 0 0"/>
+                                            </StackPanel>                                        
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>                            
                         </Expander>
                         <Expander Header="{ns:Loc LblConstellation}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                             <ComboBox ItemsSource="{Binding Constellations}" SelectedItem="{Binding SelectedConstellation}" />
