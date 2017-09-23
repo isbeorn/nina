@@ -12,13 +12,13 @@ using System.Windows.Input;
 using ToastNotifications;
 
 namespace NINA.ViewModel {
-    class ApplicationVM : DockManagerVM {
+    class ApplicationVM : BaseVM {
 
         public ApplicationVM() {
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
-            LoadAvalonDockLayoutCommand = new RelayCommand(LoadAvalonDockLayout);
+            
             RegisterMediatorMessages();
 
             InitAvalonDockLayout();
@@ -27,43 +27,22 @@ namespace NINA.ViewModel {
         }
 
         public void InitAvalonDockLayout() {            
-            this.Documents.Add(ImagingVM.ImageControl);
-            this.Anchorables.Add(CameraVM);
-            this.Anchorables.Add(TelescopeVM);
-            this.Anchorables.Add(PlatesolveVM);            
-            this.Anchorables.Add(PolarAlignVM);
-            this.Anchorables.Add(WeatherDataVM);
-            this.Anchorables.Add(PHD2VM);
-            this.Anchorables.Add(SeqVM);
-            this.Anchorables.Add(FilterWheelVM);
-            this.Anchorables.Add(FocuserVM);
-            this.Anchorables.Add(ImagingVM);
-            this.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
-            this.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);            
+            DockManagerVM.Documents.Add(ImagingVM.ImageControl);
+            DockManagerVM.Anchorables.Add(CameraVM);
+            DockManagerVM.Anchorables.Add(TelescopeVM);
+            DockManagerVM.Anchorables.Add(PlatesolveVM);            
+            DockManagerVM.Anchorables.Add(PolarAlignVM);
+            DockManagerVM.Anchorables.Add(WeatherDataVM);
+            DockManagerVM.Anchorables.Add(PHD2VM);
+            DockManagerVM.Anchorables.Add(SeqVM);
+            DockManagerVM.Anchorables.Add(FilterWheelVM);
+            DockManagerVM.Anchorables.Add(FocuserVM);
+            DockManagerVM.Anchorables.Add(ImagingVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);            
         }
 
-        private Xceed.Wpf.AvalonDock.DockingManager _dockmanager;
-        private bool _dockloaded = false;
-        public void LoadAvalonDockLayout(object o) {
-            if(!_dockloaded) { 
-                _dockmanager = (Xceed.Wpf.AvalonDock.DockingManager)o;
-                var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
-                serializer.LayoutSerializationCallback += (s, args) => {
-                    
-                    args.Content = args.Content;
-                };
-
-                if (System.IO.File.Exists(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH)) {
-                    serializer.Deserialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
-                }
-                _dockloaded = true;
-            }
-        }
-
-        public void SaveAvalonDockLayout() {
-            var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
-            serializer.Serialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
-        }
+        
 
         private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
@@ -105,7 +84,7 @@ namespace NINA.ViewModel {
         }
 
         private void ExitApplication(object obj) {
-            SaveAvalonDockLayout();
+            DockManagerVM.SaveAvalonDockLayout();
             if (CameraVM?.Cam?.Connected == true) {
                 var diag = MyMessageBox.MyMessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);                
                 if(diag == MessageBoxResult.OK) {
@@ -130,6 +109,20 @@ namespace NINA.ViewModel {
         public PHD2Client PHD2Client {
             get {
                 return Utility.Utility.PHDClient;
+            }
+        }
+
+        private DockManagerVM _dockManagerVM;
+        public DockManagerVM DockManagerVM {
+            get {
+                if(_dockManagerVM == null) {
+                    _dockManagerVM = new DockManagerVM();
+                }
+                return _dockManagerVM;
+            }
+            set {
+                _dockManagerVM = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -333,7 +326,7 @@ namespace NINA.ViewModel {
 
         public ICommand ExitCommand { get; private set; }
                 
-        public ICommand LoadAvalonDockLayoutCommand { get; private set; }
+        
 
 
     }

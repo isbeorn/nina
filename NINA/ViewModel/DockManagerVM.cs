@@ -1,17 +1,18 @@
-﻿using System;
+﻿using NINA.Utility;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace NINA.ViewModel {
     public class DockManagerVM : BaseVM {
 
         public DockManagerVM(/*IEnumerable<DockableVM> dockWindowViewModels*/) {
-            this.Documents = new ObservableCollection<DockableVM>();
-            this.Anchorables = new ObservableCollection<object>();
+            LoadAvalonDockLayoutCommand = new RelayCommand(LoadAvalonDockLayout);
 
             /*foreach (var document in dockWindowViewModels) {
                 document.PropertyChanged += DockWindowViewModel_PropertyChanged;
@@ -35,11 +36,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ObservableCollection<object> _anchorables;
-        public ObservableCollection<object> Anchorables {
+        private ObservableCollection<DockableVM> _anchorables;
+        public ObservableCollection<DockableVM> Anchorables {
             get {
                 if (_anchorables == null) {
-                    _anchorables = new ObservableCollection<object>();
+                    _anchorables = new ObservableCollection<DockableVM>();
                 }
                 return _anchorables;
             }
@@ -48,6 +49,31 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        private Xceed.Wpf.AvalonDock.DockingManager _dockmanager;
+        private bool _dockloaded = false;
+        public void LoadAvalonDockLayout(object o) {
+            if (!_dockloaded) {
+                _dockmanager = (Xceed.Wpf.AvalonDock.DockingManager)o;
+                var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+                serializer.LayoutSerializationCallback += (s,args) => {
+
+                    args.Content = args.Content;
+                };
+
+                if (System.IO.File.Exists(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH)) {
+                    serializer.Deserialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
+                }
+                _dockloaded = true;
+            }
+        }
+
+        public void SaveAvalonDockLayout() {
+            var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+            serializer.Serialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
+        }
+
+        public ICommand LoadAvalonDockLayoutCommand { get; private set; }
 
         /*private void DockWindowViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             DockableVM document = sender as DockableVM;

@@ -177,7 +177,7 @@
                         </Path>
                     </TabItem.Header>
                     <TabItem.Content>
-                        <view:OverView x:Name="Overview" DataContext="{Binding}"></view:OverView>
+                        <view:OverView x:Name="Overview" DataContext="{Binding DockManagerVM}"></view:OverView>
                     </TabItem.Content>
                 </TabItem>
                 <TabItem>
