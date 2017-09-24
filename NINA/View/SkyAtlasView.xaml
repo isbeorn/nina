@@ -24,10 +24,14 @@
             <Border  BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{StaticResource RightSideScrollbar}" >
                     <StackPanel Margin="5">
-                        <ninactrl:HintTextBox Text="{Binding SearchObjectName}" HintText="{ns:Loc LblObjectNameHint}" 
+                        <ninactrl:HintTextBox Text="{Binding SearchObjectName, UpdateSourceTrigger=PropertyChanged}" HintText="{ns:Loc LblObjectNameHint}" 
                                       Foreground="{StaticResource PrimaryBrush}"
                                       VerticalContentAlignment="Center" 
-                                      HorizontalAlignment="Stretch" /> 
+                                      HorizontalAlignment="Stretch">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding Path=SearchCommand}" Key="Enter" />
+                            </TextBox.InputBindings>
+                        </ninactrl:HintTextBox>
                         <Expander Header="{ns:Loc LblObjectType}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                             <ScrollViewer  Grid.Column="1" MaxHeight="300">
                                 <ItemsControl ItemsSource="{Binding ObjectTypes}" >
