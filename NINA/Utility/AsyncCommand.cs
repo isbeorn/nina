@@ -30,12 +30,32 @@ namespace NINA.Utility {
     public class AsyncCommand<TResult> : AsyncCommandBase {
         private readonly Func<Task<TResult>> _command;
         private NotifyTaskCompletion<TResult> _execution;
-        
+        /// <summary>
+        /// Encapsulated the representation for the validation of the execute method
+        /// </summary>
+        private Predicate<object> _canExecute;
+
+        /// <summary>
+        /// Defines if command can be executed (default behaviour)
+        /// </summary>
+        /// <param name="parameter">The parameter.</param>
+        /// <returns>Always true</returns>
+        private static bool DefaultCanExecute(object parameter) {
+            return true;
+        }
+
         public AsyncCommand(Func<Task<TResult>> command) {
             _command = command;
+            _canExecute = DefaultCanExecute;
         }
+
+        public AsyncCommand(Func<Task<TResult>> command, Predicate<object> canExecute) {
+            _command = command;
+            _canExecute = canExecute;
+        }
+
         public override bool CanExecute(object parameter) {
-            return Execution == null || Execution.IsCompleted;
+            return (this._canExecute != null && this._canExecute(parameter)) && (Execution == null || Execution.IsCompleted);
         }
         public override async Task ExecuteAsync(object parameter) {
             Execution = new NotifyTaskCompletion<TResult>(_command());

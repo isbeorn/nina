@@ -13,8 +13,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <ScrollViewer VerticalScrollBarVisibility="Auto" >
-        <Grid IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}" >
-            <StackPanel IsEnabled="{Binding Telescope.Connected}">
+        <Grid>
+            <StackPanel>
 
                 <local:PolarScopeView MinHeight="200" />
                 <GroupBox Grid.Column="1" Header="{ns:Loc LblPlateSolvedPolarAlignment}">

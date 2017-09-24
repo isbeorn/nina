@@ -27,13 +27,27 @@ namespace NINA.ViewModel {
             _updateValues.Tick += UpdateValues_Tick;
             _updateValues.Start();
 
-            MeasureAzimuthErrorCommand = new AsyncCommand<bool>(() => MeasurePolarError(new Progress<string>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH));
-            MeasureAltitudeErrorCommand = new AsyncCommand<bool>(() => MeasurePolarError(new Progress<string>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE));
-            SlewToMeridianOffsetCommand = new RelayCommand(SlewToMeridianOffset);
-            DARVSlewCommand = new AsyncCommand<bool>(() => Darvslew(new Progress<string>(p => Status = p), new Progress<string>(p => DarvStatus = p)));
-            CancelDARVSlewCommand = new RelayCommand(Canceldarvslew);
-            CancelMeasureAltitudeErrorCommand = new RelayCommand(CancelMeasurePolarError);
-            CancelMeasureAzimuthErrorCommand = new RelayCommand(CancelMeasurePolarError);
+            MeasureAzimuthErrorCommand = new AsyncCommand<bool>(
+                () => MeasurePolarError(new Progress<string>(p => AzimuthPolarErrorStatus = p),Direction.AZIMUTH),
+                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
+            MeasureAltitudeErrorCommand = new AsyncCommand<bool>(
+                () => MeasurePolarError(new Progress<string>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE),
+                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
+            SlewToMeridianOffsetCommand = new RelayCommand(
+                SlewToMeridianOffset,
+                (p) => (Telescope?.Connected == true));
+            DARVSlewCommand = new AsyncCommand<bool>(
+                () => Darvslew(new Progress<string>(p => Status = p), new Progress<string>(p => DarvStatus = p)),
+                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
+            CancelDARVSlewCommand = new RelayCommand(
+                Canceldarvslew,
+                (p) => _cancelDARVSlewToken != null);
+            CancelMeasureAltitudeErrorCommand = new RelayCommand(
+                CancelMeasurePolarError,
+                (p) => _cancelMeasureErrorToken != null);
+            CancelMeasureAzimuthErrorCommand = new RelayCommand(
+                CancelMeasurePolarError,
+                (p) => _cancelMeasureErrorToken != null);
             
             MeridianOffset = 0;
             Declination = 0;
