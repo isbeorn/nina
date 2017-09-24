@@ -36,20 +36,20 @@
                                     <Trigger Property="IsChecked" Value="True">
                                         <Setter Property="Content">
                                             <Setter.Value>
-                                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding ImageGeometry}" Stretch="Uniform" Margin="5">
+                                                <Path Fill="{StaticResource PrimaryBrush}" Data="{Binding ImageGeometry}" Stretch="Uniform" Margin="5">
                                                 </Path>
                                             </Setter.Value>
                                         </Setter>
-                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                                        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
                                     </Trigger>
                                     <Trigger Property="IsChecked" Value="False">
                                         <Setter Property="Content">
                                             <Setter.Value>
-                                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{Binding ImageGeometry}" Stretch="Uniform" Margin="5">
+                                                <Path Fill="{StaticResource PrimaryBrush}" Opacity="0.4" Data="{Binding ImageGeometry}" Stretch="Uniform" Margin="5">
                                                 </Path>
                                             </Setter.Value>
                                         </Setter>
-                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                                        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
