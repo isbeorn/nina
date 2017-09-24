@@ -201,7 +201,6 @@
                     <util:PaneStyleSelector.DocumentStyle>
                         <Style TargetType="{x:Type dock:LayoutItem}" >
                             <Setter Property="Title" Value="{Binding Model.Title}" />
-                            <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
                             <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
                             <Setter Property="ContentId" Value="{Binding Model.ContentId}" />
                         </Style>

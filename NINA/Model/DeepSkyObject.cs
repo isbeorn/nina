@@ -20,10 +20,18 @@ using System.Windows.Threading;
 namespace NINA.Model {
     public class DeepSkyObject:BaseINPC {
 
-        public DeepSkyObject(string name) {
-            Name = name;
+        private DeepSkyObject() {
             SetSequenceCoordinatesCommand = new RelayCommand(SetSequenceCoordinates);
-            SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);            
+            SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
+        }
+
+        public DeepSkyObject(string name) : this() {
+            Name = name;
+                      
+        }
+
+        public DeepSkyObject(string name, Coordinates coords) : this(name) {            
+            Coordinates = coords;
         }
 
         private string _name;
@@ -120,15 +128,16 @@ namespace NINA.Model {
         }
 
         private void SetSequenceCoordinates(object obj) {
-            Mediator.Instance.Notify(MediatorMessages.SetSequenceCoordinates,new object[] { AlsoKnownAs.FirstOrDefault(), Coordinates });
+            Mediator.Instance.Notify(MediatorMessages.SetSequenceCoordinates,new object[] { this });
         }
 
         private void SlewToCoordinates(object obj) {
             Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates,Coordinates);
         }
 
-        public void CalculateAltitude(DateTime start, double siderealTime, double latitude,double longitude) {
+        public void CalculateAltitude(DateTime start, double latitude,double longitude) {
 
+            var siderealTime = Astrometry.GetLocalSiderealTime(start,longitude);
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
             
             for (double angle = hourAngle;angle < hourAngle + 24;angle += 0.1) {

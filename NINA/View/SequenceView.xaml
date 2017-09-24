@@ -11,40 +11,77 @@
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              mc:Ignorable="d" xmlns:s="clr-namespace:System;assembly=mscorlib"
              d:DesignHeight="300" d:DesignWidth="300">
-    <GroupBox Header="{ns:Loc LblSequence}">
+    
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition />
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            <StackPanel>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
-                    <UniformGrid Columns="2">
-                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblTargetName}"></TextBlock>
-                            <TextBox Text="{Binding Sequence.TargetName}" Margin="5,0,0,0" />
-                        </UniformGrid>
+        <UniformGrid Columns="2">
+            <GroupBox>
+                <GroupBox.Header>
+                    <UniformGrid Columns="2" >
+                        <Grid Margin="5" Height="40">
+                            <TextBlock Text="{ns:Loc LblSequence}" VerticalAlignment="Center" FontSize="20" ></TextBlock>
+                        </Grid>
                     </UniformGrid>
-                </Border>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
-                    <UniformGrid Columns="2">
-                        <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblSequenceDelay}"></TextBlock>
-                            <TextBox Margin="5,0,0,0">
-                                <TextBox.Text>
-                                    <Binding Path="Sequence.Delay" UpdateSourceTrigger="LostFocus" >
-                                        <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
+                </GroupBox.Header>
+
+                
+                <StackPanel DataContext="{Binding Sequence}" >
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                        <UniformGrid Columns="2">
+                            <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetName}"></TextBlock>
+                                <TextBox Text="{Binding TargetName}" Margin="5,0,0,0" />
+                            </UniformGrid>
                         </UniformGrid>
-                    </UniformGrid>
-                </Border>
-            </StackPanel>
-            <DataGrid Grid.Row="1" Margin="0 10 0 0" ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}">
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                        <UniformGrid Columns="2">
+                            <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSequenceDelay}"></TextBlock>
+                                <TextBox Margin="5,0,0,0">
+                                    <TextBox.Text>
+                                        <Binding Path="Delay" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </UniformGrid>
+                        </UniformGrid>
+                    </Border>
+                    <StackPanel Visibility="{Binding Coordinates, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <UniformGrid Columns="2">
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}"></TextBlock>
+                                    <TextBlock Text="{Binding Coordinates.RAString}" Margin="5,0,0,0" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                            <UniformGrid Columns="2">
+                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}"></TextBlock>
+                                    <TextBlock Text="{Binding Coordinates.DecString}" Margin="5,0,0,0" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>                    
+                
+               
+            </GroupBox>
+            <Grid Margin="0 10 0 0" Visibility="{Binding Sequence.DSO, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                <local:AltitudeChart DataContext="{Binding Sequence.DSO}" />
+            </Grid>
+        </UniformGrid>
+        
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Width="*" Header="{ns:Loc LblRemainingNo}" CanUserSort="False">
                         <DataGridTemplateColumn.CellTemplate>
@@ -263,5 +300,4 @@
                     />
             </StackPanel>
         </Grid>
-    </GroupBox>
 </UserControl>

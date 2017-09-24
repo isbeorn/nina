@@ -178,11 +178,9 @@ namespace NINA.ViewModel {
 
                     DateTime d = GetReferenceDate();
 
-                    var siderealTime = Astrometry.GetLocalSiderealTime(d,longitude);
-
                     Parallel.ForEach(result,(obj) => {
                         var cloneDate = d;
-                        obj.CalculateAltitude(cloneDate,siderealTime,latitude,longitude);
+                        obj.CalculateAltitude(cloneDate, latitude,longitude);
                         _searchTokenSource.Token.ThrowIfCancellationRequested();
                     });
 

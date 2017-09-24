@@ -15,9 +15,10 @@ namespace NINA.Model {
             TargetName = string.Empty;
             Mediator.Instance.Register((object o) => {
                 var args = (object[])o;
-                if(args.Length == 2) {
-                    TargetName = (string)args[0];
-                    Coordinates = (Coordinates)args[1];
+                if(args.Length == 1) {
+                    DSO = (DeepSkyObject)args[0];
+                    TargetName = DSO.AlsoKnownAs.FirstOrDefault();
+                    Coordinates = DSO.Coordinates;                    
                 }                
             },MediatorMessages.SetSequenceCoordinates);
         }
@@ -53,6 +54,18 @@ namespace NINA.Model {
             }
             set {
                 _coordinates = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(Coordinates)));
+            }
+        }
+
+        private DeepSkyObject _dso;
+        public DeepSkyObject DSO {
+            get {
+                return _dso;
+            }
+            set {
+                _dso = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(DSO)));
             }
         }
 
