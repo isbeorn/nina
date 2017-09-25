@@ -707,5 +707,53 @@ namespace NINA.Properties {
                 this["SkyAtlasImageRepository"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFF5A300")]
+        public global::System.Windows.Media.Color NotificationWarningColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["NotificationWarningColor"]));
+            }
+            set {
+                this["NotificationWarningColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFDB0606")]
+        public global::System.Windows.Media.Color NotificationErrorColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["NotificationErrorColor"]));
+            }
+            set {
+                this["NotificationErrorColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFF5A300")]
+        public global::System.Windows.Media.Color AltNotificationWarningColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AltNotificationWarningColor"]));
+            }
+            set {
+                this["AltNotificationWarningColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFF5A300")]
+        public global::System.Windows.Media.Color AltNotificationErrorColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AltNotificationErrorColor"]));
+            }
+            set {
+                this["AltNotificationErrorColor"] = value;
+            }
+        }
     }
 }

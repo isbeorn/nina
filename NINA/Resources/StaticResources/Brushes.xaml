@@ -10,6 +10,8 @@
     <SolidColorBrush x:Key="ButtonForegroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ButtonForegroundColor}"/>
     <SolidColorBrush x:Key="ButtonForegroundDisabledBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ButtonForegroundDisabledColor}"/>
     <SolidColorBrush x:Key="BackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.BackgroundColor}"/>
+    <SolidColorBrush x:Key="NotificationWarningBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.NotificationWarningColor}"/>
+    <SolidColorBrush x:Key="NotificationErrorBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.NotificationErrorColor}"/>
 
     <SolidColorBrush x:Key="AltPrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltPrimaryColor}"/>
     <SolidColorBrush x:Key="AltSecondaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltSecondaryColor}"/>
@@ -19,5 +21,7 @@
     <SolidColorBrush x:Key="AltButtonForegroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltButtonForegroundColor}"/>
     <SolidColorBrush x:Key="AltButtonForegroundDisabledBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltButtonForegroundDisabledColor}"/>
     <SolidColorBrush x:Key="AltBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltBackgroundColor}"/>
+    <SolidColorBrush x:Key="AltNotificationWarningBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationWarningColor}"/>
+    <SolidColorBrush x:Key="AltNotificationErrorBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationErrorColor}"/>
     
 </ResourceDictionary>

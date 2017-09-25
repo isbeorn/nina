@@ -59,14 +59,16 @@ namespace NINA.Utility.Notification {
         public static void ShowWarning(string message, TimeSpan lifetime) {
             dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                 var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
-                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#f5a300"))));
+                var brush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningBrush"];
+                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush));
             }));
         }
 
         public static void ShowError(string message) {
             dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                 var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
-                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, new SolidColorBrush(Colors.Red)));
+                var brush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorBrush"];
+                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol,brush));
             }));
         }
     }

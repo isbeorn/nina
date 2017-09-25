@@ -123,6 +123,18 @@
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding ButtonForegroundDisabledColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonForegroundDisabledBrush}"></Button>
                         </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblNotificationWarning}"></TextBlock>
+                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding NotificationWarningColor}" />
+                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource NotificationWarningBrush}"></Button>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblNotificationError}"></TextBlock>
+                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding NotificationErrorColor}" />
+                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource NotificationErrorBrush}"></Button>
+                        </StackPanel>
                     </UniformGrid>
 
                 </GroupBox>
@@ -171,6 +183,18 @@
                             <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonForegroundDisabled}"></TextBlock>
                             <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonForegroundDisabledColor}" />
                             <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonForegroundDisabledBrush}"></Button>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblNotificationWarning}"></TextBlock>
+                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltNotificationWarningColor}" />
+                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltNotificationWarningBrush}"></Button>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblNotificationError}"></TextBlock>
+                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltNotificationErrorColor}" />
+                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltNotificationErrorBrush}"></Button>
                         </StackPanel>
                     </UniformGrid>
                 </GroupBox>                

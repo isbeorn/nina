@@ -173,5 +173,17 @@
     <Setting Name="SkyAtlasImageRepository" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="NotificationWarningColor" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFF5A300</Value>
+    </Setting>
+    <Setting Name="NotificationErrorColor" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFDB0606</Value>
+    </Setting>
+    <Setting Name="AltNotificationWarningColor" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFF5A300</Value>
+    </Setting>
+    <Setting Name="AltNotificationErrorColor" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFF5A300</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -674,6 +674,58 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Save();
             }
         }
+
+        public static Color NotificationWarningColor {
+            get {
+                return ColorSchema.NotificationWarningColor;
+            }
+            set {
+                if (ColorSchemaName == "Custom") {
+                    ColorSchema.NotificationWarningColor = value;
+                    Properties.Settings.Default.NotificationWarningColor = value;
+                    Properties.Settings.Default.Save();
+                }
+            }
+        }
+
+        public static Color NotificationErrorColor {
+            get {
+                return ColorSchema.NotificationErrorColor;
+            }
+            set {
+                if (ColorSchemaName == "Custom") {
+                    ColorSchema.NotificationErrorColor = value;
+                    Properties.Settings.Default.NotificationErrorColor = value;
+                    Properties.Settings.Default.Save();
+                }
+            }
+        }
+
+        public static Color AltNotificationWarningColor {
+            get {
+                return AlternativeColorSchema.NotificationWarningColor;
+            }
+            set {
+                if (ColorSchemaName == "Alternative Custom") {
+                    AlternativeColorSchema.NotificationWarningColor = value;
+                    Properties.Settings.Default.AltNotificationWarningColor = value;
+                    Properties.Settings.Default.Save();
+                }
+            }
+        }
+
+        public static Color AltNotificationErrorColor {
+            get {
+                return AlternativeColorSchema.NotificationErrorColor;
+            }
+            set {
+                if (ColorSchemaName == "Alternative Custom") {
+                    AlternativeColorSchema.NotificationErrorColor = value;
+                    Properties.Settings.Default.AltNotificationErrorColor = value;
+                    Properties.Settings.Default.Save();
+                }
+            }
+        }
     }
 
 }

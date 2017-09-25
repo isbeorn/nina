@@ -772,6 +772,46 @@ namespace NINA.ViewModel {
             }
         }
 
-        
+        public Color NotificationWarningColor {
+            get {
+                return Settings.NotificationWarningColor;
+            }
+            set {
+                Settings.NotificationWarningColor = value;
+                RaisePropertyChanged();
+            }
+
+        }
+        public Color NotificationErrorColor {
+            get {
+                return Settings.NotificationErrorColor;
+            }
+            set {
+                Settings.NotificationErrorColor = value;
+                RaisePropertyChanged();
+            }
+
+        }
+        public Color AltNotificationWarningColor {
+            get {
+                return Settings.AltNotificationWarningColor;
+            }
+            set {
+                Settings.AltNotificationWarningColor = value;
+                RaisePropertyChanged();
+            }
+
+        }
+        public Color AltNotificationErrorColor {
+            get {
+                return Settings.AltNotificationErrorColor;
+            }
+            set {
+                Settings.AltNotificationErrorColor = value;
+                RaisePropertyChanged();
+            }
+
+        }
+
     }
 }

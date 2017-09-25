@@ -297,4 +297,6 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblSunRise">Sunrise</s:String>
     <s:String x:Key="LblSunSet">Sunset</s:String>
     <s:String x:Key="LblDusk">Dusk</s:String>
+    <s:String x:Key="LblNotificationWarning">Notification Warning</s:String>
+    <s:String x:Key="LblNotificationError">Notification Error</s:String>
 </ResourceDictionary>

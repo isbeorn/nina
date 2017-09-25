@@ -301,4 +301,6 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblSunRise">Sonnenaufgang</s:String>
     <s:String x:Key="LblSunSet">Sonnenuntergang</s:String>
     <s:String x:Key="LblDusk">Abenddämmerung</s:String>
+    <s:String x:Key="LblNotificationWarning">Warnungsbenachrichtigung</s:String>
+    <s:String x:Key="LblNotificationError">Fehlerbenachrichtigung</s:String>
 </ResourceDictionary>
