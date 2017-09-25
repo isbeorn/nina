@@ -137,7 +137,6 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Width="*" Header="{ns:Loc LblSuccess}" Binding="{Binding Success}" IsReadOnly="True" />
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblRA}" Binding="{Binding Coordinates.RAString}" IsReadOnly="True"/>
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblDec}" Binding="{Binding Coordinates.DecString}" IsReadOnly="True"/>
                             <DataGridTextColumn Width="*" Header="{ns:Loc LblRAError}" Binding="{Binding RaErrorString}" IsReadOnly="True"/>
