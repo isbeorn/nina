@@ -85,10 +85,12 @@ namespace NINA.ViewModel{
             get {
                 if(_imageTypes == null) {
                     _imageTypes = new ObservableCollection<string>();
-                    _imageTypes.Add(Model.CaptureSequence.ImageTypes.LIGHT);
-                    _imageTypes.Add(Model.CaptureSequence.ImageTypes.DARK);
-                    _imageTypes.Add(Model.CaptureSequence.ImageTypes.FLAT);
-                    _imageTypes.Add(Model.CaptureSequence.ImageTypes.BIAS);
+
+                    Type type = typeof(Model.CaptureSequence.ImageTypes); 
+                    foreach (var p in type.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)) {
+                        var v = p.GetValue(null);
+                        _imageTypes.Add(v.ToString());
+                    }
                 }
                 return _imageTypes;
             }

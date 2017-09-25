@@ -105,6 +105,7 @@ namespace NINA.Model {
             public const string FLAT = "FLAT";
             public const string DARK = "DARK";
             public const string BIAS = "BIAS";
+            public const string DARKFLAT = "DARKFLAT";
             public const string SNAP = "SNAP";
         }
 
