@@ -2,6 +2,7 @@
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
+using OxyPlot.Axes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -189,9 +190,9 @@ namespace NINA.ViewModel {
                         /* Apply Altitude Filter */
                         SearchResult = new AsyncObservableCollection<DeepSkyObject>(result.Where((x) => {
                             return x.Altitudes.Where((y) => {
-                                return (y.Key > SelectedAltitudeTimeFrom && y.Key < SelectedAltitudeTimeThrough);
+                                return (y.X > DateTimeAxis.ToDouble(SelectedAltitudeTimeFrom) && y.X < DateTimeAxis.ToDouble(SelectedAltitudeTimeThrough));
                             }).All((z) => {
-                                return z.Value > SelectedMinimumAltitudeDegrees;
+                                return z.Y > SelectedMinimumAltitudeDegrees;
                             });
                         }));
                     }

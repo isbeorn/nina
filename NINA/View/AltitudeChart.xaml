@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"   
              xmlns:local="clr-namespace:NINA.View"
+             xmlns:util="clr-namespace:NINA.Utility"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
@@ -43,18 +44,27 @@
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries 
-                                            ItemsSource="{Binding Altitudes}"                                                 
-                                            DataFieldX="Key"                                                 
-                                            DataFieldY="Value" 
-                                            TrackerFormatString="X: {2:HH:mm}h&#x0a;Y: {4:0.00}°" 
-                                            Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"  />
+                    ItemsSource="{Binding Altitudes}"                                                 
+                    DataFieldX="Key"                                                 
+                    DataFieldY="Value" 
+                    TrackerFormatString="X: {2:HH:mm}h&#x0a;Y: {4:0.00}°" 
+                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"  />
                 <oxy:AreaSeries 
-                                            ItemsSource="{Binding Source={StaticResource AppVM}, 
-                                            Path=SkyAtlasVM.NightDuration}"  
-                                            DataFieldX="Key" 
-                                            DataFieldY="Value" 
-                                            TrackerFormatString="X: {2:HH:mm}h"
-                                            Color="Black" />
+                    ItemsSource="{Binding Source={StaticResource AppVM}, 
+                    Path=SkyAtlasVM.NightDuration}"  
+                    DataFieldX="Key" 
+                    DataFieldY="Value" 
+                    TrackerFormatString="X: {2:HH:mm}h"
+                    Color="Black" />
+                <oxy:ScatterSeries 
+                    ItemsSource="{Binding AltitudeNow}"                                                 
+                    DataFieldX="Key"                                                 
+                    DataFieldY="Value" 
+                    MarkerType="Circle" 
+                    MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    MarkerStroke="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
+                    MarkerStrokeThickness="1"
+                    />
             </oxy:Plot.Series>
         </oxy:Plot>
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding DoesTransitSouth, Mode=OneWay, Converter={StaticResource BoolToLabelConverter}, ConverterParameter=LblTransitSouth|LblTransitNorth}" />
