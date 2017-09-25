@@ -24,25 +24,6 @@ namespace NINA.Model {
         private DeepSkyObject() {
             SetSequenceCoordinatesCommand = new RelayCommand(SetSequenceCoordinates);
             SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
-            _timer = new Timer();
-            _timer.Interval = 60000;
-            _timer.Elapsed += _timer_Elapsed; 
-        }
-
-        private void _timer_Elapsed(object sender,ElapsedEventArgs e) {
-            CalculateAltitudeNow();
-        }
-
-        private void CalculateAltitudeNow() {
-            var d = DateTime.Now;
-            var siderealTime = Astrometry.GetLocalSiderealTime(d,_longitude);
-            var hourAngle = Astrometry.HoursToDegrees(Astrometry.GetHourAngle(siderealTime,this.Coordinates.RA));
-
-            var altitude = Astrometry.GetAltitude(hourAngle,_latitude,this.Coordinates.Dec);
-            Application.Current.Dispatcher.BeginInvoke(new Action(() => {
-                AltitudeNow.Clear();
-                AltitudeNow.Add(new ScatterPoint(DateTimeAxis.ToDouble(DateTime.Now),altitude));
-            }));
         }
 
         public DeepSkyObject(string name) : this() {
@@ -53,11 +34,6 @@ namespace NINA.Model {
         public DeepSkyObject(string name, Coordinates coords) : this(name) {            
             Coordinates = coords;
         }
-
-
-        private double _latitude;
-        private double _longitude;
-        private Timer _timer;
 
         private string _name;
         public string Name {
@@ -124,21 +100,6 @@ namespace NINA.Model {
             }
         }
 
-        private AsyncObservableCollection<ScatterPoint> _altitudeNow;
-        public AsyncObservableCollection<ScatterPoint> AltitudeNow {
-            get {
-                if(_altitudeNow == null) {
-                    _altitudeNow = new AsyncObservableCollection<ScatterPoint>();
-                }
-                return _altitudeNow;
-            }
-            set {
-                _altitudeNow = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
         private AsyncObservableCollection<DataPoint> _altitudes;
         public AsyncObservableCollection<DataPoint> Altitudes {
             get {
@@ -175,9 +136,7 @@ namespace NINA.Model {
             Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates,Coordinates);
         }
 
-        public void CalculateAltitude(DateTime start, double latitude,double longitude) {
-            _timer.Stop();
-
+        public void CalculateAltitude(DateTime start, double latitude,double longitude) {            
             var siderealTime = Astrometry.GetLocalSiderealTime(start,longitude);
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
             
@@ -189,12 +148,6 @@ namespace NINA.Model {
             }
 
             CalculateTransit(latitude);
-
-            /*latlong used for altitude now calc */
-            _latitude = latitude;
-            _longitude = longitude;
-            _timer.Start();
-            CalculateAltitudeNow();
         }
 
         private void CalculateTransit(double latitude) {

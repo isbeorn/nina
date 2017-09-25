@@ -42,6 +42,11 @@ namespace NINA.ViewModel {
             _searchTokenSource?.Cancel();
         }
 
+        public Ticker Ticker {
+            get {
+                return new Ticker(30000);
+            }
+        }
 
         private AsyncObservableCollection<KeyValuePair<DateTime,double>> _nightDuration;
         public AsyncObservableCollection<KeyValuePair<DateTime,double>> NightDuration {

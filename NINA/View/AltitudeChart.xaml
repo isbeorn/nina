@@ -6,8 +6,10 @@
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"   
              xmlns:local="clr-namespace:NINA.View"
              xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    
     <StackPanel>
         <oxy:Plot Height="180"
                                         Background="{StaticResource BackgroundBrush}"
@@ -55,17 +57,15 @@
                     DataFieldX="Key" 
                     DataFieldY="Value" 
                     TrackerFormatString="X: {2:HH:mm}h"
-                    Color="Black" />
-                <oxy:ScatterSeries 
-                    ItemsSource="{Binding AltitudeNow}"                                                 
-                    DataFieldX="Key"                                                 
-                    DataFieldY="Value" 
-                    MarkerType="Circle" 
-                    MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    MarkerStroke="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
-                    MarkerStrokeThickness="1"
-                    />
+                    Color="Black" />                
             </oxy:Plot.Series>
+            <oxy:Plot.Annotations>
+                <oxy:LineAnnotation 
+                    Type="Vertical"                                     
+                    X="{Binding Source={StaticResource AppVM}, Path=SkyAtlasVM.Ticker.OxyNow}" MaximumY="90" Color="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"              
+                    Text="{ns:Loc LblNow}" />
+            </oxy:Plot.Annotations>
         </oxy:Plot>
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding DoesTransitSouth, Mode=OneWay, Converter={StaticResource BoolToLabelConverter}, ConverterParameter=LblTransitSouth|LblTransitNorth}" />
     </StackPanel>

@@ -298,6 +298,7 @@
     </Compile>
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
     <Compile Include="Utility\Mediator.cs" />
+    <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
     <Compile Include="Utility\ValidationRules\DirectoryExistsRule.cs" />
     <Compile Include="Utility\ValidationRules\FileExistsRule.cs" />
