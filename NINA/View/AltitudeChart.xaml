@@ -65,6 +65,13 @@
                     X="{Binding Source={StaticResource AppVM}, Path=SkyAtlasVM.Ticker.OxyNow}" MaximumY="90" Color="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"              
                     Text="{ns:Loc LblNow}" />
+                <oxy:PointAnnotation 
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"  
+                    Text="{Binding MaxAltitude.Y, StringFormat=\{0:0\}°}"                     
+                    Shape="Circle" 
+                    Fill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    X="{Binding MaxAltitude.X}" 
+                    Y="{Binding MaxAltitude.Y}" />
             </oxy:Plot.Annotations>
         </oxy:Plot>
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding DoesTransitSouth, Mode=OneWay, Converter={StaticResource BoolToLabelConverter}, ConverterParameter=LblTransitSouth|LblTransitNorth}" />

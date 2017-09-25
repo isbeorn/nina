@@ -100,6 +100,17 @@ namespace NINA.Model {
             }
         }
 
+        private DataPoint _maxAltitude;
+        public DataPoint MaxAltitude {
+            get {
+                return _maxAltitude;
+            }
+            set {
+                _maxAltitude = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private AsyncObservableCollection<DataPoint> _altitudes;
         public AsyncObservableCollection<DataPoint> Altitudes {
             get {
@@ -146,6 +157,8 @@ namespace NINA.Model {
                 Altitudes.Add(new DataPoint(DateTimeAxis.ToDouble(start),altitude));                
                 start = start.AddHours(0.1);                
             }
+
+            MaxAltitude = Altitudes.OrderByDescending((x) => x.Y).FirstOrDefault();
 
             CalculateTransit(latitude);
         }
