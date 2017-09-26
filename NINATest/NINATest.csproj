@@ -54,6 +54,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AstrometryTest.cs" />
     <Compile Include="CaptureSequenceTest.cs" />
     <Compile Include="ImageArrayTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
