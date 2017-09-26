@@ -28,7 +28,7 @@
                                  TextAlignment="Center"    
                                  Text="{Binding Value, 
                                                 StringFormat=\{0:#.00\}, 
-                                                UpdateSourceTrigger=PropertyChanged,
+                                                UpdateSourceTrigger=LostFocus,
                                                 RelativeSource={RelativeSource AncestorType={x:Type local:StepperControl}}}"/>
                         <Button Name="PART_Decrement" Height="25" Grid.Column="2">
                             <Path Fill="{TemplateBinding ButtonForegroundBrush}" 
