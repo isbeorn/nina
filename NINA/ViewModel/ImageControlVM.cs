@@ -298,6 +298,8 @@ namespace NINA.ViewModel {
 
                 p.Add(new OptionsVM.ImagePattern("$$TARGETNAME$$", "Target Name if available", targetname));
 
+                p.Add(new OptionsVM.ImagePattern("$$GAIN$$","Camera Gain",Cam?.Gain.ToString() ?? string.Empty));
+
                 string filename = Utility.Utility.GetImageFileString(p);
                 string completefilename = Settings.ImageFilePath + filename;
 
