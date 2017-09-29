@@ -54,6 +54,7 @@
      * Advanced filtering to get just the Deep Sky Objects that are relevant for you
      * Calculated altitude chart for each object based on your position
      * Night time duration based on your position
+     * Set object as sequence target
 
 * Experimental
      * Canon Cameras 
@@ -65,10 +66,6 @@ Through the issue tracker
 a mail to: isbeorn86+NINA@googlemail.com
 
 or directly via Discord: @[]()Isbeorn#1882 
-
-** Setup Checksum **
-
-d62690[]()a87d36[]()95dd70[]()4040e8[]()cf674b[]()f4
 
 ** Credit **
 
