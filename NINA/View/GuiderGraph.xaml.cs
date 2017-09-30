@@ -15,10 +15,10 @@ using System.Windows.Shapes;
 
 namespace NINA.View {
     /// <summary>
-    /// Interaction logic for PHD2Graph.xaml
+    /// Interaction logic for GuiderGraph.xaml
     /// </summary>
-    public partial class PHD2Graph : UserControl {
-        public PHD2Graph() {
+    public partial class GuiderGraph : UserControl {
+        public GuiderGraph() {
             InitializeComponent();
         }
     }

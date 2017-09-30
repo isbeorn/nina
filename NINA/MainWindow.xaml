@@ -126,19 +126,19 @@
                     <TabItem.Header>
                         <Grid>
                             <Grid Height="50" Width="50">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PHD2SVG}" Stretch="Uniform" Margin="5"  >
+                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource GuiderSVG}" Stretch="Uniform" Margin="5"  >
                                 </Path>
                             </Grid>
                             <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
-                                        Visibility="{Binding PHD2VM.PHD2Client.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                        Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
                                         Opacity="0.5" 
                                         Data="{StaticResource PowerSVG}" 
                                         Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
                             </Path>
 
-                            <Grid Visibility="{Binding PHD2VM.PHD2Client, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Grid Visibility="{Binding GuiderVM.Guider, Converter={StaticResource NullToVisibilityConverter}}">
                                 <Path Fill="{StaticResource ButtonForegroundBrush}" 
-                                            Visibility="{Binding PHD2VM.PHD2Client.Connected, Converter={StaticResource VisibilityConverter}}"                                          
+                                            Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource VisibilityConverter}}"                                          
                                             Data="{StaticResource PowerSVG}" 
                                             Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
                                 </Path>
@@ -147,7 +147,7 @@
 
                     </TabItem.Header>
                     <TabItem.Content>
-                        <view:PHD2View DataContext="{Binding PHD2VM}" ></view:PHD2View>
+                        <view:GuiderView DataContext="{Binding GuiderVM}" ></view:GuiderView>
                     </TabItem.Content>
                 </TabItem>
                 

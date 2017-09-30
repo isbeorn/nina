@@ -109,7 +109,7 @@
     <s:String x:Key="LblAbbrSouth">S</s:String>
     <s:String x:Key="LblPark">Parken</s:String>
     <s:String x:Key="LblUnpark">Ausparken</s:String>
-    <s:String x:Key="LblPHD2Status">PHD2 Status</s:String>
+    <s:String x:Key="LblGuiderStatus">Guider Status</s:String>
     <s:String x:Key="LblConnect">Verbinden</s:String>
     <s:String x:Key="LblDisconnect">Trennen</s:String>
     <s:String x:Key="LblConnected">Verbunden</s:String>
@@ -187,7 +187,7 @@
     <s:String x:Key="LblWeather">Wetter</s:String>
     <s:String x:Key="LblPolarAlignment">Polarausrichtung</s:String>
     <s:String x:Key="LblImageArea">Bildregion</s:String>
-    <s:String x:Key="LblPHD2">PHD2</s:String>
+    <s:String x:Key="LblGuider">Guider</s:String>
     <s:String x:Key="LblHumidity">Feuchtigkeit</s:String>
     <s:String x:Key="LblDewpoint">Taupunkt</s:String>
     <s:String x:Key="LblPressure">Druck</s:String>
@@ -240,7 +240,7 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblFilterwheelConnected">Filterrad verbunden</s:String>
     <s:String x:Key="LblFocuserConnected">Okularauszug verbunden</s:String>
     <s:String x:Key="LblTelescopeConnected">Teleskop verbunden</s:String>
-    <s:String x:Key="LblPHD2Connected">PHD2 verbunden</s:String>
+    <s:String x:Key="LblGuiderConnected">Guider verbunden</s:String>
     <s:String x:Key="LblTelescopeSynced">Teleskop zu Koordinaten synchronisiert</s:String>
     <s:String x:Key="LblCameraConnectionLost">Verbindung zur Kamera verloren! Bitte Kamera erneut verbinden!</s:String>
     <s:String x:Key="LblFilterwheelConnectionLost">Verbindung zum Filterrad verloren! Bitte Filterrad erneut verbinden!</s:String>
@@ -250,10 +250,10 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblTelescopeCannotSlew">Teleskop kann nicht schwenken</s:String>
     <s:String x:Key="LblTelescopeNotConnected">Teleskop nicht verbunden</s:String>
     <s:String x:Key="LblCameraBusy">Kamera ist beschäftigt</s:String>
-    <s:String x:Key="LblPHD2NoSettleDone">PHD2 hat keine SettleDone Nachricht geschickt. Überspringe.</s:String>
+    <s:String x:Key="LblGuiderNoSettleDone">Guider hat keine SettleDone Nachricht geschickt. Überspringe.</s:String>
     <s:String x:Key="LblNoCameraConnected">Keine Kamera verbunden</s:String>
-    <s:String x:Key="LblPHD2DitherButNotConnected">PHD2 Dither ist aktiviert, aber die Applikation ist nicht mit PHD2 verbunden</s:String>
-    <s:String x:Key="LblPHD2NoResume">PHD2 hat keine Resume Nachricht geschickt. Sequenz wird fortgeführt, aber bitte sicherstellen dass die Nachführung wieder aktiv ist!</s:String>
+    <s:String x:Key="LblGuiderDitherButNotConnected">Guider Dither ist aktiviert, aber die Applikation ist nicht mit Guider verbunden</s:String>
+    <s:String x:Key="LblGuiderNoResume">Guider hat keine Resume Nachricht geschickt. Sequenz wird fortgeführt, aber bitte sicherstellen dass die Nachführung wieder aktiv ist!</s:String>
     <s:String x:Key="LblUnableToSync">Synchronization ist nicht möglich, da kein Teleskop verbunden ist.</s:String>
     <s:String x:Key="LblSyncFailed">Synchronization des Teleskops fehlgeschlagen</s:String>
     <s:String x:Key="LblNoCoordinatesForSync">Keine Koordinaten verfügbar zum Synchronisieren des Teleskops</s:String>

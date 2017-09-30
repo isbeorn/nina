@@ -25,7 +25,7 @@ namespace NINA.Utility.AvalonDock {
 
         public DataTemplate PolarAlignmentTemplate { get; set; }
 
-        public DataTemplate PHD2Template { get; set; }
+        public DataTemplate GuiderTemplate { get; set; }
 
         public DataTemplate FilterWheelTemplate { get; set; }
 
@@ -56,8 +56,8 @@ namespace NINA.Utility.AvalonDock {
             if (item is PolarAlignmentVM)
                 return PolarAlignmentTemplate;
 
-            if (item is PHD2VM)
-                return PHD2Template;
+            if (item is GuiderVM)
+                return GuiderTemplate;
 
             if (item is FilterWheelVM)
                 return FilterWheelTemplate;

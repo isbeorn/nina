@@ -63,12 +63,6 @@ namespace NINA.ViewModel
                 RaisePropertyChanged();
             }
         }
-        
-        private PHD2Client PHD2Client {
-            get {
-                return Utility.Utility.PHDClient;
-            }
-        }
 
         private ITelescope _telescope;
         public ITelescope Telescope {
@@ -107,10 +101,10 @@ namespace NINA.ViewModel
         /// <summary>
         /// Checks if auto meridian flip should be considered and executes it
         /// 1) Compare next exposure length with time to meridian - If exposure length is greater than time to flip the system will wait
-        /// 2) Pause PHD2
+        /// 2) Pause Guider
         /// 3) Execute the flip
         /// 4) If recentering is enabled, platesolve current position, sync and recenter to old target position
-        /// 5) Resume PHD2
+        /// 5) Resume Guider
         /// </summary>
         /// <param name="seq">Current Sequence row</param>
         /// <param name="tokenSource">cancel token</param>
@@ -167,39 +161,22 @@ namespace NINA.ViewModel
             return true;
         }
 
-        private async Task<bool> StopAutoguider(CancellationTokenSource tokensource, IProgress<string> progress) {
-            if (PHD2Client?.Connected == true) {
-                progress.Report("Stopping autoguider");
-                await PHD2Client.Pause(true);
-            }
+        private async Task<bool> StopAutoguider(CancellationTokenSource tokenSource, IProgress<string> progress) {
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.PauseGuider,tokenSource.Token);
             return true;
         }
 
         private async Task<bool> SelectNewGuideStar(CancellationTokenSource tokenSource, IProgress<string> progress) {
-            if (PHD2Client?.Connected == true) {
-                progress.Report("Select new Guidestar");
-                await Task.Delay(TimeSpan.FromSeconds(5), tokenSource.Token);
-            }
+            progress.Report("Select new Guidestar");
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.AutoSelectGuideStar,tokenSource.Token);
+            
             return true;
         }
 
         private async Task<bool> ResumeAutoguider(CancellationTokenSource tokenSource, IProgress<string> progress) {
-            if (PHD2Client?.Connected == true) {
-                progress.Report("Resuming autoguider");
-                await PHD2Client.Pause(false);
 
-                var time = 0;
-                while (PHD2Client.Paused) {
-                    await Task.Delay(500, tokenSource.Token);
-                    time += 500;
-                    if (time > 20000) {
-                        //Failsafe when phd is not sending resume message
-                        Notification.ShowWarning(Locale.Loc.Instance["LblPHD2NoResume"]/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);
-                        break;
-                    }
-                    tokenSource.Token.ThrowIfCancellationRequested();
-                }
-            }
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ResumeGuider,tokenSource.Token);
+            
             return true;
         }        
 
@@ -217,21 +194,20 @@ namespace NINA.ViewModel
 
         private async Task<bool> DoMeridianFlip() {
             try {
-                Steps = new AutomatedWorkflow();
-                var guiderConnected = PHD2Client?.Connected == true;
-                if(guiderConnected) {
-                    Steps.Add(new WorkflowStep("StopAutoguider", Locale.Loc.Instance["LblStopAutoguider"], () => StopAutoguider(_tokensource, _progress)));
-                }                
+                Steps = new AutomatedWorkflow();                
+
+                Steps.Add(new WorkflowStep("StopAutoguider", Locale.Loc.Instance["LblStopAutoguider"], () => StopAutoguider(_tokensource, _progress)));
+                
                 Steps.Add(new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(_tokensource, _progress)));
                 Steps.Add(new WorkflowStep("Flip", Locale.Loc.Instance["LblFlip"], () => DoFilp(_tokensource, _progress)));
                 if (Settings.RecenterAfterFlip) {
                     Steps.Add(new WorkflowStep("Recenter", Locale.Loc.Instance["LblRecenter"], () => Recenter(_tokensource, _progress)));
                 }
 
-                if (guiderConnected) {
-                    Steps.Add(new WorkflowStep("SelectNewGuideStar", Locale.Loc.Instance["LblSelectNewGuideStar"], () => SelectNewGuideStar(_tokensource, _progress)));
-                    Steps.Add(new WorkflowStep("ResumeAutoguider", Locale.Loc.Instance["LblResumeAutoguider"], () => ResumeAutoguider(_tokensource, _progress)));
-                }                
+                
+                Steps.Add(new WorkflowStep("SelectNewGuideStar", Locale.Loc.Instance["LblSelectNewGuideStar"], () => SelectNewGuideStar(_tokensource, _progress)));
+                Steps.Add(new WorkflowStep("ResumeAutoguider", Locale.Loc.Instance["LblResumeAutoguider"], () => ResumeAutoguider(_tokensource, _progress)));
+                          
                 Steps.Add(new WorkflowStep("Settle", Locale.Loc.Instance["LblSettle"], () => Settle(_tokensource, _progress)));
 
                 await Steps.Process();

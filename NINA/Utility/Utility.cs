@@ -26,13 +26,7 @@ namespace NINA.Utility {
             new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
 
         public static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }       
-        
-        public static PHD2Client PHDClient {
-            get {
-                return PHD2Client.Instance;
-            }
-        }
-        
+                        
         /// <summary>
         /// Replaces makros from Settings.ImageFilePattern into actual values based on input
         /// e.g.: $$Filter$$ -> "Red"

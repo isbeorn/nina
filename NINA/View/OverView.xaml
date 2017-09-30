@@ -101,8 +101,8 @@
                     <view:ImageControlView />
                 </DataTemplate>
                 
-                <DataTemplate DataType="{x:Type vm:PHD2VM}">
-                    <view:AnchorablePHD2View />
+                <DataTemplate DataType="{x:Type vm:GuiderVM}">
+                    <view:AnchorableGuideriew />
                 </DataTemplate>-->
             </dock:DockingManager.Resources>
 
@@ -136,11 +136,11 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.PolarAlignmentTemplate>
 
-                    <util:PaneTemplateSelector.PHD2Template>
+                    <util:PaneTemplateSelector.GuiderTemplate>
                         <DataTemplate>
-                            <view:AnchorablePHD2View />
+                            <view:AnchorableGuiderView />
                         </DataTemplate>
-                    </util:PaneTemplateSelector.PHD2Template>
+                    </util:PaneTemplateSelector.GuiderTemplate>
 
                     <util:PaneTemplateSelector.FilterWheelTemplate>
                         <DataTemplate>

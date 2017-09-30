@@ -74,7 +74,8 @@ namespace NINA.Utility {
         LocaleChanged = 18,
         LocationChanged = 19,
         SetSequenceCoordinates = 20,
-        SlewToCoordinates = 21
+        SlewToCoordinates = 21,
+        AutoSelectGuideStar = 22
     };
 
     public enum AsyncMediatorMessages {
@@ -86,7 +87,11 @@ namespace NINA.Utility {
         ChangeFilterWheelPosition = 6,
         Solve = 7,
         CheckMeridianFlip = 8,
-        CaputureSolveSyncAndReslew = 9
+        CaputureSolveSyncAndReslew = 9,
+        DitherGuider = 10,
+        PauseGuider = 11,
+        ResumeGuider = 12,
+        AutoSelectGuideStar = 13
     }
 
 }

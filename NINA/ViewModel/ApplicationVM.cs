@@ -33,7 +33,7 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(PlatesolveVM);            
             DockManagerVM.Anchorables.Add(PolarAlignVM);
             DockManagerVM.Anchorables.Add(WeatherDataVM);
-            DockManagerVM.Anchorables.Add(PHD2VM);
+            DockManagerVM.Anchorables.Add(GuiderVM);
             DockManagerVM.Anchorables.Add(SeqVM);
             DockManagerVM.Anchorables.Add(FilterWheelVM);
             DockManagerVM.Anchorables.Add(FocuserVM);
@@ -103,13 +103,7 @@ namespace NINA.ViewModel {
             TelescopeVM?.Telescope?.Disconnect();
             FilterWheelVM?.FW?.Disconnect();
             FocuserVM?.Focuser?.Disconnect();
-            PHD2Client.Disconnect();
-        }
-
-        public PHD2Client PHD2Client {
-            get {
-                return Utility.Utility.PHDClient;
-            }
+            GuiderVM?.Guider?.Disconnect();
         }
 
         private DockManagerVM _dockManagerVM;
@@ -264,16 +258,16 @@ namespace NINA.ViewModel {
             }
         }
 
-        private PHD2VM _phd2VM;
-        public PHD2VM PHD2VM {
+        private GuiderVM _guiderVM;
+        public GuiderVM GuiderVM {
             get {
-                if (_phd2VM == null) {
-                    _phd2VM = new PHD2VM();
+                if (_guiderVM == null) {
+                    _guiderVM = new GuiderVM();
                 }
-                return _phd2VM;
+                return _guiderVM;
             }
             set {                
-                _phd2VM = value;
+                _guiderVM = value;
                 RaisePropertyChanged();
             }
         }

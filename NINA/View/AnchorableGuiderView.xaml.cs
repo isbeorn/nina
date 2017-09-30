@@ -15,10 +15,10 @@ using System.Windows.Shapes;
 
 namespace NINA.View {
     /// <summary>
-    /// Interaction logic for AnchorablePHD2View.xaml
+    /// Interaction logic for AnchorableGuiderView.xaml
     /// </summary>
-    public partial class AnchorablePHD2View : UserControl {
-        public AnchorablePHD2View() {
+    public partial class AnchorableGuiderView : UserControl {
+        public AnchorableGuiderView() {
             InitializeComponent();
         }
     }

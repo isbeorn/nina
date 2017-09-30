@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NINA.Utility {
+namespace NINA.Model.MyGuider {
 
     class PHD2EventId {
         public const string LOOP = "1";

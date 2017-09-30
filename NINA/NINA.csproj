@@ -252,6 +252,8 @@
     <Compile Include="Model\MyCamera\EDCamera.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\IFocuser.cs" />
+    <Compile Include="Model\MyGuider\IGuider.cs" />
+    <Compile Include="Model\MyGuider\PHD2Guider.cs" />
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
@@ -336,8 +338,7 @@
     <Compile Include="Utility\TabControlEx.cs" />
     <Compile Include="Utility\Notification\Notification.cs" />
     <Compile Include="Utility\NotifyTaskCompletion.cs" />
-    <Compile Include="Utility\PHD2Client.cs" />
-    <Compile Include="Utility\PHD2Methods.cs" />
+    <Compile Include="Model\MyGuider\PHD2Methods.cs" />
     <Compile Include="Utility\RelayCommand.cs" />
     <Compile Include="Utility\Settings.cs" />
     <Compile Include="Utility\Utility.cs" />
@@ -350,7 +351,7 @@
     <Compile Include="ViewModel\ImagingVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
-    <Compile Include="ViewModel\PHD2VM.cs" />
+    <Compile Include="ViewModel\GuiderVM.cs" />
     <Compile Include="ViewModel\PlatesolveVM.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
@@ -378,8 +379,8 @@
     <Compile Include="View\AnchorableImageStatisticsView.xaml.cs">
       <DependentUpon>AnchorableImageStatisticsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorablePHD2View.xaml.cs">
-      <DependentUpon>AnchorablePHD2View.xaml</DependentUpon>
+    <Compile Include="View\AnchorableGuiderView.xaml.cs">
+      <DependentUpon>AnchorableGuiderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AnchorablePlateSolveView.xaml.cs">
       <DependentUpon>AnchorablePlateSolveView.xaml</DependentUpon>
@@ -441,8 +442,8 @@
     <Compile Include="View\MeridianFlipView.xaml.cs">
       <DependentUpon>MeridianFlipView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\MinimalisticPHD2Graph.xaml.cs">
-      <DependentUpon>MinimalisticPHD2Graph.xaml</DependentUpon>
+    <Compile Include="View\MinimalisticGuiderGraph.xaml.cs">
+      <DependentUpon>MinimalisticGuiderGraph.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
@@ -450,11 +451,11 @@
     <Compile Include="View\OverView.xaml.cs">
       <DependentUpon>OverView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\PHD2Graph.xaml.cs">
-      <DependentUpon>PHD2Graph.xaml</DependentUpon>
+    <Compile Include="View\GuiderGraph.xaml.cs">
+      <DependentUpon>GuiderGraph.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\PHD2View.xaml.cs">
-      <DependentUpon>PHD2View.xaml</DependentUpon>
+    <Compile Include="View\GuiderView.xaml.cs">
+      <DependentUpon>GuiderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PlateSolveView.xaml.cs">
       <DependentUpon>PlateSolveView.xaml</DependentUpon>
@@ -651,7 +652,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorablePHD2View.xaml">
+    <Page Include="View\AnchorableGuiderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -735,7 +736,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\MinimalisticPHD2Graph.xaml">
+    <Page Include="View\MinimalisticGuiderGraph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -747,11 +748,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\PHD2Graph.xaml">
+    <Page Include="View\GuiderGraph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\PHD2View.xaml">
+    <Page Include="View\GuiderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

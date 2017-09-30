@@ -79,12 +79,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private PHD2Client PHD2Client {
-            get {
-                return Utility.Utility.PHDClient;
-            }
-        }
-
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private bool _loop;
@@ -248,24 +242,8 @@ namespace NINA.ViewModel {
         private async Task<bool> Dither(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
             if (seq.Dither && ((seq.ExposureCount % seq.DitherAmount) == 0)) {
                 progress.Report(ExposureStatus.DITHERING);
-                await PHD2Client.Dither();
 
-                progress.Report(ExposureStatus.SETTLING);
-                var time = 0;
-                await Task.Run<bool>(async () => {
-                    while (PHD2Client.IsDithering) {                        
-                        await Task.Delay(100, tokenSource.Token);
-                        time += 100;
-
-                        if(time > 20000) {
-                            //Failsafe when phd is not sending settlingdone message
-                            Notification.ShowWarning(Locale.Loc.Instance["LblPHD2NoSettleDone"]);
-                            PHD2Client.IsDithering = false;
-                        }
-                        tokenSource.Token.ThrowIfCancellationRequested();
-                    }
-                    return true;
-                });
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.DitherGuider, tokenSource.Token);
             }
             tokenSource.Token.ThrowIfCancellationRequested();
             return true;
@@ -297,11 +275,7 @@ namespace NINA.ViewModel {
                     foreach (CaptureSequence seq in sequence) {
 
                         sequence.SetActiveSequence(seq);                                             
-
-                        if (seq.Dither && !PHD2Client.Connected) {
-                            Notification.ShowWarning(Locale.Loc.Instance["LblPHD2DitherButNotConnected"]);
-                        }
-
+                        
                         while (seq.ExposureCount > 0) {
 
                             await CheckMeridianFlip(seq,tokenSource,progress);
@@ -398,10 +372,10 @@ namespace NINA.ViewModel {
         /// <summary>
         /// Checks if auto meridian flip should be considered and executes it
         /// 1) Compare next exposure length with time to meridian - If exposure length is greater than time to flip the system will wait
-        /// 2) Pause PHD2
+        /// 2) Pause Guider
         /// 3) Execute the flip
         /// 4) If recentering is enabled, platesolve current position, sync and recenter to old target position
-        /// 5) Resume PHD2
+        /// 5) Resume Guider
         /// </summary>
         /// <param name="seq">Current Sequence row</param>
         /// <param name="tokenSource">cancel token</param>
