@@ -43,9 +43,13 @@ namespace NINA.ViewModel {
             _searchTokenSource?.Cancel();
         }
 
+        private Ticker _ticker;
         public Ticker Ticker {
             get {
-                return new Ticker(30000);
+                if(_ticker == null) {
+                    _ticker = new Ticker(30000);
+                }
+                return _ticker;
             }
         }
 
