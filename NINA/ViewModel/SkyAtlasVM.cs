@@ -182,7 +182,8 @@ namespace NINA.ViewModel {
                 d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,12,0,0);
             }
             else {
-                d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day - 1,12,0,0);
+                var tmp = DateTime.Now.AddDays(-1);
+                d = new DateTime(tmp.Year,tmp.Month,tmp.Day,12,0,0);
             }
             return d;
         }
