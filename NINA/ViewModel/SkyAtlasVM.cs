@@ -2,6 +2,7 @@
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
+using OxyPlot;
 using OxyPlot.Axes;
 using System;
 using System.Collections.Generic;
@@ -48,24 +49,50 @@ namespace NINA.ViewModel {
             }
         }
 
-        private AsyncObservableCollection<KeyValuePair<DateTime,double>> _nightDuration;
-        public AsyncObservableCollection<KeyValuePair<DateTime,double>> NightDuration {
+        private AsyncObservableCollection<DataPoint> _nightDuration;
+        public AsyncObservableCollection<DataPoint> NightDuration {
             get {
                 if(_nightDuration == null) {
 
-                    DateTime d = GetReferenceDate();
-
-                    var twilight = Astrometry.GetNightTimes(d);
-                    
-                    if(twilight != null) { 
-                        _nightDuration = new AsyncObservableCollection<KeyValuePair<DateTime,double>>() {
-                        new KeyValuePair<DateTime,double>(twilight.RiseDate, 90),
-                        new KeyValuePair<DateTime,double>(twilight.SetDate, 90) };
+                    var twilight = TwilightRiseAndSet;
+                    if (twilight != null) { 
+                        _nightDuration = new AsyncObservableCollection<DataPoint>() {
+                        new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate), 90),
+                        new DataPoint(DateTimeAxis.ToDouble(twilight.SetDate), 90) };
                     } else {
-                        _nightDuration = new AsyncObservableCollection<KeyValuePair<DateTime,double>>();
+                        _nightDuration = new AsyncObservableCollection<DataPoint>();
                     }
                 }
                 return _nightDuration;
+            }
+        }
+
+        private AsyncObservableCollection<DataPoint> _twilightDuration;
+        public AsyncObservableCollection<DataPoint> TwilightDuration {
+            get {
+                if (_twilightDuration == null) {
+
+                    var twilight = SunRiseAndSet;
+                    var night = TwilightRiseAndSet;
+                    if (twilight != null) {
+                        _twilightDuration = new AsyncObservableCollection<DataPoint>();
+                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.SetDate),90));
+
+                        if(night != null) {
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate),90));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate),0));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate),0));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate),90));
+                        }
+
+                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate),90));
+                        
+                    }
+                    else {
+                        _twilightDuration = new AsyncObservableCollection<DataPoint>();
+                    }
+                }
+                return _twilightDuration;
             }
         }
 

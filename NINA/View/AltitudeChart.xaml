@@ -45,19 +45,32 @@
                                                     IsPanEnabled="False" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LineSeries 
-                    ItemsSource="{Binding Altitudes}"                                                 
-                    DataFieldX="Key"                                                 
+                <oxy:AreaSeries 
+                    ItemsSource="{Binding Source={StaticResource AppVM}, 
+                    Path=SkyAtlasVM.TwilightDuration}"  
+                    DataFieldX="Key" 
                     DataFieldY="Value" 
-                    TrackerFormatString="X: {2:HH:mm}h&#x0a;Y: {4:0.00}°" 
-                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"  />
+                    TrackerFormatString="X: {2:HH:mm}h"
+                    Color="#FF73737E" 
+                    Color2="Transparent"
+                    />
+                
                 <oxy:AreaSeries 
                     ItemsSource="{Binding Source={StaticResource AppVM}, 
                     Path=SkyAtlasVM.NightDuration}"  
                     DataFieldX="Key" 
                     DataFieldY="Value" 
                     TrackerFormatString="X: {2:HH:mm}h"
-                    Color="Black" />                
+                    Color="Black"  
+                    Color2="Transparent"
+                    />
+
+                <oxy:LineSeries 
+                    ItemsSource="{Binding Altitudes}"                                                 
+                    DataFieldX="Key"                                                 
+                    DataFieldY="Value" 
+                    TrackerFormatString="X: {2:HH:mm}h&#x0a;Y: {4:0.00}°" 
+                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"  />
             </oxy:Plot.Series>
             <oxy:Plot.Annotations>
                 <oxy:LineAnnotation 
