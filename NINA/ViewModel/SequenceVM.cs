@@ -50,7 +50,14 @@ namespace NINA.ViewModel{
             return true;
         }
 
-        private void RegisterMediatorMessages() {            
+        private void RegisterMediatorMessages() {
+            Mediator.Instance.Register((object o) => {
+                var args = (object[])o;
+                if (args.Length == 1) {
+                    var dso = (DeepSkyObject)args[0];
+                    Sequence.SetSequenceTarget(dso);
+                }
+            },MediatorMessages.SetSequenceCoordinates);
         }
 
         private CaptureSequenceList _sequence;

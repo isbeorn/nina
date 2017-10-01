@@ -12,19 +12,17 @@ namespace NINA.Model {
     public class CaptureSequenceList : AsyncObservableCollection<CaptureSequence> {
 
         public CaptureSequenceList() {
-            TargetName = string.Empty;
-            Mediator.Instance.Register((object o) => {
-                var args = (object[])o;
-                if(args.Length == 1) {
-                    DSO = (DeepSkyObject)args[0];
-                    TargetName = DSO.AlsoKnownAs.FirstOrDefault();
-                    Coordinates = DSO.Coordinates;                    
-                }                
-            },MediatorMessages.SetSequenceCoordinates);
+            TargetName = string.Empty;            
         }
 
         public CaptureSequenceList(CaptureSequence seq) : this() {
             this.Add(seq);
+        }
+
+        public void SetSequenceTarget(DeepSkyObject dso) {
+            DSO = dso;
+            TargetName = DSO.AlsoKnownAs.FirstOrDefault();
+            Coordinates = DSO.Coordinates;
         }
 
         private string _targetName;
