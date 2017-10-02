@@ -73,7 +73,6 @@ namespace NINA.Utility {
         FocuserChanged = 17,
         LocaleChanged = 18,
         LocationChanged = 19,
-        SetSequenceCoordinates = 20,
         SlewToCoordinates = 21,
         AutoSelectGuideStar = 22
     };
@@ -91,7 +90,8 @@ namespace NINA.Utility {
         DitherGuider = 10,
         PauseGuider = 11,
         ResumeGuider = 12,
-        AutoSelectGuideStar = 13
+        AutoSelectGuideStar = 13,
+        SetSequenceCoordinates = 14
     }
 
 }

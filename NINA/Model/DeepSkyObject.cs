@@ -22,7 +22,7 @@ namespace NINA.Model {
     public class DeepSkyObject:BaseINPC {
 
         private DeepSkyObject() {
-            SetSequenceCoordinatesCommand = new RelayCommand(SetSequenceCoordinates);
+            SetSequenceCoordinatesCommand = new AsyncCommand<bool>(() => SetSequenceCoordinates());
             SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
         }
 
@@ -139,8 +139,9 @@ namespace NINA.Model {
             }
         }
 
-        private void SetSequenceCoordinates(object obj) {
-            Mediator.Instance.Notify(MediatorMessages.SetSequenceCoordinates,new object[] { this });
+        private async Task<bool> SetSequenceCoordinates() {
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SetSequenceCoordinates,new object[] { this });
+            return true;
         }
 
         private void SlewToCoordinates(object obj) {

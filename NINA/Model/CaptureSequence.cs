@@ -21,7 +21,7 @@ namespace NINA.Model {
 
         public void SetSequenceTarget(DeepSkyObject dso) {
             DSO = dso;
-            TargetName = DSO.AlsoKnownAs.FirstOrDefault();
+            TargetName = DSO.Name;
             Coordinates = DSO.Coordinates;
         }
 

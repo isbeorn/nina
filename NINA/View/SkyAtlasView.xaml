@@ -24,7 +24,6 @@
             <Border  BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{StaticResource RightSideScrollbar}" >
                     <StackPanel Margin="5">
-                        <DatePicker SelectedDate="{Binding SelectedDate}" />
                         <ninactrl:HintTextBox Text="{Binding SearchObjectName, UpdateSourceTrigger=PropertyChanged}" HintText="{ns:Loc LblObjectNameHint}" 
                                       Foreground="{StaticResource PrimaryBrush}"
                                       VerticalContentAlignment="Center" 
@@ -130,6 +129,14 @@
                                 </UniformGrid>
                             </StackPanel>
                         </Expander>
+
+                        <Expander Header="{ns:Loc LblReferenceDate}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <UniformGrid Columns="2">
+                                <TextBlock Text="{ns:Loc LblReferenceDate}" VerticalAlignment="Center" />
+                                <DatePicker SelectedDate="{Binding SelectedDate}" />
+                            </UniformGrid>
+                        </Expander>
+                        
 
 
                         <ninactrl:CancellableButton 

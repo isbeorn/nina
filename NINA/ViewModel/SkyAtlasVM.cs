@@ -110,7 +110,7 @@ namespace NINA.ViewModel {
         public Astrometry.RiseAndSetAstroEvent TwilightRiseAndSet {
             get {
                 if (_twilightRiseAndSet == null) {
-                    var d = GetReferenceDate();
+                    var d = GetReferenceDate(SelectedDate);
                     _twilightRiseAndSet = Astrometry.GetNightTimes(d);
                 }
                 return _twilightRiseAndSet;
@@ -125,7 +125,7 @@ namespace NINA.ViewModel {
         public Astrometry.RiseAndSetAstroEvent MoonRiseAndSet {
             get {
                 if(_moonRiseAndSet == null) {
-                    var d = GetReferenceDate();
+                    var d = GetReferenceDate(SelectedDate);
                     _moonRiseAndSet = Astrometry.GetMoonRiseAndSet(d);
                 }
                 return _moonRiseAndSet;
@@ -140,7 +140,7 @@ namespace NINA.ViewModel {
         public double? Illumination {
             get {
                 if(_illumination == null) {
-                    var d = GetReferenceDate();
+                    var d = GetReferenceDate(SelectedDate);
                     _illumination = Astrometry.GetMoonIllumination(d);
                 }
                 return _illumination.Value;
@@ -155,7 +155,7 @@ namespace NINA.ViewModel {
         public Astrometry.MoonPhase MoonPhase {
             get {
                 if(_moonPhase == Astrometry.MoonPhase.Unknown) {
-                    var d = GetReferenceDate();
+                    var d = GetReferenceDate(SelectedDate);
                     _moonPhase = Astrometry.GetMoonPhase(d);                    
                 }
                 return _moonPhase;
@@ -170,7 +170,7 @@ namespace NINA.ViewModel {
         public Astrometry.RiseAndSetAstroEvent SunRiseAndSet {
             get {
                 if (_sunRiseAndSet == null) {
-                    var d = GetReferenceDate();
+                    var d = GetReferenceDate(SelectedDate);
                     _sunRiseAndSet = Astrometry.GetSunRiseAndSet(d);
                 }
                 return _sunRiseAndSet;
@@ -193,8 +193,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        private DateTime GetReferenceDate() {
-            DateTime d = SelectedDate;
+        public static DateTime GetReferenceDate(DateTime reference) {
+            DateTime d = reference;
             if (d.Hour > 12) {
                 d = new DateTime(d.Year, d.Month, d.Day,12,0,0);
             }
@@ -231,7 +231,7 @@ namespace NINA.ViewModel {
                     var longitude = Settings.Longitude;
                     var latitude = Settings.Latitude;
 
-                    DateTime d = GetReferenceDate();
+                    DateTime d = GetReferenceDate(SelectedDate);
 
                     Parallel.ForEach(result,(obj) => {
                         var cloneDate = d;
@@ -278,7 +278,7 @@ namespace NINA.ViewModel {
             SelectedAltitudeTimeThrough = DateTime.MaxValue;
             SelectedMinimumAltitudeDegrees = 0;
             
-            var d = GetReferenceDate();
+            var d = GetReferenceDate(SelectedDate);
 
             AltitudeTimesFrom.Add(DateTime.MinValue);
             AltitudeTimesThrough.Add(DateTime.MaxValue);
