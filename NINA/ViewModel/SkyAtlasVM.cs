@@ -16,10 +16,12 @@ using System.Windows.Input;
 namespace NINA.ViewModel {
     public class SkyAtlasVM : BaseVM {
         public SkyAtlasVM() {
+            SelectedDate = DateTime.Now;
+
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
                         
-            InitializeFilters();
+            InitializeFilters();            
 
             Mediator.Instance.Register((object o) => {
                 _nightDuration = null; //Clear cache
@@ -37,6 +39,7 @@ namespace NINA.ViewModel {
             TwilightRiseAndSet = null;
             _nightDuration = null;
             _twilightDuration = null;
+            _ticker?.Stop();
             _ticker = null;
         }
 
@@ -178,14 +181,25 @@ namespace NINA.ViewModel {
             }
         }
 
+        private DateTime _selectedDate;
+        public DateTime SelectedDate {
+            get {
+                return _selectedDate;
+            }
+            set {
+                _selectedDate = value;
+                RaisePropertyChanged();
+                ResetRiseAndSetTimes();
+            }
+        }
 
         private DateTime GetReferenceDate() {
-            DateTime d;
-            if (DateTime.Now.Hour > 12) {
-                d = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,12,0,0);
+            DateTime d = SelectedDate;
+            if (d.Hour > 12) {
+                d = new DateTime(d.Year, d.Month, d.Day,12,0,0);
             }
             else {
-                var tmp = DateTime.Now.AddDays(-1);
+                var tmp = d.AddDays(-1);
                 d = new DateTime(tmp.Year,tmp.Month,tmp.Day,12,0,0);
             }
             return d;

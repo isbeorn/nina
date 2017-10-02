@@ -24,6 +24,7 @@
             <Border  BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{StaticResource RightSideScrollbar}" >
                     <StackPanel Margin="5">
+                        <DatePicker SelectedDate="{Binding SelectedDate}" />
                         <ninactrl:HintTextBox Text="{Binding SearchObjectName, UpdateSourceTrigger=PropertyChanged}" HintText="{ns:Loc LblObjectNameHint}" 
                                       Foreground="{StaticResource PrimaryBrush}"
                                       VerticalContentAlignment="Center" 

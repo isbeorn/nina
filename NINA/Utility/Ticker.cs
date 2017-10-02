@@ -34,6 +34,10 @@ namespace NINA.Utility {
             RaisePropertyChanged(nameof(Now));
             RaisePropertyChanged(nameof(OxyNow));
         }
+
+        public void Stop() {
+            _timer.Stop();
+        }
         
     }
 }
