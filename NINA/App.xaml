@@ -39,6 +39,7 @@
                 <ResourceDictionary Source="Resources\Styles\Tooltip.xaml" />
                 <ResourceDictionary Source="Resources\Styles\CancellableButton.xaml" />
                 <ResourceDictionary Source="Resources\Styles\Oxyplot.xaml" />
+                <ResourceDictionary Source="Resources\Styles\DatePicker.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
                 
                 <!-- DataTemplates-->
