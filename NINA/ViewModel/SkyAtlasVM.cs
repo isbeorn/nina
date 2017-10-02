@@ -35,6 +35,9 @@ namespace NINA.ViewModel {
             MoonRiseAndSet = null;
             SunRiseAndSet = null;
             TwilightRiseAndSet = null;
+            _nightDuration = null;
+            _twilightDuration = null;
+            _ticker = null;
         }
 
         private CancellationTokenSource _searchTokenSource;
