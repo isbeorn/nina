@@ -189,6 +189,7 @@ namespace NINA.ViewModel {
             set {
                 _selectedDate = value;
                 RaisePropertyChanged();
+                InitializeElevationFilters();
                 ResetRiseAndSetTimes();
             }
         }
