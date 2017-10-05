@@ -303,4 +303,6 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblSequenceModeStandard">One by another</s:String>
     <s:String x:Key="LblSequenceModeRotate">Rotate through</s:String>
     
+    <s:String x:Key="LblReferenceDate">Reference Date</s:String>
+    
 </ResourceDictionary>

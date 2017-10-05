@@ -10,7 +10,10 @@ namespace NINA.Utility {
     static class Settings  {
         
         static Settings() {
-            ColorSchemas = ColorSchemas.ReadColorSchemas();            
+            ColorSchemas = ColorSchemas.ReadColorSchemas();
+
+            System.Threading.Thread.CurrentThread.CurrentUICulture = Language;
+            System.Threading.Thread.CurrentThread.CurrentCulture = Language;
         }
 
         public static CultureInfo Language {
@@ -18,8 +21,12 @@ namespace NINA.Utility {
                 return (CultureInfo)Properties.Settings.Default.Language;
             }
             set {
-                Properties.Settings.Default.Language = (CultureInfo)value;
+                var culture = (CultureInfo)value;
+                Properties.Settings.Default.Language = culture;
                 Properties.Settings.Default.Save();
+
+                System.Threading.Thread.CurrentThread.CurrentUICulture = culture;
+                System.Threading.Thread.CurrentThread.CurrentCulture = culture;
                 Locale.Loc.Instance.ReloadLocale();
             }
         }

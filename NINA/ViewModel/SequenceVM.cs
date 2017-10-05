@@ -51,13 +51,18 @@ namespace NINA.ViewModel{
         }
 
         private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((object o) => {
+            Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;
                 if (args.Length == 1) {
                     var dso = (DeepSkyObject)args[0];
-                    Sequence.SetSequenceTarget(dso);
+                    var sequenceDso = new DeepSkyObject(dso.AlsoKnownAs.FirstOrDefault(),dso.Coordinates);
+                    await Task.Run(() => {
+                        sequenceDso.CalculateAltitude(SkyAtlasVM.GetReferenceDate(DateTime.Now),Settings.Latitude,Settings.Longitude);
+                    });
+                    
+                    Sequence.SetSequenceTarget(sequenceDso);
                 }
-            },MediatorMessages.SetSequenceCoordinates);
+            }, AsyncMediatorMessages.SetSequenceCoordinates);
         }
 
         private CaptureSequenceList _sequence;
