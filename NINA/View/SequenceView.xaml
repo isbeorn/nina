@@ -54,6 +54,16 @@
                             </UniformGrid>
                         </UniformGrid>
                     </Border>
+
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
+                        <UniformGrid Columns="2">
+                            <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSequenceMode}"></TextBlock>
+                                <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type model:SequenceMode} }}" SelectedItem="{Binding Mode}" Margin="5,0,0,0"/>
+                            </UniformGrid>
+                        </UniformGrid>
+                    </Border>                    
+                    
                     <StackPanel Visibility="{Binding Coordinates, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1">
                             <UniformGrid Columns="2">

@@ -41,43 +41,175 @@ namespace NINATest {
         }
 
         [TestMethod]
-        public void SetActiveSequence_ValueTest() {
+        public void GetNextSequence_ModeStandard_Initial() {
             //Arrange
             var seq = new CaptureSequence();
             var seq2 = new CaptureSequence();
             var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.STANDARD;
             l.Add(seq);
             l.Add(seq2);
 
             //Act
-            var success = l.SetActiveSequence(seq2);
+            var nextSeq = l.Next();
 
             //Assert
-            Assert.IsTrue(success);
             Assert.AreEqual(string.Empty, l.TargetName, "Targetname");
+            Assert.AreSame(seq, nextSeq);
             Assert.AreEqual(2, l.Count);
-            Assert.AreSame(seq2, l.ActiveSequence);
+            Assert.AreSame(seq, l.ActiveSequence);
             Assert.AreEqual(1, l.ActiveSequenceIndex);
             Assert.AreEqual(0, l.Delay);
         }
 
         [TestMethod]
-        public void SetActiveSequence_DoesNotExist_ReturnFalse() {
+        public void GetNextSequence_ModeStandard_NextSequenceSelected() {
             //Arrange
-            var seq = new CaptureSequence();
+            var seq = new CaptureSequence() { ExposureCount = 2 };
             var seq2 = new CaptureSequence();
-            var seq3 = new CaptureSequence();
             var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.STANDARD;
             l.Add(seq);
             l.Add(seq2);
 
             //Act
-            var success = l.SetActiveSequence(seq3);
+            var nextSeq = l.Next();
+            nextSeq = l.Next();
+            nextSeq = l.Next();
 
             //Assert
-            Assert.IsFalse(success);
+            Assert.AreEqual(string.Empty, l.TargetName, "Targetname");
+            Assert.AreSame(seq2, nextSeq);
+            Assert.AreEqual(2, l.Count);
+            Assert.AreSame(seq2, l.ActiveSequence);
+            Assert.AreEqual(2, l.ActiveSequenceIndex);
+            Assert.AreEqual(0, l.Delay);
+        }
+
+        [TestMethod]
+        public void GetNextSequence_ModeStandard_AllFinished() {
+            //Arrange
+            var seq = new CaptureSequence() { ExposureCount = 5 };
+            var seq2 = new CaptureSequence() { ExposureCount = 5 };
+            var seq3 = new CaptureSequence() { ExposureCount = 5 };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.STANDARD;
+
+            l.Add(seq);
+            l.Add(seq2);
+            l.Add(seq3);
+
+            //Act
+            CaptureSequence actualSeq;
+            while ((actualSeq = l.Next()) != null) {
+
+            }
+
+            //Assert
             Assert.AreEqual(null, l.ActiveSequence);
             Assert.AreEqual(-1, l.ActiveSequenceIndex);
+            Assert.AreEqual(0, l.Where(x => x.ExposureCount > 0).Count());
+        }
+
+        [TestMethod]
+        public void GetNextSequence_ModeStandard_EmptyListNextNull() {
+            //Arrange
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.STANDARD;
+
+            //Act
+            var actual = l.Next();
+
+            //Assert
+            Assert.AreSame(null, actual);
+            Assert.AreEqual(null, l.ActiveSequence);
+            Assert.AreEqual(-1, l.ActiveSequenceIndex);
+        }
+
+        [TestMethod]
+        public void GetNextSequence_ModeRotate_EmptyListNextNull() {
+            //Arrange
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.ROTATE;
+            
+            //Act
+            var actual = l.Next();
+
+            //Assert
+            Assert.AreSame(null, actual);
+            Assert.AreEqual(null, l.ActiveSequence);
+            Assert.AreEqual(-1, l.ActiveSequenceIndex);
+        }
+
+        [TestMethod]
+        public void GetNextSequence_ModeRotate_NextSequenceSelected() {
+            //Arrange
+            var seq = new CaptureSequence() { ExposureCount = 5 };
+            var seq2 = new CaptureSequence() { ExposureCount = 5 };
+            var seq3 = new CaptureSequence() { ExposureCount = 5 };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.ROTATE;
+
+            l.Add(seq);
+            l.Add(seq2);
+            l.Add(seq3);
+
+            //Act
+            var actualFirst = l.Next();
+            var actualSecond = l.Next();
+            var actualThird = l.Next();
+            var actualFourth = l.Next();
+
+            //Assert
+            Assert.AreSame(seq, actualFirst, "First wrong");
+            Assert.AreSame(seq2, actualSecond, "Second wrong");
+            Assert.AreSame(seq3, actualThird, "Third wrong");
+            Assert.AreSame(seq, actualFourth, "Fourth wrong");
+        }
+
+        [TestMethod]
+        public void GetNextSequence_ModeRotate_FirstEmptySecondSelected() {
+            //Arrange
+            var seq = new CaptureSequence() { ExposureCount = 0 };
+            var seq2 = new CaptureSequence() { ExposureCount = 5 };
+            var seq3 = new CaptureSequence() { ExposureCount = 5 };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.ROTATE;
+
+            l.Add(seq);
+            l.Add(seq2);
+            l.Add(seq3);
+
+            //Act
+            var actual = l.Next();
+
+            //Assert
+            Assert.AreSame(seq2, actual);
+        }
+
+        [TestMethod]
+        public void GetNextSequence_ModeRotate_AllFinished() {
+            //Arrange
+            var seq = new CaptureSequence() { ExposureCount = 5 };
+            var seq2 = new CaptureSequence() { ExposureCount = 5 };
+            var seq3 = new CaptureSequence() { ExposureCount = 5 };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.ROTATE;
+
+            l.Add(seq);
+            l.Add(seq2);
+            l.Add(seq3);
+
+            //Act
+            CaptureSequence actualSeq;
+            while ((actualSeq = l.Next()) != null) {
+
+            }
+
+            //Assert
+            Assert.AreEqual(null, l.ActiveSequence);
+            Assert.AreEqual(-1, l.ActiveSequenceIndex);
+            Assert.AreEqual(0, l.Where(x => x.ExposureCount > 0).Count());
         }
 
         [TestMethod]

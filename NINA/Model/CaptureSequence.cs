@@ -6,13 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
 using NINA.Utility.Astrometry;
+using System.ComponentModel;
 
 namespace NINA.Model {
 
     public class CaptureSequenceList : AsyncObservableCollection<CaptureSequence> {
 
         public CaptureSequenceList() {
-            TargetName = string.Empty;            
+            TargetName = string.Empty;
+            Mode = SequenceMode.STANDARD;
         }
 
         public CaptureSequenceList(CaptureSequence seq) : this() {
@@ -36,15 +38,63 @@ namespace NINA.Model {
             }
         }
 
-        public bool SetActiveSequence(CaptureSequence seq) {
-            if(this.Contains(seq)) {
-                ActiveSequence = seq;
-                return true;
-            } else {
-                return false;
-            }            
+        private SequenceMode _mode;
+        public SequenceMode Mode {
+            get {
+                return _mode;
+            }
+            set {
+                _mode = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(Mode)));
+            }
         }
 
+        public CaptureSequence Next() {
+            if(this.Count == 0) { return null; }
+
+            CaptureSequence seq = null;
+            
+            if(Mode == SequenceMode.STANDARD) {
+                seq = ActiveSequence ?? this.First();
+                if(seq.ExposureCount > 0) {
+                    //There are exposures remaining. Reduce by 1 and return
+                    seq.ExposureCount--;                        
+                } else {
+                    //No exposures remaining. Get next Sequence, reduce by 1 and return
+                    var idx = this.IndexOf(seq) + 1;
+                    if(idx < this.Count) {
+                        seq = this[idx];
+                        seq.ExposureCount--;
+                    } else {
+                        seq = null;
+                    }                        
+                }
+            } else if (Mode == SequenceMode.ROTATE) {
+                if (this.Count == this.Where(x => x.ExposureCount == 0).Count()) {
+                    //All sequences done
+                    ActiveSequence = null;
+                    return null;
+                }
+
+                seq = ActiveSequence;                
+                if(seq == null) {
+                    seq = this.First();
+                } else {
+                    var idx = (this.IndexOf(seq) + 1) % this.Count;
+                    seq = this[idx];                    
+                    seq.ExposureCount--;
+                }
+
+                if (seq.ExposureCount == 0) {
+                    ActiveSequence = seq;
+                    return this.Next(); //Search for next sequence where exposurecount > 0
+                }
+            }
+            
+            ActiveSequence = seq;
+            return seq;
+        }
+        
         private Coordinates _coordinates;
         public Coordinates Coordinates {
             get {
@@ -81,7 +131,7 @@ namespace NINA.Model {
 
         public int ActiveSequenceIndex {
             get {
-                return this.IndexOf(_activeSequence);
+                return this.IndexOf(_activeSequence) == -1 ? -1 : this.IndexOf(_activeSequence) + 1;
             }
         }
 
@@ -96,6 +146,14 @@ namespace NINA.Model {
             }
         }
     }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum SequenceMode {
+        [Description("LblSequenceModeStandard")]
+        STANDARD,
+        [Description("LblSequenceModeRotate")]
+        ROTATE
+    }    
 
     public class CaptureSequence :BaseINPC {
         public static class ImageTypes {
@@ -192,8 +250,9 @@ namespace NINA.Model {
                 return _exposureCount;
             }
 
-            set {
+            set {                
                 _exposureCount = value;
+                if (_exposureCount < 0) { _exposureCount = 0; }
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(ProgressExposureCount));
 

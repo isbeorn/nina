@@ -272,77 +272,84 @@ namespace NINA.ViewModel {
                         progress.Report(string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay));
                     }
 
-                    foreach (CaptureSequence seq in sequence) {
+                    CaptureSequence seq;
+                    while ((seq = sequence.Next()) != null) {
+                        await CheckMeridianFlip(seq, tokenSource, progress);
+
+                        /*Change Filter*/
+                        await ChangeFilter(seq, tokenSource, progress);
+
+                        if (Cam?.Connected != true) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
+                        }
+
+                        /*Set Camera Gain */
+                        SetGain(seq);
+
+                        /*Set Camera Binning*/
+                        SetBinning(seq);
+
+                        if (Cam?.Connected != true) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
+                        }
+
+                        /*Capture*/
+                        await Capture(seq, tokenSource, progress);
+
+                        if (Cam?.Connected != true) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
+                        }
+
+                        /*Download Image */
+                        ImageArray arr = await Download(tokenSource, progress);
+                        if (arr == null) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
+                        }
+
+                        ImageControl.ImgArr = arr;
+
+                        /*Prepare Image for UI*/
+                        progress.Report(ImagingVM.ExposureStatus.PREPARING);
+
+                        await ImageControl.PrepareImage(progress, tokenSource);
+
+
+                        if (Cam?.Connected != true) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
+                        }
+
+                        /*Save to disk*/
+                        if (bSave) {
+                            await Save(sequence, tokenSource, progress);
+                        }
+
+                        /*Dither*/
+                        await Dither(seq, tokenSource, progress);
+
+                        if (Cam?.Connected != true) {
+                            tokenSource.Cancel();
+                            throw new OperationCanceledException();
+                        }
+                    }
+
+                    /*foreach (CaptureSequence seq in sequence) {
 
                         sequence.SetActiveSequence(seq);                                             
                         
                         while (seq.ExposureCount > 0) {
+                        */
+                            
 
-                            await CheckMeridianFlip(seq,tokenSource,progress);
-
-                            /*Change Filter*/
-                            await ChangeFilter(seq, tokenSource, progress);
-
-                            if (Cam?.Connected != true) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
-
-                            /*Set Camera Gain */
-                            SetGain(seq);
-
-                            /*Set Camera Binning*/
-                            SetBinning(seq);
-
-                            if (Cam?.Connected != true) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
-
-                            /*Capture*/
-                            await Capture(seq, tokenSource, progress);
-
-                            if (Cam?.Connected != true) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
-
-                            /*Download Image */
-                            ImageArray arr = await Download(tokenSource, progress);
-                            if (arr == null) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
-
-                            ImageControl.ImgArr = arr;
-
-                            /*Prepare Image for UI*/
-                            progress.Report(ImagingVM.ExposureStatus.PREPARING);
-
-                            await ImageControl.PrepareImage(progress, tokenSource);
-
-
-                            if (Cam?.Connected != true) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
-
-                            /*Save to disk*/
-                            if (bSave) {
-                                await Save(sequence, tokenSource, progress);
-                            }
-
-                            /*Dither*/
-                            await Dither(seq, tokenSource, progress);
-
-                            if (Cam?.Connected != true) {
-                                tokenSource.Cancel();
-                                throw new OperationCanceledException();
-                            }
-
-                            seq.ExposureCount -= 1;
+                            
+                    /*
                         }
                     }
+                    */
                 } catch (System.OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
                     if (Cam?.Connected == true) {
