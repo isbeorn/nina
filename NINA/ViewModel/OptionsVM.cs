@@ -190,6 +190,26 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double AutoStretchFactor {
+            get {
+                return Settings.AutoStretchFactor;
+            }
+            set {
+                Settings.AutoStretchFactor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool AnnotateImage {
+            get {
+                return Settings.AnnotateImage;
+            }
+            set {
+                Settings.AnnotateImage = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public PlateSolverEnum PlateSolverType {
             get {
                 return Settings.PlateSolverType;

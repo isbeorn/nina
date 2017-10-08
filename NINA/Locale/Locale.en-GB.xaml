@@ -303,4 +303,9 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblSequenceModeStandard">One by another</s:String>
     <s:String x:Key="LblSequenceModeRotate">Rotate through</s:String>
     <s:String x:Key="LblReferenceDate">Reference Date</s:String>
+    <s:String x:Key="LblImageOptions">Image Options</s:String>
+    <s:String x:Key="LblAnnotateImage">Annotate Image</s:String>
+    <s:String x:Key="LblAnnotateImageTooltip">If checked and a star detection for an image is applied, the image will be annotated with the found stars and their respective HFR value</s:String>
+    <s:String x:Key="LblAutoStretchFactor">Autostretch factor</s:String>
+    <s:String x:Key="LblAutoStretchFactorTooltip">The factor for the autostretch algorithm that is used to display an image and detect stars. Must be a value between 0 and 1. A value of 0.2 should work most of the time.</s:String>
 </ResourceDictionary>

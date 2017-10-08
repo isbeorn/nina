@@ -34,7 +34,6 @@ namespace NINA.ViewModel {
             AutoStretch = false;
             DetectStars = false;
             ShowCrossHair = false;
-            AutoStretchFactor = 0.20;
 
             PrepareImageCommand = new AsyncCommand<bool>(() => PrepareImageHelper());
             PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage());
@@ -172,17 +171,6 @@ namespace NINA.ViewModel {
         private Task _prepImageTask;
         private CancellationTokenSource _prepImageCancellationSource;
 
-        private double _autoStretchFactor;
-        public double AutoStretchFactor {
-            get {
-                return _autoStretchFactor;
-            }
-            set {
-                _autoStretchFactor = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private bool _showCrossHair;
         public bool ShowCrossHair {
             get {
@@ -230,13 +218,23 @@ namespace NINA.ViewModel {
 
         public async Task PrepareImage(IProgress<string> progress, CancellationTokenSource canceltoken) {
             if (ImgArr != null) {
-                BitmapSource source = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
+                BitmapSource source = ImageAnalysis.CreateSourceFromArray(ImgArr,System.Windows.Media.PixelFormats.Gray16);
 
-                if (DetectStars) {
-                    source = await ImageAnalysis.DetectStarsAsync(source, ImgArr, progress, canceltoken);
-                } else if (AutoStretch) {
+                if (AutoStretch) {
                     source = await StretchAsync(source);
                 }
+
+                if (DetectStars) {
+                    var analysis = new ImageAnalysis(source, ImgArr);
+                    await analysis.DetectStarsAsync(progress, canceltoken.Token);
+
+                    if(Settings.AnnotateImage) {
+                        source = analysis.GetAnnotatedImage();
+                    }                    
+
+                    ImgArr.Statistics.HFR = analysis.AverageHFR;
+                    ImgArr.Statistics.DetectedStars = analysis.DetectedStars;
+                }                
 
                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                     Image = null;
@@ -254,7 +252,7 @@ namespace NINA.ViewModel {
         private BitmapSource Stretch(BitmapSource source) {
             var img = ImageAnalysis.BitmapFromSource(source);
 
-            var filter = ImageAnalysis.GetColorRemappingFilter(ImgArr.Statistics.Mean, AutoStretchFactor);
+            var filter = ImageAnalysis.GetColorRemappingFilter(ImgArr.Statistics.Mean, Settings.AutoStretchFactor);
             filter.ApplyInPlace(img);
 
             source = null;

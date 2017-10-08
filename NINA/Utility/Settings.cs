@@ -733,6 +733,26 @@ namespace NINA.Utility {
                 }
             }
         }
+
+        public static double AutoStretchFactor {
+            get {
+                return Properties.Settings.Default.AutoStretchFactor;
+            }
+            set {
+                Properties.Settings.Default.AutoStretchFactor = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static bool AnnotateImage {
+            get {
+                return Properties.Settings.Default.AnnotateImage;
+            }
+            set {
+                Properties.Settings.Default.AnnotateImage = value;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 
 }

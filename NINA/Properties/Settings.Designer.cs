@@ -755,5 +755,29 @@ namespace NINA.Properties {
                 this["AltNotificationErrorColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.2")]
+        public double AutoStretchFactor {
+            get {
+                return ((double)(this["AutoStretchFactor"]));
+            }
+            set {
+                this["AutoStretchFactor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AnnotateImage {
+            get {
+                return ((bool)(this["AnnotateImage"]));
+            }
+            set {
+                this["AnnotateImage"] = value;
+            }
+        }
     }
 }

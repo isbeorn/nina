@@ -185,5 +185,11 @@
     <Setting Name="AltNotificationErrorColor" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FFF5A300</Value>
     </Setting>
+    <Setting Name="AutoStretchFactor" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.2</Value>
+    </Setting>
+    <Setting Name="AnnotateImage" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

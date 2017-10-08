@@ -296,56 +296,84 @@
                         </ListView>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="{ns:Loc LblAutoMeridianFlip}">
-                    <StackPanel Orientation="Vertical">
-                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblEnabled}"></TextBlock>
-                            <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding AutoMeridianFlip}" />
+                <StackPanel Orientation="Vertical">
+                    <GroupBox Header="{ns:Loc LblAutoMeridianFlip}">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblEnabled}"></TextBlock>
+                                <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding AutoMeridianFlip}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20" MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblMinutesAfterMeridian}"></TextBlock>
+                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="MinutesAfterMeridian" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblRecenterAfterFlip}"></TextBlock>
+                                <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding RecenterAfterFlip}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblScopeSettleTimeAfterFlip}"></TextBlock>
+                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="MeridianFlipSettleTime" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblPauseTimeBeforeMeridian}"></TextBlock>
+                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="PauseTimeBeforeMeridian" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20" MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblMinutesAfterMeridian}"></TextBlock>
-                            <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                <TextBox.Text>
-                                    <Binding Path="MinutesAfterMeridian" UpdateSourceTrigger="LostFocus" >
-                                        <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
+                    </GroupBox>
+                    <GroupBox Header="{ns:Loc LblImageOptions}">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblAutoStretchFactor}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblAutoStretchFactorTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="AutoStretchFactor" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblAnnotateImage}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblAnnotateImageTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding AnnotateImage}" />
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblRecenterAfterFlip}"></TextBlock>
-                            <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding RecenterAfterFlip}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblScopeSettleTimeAfterFlip}"></TextBlock>
-                            <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                <TextBox.Text>
-                                    <Binding Path="MeridianFlipSettleTime" UpdateSourceTrigger="LostFocus" >
-                                        <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblPauseTimeBeforeMeridian}"></TextBlock>
-                            <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                <TextBox.Text>
-                                    <Binding Path="PauseTimeBeforeMeridian" UpdateSourceTrigger="LostFocus" >
-                                        <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                        </StackPanel>
-
-                        
-                    </StackPanel>
-                </GroupBox>
+                    </GroupBox>
+                </StackPanel>
             </UniformGrid>
         </TabItem>
         <TabItem>
