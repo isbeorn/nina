@@ -265,7 +265,6 @@
     <Compile Include="PlateSolving\Platesolve2Solver.cs" />
     <Compile Include="PlateSolving\PlateSolverFactory.cs" />
     <Compile Include="Utility\ASISDK\ASICameraDll.cs" />
-    <Compile Include="Utility\ASISDK\ASICameraDll2.cs" />
     <Compile Include="Model\MyFilterWheel\AscomFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\IFilterWheel.cs" />
     <Compile Include="Model\MyTelescope\AscomTelescope.cs" />
@@ -794,9 +793,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Content Include="External\ASICamera.dll" />
     <Content Include="External\ASICamera2.dll" />
-    <Content Include="External\ASICamera_x64.dll" />
     <Resource Include="Resources\astrometry.net.png" />
     <Content Include="Utility\ColorSchema\ColorSchemas.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -808,9 +805,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Database\NINA.sqlite" />
-    <None Include="External\ASICamera.lib" />
     <None Include="External\ASICamera2.lib" />
-    <None Include="External\ASICamera_x64.lib" />
     <None Include="packages.config" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />

@@ -218,7 +218,6 @@ namespace NINA.ViewModel {
             }
             set {
                 _cam = value;
-                RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.CameraChanged, _cam);
             }
         }
@@ -226,6 +225,7 @@ namespace NINA.ViewModel {
         private void ChooseCamera(object obj) {
             Cam = (ICamera)CameraChooserVM.SelectedDevice;
             if (Cam?.Connect() == true) {
+                RaisePropertyChanged(nameof(Cam));
                 _updateCamera.Start();
                 Settings.CameraId = Cam.Id;
             } else {
