@@ -108,9 +108,6 @@ namespace NINA.Utility {
             return filter;
         }
 
-        
-
-
         private static ushort[] GetStretchMap(double mean, double targetHistogramMeanPct) {
             double power;
             if (mean <= 1) {
@@ -155,123 +152,39 @@ namespace NINA.Utility {
                 
                 canceltoken?.Token.ThrowIfCancellationRequested();
 
-
-                Debug.Print("Time for image conversion and stretch: " + sw.Elapsed);
-                sw.Restart();
-
-
                 /* Resize to speed up manipulation */
-
-                int targetWidth = 1552;
-                double resizefactor = 1.0;
-                if (bmp.Width > targetWidth) {
-                    resizefactor = (double)targetWidth / bmp.Width;
-
-                    bmp = new ResizeBicubic(targetWidth, (int) Math.Floor(bmp.Height * resizefactor)).Apply(bmp);
-                }
-                double inverseresizefactor = 1.0 / resizefactor;
-                
-
+                double resizefactor = Resize(ref bmp);
+                double inverseresizefactor = 1.0d / resizefactor;
 
                 /* prepare image for structure detection */
+                PrepareForStructureDetection(bmp, canceltoken?.Token);
                 
-                new CannyEdgeDetector().ApplyInPlace(bmp);
-                canceltoken?.Token.ThrowIfCancellationRequested();
-                new SISThreshold().ApplyInPlace(bmp);
-                canceltoken?.Token.ThrowIfCancellationRequested();
-                new BinaryDilatation3x3().ApplyInPlace(bmp);
-                canceltoken?.Token.ThrowIfCancellationRequested();
-                
-
-                Debug.Print("Time for image preparation: " + sw.Elapsed);
-                sw.Restart();
-
                 progress?.Report("Detecting structures");
 
-                /* detect structures */
-                int minStarSize = (int)Math.Floor( 5 * resizefactor);
+                /* get structure info */
+                BlobCounter blobCounter = DetectStructures(bmp,resizefactor,canceltoken?.Token);
+                                
+                progress?.Report("Analyzing stars");
+
+                int minStarSize = (int)Math.Floor(5 * resizefactor);
                 //Prevent Hotpixels to be detected
                 if (minStarSize < 2) minStarSize = 2;
                 int maxStarSize = (int)Math.Ceiling(150 * resizefactor);
-                BlobCounter blobCounter = new BlobCounter();
-                blobCounter.ProcessImage(bmp);
 
-                canceltoken?.Token.ThrowIfCancellationRequested();
-                Debug.Print("Time for structure detection: " + sw.Elapsed);
-                sw.Restart();
-
-                /* get structure info */
-                Blob[] blobs = blobCounter.GetObjectsInformation();
-
-                // process each blob
-
-                SimpleShapeChecker checker = new SimpleShapeChecker();
-                Star s;
-                List<Star> starlist = new List<Star>();
-
-
-                progress?.Report("Analyzing stars");
-                double value;
-                foreach (Blob blob in blobs) {
-                    canceltoken?.Token.ThrowIfCancellationRequested();
-
-                    if (blob.Rectangle.Width > maxStarSize || blob.Rectangle.Height > maxStarSize || blob.Rectangle.Width < minStarSize || blob.Rectangle.Height < minStarSize) {
-                        continue;
-                    }
-                    var points = blobCounter.GetBlobsEdgePoints(blob);
-                    AForge.Point centerpoint; float radius;
-                    var rect = new Rectangle((int)Math.Floor(blob.Rectangle.X * inverseresizefactor), (int)Math.Floor(blob.Rectangle.Y * inverseresizefactor), (int)Math.Ceiling(blob.Rectangle.Width * inverseresizefactor), (int)Math.Ceiling(blob.Rectangle.Height * inverseresizefactor));
-                    //Star is circle
-                    if (checker.IsCircle(points, out centerpoint, out radius)) {
-                        s = new Star { Position = new AForge.Point(centerpoint.X * (float)inverseresizefactor, centerpoint.Y * (float)inverseresizefactor), radius = radius * inverseresizefactor, Rectangle = rect };
-                    }
-                    else { //Star is elongated
-                        s = new Star { Position = new AForge.Point(centerpoint.X * (float)inverseresizefactor, centerpoint.Y * (float)inverseresizefactor), radius = Math.Max(rect.Width, rect.Height) / 2, Rectangle = rect };
-                    }
-                    /* get pixeldata */
-                    for (int x = s.Rectangle.X; x < s.Rectangle.X + s.Rectangle.Width; x++) {
-                        for (int y = s.Rectangle.Y; y < s.Rectangle.Y + s.Rectangle.Height; y++) {
-                            value = value = iarr.FlatArray[x + (iarr.Statistics.Width * y)] - iarr.Statistics.Mean;
-                            if(value < 0) { value = 0; }
-                            PixelData pd = new PixelData { PosX = x, PosY = y, value = (ushort)value };
-                            s.Pixeldata.Add(pd);
-                        }
-                    }
-                    s.HFR = CalculateHfr(s  );
-                    starlist.Add(s);
-
-                }
+                List<Star> starlist = IdentifyStars(blobCounter,iarr,minStarSize,maxStarSize,inverseresizefactor,canceltoken?.Token);
+                                
                 canceltoken?.Token.ThrowIfCancellationRequested();
                 progress?.Report("Annotating image");
-                Bitmap newBitmap = new Bitmap(orig.Width, orig.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-
-                Graphics graphics = Graphics.FromImage(newBitmap);
-
-                graphics.DrawImage(orig, 0, 0);
-
-                if(starlist.Count > 0) { 
-                    int r, offset = 10;
-                    float textposx, textposy;
+                                
+                if (starlist.Count > 0) {
                     var m = (from star in starlist select star.HFR).Average();
+                    Debug.Print("Mean HFR: " + m);
                     iarr.Statistics.HFR = m;
                     iarr.Statistics.DetectedStars = starlist.Count;
-                    Debug.Print("Mean HFR: " + m);
-                    var threshhold = 200;
-                    if (starlist.Count > threshhold) {
-                        starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
-                        starlist = starlist.GetRange(0, threshhold);
-                    }
-
-                    foreach (Star star in starlist) {
-                        canceltoken?.Token.ThrowIfCancellationRequested();
-                        r = (int)Math.Ceiling(star.radius);
-                        textposx = star.Position.X - offset;
-                        textposy = star.Position.Y - offset;
-                        graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width , star.Rectangle.Height ));
-                        graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
-                    }
                 }
 
+                var newBitmap = AnnotateImage(orig, starlist, canceltoken?.Token);
+                
                 result = ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
 
                 Debug.Print("Time to annotate image: " + sw.Elapsed);
@@ -292,6 +205,123 @@ namespace NINA.Utility {
             }
             result.Freeze();
             return result;
+        }
+
+        private static List<Star> IdentifyStars(
+                BlobCounter blobCounter, 
+                ImageArray iarr,
+                double minStarSize, 
+                double maxStarSize, 
+                double inverseresizefactor, 
+                CancellationToken? token) {
+            Blob[] blobs = blobCounter.GetObjectsInformation();
+            SimpleShapeChecker checker = new SimpleShapeChecker();
+            List<Star> starlist = new List<Star>();
+
+            foreach (Blob blob in blobs) {
+                token?.ThrowIfCancellationRequested();
+
+                if (blob.Rectangle.Width > maxStarSize || blob.Rectangle.Height > maxStarSize || blob.Rectangle.Width < minStarSize || blob.Rectangle.Height < minStarSize) {
+                    continue;
+                }
+                var points = blobCounter.GetBlobsEdgePoints(blob);
+                AForge.Point centerpoint; float radius;
+                var rect = new Rectangle((int)Math.Floor(blob.Rectangle.X * inverseresizefactor),(int)Math.Floor(blob.Rectangle.Y * inverseresizefactor),(int)Math.Ceiling(blob.Rectangle.Width * inverseresizefactor),(int)Math.Ceiling(blob.Rectangle.Height * inverseresizefactor));
+                //Star is circle
+                Star s;
+                if (checker.IsCircle(points,out centerpoint,out radius)) {
+                    s = new Star { Position = new AForge.Point(centerpoint.X * (float)inverseresizefactor,centerpoint.Y * (float)inverseresizefactor),radius = radius * inverseresizefactor,Rectangle = rect };
+                }
+                else { //Star is elongated
+                    s = new Star { Position = new AForge.Point(centerpoint.X * (float)inverseresizefactor,centerpoint.Y * (float)inverseresizefactor),radius = Math.Max(rect.Width,rect.Height) / 2,Rectangle = rect };
+                }
+                /* get pixeldata */                
+                for (int x = s.Rectangle.X;x < s.Rectangle.X + s.Rectangle.Width;x++) {
+                    for (int y = s.Rectangle.Y;y < s.Rectangle.Y + s.Rectangle.Height;y++) {
+                        var value = iarr.FlatArray[x + (iarr.Statistics.Width * y)] - iarr.Statistics.Mean;
+                        if (value < 0) { value = 0; }
+                        PixelData pd = new PixelData { PosX = x,PosY = y,value = (ushort)value };
+                        s.Pixeldata.Add(pd);
+                    }
+                }
+                s.HFR = CalculateHfr(s);
+                starlist.Add(s);
+
+            }
+
+            return starlist;
+        }
+
+        private static Bitmap AnnotateImage(Bitmap bmp, List<Star> starlist, CancellationToken? token) {
+            Bitmap newBitmap = new Bitmap(bmp.Width,bmp.Height,System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+            Graphics graphics = Graphics.FromImage(newBitmap);
+            graphics.DrawImage(bmp,0,0);
+
+            if (starlist.Count > 0) {
+                int r, offset = 10;
+                float textposx, textposy;                
+                
+                var threshhold = 200;
+                if (starlist.Count > threshhold) {
+                    starlist.Sort((item1,item2) => item2.Average.CompareTo(item1.Average));
+                    starlist = starlist.GetRange(0,threshhold);
+                }
+
+                foreach (Star star in starlist) {
+                    token?.ThrowIfCancellationRequested();
+                    r = (int)Math.Ceiling(star.radius);
+                    textposx = star.Position.X - offset;
+                    textposy = star.Position.Y - offset;
+                    graphics.DrawEllipse(ELLIPSEPEN,new RectangleF(star.Rectangle.X,star.Rectangle.Y,star.Rectangle.Width,star.Rectangle.Height));
+                    graphics.DrawString(star.HFR.ToString("##.##"),FONT,TEXTBRUSH,new PointF(Convert.ToSingle(textposx - 1.5 * offset),Convert.ToSingle(textposy + 2.5 * offset)));
+                }
+            }
+
+            return newBitmap;
+        }
+
+        private static BlobCounter DetectStructures(Bitmap bmp, double resizefactor, CancellationToken? token) {
+            var sw = Stopwatch.StartNew();
+
+            /* detect structures */            
+            BlobCounter blobCounter = new BlobCounter();
+            blobCounter.ProcessImage(bmp);
+
+            token?.ThrowIfCancellationRequested();
+            
+            sw.Stop();
+            Debug.Print("Time for structure detection: " + sw.Elapsed);
+            sw = null;
+            
+            return blobCounter;
+        }
+
+        private static void PrepareForStructureDetection(Bitmap bmp, CancellationToken? token) {
+            var sw = Stopwatch.StartNew();
+
+            new CannyEdgeDetector().ApplyInPlace(bmp);
+            token?.ThrowIfCancellationRequested();
+            new SISThreshold().ApplyInPlace(bmp);
+            token?.ThrowIfCancellationRequested();
+            new BinaryDilatation3x3().ApplyInPlace(bmp);
+            token?.ThrowIfCancellationRequested();
+
+            sw.Stop();
+            Debug.Print("Time for image preparation: " + sw.Elapsed);
+            sw = null;
+        }
+
+        public static double Resize(ref Bitmap bmp) {
+            int targetWidth = 1552;
+            double resizefactor = 1.0;
+            if (bmp.Width > targetWidth) {
+                resizefactor = (double)targetWidth / bmp.Width;
+
+                bmp = new ResizeBicubic(targetWidth,(int)Math.Floor(bmp.Height * resizefactor)).Apply(bmp);
+            }            
+
+            return resizefactor;
         }
 
 
