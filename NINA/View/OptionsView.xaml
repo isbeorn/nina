@@ -297,6 +297,18 @@
                     </Grid>
                 </GroupBox>
                 <StackPanel Orientation="Vertical">
+                    <GroupBox Header="{ns:Loc LblFocuser}">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblFocuserUseFilterWheelOffsets}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblFocuserUseFilterWheelOffsetsTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding FocuserUseFilterWheelOffsets}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
                     <GroupBox Header="{ns:Loc LblAutoMeridianFlip}">
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">

@@ -753,6 +753,16 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Save();
             }
         }
+
+        public static bool FocuserUseFilterWheelOffsets {
+            get {
+                return Properties.Settings.Default.FocuserUseFilterWheelOffsets;
+            }
+            set {
+                Properties.Settings.Default.FocuserUseFilterWheelOffsets = value;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 
 }

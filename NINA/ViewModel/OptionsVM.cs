@@ -834,5 +834,16 @@ namespace NINA.ViewModel {
 
         }
 
+        public bool FocuserUseFilterWheelOffsets {
+            get {
+                return Settings.FocuserUseFilterWheelOffsets;
+            }
+            set {
+                Settings.FocuserUseFilterWheelOffsets = value;
+                RaisePropertyChanged();
+            }
+
+        }
+
     }
 }

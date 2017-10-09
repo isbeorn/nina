@@ -308,4 +308,7 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblAnnotateImageTooltip">If checked and a star detection for an image is applied, the image will be annotated with the found stars and their respective HFR value</s:String>
     <s:String x:Key="LblAutoStretchFactor">Autostretch factor</s:String>
     <s:String x:Key="LblAutoStretchFactorTooltip">The factor for the autostretch algorithm that is used to display an image and detect stars. Must be a value between 0 and 1. A value of 0.2 should work most of the time.</s:String>
+
+    <s:String x:Key="LblFocuserUseFilterWheelOffsets">Use FilterWheel Offsets</s:String>
+    <s:String x:Key="LblFocuserUseFilterWheelOffsetsTooltip">When switching from one filter to another the focuser will change it's position relative to the given offset specified for that filter</s:String>
 </ResourceDictionary>

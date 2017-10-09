@@ -32,6 +32,7 @@ namespace NINA.ViewModel {
                     if (args.Length > 1) { token = (CancellationTokenSource)args[1]; }
                     FilterInfo filter = (FilterInfo)args[0];
                     if (SelectedFilter != filter) { _selectedFilter = filter; RaisePropertyChanged(nameof(SelectedFilter)); }
+
                     await ChangeFilter(filter, token);                    
                 }                              
             }, AsyncMediatorMessages.ChangeFilterWheelPosition);
@@ -42,7 +43,9 @@ namespace NINA.ViewModel {
         private bool ChangeFilterHelper() {
             _changeFilterCancellationSource?.Cancel();
             try {
-                _changeFilterTask?.Wait(_changeFilterCancellationSource.Token);
+                if(_changeFilterCancellationSource != null) {
+                    _changeFilterTask?.Wait(_changeFilterCancellationSource.Token);
+                }                
             } catch (OperationCanceledException) {
 
             }
@@ -54,13 +57,26 @@ namespace NINA.ViewModel {
 
         private async Task<bool> ChangeFilter(FilterInfo filter, CancellationTokenSource token = null) {
             if (FW?.Connected == true && FW?.Position != filter.Position) {
+                Task changeFocus = null;
+                if (Settings.FocuserUseFilterWheelOffsets) {
+                    if (this._prevFilter != null) {
+                        int offset = this.SelectedFilter.FocusOffset - this._prevFilter.FocusOffset;
+                        changeFocus =  Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative,offset);
+                    }
+                }
+
                 FW.Position = filter.Position;
-                await Task.Run(async () => {
+                var changeFilter = Task.Run(async () => {
                     while (FW.Position == -1) {
                         await Task.Delay(1000);
                         token?.Token.ThrowIfCancellationRequested();
                     }
                 });
+
+                if(changeFocus != null) {
+                    await changeFocus;
+                }                
+                await changeFilter;
             }
             return true;
         }

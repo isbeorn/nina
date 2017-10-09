@@ -26,6 +26,11 @@ namespace NINA.ViewModel {
             _updateFocuser = new DispatcherTimer();
             _updateFocuser.Interval = TimeSpan.FromMilliseconds(300);
             _updateFocuser.Tick += UpdateFocuser_Tick;
+
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                int offset = (int)o;
+                await MoveFocuserRelative(offset);                
+            },AsyncMediatorMessages.MoveFocuserRelative);
         }
 
         private void HaltFocuser(object obj) {
@@ -34,6 +39,15 @@ namespace NINA.ViewModel {
 
         private void MoveFocuser(object obj) {
             Focuser.Move(TargetPosition);
+        }
+
+        private async Task MoveFocuserRelative(int offset) {
+            if(Focuser?.Connected == true) { 
+                await Task.Run(() => {
+                    var pos = Focuser.Position + offset;
+                    Focuser.Move(pos);
+                });
+            }
         }
 
         private void UpdateFocuser_Tick(object sender, EventArgs e) {

@@ -91,7 +91,8 @@ namespace NINA.Utility {
         PauseGuider = 11,
         ResumeGuider = 12,
         AutoSelectGuideStar = 13,
-        SetSequenceCoordinates = 14
+        SetSequenceCoordinates = 14,
+        MoveFocuserRelative = 15
     }
 
 }

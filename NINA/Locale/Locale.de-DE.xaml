@@ -313,4 +313,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblAnnotateImageTooltip">Wenn aktiviert und eine Sternenerkennung initiiert wird, wird das Bild mit den gefundenen Sternen und deren HFR Werten beschriftet</s:String>
     <s:String x:Key="LblAutoStretchFactor">Autostretch Faktor</s:String>
     <s:String x:Key="LblAutoStretchFactorTooltip">Faktor für den Autostretch Algorithmus. Wird zum anzeigen der Bilder, sowie zur Sternenerkennung genutzt. Muss ein Wert zwischen 0 und 1 sein. Ein Wert von 0,2 sollte für die meisten Fälle ausreichen.</s:String>
+
+    <s:String x:Key="LblFocuserUseFilterWheelOffsets">Filterrad Offsets nutzen</s:String>
+    <s:String x:Key="LblFocuserUseFilterWheelOffsetsTooltip">Wenn von einem Filter zum Anderen gewechselt wird, wird der Fokussierer relativ zum Offset zwischen den beiden Filtern bewegt.</s:String>
 </ResourceDictionary>

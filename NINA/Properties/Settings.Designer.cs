@@ -779,5 +779,17 @@ namespace NINA.Properties {
                 this["AnnotateImage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FocuserUseFilterWheelOffsets {
+            get {
+                return ((bool)(this["FocuserUseFilterWheelOffsets"]));
+            }
+            set {
+                this["FocuserUseFilterWheelOffsets"] = value;
+            }
+        }
     }
 }
