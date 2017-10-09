@@ -31,6 +31,7 @@ namespace NINA.ViewModel {
                     CancellationTokenSource token = null;
                     if (args.Length > 1) { token = (CancellationTokenSource)args[1]; }
                     FilterInfo filter = (FilterInfo)args[0];
+                    if (SelectedFilter != filter) { _selectedFilter = filter; RaisePropertyChanged(nameof(SelectedFilter)); }
                     await ChangeFilter(filter, token);                    
                 }                              
             }, AsyncMediatorMessages.ChangeFilterWheelPosition);
@@ -80,12 +81,14 @@ namespace NINA.ViewModel {
             }
         }
 
+        private FilterInfo _prevFilter;
         private FilterInfo _selectedFilter;
         public FilterInfo SelectedFilter {
             get {
                 return _selectedFilter;
             }
             set {
+                _prevFilter = _selectedFilter;
                 _selectedFilter = value;
                 ChangeFilterHelper();
                 RaisePropertyChanged();
