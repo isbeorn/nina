@@ -311,4 +311,6 @@ When duration is set, the application will slowly decrease the temperature durin
 
     <s:String x:Key="LblFocuserUseFilterWheelOffsets">Use FilterWheel Offsets</s:String>
     <s:String x:Key="LblFocuserUseFilterWheelOffsetsTooltip">When switching from one filter to another the focuser will change it's position relative to the given offset specified for that filter</s:String>
+    <s:String x:Key="LblAutoFocus">Auto Focus</s:String>
+    <s:String x:Key="LblStartAutoFocus">Start Auto Focus</s:String>
 </ResourceDictionary>

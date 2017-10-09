@@ -310,6 +310,7 @@
     <Compile Include="Utility\ValidationRules\ShortRangeRule.cs" />
     <Compile Include="Utility\WindowService.cs" />
     <Compile Include="Utility\XISF.cs" />
+    <Compile Include="ViewModel\AutoFocusVM.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
@@ -359,6 +360,9 @@
     <Compile Include="ViewModel\WeatherDataVM.cs" />
     <Compile Include="View\AltitudeChart.xaml.cs">
       <DependentUpon>AltitudeChart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AnchorableAutoFocusView.xaml.cs">
+      <DependentUpon>AnchorableAutoFocusView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AnchorableCameraControlView.xaml.cs">
       <DependentUpon>AnchorableCameraControlView.xaml</DependentUpon>
@@ -628,6 +632,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AltitudeChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AnchorableAutoFocusView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

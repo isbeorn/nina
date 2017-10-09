@@ -184,6 +184,12 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.FocuserTemplate>
 
+                    <util:PaneTemplateSelector.AutoFocusTemplate>
+                        <DataTemplate>
+                            <view:AnchorableAutoFocusView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.AutoFocusTemplate>
+
                 </util:PaneTemplateSelector>
             </dock:DockingManager.LayoutItemTemplateSelector>
 

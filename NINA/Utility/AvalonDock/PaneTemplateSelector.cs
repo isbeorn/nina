@@ -41,6 +41,8 @@ namespace NINA.Utility.AvalonDock {
 
         public DataTemplate FocuserTemplate { get; set; }
 
+        public DataTemplate AutoFocusTemplate { get; set; }
+
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
 
@@ -82,6 +84,9 @@ namespace NINA.Utility.AvalonDock {
 
             if (item is FocuserVM)
                 return FocuserTemplate;
+
+            if (item is AutoFocusVM)
+                return AutoFocusTemplate;
 
             return base.SelectTemplate(item, container);
         }

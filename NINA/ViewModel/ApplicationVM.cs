@@ -39,7 +39,8 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(FocuserVM);
             DockManagerVM.Anchorables.Add(ImagingVM);
             DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
-            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);            
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
+            DockManagerVM.Anchorables.Add(AutoFocusVM);
         }
 
         
@@ -296,6 +297,20 @@ namespace NINA.ViewModel {
             }
             set {
                 _frameFocusVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private AutoFocusVM _autoFocusVM;
+        public AutoFocusVM AutoFocusVM {
+            get {
+                if (_autoFocusVM == null) {
+                    _autoFocusVM = new AutoFocusVM();
+                }
+                return _autoFocusVM;
+            }
+            set {
+                _autoFocusVM = value;
                 RaisePropertyChanged();
             }
         }
