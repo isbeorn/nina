@@ -22,7 +22,7 @@ namespace NINA.ViewModel {
             RefreshFWListCommand = new RelayCommand(RefreshFWList);
 
             RegisterMediatorMessages();
-        }
+        }        
 
         private void RegisterMediatorMessages() {
             Mediator.Instance.RegisterAsync(async (object o) => {
@@ -30,15 +30,30 @@ namespace NINA.ViewModel {
                 if(args[0] != null) {
                     CancellationTokenSource token = null;
                     if (args.Length > 1) { token = (CancellationTokenSource)args[1]; }
-                    short filter = (short)args[0];
+                    FilterInfo filter = (FilterInfo)args[0];
                     await ChangeFilter(filter, token);                    
                 }                              
             }, AsyncMediatorMessages.ChangeFilterWheelPosition);
         }
 
-        private async Task ChangeFilter(short position, CancellationTokenSource token = null) {
-            if (FW?.Connected == true && FW?.Position != position) {
-                FW.Position = position;
+        private CancellationTokenSource _changeFilterCancellationSource;
+        private Task _changeFilterTask;
+        private bool ChangeFilterHelper() {
+            _changeFilterCancellationSource?.Cancel();
+            try {
+                _changeFilterTask?.Wait(_changeFilterCancellationSource.Token);
+            } catch (OperationCanceledException) {
+
+            }
+            _changeFilterCancellationSource = new CancellationTokenSource();
+            _changeFilterTask = ChangeFilter(SelectedFilter, _changeFilterCancellationSource);
+            
+            return true;
+        }
+
+        private async Task<bool> ChangeFilter(FilterInfo filter, CancellationTokenSource token = null) {
+            if (FW?.Connected == true && FW?.Position != filter.Position) {
+                FW.Position = filter.Position;
                 await Task.Run(async () => {
                     while (FW.Position == -1) {
                         await Task.Delay(1000);
@@ -46,6 +61,7 @@ namespace NINA.ViewModel {
                     }
                 });
             }
+            return true;
         }
 
         private void RefreshFWList(object obj) {
@@ -64,11 +80,26 @@ namespace NINA.ViewModel {
             }
         }
 
+        private FilterInfo _selectedFilter;
+        public FilterInfo SelectedFilter {
+            get {
+                return _selectedFilter;
+            }
+            set {
+                _selectedFilter = value;
+                ChangeFilterHelper();
+                RaisePropertyChanged();
+            }
+        }
+
         private void ChooseFW(object obj) {
             FW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
             if (FW?.Connect() == true) {
             
-                Settings.FilterWheelId = FW.Id;                
+                Settings.FilterWheelId = FW.Id;
+                if(FW.Position > -1) {
+                    SelectedFilter = FW.Filters[FW.Position];
+                }                
             } else {
                 FW = null;
             }

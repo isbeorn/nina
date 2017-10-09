@@ -175,7 +175,9 @@ namespace NINA.ViewModel {
         private async Task ChangeFilter(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
 
             progress.Report(ExposureStatus.FILTERCHANGE);
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ChangeFilterWheelPosition, new object[] { seq.FilterType?.Position, tokenSource });            
+            if(seq.FilterType != null) {
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ChangeFilterWheelPosition, new object[] { seq.FilterType, tokenSource });
+            }            
         }
 
         private void SetBinning(CaptureSequence seq) {

@@ -152,7 +152,6 @@ namespace NINA.Model.MyFilterWheel {
                 if(Connected) {
                     try {                        
                         _filterwheel.Position = value;
-                        WaitForFilterChangeAndNotify();
                     } catch(ASCOM.DriverAccessCOMException ex) {
                         Notification.ShowWarning(ex.Message);
                     }
@@ -160,27 +159,7 @@ namespace NINA.Model.MyFilterWheel {
                 
                 RaisePropertyChanged();
             }
-        }
-
-        private Task _waitForFilterChangeAndNotifyTask;
-        private CancellationTokenSource _waitForFilterChangeAndNotifyToken;
-
-        private void WaitForFilterChangeAndNotify() {
-            _waitForFilterChangeAndNotifyToken?.Cancel();
-            try {
-                _waitForFilterChangeAndNotifyTask?.Wait(_waitForFilterChangeAndNotifyToken.Token);
-            } catch (OperationCanceledException) {
-
-            }
-            _waitForFilterChangeAndNotifyToken = new CancellationTokenSource();
-            _waitForFilterChangeAndNotifyTask = Task.Run(async () => {
-                await Task.Delay(1000, _waitForFilterChangeAndNotifyToken.Token);
-                while (Connected && _filterwheel?.Position == -1) {
-                    await Task.Delay(1000, _waitForFilterChangeAndNotifyToken.Token);
-                }
-                RaisePropertyChanged(nameof(Position));
-            });
-        }
+        }       
 
         public ArrayList SupportedActions {
             get {

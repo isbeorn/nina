@@ -15,7 +15,7 @@
             </UniformGrid>
         </Border>
 
-        <ComboBox ItemsSource="{Binding FW.Filters}" SelectedIndex="{Binding FW.Position}">
+        <ComboBox ItemsSource="{Binding FW.Filters}" SelectedItem="{Binding SelectedFilter}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}" />                        
