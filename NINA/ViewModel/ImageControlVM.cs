@@ -97,6 +97,7 @@ namespace NINA.ViewModel {
                 _imgArr = value;
                 RaisePropertyChanged();
                 ImgStatisticsVM.Add(ImgArr.Statistics);
+                Mediator.Instance.Notify(MediatorMessages.ImageStatisticsChanged, ImgArr.Statistics);
             }
         }
 

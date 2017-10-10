@@ -763,6 +763,38 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Save();
             }
         }
+
+        public static int FocuserAutoFocusInitialOffsetSteps {
+            get {
+                return Properties.Settings.Default.FocuserAutoFocusInitialOffsetSteps;
+            }
+            set {
+                Properties.Settings.Default.FocuserAutoFocusInitialOffsetSteps = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static int FocuserAutoFocusStepSize {
+            get {
+                return Properties.Settings.Default.FocuserAutoFocusStepSize;
+            }
+            set {
+                Properties.Settings.Default.FocuserAutoFocusStepSize = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static int FocuserAutoFocusExposureTime {
+            get {
+                return Properties.Settings.Default.FocuserAutoFocusExposureTime;
+            }
+            set {
+                Properties.Settings.Default.FocuserAutoFocusExposureTime = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        
     }
 
 }

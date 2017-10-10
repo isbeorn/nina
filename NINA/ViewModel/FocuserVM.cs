@@ -63,8 +63,27 @@ namespace NINA.ViewModel {
                 _updateFocuser.Start();
                 TargetPosition = Focuser.Position;
                 Settings.FocuserId = Focuser.Id;
+                Focuser.PropertyChanged += Focuser_PropertyChanged;
             } else {
                 Focuser = null;
+            }
+        }
+
+        private void Focuser_PropertyChanged(object sender,System.ComponentModel.PropertyChangedEventArgs e) {
+            if(e.PropertyName == nameof(Focuser.Position)) {
+                this.Position = Focuser.Position;
+            }
+        }
+
+        private int _position;
+        public int Position {
+            get {
+                return _position;
+            }
+            private set {
+                _position = value;
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.FocuserPositionChanged,_position);
             }
         }
 
@@ -128,7 +147,7 @@ namespace NINA.ViewModel {
                 
         public ICommand MoveFocuserCommand { get; private set; }
         
-        public ICommand HaltFocuserCommand { get; private set; }
+        public ICommand HaltFocuserCommand { get; private set; }        
     }
 
     class FocuserChooserVM : EquipmentChooserVM {

@@ -307,6 +307,40 @@
                                 </TextBlock>
                                 <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding FocuserUseFilterWheelOffsets}" />
                             </StackPanel>
+                            
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblFocuserAutoFocusStepSize}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblFocuserAutoFocusStepSizeTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox  Width="75" Height="25" HorizontalAlignment="Left"  Text="{Binding FocuserAutoFocusStepSize}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblFocuserAutoFocusInitialOffsetSteps}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblFocuserAutoFocusInitialOffsetStepsTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox  Width="75" Height="25" HorizontalAlignment="Left"  Text="{Binding FocuserAutoFocusInitialOffsetSteps}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusExposureTime}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblAutoFocusExposureTimeTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox  Width="75" Height="25" HorizontalAlignment="Left">
+                                    <TextBox.Text>
+                                        <Binding Path="FocuserAutoFocusExposureTime" UpdateSourceTrigger="LostFocus" >
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </StackPanel>                            
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Header="{ns:Loc LblAutoMeridianFlip}">

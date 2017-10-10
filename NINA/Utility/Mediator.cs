@@ -74,7 +74,9 @@ namespace NINA.Utility {
         LocaleChanged = 18,
         LocationChanged = 19,
         SlewToCoordinates = 21,
-        AutoSelectGuideStar = 22
+        AutoSelectGuideStar = 22,
+        ImageStatisticsChanged = 23,
+        FocuserPositionChanged = 24
     };
 
     public enum AsyncMediatorMessages {

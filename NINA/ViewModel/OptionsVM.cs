@@ -845,5 +845,36 @@ namespace NINA.ViewModel {
 
         }
 
+        public int FocuserAutoFocusInitialOffsetSteps {
+            get {
+                return Settings.FocuserAutoFocusInitialOffsetSteps;
+            }
+            set {
+                Settings.FocuserAutoFocusInitialOffsetSteps = value;
+                RaisePropertyChanged();
+            }
+
+        }
+
+        public int FocuserAutoFocusStepSize {
+            get {
+                return Settings.FocuserAutoFocusStepSize;
+            }
+            set {
+                Settings.FocuserAutoFocusStepSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int FocuserAutoFocusExposureTime {
+            get {
+                return Settings.FocuserAutoFocusExposureTime;
+            }
+            set {
+                Settings.FocuserAutoFocusExposureTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
     }
 }

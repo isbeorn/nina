@@ -318,4 +318,10 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblFocuserUseFilterWheelOffsetsTooltip">Wenn von einem Filter zum Anderen gewechselt wird, wird der Fokussierer relativ zum Offset zwischen den beiden Filtern bewegt.</s:String>
     <s:String x:Key="LblAutoFocus">Autofokus</s:String>
     <s:String x:Key="LblStartAutoFocus">Starte Autofokus</s:String>
+    <s:String x:Key="LblFocuserAutoFocusStepSize">Autofokus Schrittgröße</s:String>
+    <s:String x:Key="LblFocuserAutoFocusStepSizeTooltip">Die größe eines Schrittes der für Autofokus genutzt werden soll. Ein Schritt sollte kleiner sein, als die Toleranz des kritischen Fokuspunktes.</s:String>
+    <s:String x:Key="LblFocuserAutoFocusInitialOffsetSteps">Initialer Autofokus Schrittoffset</s:String>
+    <s:String x:Key="LblFocuserAutoFocusInitialOffsetStepsTooltip">Initiale Anzahl von Schritten, die der Fokussierer herausfährt, um die Autofokus Prozedur zu starten.</s:String>
+    <s:String x:Key="LblAutoFocusExposureTime">Autofokus Belichtungszeit</s:String>
+    <s:String x:Key="LblAutoFocusExposureTimeTooltip">Belichtungszeit, die für Autofokus genutzt werden soll.</s:String>
 </ResourceDictionary>
