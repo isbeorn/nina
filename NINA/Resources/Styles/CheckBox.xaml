@@ -91,7 +91,7 @@
                     <Border x:Name="PART_Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{StaticResource BackgroundBrush}">
                         <Grid>
                             <Path x:Name="PART_CheckedSymbol" 
-                                    Fill="{StaticResource ButtonForegroundBrush}" 
+                                    Fill="{StaticResource PrimaryBrush}" 
                                     Data="{StaticResource CheckedCircledSVG}" 
                                     Stretch="Uniform" Margin="2" Visibility="Visible">
                             </Path>
