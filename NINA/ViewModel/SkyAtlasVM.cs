@@ -236,7 +236,7 @@ namespace NINA.ViewModel {
 
                     Parallel.ForEach(result,(obj) => {
                         var cloneDate = d;
-                        obj.CalculateAltitude(cloneDate, latitude,longitude);
+                        obj.SetDateAndPosition(cloneDate,latitude,longitude);  
                         _searchTokenSource.Token.ThrowIfCancellationRequested();
                     });
 

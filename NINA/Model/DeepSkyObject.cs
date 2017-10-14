@@ -116,6 +116,7 @@ namespace NINA.Model {
             get {
                 if (_altitudes == null) {
                     _altitudes = new AsyncObservableCollection<DataPoint>();
+                    CalculateAltitude(_referenceDate,_latitude,_longitude);
                 }
                 return _altitudes;
             }
@@ -139,6 +140,16 @@ namespace NINA.Model {
             }
         }
 
+        DateTime _referenceDate;
+        double _latitude;
+        double _longitude;
+
+        public void SetDateAndPosition(DateTime start,double latitude,double longitude) {
+            this._referenceDate = start;
+            this._latitude = latitude;
+            this._longitude = longitude;
+        }
+
         private async Task<bool> SetSequenceCoordinates() {
             await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SetSequenceCoordinates,new object[] { this });
             return true;
@@ -148,7 +159,7 @@ namespace NINA.Model {
             Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates,Coordinates);
         }
 
-        public void CalculateAltitude(DateTime start, double latitude,double longitude) {            
+        private void CalculateAltitude(DateTime start, double latitude,double longitude) {            
             var siderealTime = Astrometry.GetLocalSiderealTime(start,longitude);
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
             
