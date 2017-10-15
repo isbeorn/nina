@@ -244,8 +244,8 @@ namespace NINA.ViewModel {
         private void Disconnect() {
             _updateCamera.Stop();
             _cancelCoolCameraSource?.Cancel();
-            CoolingRunning = false;
-            Cam.Disconnect();
+            CoolingRunning = false;            
+            Cam?.Disconnect();
             Cam = null;
         }
 
