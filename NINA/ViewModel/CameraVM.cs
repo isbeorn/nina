@@ -29,7 +29,7 @@ namespace NINA.ViewModel {
 
             //ConnectCameraCommand = new RelayCommand(connectCamera);
             ChooseCameraCommand = new RelayCommand(ChooseCamera);
-            DisconnectCommand = new RelayCommand(DisconnectCamera);
+            DisconnectCommand = new RelayCommand(DisconnectDiag);
             CoolCamCommand = new AsyncCommand<bool>(() => CoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
             RefreshCameraListCommand = new RelayCommand(RefreshCameraList);
@@ -234,15 +234,24 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void DisconnectCamera(object obj) {
+        private void DisconnectDiag(object obj) {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                _updateCamera.Stop();
-                _cancelCoolCameraSource?.Cancel();
-                CoolingRunning = false;
-                Cam.Disconnect();
-                Cam = null;
+                Disconnect();
             }
+        }
+
+        private void Disconnect() {
+            _updateCamera.Stop();
+            _cancelCoolCameraSource?.Cancel();
+            CoolingRunning = false;
+            Cam.Disconnect();
+            Cam = null;
+        }
+
+        public void Shutdown() {
+            Disconnect();
+            CameraChooserVM?.Shutdown();
         }
 
         void UpdateCamera_Tick(object sender, EventArgs e) {
@@ -347,6 +356,10 @@ namespace NINA.ViewModel {
                 c.Disconnect();
                 Devices.Remove(c);
             }            
+        }
+
+        public void Shutdown() {
+            _nikonManager.Shutdown();
         }
     }
 }
