@@ -3,6 +3,7 @@ using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,26 @@ namespace NINA.ViewModel {
                 }
                 
             },MediatorMessages.SlewToCoordinates);
+
+            Mediator.Instance.Register((object o) => {
+                bool start = (bool)o;
+                SendToSnapPort(start);
+            },MediatorMessages.TelescopeSnapPort);
+        }
+
+        private void SendToSnapPort(bool start) {
+            if(Telescope?.Connected == true) {
+                string command = string.Empty;
+                if (start) {
+                    command = Settings.TelescopeSnapPortStart;
+                }
+                else {
+                    command = Settings.TelescopeSnapPortStop;
+                }
+                _telescope?.SendCommandString(command);
+            } else {
+                Notification.ShowError("Telescope not connected to send command string");
+            }
         }
 
         private void RefreshTelescopeList(object obj) {

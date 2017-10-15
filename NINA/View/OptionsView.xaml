@@ -419,6 +419,38 @@
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
+
+                    <GroupBox Header="{ns:Loc LblCameraOptions}">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblUseSnapPort}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding UseTelescopeSnapPort}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblSnapPortStart}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding TelescopeSnapPortStart}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblSnapPortStop}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding TelescopeSnapPortStop}" />
+                            </StackPanel>
+                            
+                        </StackPanel>
+                    </GroupBox>
+
+
                 </StackPanel>
             </UniformGrid>
         </TabItem>

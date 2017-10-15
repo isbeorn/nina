@@ -76,7 +76,8 @@ namespace NINA.Utility {
         SlewToCoordinates = 21,
         AutoSelectGuideStar = 22,
         ImageStatisticsChanged = 23,
-        FocuserPositionChanged = 24
+        FocuserPositionChanged = 24,
+        TelescopeSnapPort = 25
     };
 
     public enum AsyncMediatorMessages {

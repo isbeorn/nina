@@ -9,6 +9,9 @@ namespace NINA.Model {
     interface IDevice : INotifyPropertyChanged {
         bool HasSetupDialog { get; }
         string Id { get; }
+        string Name { get; }
+        bool Connect();
+        void Disconnect();
         void SetupDialog();             
     }
 }

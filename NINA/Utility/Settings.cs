@@ -794,7 +794,39 @@ namespace NINA.Utility {
             }
         }
 
+        public static bool UseTelescopeSnapPort {
+            get {
+                return Properties.Settings.Default.UseTelescopeSnapPort;
+            }
+            set {
+                Properties.Settings.Default.UseTelescopeSnapPort = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static string TelescopeSnapPortStart {
+            get {
+                return Properties.Settings.Default.TelescopeSnapPortStart;
+            }
+            set {
+                Properties.Settings.Default.TelescopeSnapPortStart = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static string TelescopeSnapPortStop {
+            get {
+                return Properties.Settings.Default.TelescopeSnapPortStop;
+            }
+            set {
+                Properties.Settings.Default.TelescopeSnapPortStop = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         
+
+
     }
 
 }

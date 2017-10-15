@@ -8,10 +8,15 @@ NINACustomControlLibrary/bin/
 NINACustomControlLibrary/obj/
 NINATest/bin/
 NINATest/obj/
+nikoncswrapper/bin/
+nikoncswrapper/obj/
 StarDataImport/bin/
 StarDataImport/obj/
 SetupCygwinInstallAction/obj/
 SetupCygwinInstallAction/bin/
 packages/
 NINA/Utility/EDSDK/EDSDK.dll
+NINA/External/NkdPTP.dll
+NINA/External/Type0004.md3
+NINA/External/Type0005.md3
 /.vs/NINA/v15/sqlite3/storage.ide

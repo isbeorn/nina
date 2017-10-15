@@ -827,5 +827,41 @@ namespace NINA.Properties {
                 this["FocuserAutoFocusExposureTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseTelescopeSnapPort {
+            get {
+                return ((bool)(this["UseTelescopeSnapPort"]));
+            }
+            set {
+                this["UseTelescopeSnapPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(":SNAP1,1#")]
+        public string TelescopeSnapPortStart {
+            get {
+                return ((string)(this["TelescopeSnapPortStart"]));
+            }
+            set {
+                this["TelescopeSnapPortStart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(":SNAP1,0#")]
+        public string TelescopeSnapPortStop {
+            get {
+                return ((string)(this["TelescopeSnapPortStop"]));
+            }
+            set {
+                this["TelescopeSnapPortStop"] = value;
+            }
+        }
     }
 }

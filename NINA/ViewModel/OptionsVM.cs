@@ -876,5 +876,35 @@ namespace NINA.ViewModel {
             }
         }
 
+        public bool UseTelescopeSnapPort {
+            get {
+                return Settings.UseTelescopeSnapPort;
+            } 
+            set {
+                Settings.UseTelescopeSnapPort = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TelescopeSnapPortStart {
+            get {
+                return Settings.TelescopeSnapPortStart;
+            }
+            set {
+                Settings.TelescopeSnapPortStart = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TelescopeSnapPortStop {
+            get {
+                return Settings.TelescopeSnapPortStop;
+            }
+            set {
+                Settings.TelescopeSnapPortStop = value;
+                RaisePropertyChanged();
+            }
+        }
+
     }
 }

@@ -203,5 +203,14 @@
     <Setting Name="FocuserAutoFocusExposureTime" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">6</Value>
     </Setting>
+    <Setting Name="UseTelescopeSnapPort" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="TelescopeSnapPortStart" Type="System.String" Scope="User">
+      <Value Profile="(Default)">:SNAP1,1#</Value>
+    </Setting>
+    <Setting Name="TelescopeSnapPortStop" Type="System.String" Scope="User">
+      <Value Profile="(Default)">:SNAP1,0#</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

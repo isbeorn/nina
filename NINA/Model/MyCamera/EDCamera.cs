@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Diagnostics;
 using NINA.Utility.Notification;
 using System.Collections;
+using NINA.Utility.DCRaw;
 
 namespace NINA.Model.MyCamera {
     class EDCamera : BaseINPC, ICamera {
@@ -26,7 +27,7 @@ namespace NINA.Model.MyCamera {
             Name = info.szDeviceDescription;
         }
 
-        static string TMPIMGFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA\\dcraw_tmp";
+        
 
         private IntPtr _cam;
 
@@ -300,7 +301,6 @@ namespace NINA.Model.MyCamera {
 
         public void AbortExposure() {
             var err = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
-            _remainingexposuretime = 0;
         }
 
         public bool Connect() {
@@ -473,47 +473,17 @@ namespace NINA.Model.MyCamera {
                 sw.Restart();
 
                 System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
-                System.IO.FileStream test = new System.IO.FileStream(TMPIMGFILEPATH + ".cr2", System.IO.FileMode.Create);
-                memoryStream.WriteTo(test);
+                var fileextension = ".cr2";
+                System.IO.FileStream filestream = new System.IO.FileStream(DCRaw.TMPIMGFILEPATH + fileextension, System.IO.FileMode.Create);
+                memoryStream.WriteTo(filestream);
 
                 memoryStream.Dispose();
-                test.Dispose();
+                filestream.Dispose();
 
                 Debug.Print("Write temp file: " + sw.Elapsed);
                 sw.Restart();
 
-                System.Diagnostics.Process process = new System.Diagnostics.Process();
-                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-                startInfo.FileName = @"Utility\EDSDK\dcraw.exe";
-                startInfo.UseShellExecute = false;
-                startInfo.RedirectStandardOutput = true;
-                startInfo.CreateNoWindow = true;
-                startInfo.Arguments = "-4 -d -T -t 0 " + TMPIMGFILEPATH + ".cr2";
-                process.StartInfo = startInfo;
-                process.Start();
-
-                while (!process.StandardOutput.EndOfStream) {
-                    tokenSource.Token.ThrowIfCancellationRequested();
-                }
-
-                Debug.Print("DCRaw call: " + sw.Elapsed);
-                sw.Restart();
-                tokenSource.Token.ThrowIfCancellationRequested();
-
-                var file = TMPIMGFILEPATH + ".tiff";
-                ImageArray iarr = null;
-                if (File.Exists(file)) {
-                    TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(file), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    BitmapFrame bmp = TifDec.Frames[0];
-                    ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
-                    bmp.CopyPixels(pixels, 2 * bmp.PixelWidth, 0);
-                    iarr = await ImageArray.CreateInstance(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight);
-
-
-                } else {
-                    Notification.ShowError("Error occured during DCRaw conversion");
-                }
+                var iarr = await new DCRaw().ConvertToImageArray(fileextension,tokenSource.Token);
 
                 Debug.Print("Get Pixels from temp tiff: " + sw.Elapsed);
                 sw.Restart();
@@ -549,7 +519,6 @@ namespace NINA.Model.MyCamera {
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
             DownloadReady = false;
-            _remainingexposuretime = exposureTime;
             if (exposureTime < 1) {
                 SetExposureTime(exposureTime);
             } else {
@@ -560,21 +529,22 @@ namespace NINA.Model.MyCamera {
             if(HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF))) {
                 Notification.ShowError("Could not start camera exposure");
             }
-
+            DateTime d = DateTime.Now;
             /*Stop Exposure after exposure time */
             Task.Run(() => {
-                Thread.Sleep((int)(_remainingexposuretime * 1000));
-                if(_remainingexposuretime > 0) {
-                    if(HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF))) {
-                        Notification.ShowError("Could not stop camera exposure");
-                    }
+                exposureTime = exposureTime * 1000;
+                do {
+                    Thread.Sleep(100);
+                } while ((DateTime.Now - d).TotalMilliseconds < exposureTime);
+                                
+                if(HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF))) {
+                    Notification.ShowError("Could not stop camera exposure");
                 }
                 
             });
 
         }
-
-        double _remainingexposuretime;
+        
 
         private void SetExposureTime(double exposureTime) {
             double key;
@@ -611,7 +581,6 @@ namespace NINA.Model.MyCamera {
 
         public void StopExposure() {
             var err = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
-            _remainingexposuretime = 0;
         }
 
         public void UpdateValues() {
