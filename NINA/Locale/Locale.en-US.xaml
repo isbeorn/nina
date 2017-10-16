@@ -173,7 +173,7 @@
     <s:String x:Key="LblWest">West</s:String>
     <s:String x:Key="LblNorthern">Northern</s:String>
     <s:String x:Key="LblSouthern">Southern</s:String>
-    <s:String x:Key="LblJ2000">J200</s:String>
+    <s:String x:Key="LblJ2000">J2000</s:String>
     <s:String x:Key="LblJNOW">JNOW</s:String>
     <s:String x:Key="LblStatistics">Statistics</s:String>
     <s:String x:Key="LblFrameNFocus">Frame &amp; Focus</s:String>
