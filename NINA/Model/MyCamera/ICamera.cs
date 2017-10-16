@@ -61,25 +61,27 @@ namespace NINA.Model.MyCamera {
 
     public class ImageArray {
         public ushort[] FlatArray;
-        public ImageStatistics Statistics { get; set; }        
+        public ImageStatistics Statistics { get; set; } 
+        
+        public bool IsBayered { get; private set; }
 
         private ImageArray() {
             Statistics = new ImageStatistics { };
         }
 
 
-        public static async Task<ImageArray> CreateInstance(Array input) {
+        public static async Task<ImageArray> CreateInstance(Array input, bool isBayered = false) {
             ImageArray imgArray = new ImageArray();
-
+            imgArray.IsBayered = isBayered;
             await Task.Run(() => imgArray.FlipAndConvert(input));
             await Task.Run(() => imgArray.CalculateStatistics());
 
             return imgArray;
         }
 
-        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height) {
+        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, bool isBayered = false) {
             ImageArray imgArray = new ImageArray();
-
+            imgArray.IsBayered = isBayered;
             imgArray.FlatArray = input;
             imgArray.Statistics.Width = width;
             imgArray.Statistics.Height = height;

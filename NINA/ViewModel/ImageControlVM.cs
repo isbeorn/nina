@@ -220,6 +220,7 @@ namespace NINA.ViewModel {
         public async Task PrepareImage(IProgress<string> progress, CancellationTokenSource canceltoken) {
             if (ImgArr != null) {
                 BitmapSource source = ImageAnalysis.CreateSourceFromArray(ImgArr,System.Windows.Media.PixelFormats.Gray16);
+                
 
                 if (AutoStretch) {
                     source = await StretchAsync(source);
@@ -235,7 +236,11 @@ namespace NINA.ViewModel {
 
                     ImgArr.Statistics.HFR = analysis.AverageHFR;
                     ImgArr.Statistics.DetectedStars = analysis.DetectedStars;
-                }                
+                }
+
+                if(ImgArr.IsBayered) {
+                    source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
+                }               
 
                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                     Image = null;

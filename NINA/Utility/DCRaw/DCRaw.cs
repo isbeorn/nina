@@ -43,7 +43,7 @@ namespace NINA.Utility.DCRaw {
                     BitmapFrame bmp = TifDec.Frames[0];
                     ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
                     bmp.CopyPixels(pixels,2 * bmp.PixelWidth,0);
-                    iarr = await ImageArray.CreateInstance(pixels,(int)bmp.PixelWidth,(int)bmp.PixelHeight);
+                    iarr = await ImageArray.CreateInstance(pixels,(int)bmp.PixelWidth,(int)bmp.PixelHeight, true);
 
 
                 }

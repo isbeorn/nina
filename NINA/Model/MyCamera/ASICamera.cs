@@ -328,7 +328,7 @@ namespace NINA.Model.MyCamera {
                     ushort[] arr = new ushort[size / 2];
                     CopyToUShort(pointer, arr, 0, size / 2);
                     Marshal.FreeHGlobal(pointer);
-                    return await ImageArray.CreateInstance(arr, Resolution.Width, Resolution.Height);
+                    return await ImageArray.CreateInstance(arr, Resolution.Width, Resolution.Height, SensorType != SensorType.Monochrome);
 
 
                 } catch (OperationCanceledException) {

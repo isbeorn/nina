@@ -891,11 +891,11 @@ namespace NINA.Model.MyCamera {
                     Array arr;
                     if (ImageArray.GetType() == typeof(Int32[,])) {
                         arr = (Int32[,])ImageArray;
-                        return await MyCamera.ImageArray.CreateInstance(arr);
+                        return await MyCamera.ImageArray.CreateInstance(arr, SensorType != SensorType.Monochrome);
                         
                     } else {
                         arr = (Int32[,,])ImageArray;
-                        return await MyCamera.ImageArray.CreateInstance(arr);
+                        return await MyCamera.ImageArray.CreateInstance(arr, false);
                     }
                 } catch (OperationCanceledException ex) {
                     Logger.Trace(ex.Message);

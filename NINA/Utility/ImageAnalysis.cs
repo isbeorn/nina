@@ -383,6 +383,28 @@ namespace NINA.Utility {
             source.Freeze();
             return source;
         }
+
+        public static BitmapSource Debayer(BitmapSource source, System.Drawing.Imaging.PixelFormat pf) {            
+            if (pf == System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
+                source = Convert16BppTo8BppSource(source);
+            } else if (pf == System.Drawing.Imaging.PixelFormat.Format8bppIndexed) {
+                
+            } else {
+                throw new NotSupportedException();
+            }
+            var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+            bmp = Debayer(bmp);
+            var newSource = ConvertBitmap(bmp, PixelFormats.Rgb24);
+            newSource.Freeze();
+            return newSource;
+        }
+
+        public static Bitmap Debayer(Bitmap bmp) {
+            var filter = new BayerFilterOptimized();
+            filter.Pattern = BayerPattern.BGGR;
+            var debayered = filter.Apply(bmp);
+            return debayered;
+        }
     }
 
 
