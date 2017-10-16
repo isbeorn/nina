@@ -400,8 +400,8 @@ namespace NINA.Utility {
         }
 
         public static Bitmap Debayer(Bitmap bmp) {
-            var filter = new BayerFilterOptimized();
-            filter.Pattern = BayerPattern.BGGR;
+            var filter = new BayerFilter();
+            filter.BayerPattern = new int[,] { { RGB.B,RGB.G },{ RGB.G,RGB.R } };
             var debayered = filter.Apply(bmp);
             return debayered;
         }
