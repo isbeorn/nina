@@ -295,9 +295,11 @@ namespace NINA.ViewModel {
             Devices.Clear();
 
             /* ASI */
+            Logger.Trace("Adding ASI Cameras");
             for (int i = 0; i < ASICameras.Count; i++) {
                 var cam = ASICameras.GetCamera(i);
                 if (cam.Name != "") {
+                    Logger.Trace("Adding " + cam.Name);
                     Devices.Add(cam);
                 }
             }
@@ -308,6 +310,7 @@ namespace NINA.ViewModel {
 
                 try {
                     AscomCamera cam = new AscomCamera(device.Key, device.Value + " (ASCOM)");
+                    Logger.Trace("Adding " + cam.Name);
                     Devices.Add(cam);
                 } catch (Exception) {
                     //only add cameras which are supported. e.g. x86 drivers will not work in x64
@@ -328,7 +331,7 @@ namespace NINA.ViewModel {
                     EDSDK.EdsDeviceInfo info;
                     err = EDSDK.EdsGetDeviceInfo(cam, out info);
 
-
+                    Logger.Trace("Adding " + info.szDeviceDescription);
                     Devices.Add(new EDCamera(cam, info));
                 }
             }
@@ -346,16 +349,18 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void Mgr_DeviceRemoved(NikonManager sender,NikonDevice device) {            
-            Devices.Add(new NikonCamera(device));
-        }
-
-        private void Mgr_DeviceAdded(NikonManager sender,NikonDevice device) {            
+        private void Mgr_DeviceRemoved(NikonManager sender,NikonDevice device) {
             var c = Devices.Where((cam) => cam.Id == device.Id.ToString() && cam.Name == device.Name).FirstOrDefault();
-            if(c != null) {
+            if (c != null) {
+                Logger.Trace("Removing Nikon Camera " + c.Name);
                 c.Disconnect();
                 Devices.Remove(c);
-            }            
+            }
+        }
+
+        private void Mgr_DeviceAdded(NikonManager sender,NikonDevice device) {
+            Logger.Trace("Adding Nikon Camera");
+            Devices.Add(new NikonCamera(device));
         }
 
         public void Shutdown() {
