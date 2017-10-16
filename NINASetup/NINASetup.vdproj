@@ -15,12 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_04A5286E18A84958883B5EFFF55226B4"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_088F0647C0236469B83F193C9B1A7854"
         "OwnerKey" = "8:_1CB6472DBDBF4BD4A442DB7BA216741F"
         "MsmSig" = "8:_UNDEFINED"
@@ -57,6 +51,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_11493249AADD0DF8B7A031567082C52D"
+        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_123095E52099048816E65DCE26B8942E"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -71,6 +71,12 @@
         {
         "MsmKey" = "8:_123095E52099048816E65DCE26B8942E"
         "OwnerKey" = "8:_BA30C9EF8AFF59526B2C9EA80FC19D82"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1542BB1D6F8B4F5FAC05C7491DEBB5AC"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -94,6 +100,12 @@
         "Entry"
         {
         "MsmKey" = "8:_1CB6472DBDBF4BD4A442DB7BA216741F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1E918DBF099F4CD88B74B56E838D69D1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -149,12 +161,6 @@
         {
         "MsmKey" = "8:_2910C63C4191120DDE2B0BA8BB0D2908"
         "OwnerKey" = "8:_A83A91C8B60FCF79007077AB390E87AD"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2D8C46CBBE3D48A39FD38384EFC3649A"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -393,6 +399,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6B38C61E6B2C43E49188EB23F3F125B5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6B490314CB8399941788BD25B283C127"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -525,12 +537,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9D50C6ADE59D491E9ADA7785576ABFD9"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_9EB70226336508692CDD56D8752BC024"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -591,6 +597,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A9DDA5A0219A49349E51E071C9689211"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_AB00B115CDAE253B41ACE60FCA278C5F"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -623,12 +635,6 @@
         {
         "MsmKey" = "8:_B73B3FB64B0EE656F55D14EE272762A3"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B744A2D5AEC8404FBB5F2820FC537756"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -669,6 +675,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_BE77FDECFDC24E95A5437B0F21E050AB"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C3C08230655829DFD52CD35A681D1AC8"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -681,20 +693,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_C881C1D945D34E3D9C34C96A907A60AE"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_CE56ABFE3F17AF1C0064A728571FCE24"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CF6D0138E53F4D0EA16DC3CC619E329E"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -707,6 +707,12 @@
         {
         "MsmKey" = "8:_D30391BA43D9684C3ACCD21B58C85CE1"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D8418ED64EFE45E6AA3B724CA256044F"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -887,12 +893,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_27EDB37F06A036C2EE4A6805E14B356A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DF5A2D4D6810125DD0F34084F881CB8A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1145,6 +1145,18 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_123095E52099048816E65DCE26B8942E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_DF5A2D4D6810125DD0F34084F881CB8A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_11493249AADD0DF8B7A031567082C52D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1632,26 +1644,6 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_04A5286E18A84958883B5EFFF55226B4"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\ASICamera_x64.lib"
-            "TargetName" = "8:ASICamera_x64.lib"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_088F0647C0236469B83F193C9B1A7854"
             {
             "AssemblyRegister" = "3:1"
@@ -1838,6 +1830,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_11493249AADD0DF8B7A031567082C52D"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:nikoncswrapper, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_11493249AADD0DF8B7A031567082C52D"
+                    {
+                    "Name" = "8:nikoncswrapper.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:nikoncswrapper.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_123095E52099048816E65DCE26B8942E"
             {
             "AssemblyRegister" = "3:1"
@@ -1869,6 +1892,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1542BB1D6F8B4F5FAC05C7491DEBB5AC"
+            {
+            "SourcePath" = "8:..\\NINA\\External\\ASICamera2.dll"
+            "TargetName" = "8:ASICamera2.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_17A2CBD658978DA7D9ED407F01AE396F"
             {
             "AssemblyRegister" = "3:1"
@@ -1898,6 +1941,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1E918DBF099F4CD88B74B56E838D69D1"
+            {
+            "SourcePath" = "8:..\\NINA\\External\\EDSDK.dll"
+            "TargetName" = "8:EDSDK.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1F9FEB784B1F1574B72FC3B27C12B8BD"
@@ -2146,26 +2209,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2D8C46CBBE3D48A39FD38384EFC3649A"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\ASICamera.dll"
-            "TargetName" = "8:ASICamera.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2E7CC597280C3835B67BDD74A273B685"
@@ -3096,6 +3139,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6B38C61E6B2C43E49188EB23F3F125B5"
+            {
+            "SourcePath" = "8:..\\NINA\\External\\Type0004.md3"
+            "TargetName" = "8:Type0004.md3"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6B490314CB8399941788BD25B283C127"
             {
             "AssemblyRegister" = "3:1"
@@ -3550,26 +3613,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9D50C6ADE59D491E9ADA7785576ABFD9"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\ASICamera_x64.dll"
-            "TargetName" = "8:ASICamera_x64.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9EB70226336508692CDD56D8752BC024"
             {
             "AssemblyRegister" = "3:1"
@@ -3838,6 +3881,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A9DDA5A0219A49349E51E071C9689211"
+            {
+            "SourcePath" = "8:..\\NINA\\External\\NkdPTP.dll"
+            "TargetName" = "8:NkdPTP.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AB00B115CDAE253B41ACE60FCA278C5F"
             {
             "AssemblyRegister" = "3:1"
@@ -4022,26 +4085,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B744A2D5AEC8404FBB5F2820FC537756"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\ASICamera2.dll"
-            "TargetName" = "8:ASICamera2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B83C7C35A9859B3DA9CD6BA5DA8F1464"
@@ -4230,6 +4273,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BE77FDECFDC24E95A5437B0F21E050AB"
+            {
+            "SourcePath" = "8:..\\NINA\\External\\ASICamera2.lib"
+            "TargetName" = "8:ASICamera2.lib"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C3C08230655829DFD52CD35A681D1AC8"
             {
             "AssemblyRegister" = "3:1"
@@ -4292,26 +4355,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C881C1D945D34E3D9C34C96A907A60AE"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\ASICamera2.lib"
-            "TargetName" = "8:ASICamera2.lib"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CE56ABFE3F17AF1C0064A728571FCE24"
             {
             "AssemblyRegister" = "3:1"
@@ -4341,26 +4384,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CF6D0138E53F4D0EA16DC3CC619E329E"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\ASICamera.lib"
-            "TargetName" = "8:ASICamera.lib"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D24B16354425EEBAA142854CEEA72437"
@@ -4423,6 +4446,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D8418ED64EFE45E6AA3B724CA256044F"
+            {
+            "SourcePath" = "8:..\\NINA\\External\\Type0005.md3"
+            "TargetName" = "8:Type0005.md3"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DF5A2D4D6810125DD0F34084F881CB8A"
