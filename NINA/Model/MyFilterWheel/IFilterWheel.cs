@@ -10,7 +10,6 @@ namespace NINA.Model.MyFilterWheel {
     interface IFilterWheel :IDevice {
         bool Connected { get; }
         string Description { get; }
-        string Name { get;  }
         string DriverInfo { get;  }
         string DriverVersion { get; }
         short InterfaceVersion { get;  }
@@ -19,10 +18,7 @@ namespace NINA.Model.MyFilterWheel {
         short Position { get; set; }
         ArrayList SupportedActions { get; }
         AsyncObservableCollection<FilterInfo> Filters { get; }
-
-
-        bool Connect();
-        void Disconnect();
+        
 
     }
 

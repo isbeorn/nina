@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyFocuser {
     interface IFocuser : IDevice {
         bool Connected { get; }
-        bool Connect();
         string Description { get; }
         string DriverInfo { get; }
         string DriverVersion { get; }
-        void Disconnect();
         bool IsMoving { get; }
         int MaxIncrement { get; }
         int MaxStep { get; }

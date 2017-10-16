@@ -845,5 +845,66 @@ namespace NINA.ViewModel {
 
         }
 
+        public int FocuserAutoFocusInitialOffsetSteps {
+            get {
+                return Settings.FocuserAutoFocusInitialOffsetSteps;
+            }
+            set {
+                Settings.FocuserAutoFocusInitialOffsetSteps = value;
+                RaisePropertyChanged();
+            }
+
+        }
+
+        public int FocuserAutoFocusStepSize {
+            get {
+                return Settings.FocuserAutoFocusStepSize;
+            }
+            set {
+                Settings.FocuserAutoFocusStepSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int FocuserAutoFocusExposureTime {
+            get {
+                return Settings.FocuserAutoFocusExposureTime;
+            }
+            set {
+                Settings.FocuserAutoFocusExposureTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool UseTelescopeSnapPort {
+            get {
+                return Settings.UseTelescopeSnapPort;
+            } 
+            set {
+                Settings.UseTelescopeSnapPort = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TelescopeSnapPortStart {
+            get {
+                return Settings.TelescopeSnapPortStart;
+            }
+            set {
+                Settings.TelescopeSnapPortStart = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TelescopeSnapPortStop {
+            get {
+                return Settings.TelescopeSnapPortStop;
+            }
+            set {
+                Settings.TelescopeSnapPortStop = value;
+                RaisePropertyChanged();
+            }
+        }
+
     }
 }

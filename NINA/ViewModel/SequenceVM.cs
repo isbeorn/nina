@@ -57,7 +57,7 @@ namespace NINA.ViewModel{
                     var dso = (DeepSkyObject)args[0];
                     var sequenceDso = new DeepSkyObject(dso.AlsoKnownAs.FirstOrDefault(),dso.Coordinates);
                     await Task.Run(() => {
-                        sequenceDso.CalculateAltitude(SkyAtlasVM.GetReferenceDate(DateTime.Now),Settings.Latitude,Settings.Longitude);
+                        sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now),Settings.Latitude,Settings.Longitude);
                     });
                     
                     Sequence.SetSequenceTarget(sequenceDso);

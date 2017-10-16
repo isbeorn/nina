@@ -791,5 +791,77 @@ namespace NINA.Properties {
                 this["FocuserUseFilterWheelOffsets"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int FocuserAutoFocusStepSize {
+            get {
+                return ((int)(this["FocuserAutoFocusStepSize"]));
+            }
+            set {
+                this["FocuserAutoFocusStepSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int FocuserAutoFocusInitialOffsetSteps {
+            get {
+                return ((int)(this["FocuserAutoFocusInitialOffsetSteps"]));
+            }
+            set {
+                this["FocuserAutoFocusInitialOffsetSteps"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6")]
+        public int FocuserAutoFocusExposureTime {
+            get {
+                return ((int)(this["FocuserAutoFocusExposureTime"]));
+            }
+            set {
+                this["FocuserAutoFocusExposureTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseTelescopeSnapPort {
+            get {
+                return ((bool)(this["UseTelescopeSnapPort"]));
+            }
+            set {
+                this["UseTelescopeSnapPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(":SNAP1,1#")]
+        public string TelescopeSnapPortStart {
+            get {
+                return ((string)(this["TelescopeSnapPortStart"]));
+            }
+            set {
+                this["TelescopeSnapPortStart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(":SNAP1,0#")]
+        public string TelescopeSnapPortStop {
+            get {
+                return ((string)(this["TelescopeSnapPortStop"]));
+            }
+            set {
+                this["TelescopeSnapPortStop"] = value;
+            }
+        }
     }
 }

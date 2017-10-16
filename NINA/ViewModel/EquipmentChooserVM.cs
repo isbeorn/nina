@@ -15,11 +15,11 @@ namespace NINA.ViewModel {
             GetEquipment();
         }
 
-        private ObservableCollection<Model.IDevice> _devices;
-        public ObservableCollection<Model.IDevice> Devices {
+        private AsyncObservableCollection<Model.IDevice> _devices;
+        public AsyncObservableCollection<Model.IDevice> Devices {
             get {
                 if (_devices == null) {
-                    _devices = new ObservableCollection<Model.IDevice>();
+                    _devices = new AsyncObservableCollection<Model.IDevice>();
                 }
                 return _devices;
             }

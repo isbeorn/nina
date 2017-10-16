@@ -1,5 +1,6 @@
 ﻿using ASCOM.DriverAccess;
 using EDSDKLib;
+using Nikon;
 using NINA.EquipmentChooser;
 using NINA.Model.MyCamera;
 using NINA.Utility;
@@ -28,7 +29,7 @@ namespace NINA.ViewModel {
 
             //ConnectCameraCommand = new RelayCommand(connectCamera);
             ChooseCameraCommand = new RelayCommand(ChooseCamera);
-            DisconnectCommand = new RelayCommand(DisconnectCamera);
+            DisconnectCommand = new RelayCommand(DisconnectDiag);
             CoolCamCommand = new AsyncCommand<bool>(() => CoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
             RefreshCameraListCommand = new RelayCommand(RefreshCameraList);
@@ -233,15 +234,24 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void DisconnectCamera(object obj) {
+        private void DisconnectDiag(object obj) {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                _updateCamera.Stop();
-                _cancelCoolCameraSource?.Cancel();
-                CoolingRunning = false;
-                Cam.Disconnect();
-                Cam = null;
+                Disconnect();
             }
+        }
+
+        private void Disconnect() {
+            _updateCamera.Stop();
+            _cancelCoolCameraSource?.Cancel();
+            CoolingRunning = false;            
+            Cam?.Disconnect();
+            Cam = null;
+        }
+
+        public void Shutdown() {
+            Disconnect();
+            CameraChooserVM?.Shutdown();
         }
 
         void UpdateCamera_Tick(object sender, EventArgs e) {
@@ -272,11 +282,19 @@ namespace NINA.ViewModel {
     }
 
     class CameraChooserVM : EquipmentChooserVM {
+        public CameraChooserVM() : base() {
+            /* NIKON */
+            _nikonManager = new NikonManager("Type0005.md3");
+            _nikonManager.DeviceAdded += Mgr_DeviceAdded;
+            _nikonManager.DeviceRemoved += Mgr_DeviceRemoved;
+        }
+
+        NikonManager _nikonManager;
+
         public override void GetEquipment() {
             Devices.Clear();
 
-            var ascomDevices = new ASCOM.Utilities.Profile();
-
+            /* ASI */
             for (int i = 0; i < ASICameras.Count; i++) {
                 var cam = ASICameras.GetCamera(i);
                 if (cam.Name != "") {
@@ -284,6 +302,8 @@ namespace NINA.ViewModel {
                 }
             }
 
+            /* ASCOM */
+            var ascomDevices = new ASCOM.Utilities.Profile();
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
 
                 try {
@@ -294,8 +314,7 @@ namespace NINA.ViewModel {
                 }
             }
 
-
-
+            /* CANON */
             IntPtr cameraList;
             uint err = EDSDK.EdsGetCameraList(out cameraList);
             if (err == (uint)EDSDK.EDS_ERR.OK) {
@@ -312,9 +331,9 @@ namespace NINA.ViewModel {
 
                     Devices.Add(new EDCamera(cam, info));
                 }
-
-
             }
+
+            
 
             if (Devices.Count > 0) {
                 var items = (from device in Devices where device.Id == Settings.CameraId select device);
@@ -327,6 +346,20 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void Mgr_DeviceRemoved(NikonManager sender,NikonDevice device) {            
+            Devices.Add(new NikonCamera(device));
+        }
 
+        private void Mgr_DeviceAdded(NikonManager sender,NikonDevice device) {            
+            var c = Devices.Where((cam) => cam.Id == device.Id.ToString() && cam.Name == device.Name).FirstOrDefault();
+            if(c != null) {
+                c.Disconnect();
+                Devices.Remove(c);
+            }            
+        }
+
+        public void Shutdown() {
+            _nikonManager.Shutdown();
+        }
     }
 }

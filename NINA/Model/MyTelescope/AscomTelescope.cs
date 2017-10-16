@@ -1177,6 +1177,13 @@ namespace NINA.Model.MyTelescope {
             }
         }
 
+        public void SendCommandString(string command) {
+            if(Connected) {
+                _telescope.CommandString(command,true);
+            } else {
+                Notification.ShowError("Telescope not connected to send command: " + command);
+            }
+        }
     }
 
 }

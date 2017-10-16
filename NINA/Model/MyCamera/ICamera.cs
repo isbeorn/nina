@@ -17,7 +17,6 @@ namespace NINA.Model.MyCamera {
         double SetCCDTemperature { get; set; }
         short BinX { get; set; }
         short BinY { get; set; }
-        string Name { get;  }
         string Description { get; }
         string DriverInfo { get; }
         string DriverVersion { get; }
@@ -50,8 +49,7 @@ namespace NINA.Model.MyCamera {
 
         AsyncObservableCollection<BinningMode> BinningModes { get; }
 
-        bool Connect();
-        void Disconnect();
+       
         void UpdateValues();
         void SetBinning(short x, short y);
         void StartExposure(double exposureTime, bool isLightFrame);

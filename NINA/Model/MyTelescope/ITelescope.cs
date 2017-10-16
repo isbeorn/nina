@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MyTelescope {
     interface ITelescope : IDevice {
-        string Name { get; }
         bool Connected { get; }
         Coordinates Coordinates { get; }
         double RightAscension { get; }
@@ -30,9 +29,7 @@ namespace NINA.Model.MyTelescope {
         double SiteLatitude { get; }
         double SiteLongitude { get; }
         double SiteElevation { get; }
-
-        bool Connect();
-        void Disconnect();
+        
         bool MeridianFlip(Coordinates targetCoordinates);
         void MoveAxis(TelescopeAxes axis, double rate);
         void Park();
@@ -46,5 +43,6 @@ namespace NINA.Model.MyTelescope {
         bool Sync(double ra, double dec);
         void Unpark();
         void UpdateValues();
+        void SendCommandString(string command);
     }
 }

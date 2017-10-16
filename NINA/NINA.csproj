@@ -250,6 +250,7 @@
     <Compile Include="Model\DeepSkyObject.cs" />
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
+    <Compile Include="Model\MyCamera\NikonCamera.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\IFocuser.cs" />
     <Compile Include="Model\MyGuider\IGuider.cs" />
@@ -290,6 +291,7 @@
     <Compile Include="Utility\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
     <Compile Include="Utility\DatabaseInteraction.cs" />
+    <Compile Include="Utility\DCRaw\DCRaw.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
@@ -803,17 +805,20 @@
     </Compile>
     <Content Include="External\ASICamera2.dll" />
     <Resource Include="Resources\astrometry.net.png" />
+    <Content Include="External\NkdPTP.dll" />
     <Content Include="Utility\ColorSchema\ColorSchemas.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Utility\EDSDK\dcraw.exe">
+    <Content Include="Utility\DCRaw\dcraw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Utility\EDSDK\EDSDK.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Database\NINA.sqlite" />
-    <None Include="External\ASICamera2.lib" />
+    <Content Include="External\ASICamera2.lib" />
+    <Content Include="External\Type0004.md3" />
+    <Content Include="External\Type0005.md3" />
     <None Include="packages.config" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />
@@ -862,6 +867,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\nikoncswrapper\nikoncswrapper.csproj">
+      <Project>{aade1df5-4c46-4760-b72b-474d90336f5b}</Project>
+      <Name>nikoncswrapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NINACustomControlLibrary\NINACustomControlLibrary.csproj">
       <Project>{39fefc1e-7a69-440d-b38a-5b9469353491}</Project>
       <Name>NINACustomControlLibrary</Name>
@@ -869,7 +878,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /y /d  "$(ProjectDir)External\*.dll" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /y /d  "$(ProjectDir)External\*.*" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
