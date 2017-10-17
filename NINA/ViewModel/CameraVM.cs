@@ -241,17 +241,12 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void Disconnect() {
+        public void Disconnect() {
             _updateCamera.Stop();
             _cancelCoolCameraSource?.Cancel();
             CoolingRunning = false;            
             Cam?.Disconnect();
             Cam = null;
-        }
-
-        public void Shutdown() {
-            Disconnect();
-            CameraChooserVM?.Shutdown();
         }
 
         void UpdateCamera_Tick(object sender, EventArgs e) {
@@ -283,13 +278,8 @@ namespace NINA.ViewModel {
 
     class CameraChooserVM : EquipmentChooserVM {
         public CameraChooserVM() : base() {
-            /* NIKON */
-            _nikonManager = new NikonManager("Type0005.md3");
-            _nikonManager.DeviceAdded += Mgr_DeviceAdded;
-            _nikonManager.DeviceRemoved += Mgr_DeviceRemoved;
+            
         }
-
-        NikonManager _nikonManager;
 
         public override void GetEquipment() {
             Devices.Clear();
@@ -336,7 +326,8 @@ namespace NINA.ViewModel {
                 }
             }
 
-            
+            /* NIKON */
+            Devices.Add(new NikonCamera());
 
             if (Devices.Count > 0) {
                 var items = (from device in Devices where device.Id == Settings.CameraId select device);
@@ -349,22 +340,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void Mgr_DeviceRemoved(NikonManager sender,NikonDevice device) {
-            var c = Devices.Where((cam) => cam.Id == device.Id.ToString() && cam.Name == device.Name).FirstOrDefault();
-            if (c != null) {
-                Logger.Trace("Removing Nikon Camera " + c.Name);
-                c.Disconnect();
-                Devices.Remove(c);
-            }
-        }
-
-        private void Mgr_DeviceAdded(NikonManager sender,NikonDevice device) {
-            Logger.Trace("Adding Nikon Camera");
-            Devices.Add(new NikonCamera(device));
-        }
-
-        public void Shutdown() {
-            _nikonManager.Shutdown();
-        }
+        
     }
 }

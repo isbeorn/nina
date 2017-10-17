@@ -160,11 +160,11 @@ namespace ZWOptical.ASISDK {
 
         }
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl,EntryPoint = "ASIGetNumOfConnectedCameras")]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl,EntryPoint = "ASIGetNumOfConnectedCameras")]
         public static extern int GetNumOfConnectedCameras();
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetCameraProperty(out ASI_CAMERA_INFO pASICameraInfo,int iCameraIndex);
 
         public static ASI_CAMERA_INFO GetCameraProperties(int cameraIndex) {
@@ -201,14 +201,14 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIOpenCamera(int iCameraID);
 
         public static void OpenCamera(int cameraId) {
             CheckReturn(ASIOpenCamera(cameraId),MethodBase.GetCurrentMethod(),cameraId);
         }
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIInitCamera(int iCameraID);
 
         public static void InitCamera(int cameraId) {
@@ -217,7 +217,7 @@ namespace ZWOptical.ASISDK {
 
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASICloseCamera(int iCameraID);
 
         public static void CloseCamera(int cameraId) {
@@ -226,7 +226,7 @@ namespace ZWOptical.ASISDK {
 
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetNumOfControls(int iCameraID,out int piNumberOfControls);
 
         public static int GetNumOfControls(int cameraId) {
@@ -236,7 +236,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetControlCaps(int iCameraID,int iControlIndex,out ASI_CONTROL_CAPS pControlCaps);
 
         public static ASI_CONTROL_CAPS GetControlCaps(int cameraIndex,int controlIndex) {
@@ -245,7 +245,7 @@ namespace ZWOptical.ASISDK {
             return result;
         }
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetControlValue(int iCameraID,ASI_CONTROL_TYPE controlType,out int plValue,out ASI_BOOL pbAuto);
 
         public static int GetControlValue(int cameraId,ASI_CONTROL_TYPE controlType,out bool isAuto) {
@@ -257,7 +257,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASISetControlValue(int iCameraID,ASI_CONTROL_TYPE controlType,int lValue,ASI_BOOL bAuto);
 
         public static void SetControlValue(int cameraId,ASI_CONTROL_TYPE controlType,int value,bool auto) {
@@ -266,7 +266,7 @@ namespace ZWOptical.ASISDK {
 
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASISetROIFormat(int iCameraID,int iWidth,int iHeight,int iBin,ASI_IMG_TYPE Img_type);
 
         public static void SetROIFormat(int cameraId,Size size,int bin,ASI_IMG_TYPE imageType) {
@@ -274,7 +274,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetROIFormat(int iCameraID,out int piWidth,out int piHeight,out int piBin,out ASI_IMG_TYPE pImg_type);
 
         public static Size GetROIFormat(int cameraId,out int bin,out ASI_IMG_TYPE imageType) {
@@ -283,7 +283,7 @@ namespace ZWOptical.ASISDK {
             return new Size(width,height);
         }
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASISetStartPos(int iCameraID,int iStartX,int iStartY);
 
         public static void SetStartPos(int cameraId,Point startPos) {
@@ -291,7 +291,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetStartPos(int iCameraID,out int piStartX,out int piStartY);
 
         public static Point GetStartPos(int cameraId) {
@@ -301,7 +301,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetDroppedFrames(int iCameraID,out int piDropFrames);
 
         public static int GetDroppedFrames(int cameraId) {
@@ -311,7 +311,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIEnableDarkSubtract(int iCameraID,[MarshalAs(UnmanagedType.LPStr)] string pcBMPPath,out ASI_BOOL bIsSubDarkWorking);
 
         public static bool EnableDarkSubtract(int cameraId,string darkFilePath) {
@@ -321,7 +321,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIDisableDarkSubtract(int iCameraID);
 
         public static void DisableDarkSubtract(int cameraId) {
@@ -329,7 +329,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIStartVideoCapture(int iCameraID);
 
         public static void StartVideoCapture(int cameraId) {
@@ -337,14 +337,14 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIStopVideoCapture(int iCameraID);
 
         public static void StopVideoCapture(int cameraId) {
             CheckReturn(ASIStopVideoCapture(cameraId),MethodBase.GetCurrentMethod(),cameraId);
         }
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetVideoData(int iCameraID,IntPtr pBuffer,int lBuffSize,int iWaitms);
 
         public static bool GetVideoData(int cameraId,IntPtr buffer,int bufferSize,int waitMs) {
@@ -358,7 +358,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIPulseGuideOn(int iCameraID,ASI_GUIDE_DIRECTION direction);
 
         public static void PulseGuideOn(int cameraId,ASI_GUIDE_DIRECTION direction) {
@@ -366,7 +366,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIPulseGuideOff(int iCameraID,ASI_GUIDE_DIRECTION direction);
 
         public static void PulseGuideOff(int cameraId,ASI_GUIDE_DIRECTION direction) {
@@ -375,7 +375,7 @@ namespace ZWOptical.ASISDK {
 
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIStartExposure(int iCameraID,ASI_BOOL bIsDark);
 
         public static void StartExposure(int cameraId,bool isDark) {
@@ -383,7 +383,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIStopExposure(int iCameraID);
 
         public static void StopExposure(int cameraId) {
@@ -391,7 +391,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetExpStatus(int iCameraID,out ExposureStatus pExpStatus);
 
         public static ExposureStatus GetExposureStatus(int cameraId) {
@@ -401,7 +401,7 @@ namespace ZWOptical.ASISDK {
         }
 
 
-        [DllImport("ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("External/ASI/ASICamera2.dll",CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetDataAfterExp(int iCameraID,IntPtr pBuffer,int lBuffSize);
 
         public static bool GetDataAfterExp(int cameraId,IntPtr buffer,int bufferSize) {

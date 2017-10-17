@@ -100,7 +100,7 @@ namespace NINA.ViewModel {
         }
 
         private void DisconnectEquipment() {
-            CameraVM?.Shutdown();
+            CameraVM?.Disconnect();
             TelescopeVM?.Telescope?.Disconnect();
             FilterWheelVM?.FW?.Disconnect();
             FocuserVM?.Focuser?.Disconnect();

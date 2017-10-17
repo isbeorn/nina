@@ -75,12 +75,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_1542BB1D6F8B4F5FAC05C7491DEBB5AC"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_17A2CBD658978DA7D9ED407F01AE396F"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -100,12 +94,6 @@
         "Entry"
         {
         "MsmKey" = "8:_1CB6472DBDBF4BD4A442DB7BA216741F"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_1E918DBF099F4CD88B74B56E838D69D1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -399,12 +387,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6B38C61E6B2C43E49188EB23F3F125B5"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_6B490314CB8399941788BD25B283C127"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -597,12 +579,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A9DDA5A0219A49349E51E071C9689211"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_AB00B115CDAE253B41ACE60FCA278C5F"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -675,12 +651,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_BE77FDECFDC24E95A5437B0F21E050AB"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_C3C08230655829DFD52CD35A681D1AC8"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -707,12 +677,6 @@
         {
         "MsmKey" = "8:_D30391BA43D9684C3ACCD21B58C85CE1"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D8418ED64EFE45E6AA3B724CA256044F"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1892,26 +1856,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1542BB1D6F8B4F5FAC05C7491DEBB5AC"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\ASICamera2.dll"
-            "TargetName" = "8:ASICamera2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_17A2CBD658978DA7D9ED407F01AE396F"
             {
             "AssemblyRegister" = "3:1"
@@ -1941,26 +1885,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1E918DBF099F4CD88B74B56E838D69D1"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\EDSDK.dll"
-            "TargetName" = "8:EDSDK.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1F9FEB784B1F1574B72FC3B27C12B8BD"
@@ -3139,26 +3063,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6B38C61E6B2C43E49188EB23F3F125B5"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\Type0004.md3"
-            "TargetName" = "8:Type0004.md3"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6B490314CB8399941788BD25B283C127"
             {
             "AssemblyRegister" = "3:1"
@@ -3881,26 +3785,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A9DDA5A0219A49349E51E071C9689211"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\NkdPTP.dll"
-            "TargetName" = "8:NkdPTP.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AB00B115CDAE253B41ACE60FCA278C5F"
             {
             "AssemblyRegister" = "3:1"
@@ -4273,26 +4157,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BE77FDECFDC24E95A5437B0F21E050AB"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\ASICamera2.lib"
-            "TargetName" = "8:ASICamera2.lib"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C3C08230655829DFD52CD35A681D1AC8"
             {
             "AssemblyRegister" = "3:1"
@@ -4446,26 +4310,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D8418ED64EFE45E6AA3B724CA256044F"
-            {
-            "SourcePath" = "8:..\\NINA\\External\\Type0005.md3"
-            "TargetName" = "8:Type0005.md3"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DF5A2D4D6810125DD0F34084F881CB8A"

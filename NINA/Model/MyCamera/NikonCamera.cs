@@ -10,11 +10,49 @@ using ASCOM.DeviceInterface;
 using NINA.Utility;
 using Nikon;
 using NINA.Utility.DCRaw;
+using System.IO;
+using NINA.Utility.Notification;
 
 namespace NINA.Model.MyCamera
 {
     public class NikonCamera: BaseINPC, ICamera {
-        public NikonCamera(NikonDevice cam) {
+        public NikonCamera() {
+            /* NIKON */                        
+            Name = "Nikon";
+        }
+
+        private List<NikonManager> _nikonManagers;
+        private NikonManager _activeNikonManager;
+
+        private void Mgr_DeviceRemoved(NikonManager sender,NikonDevice device) {
+            Disconnect();
+        }
+
+        private void Mgr_DeviceAdded(NikonManager sender,NikonDevice device) {
+            _activeNikonManager = sender;
+            _activeNikonManager.DeviceRemoved += Mgr_DeviceRemoved;
+
+            CleanupUnusedManagers(_activeNikonManager);
+
+            Init(device);
+            
+            Connected = true;
+            Name = _camera.Name;
+
+            _cameraConnected.TrySetResult(null);
+        }
+
+        private void CleanupUnusedManagers(NikonManager activeManager) {
+            foreach (NikonManager mgr in _nikonManagers) {
+                if (mgr != activeManager) {
+                    mgr.Shutdown();
+                }
+            }
+            _nikonManagers.Clear();
+        }
+
+
+        public void Init(NikonDevice cam) {
             _camera = cam;
             _camera.ImageReady += Camera_ImageReady;
             _camera.CaptureComplete += _camera_CaptureComplete;
@@ -33,6 +71,7 @@ namespace NINA.Model.MyCamera
         }
 
         private TaskCompletionSource<object> _downloadExposure;
+        private TaskCompletionSource<object> _cameraConnected;
 
         private void _camera_CaptureComplete(NikonDevice sender,int data) {
             _downloadExposure.TrySetResult(null);
@@ -41,7 +80,6 @@ namespace NINA.Model.MyCamera
         private string _fileExtension;
 
         private void Camera_ImageReady(NikonDevice sender,NikonImage image) {
-            //idea: write to temp file; call dcraw in downloadexposure and parse to imagearray
             _fileExtension = (image.Type == NikonImageType.Jpeg) ? ".jpg" : ".nef";
             string filename = DCRaw.TMPIMGFILEPATH + _fileExtension;
 
@@ -55,20 +93,28 @@ namespace NINA.Model.MyCamera
 
         public string Id {
             get {
-                return _camera.Id.ToString();
+                return "Nikon";
             }
         }
 
-
+        private string _name;
         public string Name {
             get {
-                return _camera.Name;
+                return _name;
+            }
+            private set {
+                _name = value;
+                RaisePropertyChanged();
             }
         }
 
         public string Description {
             get {
-                return _camera.Name;
+                if(Connected) {
+                    return _camera.Name;
+                } else {
+                    return string.Empty;
+                }                
             }
         }
 
@@ -78,9 +124,14 @@ namespace NINA.Model.MyCamera
             }
         }
 
+        private bool _connected;
         public bool Connected {
             get {
-                return _camera != null;
+                return _connected;
+            }
+            set {
+                _connected = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -125,7 +176,7 @@ namespace NINA.Model.MyCamera
 
         public string DriverVersion {
             get {
-                throw new NotImplementedException();
+                return string.Empty;
             }
         }
 
@@ -254,13 +305,23 @@ namespace NINA.Model.MyCamera
 
         public bool CanGetGain {
             get {
-                return _camera.SupportsCapability(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
+                if (Connected) {
+                    return _camera.SupportsCapability(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
+                }
+                else {
+                    return false;
+                }                
             }
         }
 
         public bool CanSetGain {
             get {
-                return _camera.SupportsCapability(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
+                if (Connected) {
+                    return _camera.SupportsCapability(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
+                }
+                else {
+                    return false;
+                }
             }
         }
 
@@ -287,16 +348,21 @@ namespace NINA.Model.MyCamera
 
         public short Gain {
             get {
-                NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
-                return (short)e.Value;
-
+                if(Connected) {
+                    NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
+                    return (short)e.Value;
+                } else {
+                    return -1;
+                }
             }
             set {
-                var iso = ISOSpeeds.Where((x) => x.Key == value).FirstOrDefault().Value;
-                NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
-                e.Index = iso;
-                _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity,e);
-                RaisePropertyChanged();
+                if(Connected) {
+                    var iso = ISOSpeeds.Where((x) => x.Key == value).FirstOrDefault().Value;
+                    NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
+                    e.Index = iso;
+                    _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity,e);
+                    RaisePropertyChanged();
+                }                
             }
         }
 
@@ -305,15 +371,17 @@ namespace NINA.Model.MyCamera
         private ArrayList _gains;
         public ArrayList Gains {
             get {
-                if(_gains == null) {
-                    _gains = new ArrayList();
-                    if(CanGetGain) {
-                        NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
-                        for(int i = 0; i < e.Length; i++) {
-                            var iso = (int)e.GetEnumValueByIndex(i);
-                            ISOSpeeds.Add((short)iso,i);
-                            _gains.Add(i);
-                        }                        
+                if(Connected) {
+                    if(_gains == null) {
+                        _gains = new ArrayList();
+                        if(CanGetGain) {
+                            NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
+                            for(int i = 0; i < e.Length; i++) {
+                                var iso = (int)e.GetEnumValueByIndex(i);
+                                ISOSpeeds.Add((short)iso,i);
+                                _gains.Add(i);
+                            }                        
+                        }
                     }
                 }
                 return _gains;
@@ -323,10 +391,12 @@ namespace NINA.Model.MyCamera
         private AsyncObservableCollection<BinningMode> _binningModes;
         public AsyncObservableCollection<BinningMode> BinningModes {
             get {
-                if (_binningModes == null) {
-                    _binningModes = new AsyncObservableCollection<BinningMode>();
-                    _binningModes.Add(new BinningMode(1,1));
-                }
+                if(Connected) {
+                    if (_binningModes == null) {
+                        _binningModes = new AsyncObservableCollection<BinningMode>();
+                        _binningModes.Add(new BinningMode(1,1));
+                    }
+                }                
                 return _binningModes;
             }
         }
@@ -336,19 +406,44 @@ namespace NINA.Model.MyCamera
                 return false;
             }
         }
-
         
-
         public void AbortExposure() {
-            _camera.StopBulbCapture();
+            if(Connected) {
+                _camera.StopBulbCapture();
+            }            
         }
 
         public bool Connect() {
+            _nikonManagers = new List<NikonManager>();
+            foreach(string file in Directory.GetFiles("External/Nikon", "*.md3")) {
+                NikonManager mgr = new NikonManager(file);
+                mgr.DeviceAdded += Mgr_DeviceAdded;
+                _nikonManagers.Add(mgr);
+            }
+
+            _cameraConnected = new TaskCompletionSource<object>();
+            var d = DateTime.Now;
+            //Wait maximum 30 seconds for a camera to connect;
+            do {                
+                if(_cameraConnected.Task.IsCompleted) {
+                    break;
+                }                   
+                Thread.Sleep(500);
+            } while ((DateTime.Now - d).TotalMilliseconds < TimeSpan.FromSeconds(30).TotalMilliseconds);
+
+            if (!_cameraConnected.Task.IsCompleted) {
+                CleanupUnusedManagers(null);
+                Notification.ShowError("No Nikon camera found!");
+            }            
+
             return true;
         }
 
         public void Disconnect() {
-            
+            Connected = false;
+            _camera = null;
+            _activeNikonManager?.Shutdown();
+            _nikonManagers?.Clear();           
         }
 
         public async Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource) {
@@ -370,34 +465,13 @@ namespace NINA.Model.MyCamera
         
         
         public void StartExposure(double exposureTime,bool isLightFrame) {
-            _downloadExposure = new TaskCompletionSource<object>();
+            if(Connected) {
+                _downloadExposure = new TaskCompletionSource<object>();
 
-            if(Settings.UseTelescopeSnapPort) {
-                Mediator.Instance.Notify(MediatorMessages.TelescopeSnapPort,true);
-                DateTime d = DateTime.Now;
-                
-                /*Stop Exposure after exposure time */
-                Task.Run(() => {
-                    exposureTime = exposureTime * 1000;
-                    do {
-                        Thread.Sleep(100);
-                    } while ((DateTime.Now - d).TotalMilliseconds < exposureTime);
-
-                    Mediator.Instance.Notify(MediatorMessages.TelescopeSnapPort,false);
-                });
-
-            } else {
-                if (exposureTime < 1.0) {
-                    var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
-
-                    //Todo set to native shutter speeds
-
-
-                }
-                else {
+                if(Settings.UseTelescopeSnapPort) {
+                    Mediator.Instance.Notify(MediatorMessages.TelescopeSnapPort,true);
                     DateTime d = DateTime.Now;
-                    _camera.StartBulbCapture();
-                    
+                
                     /*Stop Exposure after exposure time */
                     Task.Run(() => {
                         exposureTime = exposureTime * 1000;
@@ -405,16 +479,39 @@ namespace NINA.Model.MyCamera
                             Thread.Sleep(100);
                         } while ((DateTime.Now - d).TotalMilliseconds < exposureTime);
 
-                        _camera.StopBulbCapture();
+                        Mediator.Instance.Notify(MediatorMessages.TelescopeSnapPort,false);
                     });
+
+                } else {
+                    if (exposureTime < 1.0) {
+                        var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
+
+                        //Todo set to native shutter speeds
+
+
+                    }
+                    else {
+                        DateTime d = DateTime.Now;
+                        _camera.StartBulbCapture();
+                    
+                        /*Stop Exposure after exposure time */
+                        Task.Run(() => {
+                            exposureTime = exposureTime * 1000;
+                            do {
+                                Thread.Sleep(100);
+                            } while ((DateTime.Now - d).TotalMilliseconds < exposureTime);
+
+                            _camera.StopBulbCapture();
+                        });
+                    }
                 }
             }
-            
-                      
         }
 
         public void StopExposure() {
-            _camera.StopBulbCapture();
+            if(Connected) {
+                _camera.StopBulbCapture();
+            }            
         }
 
         public void UpdateValues() {
