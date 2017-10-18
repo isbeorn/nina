@@ -10,8 +10,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     
-    <StackPanel>
-        <oxy:Plot Height="180"
+    <Grid>        
+        <oxy:Plot MinHeight="180"
                                         Background="{StaticResource BackgroundBrush}"
                                         PlotAreaBackground="{StaticResource BackgroundBrush}" 
                                         PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
@@ -85,8 +85,15 @@
                     Fill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     X="{Binding MaxAltitude.X}" 
                     Y="{Binding MaxAltitude.Y}" />
+                <oxy:PointAnnotation 
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"  Margin="0,10,0,0"
+                    Text="{Binding DoesTransitSouth, Mode=OneWay, Converter={StaticResource BoolToLabelConverter}, ConverterParameter=LblTransitSouth|LblTransitNorth, StringFormat={}&#x0a;{0}}"                     
+                    Shape="Circle" 
+                    Fill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    X="{Binding MaxAltitude.X}" 
+                    Y="{Binding MaxAltitude.Y}" />
             </oxy:Plot.Annotations>
         </oxy:Plot>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding DoesTransitSouth, Mode=OneWay, Converter={StaticResource BoolToLabelConverter}, ConverterParameter=LblTransitSouth|LblTransitNorth}" />
-    </StackPanel>
+        
+    </Grid>
 </UserControl>
