@@ -25,6 +25,7 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.Register((object o) => {
                 _nightDuration = null; //Clear cache
+                SelectedDate = DateTime.Now;
                 InitializeElevationFilters();
                 ResetRiseAndSetTimes();
             },MediatorMessages.LocationChanged);

@@ -146,9 +146,6 @@ namespace NINA.Utility.Astrometry {
                          * Math.Cos(ToRadians(latitude))
                          * Math.Cos(radX);
             var altitude = Astrometry.ToDegree(Math.Asin(sinAlt));
-            if(Settings.HemisphereType == Hemisphere.SOUTHERN) {
-                altitude = -altitude;
-            }
             return altitude;
         }
 
@@ -192,7 +189,7 @@ namespace NINA.Utility.Astrometry {
              * Arraylist(2) - Integer - Number of set events in this 24 hour period
              * Arraylist(3) onwards - Double - Values of rise events in hours Arraylist
              * (3 + NumberOfRiseEvents) onwards - Double - Values of set events in hours*/
-            var times = AstroUtils.EventTimes(type,d,m,y,Settings.Latitude,Settings.Longitude,Settings.TimeZone.GetUtcOffset(date).Hours + Settings.TimeZone.GetUtcOffset(date).Minutes / 60.0);
+            var times = AstroUtils.EventTimes(type,d,m,y,Settings.Latitude,Settings.Longitude,TimeZone.CurrentTimeZone.GetUtcOffset(date).Hours + TimeZone.CurrentTimeZone.GetUtcOffset(date).Minutes / 60.0);
 
             if (times.Count > 3) {
                 int nrOfRiseEvents = (int)times[1];

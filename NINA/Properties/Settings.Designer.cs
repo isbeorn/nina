@@ -686,18 +686,6 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("UTC")]
-        public string TimeZone {
-            get {
-                return ((string)(this["TimeZone"]));
-            }
-            set {
-                this["TimeZone"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string SkyAtlasImageRepository {
             get {

@@ -660,17 +660,7 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Longitude = value;
                 Properties.Settings.Default.Save();
             }
-        }
-
-        public static TimeZoneInfo TimeZone {
-            get {
-                return TimeZoneInfo.FindSystemTimeZoneById(Properties.Settings.Default.TimeZone);
-            }
-            set {
-                Properties.Settings.Default.TimeZone = value.Id;
-                Properties.Settings.Default.Save();
-            }
-        }
+        }        
 
         public static string SkyAtlasImageRepository {
             get {

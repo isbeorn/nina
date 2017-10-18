@@ -235,9 +235,10 @@ namespace NINA.ViewModel {
             get {
                 return Settings.HemisphereType;
             }
-            set {
+            set {                
                 Settings.HemisphereType = value;
                 RaisePropertyChanged();
+                Latitude = Latitude;
                 Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
@@ -749,6 +750,9 @@ namespace NINA.ViewModel {
                 return Settings.Latitude;
             }
             set {
+                if((HemisphereType == Hemisphere.SOUTHERN && value > 0) || (HemisphereType == Hemisphere.NORTHERN && value < 0)) {
+                    value = -value;
+                }
                 Settings.Latitude = value;
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.LocationChanged,null);
@@ -761,23 +765,6 @@ namespace NINA.ViewModel {
             }
             set {
                 Settings.Longitude = value;
-                RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged,null);
-            }
-        }
-
-        public ReadOnlyCollection<TimeZoneInfo> TimeZones {
-            get {
-                return TimeZoneInfo.GetSystemTimeZones();
-            }
-        }
-
-       public TimeZoneInfo TimeZone {
-            get {
-                return Settings.TimeZone;
-            }
-            set {
-                Settings.TimeZone = value;
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.LocationChanged,null);
             }
