@@ -149,8 +149,11 @@ namespace NINA.Model.MyCamera {
 
         public SensorType SensorType {
             get {
-                //TODO
-                return SensorType.Monochrome;
+                if(Info.IsColorCam == ASICameraDll.ASI_BOOL.ASI_TRUE) {
+                    return SensorType.RGGB;
+                } else {
+                    return SensorType.Monochrome;
+                }                
             }
         }
 
