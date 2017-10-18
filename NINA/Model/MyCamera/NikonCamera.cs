@@ -12,6 +12,7 @@ using Nikon;
 using NINA.Utility.DCRaw;
 using System.IO;
 using NINA.Utility.Notification;
+using System.Globalization;
 
 namespace NINA.Model.MyCamera
 {
@@ -66,6 +67,32 @@ namespace NINA.Model.MyCamera
                     compression.Index = i;
                     _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel,compression);
                     break;
+                }
+            }
+
+            GetShutterSpeeds();
+        }
+
+        
+
+        private void GetShutterSpeeds() {
+            _shutterSpeeds.Clear();
+            var shutterSpeeds = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
+            for(int i = 0; i < shutterSpeeds.Length; i++) {
+                try {
+                    var val = shutterSpeeds.GetEnumValueByIndex(i).ToString();
+
+                    if (val.Contains("/")) {
+                        var split = val.Split('/');
+                        var convertedSpeed = double.Parse(split[0],CultureInfo.InvariantCulture) / double.Parse(split[1],CultureInfo.InvariantCulture);
+
+                        _shutterSpeeds.Add(i,convertedSpeed);
+                    }
+                    else if (val == "Bulb") {
+                        _bulbShutterSpeedIndex = i;
+                    }
+                } catch(Exception ex) {
+                    Logger.Error("Unexpected Shutter Speed: " + ex.Message,ex.StackTrace);
                 }
             }
         }
@@ -461,14 +488,20 @@ namespace NINA.Model.MyCamera
 
         }
 
-        private Dictionary<int,int> _shutterSpeeds = new Dictionary<int,int>();
-        
-        
+        private Dictionary<int,double> _shutterSpeeds = new Dictionary<int,double>();
+        private int _bulbShutterSpeedIndex;
+
         public void StartExposure(double exposureTime,bool isLightFrame) {
             if(Connected) {
                 _downloadExposure = new TaskCompletionSource<object>();
 
-                if(Settings.UseTelescopeSnapPort) {
+                var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
+
+                if (Settings.UseTelescopeSnapPort) {
+                    shutterspeed.Index = _bulbShutterSpeedIndex;
+                    _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed,shutterspeed);
+
+
                     Mediator.Instance.Notify(MediatorMessages.TelescopeSnapPort,true);
                     DateTime d = DateTime.Now;
                 
@@ -483,17 +516,24 @@ namespace NINA.Model.MyCamera
                     });
 
                 } else {
-                    if (exposureTime < 1.0) {
-                        var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
+                    
 
-                        //Todo set to native shutter speeds
+                    if (exposureTime < 1.0) {                      
 
+                        var speed = _shutterSpeeds.Aggregate((x,y) => Math.Abs(x.Value - exposureTime) < Math.Abs(y.Value - exposureTime) ? x : y);
 
+                        shutterspeed.Index = speed.Key;
+                        _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed,shutterspeed);
+                        _camera.Capture();
                     }
                     else {
+                        //Set Camera to bulb
+                        shutterspeed.Index = _bulbShutterSpeedIndex;
+                        _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed,shutterspeed);
+
                         DateTime d = DateTime.Now;
                         _camera.StartBulbCapture();
-                    
+
                         /*Stop Exposure after exposure time */
                         Task.Run(() => {
                             exposureTime = exposureTime * 1000;
