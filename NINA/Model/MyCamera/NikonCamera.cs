@@ -404,18 +404,20 @@ namespace NINA.Model.MyCamera
         private ArrayList _gains;
         public ArrayList Gains {
             get {
-                if(Connected) {
-                    if(_gains == null) {
-                        _gains = new ArrayList();
-                        if(CanGetGain) {
-                            NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
-                            for(int i = 0; i < e.Length; i++) {
-                                var iso = (int)e.GetEnumValueByIndex(i);
-                                ISOSpeeds.Add((short)iso,i);
-                                _gains.Add(i);
-                            }                        
-                        }
-                    }
+                if (_gains == null) {
+                    _gains = new ArrayList();
+                }
+
+                if (Connected && CanGetGain && _gains.Count == 0) {
+                    
+                    if(CanGetGain) {
+                        NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
+                        for(int i = 0; i < e.Length; i++) {
+                            var iso = (int)e.GetEnumValueByIndex(i);
+                            ISOSpeeds.Add((short)iso,i);
+                            _gains.Add(i);
+                        }                        
+                    }                    
                 }
                 return _gains;
             }
@@ -423,13 +425,12 @@ namespace NINA.Model.MyCamera
 
         private AsyncObservableCollection<BinningMode> _binningModes;
         public AsyncObservableCollection<BinningMode> BinningModes {
-            get {
-                if(Connected) {
-                    if (_binningModes == null) {
-                        _binningModes = new AsyncObservableCollection<BinningMode>();
-                        _binningModes.Add(new BinningMode(1,1));
-                    }
-                }                
+            get {                
+                if (_binningModes == null) {
+                    _binningModes = new AsyncObservableCollection<BinningMode>();
+                    _binningModes.Add(new BinningMode(1,1));
+                }
+                                
                 return _binningModes;
             }
         }
@@ -462,13 +463,13 @@ namespace NINA.Model.MyCamera
                     break;
                 }                   
                 Thread.Sleep(500);
-            } while ((DateTime.Now - d).TotalMilliseconds < TimeSpan.FromSeconds(30).TotalMilliseconds);
+            } while ((DateTime.Now - d).TotalMilliseconds < TimeSpan.FromSeconds(20).TotalMilliseconds);
 
             if (!_cameraConnected.Task.IsCompleted) {
                 CleanupUnusedManagers(null);
                 Notification.ShowError("No Nikon camera found!");
                 return false;
-            }            
+            }    
 
             return true;
         }
