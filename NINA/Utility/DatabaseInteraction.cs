@@ -101,27 +101,27 @@ namespace NINA.Utility {
             }
 
             if (rafrom != null) {
-                query += " AND ra > $rafrom ";
+                query += " AND ra >= $rafrom ";
             }
 
             if (rathru != null) {
-                query += " AND ra < $rathru ";
+                query += " AND ra <= $rathru ";
             }
 
             if (decfrom != null) {
-                query += " AND dec > $decfrom ";
+                query += " AND dec >= $decfrom ";
             }
 
             if (decthru != null) {
-                query += " AND dec < $decthru ";
+                query += " AND dec <= $decthru ";
             }
 
             if (sizefrom != null && sizefrom != string.Empty) {
-                query += " AND sizemin > $sizefrom ";
+                query += " AND sizemin >= $sizefrom ";
             }
 
             if (sizethru != null && sizethru != string.Empty) {
-                query += " AND sizemax < $sizethru ";
+                query += " AND sizemax <= $sizethru ";
             }
 
             if (dsotypes != null && dsotypes.Count > 0) {
@@ -134,19 +134,19 @@ namespace NINA.Utility {
             }
 
             if (brightnessfrom != null && brightnessfrom != string.Empty) {
-                query += " AND surfacebrightness > $brightnessfrom ";
+                query += " AND surfacebrightness >= $brightnessfrom ";
             }
 
             if (brightnessthru != null && brightnessthru != string.Empty) {
-                query += " AND surfacebrightness < $brightnessthru ";
+                query += " AND surfacebrightness <= $brightnessthru ";
             }
 
             if (magnitudefrom != null && magnitudefrom != string.Empty) {
-                query += " AND magnitude > $magnitudefrom ";
+                query += " AND magnitude >= $magnitudefrom ";
             }
 
             if (magnitudethru != null && magnitudethru != string.Empty) {
-                query += " AND magnitude < $magnitudethru ";
+                query += " AND magnitude <= $magnitudethru ";
             }
 
             query += " GROUP BY id ";
