@@ -20,6 +20,7 @@ namespace NINA.Model.MyCamera
         public NikonCamera() {
             /* NIKON */                        
             Name = "Nikon";
+            _nikonManagers = new List<NikonManager>();
         }
 
         private List<NikonManager> _nikonManagers;
@@ -30,17 +31,22 @@ namespace NINA.Model.MyCamera
         }
 
         private void Mgr_DeviceAdded(NikonManager sender,NikonDevice device) {
-            _activeNikonManager = sender;
-            _activeNikonManager.DeviceRemoved += Mgr_DeviceRemoved;
+            try {            
+                _activeNikonManager = sender;
+                _activeNikonManager.DeviceRemoved += Mgr_DeviceRemoved;
 
-            CleanupUnusedManagers(_activeNikonManager);
+                CleanupUnusedManagers(_activeNikonManager);
 
-            Init(device);
+                Init(device);
             
-            Connected = true;
-            Name = _camera.Name;
-
-            _cameraConnected.TrySetResult(null);
+                Connected = true;
+                Name = _camera.Name;
+            } catch(Exception ex) {
+                Notification.ShowError(ex.Message);
+                Logger.Error(ex.Message,ex.StackTrace);
+            } finally {
+                _cameraConnected.TrySetResult(null);
+            }            
         }
 
         private void CleanupUnusedManagers(NikonManager activeManager) {
@@ -441,7 +447,7 @@ namespace NINA.Model.MyCamera
         }
 
         public bool Connect() {
-            _nikonManagers = new List<NikonManager>();
+            _nikonManagers.Clear();
             foreach(string file in Directory.GetFiles("External/Nikon", "*.md3")) {
                 NikonManager mgr = new NikonManager(file);
                 mgr.DeviceAdded += Mgr_DeviceAdded;
@@ -461,6 +467,7 @@ namespace NINA.Model.MyCamera
             if (!_cameraConnected.Task.IsCompleted) {
                 CleanupUnusedManagers(null);
                 Notification.ShowError("No Nikon camera found!");
+                return false;
             }            
 
             return true;
