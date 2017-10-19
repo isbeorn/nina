@@ -58,6 +58,10 @@
 
 * Experimental
      * Canon Cameras 
+     * Nikon Cameras 
+     
+* In Development
+     * Autofocus
 
 ** Feedback**
 
