@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -20,7 +21,7 @@ namespace NINA.ViewModel {
             ChooseFocuserCommand = new RelayCommand(ChooseFocuser);
             DisconnectCommand = new RelayCommand(DisconnectFocuser);
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList);
-            MoveFocuserCommand = new RelayCommand(MoveFocuser);
+            MoveFocuserCommand = new AsyncCommand<bool>(() => MoveFocuser(TargetPosition), (p) => Focuser?.TempComp == false);
             HaltFocuserCommand = new RelayCommand(HaltFocuser);
 
             _updateFocuser = new DispatcherTimer();
@@ -34,19 +35,32 @@ namespace NINA.ViewModel {
         }
 
         private void HaltFocuser(object obj) {
+            _cancelMove?.Cancel();
             Focuser.Halt();
         }
 
-        private void MoveFocuser(object obj) {
-            Focuser.Move(TargetPosition);
+        CancellationTokenSource _cancelMove;
+
+        private async Task<bool> MoveFocuser(int position) {
+            _cancelMove = new CancellationTokenSource();
+            await Task.Run(() => {
+                try {                    
+                    while (Focuser.Position != position) {
+                        _cancelMove.Token.ThrowIfCancellationRequested();
+                        Focuser.Move(position);
+                    }
+                } catch(OperationCanceledException) {
+
+                }
+                
+            });
+            return true;
         }
 
         private async Task MoveFocuserRelative(int offset) {
-            if(Focuser?.Connected == true) { 
-                await Task.Run(() => {
-                    var pos = Focuser.Position + offset;
-                    Focuser.Move(pos);
-                });
+            if(Focuser?.Connected == true) {
+                var pos = Focuser.Position + offset;
+                await MoveFocuser(pos);                
             }
         }
 

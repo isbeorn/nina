@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              xmlns:local="clr-namespace:NINA.View"
              xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
@@ -19,7 +20,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">                    
                         <UniformGrid Columns="2" VerticalAlignment="Center">
                         <TextBlock Text="{ns:Loc LblIsMoving}"></TextBlock>
-                            <TextBlock Text="{Binding Focuser.IsMoving}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
+                        <CheckBox IsChecked="{Binding Focuser.IsMoving, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
                         </UniformGrid>                    
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">                    
@@ -50,19 +51,15 @@
                 </Border>
                 
                 <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}" MinHeight="30">
-                    <Grid IsEnabled="{Binding Focuser.TempComp, Converter={StaticResource InverseBooleanConverter}}">
-                        <Button  VerticalAlignment="Center" Height="35" Margin="10 10 10 0" Command="{Binding MoveFocuserCommand}"
-                            Visibility="{Binding Focuser.IsMoving, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                            <TextBlock Text ="{ns:Loc LblMove}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                        </Button>
-                        <Grid Visibility="{Binding Focuser, Converter={StaticResource NullToVisibilityConverter}}"
-                                VerticalAlignment="Center" Height="35" Margin="10 10 10 0">
-                        <Button   Command="{Binding HaltFocuserCommand}"
-                            Visibility="{Binding Focuser.IsMoving, Converter={StaticResource VisibilityConverter}}">
-                                <TextBlock Text ="{ns:Loc LblHalt}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                        </Button>
-                        </Grid>
-                    </Grid>
+                    <ninactrl:CancellableButton
+                                        Height="35" 
+                                        Command="{Binding MoveFocuserCommand}" 
+                                        CancelCommand="{Binding HaltFocuserCommand}" 
+                                        ButtonText="{ns:Loc LblMove}" 
+                                        CancelButtonImage="{StaticResource CancelSVG}"  
+                                        ToolTip=""
+                                        Margin="10" HorizontalAlignment="Left"
+                                        />
                 </Grid>                                    
             </StackPanel>
         </Grid>

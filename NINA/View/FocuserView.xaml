@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ns="clr-namespace:NINA.Locale"
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -166,19 +167,15 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBox Height="25" MinWidth="90" Text="{Binding TargetPosition}" Margin="5 0 0 0" />
                                 <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
-                                    <Grid IsEnabled="{Binding Focuser.TempComp, Converter={StaticResource InverseBooleanConverter}}">
-                                        <Button Margin="5" Height="25" Width="50" Command="{Binding MoveFocuserCommand}" HorizontalAlignment="Left"
-                                    Visibility="{Binding Focuser.IsMoving, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                            <TextBlock Text ="{ns:Loc LblMove}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                                        </Button>
-                                        <Grid Visibility="{Binding Focuser, Converter={StaticResource NullToVisibilityConverter}}"
-                                              Margin="5" Height="25" Width="50" HorizontalAlignment="Left">
-                                        <Button  Command="{Binding HaltFocuserCommand}" 
-                                    Visibility="{Binding Focuser.IsMoving, Converter={StaticResource VisibilityConverter}}">
-                                            <TextBlock Text="{ns:Loc LblHalt}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
-                                        </Button>
-                                        </Grid>
-                                    </Grid>
+                                    <ninactrl:CancellableButton
+                                        Width="50" Height="25" 
+                                        Command="{Binding MoveFocuserCommand}" 
+                                        CancelCommand="{Binding HaltFocuserCommand}" 
+                                        ButtonText="{ns:Loc LblMove}" 
+                                        CancelButtonImage="{StaticResource CancelSVG}"  
+                                        ToolTip=""
+                                        Margin="5" HorizontalAlignment="Left"
+                                        />
                                 </Grid>
                             </StackPanel>
                         </UniformGrid>
