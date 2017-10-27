@@ -152,6 +152,7 @@ namespace NINA.ViewModel {
 
     class FocuserChooserVM : EquipmentChooserVM {
         public override void GetEquipment() {
+            Devices.Clear();
             var ascomDevices = new ASCOM.Utilities.Profile();
 
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Focuser")) {
