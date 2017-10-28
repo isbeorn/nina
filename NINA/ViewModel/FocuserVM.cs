@@ -25,7 +25,7 @@ namespace NINA.ViewModel {
             HaltFocuserCommand = new RelayCommand(HaltFocuser);
 
             _updateFocuser = new DispatcherTimer();
-            _updateFocuser.Interval = TimeSpan.FromMilliseconds(300);
+            _updateFocuser.Interval = TimeSpan.FromMilliseconds(1000);
             _updateFocuser.Tick += UpdateFocuser_Tick;
 
             Mediator.Instance.RegisterAsync(async (object o) => {
@@ -65,9 +65,11 @@ namespace NINA.ViewModel {
         }
 
         private void UpdateFocuser_Tick(object sender, EventArgs e) {
-            if (Focuser?.Connected == true) {
-                Focuser.UpdateValues();
-            }
+            Task.Run(() => {
+                if (Focuser?.Connected == true) {
+                    Focuser.UpdateValues();
+                }
+            });            
         }
 
         public void ChooseFocuser(object obj) {
