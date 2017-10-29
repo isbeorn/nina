@@ -38,7 +38,7 @@
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">                    
                         <UniformGrid Columns="2" VerticalAlignment="Center">
                         <TextBlock Text="{ns:Loc LblTemperature}"></TextBlock>
-                            <TextBlock Text="{Binding Focuser.Temperature }" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
+                        <TextBlock Text="{Binding Focuser.Temperature, StringFormat=\{0:#.00\} }" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>                    
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">                    

@@ -32,6 +32,10 @@ namespace NINA.ViewModel {
                 int offset = (int)o;
                 await MoveFocuserRelative(offset);                
             },AsyncMediatorMessages.MoveFocuserRelative);
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                int position = (int)o;
+                await MoveFocuser(position);
+            },AsyncMediatorMessages.MoveFocuserAbsolute);
         }
 
         private void HaltFocuser(object obj) {

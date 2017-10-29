@@ -12,6 +12,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
+            <RowDefinition Height="35" />
             <RowDefinition Height="45" />
         </Grid.RowDefinitions>
         <oxy:Plot
@@ -57,8 +58,10 @@
             </oxy:Plot.Series>
         </oxy:Plot>
 
+        <TextBlock Grid.Row="1" Text="{Binding Status}" Margin="10, 0,0,0" VerticalAlignment="Center" />
+
         <ninactrl:CancellableButton 
-            Grid.Row="1" 
+            Grid.Row="2" 
             Height="35" Margin="10,10,10,0" 
             Command="{Binding StartAutoFocusCommand}" 
             ButtonText="{ns:Loc LblStartAutoFocus}" 

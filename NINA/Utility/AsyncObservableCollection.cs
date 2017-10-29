@@ -50,5 +50,16 @@ namespace NINA.Utility {
             // We are in the creator thread, call the base implementation directly
             base.OnPropertyChanged((PropertyChangedEventArgs)param);
         }
+
+        public void AddSorted(T item,IComparer<T> comparer = null) {
+            if (comparer == null)
+                comparer = Comparer<T>.Default;
+
+            int i = 0;
+            while (i < this.Count && comparer.Compare(this[i],item) < 0)
+                i++;
+
+            this.Insert(i,item);
+        }
     }
 }
