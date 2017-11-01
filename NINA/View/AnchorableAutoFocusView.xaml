@@ -24,7 +24,6 @@
                 <oxy:LinearAxis  Position="Left"  IsZoomEnabled="False" IsPanEnabled="False" 
                                                             StartPosition="0"
                                                             EndPosition="1"
-                                                            
                                                             TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                                                             AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                                                             TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"                                 
@@ -56,8 +55,20 @@
                         MarkerType="Circle"
                         Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"  />
             </oxy:Plot.Series>
+            <oxy:Plot.Annotations>
+                <oxy:LineAnnotation
+                    Slope="{Binding LeftTrend.Slope}"  
+                    Intercept="{Binding LeftTrend.Offset}"
+                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" 
+                />
+                <oxy:LineAnnotation
+                    Slope="{Binding RightTrend.Slope}"  
+                    Intercept="{Binding RightTrend.Offset}" 
+                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" 
+                    
+                />
+            </oxy:Plot.Annotations>
         </oxy:Plot>
-
         <TextBlock Grid.Row="1" Text="{Binding Status}" Margin="10, 0,0,0" VerticalAlignment="Center" />
 
         <ninactrl:CancellableButton 

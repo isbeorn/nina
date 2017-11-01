@@ -2,6 +2,7 @@
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Notification;
+using OxyPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace NINA.ViewModel {
             ContentId = nameof(AutoFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["AutoFocusSVG"];
 
-            FocusPoints = new AsyncObservableCollection<FocusPoint>();
+            FocusPoints = new AsyncObservableCollection<DataPoint>();
 
             StartAutoFocusCommand = new AsyncCommand<bool>(() => Task.Run(async () => await StartAutoFocus(new Progress<string>(p => Status = p))));
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
@@ -27,8 +28,8 @@ namespace NINA.ViewModel {
         }
 
         private CancellationTokenSource _autoFocusCancelToken;
-        private AsyncObservableCollection<FocusPoint> _focusPoints;
-        public AsyncObservableCollection<FocusPoint> FocusPoints {
+        private AsyncObservableCollection<DataPoint> _focusPoints;
+        public AsyncObservableCollection<DataPoint> FocusPoints {
             get {
                 return _focusPoints;
             }
@@ -37,6 +38,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        private DataPoint _minimum;
 
         private string _status;
         public string Status {
@@ -49,6 +52,30 @@ namespace NINA.ViewModel {
                 Mediator.Instance.Notify(MediatorMessages.StatusUpdate,_status);
             }
         }
+
+        private TrendLine _leftTrend;
+        public TrendLine LeftTrend {
+            get {
+                return _leftTrend;
+            }
+            set {
+                _leftTrend = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private TrendLine _rightTrend;
+        public TrendLine RightTrend {
+            get {
+                return _rightTrend;
+            }
+            set {
+                _rightTrend = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
 
         private ImageStatistics _imageStatistics;
         private int _focusPosition;
@@ -73,7 +100,7 @@ namespace NINA.ViewModel {
 
                 token.ThrowIfCancellationRequested();
 
-                FocusPoints.AddSorted(new FocusPoint(_focusPosition,_imageStatistics.HFR),comparer);                
+                FocusPoints.AddSorted(new DataPoint(_focusPosition,_imageStatistics.HFR),comparer);                
 
                 Logger.Trace("Moving focuser to next autofocus position");
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative,-stepSize);
@@ -81,11 +108,22 @@ namespace NINA.ViewModel {
                 token.ThrowIfCancellationRequested();
             }            
         }
+
+        private void CalculateTrends() {
+            _minimum = FocusPoints.Aggregate((l,r) => l.Y < r.Y ? l : r);
+            IEnumerable<DataPoint> leftTrendPoints = FocusPoints.Where((x) => x.X < _minimum.X && x.Y > (_minimum.Y + 0.1));
+            IEnumerable<DataPoint> rightTrendPoints = FocusPoints.Where((x) => x.X > _minimum.X && x.Y > (_minimum.Y + 0.1));
+            LeftTrend = new TrendLine(leftTrendPoints);
+            RightTrend = new TrendLine(rightTrendPoints);
+        }
         
         private async Task<bool> StartAutoFocus(IProgress<string> progress) {
             Logger.Trace("Starting Autofocus");
             _autoFocusCancelToken = new CancellationTokenSource();
             FocusPoints.Clear();
+            LeftTrend = null;
+            RightTrend = null;
+            _minimum = new DataPoint(0,0);
             try {
                 //Todo check if focuser and cam are connected
 
@@ -101,53 +139,44 @@ namespace NINA.ViewModel {
 
 
 
-                //Todo - when datapoints are not sufficient analyze and take more
-                FocusPoint minimum = FocusPoints.Aggregate((l,r) => l.HFR < r.HFR ? l : r);
-                IEnumerable<FocusPoint> leftTrendPoints = FocusPoints.Where((x) => x.FocusPosition < minimum.FocusPosition);
-                IEnumerable<FocusPoint> rightTrendPoints = FocusPoints.Where((x) => x.FocusPosition > minimum.FocusPosition);
-                do {
-                    var remainingSteps = Math.Abs(leftTrendPoints.Count() - rightTrendPoints.Count());
+                //When datapoints are not sufficient analyze and take more
+                CalculateTrends();
 
-                    if (rightTrendPoints.Count() < offsetSteps || leftTrendPoints.Count() > rightTrendPoints.Count()) {
+                do {
+                    var remainingSteps = Math.Min(Math.Abs(LeftTrend.DataPoints.Count() - RightTrend.DataPoints.Count()), offsetSteps);
+
+                    if (RightTrend.DataPoints.Count() < offsetSteps && LeftTrend.DataPoints.Count() > RightTrend.DataPoints.Count()) {
                         Logger.Trace("More datapoints needed to the right of the minimum");
                         //More points needed to the right                    
                         var offset = initialOffset * 2 + stepSize + remainingSteps * stepSize;  //todo
                         await GetFocusPoints(remainingSteps,stepSize,progress,_autoFocusCancelToken.Token,offset);
                     }
-                    else if (leftTrendPoints.Count() < offsetSteps || leftTrendPoints.Count() < rightTrendPoints.Count()) {
+                    else if (LeftTrend.DataPoints.Count() < offsetSteps && LeftTrend.DataPoints.Count() < RightTrend.DataPoints.Count()) {
                         Logger.Trace("More datapoints needed to the left of the minimum");
                         //More points needed to the left
                         //todo offset calc
                         await GetFocusPoints(remainingSteps,stepSize,progress,_autoFocusCancelToken.Token);
                     }
 
-                    minimum = FocusPoints.Aggregate((l,r) => l.HFR < r.HFR ? l : r);
 
-                    leftTrendPoints = FocusPoints.Where((x) => x.FocusPosition < minimum.FocusPosition);
-                    rightTrendPoints = FocusPoints.Where((x) => x.FocusPosition > minimum.FocusPosition);
+                    CalculateTrends();
 
                     _autoFocusCancelToken.Token.ThrowIfCancellationRequested();
-                } while (rightTrendPoints.Count() < offsetSteps || leftTrendPoints.Count() < offsetSteps);
+                } while (RightTrend.DataPoints.Count() < offsetSteps || LeftTrend.DataPoints.Count() < offsetSteps);
 
                 
 
                 _autoFocusCancelToken.Token.ThrowIfCancellationRequested();
 
+                //Get Trendline Intersection
+                var p = LeftTrend.Intersect(RightTrend);
 
-
-
-                //Todo calcualte trend lines and intersection
-                var trend1 = new TrendLine(leftTrendPoints);
-                var trend2 = new TrendLine(rightTrendPoints);
-
-                var p = trend1.Intersect(trend2);
-
-                progress.Report((string.Format("Ideal Position: {0}, Theretical HFR: {1}", p.FocusPosition,p.HFR)));
+                progress.Report((string.Format("Ideal Position: {0}, Theoretical HFR: {1}", p.X,p.Y)));
 
                 //Todo when data is too noisy for trend lines find something else
+                
 
-
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserAbsolute, p.FocusPosition);
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserAbsolute, (int)p.X);
             } catch (OperationCanceledException) {
                 FocusPoints.Clear();
             } catch(Exception ex) {
@@ -166,20 +195,11 @@ namespace NINA.ViewModel {
         public ICommand CancelAutoFocusCommand { get; private set; }
     }
 
-    public class FocusPoint {
-        public FocusPoint(int pos, double hfr) {
-            this.FocusPosition = pos;
-            this.HFR = hfr;
-        }
-        public int FocusPosition { get; private set; }
-        public double HFR { get; private set; }
-    }
-
-    public class FocusPointComparer:IComparer<FocusPoint> {
-        public int Compare(FocusPoint x,FocusPoint y) {
-            if(x.FocusPosition < y.FocusPosition) {
+    public class FocusPointComparer:IComparer<DataPoint> {
+        public int Compare(DataPoint x,DataPoint y) {
+            if(x.X < y.X) {
                 return -1;
-            } else if(x.FocusPosition > y.FocusPosition) {
+            } else if(x.X > y.X) {
                 return 1;
             } else {
                 return 0;
@@ -188,15 +208,15 @@ namespace NINA.ViewModel {
     }
 
     public class TrendLine {        
-        public TrendLine(IEnumerable<FocusPoint> l) {
-            _dataPoints = l;
+        public TrendLine(IEnumerable<DataPoint> l) {
+            DataPoints = l;
 
-            var n = _dataPoints.Count();
-            var sumXY = _dataPoints.Sum((x) => x.FocusPosition * x.HFR);
-            var sumX = _dataPoints.Sum((x) => x.FocusPosition);
-            var sumY = _dataPoints.Sum((x) => x.HFR);
+            var n = DataPoints.Count();
+            var sumXY = DataPoints.Sum((x) => x.X * x.Y);
+            var sumX = DataPoints.Sum((x) => x.X);
+            var sumY = DataPoints.Sum((x) => x.Y);
             var sumXsumY = sumX * sumY;
-            var sumXsquared = _dataPoints.Sum((x) => Math.Pow(x.FocusPosition,2));
+            var sumXsquared = DataPoints.Sum((x) => Math.Pow(x.X,2));
 
             var alpha = (n * sumXY - sumXsumY) / (n * sumXsquared - Math.Pow(sumX,2));
 
@@ -213,23 +233,21 @@ namespace NINA.ViewModel {
         public double Slope { get; set; }
         public double Offset { get; set; }
 
-        IEnumerable<FocusPoint> _dataPoints;
+        public IEnumerable<DataPoint> DataPoints { get; set; }
 
         public double GetY(double x) {
             return Slope * x + Offset;
         }
 
-        public FocusPoint Intersect(TrendLine line) {
+        public DataPoint Intersect(TrendLine line) {
             if(this.Slope == line.Slope) {
                 //Lines are parallel
-                return null;
+                return new DataPoint(0,0);
             }
             var x = (line.Offset - this.Offset) / (this.Slope - line.Slope);
             var y = this.Slope * x + this.Offset;
 
-            return new FocusPoint((int)Math.Round(x),y);
+            return new DataPoint((int)Math.Round(x),y);
         }
-
-
     }
 }

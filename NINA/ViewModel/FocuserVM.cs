@@ -68,12 +68,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void UpdateFocuser_Tick(object sender, EventArgs e) {
-            Task.Run(() => {
-                if (Focuser?.Connected == true) {
-                    Focuser.UpdateValues();
-                }
-            });            
+        private void UpdateFocuser_Tick(object sender, EventArgs e) {            
+            if (Focuser?.Connected == true) {
+                Focuser.UpdateValues();
+            }          
         }
 
         public void ChooseFocuser(object obj) {
