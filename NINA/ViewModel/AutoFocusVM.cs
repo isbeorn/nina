@@ -143,7 +143,7 @@ namespace NINA.ViewModel {
                 CalculateTrends();
 
                 do {
-                    var remainingSteps = Math.Min(Math.Abs(LeftTrend.DataPoints.Count() - RightTrend.DataPoints.Count()), offsetSteps);
+                    var remainingSteps = Math.Abs(LeftTrend.DataPoints.Count() - RightTrend.DataPoints.Count());
 
                     if (RightTrend.DataPoints.Count() < offsetSteps && LeftTrend.DataPoints.Count() > RightTrend.DataPoints.Count()) {
                         Logger.Trace("More datapoints needed to the right of the minimum");

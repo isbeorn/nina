@@ -21,30 +21,41 @@
             PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" >            
        
             <oxy:Plot.Axes>
-                <oxy:LinearAxis  Position="Left"  IsZoomEnabled="False" IsPanEnabled="False" 
-                                                            StartPosition="0"
-                                                            EndPosition="1"
-                                                            TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                            AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                            TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"                                 
+                <oxy:LinearAxis 
+                    Position="Left"  
+                    IsZoomEnabled="False" 
+                    IsPanEnabled="False" 
+                    StartPosition="0"
+                    EndPosition="1"
+                    MinimumPadding="0.1" 
+                    MaximumPadding="0.1"
+                                
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"                                 
                                                             
-                                                            MajorGridlineStyle="LongDash"
-                                                            MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
+                    MajorGridlineStyle="LongDash"
+                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
                                                    
-                                                            />
+                />
 
-                <oxy:LinearAxis  Position="Bottom"  IsZoomEnabled="False" IsPanEnabled="False"
-                                                            StartPosition="0"
-                                                            EndPosition="1"
+                <oxy:LinearAxis 
+                    Position="Bottom"  
+                    IsZoomEnabled="False" 
+                    IsPanEnabled="False"
+                    StartPosition="0"
+                    EndPosition="1"
+                    MinimumPadding="0.1" 
+                    MaximumPadding="0.1"
                                                             
-                                                            TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                            AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                            TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"                                 
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"                                 
                                                             
-                                                            MajorGridlineStyle="LongDash"
-                                                            MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
-                                                   
-                                                            />
+                    MajorGridlineStyle="LongDash"
+                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
+                                                            
+                />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries 
