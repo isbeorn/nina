@@ -106,6 +106,7 @@ namespace NINA.ViewModel {
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative,-stepSize);
 
                 token.ThrowIfCancellationRequested();
+                CalculateTrends();
             }            
         }
 
@@ -140,8 +141,6 @@ namespace NINA.ViewModel {
 
 
                 //When datapoints are not sufficient analyze and take more
-                CalculateTrends();
-
                 do {
                     var remainingSteps = Math.Abs(LeftTrend.DataPoints.Count() - RightTrend.DataPoints.Count());
 
@@ -159,7 +158,7 @@ namespace NINA.ViewModel {
                     }
 
 
-                    CalculateTrends();
+                    
 
                     _autoFocusCancelToken.Token.ThrowIfCancellationRequested();
                 } while (RightTrend.DataPoints.Count() < offsetSteps || LeftTrend.DataPoints.Count() < offsetSteps);
