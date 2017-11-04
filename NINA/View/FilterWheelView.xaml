@@ -110,7 +110,11 @@
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
-                <ListView Margin="0 10 0 0" ItemsSource="{Binding FW.Filters}" SelectedItem="{Binding SelectedFilter}">
+                <ListView 
+                        Margin="0 10 0 0" 
+                        ItemsSource="{Binding FW.Filters}" 
+                        SelectedItem="{Binding SelectedFilter}"
+                        IsEnabled="{Binding IsMoving, Converter={StaticResource InverseBooleanConverter}}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="{ns:Loc LblFilterName}" Width="Auto" DisplayMemberBinding="{Binding Name}" />

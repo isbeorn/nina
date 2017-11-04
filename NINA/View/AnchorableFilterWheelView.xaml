@@ -15,7 +15,10 @@
             </UniformGrid>
         </Border>
 
-        <ComboBox ItemsSource="{Binding FW.Filters}" SelectedItem="{Binding SelectedFilter}">
+        <ComboBox 
+                ItemsSource="{Binding FW.Filters}" 
+                SelectedItem="{Binding SelectedFilter}"
+                IsEnabled="{Binding IsMoving, Converter={StaticResource InverseBooleanConverter}}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}" />                        

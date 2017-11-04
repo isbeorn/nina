@@ -31,7 +31,6 @@ namespace NINA.ViewModel {
                     CancellationTokenSource token = null;
                     if (args.Length > 1) { token = (CancellationTokenSource)args[1]; }
                     FilterInfo filter = (FilterInfo)args[0];
-                    if (SelectedFilter != filter) { _selectedFilter = filter; RaisePropertyChanged(nameof(SelectedFilter)); }
 
                     await ChangeFilter(filter, token);                    
                 }                              
@@ -40,7 +39,7 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _changeFilterCancellationSource;
         private Task _changeFilterTask;
-        private bool ChangeFilterHelper() {
+        private bool ChangeFilterHelper(FilterInfo filter) {
             _changeFilterCancellationSource?.Cancel();
             try {
                 if(_changeFilterCancellationSource != null) {
@@ -50,17 +49,20 @@ namespace NINA.ViewModel {
 
             }
             _changeFilterCancellationSource = new CancellationTokenSource();
-            _changeFilterTask = ChangeFilter(SelectedFilter, _changeFilterCancellationSource);
+            _changeFilterTask = ChangeFilter(filter, _changeFilterCancellationSource);
             
             return true;
         }
 
-        private async Task<bool> ChangeFilter(FilterInfo filter, CancellationTokenSource token = null) {
+        private async Task<bool> ChangeFilter(FilterInfo filter, CancellationTokenSource token = null) {            
+            var prevFilter = SelectedFilter;
+
             if (FW?.Connected == true && FW?.Position != filter.Position) {
+                IsMoving = true;
                 Task changeFocus = null;
                 if (Settings.FocuserUseFilterWheelOffsets) {
-                    if (this._prevFilter != null) {
-                        int offset = this.SelectedFilter.FocusOffset - this._prevFilter.FocusOffset;
+                    if (prevFilter != null) {
+                        int offset = filter.FocusOffset - prevFilter.FocusOffset;
                         changeFocus =  Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative,offset);
                     }
                 }
@@ -75,14 +77,30 @@ namespace NINA.ViewModel {
 
                 if(changeFocus != null) {
                     await changeFocus;
-                }                
+                }
+                
                 await changeFilter;
+
+                IsMoving = false;
             }
+            _selectedFilter = filter;
+            RaisePropertyChanged(nameof(SelectedFilter));
             return true;
         }
 
         private void RefreshFWList(object obj) {
             FilterWheelChooserVM.GetEquipment();
+        }
+
+        private bool _isMoving;
+        public bool IsMoving {
+            get {
+                return _isMoving;
+            }
+            set {
+                _isMoving = value;
+                RaisePropertyChanged();
+            }
         }
 
         private IFilterWheel _fW;
@@ -96,17 +114,14 @@ namespace NINA.ViewModel {
                 Mediator.Instance.Notify(MediatorMessages.FilterWheelChanged, _fW);
             }
         }
-
-        private FilterInfo _prevFilter;
+                
         private FilterInfo _selectedFilter;
         public FilterInfo SelectedFilter {
             get {
                 return _selectedFilter;
             }
-            set {
-                _prevFilter = _selectedFilter;
-                _selectedFilter = value;
-                ChangeFilterHelper();
+            set {                
+                ChangeFilterHelper(value);
                 RaisePropertyChanged();
             }
         }
