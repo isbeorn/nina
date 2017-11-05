@@ -7,28 +7,30 @@
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
-            <RowDefinition Height="30" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" >
-            <UniformGrid Columns="2" VerticalAlignment="Center">
-                <TextBlock Text="{ns:Loc LblConnected}" VerticalAlignment="Center"></TextBlock>
-                <CheckBox IsChecked="{Binding Guider.Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />                
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" >
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock Text="{ns:Loc LblConnected}" VerticalAlignment="Center"></TextBlock>
+                    <CheckBox IsChecked="{Binding Guider.Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
 
-            </UniformGrid>
-        </Border>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" Grid.Row="1">
-            <UniformGrid Columns="2" VerticalAlignment="Center">
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" Grid.Row="1">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
 
-                <TextBlock Text="{ns:Loc LblState}"></TextBlock>
-                <TextBlock Text="{Binding Guider.AppState.State}" Margin="5,0,0,0" />
+                    <TextBlock Text="{ns:Loc LblState}"></TextBlock>
+                    <TextBlock Text="{Binding Guider.AppState.State}" Margin="5,0,0,0" />
 
-            </UniformGrid>
-        </Border>
-        <local:MinimalisticGuiderGraph Grid.Row="2" DataContext="{Binding}" IsEnabled="{Binding Guider.Connected }" />
+                </UniformGrid>
+            </Border>
+            <local:MinimalisticGuiderGraph MinHeight="80" Grid.Row="2" DataContext="{Binding}" IsEnabled="{Binding Guider.Connected }" />
 
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

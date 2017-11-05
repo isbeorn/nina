@@ -8,51 +8,53 @@
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <oxy:Plot 
-                 Background="{StaticResource BackgroundBrush}"
-                  PlotAreaBackground="{StaticResource BackgroundBrush}" 
-                  PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}"                   
-                  >
-            <oxy:Plot.Axes>
-                <oxy:LinearAxis  Position="Left" 
-                                  Maximum="10" 
-                                 Minimum="0"    
-                                 IntervalLength = "25" IsZoomEnabled="False" IsPanEnabled="False"
-                                 TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+        <Grid>
+            <oxy:Plot 
+                     Background="{StaticResource BackgroundBrush}"
+                      PlotAreaBackground="{StaticResource BackgroundBrush}" 
+                      PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}"                   
+                      >
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis  Position="Left" 
+                                      Maximum="10" 
+                                     Minimum="0"    
+                                     IntervalLength = "25" IsZoomEnabled="False" IsPanEnabled="False"
+                                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                                  
-                                 MajorGridlineStyle="Solid"
-                                 MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                                     MajorGridlineStyle="Solid"
+                                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                                  
-                                 />
-                <oxy:LinearAxis  Position="Right" Key="Secondary"
-                                  Maximum="400" 
-                                 Minimum="0"    
-                                 IntervalLength = "25" IsZoomEnabled="False" IsPanEnabled="False"
-                                 TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                     />
+                    <oxy:LinearAxis  Position="Right" Key="Secondary"
+                                      Maximum="400" 
+                                     Minimum="0"    
+                                     IntervalLength = "25" IsZoomEnabled="False" IsPanEnabled="False"
+                                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                                  
-                                 MajorGridlineStyle="Solid"
-                                 MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                                     MajorGridlineStyle="Solid"
+                                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                                  
-                                 />
-                <oxy:LinearAxis Position="Bottom" IntervalLength = "100" TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" IsZoomEnabled="False" IsPanEnabled="False"
-                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"/>
-            </oxy:Plot.Axes>
-            <oxy:Plot.Series>
-                <oxy:LineSeries  ItemsSource="{Binding ImgStatHistory}"  
-                                DataFieldX="Id" 
-                                DataFieldY="HFR" 
-                                MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" 
-                                MarkerType="Circle" />
-                <oxy:LineSeries ItemsSource="{Binding ImgStatHistory}"  
-                                DataFieldX="Id" YAxisKey="Secondary"
-                                DataFieldY="DetectedStars"  
-                                MarkerFill="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" 
-                                MarkerType="Circle" />
+                                     />
+                    <oxy:LinearAxis Position="Bottom" IntervalLength = "100" TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" IsZoomEnabled="False" IsPanEnabled="False"
+                                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"/>
+                </oxy:Plot.Axes>
+                <oxy:Plot.Series>
+                    <oxy:LineSeries  ItemsSource="{Binding ImgStatHistory}"  
+                                    DataFieldX="Id" 
+                                    DataFieldY="HFR" 
+                                    MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" 
+                                    MarkerType="Circle" />
+                    <oxy:LineSeries ItemsSource="{Binding ImgStatHistory}"  
+                                    DataFieldX="Id" YAxisKey="Secondary"
+                                    DataFieldY="DetectedStars"  
+                                    MarkerFill="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" 
+                                    MarkerType="Circle" />
 
-            </oxy:Plot.Series>
-        </oxy:Plot>
-    </Grid>
+                </oxy:Plot.Series>
+            </oxy:Plot>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

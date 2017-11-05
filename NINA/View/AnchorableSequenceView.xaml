@@ -8,77 +8,79 @@
              xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel Orientation="Vertical">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+        <StackPanel Orientation="Vertical">
 
-        <Grid  Height="25" Margin="5" >
-            <ProgressBar x:Name="pbSequences" Minimum="0" Maximum="{Binding Sequence.Count}" Value="{Binding Sequence.ActiveSequenceIndex, Mode=OneWay}" />
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock  Text="{Binding ElementName=pbSequences, Path=Value}" />
-                <TextBlock  Text=" / " />
-                <TextBlock  Text="{Binding ElementName=pbSequences, Path=Maximum}" />
-            </StackPanel>
-        </Grid>
-        
-        
-        <GroupBox Header="{ns:Loc LblActiveSequenceDetails}">
-            <StackPanel Orientation="Vertical" DataContext="{Binding Sequence.ActiveSequence}">
-                <Grid Height="25" Margin="5" >
-                    <ProgressBar x:Name="pbActiveSequence" Minimum="0" Maximum="{Binding TotalExposureCount, FallbackValue=0}" Value="{Binding ProgressExposureCount, Mode=OneWay}" />
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock  Text="{Binding ElementName=pbActiveSequence, Path=Value}" />
-                        <TextBlock  Text=" / " />
-                        <TextBlock  Text="{Binding ElementName=pbActiveSequence, Path=Maximum}" />
-                    </StackPanel>                    
-                </Grid>
-                
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                    <UniformGrid Columns="2" VerticalAlignment="Center" >
-                        <TextBlock Text="{ns:Loc LblRemaining}"></TextBlock>
-                        <TextBlock Text="{Binding ExposureCount}" Margin="5,0,0,0" />
-                    </UniformGrid>
-                </Border>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                    <UniformGrid Columns="2" VerticalAlignment="Center" >
-                        <TextBlock Text="{ns:Loc LblExposureTime}"></TextBlock>
-                        <TextBlock Text="{Binding ExposureTime}" Margin="5,0,0,0" />
-                    </UniformGrid>
-                </Border>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                    <UniformGrid Columns="2" VerticalAlignment="Center" >
-                        <TextBlock Text="{ns:Loc LblType}"></TextBlock>
-                        <TextBlock Text="{Binding ImageType}" Margin="5,0,0,0" />
-                    </UniformGrid>
-                </Border>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                    <UniformGrid Columns="2" VerticalAlignment="Center" >
-                        <TextBlock Text="{ns:Loc LblFilter}"></TextBlock>
-                        <TextBlock Text="{Binding FilterType}" Margin="5,0,0,0" />
-                    </UniformGrid>
-                </Border>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                    <UniformGrid Columns="2" VerticalAlignment="Center" >
-                        <TextBlock Text="{ns:Loc LblBinning}"></TextBlock>
-                        <TextBlock Text="{Binding Binning}" Margin="5,0,0,0" />
-                    </UniformGrid>
-                </Border>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                    <UniformGrid Columns="2" VerticalAlignment="Center" >
-                        <TextBlock Text="{ns:Loc LblGain}"></TextBlock>
-                        <TextBlock Text="{Binding Gain, Converter={StaticResource MinusOneToEmptyStringConverter}}" Margin="5,0,0,0" />
-                    </UniformGrid>
-                </Border>
-                                
-            </StackPanel>
-            
-        </GroupBox>
+            <Grid  Height="25" Margin="5" >
+                <ProgressBar x:Name="pbSequences" Minimum="0" Maximum="{Binding Sequence.Count}" Value="{Binding Sequence.ActiveSequenceIndex, Mode=OneWay}" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock  Text="{Binding ElementName=pbSequences, Path=Value}" />
+                    <TextBlock  Text=" / " />
+                    <TextBlock  Text="{Binding ElementName=pbSequences, Path=Maximum}" />
+                </StackPanel>
+            </Grid>
 
-        <ninactrl:CancellableButton 
-            Height="35" Margin="10 0 10 0"
-            Command="{Binding StartSequenceCommand}" 
-            CancelCommand="{Binding CancelSequenceCommand}" 
-            ButtonImage="{StaticResource PlaySVG}" 
-            CancelButtonImage="{StaticResource CancelSVG}" 
-            ToolTip="{ns:Loc LblTooltipStartSequence}"
-            />
-    </StackPanel>
+
+            <GroupBox Header="{ns:Loc LblActiveSequenceDetails}">
+                <StackPanel Orientation="Vertical" DataContext="{Binding Sequence.ActiveSequence}">
+                    <Grid Height="25" Margin="5" >
+                        <ProgressBar x:Name="pbActiveSequence" Minimum="0" Maximum="{Binding TotalExposureCount, FallbackValue=0}" Value="{Binding ProgressExposureCount, Mode=OneWay}" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock  Text="{Binding ElementName=pbActiveSequence, Path=Value}" />
+                            <TextBlock  Text=" / " />
+                            <TextBlock  Text="{Binding ElementName=pbActiveSequence, Path=Maximum}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                        <UniformGrid Columns="2" VerticalAlignment="Center" >
+                            <TextBlock Text="{ns:Loc LblRemaining}"></TextBlock>
+                            <TextBlock Text="{Binding ExposureCount}" Margin="5,0,0,0" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                        <UniformGrid Columns="2" VerticalAlignment="Center" >
+                            <TextBlock Text="{ns:Loc LblExposureTime}"></TextBlock>
+                            <TextBlock Text="{Binding ExposureTime}" Margin="5,0,0,0" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                        <UniformGrid Columns="2" VerticalAlignment="Center" >
+                            <TextBlock Text="{ns:Loc LblType}"></TextBlock>
+                            <TextBlock Text="{Binding ImageType}" Margin="5,0,0,0" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                        <UniformGrid Columns="2" VerticalAlignment="Center" >
+                            <TextBlock Text="{ns:Loc LblFilter}"></TextBlock>
+                            <TextBlock Text="{Binding FilterType}" Margin="5,0,0,0" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                        <UniformGrid Columns="2" VerticalAlignment="Center" >
+                            <TextBlock Text="{ns:Loc LblBinning}"></TextBlock>
+                            <TextBlock Text="{Binding Binning}" Margin="5,0,0,0" />
+                        </UniformGrid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                        <UniformGrid Columns="2" VerticalAlignment="Center" >
+                            <TextBlock Text="{ns:Loc LblGain}"></TextBlock>
+                            <TextBlock Text="{Binding Gain, Converter={StaticResource MinusOneToEmptyStringConverter}}" Margin="5,0,0,0" />
+                        </UniformGrid>
+                    </Border>
+
+                </StackPanel>
+
+            </GroupBox>
+
+            <ninactrl:CancellableButton 
+                Height="35" Margin="10 0 10 0"
+                Command="{Binding StartSequenceCommand}" 
+                CancelCommand="{Binding CancelSequenceCommand}" 
+                ButtonImage="{StaticResource PlaySVG}" 
+                CancelButtonImage="{StaticResource CancelSVG}" 
+                ToolTip="{ns:Loc LblTooltipStartSequence}"
+                />
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

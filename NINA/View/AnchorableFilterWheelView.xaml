@@ -7,23 +7,25 @@
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-            <UniformGrid Columns="2" VerticalAlignment="Center">
-                <TextBlock Text="{ns:Loc LblConnected}" VerticalAlignment="Center"></TextBlock>
-                <CheckBox IsChecked="{Binding FW.Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
-            </UniformGrid>
-        </Border>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+        <StackPanel>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock Text="{ns:Loc LblConnected}" VerticalAlignment="Center"></TextBlock>
+                    <CheckBox IsChecked="{Binding FW.Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
+                </UniformGrid>
+            </Border>
 
-        <ComboBox 
+            <ComboBox 
                 ItemsSource="{Binding FW.Filters}" 
                 SelectedItem="{Binding SelectedFilter}"
                 IsEnabled="{Binding IsMoving, Converter={StaticResource InverseBooleanConverter}}">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Name}" />                        
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-    </StackPanel>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

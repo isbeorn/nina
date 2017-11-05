@@ -9,87 +9,89 @@
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="35" />
-            <RowDefinition Height="45" />
-        </Grid.RowDefinitions>
-        <oxy:Plot
-            Background="{StaticResource BackgroundBrush}"
-            PlotAreaBackground="{StaticResource BackgroundBrush}" 
-            PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" >            
-       
-            <oxy:Plot.Axes>
-                <oxy:LinearAxis 
-                    Position="Left"  
-                    IsZoomEnabled="False" 
-                    IsPanEnabled="False" 
-                    StartPosition="0"
-                    EndPosition="1"
-                    MinimumPadding="0.1" 
-                    MaximumPadding="0.1"
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="45" />
+            </Grid.RowDefinitions>
+            <oxy:Plot
+                Background="{StaticResource BackgroundBrush}"
+                PlotAreaBackground="{StaticResource BackgroundBrush}" 
+                PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" >
+
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis 
+                        Position="Left"  
+                        IsZoomEnabled="False" 
+                        IsPanEnabled="False" 
+                        StartPosition="0"
+                        EndPosition="1"
+                        MinimumPadding="0.1" 
+                        MaximumPadding="0.1"
                                 
-                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"                                 
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"                                 
                                                             
-                    MajorGridlineStyle="LongDash"
-                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
+                        MajorGridlineStyle="LongDash"
+                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
                                                    
-                />
+                    />
 
-                <oxy:LinearAxis 
-                    Position="Bottom"  
-                    IsZoomEnabled="False" 
-                    IsPanEnabled="False"
-                    StartPosition="0"
-                    EndPosition="1"
-                    MinimumPadding="0.1" 
-                    MaximumPadding="0.1"
+                    <oxy:LinearAxis 
+                        Position="Bottom"  
+                        IsZoomEnabled="False" 
+                        IsPanEnabled="False"
+                        StartPosition="0"
+                        EndPosition="1"
+                        MinimumPadding="0.1" 
+                        MaximumPadding="0.1"
                                                             
-                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"                                 
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"                                 
                                                             
-                    MajorGridlineStyle="LongDash"
-                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
+                        MajorGridlineStyle="LongDash"
+                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
                                                             
-                />
-            </oxy:Plot.Axes>
-            <oxy:Plot.Series>
-                <oxy:LineSeries 
-                        ItemsSource="{Binding FocusPoints}"                                                 
-                        DataFieldX="FocusPosition"                                                 
-                        DataFieldY="HFR" 
-                        MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" 
-                        MarkerType="Circle"
-                        Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"  />
-            </oxy:Plot.Series>
-            <oxy:Plot.Annotations>
-                <oxy:LineAnnotation
-                    Slope="{Binding LeftTrend.Slope}"  
-                    Intercept="{Binding LeftTrend.Offset}"
-                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" 
-                />
-                <oxy:LineAnnotation
-                    Slope="{Binding RightTrend.Slope}"  
-                    Intercept="{Binding RightTrend.Offset}" 
-                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" 
+                    />
+                </oxy:Plot.Axes>
+                <oxy:Plot.Series>
+                    <oxy:LineSeries 
+                            ItemsSource="{Binding FocusPoints}"                                                 
+                            DataFieldX="FocusPosition"                                                 
+                            DataFieldY="HFR" 
+                            MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" 
+                            MarkerType="Circle"
+                            Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"  />
+                </oxy:Plot.Series>
+                <oxy:Plot.Annotations>
+                    <oxy:LineAnnotation
+                        Slope="{Binding LeftTrend.Slope}"  
+                        Intercept="{Binding LeftTrend.Offset}"
+                        Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" 
+                    />
+                    <oxy:LineAnnotation
+                        Slope="{Binding RightTrend.Slope}"  
+                        Intercept="{Binding RightTrend.Offset}" 
+                        Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" 
                     
+                    />
+                </oxy:Plot.Annotations>
+            </oxy:Plot>
+            <TextBlock Grid.Row="1" Text="{Binding Status}" Margin="10, 0,0,0" VerticalAlignment="Center" />
+
+            <ninactrl:CancellableButton 
+                Grid.Row="2" 
+                Height="35" Margin="10,10,10,0" 
+                Command="{Binding StartAutoFocusCommand}" 
+                ButtonText="{ns:Loc LblStartAutoFocus}" 
+                CancelCommand="{Binding CancelAutoFocusCommand}" 
+                CancelButtonImage="{StaticResource CancelSVG}"  
                 />
-            </oxy:Plot.Annotations>
-        </oxy:Plot>
-        <TextBlock Grid.Row="1" Text="{Binding Status}" Margin="10, 0,0,0" VerticalAlignment="Center" />
 
-        <ninactrl:CancellableButton 
-            Grid.Row="2" 
-            Height="35" Margin="10,10,10,0" 
-            Command="{Binding StartAutoFocusCommand}" 
-            ButtonText="{ns:Loc LblStartAutoFocus}" 
-            CancelCommand="{Binding CancelAutoFocusCommand}" 
-            CancelButtonImage="{StaticResource CancelSVG}"  
-            />
-
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

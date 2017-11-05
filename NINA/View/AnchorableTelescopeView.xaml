@@ -7,66 +7,68 @@
              xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel Orientation="Vertical">
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-            <UniformGrid Columns="2" VerticalAlignment="Center">
-                <TextBlock Text="{ns:Loc LblConnected}" VerticalAlignment="Center"></TextBlock>
-                <CheckBox IsChecked="{Binding Telescope.Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />                
-            </UniformGrid>
-        </Border>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-            <UniformGrid Columns="2" VerticalAlignment="Center">
-                <TextBlock Text="{ns:Loc LblTracking}" VerticalAlignment="Center"></TextBlock>
-                <CheckBox IsChecked="{Binding Telescope.Tracking, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
-            </UniformGrid>
-        </Border>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-            <UniformGrid Columns="2" VerticalAlignment="Center" >
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+        <StackPanel Orientation="Vertical">
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock Text="{ns:Loc LblConnected}" VerticalAlignment="Center"></TextBlock>
+                    <CheckBox IsChecked="{Binding Telescope.Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock Text="{ns:Loc LblTracking}" VerticalAlignment="Center"></TextBlock>
+                    <CheckBox IsChecked="{Binding Telescope.Tracking, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center" >
 
-                <TextBlock Text="{ns:Loc LblSiderealTime}"></TextBlock>
-                <TextBlock Text="{Binding Telescope.SiderealTimeString}" Margin="5,0,0,0" />
+                    <TextBlock Text="{ns:Loc LblSiderealTime}"></TextBlock>
+                    <TextBlock Text="{Binding Telescope.SiderealTimeString}" Margin="5,0,0,0" />
 
-            </UniformGrid>
-        </Border>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-            <UniformGrid Columns="2" VerticalAlignment="Center">
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
 
-                <TextBlock Text="{ns:Loc LblMeridianIn}"></TextBlock>
-                <TextBlock Text="{Binding Telescope.HoursToMeridianString}" Margin="5,0,0,0" />
+                    <TextBlock Text="{ns:Loc LblMeridianIn}"></TextBlock>
+                    <TextBlock Text="{Binding Telescope.HoursToMeridianString}" Margin="5,0,0,0" />
 
-            </UniformGrid>
-        </Border>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-            <UniformGrid Columns="2" VerticalAlignment="Center" >
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center" >
 
-                <TextBlock Text="{ns:Loc LblRightAscension}"></TextBlock>
-                <TextBlock Text="{Binding Telescope.RightAscensionString}" Margin="5,0,0,0" />
+                    <TextBlock Text="{ns:Loc LblRightAscension}"></TextBlock>
+                    <TextBlock Text="{Binding Telescope.RightAscensionString}" Margin="5,0,0,0" />
 
-            </UniformGrid>
-        </Border>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-            <UniformGrid Columns="2" VerticalAlignment="Center">
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
 
-                <TextBlock Text="{ns:Loc LblDeclination}"></TextBlock>
-                <TextBlock Text="{Binding Telescope.DeclinationString}" Margin="5,0,0,0" />
+                    <TextBlock Text="{ns:Loc LblDeclination}"></TextBlock>
+                    <TextBlock Text="{Binding Telescope.DeclinationString}" Margin="5,0,0,0" />
 
-            </UniformGrid>
-        </Border>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-            <UniformGrid Columns="2" VerticalAlignment="Center" >
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center" >
 
-                <TextBlock Text="{ns:Loc LblAltitude}"></TextBlock>
-                <TextBlock Text="{Binding Telescope.AltitudeString}" Margin="5,0,0,0" />
-            </UniformGrid>
-        </Border>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-            <UniformGrid Columns="2" VerticalAlignment="Center">
-                <TextBlock Text="{ns:Loc LblAzimuth}"></TextBlock>
+                    <TextBlock Text="{ns:Loc LblAltitude}"></TextBlock>
+                    <TextBlock Text="{Binding Telescope.AltitudeString}" Margin="5,0,0,0" />
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <TextBlock Text="{ns:Loc LblAzimuth}"></TextBlock>
 
 
-                <TextBlock Text="{Binding Telescope.AzimuthString}" Margin="5,0,0,0" />
+                    <TextBlock Text="{Binding Telescope.AzimuthString}" Margin="5,0,0,0" />
 
-            </UniformGrid>
-        </Border>
-    </StackPanel>
+                </UniformGrid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

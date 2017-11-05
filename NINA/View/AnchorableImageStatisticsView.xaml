@@ -7,41 +7,43 @@
               xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid DataContext="{Binding Statistics}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="120" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"  >
-            <StackPanel  VerticalAlignment="Top" Margin="5">
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblWidth}"></TextBlock>
-                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Width, StringFormat=\{0:#0\}}" />
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+        <Grid DataContext="{Binding Statistics}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="120" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"  >
+                <StackPanel  VerticalAlignment="Top" Margin="5">
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblWidth}"></TextBlock>
+                        <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Width, StringFormat=\{0:#0\}}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblHeight}"></TextBlock>
+                        <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Height, StringFormat=\{0:#\}}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblMean}"></TextBlock>
+                        <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Mean, StringFormat=\{0:#.00\}}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblStDev}"></TextBlock>
+                        <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding StDev, StringFormat=\{0:#.00\}}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblNrStars}"></TextBlock>
+                        <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding DetectedStars, StringFormat=\{0:#\}}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblHFR}"></TextBlock>
+                        <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblHeight}"></TextBlock>
-                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Height, StringFormat=\{0:#\}}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblMean}"></TextBlock>
-                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding Mean, StringFormat=\{0:#.00\}}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblStDev}"></TextBlock>
-                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding StDev, StringFormat=\{0:#.00\}}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblNrStars}"></TextBlock>
-                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding DetectedStars, StringFormat=\{0:#\}}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Width="70" Text="{ns:Loc LblHFR}"></TextBlock>
-                    <TextBlock HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
-                </StackPanel>
-            </StackPanel>
-        </Border>
-        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Grid.Row="1" >
-            <local:HistogramView />
-        </Border>
-    </Grid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Grid.Row="1" >
+                <local:HistogramView MinHeight="80" />
+            </Border>
+        </Grid>
+    </ScrollViewer>
 </UserControl>
