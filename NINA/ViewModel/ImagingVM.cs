@@ -305,6 +305,9 @@ namespace NINA.ViewModel {
                             throw new OperationCanceledException();
                         }
 
+                        /*Dither*/
+                        var ditherTask = Dither(seq,tokenSource,progress);
+
                         /*Download Image */
                         ImageArray arr = await Download(tokenSource, progress);
                         if (arr == null) {
@@ -323,35 +326,23 @@ namespace NINA.ViewModel {
                         if (Cam?.Connected != true) {
                             tokenSource.Cancel();
                             throw new OperationCanceledException();
-                        }
+                        }                        
 
                         /*Save to disk*/
                         if (bSave) {
                             await Save(sequence, tokenSource, progress);
                         }
 
-                        /*Dither*/
-                        await Dither(seq, tokenSource, progress);
+                        //Wait for dither to finish. Runs in parallel to save.
+                        progress.Report(ExposureStatus.DITHERING);
+                        await ditherTask;
+                        
 
                         if (Cam?.Connected != true) {
                             tokenSource.Cancel();
                             throw new OperationCanceledException();
                         }
                     }
-
-                    /*foreach (CaptureSequence seq in sequence) {
-
-                        sequence.SetActiveSequence(seq);                                             
-                        
-                        while (seq.ExposureCount > 0) {
-                        */
-                            
-
-                            
-                    /*
-                        }
-                    }
-                    */
                 } catch (System.OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
                     if (Cam?.Connected == true) {
