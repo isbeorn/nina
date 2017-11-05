@@ -55,7 +55,7 @@ namespace NINA.ViewModel {
 
         public string Version {
             get {               
-                return "v. 1.2.0";
+                return "v. 1.2.1";
             }
         }
 
