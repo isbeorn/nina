@@ -258,7 +258,6 @@ namespace NINATest {
             Assert.AreEqual(CaptureSequence.ImageTypes.LIGHT, seq.ImageType, "ImageType value not as expected");
             Assert.AreEqual(0, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
             Assert.AreEqual(1, seq.TotalExposureCount, "TotalExposureCount value not as expected");
-            Assert.AreEqual(1, seq.ExposureNr,"ExposureNr value not as expected");
         }
 
         [TestMethod]
@@ -285,7 +284,6 @@ namespace NINATest {
             Assert.AreEqual(imageType, seq.ImageType, "ImageType value not as expected");
             Assert.AreEqual(0, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
             Assert.AreEqual(exposureCount, seq.TotalExposureCount, "TotalExposureCount value not as expected");
-            Assert.AreEqual(1,seq.ExposureNr,"ExposureNr value not as expected");
         }
 
         [TestMethod]
@@ -309,7 +307,6 @@ namespace NINATest {
             Assert.AreEqual(exposureCount - exposuresTaken, seq.ExposureCount, "ExposureCount value not as expected");
             Assert.AreEqual(exposuresTaken, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
             Assert.AreEqual(exposureCount, seq.TotalExposureCount, "TotalExposureCount value not as expected");
-            Assert.AreEqual(exposuresTaken + 1, seq.ExposureNr,"ExposureNr value not as expected");
         }
 
 

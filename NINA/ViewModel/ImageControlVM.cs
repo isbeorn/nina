@@ -272,7 +272,7 @@ namespace NINA.ViewModel {
 
             var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
             var activeCaptureSequence = sequence.ActiveSequence;
-            var framenr = sequence.ActiveSequence.ExposureNr;
+            var framenr = sequence.ActiveSequence.ProgressExposureCount;
             return await SaveToDisk(activeCaptureSequence.ExposureTime, filter, activeCaptureSequence.ImageType, activeCaptureSequence.Binning.Name, Cam.CCDTemperature, framenr, tokenSource, progress, sequence.TargetName);
 
         }
