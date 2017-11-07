@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyFocuser {
     class AscomFocuser : BaseINPC, IFocuser, IDisposable {
 
-        public AscomFocuser(string focuserwheel, string name) {
-            Id = focuserwheel;
+        public AscomFocuser(string focuser, string name) {
+            Id = focuser;
             Name = name;
         }
 
@@ -126,16 +126,16 @@ namespace NINA.Model.MyFocuser {
             }
         }
 
-        private bool _hasTempearture;
+        private bool _hasTemperature;
         public double Temperature {
             get {
                 double temperature = double.NaN;
                 try {
-                    if (Connected && _hasTempearture) {
+                    if (Connected && _hasTemperature) {
                         temperature = _focuser.Temperature;
                     }
                 } catch (PropertyNotImplementedException) {
-                    _hasTempearture = false;
+                    _hasTemperature = false;
                 }
                 return temperature;
             }
@@ -271,7 +271,7 @@ namespace NINA.Model.MyFocuser {
         private void init() {
             _canGetPosition = true;
             _canGetStepSize = true;
-            _hasTempearture = true;
+            _hasTemperature = true;
             _canHalt = true;
         }
 
