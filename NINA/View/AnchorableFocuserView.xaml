@@ -10,12 +10,12 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <ScrollViewer VerticalScrollBarVisibility="Auto" >
         <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <Grid  IsEnabled="{Binding Focuser.Connected}">
+            <Grid  IsEnabled="{Binding Connected}">
                 <StackPanel Orientation="Vertical">
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblConnected}" VerticalAlignment="Center"></TextBlock>
-                            <CheckBox IsChecked="{Binding Focuser.Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
+                            <CheckBox IsChecked="{Binding Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">

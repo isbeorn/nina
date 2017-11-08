@@ -79,7 +79,8 @@ namespace NINA.Utility {
         FocuserPositionChanged = 24,
         TelescopeSnapPort = 25,
         FocuserTemperatureChanged = 26,
-        FocuserIsMovingChanged = 27
+        FocuserIsMovingChanged = 27,
+        FocuserConnectedChanged = 28
     };
 
     public enum AsyncMediatorMessages {

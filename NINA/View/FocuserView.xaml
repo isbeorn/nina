@@ -20,7 +20,7 @@
                         <ColumnDefinition Width="40" />
                     </Grid.ColumnDefinitions>
                     <ComboBox MinHeight="40" 
-                                          IsEnabled="{Binding Focuser.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                          IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
                                           ItemsSource="{Binding FocuserChooserVM.Devices}" 
                                           SelectedItem="{Binding FocuserChooserVM.SelectedDevice}" 
                                           SelectedValuePath="Name" 
@@ -49,8 +49,8 @@
                     </Button>
                     <Grid Height="40" Width="40" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Button Command="{Binding ChooseFocuserCommand}"  
-                                        IsEnabled="{Binding Focuser.Connected, Converter={StaticResource InverseBooleanConverter}}"
-                                        Visibility="{Binding Focuser.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                        IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                        Visibility="{Binding Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                             <Button.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
                                     <TextBlock Text="{ns:Loc LblConnect}" />
@@ -63,8 +63,8 @@
                         </Button>
                         <Grid Visibility="{Binding Focuser, Converter={StaticResource NullToVisibilityConverter}}">
                             <Button  Command="{Binding DisconnectCommand}" 
-                                             IsEnabled="{Binding Focuser.Connected}" 
-                                             Visibility="{Binding Focuser.Connected, Converter={StaticResource VisibilityConverter}}">
+                                             IsEnabled="{Binding Connected}" 
+                                             Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}">
                                 <Button.ToolTip>
                                     <ToolTip ToolTipService.ShowOnDisabled="False">
                                         <TextBlock Text="{ns:Loc LblDisconnect}" />

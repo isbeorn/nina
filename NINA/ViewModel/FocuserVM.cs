@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -76,6 +77,7 @@ namespace NINA.ViewModel {
         public void ChooseFocuser(object obj) {
             Focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
             if (Focuser?.Connect() == true) {
+                Connected = true;
                 _updateFocuserWorker?.CancelAsync();
                 _updateFocuserWorker = new BackgroundWorker();
                 _updateFocuserWorker.WorkerReportsProgress = true;
@@ -92,21 +94,36 @@ namespace NINA.ViewModel {
 
         private void _updateFocuserWorker_ProgressChanged(object sender,ProgressChangedEventArgs e) {
             var focuserValues = (Dictionary <string, object>)e.UserState;
-            Position = (int)focuserValues[nameof(Position)];
-            Temperature = (double)focuserValues[nameof(Temperature)];
-            IsMoving = (bool)focuserValues[nameof(IsMoving)];
-            TempComp = (bool)focuserValues[nameof(TempComp)];
+
+            object o = null;
+            focuserValues.TryGetValue(nameof(Connected),out o);
+            Connected = (bool)(o ?? false);
+
+            focuserValues.TryGetValue(nameof(Position),out o);
+            Position = (int)(o ?? 0);
+
+            focuserValues.TryGetValue(nameof(Temperature),out o);
+            Temperature = (double)(o ?? double.NaN);
+
+            focuserValues.TryGetValue(nameof(IsMoving),out o);
+            IsMoving = (bool)(o ?? false);
+
+            focuserValues.TryGetValue(nameof(TempComp),out o);
+            TempComp = (bool)(o ?? false);
         }
 
         private void _updateFocuserWorker_DoWork(object sender,DoWorkEventArgs e) {
+            Dictionary<string,object> focuserValues = new Dictionary<string,object>();
             do {
                 if (_updateFocuserWorker.CancellationPending) {
                     break;
                 }
 
-                Dictionary<string,object> focuserValues = new Dictionary<string,object>();
+                Stopwatch sw = Stopwatch.StartNew();
+                focuserValues.Clear();
+                focuserValues.Add(nameof(Connected),_focuser?.Connected ?? false);
                 focuserValues.Add(nameof(Position), _focuser?.Position ?? 0);
-                focuserValues.Add(nameof(Temperature),_focuser?.Temperature ?? 0.0d);
+                focuserValues.Add(nameof(Temperature),_focuser?.Temperature ?? double.NaN);
                 focuserValues.Add(nameof(IsMoving),_focuser?.IsMoving ?? false);
                 focuserValues.Add(nameof(TempComp),_focuser?.TempComp ?? false);
                 
@@ -116,10 +133,28 @@ namespace NINA.ViewModel {
                     break;
                 }
 
-                Thread.Sleep(2000);
-            } while (true);
-            
-            
+                var elapsed = (int)sw.Elapsed.TotalMilliseconds;
+
+                //Update after one second + the time it takes to read the values
+                Thread.Sleep(elapsed + 1000);
+                
+            } while (Connected == true);
+
+            focuserValues.Clear();
+            focuserValues.Add(nameof(Connected), false);
+            _updateFocuserWorker.ReportProgress(0,focuserValues);
+        }
+
+        private bool _connected;
+        public bool Connected {
+            get {
+                return _connected;
+            }
+            private set {
+                _connected = value;
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.FocuserConnectedChanged,_connected);
+            }
         }
 
         private int _position;
@@ -189,6 +224,7 @@ namespace NINA.ViewModel {
             _updateFocuserWorker?.CancelAsync();
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Focuser?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
+                Connected = false;
                 Focuser?.Disconnect();
                 Focuser = null;
                 RaisePropertyChanged(nameof(Focuser));
