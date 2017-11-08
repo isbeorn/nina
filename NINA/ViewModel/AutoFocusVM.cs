@@ -20,11 +20,19 @@ namespace NINA.ViewModel {
 
             FocusPoints = new AsyncObservableCollection<DataPoint>();
 
-            StartAutoFocusCommand = new AsyncCommand<bool>(() => Task.Run(async () => await StartAutoFocus(new Progress<string>(p => Status = p))));
+            StartAutoFocusCommand = new AsyncCommand<bool>(
+                () => 
+                    Task.Run(
+                        async () => await StartAutoFocus(new Progress<string>(p => Status = p))
+                    ),  
+                (p) => { return _focuserConnected && _cameraConnected; }
+            );
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
 
-            Mediator.Instance.Register((object o) => _imageStatistics = (ImageStatistics)o,MediatorMessages.ImageStatisticsChanged);
-            Mediator.Instance.Register((object o) => _focusPosition = (int)o,MediatorMessages.FocuserPositionChanged);
+            Mediator.Instance.Register((object o) => _imageStatistics = (ImageStatistics)o, MediatorMessages.ImageStatisticsChanged);
+            Mediator.Instance.Register((object o) => _focusPosition = (int)o, MediatorMessages.FocuserPositionChanged);
+            Mediator.Instance.Register((object o) => _focuserConnected = (bool)o, MediatorMessages.FocuserConnectedChanged);
+            Mediator.Instance.Register((object o) => _cameraConnected = (bool)o,MediatorMessages.CameraConnectedChanged);
         }
 
         private CancellationTokenSource _autoFocusCancelToken;
@@ -79,6 +87,8 @@ namespace NINA.ViewModel {
 
         private ImageStatistics _imageStatistics;
         private int _focusPosition;
+        private bool _focuserConnected;
+        private bool _cameraConnected;
 
         private async Task GetFocusPoints(int nrOfSteps, int stepSize, IProgress<string> progress, CancellationToken token, int initialOffset = 0) {
             
@@ -119,6 +129,11 @@ namespace NINA.ViewModel {
         }
         
         private async Task<bool> StartAutoFocus(IProgress<string> progress) {
+            if(!(_focuserConnected && _cameraConnected)) {
+                Notification.ShowError(Locale.Loc.Instance["LblAutoFocusGearNotConnected"]);
+                return false;
+            }
+
             Logger.Trace("Starting Autofocus");
             _autoFocusCancelToken = new CancellationTokenSource();
             FocusPoints.Clear();
@@ -126,7 +141,6 @@ namespace NINA.ViewModel {
             RightTrend = null;
             _minimum = new DataPoint(0,0);
             try {
-                //Todo check if focuser and cam are connected
 
                 Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars,true);
 
@@ -138,30 +152,34 @@ namespace NINA.ViewModel {
 
                 await GetFocusPoints(nrOfSteps,stepSize,progress,_autoFocusCancelToken.Token,initialOffset);
 
-
-
+                int leftcount = 0, rightcount = 0;
                 //When datapoints are not sufficient analyze and take more
                 do {
-                    var remainingSteps = Math.Abs(LeftTrend.DataPoints.Count() - RightTrend.DataPoints.Count());
+                    leftcount = LeftTrend.DataPoints.Count();
+                    rightcount = RightTrend.DataPoints.Count();
 
-                    if (RightTrend.DataPoints.Count() < offsetSteps && LeftTrend.DataPoints.Count() > RightTrend.DataPoints.Count()) {
+                    if(leftcount == 0 && rightcount == 0) {
+                        Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"]);
+                        progress.Report(Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"]);
+                        return false;
+                    }
+
+                    var remainingSteps = Math.Abs(leftcount - RightTrend.DataPoints.Count());
+
+                    if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
                         Logger.Trace("More datapoints needed to the right of the minimum");
                         //More points needed to the right                    
                         var offset = initialOffset * 2 + stepSize + remainingSteps * stepSize;  //todo
                         await GetFocusPoints(remainingSteps,stepSize,progress,_autoFocusCancelToken.Token,offset);
                     }
-                    else if (LeftTrend.DataPoints.Count() < offsetSteps && LeftTrend.DataPoints.Count() < RightTrend.DataPoints.Count()) {
+                    else if (LeftTrend.DataPoints.Count() < offsetSteps && leftcount < rightcount) {
                         Logger.Trace("More datapoints needed to the left of the minimum");
                         //More points needed to the left
-                        //todo offset calc
                         await GetFocusPoints(remainingSteps,stepSize,progress,_autoFocusCancelToken.Token);
                     }
 
-
-                    
-
                     _autoFocusCancelToken.Token.ThrowIfCancellationRequested();
-                } while (RightTrend.DataPoints.Count() < offsetSteps || LeftTrend.DataPoints.Count() < offsetSteps);
+                } while (rightcount < offsetSteps || leftcount < offsetSteps);
 
                 
 
@@ -170,7 +188,7 @@ namespace NINA.ViewModel {
                 //Get Trendline Intersection
                 var p = LeftTrend.Intersect(RightTrend);
 
-                progress.Report((string.Format("Ideal Position: {0}, Theoretical HFR: {1}", p.X,p.Y)));
+                progress.Report((string.Format("Ideal Position: {0}, Theoretical HFR: {1}", p.X, Math.Round(p.Y, 2))));
 
                 //Todo when data is too noisy for trend lines find something else
                 

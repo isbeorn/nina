@@ -328,4 +328,6 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblUseSnapPort">Teleskop Snap Port nutzen</s:String>
     <s:String x:Key="LblSnapPortStart">Snap Port Start Kommando</s:String>
     <s:String x:Key="LblSnapPortStop">Snap Port Stop Kommando</s:String>
+    <s:String x:Key="LblAutoFocusGearNotConnected">Autofokus kann nicht gestartet werden. Kamera oder Motorfokus ist nicht verbunden!</s:String>
+    <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints">Die HFR Werte der Fokuspunkte liegen zu dicht beieinander. Entweder ist der Okularauszug zu weit außerhalb des Fokuses oder die Schrittgröße ist zu klein eingestellt.</s:String>
 </ResourceDictionary>

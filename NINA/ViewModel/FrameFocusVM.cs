@@ -33,10 +33,7 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 IsExposing = (bool)o;
             }, MediatorMessages.IsExposingUpdate);
-
-            Mediator.Instance.Register((object o) => {
-                Cam = (ICamera)o;
-            }, MediatorMessages.CameraChanged);
+            
         }
 
         private string _status; 
@@ -49,17 +46,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
 
                 Mediator.Instance.Notify(MediatorMessages.StatusUpdate, _status);
-            }
-        }
-
-        private ICamera _cam;
-        public ICamera Cam {
-            get {
-                return _cam;
-            }
-            set {
-                _cam = value;
-                RaisePropertyChanged();
             }
         }
 

@@ -35,7 +35,7 @@
                                 <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
                             <ComboBox MinHeight="40" 
-                                      IsEnabled="{Binding Cam.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                      IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
                                       ItemsSource="{Binding CameraChooserVM.Devices}" 
                                       SelectedItem="{Binding CameraChooserVM.SelectedDevice}" 
                                       SelectedValuePath="Name" 
@@ -64,8 +64,8 @@
                             </Button>
                             <Grid Height="40" Width="40" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Button   Command="{Binding ChooseCameraCommand}"  
-                                                  IsEnabled="{Binding Cam.Connected, Converter={StaticResource InverseBooleanConverter}}"
-                                                  Visibility="{Binding Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                                  IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                                  Visibility="{Binding Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                                     <Button.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="False">
                                             <TextBlock Text="{ns:Loc LblConnect}" />
@@ -78,8 +78,8 @@
                                 </Button>
                                 <Grid Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
                                     <Button Command="{Binding DisconnectCommand}" 
-                                                    IsEnabled="{Binding Cam.Connected}"
-                                                    Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}">
+                                                    IsEnabled="{Binding Connected}"
+                                                    Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}">
                                         <Button.ToolTip>
                                             <ToolTip ToolTipService.ShowOnDisabled="False">
                                                 <TextBlock Text="{ns:Loc LblDisconnect}" />
@@ -101,7 +101,7 @@
                             <UniformGrid Columns="2" >
                                 <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                                     <TextBlock Text="{ns:Loc LblCameraState}"></TextBlock>
-                                    <TextBlock Text="{Binding Cam.CameraState}" Margin="5,0,0,0" />
+                                    <TextBlock Text="{Binding CameraState}" Margin="5,0,0,0" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -210,7 +210,7 @@
 
         
         <Grid Grid.Row="2" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <GroupBox Header="{ns:Loc LblCamSettings}" Grid.Column="1" IsEnabled="{Binding Cam.Connected}">
+            <GroupBox Header="{ns:Loc LblCamSettings}" Grid.Column="1" IsEnabled="{Binding Connected}">
                 <StackPanel Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
                     <DockPanel Visibility="{Binding Cam.CanGetGain , Converter={StaticResource VisibilityConverter}}">
                         <TextBlock VerticalAlignment="Center" MinWidth="100" Text="{ns:Loc LblGain}"></TextBlock>
@@ -239,7 +239,7 @@
             </GroupBox>            
         </Grid>
         <Grid Grid.Column="1" Grid.RowSpan="3" IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <Grid IsEnabled="{Binding Cam.Connected}">
+            <Grid IsEnabled="{Binding Connected}">
                 <GroupBox Header="{ns:Loc LblTempControl}" IsEnabled="{Binding Cam.CanSetCCDTemperature}" >
                     <Grid>
                         <Grid.RowDefinitions>
@@ -252,7 +252,7 @@
                                 <UniformGrid Columns="2" >
                                     <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                                         <TextBlock Text="{ns:Loc LblCoolerOn}" VerticalAlignment="Center"></TextBlock>
-                                        <CheckBox IsChecked="{Binding Cam.CoolerOn}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
+                                        <CheckBox IsChecked="{Binding CoolerOn}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
@@ -260,7 +260,7 @@
                                 <UniformGrid Columns="2" >
                                     <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                                         <TextBlock Text="{ns:Loc LblCoolerPower}"></TextBlock>
-                                        <TextBlock Text="{Binding Cam.CoolerPower, StringFormat=\{0:#.00\}%}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
+                                        <TextBlock Text="{Binding CoolerPower, StringFormat=\{0:#.00\}%}" Margin="5,0,0,0" Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}"/>
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
@@ -268,7 +268,7 @@
                                 <UniformGrid Columns="2" >
                                     <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                                         <TextBlock Text="{ns:Loc LblChipTemp}"></TextBlock>
-                                        <TextBlock Text="{Binding Cam.CCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
+                                        <TextBlock Text="{Binding CCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}"/>
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
@@ -276,7 +276,7 @@
                                 <UniformGrid Columns="2" >
                                     <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                                         <TextBlock Text="{ns:Loc LblTargetTemp}" />
-                                        <TextBlock Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" MinWidth="20" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
+                                        <TextBlock Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" MinWidth="20" Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}"/>
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>

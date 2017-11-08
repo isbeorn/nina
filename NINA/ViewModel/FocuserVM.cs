@@ -220,11 +220,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        public void DisconnectFocuser(object obj) {
-            _updateFocuserWorker?.CancelAsync();
+        public void DisconnectFocuser(object obj) {            
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Focuser?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
                 Connected = false;
+                _updateFocuserWorker?.CancelAsync();
                 Focuser?.Disconnect();
                 Focuser = null;
                 RaisePropertyChanged(nameof(Focuser));

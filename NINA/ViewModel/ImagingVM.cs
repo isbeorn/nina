@@ -60,11 +60,15 @@ namespace NINA.ViewModel {
                 await CaptureImage(seq, save, progress, token);
             }, AsyncMediatorMessages.CaptureImage);
 
+
+            Mediator.Instance.Register((object o) => _cameraConnected = (bool)o,MediatorMessages.CameraConnectedChanged);
             Mediator.Instance.Register((object o) => {
                 Cam = (ICamera)o;
             }, MediatorMessages.CameraChanged);
                         
         }
+
+        private bool _cameraConnected;
 
         private string _status;
         public string Status {
@@ -252,7 +256,7 @@ namespace NINA.ViewModel {
         }
                 
         public  async Task<bool> StartSequence(CaptureSequenceList sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
-            if (Cam?.Connected != true) {
+            if (_cameraConnected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
                 return false;
             }
@@ -281,7 +285,7 @@ namespace NINA.ViewModel {
                         /*Change Filter*/
                         await ChangeFilter(seq, tokenSource, progress);
 
-                        if (Cam?.Connected != true) {
+                        if (_cameraConnected != true) {
                             tokenSource.Cancel();
                             throw new OperationCanceledException();
                         }
@@ -292,7 +296,7 @@ namespace NINA.ViewModel {
                         /*Set Camera Binning*/
                         SetBinning(seq);
 
-                        if (Cam?.Connected != true) {
+                        if (_cameraConnected != true) {
                             tokenSource.Cancel();
                             throw new OperationCanceledException();
                         }
@@ -300,7 +304,7 @@ namespace NINA.ViewModel {
                         /*Capture*/
                         await Capture(seq, tokenSource, progress);
 
-                        if (Cam?.Connected != true) {
+                        if (_cameraConnected != true) {
                             tokenSource.Cancel();
                             throw new OperationCanceledException();
                         }
@@ -323,7 +327,7 @@ namespace NINA.ViewModel {
                         await ImageControl.PrepareImage(progress, tokenSource);
 
 
-                        if (Cam?.Connected != true) {
+                        if (_cameraConnected != true) {
                             tokenSource.Cancel();
                             throw new OperationCanceledException();
                         }                        
@@ -338,19 +342,19 @@ namespace NINA.ViewModel {
                         await ditherTask;
                         
 
-                        if (Cam?.Connected != true) {
+                        if (_cameraConnected != true) {
                             tokenSource.Cancel();
                             throw new OperationCanceledException();
                         }
                     }
                 } catch (System.OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
-                    if (Cam?.Connected == true) {
+                    if (_cameraConnected == true) {
                         Cam.AbortExposure();
                     }
                 } catch (Exception ex) {
                     Notification.ShowError(ex.Message);
-                    if (Cam?.Connected == true) {
+                    if (_cameraConnected == true) {
                         Cam.AbortExposure();
                     }
                 } finally {

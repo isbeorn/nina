@@ -15,31 +15,31 @@
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblConnected}" VerticalAlignment="Center"></TextBlock>
-                            <CheckBox IsChecked="{Binding Cam.Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
+                            <CheckBox IsChecked="{Binding Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" >
                             <TextBlock Text="{ns:Loc LblCoolerOn}" VerticalAlignment="Center"></TextBlock>
-                            <CheckBox IsChecked="{Binding Cam.CoolerOn}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
+                            <CheckBox IsChecked="{Binding CoolerOn}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center" >
                             <TextBlock Text="{ns:Loc LblCoolerPower}"></TextBlock>
-                            <TextBlock Text="{Binding Cam.CoolerPower, StringFormat=\{0:#.00\}%}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
+                            <TextBlock Text="{Binding CoolerPower, StringFormat=\{0:#.00\}%}" Margin="5,0,0,0" Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}"/>
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblChipTempShort}"></TextBlock>
-                            <TextBlock Text="{Binding Cam.CCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
+                            <TextBlock Text="{Binding CCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}"/>
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblTargetTempShort}" />
-                            <TextBlock Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" MinWidth="20" Visibility="{Binding Cam.Connected, Converter={StaticResource VisibilityConverter}}"/>
+                            <TextBlock Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" MinWidth="20" Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}"/>
                         </UniformGrid>
                     </Border>
 

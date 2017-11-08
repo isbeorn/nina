@@ -11,6 +11,8 @@ using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -33,11 +35,7 @@ namespace NINA.ViewModel {
             CoolCamCommand = new AsyncCommand<bool>(() => CoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
             RefreshCameraListCommand = new RelayCommand(RefreshCameraList);
-
-            _updateCamera = new DispatcherTimer();
-            _updateCamera.Interval = TimeSpan.FromMilliseconds(1000);
-            _updateCamera.Tick += UpdateCamera_Tick;
-
+            
             CoolingRunning = false;
             CoolerPowerHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
@@ -185,8 +183,7 @@ namespace NINA.ViewModel {
             _cancelCoolCameraSource?.Cancel();
         }
 
-
-        DispatcherTimer _updateCamera;
+        private BackgroundWorker _updateCameraWorker;        
 
 
         private double _targetTemp;
@@ -226,13 +223,152 @@ namespace NINA.ViewModel {
         private void ChooseCamera(object obj) {
             Cam = (ICamera)CameraChooserVM.SelectedDevice;
             if (Cam?.Connect() == true) {
+                Connected = true;
                 RaisePropertyChanged(nameof(Cam));
-                _updateCamera.Start();
+                _updateCameraWorker?.CancelAsync();
+                _updateCameraWorker = new BackgroundWorker();
+                _updateCameraWorker.WorkerReportsProgress = true;
+                _updateCameraWorker.WorkerSupportsCancellation = true;
+                _updateCameraWorker.DoWork += _updateCameraWorker_DoWork;
+                _updateCameraWorker.ProgressChanged += _updateCameraWorker_ProgressChanged;
+                _updateCameraWorker.RunWorkerAsync();
+
+
                 Settings.CameraId = Cam.Id;
             } else {
                 Cam = null;
             }
         }
+
+        private void _updateCameraWorker_ProgressChanged(object sender,ProgressChangedEventArgs e) {
+            var cameraValues = (Dictionary<string,object>)e.UserState;
+
+            object o = null;
+            cameraValues.TryGetValue(nameof(Connected),out o);
+            Connected = (bool)(o ?? false);
+
+            cameraValues.TryGetValue(nameof(CoolerOn),out o);
+            CoolerOn = (bool)(o ?? false);
+
+            cameraValues.TryGetValue(nameof(CCDTemperature),out o);
+            CCDTemperature = (double)(o ?? double.NaN);
+
+            cameraValues.TryGetValue(nameof(CoolerPower),out o);
+            CoolerPower = (double)(o ?? double.NaN);
+
+            cameraValues.TryGetValue(nameof(CameraState),out o);
+            CameraState = (string)(o ?? string.Empty);
+
+            DateTime x = DateTime.Now;
+            CoolerPowerHistory.Add(new KeyValuePair<DateTime,double>(x,CoolerPower));
+            CCDTemperatureHistory.Add(new KeyValuePair<DateTime,double>(x,CCDTemperature));
+        }
+
+        private void _updateCameraWorker_DoWork(object sender,DoWorkEventArgs e) {
+            Dictionary<string,object> cameraValues = new Dictionary<string,object>();
+            do {
+                if (_updateCameraWorker.CancellationPending) {
+                    break;
+                }
+
+                Stopwatch sw = Stopwatch.StartNew();
+                cameraValues.Clear();
+                cameraValues.Add(nameof(Connected),_cam?.Connected ?? false);
+                cameraValues.Add(nameof(CoolerOn),_cam?.CoolerOn ?? false);
+                cameraValues.Add(nameof(CCDTemperature),_cam?.CCDTemperature ?? double.NaN);
+                cameraValues.Add(nameof(CoolerPower),_cam?.CoolerPower ?? double.NaN);
+                cameraValues.Add(nameof(CameraState),_cam?.CameraState ?? string.Empty);
+                
+
+                //cameraValues.Add(nameof(FullWellCapacity),_cam?.FullWellCapacity ?? double.NaN);
+                //cameraValues.Add(nameof(HeatSinkTemperature),_cam?.HeatSinkTemperature ?? false);
+                //cameraValues.Add(nameof(IsPulseGuiding),_cam?.IsPulseGuiding ?? false);
+
+                _updateCameraWorker.ReportProgress(0,cameraValues);
+
+                if (_updateCameraWorker.CancellationPending) {
+                    break;
+                }
+
+                var elapsed = (int)sw.Elapsed.TotalMilliseconds;
+
+                //Update after one second + the time it takes to read the values
+                Thread.Sleep(elapsed + 500);
+
+            } while (Connected == true);
+
+            cameraValues.Clear();
+            cameraValues.Add(nameof(Connected),false);
+            _updateCameraWorker.ReportProgress(0,cameraValues);
+        }
+
+        private bool _connected;
+        public bool Connected {
+            get {
+                return _connected;
+            }
+            private set {
+                var prevVal = _connected;
+                _connected = value;
+                RaisePropertyChanged();
+                if(prevVal != _connected) {
+                    Mediator.Instance.Notify(MediatorMessages.CameraConnectedChanged,_connected);
+                }                
+            }
+        }
+
+        private string _cameraState;
+        public string CameraState {
+            get {
+                return _cameraState;
+            }
+            private set {
+                _cameraState = value;
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.CameraStateChanged,_connected);
+            }
+        }
+
+        private double _cCDTemperature;
+        public double CCDTemperature {
+            get {
+                return _cCDTemperature;
+            }
+            private set {
+                _cCDTemperature = value;
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.CameraTemperatureChanged,_cCDTemperature);
+            }
+        }
+
+        private double _coolerPower;
+        public double CoolerPower {
+            get {
+                return _coolerPower;
+            }
+            private set {
+                _coolerPower = value;
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.CameraCoolerPowerChanged,_coolerPower);
+            }
+        }
+
+        private bool _coolerOn;
+        public bool CoolerOn {
+            get {
+                return _coolerOn;
+            }
+            set {
+                _coolerOn = value;
+                if(_cam?.Connected == true) {
+                    _cam.CoolerOn = value;
+                }               
+                
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.CameraCoolerPowerChanged,_coolerOn);
+            }
+        }
+
 
         private void DisconnectDiag(object obj) {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
@@ -242,7 +378,7 @@ namespace NINA.ViewModel {
         }
 
         public void Disconnect() {
-            _updateCamera.Stop();
+            _updateCameraWorker?.CancelAsync();
             _cancelCoolCameraSource?.Cancel();
             CoolingRunning = false;            
             Cam?.Disconnect();
