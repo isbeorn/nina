@@ -91,10 +91,10 @@ namespace NINA.ViewModel {
 
         private void _updateFocuserWorker_ProgressChanged(object sender,ProgressChangedEventArgs e) {
             var focuserValues = (Dictionary <string, object>)e.UserState;
-            Position = (int)focuserValues["Position"];
-            Temperature = (double)focuserValues["Temperature"];
-            IsMoving = (bool)focuserValues["IsMoving"];
-            TempComp = (bool)focuserValues["TempComp"];
+            Position = (int)focuserValues[nameof(Position)];
+            Temperature = (double)focuserValues[nameof(Temperature)];
+            IsMoving = (bool)focuserValues[nameof(IsMoving)];
+            TempComp = (bool)focuserValues[nameof(TempComp)];
         }
 
         private void _updateFocuserWorker_DoWork(object sender,DoWorkEventArgs e) {
@@ -104,10 +104,10 @@ namespace NINA.ViewModel {
                 }
 
                 Dictionary<string,object> focuserValues = new Dictionary<string,object>();
-                focuserValues.Add("Position", _focuser?.Position ?? 0);
-                focuserValues.Add("Temperature",_focuser?.Temperature ?? 0.0d);
-                focuserValues.Add("IsMoving",_focuser?.IsMoving ?? false);
-                focuserValues.Add("TempComp",_focuser?.TempComp ?? false);
+                focuserValues.Add(nameof(Position), _focuser?.Position ?? 0);
+                focuserValues.Add(nameof(Temperature),_focuser?.Temperature ?? 0.0d);
+                focuserValues.Add(nameof(IsMoving),_focuser?.IsMoving ?? false);
+                focuserValues.Add(nameof(TempComp),_focuser?.TempComp ?? false);
 
                 if (_updateFocuserWorker.CancellationPending) {
                     break;
