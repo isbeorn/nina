@@ -21,25 +21,25 @@
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblIsMoving}" VerticalAlignment="Center"></TextBlock>
-                            <CheckBox IsChecked="{Binding Focuser.IsMoving, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
+                            <CheckBox IsChecked="{Binding IsMoving, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblPosition}"></TextBlock>
-                            <TextBlock Text="{Binding Focuser.Position}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="{Binding Position}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" IsEnabled="{Binding Focuser.TempCompAvailable}" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblTempComp}" VerticalAlignment="Center"></TextBlock>
-                            <CheckBox IsChecked="{Binding Focuser.TempComp}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
+                            <CheckBox IsChecked="{Binding TempComp}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
                         <UniformGrid Columns="2" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblTemperature}"></TextBlock>
-                            <TextBlock Text="{Binding Focuser.Temperature, StringFormat=\{0:#.00\} }" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="{Binding Temperature, StringFormat=\{0:#.00\} }" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">

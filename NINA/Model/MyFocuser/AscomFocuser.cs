@@ -121,7 +121,6 @@ namespace NINA.Model.MyFocuser {
             set {
                 if(Connected && _focuser.TempCompAvailable) {
                     _focuser.TempComp = value;
-                    RaisePropertyChanged();
                 }
             }
         }
@@ -175,7 +174,7 @@ namespace NINA.Model.MyFocuser {
         }
 
         public void Move(int position) {
-            if(Connected && !TempComp) {                
+            if(Connected && !TempComp) {
                 _focuser.Move(position);
             }
         }
@@ -223,10 +222,6 @@ namespace NINA.Model.MyFocuser {
         }
 
         public void UpdateValues() {
-            RaisePropertyChanged(nameof(Position));
-            RaisePropertyChanged(nameof(Temperature));
-            RaisePropertyChanged(nameof(IsMoving));
-            RaisePropertyChanged(nameof(TempComp));
         }
 
         public void Dispose() {

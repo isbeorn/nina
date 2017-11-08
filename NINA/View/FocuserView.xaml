@@ -115,7 +115,7 @@
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblIsMoving}"></TextBlock>
-                            <TextBlock Text="{Binding Focuser.IsMoving}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="{Binding IsMoving}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
@@ -139,7 +139,7 @@
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblPosition}"></TextBlock>
-                            <TextBlock Text="{Binding Focuser.Position}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="{Binding Position}" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
@@ -147,7 +147,7 @@
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblTemperatureCompensation}" VerticalAlignment="Center"></TextBlock>
-                            <CheckBox IsChecked="{Binding Focuser.TempComp}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
+                            <CheckBox IsChecked="{Binding TempComp}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
@@ -155,7 +155,7 @@
                     <UniformGrid Columns="2" >
                         <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
                             <TextBlock Text="{ns:Loc LblTemperature}"></TextBlock>
-                            <TextBlock Text="{Binding Focuser.Temperature, StringFormat=\{0:#.00\} }" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="{Binding Temperature, StringFormat=\{0:#.00\} }" Margin="5,0,0,0" TextWrapping="WrapWithOverflow"/>
                         </UniformGrid>
                     </UniformGrid>
                 </Border>

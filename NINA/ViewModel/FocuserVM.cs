@@ -3,6 +3,7 @@ using NINA.Utility;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -21,13 +22,9 @@ namespace NINA.ViewModel {
             ChooseFocuserCommand = new RelayCommand(ChooseFocuser);
             DisconnectCommand = new RelayCommand(DisconnectFocuser);
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList);
-            MoveFocuserCommand = new AsyncCommand<bool>(() => MoveFocuser(TargetPosition), (p) => Focuser?.TempComp == false);
+            MoveFocuserCommand = new AsyncCommand<bool>(() => MoveFocuser(TargetPosition), (p) => TempComp == false);
             HaltFocuserCommand = new RelayCommand(HaltFocuser);
-
-            _updateFocuser = new DispatcherTimer();
-            _updateFocuser.Interval = TimeSpan.FromMilliseconds(1000);
-            _updateFocuser.Tick += UpdateFocuser_Tick;
-
+            
             Mediator.Instance.RegisterAsync(async (object o) => {
                 int offset = (int)o;
                 await MoveFocuserRelative(offset);                
@@ -50,6 +47,7 @@ namespace NINA.ViewModel {
             await Task.Run(() => {
                 try {                    
                     while (Focuser.Position != position) {
+                        IsMoving = true;
                         _cancelMove.Token.ThrowIfCancellationRequested();
                         Focuser.Move(position);
                     }
@@ -71,26 +69,64 @@ namespace NINA.ViewModel {
         private void UpdateFocuser_Tick(object sender, EventArgs e) {            
             if (Focuser?.Connected == true) {
                 Focuser.UpdateValues();
+                this.Position = Focuser.Position;
             }          
         }
 
         public void ChooseFocuser(object obj) {
-            _updateFocuser.Stop();
             Focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
             if (Focuser?.Connect() == true) {
-                _updateFocuser.Start();
+                _updateFocuserWorker = new BackgroundWorker();
+                _updateFocuserWorker.WorkerReportsProgress = true;
+                _updateFocuserWorker.WorkerSupportsCancellation = true;
+                _updateFocuserWorker.DoWork += _updateFocuserWorker_DoWork;
+                _updateFocuserWorker.ProgressChanged += _updateFocuserWorker_ProgressChanged;
+                _updateFocuserWorker.RunWorkerAsync();
                 TargetPosition = Focuser.Position;
                 Settings.FocuserId = Focuser.Id;
-                Focuser.PropertyChanged += Focuser_PropertyChanged;
             } else {
                 Focuser = null;
             }
         }
 
-        private void Focuser_PropertyChanged(object sender,System.ComponentModel.PropertyChangedEventArgs e) {
-            if(e.PropertyName == nameof(Focuser.Position)) {
-                this.Position = Focuser.Position;
-            }
+        private void _updateFocuserWorker_ProgressChanged(object sender,ProgressChangedEventArgs e) {
+            var focuserValues = (Dictionary <string, object>)e.UserState;
+            Position = (int)focuserValues["Position"];
+            Temperature = (double)focuserValues["Temperature"];
+            IsMoving = (bool)focuserValues["IsMoving"];
+            TempComp = (bool)focuserValues["TempComp"];
+        }
+
+        private void _updateFocuserWorker_DoWork(object sender,DoWorkEventArgs e) {
+            do {
+                if (_updateFocuserWorker.CancellationPending) {
+                    break;
+                }
+
+                Dictionary<string,object> focuserValues = new Dictionary<string,object>();
+                focuserValues.Add("Position", _focuser?.Position ?? 0);
+                focuserValues.Add("Temperature",_focuser?.Temperature ?? 0.0d);
+                focuserValues.Add("IsMoving",_focuser?.IsMoving ?? false);
+                focuserValues.Add("TempComp",_focuser?.TempComp ?? false);
+
+                if (_updateFocuserWorker.CancellationPending) {
+                    break;
+                }
+
+                _updateFocuserWorker.ReportProgress(0,focuserValues);
+
+                if(_updateFocuserWorker.CancellationPending) {
+                    break;
+                }
+
+                Thread.Sleep(2000);
+
+                if (_updateFocuserWorker.CancellationPending) {
+                    break;
+                }
+            } while (true);
+            
+            
         }
 
         private int _position;
@@ -102,6 +138,46 @@ namespace NINA.ViewModel {
                 _position = value;
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.FocuserPositionChanged,_position);
+            }
+        }
+
+        private double _temperature;
+        public double Temperature {
+            get {
+                return _temperature;
+            }
+            private set {
+                _temperature = value;          
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.FocuserTemperatureChanged,_temperature);
+            }
+        }
+
+        private bool _isMoving;
+        public bool IsMoving {
+            get {
+                return _isMoving;
+            }
+            private set {
+                _isMoving = value;
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.FocuserIsMovingChanged,_isMoving);
+            }
+        }
+
+        private bool _tempComp;
+        public bool TempComp {
+            get {
+                return _tempComp;
+            }
+            set {
+                var prev = _tempComp;
+                _tempComp = value;
+                if (_focuser?.Connected == true && prev != _tempComp) {
+                    _focuser.TempComp = _tempComp;
+                }
+                RaisePropertyChanged();
+                Mediator.Instance.Notify(MediatorMessages.FocuserIsMovingChanged,_tempComp);
             }
         }
 
@@ -117,9 +193,9 @@ namespace NINA.ViewModel {
         }
 
         public void DisconnectFocuser(object obj) {
+            _updateFocuserWorker?.CancelAsync();
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Focuser?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                _updateFocuser.Stop();
                 Focuser?.Disconnect();
                 Focuser = null;
                 RaisePropertyChanged(nameof(Focuser));
@@ -154,8 +230,8 @@ namespace NINA.ViewModel {
                 _focuserChooserVM = value;
             }
         }
-        
-        private DispatcherTimer _updateFocuser;
+
+        private BackgroundWorker _updateFocuserWorker;
 
         public ICommand RefreshFocuserListCommand { get; private set; }
 
