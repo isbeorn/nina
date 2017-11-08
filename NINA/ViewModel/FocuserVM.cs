@@ -76,6 +76,7 @@ namespace NINA.ViewModel {
         public void ChooseFocuser(object obj) {
             Focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
             if (Focuser?.Connect() == true) {
+                _updateFocuserWorker?.CancelAsync();
                 _updateFocuserWorker = new BackgroundWorker();
                 _updateFocuserWorker.WorkerReportsProgress = true;
                 _updateFocuserWorker.WorkerSupportsCancellation = true;
@@ -108,11 +109,7 @@ namespace NINA.ViewModel {
                 focuserValues.Add(nameof(Temperature),_focuser?.Temperature ?? 0.0d);
                 focuserValues.Add(nameof(IsMoving),_focuser?.IsMoving ?? false);
                 focuserValues.Add(nameof(TempComp),_focuser?.TempComp ?? false);
-
-                if (_updateFocuserWorker.CancellationPending) {
-                    break;
-                }
-
+                
                 _updateFocuserWorker.ReportProgress(0,focuserValues);
 
                 if(_updateFocuserWorker.CancellationPending) {
@@ -120,10 +117,6 @@ namespace NINA.ViewModel {
                 }
 
                 Thread.Sleep(2000);
-
-                if (_updateFocuserWorker.CancellationPending) {
-                    break;
-                }
             } while (true);
             
             
