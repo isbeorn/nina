@@ -12,6 +12,18 @@
     <NotificationWarningColor Color="#FFF5A300" />
     <NotificationErrorColor Color="#FFDB0606" />
   </ColorSchema>
+  <ColorSchema Name="Classic">
+    <PrimaryColor Color="#FF000000" />
+    <SecondaryColor Color="#FF54748c" />
+    <BorderColor Color="#FFADB2B5" />
+    <BackgroundColor Color="#FFFFFFFF" />
+    <ButtonBackgroundColor Color="#FFDDDDDD" />
+    <ButtonBackgroundSelectedColor Color="#FFb8e0f3" />
+    <ButtonForegroundColor Color="#FF000000" />
+    <ButtonForegroundDisabledColor Color="#FFF4F4F4" />
+    <NotificationWarningColor Color="#FFF5A300" />
+    <NotificationErrorColor Color="#FFDB0606" />
+  </ColorSchema>
   <ColorSchema Name="Dark">
     <PrimaryColor Color="#FF550C18" />
     <SecondaryColor Color="#FF1B2A41" />
