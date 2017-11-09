@@ -183,9 +183,6 @@ namespace NINA.ViewModel {
             _cancelCoolCameraSource?.Cancel();
         }
 
-        private BackgroundWorker _updateCameraWorker;        
-
-
         private double _targetTemp;
         public double TargetTemp {
             get {
@@ -225,23 +222,19 @@ namespace NINA.ViewModel {
             if (Cam?.Connect() == true) {
                 Connected = true;
                 RaisePropertyChanged(nameof(Cam));
-                _updateCameraWorker?.CancelAsync();
-                _updateCameraWorker = new BackgroundWorker();
-                _updateCameraWorker.WorkerReportsProgress = true;
-                _updateCameraWorker.WorkerSupportsCancellation = true;
-                _updateCameraWorker.DoWork += _updateCameraWorker_DoWork;
-                _updateCameraWorker.ProgressChanged += _updateCameraWorker_ProgressChanged;
-                _updateCameraWorker.RunWorkerAsync();
 
-
+                _cancelUpdateCameraValues?.Cancel();
+                _updateCameraValuesProgress = new Progress<Dictionary<string,object>>(UpdateCameraValues);
+                _cancelUpdateCameraValues = new CancellationTokenSource();
+                _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress,_cancelUpdateCameraValues.Token));
+                
                 Settings.CameraId = Cam.Id;
             } else {
                 Cam = null;
             }
         }
 
-        private void _updateCameraWorker_ProgressChanged(object sender,ProgressChangedEventArgs e) {
-            var cameraValues = (Dictionary<string,object>)e.UserState;
+        private void UpdateCameraValues(Dictionary<string,object> cameraValues) {
 
             object o = null;
             cameraValues.TryGetValue(nameof(Connected),out o);
@@ -264,42 +257,40 @@ namespace NINA.ViewModel {
             CCDTemperatureHistory.Add(new KeyValuePair<DateTime,double>(x,CCDTemperature));
         }
 
-        private void _updateCameraWorker_DoWork(object sender,DoWorkEventArgs e) {
+        private void GetCameraValues(IProgress<Dictionary<string,object>> progress,CancellationToken token) {
             Dictionary<string,object> cameraValues = new Dictionary<string,object>();
-            do {
-                if (_updateCameraWorker.CancellationPending) {
-                    break;
-                }
+            try {
+                do {
+                    token.ThrowIfCancellationRequested();
+                    
+                    cameraValues.Clear();
+                    cameraValues.Add(nameof(Connected),_cam?.Connected ?? false);
+                    cameraValues.Add(nameof(CoolerOn),_cam?.CoolerOn ?? false);
+                    cameraValues.Add(nameof(CCDTemperature),_cam?.CCDTemperature ?? double.NaN);
+                    cameraValues.Add(nameof(CoolerPower),_cam?.CoolerPower ?? double.NaN);
+                    cameraValues.Add(nameof(CameraState),_cam?.CameraState ?? string.Empty);
 
-                Stopwatch sw = Stopwatch.StartNew();
+
+                    //cameraValues.Add(nameof(FullWellCapacity),_cam?.FullWellCapacity ?? double.NaN);
+                    //cameraValues.Add(nameof(HeatSinkTemperature),_cam?.HeatSinkTemperature ?? false);
+                    //cameraValues.Add(nameof(IsPulseGuiding),_cam?.IsPulseGuiding ?? false);
+
+
+                    progress.Report(cameraValues);
+
+                    token.ThrowIfCancellationRequested();
+
+                    //Update after one second + the time it takes to read the values
+                    Thread.Sleep(500);
+
+                } while (Connected == true);
+            } catch (OperationCanceledException) {
+
+            } finally {
                 cameraValues.Clear();
-                cameraValues.Add(nameof(Connected),_cam?.Connected ?? false);
-                cameraValues.Add(nameof(CoolerOn),_cam?.CoolerOn ?? false);
-                cameraValues.Add(nameof(CCDTemperature),_cam?.CCDTemperature ?? double.NaN);
-                cameraValues.Add(nameof(CoolerPower),_cam?.CoolerPower ?? double.NaN);
-                cameraValues.Add(nameof(CameraState),_cam?.CameraState ?? string.Empty);
-                
-
-                //cameraValues.Add(nameof(FullWellCapacity),_cam?.FullWellCapacity ?? double.NaN);
-                //cameraValues.Add(nameof(HeatSinkTemperature),_cam?.HeatSinkTemperature ?? false);
-                //cameraValues.Add(nameof(IsPulseGuiding),_cam?.IsPulseGuiding ?? false);
-
-                _updateCameraWorker.ReportProgress(0,cameraValues);
-
-                if (_updateCameraWorker.CancellationPending) {
-                    break;
-                }
-
-                var elapsed = (int)sw.Elapsed.TotalMilliseconds;
-
-                //Update after one second + the time it takes to read the values
-                Thread.Sleep(elapsed + 500);
-
-            } while (Connected == true);
-
-            cameraValues.Clear();
-            cameraValues.Add(nameof(Connected),false);
-            _updateCameraWorker.ReportProgress(0,cameraValues);
+                cameraValues.Add(nameof(Connected),false);
+                progress.Report(cameraValues);
+            }
         }
 
         private bool _connected;
@@ -354,6 +345,10 @@ namespace NINA.ViewModel {
         }
 
         private bool _coolerOn;
+        private IProgress<Dictionary<string,object>> _updateCameraValuesProgress;
+        private CancellationTokenSource _cancelUpdateCameraValues;
+        private Task _updateCameraValuesTask;
+
         public bool CoolerOn {
             get {
                 return _coolerOn;
@@ -378,25 +373,12 @@ namespace NINA.ViewModel {
         }
 
         public void Disconnect() {
-            _updateCameraWorker?.CancelAsync();
+            _cancelUpdateCameraValues?.Cancel();
             _cancelCoolCameraSource?.Cancel();
             CoolingRunning = false;            
             Cam?.Disconnect();
             Cam = null;
         }
-
-        void UpdateCamera_Tick(object sender, EventArgs e) {
-            if (Cam.Connected) {
-                Cam.UpdateValues();
-
-                DateTime x = DateTime.Now;
-                CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, Cam.CoolerPower));
-                CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, Cam.CCDTemperature));
-
-            }
-
-        }
-
 
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
