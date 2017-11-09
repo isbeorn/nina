@@ -79,9 +79,6 @@ namespace NINA.ViewModel {
                 FW = (IFilterWheel)o;
             }, MediatorMessages.FilterWheelChanged);
             Mediator.Instance.Register((object o) => {
-                Focuser = (IFocuser)o;
-            }, MediatorMessages.FocuserChanged);
-            Mediator.Instance.Register((object o) => {
                 Telescope = (ITelescope)o;
             }, MediatorMessages.TelescopeChanged);
         }
@@ -211,7 +208,6 @@ namespace NINA.ViewModel {
         private ICamera Cam { get; set; }
         private IFilterWheel FW { get; set; }
         private ITelescope Telescope { get; set; }
-        private IFocuser Focuser { get; set; }
 
         public IAsyncCommand PlateSolveImageCommand { get; private set; }
 

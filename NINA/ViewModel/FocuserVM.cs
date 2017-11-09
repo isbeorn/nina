@@ -247,7 +247,6 @@ namespace NINA.ViewModel {
             set {
                 _focuser = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.FocuserChanged, _focuser);
             }
         }
 

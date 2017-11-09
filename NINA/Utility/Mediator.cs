@@ -70,7 +70,6 @@ namespace NINA.Utility {
         ChangeAutoStretch = 14,
         ChangeDetectStars = 15,
         ActiveSequenceChanged = 16,
-        FocuserChanged = 17,
         LocaleChanged = 18,
         LocationChanged = 19,
         SlewToCoordinates = 21,
