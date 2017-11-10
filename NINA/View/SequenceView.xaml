@@ -91,7 +91,7 @@
             </Grid>
         </UniformGrid>
         
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Sequence}" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}">
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Sequence}" HorizontalScrollBarVisibility="Disabled" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Width="*" Header="{ns:Loc LblRemainingNo}" CanUserSort="False">
                         <DataGridTemplateColumn.CellTemplate>
