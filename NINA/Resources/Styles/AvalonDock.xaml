@@ -5,10 +5,24 @@
     <dock:ActivateCommandLayoutItemFromLayoutModelConverter x:Key="ActivateCommandLayoutItemFromLayoutModelConverter"/>
 
     <DataTemplate x:Key="DocumentHeaderTemplate">
-        <TextBlock Text="{Binding Title}" Margin="10,0,10,0" Foreground="{StaticResource ButtonForegroundBrush}"/>
+        <TextBlock Name="PART_TextBlock" Text="{Binding Title}" Margin="10,0,10,0" Foreground="{StaticResource PrimaryBrush}"/>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource=
+        {RelativeSource Mode=FindAncestor, AncestorType=
+            {x:Type TabItem}},Path=IsSelected}" Value="True">
+                <Setter TargetName="PART_TextBlock" Property="Foreground" Value="{StaticResource ButtonForegroundBrush}"/>
+            </DataTrigger>
+        </DataTemplate.Triggers>
     </DataTemplate>
     <DataTemplate x:Key="AnchorHeaderTemplate">
-        <TextBlock Text="{Binding Title}" Margin="10,0,10,0" Foreground="{StaticResource ButtonForegroundBrush}"/>
+        <TextBlock Name="PART_TextBlock" Text="{Binding Title}" Margin="10,0,10,0" Foreground="{StaticResource PrimaryBrush}"/>
+        <DataTemplate.Triggers>            
+            <DataTrigger Binding="{Binding RelativeSource=
+        {RelativeSource Mode=FindAncestor, AncestorType=
+            {x:Type TabItem}},Path=IsSelected}" Value="True">
+                <Setter TargetName="PART_TextBlock" Property="Foreground" Value="{StaticResource ButtonForegroundBrush}"/>
+            </DataTrigger>
+        </DataTemplate.Triggers>
     </DataTemplate>
     
 
@@ -21,7 +35,7 @@
                             DropDownContextMenu="{Binding Root.Manager.DocumentContextMenu}"
                             DropDownContextMenuDataContext="{Binding LayoutItem, RelativeSource={RelativeSource TemplatedParent}}" >
 
-                        <Border Name="Panel" Background="{StaticResource ButtonBackgroundBrush}"                             
+                        <Border Name="Panel" Background="{StaticResource BackgroundBrush}"                             
                                 BorderBrush="{StaticResource BorderBrush}"
                                 BorderThickness="1">
                             <Grid>
@@ -31,7 +45,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Border Grid.ColumnSpan="2" Background="Transparent"/>
-                                    <ContentPresenter Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" 
+                                    <ContentPresenter Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center"
                                                   ContentTemplate="{Binding DocumentHeaderTemplate, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type dock:DockingManager}, Mode=FindAncestor}}"
                                                   ContentTemplateSelector="{Binding DocumentHeaderTemplateSelector, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type dock:DockingManager}, Mode=FindAncestor}}"/>
                                     <!-- Close button should be moved out to the container style -->
@@ -41,7 +55,6 @@
                                         <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/PinClose.png"/>
                                     </Button>
                                 </Grid>
-                                <Rectangle x:Name="icon" Fill="{StaticResource ButtonBackgroundSelectedBrush}" Visibility="Hidden" Height="3" VerticalAlignment="Bottom"/>
                             </Grid>
                         </Border>
                             
@@ -50,7 +63,8 @@
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding Path=IsSelected}" Value="true">
                             <Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton"  />
-                            <Setter Property="Visibility" Value="Visible" TargetName="icon" />
+                            <Setter TargetName="Panel" Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                            <Setter Property="Margin" Value="-6,-12,-6,-11" />
                         </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton"  />
@@ -76,12 +90,12 @@
                     <dock:DropDownControlArea 
                             DropDownContextMenu="{Binding Root.Manager.AnchorableContextMenu}"
                             DropDownContextMenuDataContext="{Binding LayoutItem, RelativeSource={RelativeSource TemplatedParent}}">
-                        <Border Name="Panel" Background="{StaticResource ButtonBackgroundBrush}" 
+                        <Border Name="Panel" Background="{StaticResource BackgroundBrush}" 
                                 BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
+                                BorderThickness="1 0 1 1">
                             <Grid>
                                 <Grid>
-                                    <ContentPresenter Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" 
+                                    <ContentPresenter Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center"
                                                   ContentTemplate="{Binding AnchorableHeaderTemplate, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type dock:DockingManager}, Mode=FindAncestor}}"
                                                   ContentTemplateSelector="{Binding AnchorableHeaderTemplateSelector, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type dock:DockingManager}, Mode=FindAncestor}}"/>
                                     <dock:DropDownControlArea 
@@ -89,13 +103,13 @@
                                         DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}"
                                         DropDownContextMenuDataContext="{Binding Path=Model, RelativeSource={RelativeSource TemplatedParent}}"/>
                                 </Grid>
-                                <Rectangle x:Name="icon" Fill="{StaticResource ButtonBackgroundSelectedBrush}" Visibility="Hidden" Height="3" VerticalAlignment="Bottom"/>
                             </Grid>
                         </Border>
                     </dock:DropDownControlArea>
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Path=IsSelected}" Value="true">                            
-                            <Setter Property="Visibility" Value="Visible" TargetName="icon" />
+                        <DataTrigger Binding="{Binding Path=IsSelected}" Value="true">
+                            <Setter Property="Margin" Value="-6,-12,-6,-11" />
+                            <Setter TargetName="Panel" Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
                         </DataTrigger>
                         <Trigger SourceName="Panel" Property="IsMouseOver" Value="True">
                             <Setter TargetName="Panel" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />

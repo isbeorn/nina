@@ -22,7 +22,7 @@
             </Grid.RowDefinitions>
             <!-- Filter area -->
             <Border  BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{StaticResource RightSideScrollbar}" >
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="5">
                         <ninactrl:HintTextBox Text="{Binding SearchObjectName, UpdateSourceTrigger=PropertyChanged}" HintText="{ns:Loc LblObjectNameHint}" 
                                       Foreground="{StaticResource PrimaryBrush}"

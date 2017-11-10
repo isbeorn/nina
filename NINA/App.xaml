@@ -16,8 +16,9 @@
                 <ResourceDictionary Source="Resources\StaticResources\ViewModels.xaml" />
                 <ResourceDictionary Source="Resources\StaticResources\Brushes.xaml" />
                 <ResourceDictionary Source="Resources\StaticResources\Converters.xaml" />
-                
+
                 <!-- UI Styles -->
+                <ResourceDictionary Source="Resources\Styles\Button.xaml" />
                 <ResourceDictionary Source="Resources\Styles\Window.xaml" />
                 <ResourceDictionary Source="Resources\Styles\TextBlock.xaml" />
                 <ResourceDictionary Source="Resources\Styles\TextBox.xaml" />
@@ -26,7 +27,6 @@
                 <ResourceDictionary Source="Resources\Styles\DataGrid.xaml" />
                 <ResourceDictionary Source="Resources\Styles\ListView.xaml" />
                 <ResourceDictionary Source="Resources\Styles\GroupBox.xaml" />
-                <ResourceDictionary Source="Resources\Styles\Button.xaml" />
                 <ResourceDictionary Source="Resources\Styles\RepeatButton.xaml" />
                 <ResourceDictionary Source="Resources\Styles\ToggleButton.xaml" />
                 <ResourceDictionary Source="Resources\Styles\Slider.xaml" />
@@ -40,6 +40,7 @@
                 <ResourceDictionary Source="Resources\Styles\CancellableButton.xaml" />
                 <ResourceDictionary Source="Resources\Styles\Oxyplot.xaml" />
                 <ResourceDictionary Source="Resources\Styles\DatePicker.xaml" />
+                <ResourceDictionary Source="Resources\Styles\Path.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
                 
                 <!-- DataTemplates-->

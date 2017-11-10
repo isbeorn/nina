@@ -14,7 +14,7 @@
     <TabControl TabStripPlacement="Top">
         <TabItem>
             <TabItem.Header>
-                <TextBlock Text="{ns:Loc LblGeneral}" Foreground="{StaticResource ButtonForegroundBrush}" />
+                <TextBlock Text="{ns:Loc LblGeneral}" Style="{StaticResource TabItemTextBox}" />
             </TabItem.Header>
             <UniformGrid Columns="2" Rows="3">
                 <GroupBox Header="{ns:Loc LblGeneral}">                    
@@ -44,7 +44,7 @@
                             </TextBox>
 
                             <Button Grid.Column="2" Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Command="{Binding OpenSkyAtlasImageRepositoryDiagCommand}">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
+                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="4,17,4,4"/>
                             </Button>
                             
                         </Grid>
@@ -75,7 +75,7 @@
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblCurrentUIColorSchema}">
                     <UniformGrid Columns="2">
-                        <ComboBox ItemsSource="{Binding ColorSchemas.Items}" DisplayMemberPath="Name" SelectedValue="{Binding ColorSchemaName}" SelectedValuePath="Name" Grid.ColumnSpan="2"/>
+                        <ComboBox ItemsSource="{Binding ColorSchemas.Items}" DisplayMemberPath="Name" SelectedValue="{Binding ColorSchemaName}" SelectedValuePath="Name" Grid.ColumnSpan="2" Margin="0,5,0,0"/>
                         <Grid />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblPrimary}"></TextBlock>
@@ -136,7 +136,7 @@
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblAlternativeUIColorSchema}">
                     <UniformGrid Columns="2">
-                        <ComboBox ItemsSource="{Binding ColorSchemas.Items}" DisplayMemberPath="Name" SelectedValue="{Binding AlternativeColorSchemaName}" SelectedValuePath="Name" Grid.ColumnSpan="2"/>                        
+                        <ComboBox ItemsSource="{Binding ColorSchemas.Items}" DisplayMemberPath="Name" SelectedValue="{Binding AlternativeColorSchemaName}" SelectedValuePath="Name" Grid.ColumnSpan="2" Margin="0,5,0,0"/>                        
                         <Grid />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblPrimary}"></TextBlock>
@@ -250,7 +250,7 @@
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Text="{ns:Loc LblImaging}" Foreground="{StaticResource ButtonForegroundBrush}" />
+                <TextBlock Text="{ns:Loc LblImaging}" Style="{StaticResource TabItemTextBox}" />
             </TabItem.Header>
             <UniformGrid Columns="2">
                 <GroupBox Header="{ns:Loc LblFileSettings}">
@@ -273,7 +273,7 @@
                         <TextBlock Grid.Row="1" VerticalAlignment="Center" Grid.Column="0" Text="{ns:Loc LblImageFilePath}"></TextBlock>
                         <TextBox Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Text="{Binding ImageFilePath}"></TextBox>
                         <Button Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Grid.Column="2" Command="{Binding OpenImageFileDiagCommand}">
-                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
+                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="4,17,4,4"/>
                         </Button>
 
                         <TextBlock VerticalAlignment="Center" Grid.Column="0" Grid.Row="3" Text="{ns:Loc LblImageFilePattern}"></TextBlock>
@@ -452,7 +452,7 @@
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Text="{ns:Loc LblPlateSolving}" Foreground="{StaticResource ButtonForegroundBrush}" />
+                <TextBlock Text="{ns:Loc LblPlateSolving}" Style="{StaticResource TabItemTextBox}" />
             </TabItem.Header>
             <GroupBox Header="{ns:Loc LblPlateSolving}">
                 <Grid Margin="0 5 0 0">
@@ -537,7 +537,7 @@
 
 
                                 <Button Margin="5 0 0 0" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" Width="30" Command="{Binding OpenCygwinFileDiagCommand}">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="4,17,4,4"/>
                                 </Button>
                             </Grid>
                             <UniformGrid Columns="2" >
@@ -658,7 +658,7 @@
 
 
                                 <Button Margin="5 0 0 0" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" Width="30" Command="{Binding OpenPS2FileDiagCommand}">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="5"/>
+                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="4,17,4,4"/>
                                 </Button>
                             </Grid>
                             <UniformGrid Columns="2" >

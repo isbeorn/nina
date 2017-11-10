@@ -11,14 +11,14 @@
         Background="{StaticResource BackgroundBrush}" Icon="/NINA;component/Resources/observatory.png" 
         Style="{StaticResource MainWindow}">
 
-    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
+    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0" >
         <Grid DataContext="{StaticResource AppVM}">            
             <TabControl TabStripPlacement="Left">                
                 <TabItem>
                     <TabItem.Header>
                         <Grid>
                             <Grid  Height="50" Width="50">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5"  >
+                                <Path Style="{StaticResource TabItemPath}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5"  >
                                 </Path>
                             </Grid>
 
@@ -47,7 +47,7 @@
                         <UniformGrid Columns="2" Height="50">
                             <Grid>
                                 <Grid  Height="25" Width="25">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource FWSVG}" Stretch="Uniform" Margin="5" >
+                                    <Path Style="{StaticResource TabItemPath}" Data="{StaticResource FWSVG}" Stretch="Uniform" Margin="5" >
                                     </Path>
                                 </Grid>
                                 <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Margin="0 0 0 5"
@@ -67,7 +67,7 @@
                             </Grid>
                             <Grid>
                                 <Grid  Height="25" Width="25">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource FocusSVG}" Stretch="Uniform" Margin="5" >
+                                    <Path Style="{StaticResource TabItemPath}" Data="{StaticResource FocusSVG}" Stretch="Uniform" Margin="5" >
                                     </Path>
                                 </Grid>
                                 <Path Fill="{StaticResource ButtonForegroundDisabledBrush}"  Margin="0 0 0 5"
@@ -98,7 +98,7 @@
                     <TabItem.Header>
                         <Grid>
                             <Grid  Height="50" Width="50">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5" >
+                                <Path Style="{StaticResource TabItemPath}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5" >
                                 </Path>
                             </Grid>
                             <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
@@ -126,7 +126,7 @@
                     <TabItem.Header>
                         <Grid>
                             <Grid Height="50" Width="50">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource GuiderSVG}" Stretch="Uniform" Margin="5"  >
+                                <Path Style="{StaticResource TabItemPath}" Data="{StaticResource GuiderSVG}" Stretch="Uniform" Margin="5"  >
                                 </Path>
                             </Grid>
                             <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
@@ -153,7 +153,7 @@
                 
                 <TabItem >
                     <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MapSVG}" Stretch="Uniform" Margin="10" Height="50" Width="50" >
+                        <Path Style="{StaticResource TabItemPath}" Data="{StaticResource MapSVG}" Stretch="Uniform" Margin="10" Height="50" Width="50" >
                         </Path>
                     </TabItem.Header>
                     <TabItem.Content>
@@ -163,7 +163,7 @@
                 
                 <TabItem>
                     <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SequenceSVG}" Stretch="Uniform" Margin="10" Height="50" Width="50" >
+                        <Path Style="{StaticResource TabItemPath}" Data="{StaticResource SequenceSVG}" Stretch="Uniform" Margin="10" Height="50" Width="50" >
                         </Path>
                     </TabItem.Header>
                     <TabItem.Content>
@@ -173,7 +173,7 @@
                 
                 <TabItem>
                     <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PictureSVG}" Stretch="Uniform"  Margin="5" Height="50" Width="50" >
+                        <Path Style="{StaticResource TabItemPath}" Data="{StaticResource PictureSVG}" Stretch="Uniform"  Margin="5" Height="50" Width="50" >
                         </Path>
                     </TabItem.Header>
                     <TabItem.Content>
@@ -182,7 +182,7 @@
                 </TabItem>
                 <TabItem>
                     <TabItem.Header>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
+                        <Path Style="{StaticResource TabItemPath}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5" Height="50" Width="50" >
                         </Path>
                     </TabItem.Header>
                     <TabItem.Content>

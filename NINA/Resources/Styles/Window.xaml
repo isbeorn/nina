@@ -5,7 +5,7 @@
     <Style x:Key="MainWindow" TargetType="{x:Type Window}">
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
-                <WindowChrome CaptionHeight="30" GlassFrameThickness="-1" UseAeroCaptionButtons="False" />
+                <WindowChrome CaptionHeight="20" GlassFrameThickness="-1" UseAeroCaptionButtons="False" />
             </Setter.Value>
         </Setter>
         <Setter Property="Template">
@@ -18,45 +18,45 @@
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=ThisWindow, Path=WindowState}" Value="Maximized">
                                         <!--<Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}"/>-->
-                                        <Setter Property="BorderThickness" Value="8"/>
+                                        <Setter Property="BorderThickness" Value="4"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
                         <Grid Background="{StaticResource BackgroundBrush}">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="20" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal" Margin="2.5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" >
-                                <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Fill="{StaticResource Observatory}" Width="25" Height="25"/>
+                                <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Fill="{StaticResource Observatory}" Width="18" Height="18"/>
                                 <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" VerticalAlignment="Center" Margin="4,0,0,0"/>
                                 <TextBlock Text="{Binding Source={StaticResource AppVM}, Path=Version}" VerticalAlignment="Center" Margin="4,0,0,0"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,2.5,0" VerticalAlignment="Center" HorizontalAlignment="Right">
                                 <TextBlock Text="{Binding Source={StaticResource AppVM}, Path=Status}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                <Button HorizontalAlignment="Right" Height="25" Width="30" Command="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ToggleColorsCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
+                                <Button HorizontalAlignment="Right" Height="15" Width="20" Style="{StaticResource BackgroundButton}" Margin="5 0 0 0" Command="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ToggleColorsCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
                                     <Button.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="True">
                                             Toggles colors to alternative color schema
                                         </ToolTip>
                                     </Button.ToolTip>
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource EyeSVG}" Stretch="Uniform" Margin="4">
+                                    <Path Fill="{StaticResource PrimaryBrush}" Data="{StaticResource EyeSVG}" Stretch="Uniform" Margin="2">
                                     </Path>
                                 </Button>
-                                <Button HorizontalAlignment="Right" Height="25" Width="30" Command="{Binding Source={StaticResource AppVM}, Path=MinimizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MinimizeWindowSVG}" VerticalAlignment="Bottom" Stretch="Uniform" Margin="4,17,4,4">
+                                <Button HorizontalAlignment="Right" Height="15" Width="20" Style="{StaticResource BackgroundButton}" Margin="5 0 0 0" Command="{Binding Source={StaticResource AppVM}, Path=MinimizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Path Fill="{StaticResource PrimaryBrush}" Data="{StaticResource MinimizeWindowSVG}" VerticalAlignment="Bottom" Stretch="Uniform" Margin="2,12,2,2">
                                     </Path>
 
                                 </Button>
-                                <Button HorizontalAlignment="Right" Height="25" Width="30" Command="{Binding Source={StaticResource AppVM}, Path=MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource MaximizeSVG}" Stretch="Uniform" Margin="4">
+                                <Button HorizontalAlignment="Right" Height="15" Width="20" Style="{StaticResource BackgroundButton}" Margin="5 0 0 0" Command="{Binding Source={StaticResource AppVM}, Path=MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Path Fill="{StaticResource PrimaryBrush}" Data="{StaticResource MaximizeSVG}" Stretch="Uniform" Margin="2">
 
                                     </Path>
                                 </Button>
-                                <Button HorizontalAlignment="Right" Height="25" Width="30" Command="{Binding Source={StaticResource AppVM}, Path=ExitCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="4">
+                                <Button HorizontalAlignment="Right" Height="15" Width="20" Style="{StaticResource BackgroundButton}" Margin="5 0 0 0" Command="{Binding Source={StaticResource AppVM}, Path=ExitCommand}" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Path Fill="{StaticResource PrimaryBrush}" Data="{StaticResource CancelSVG}" Stretch="Uniform" Margin="2">
                                     </Path>
                                 </Button>
                             </StackPanel>

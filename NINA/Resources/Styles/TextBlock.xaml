@@ -12,6 +12,25 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="{x:Type TextBlock}" x:Key="TabItemTextBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Opacity" Value="0.6" />
+            </Trigger>
+            
+            <DataTrigger 
+                Binding="{Binding RelativeSource=
+                    {RelativeSource Mode=FindAncestor, AncestorType=
+                    {x:Type TabItem}},Path=IsSelected}" 
+                Value="True">
+                <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}"/>
+            </DataTrigger>
+            
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="TextBlockWithMouseOver" TargetType="{x:Type TextBlock}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Path=IsMouseOver}" Value="True">
