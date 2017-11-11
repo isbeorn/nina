@@ -45,6 +45,7 @@ namespace NINA.Model.MyCamera
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex.Message,ex.StackTrace);
             } finally {
+                RaiseAllPropertiesChanged();
                 _cameraConnected.TrySetResult(null);
             }            
         }
