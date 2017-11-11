@@ -250,6 +250,7 @@ namespace NINA.Model.MyCamera {
             ASICameraDll.StopExposure(_cameraId);
         }
 
+        [System.Obsolete("Use async Connect")]
         public bool Connect() {
             var success = false;
             try { 
@@ -526,6 +527,32 @@ namespace NINA.Model.MyCamera {
 
         public void Initialize() {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> Connect(CancellationToken token) {
+            return await Task<bool>.Run(() => {
+                var success = false;
+                try {
+                    ASICameraDll.OpenCamera(_cameraId);
+                    ASICameraDll.InitCamera(_cameraId);
+                    _info = ASICameraDll.GetCameraProperties(_cameraId);
+                    Connected = true;
+                    success = true;
+
+                    var raw16 = from types in SupportedImageTypes where types == ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16 select types;
+                    if (raw16.Count() == 0) {
+                        Notification.ShowError("Only 16 bit Monochrome sensors supported currently");
+                        return false;
+                    }
+                    this.CaptureAreaInfo = new CaptureAreaInfo(this.Resolution,1,ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+                    RaisePropertyChanged(nameof(Connected));
+                    RaiseAllPropertiesChanged();
+                    Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
+                } catch (Exception ex) {
+                    Notification.ShowError(ex.Message);
+                }
+                return success;
+            });
         }
     }
 

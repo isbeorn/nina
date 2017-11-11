@@ -854,6 +854,7 @@ namespace NINA.Model.MyCamera {
 
         public AsyncObservableCollection<BinningMode> BinningModes { get; private set; }
 
+        [System.Obsolete("Use async Connect")]
         public bool Connect() {
             try {
                 _camera = new Camera(Id);
@@ -1009,6 +1010,25 @@ namespace NINA.Model.MyCamera {
                     Notification.ShowError(ex.Message);
                 }
             }            
+        }
+
+        public async Task<bool> Connect(CancellationToken token) {
+            return await Task<bool>.Run(() => {
+                try {
+                    _camera = new Camera(Id);
+                    Connected = true;
+                    if (Connected) {
+                        init();
+                        RaiseAllPropertiesChanged();
+                        Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
+                    }
+                } catch (ASCOM.DriverAccessCOMException ex) {
+                    Notification.ShowError(ex.Message);
+                } catch (Exception ex) {
+                    Notification.ShowError("Unable to connect to camera " + ex.Message);
+                }
+                return Connected;
+            });            
         }
     }
 }

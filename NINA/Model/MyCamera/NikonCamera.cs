@@ -447,6 +447,7 @@ namespace NINA.Model.MyCamera
             }            
         }
 
+        [System.Obsolete("Use async Connect")]
         public bool Connect() {
             _nikonManagers.Clear();
             foreach(string file in Directory.GetFiles("External/Nikon", "*.md3")) {
@@ -563,6 +564,33 @@ namespace NINA.Model.MyCamera
         }
 
         public void UpdateValues() {
+        }
+
+        public async Task<bool> Connect(CancellationToken token) {
+            return await Task.Run(() => {
+                _nikonManagers.Clear();
+                foreach (string file in Directory.GetFiles("External/Nikon","*.md3")) {
+                    NikonManager mgr = new NikonManager(file);
+                    mgr.DeviceAdded += Mgr_DeviceAdded;
+                    _nikonManagers.Add(mgr);
+                }
+
+                _cameraConnected = new TaskCompletionSource<object>();
+                var d = DateTime.Now;
+                //Wait maximum 30 seconds for a camera to connect;
+                do {
+                    token.ThrowIfCancellationRequested();
+                    Thread.Sleep(500);
+                } while (_cameraConnected.Task.IsCompleted);
+
+                if (!_cameraConnected.Task.IsCompleted) {
+                    CleanupUnusedManagers(null);
+                    Notification.ShowError("No Nikon camera found!");
+                    return false;
+                }
+
+                return true;
+            });            
         }
     }
 }

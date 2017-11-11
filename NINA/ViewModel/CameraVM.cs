@@ -30,7 +30,7 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
 
             //ConnectCameraCommand = new RelayCommand(connectCamera);
-            ChooseCameraCommand = new RelayCommand(ChooseCamera);
+            ChooseCameraCommand = new AsyncCommand<bool>(ChooseCamera);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
             CoolCamCommand = new AsyncCommand<bool>(() => CoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
@@ -217,20 +217,29 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void ChooseCamera(object obj) {
+        private async Task<bool> ChooseCamera() {
             Cam = (ICamera)CameraChooserVM.SelectedDevice;
-            if (Cam?.Connect() == true) {
-                Connected = true;
-                RaisePropertyChanged(nameof(Cam));
+            _cancelConnectCameraSource = new CancellationTokenSource();
+            if(Cam != null) {
+                var connected = await Cam.Connect(_cancelConnectCameraSource.Token);
+                if (connected) {
+                    Connected = true;
+                    RaisePropertyChanged(nameof(Cam));
 
-                _cancelUpdateCameraValues?.Cancel();
-                _updateCameraValuesProgress = new Progress<Dictionary<string,object>>(UpdateCameraValues);
-                _cancelUpdateCameraValues = new CancellationTokenSource();
-                _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress,_cancelUpdateCameraValues.Token));
-                
-                Settings.CameraId = Cam.Id;
+                    _cancelUpdateCameraValues?.Cancel();
+                    _updateCameraValuesProgress = new Progress<Dictionary<string,object>>(UpdateCameraValues);
+                    _cancelUpdateCameraValues = new CancellationTokenSource();
+                    _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress,_cancelUpdateCameraValues.Token));
+
+                    Settings.CameraId = Cam.Id;
+                    return true;
+                }
+                else {
+                    Cam = null;
+                    return false;
+                }
             } else {
-                Cam = null;
+                return false;
             }
         }
 
@@ -348,6 +357,7 @@ namespace NINA.ViewModel {
         private IProgress<Dictionary<string,object>> _updateCameraValuesProgress;
         private CancellationTokenSource _cancelUpdateCameraValues;
         private Task _updateCameraValuesTask;
+        private CancellationTokenSource _cancelConnectCameraSource;
 
         public bool CoolerOn {
             get {

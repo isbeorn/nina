@@ -303,6 +303,7 @@ namespace NINA.Model.MyCamera {
             var err = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
         }
 
+        [System.Obsolete("Use async Connect")]
         public bool Connect() {
 
             uint err = EDSDK.EdsOpenSession(_cam);
@@ -605,6 +606,21 @@ namespace NINA.Model.MyCamera {
                 //Todo React to error
                 return true;
             }
+        }
+
+        public async Task<bool> Connect(CancellationToken token) {
+            return await Task.Run(() => {
+                uint err = EDSDK.EdsOpenSession(_cam);
+                if (err != (uint)EDSDK.EDS_ERR.OK) {
+                    return false;
+                }
+                else {
+                    Connected = true;
+                    if (!Initialize()) { Disconnect(); }
+                    RaiseAllPropertiesChanged();
+                    return true;
+                }
+            });
         }
     }
 
