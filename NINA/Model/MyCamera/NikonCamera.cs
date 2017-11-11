@@ -409,16 +409,15 @@ namespace NINA.Model.MyCamera
                     _gains = new ArrayList();
                 }
 
-                if (Connected && CanGetGain && _gains.Count == 0) {
-                    
-                    if(CanGetGain) {
-                        NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
-                        for(int i = 0; i < e.Length; i++) {
-                            var iso = (int)e.GetEnumValueByIndex(i);
-                            ISOSpeeds.Add((short)iso,i);
+                if (_gains.Count == 0 && Connected && CanGetGain) {                    
+                    NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
+                    for(int i = 0; i < e.Length; i++) {
+                        short iso;
+                        if(short.TryParse(e.GetEnumValueByIndex(i).ToString(), out iso)) {
+                            ISOSpeeds.Add(iso,i);
                             _gains.Add(i);
                         }                        
-                    }                    
+                    }                                        
                 }
                 return _gains;
             }
@@ -580,7 +579,7 @@ namespace NINA.Model.MyCamera
 
                     _cameraConnected = new TaskCompletionSource<object>();
                     var d = DateTime.Now;
-                    //Wait maximum 30 seconds for a camera to connect;
+
                     do {
                         token.ThrowIfCancellationRequested();
                         Thread.Sleep(500);
