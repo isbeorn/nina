@@ -420,7 +420,7 @@ namespace NINA.Model.MyCamera
                         short iso;
                         if(short.TryParse(e.GetEnumValueByIndex(i).ToString(), out iso)) {
                             ISOSpeeds.Add(iso,i);
-                            _gains.Add(i);
+                            _gains.Add(iso);
                         }                        
                     }                                        
                 }
