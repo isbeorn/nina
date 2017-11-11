@@ -384,7 +384,12 @@ namespace NINA.Model.MyCamera
             get {
                 if(Connected) {
                     NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
-                    return (short)e.Value;
+                    short iso;
+                    if (short.TryParse(e.Value.ToString(),out iso)) {
+                        return iso;
+                    } else {
+                        return -1;
+                    }
                 } else {
                     return -1;
                 }
