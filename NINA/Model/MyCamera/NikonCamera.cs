@@ -569,28 +569,28 @@ namespace NINA.Model.MyCamera
 
         public async Task<bool> Connect(CancellationToken token) {
             return await Task.Run(() => {
-                _nikonManagers.Clear();
-                foreach (string file in Directory.GetFiles("External/Nikon","*.md3")) {
-                    NikonManager mgr = new NikonManager(file);
-                    mgr.DeviceAdded += Mgr_DeviceAdded;
-                    _nikonManagers.Add(mgr);
-                }
+                var connected = false;
+                try {
+                    _nikonManagers.Clear();
+                    foreach (string file in Directory.GetFiles("External/Nikon","*.md3")) {
+                        NikonManager mgr = new NikonManager(file);
+                        mgr.DeviceAdded += Mgr_DeviceAdded;
+                        _nikonManagers.Add(mgr);
+                    }
 
-                _cameraConnected = new TaskCompletionSource<object>();
-                var d = DateTime.Now;
-                //Wait maximum 30 seconds for a camera to connect;
-                do {
-                    token.ThrowIfCancellationRequested();
-                    Thread.Sleep(500);
-                } while (_cameraConnected.Task.IsCompleted);
-
-                if (!_cameraConnected.Task.IsCompleted) {
+                    _cameraConnected = new TaskCompletionSource<object>();
+                    var d = DateTime.Now;
+                    //Wait maximum 30 seconds for a camera to connect;
+                    do {
+                        token.ThrowIfCancellationRequested();
+                        Thread.Sleep(500);
+                    } while (!_cameraConnected.Task.IsCompleted);
+                    connected = true;
+                } catch(OperationCanceledException) {
                     CleanupUnusedManagers(null);
                     Notification.ShowError("No Nikon camera found!");
-                    return false;
                 }
-
-                return true;
+                return connected;
             });            
         }
     }
