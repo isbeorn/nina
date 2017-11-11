@@ -4,6 +4,7 @@ using Nikon;
 using NINA.EquipmentChooser;
 using NINA.Model.MyCamera;
 using NINA.Utility;
+using NINA.Utility.Notification;
 using NINA.ViewModel;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -31,6 +32,7 @@ namespace NINA.ViewModel {
 
             //ConnectCameraCommand = new RelayCommand(connectCamera);
             ChooseCameraCommand = new AsyncCommand<bool>(ChooseCamera);
+            CancelConnectCameraCommand = new RelayCommand(CancelConnectCamera);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
             CoolCamCommand = new AsyncCommand<bool>(() => CoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
@@ -221,26 +223,41 @@ namespace NINA.ViewModel {
             Cam = (ICamera)CameraChooserVM.SelectedDevice;
             _cancelConnectCameraSource = new CancellationTokenSource();
             if(Cam != null) {
-                var connected = await Cam.Connect(_cancelConnectCameraSource.Token);
-                if (connected) {
-                    Connected = true;
-                    RaisePropertyChanged(nameof(Cam));
+                try {
+                    var connected = await Cam.Connect(_cancelConnectCameraSource.Token);
+                    _cancelConnectCameraSource.Token.ThrowIfCancellationRequested();
+                    if (connected) {
+                        Connected = true;
+                        RaisePropertyChanged(nameof(Cam));
+                        
+                        Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
 
-                    _cancelUpdateCameraValues?.Cancel();
-                    _updateCameraValuesProgress = new Progress<Dictionary<string,object>>(UpdateCameraValues);
-                    _cancelUpdateCameraValues = new CancellationTokenSource();
-                    _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress,_cancelUpdateCameraValues.Token));
+                        _cancelUpdateCameraValues?.Cancel();
+                        _updateCameraValuesProgress = new Progress<Dictionary<string,object>>(UpdateCameraValues);
+                        _cancelUpdateCameraValues = new CancellationTokenSource();
+                        _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress,_cancelUpdateCameraValues.Token));
 
-                    Settings.CameraId = Cam.Id;
-                    return true;
-                }
-                else {
-                    Cam = null;
+                        Settings.CameraId = Cam.Id;
+                        return true;
+                    }
+                    else {
+                        Cam = null;
+                        return false;
+                    }
+                } catch(OperationCanceledException) {
+                    if(Connected) { Disconnect(); }
+                    Connected = false;
                     return false;
                 }
+                
+                
             } else {
                 return false;
             }
+        }
+
+        private void CancelConnectCamera(object o) {
+            _cancelConnectCameraSource?.Cancel();            
         }
 
         private void UpdateCameraValues(Dictionary<string,object> cameraValues) {
@@ -402,6 +419,7 @@ namespace NINA.ViewModel {
         public ICommand CancelCoolCamCommand { get; private set; }
 
         public ICommand RefreshCameraListCommand { get; private set; }
+        public ICommand CancelConnectCameraCommand { get; private set; }
     }
 
     class CameraChooserVM : EquipmentChooserVM {

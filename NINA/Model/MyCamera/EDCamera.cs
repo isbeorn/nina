@@ -616,7 +616,10 @@ namespace NINA.Model.MyCamera {
                 }
                 else {
                     Connected = true;
-                    if (!Initialize()) { Disconnect(); }
+                    if (!Initialize()) {
+                        Disconnect();
+                        return false;
+                    }
                     RaiseAllPropertiesChanged();
                     return true;
                 }

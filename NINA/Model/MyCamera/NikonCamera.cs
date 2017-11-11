@@ -592,7 +592,6 @@ namespace NINA.Model.MyCamera
                     connected = true;
                 } catch(OperationCanceledException) {
                     CleanupUnusedManagers(null);
-                    Notification.ShowError("No Nikon camera found!");
                 }
                 return connected;
             });            

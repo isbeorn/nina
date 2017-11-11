@@ -63,19 +63,18 @@
                                 </Grid>
                             </Button>
                             <Grid Height="40" Width="40" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Button   Command="{Binding ChooseCameraCommand}"  
-                                                  IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
-                                                  Visibility="{Binding Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                    <Button.ToolTip>
-                                        <ToolTip ToolTipService.ShowOnDisabled="False">
-                                            <TextBlock Text="{ns:Loc LblConnect}" />
-                                        </ToolTip>
-                                    </Button.ToolTip>
-                                    <Grid>
-                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
-                                        </Path>
-                                    </Grid>
-                                </Button>
+
+                                <ninactrl:CancellableButton 
+                                        IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                        Visibility="{Binding Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                        Command="{Binding ChooseCameraCommand}" 
+                                        CancelCommand="{Binding CancelConnectCameraCommand}" 
+                                        ButtonImage="{StaticResource PowerSVG}" 
+                                        CancelButtonImage="{StaticResource CancelSVG}" 
+                                        ToolTip="{ns:Loc LblConnect}"
+                                        ButtonForegroundBrush="{StaticResource ButtonForegroundDisabledBrush}"
+                                        />
+                                
                                 <Grid Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
                                     <Button Command="{Binding DisconnectCommand}" 
                                                     IsEnabled="{Binding Connected}"

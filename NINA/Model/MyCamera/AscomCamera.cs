@@ -862,7 +862,6 @@ namespace NINA.Model.MyCamera {
                 if(Connected) { 
                     init();
                     RaiseAllPropertiesChanged();
-                    Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
                 }
             } catch (ASCOM.DriverAccessCOMException ex) {
                 Notification.ShowError(ex.Message);
@@ -1020,7 +1019,6 @@ namespace NINA.Model.MyCamera {
                     if (Connected) {
                         init();
                         RaiseAllPropertiesChanged();
-                        Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
                     }
                 } catch (ASCOM.DriverAccessCOMException ex) {
                     Notification.ShowError(ex.Message);
