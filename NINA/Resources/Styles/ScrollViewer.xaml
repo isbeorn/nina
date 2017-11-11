@@ -225,10 +225,10 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <DataTrigger  Binding="{Binding ElementName=PART_VerticalScrollBar, Path=Visibility}" Value="Visible">
-                            <Setter TargetName="PART_Content" Property="Margin" Value="0 0 0 2"></Setter>
+                            <Setter TargetName="PART_Content" Property="Margin" Value="0 0 3 0"></Setter>
                         </DataTrigger>
                         <DataTrigger  Binding="{Binding ElementName=PART_HorizontalScrollBar, Path=Visibility}" Value="Visible">
-                            <Setter TargetName="PART_Content" Property="Margin" Value="0 0 2 0"></Setter>
+                            <Setter TargetName="PART_Content" Property="Margin" Value="0 0 0 3"></Setter>
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
