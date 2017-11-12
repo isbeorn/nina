@@ -34,7 +34,7 @@
                                         <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5" Visibility="{Binding ConnectGuiderCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                                         </Path>
                                         <Grid Visibility="{Binding ConnectGuiderCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}" >
-                                            <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ConnectGuiderCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" Text="..." />
+                                            <local:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ConnectGuiderCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}"/>
                                         </Grid>
                                     </Grid>
                                 </Button>

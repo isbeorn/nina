@@ -21,23 +21,6 @@ namespace NINA.View {
     public partial class LoadingAnimation : UserControl {
         public LoadingAnimation() {
             InitializeComponent();
-            (this.Content as FrameworkElement).DataContext = this;
-
-        }
-
-        public string Text {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValueDp(TextProperty, value); }
-        }
-
-        public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(LoadingAnimation), null);
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        void SetValueDp(DependencyProperty property, object value, [System.Runtime.CompilerServices.CallerMemberName] String p = null) {
-            SetValue(property, value);
-            if(PropertyChanged != null) {
-                PropertyChanged(this, new PropertyChangedEventArgs(p));
-            }
         }
     }
 }
