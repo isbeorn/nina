@@ -86,9 +86,15 @@
                 
                
             </GroupBox>
-            <Grid Margin="0 10 0 0" Visibility="{Binding Sequence.DSO, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+            <GroupBox Visibility="{Binding Sequence.DSO, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                <GroupBox.Header>
+                    <Grid Margin="5" Height="40">
+                        <TextBlock Text="{ns:Loc LblAltitude}" VerticalAlignment="Center" FontSize="20" ></TextBlock>
+                    </Grid>
+                    
+                </GroupBox.Header>
                 <local:AltitudeChart DataContext="{Binding Sequence.DSO}" />
-            </Grid>
+            </GroupBox>
         </UniformGrid>
         
         <DataGrid Grid.Row="1" ItemsSource="{Binding Sequence}" HorizontalScrollBarVisibility="Disabled" AutoGenerateColumns="False"  CanUserAddRows="False" SelectedIndex="{Binding SelectedSequenceIdx}">
