@@ -219,9 +219,18 @@
                 </StackPanel>
             </Border>
         </Grid>
-               
-       
-        
+
+        <ninactrl:LoadingControl 
+           Grid.Column="1"
+           HorizontalAlignment="Center" VerticalAlignment="Center"
+           MaxHeight="100"
+           MaxWidth="100"
+           LoadingImageBrush="{StaticResource PrimaryBrush}" 
+           Visibility="{Binding SearchCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" 
+           />
+
+
+
         <!-- Search result area -->
         <DataGrid Grid.Column="1" ItemsSource="{Binding SearchResult}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled">
             <DataGrid.CellStyle>
