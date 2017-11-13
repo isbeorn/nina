@@ -90,11 +90,11 @@ namespace NINA.ViewModel {
         private bool _focuserConnected;
         private bool _cameraConnected;
 
-        private async Task GetFocusPoints(int nrOfSteps, int stepSize, IProgress<string> progress, CancellationToken token, int initialOffset = 0) {
-
-            if (initialOffset > 0) {
+        private async Task GetFocusPoints(int nrOfSteps, IProgress<string> progress, CancellationToken token, int offset = 0) {
+            var stepSize = Settings.FocuserAutoFocusStepSize;
+            if (offset != 0) {
                 //Move to initial position
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative, initialOffset);
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative, offset * stepSize);
             }
 
 
@@ -111,9 +111,10 @@ namespace NINA.ViewModel {
                 token.ThrowIfCancellationRequested();
 
                 FocusPoints.AddSorted(new DataPoint(_focusPosition, _imageStatistics.HFR), comparer);
-
-                Logger.Trace("Moving focuser to next autofocus position");
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative, -stepSize);
+                if(i < nrOfSteps - 1) {
+                    Logger.Trace("Moving focuser to next autofocus position");
+                    await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative,-stepSize);
+                }                
 
                 token.ThrowIfCancellationRequested();
                 CalculateTrends();
@@ -144,38 +145,45 @@ namespace NINA.ViewModel {
 
                 Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, true);
 
-                var offsetSteps = Settings.FocuserAutoFocusInitialOffsetSteps;
-                var stepSize = Settings.FocuserAutoFocusStepSize;
-                var initialOffset = offsetSteps * stepSize;
+                var offsetSteps = Settings.FocuserAutoFocusInitialOffsetSteps;                
+                var offset = offsetSteps;
 
-                var nrOfSteps = offsetSteps * 2 + 1;
+                var nrOfSteps = offsetSteps + 1;
 
-                await GetFocusPoints(nrOfSteps, stepSize, progress, _autoFocusCancelToken.Token, initialOffset);
+                await GetFocusPoints(nrOfSteps, progress, _autoFocusCancelToken.Token, offset);
 
-                int leftcount = 0, rightcount = 0;
+                var laststeps = offset;
+
+                int leftcount = LeftTrend.DataPoints.Count(), rightcount = RightTrend.DataPoints.Count();
                 //When datapoints are not sufficient analyze and take more
                 do {
-                    leftcount = LeftTrend.DataPoints.Count();
-                    rightcount = RightTrend.DataPoints.Count();
-
                     if (leftcount == 0 && rightcount == 0) {
                         Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"]);
                         progress.Report(Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"]);
                         return false;
                     }
 
-                    var remainingSteps = Math.Abs(leftcount - RightTrend.DataPoints.Count());
+                    var remainingSteps = Math.Min(Math.Abs(leftcount - rightcount),offsetSteps);
+                    if(leftcount == rightcount && leftcount < offsetSteps) {
+                        remainingSteps = offsetSteps - leftcount;
+                    }
 
-                    if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
-                        Logger.Trace("More datapoints needed to the right of the minimum");
-                        //More points needed to the right                    
-                        var offset = initialOffset * 2 + stepSize + remainingSteps * stepSize;  //todo
-                        await GetFocusPoints(remainingSteps, stepSize, progress, _autoFocusCancelToken.Token, offset);
-                    } else if (LeftTrend.DataPoints.Count() < offsetSteps && leftcount < rightcount) {
+                    if ((LeftTrend.DataPoints.Count() < offsetSteps && leftcount < rightcount) 
+                            || (leftcount == rightcount && remainingSteps > 0)) {
                         Logger.Trace("More datapoints needed to the left of the minimum");
                         //More points needed to the left
-                        await GetFocusPoints(remainingSteps, stepSize, progress, _autoFocusCancelToken.Token);
+                        laststeps += remainingSteps;
+                        await GetFocusPoints(remainingSteps,progress,_autoFocusCancelToken.Token,-1);
+                    } else if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
+                        Logger.Trace("More datapoints needed to the right of the minimum");
+                        //More points needed to the right                         
+                        offset = laststeps + remainingSteps;  //todo
+                        laststeps = remainingSteps - 1;
+                        await GetFocusPoints(remainingSteps, progress, _autoFocusCancelToken.Token, offset);
                     }
+
+                    leftcount = LeftTrend.DataPoints.Count();
+                    rightcount = RightTrend.DataPoints.Count();
 
                     _autoFocusCancelToken.Token.ThrowIfCancellationRequested();
                 } while (rightcount < offsetSteps || leftcount < offsetSteps);
