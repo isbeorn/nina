@@ -17,7 +17,8 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FWSVG"];
 
             ContentId = nameof(FilterWheelVM);
-            ChooseFWCommand = new RelayCommand(ChooseFW);
+            ChooseFWCommand = new AsyncCommand<bool>(() => ChooseFW());
+            CancelChooseFWCommand = new RelayCommand(CancelChooseFW);
             DisconnectCommand = new RelayCommand(DisconnectFW);
             RefreshFWListCommand = new RelayCommand(RefreshFWList);
 
@@ -126,18 +127,27 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void ChooseFW(object obj) {
+        private async Task<bool> ChooseFW() {
             FW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
-            if (FW?.Connect() == true) {
+            _cancelChooseFilterWheelSource = new CancellationTokenSource();
+            if (await FW?.Connect(_cancelChooseFilterWheelSource.Token) == true) {
             
                 Settings.FilterWheelId = FW.Id;
                 if(FW.Position > -1) {
                     SelectedFilter = FW.Filters[FW.Position];
-                }                
+                }
+                return true;
             } else {
                 FW = null;
+                return false;
             }
         }
+
+        private void CancelChooseFW(object o) {
+            _cancelChooseFilterWheelSource?.Cancel();
+        }
+
+        CancellationTokenSource _cancelChooseFilterWheelSource;
 
         private void DisconnectFW(object obj) {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Filter Wheel?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);            
@@ -162,9 +172,8 @@ namespace NINA.ViewModel {
         }
 
         public ICommand ChooseFWCommand { get; private set; }
-
+        public ICommand CancelChooseFWCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
-
         public ICommand RefreshFWListCommand { get; private set; }
     }
 

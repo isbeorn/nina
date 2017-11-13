@@ -8,10 +8,13 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace NINA.Utility {
     public class AsyncObservableLimitedSizedStack<T> : ObservableLimitedSizedStack<T>, INotifyCollectionChanged, IEnumerable {
-        private SynchronizationContext _synchronizationContext = SynchronizationContext.Current;
+        private SynchronizationContext _synchronizationContext = new DispatcherSynchronizationContext(
+                    Application.Current.Dispatcher);
 
         public AsyncObservableLimitedSizedStack(int maxSize) : base(maxSize) {
         }

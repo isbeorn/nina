@@ -20,7 +20,8 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
 
             ContentId = nameof(FocuserVM);
-            ChooseFocuserCommand = new RelayCommand(ChooseFocuser);
+            ChooseFocuserCommand = new AsyncCommand<bool>(() => ChooseFocuser());
+            CancelChooseFocuserCommand = new RelayCommand(CancelChooseFocuser);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList);
             MoveFocuserCommand = new AsyncCommand<bool>(() => MoveFocuser(TargetPosition), (p) => Connected && TempComp == false);
@@ -75,9 +76,12 @@ namespace NINA.ViewModel {
             }          
         }
 
-        public void ChooseFocuser(object obj) {
+        CancellationTokenSource _cancelChooseFocuserSource;
+
+        public async Task<bool> ChooseFocuser() {
             Focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
-            if (Focuser?.Connect() == true) {
+            _cancelChooseFocuserSource = new CancellationTokenSource();
+            if (await Focuser?.Connect(_cancelChooseFocuserSource.Token) == true) {
                 Connected = true;
 
                 _cancelUpdateFocuserValues?.Cancel();
@@ -87,9 +91,15 @@ namespace NINA.ViewModel {
                 
                 TargetPosition = Focuser.Position;
                 Settings.FocuserId = Focuser.Id;
+                return true;
             } else {
                 Focuser = null;
+                return false;
             }
+        }
+
+        private void CancelChooseFocuser(object o) {
+            _cancelChooseFocuserSource?.Cancel();
         }
 
         private void GetFocuserValues(IProgress<Dictionary<string,object>> p, CancellationToken token) {
@@ -219,7 +229,7 @@ namespace NINA.ViewModel {
         }
 
         private void DisconnectDiag(object obj) {
-            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Camera?","",System.Windows.MessageBoxButton.OKCancel,System.Windows.MessageBoxResult.Cancel);
+            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Focuser?","",System.Windows.MessageBoxButton.OKCancel,System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
                 Disconnect();
             }
@@ -270,7 +280,7 @@ namespace NINA.ViewModel {
         public ICommand RefreshFocuserListCommand { get; private set; }
 
         public ICommand ChooseFocuserCommand { get; private set; }
-
+        public ICommand CancelChooseFocuserCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
                 
         public ICommand MoveFocuserCommand { get; private set; }

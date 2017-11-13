@@ -41,21 +41,23 @@ namespace NINA.Model.MyFilterWheel {
 
         private FilterWheel _filterwheel;
         
-        public bool Connect() {
-            try {
-                _filterwheel = new FilterWheel(Id);
-                Connected = true;      
-                if(Connected) {
-                    init();
-                    RaiseAllPropertiesChanged();
-                    Notification.ShowSuccess(Locale.Loc.Instance["LblFilterwheelConnected"]);                    
+        public async Task<bool> Connect(CancellationToken token) {
+            return await Task<bool>.Run(() => {
+                try {
+                    _filterwheel = new FilterWheel(Id);
+                    Connected = true;
+                    if (Connected) {
+                        init();
+                        RaiseAllPropertiesChanged();
+                        Notification.ShowSuccess(Locale.Loc.Instance["LblFilterwheelConnected"]);
+                    }
+                } catch (ASCOM.DriverAccessCOMException ex) {
+                    Notification.ShowError(ex.Message);
+                } catch (Exception ex) {
+                    Notification.ShowError("Unable to connect to filter wheel " + ex.Message);
                 }
-            } catch (ASCOM.DriverAccessCOMException ex) {
-                Notification.ShowError(ex.Message);
-            } catch(Exception ex) {
-                Notification.ShowError("Unable to connect to filter wheel " + ex.Message);
-            }
-            return Connected;
+                return Connected;
+            });            
         }
 
         private bool _connected;
@@ -172,7 +174,7 @@ namespace NINA.Model.MyFilterWheel {
         public void Disconnect() {
             Connected = false;
             Filters.Clear();
-            _filterwheel.Dispose();
+            _filterwheel?.Dispose();
             _filterwheel = null;
         }
 

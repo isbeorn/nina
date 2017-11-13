@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -19,7 +20,8 @@ namespace NINA.ViewModel {
             ContentId = nameof(TelescopeVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
             
-            ChooseTelescopeCommand = new RelayCommand(ChooseTelescope);
+            ChooseTelescopeCommand = new AsyncCommand<bool>(() => ChooseTelescope());
+            CancelChooseTelescopeCommand = new RelayCommand(CancelChooseTelescope);
             DisconnectCommand = new RelayCommand(DisconnectTelescope);
             StepperMoveRateCommand = new RelayCommand(StepMoveRate);
             ParkCommand = new AsyncCommand<bool>(ParkTelescope);
@@ -110,16 +112,25 @@ namespace NINA.ViewModel {
         }
 
 
-        private void ChooseTelescope(object obj) {
+        private async Task<bool> ChooseTelescope() {
             _updateTelescope.Stop();
-            Telescope = (ITelescope)TelescopeChooserVM.SelectedDevice; 
-            if (Telescope?.Connect() == true) {
+            Telescope = (ITelescope)TelescopeChooserVM.SelectedDevice;
+            _cancelChooseTelescopeSource = new CancellationTokenSource();
+            if (await Telescope?.Connect(_cancelChooseTelescopeSource.Token) == true) {
                 _updateTelescope.Start();
-                Settings.TelescopeId = Telescope.Id;                
+                Settings.TelescopeId = Telescope.Id;
+                return true;
             } else {
                 Telescope = null;
+                return false;
             }
         }
+
+        private void CancelChooseTelescope(object o) {
+            _cancelChooseTelescopeSource?.Cancel();
+        }
+
+        CancellationTokenSource _cancelChooseTelescopeSource;
 
         private void DisconnectTelescope(object obj) {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);            
@@ -261,7 +272,7 @@ namespace NINA.ViewModel {
         public ICommand SlewToCoordinatesCommand { get; private set; }
 
         public ICommand ChooseTelescopeCommand { get; private set; }
-        
+        public ICommand CancelChooseTelescopeCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
         
         public ICommand MoveCommand { get; private set; }

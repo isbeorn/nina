@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NINA.View"
              xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              xmlns:ns="clr-namespace:NINA.Locale"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -14,18 +15,29 @@
                 <TextBlock Text="{ns:Loc LblFilterWheel}" VerticalAlignment="Center" FontSize="20"></TextBlock>
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40" />
                         <ColumnDefinition />
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="40" />
                     </Grid.ColumnDefinitions>
-                    <ComboBox MinHeight="40" 
-                                          IsEnabled="{Binding FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
-                                          ItemsSource="{Binding FilterWheelChooserVM.Devices}" 
-                                          SelectedItem="{Binding FilterWheelChooserVM.SelectedDevice}" 
-                                          SelectedValuePath="Name" 
-                                          DisplayMemberPath="Name"  ></ComboBox>
-                    <Button Grid.Column="1" Width="40" Height="40"  Command="{Binding FilterWheelChooserVM.SetupDialogCommand}"  IsEnabled="{Binding FilterWheelChooserVM.SelectedDevice.HasSetupDialog}">
+                    <ninactrl:LoadingControl 
+                        Visibility="{Binding ChooseFWCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}"
+                        Height="30"                     
+                        LoadingImageBrush="{StaticResource PrimaryBrush}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                    />
+                    <ComboBox 
+                        MinHeight="40"
+                        Grid.Column="1"
+                        IsEnabled="{Binding FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                        ItemsSource="{Binding FilterWheelChooserVM.Devices}" 
+                        SelectedItem="{Binding FilterWheelChooserVM.SelectedDevice}" 
+                        SelectedValuePath="Name" 
+                        DisplayMemberPath="Name">                        
+                    </ComboBox>
+                    <Button Grid.Column="2" Width="40" Height="40"  Command="{Binding FilterWheelChooserVM.SetupDialogCommand}"  IsEnabled="{Binding FilterWheelChooserVM.SelectedDevice.HasSetupDialog}">
                         <Button.ToolTip>
                             <ToolTip ToolTipService.ShowOnDisabled="False">
                                 <TextBlock Text="{ns:Loc LblSettings}" />
@@ -36,7 +48,7 @@
                             </Path>
                         </Grid>
                     </Button>
-                    <Button Grid.Column="2" Height="40" Width="40" Command="{Binding RefreshFWListCommand}">
+                    <Button Grid.Column="3" Height="40" Width="40" Command="{Binding RefreshFWListCommand}">
                         <Button.ToolTip>
                             <ToolTip ToolTipService.ShowOnDisabled="False">
                                 <TextBlock Text="{ns:Loc LblRescanDevices}" />
@@ -47,20 +59,17 @@
                             </Path>
                         </Grid>
                     </Button>
-                    <Grid Height="40" Width="40" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Button Command="{Binding ChooseFWCommand}"  
+                    <Grid Height="40" Width="40" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ninactrl:CancellableButton 
                                         IsEnabled="{Binding FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
-                                        Visibility="{Binding FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                            <Button.ToolTip>
-                                <ToolTip ToolTipService.ShowOnDisabled="False">
-                                    <TextBlock Text="{ns:Loc LblConnect}" />
-                                </ToolTip>
-                            </Button.ToolTip>
-                            <Grid>
-                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
-                                </Path>
-                            </Grid>
-                        </Button>
+                                        Visibility="{Binding FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                        Command="{Binding ChooseFWCommand}" 
+                                        CancelCommand="{Binding CancelChooseFWCommand}" 
+                                        ButtonImage="{StaticResource PowerSVG}" 
+                                        CancelButtonImage="{StaticResource CancelSVG}" 
+                                        ToolTip="{ns:Loc LblConnect}"
+                                        ButtonForegroundBrush="{StaticResource ButtonForegroundDisabledBrush}"
+                                        />                        
                         <Grid Visibility="{Binding FW, Converter={StaticResource NullToVisibilityConverter}}">
                             <Button  Command="{Binding DisconnectCommand}" 
                                              IsEnabled="{Binding FW.Connected}" 

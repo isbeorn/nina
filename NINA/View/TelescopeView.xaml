@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
              xmlns:local="clr-namespace:NINA.View"
              xmlns:util="clr-namespace:NINA.Utility"
              xmlns:ns="clr-namespace:NINA.Locale"
@@ -27,18 +28,27 @@
                         <TextBlock Text="{ns:Loc LblTelescope}" VerticalAlignment="Center" FontSize="20"></TextBlock>
                         <Grid Margin="5">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40" />
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
-                            <ComboBox MinHeight="40" 
+                            <ninactrl:LoadingControl 
+                                Visibility="{Binding ChooseTelescopeCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}"
+                                Height="30"                     
+                                LoadingImageBrush="{StaticResource PrimaryBrush}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                            />
+                            <ComboBox MinHeight="40"
+                                      Grid.Column="1"
                                       IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}" 
                                       ItemsSource="{Binding TelescopeChooserVM.Devices}" 
                                       SelectedItem="{Binding TelescopeChooserVM.SelectedDevice}" 
                                       SelectedValuePath="Name" 
                                       DisplayMemberPath="Name"  ></ComboBox>
-                            <Button Grid.Column="1" Width="40" Height="40"  Command="{Binding TelescopeChooserVM.SetupDialogCommand}"  IsEnabled="{Binding TelescopeChooserVM.SelectedDevice.HasSetupDialog}">
+                            <Button Grid.Column="2" Width="40" Height="40"  Command="{Binding TelescopeChooserVM.SetupDialogCommand}"  IsEnabled="{Binding TelescopeChooserVM.SelectedDevice.HasSetupDialog}">
                                 <Button.ToolTip>
                                     <ToolTip ToolTipService.ShowOnDisabled="False">
                                         <TextBlock Text="{ns:Loc LblSettings}" />
@@ -49,7 +59,7 @@
                                     </Path>
                                 </Grid>
                             </Button>
-                            <Button Grid.Column="2" Height="40" Width="40" Command="{Binding RefreshTelescopeListCommand}">
+                            <Button Grid.Column="3" Height="40" Width="40" Command="{Binding RefreshTelescopeListCommand}">
                                 <Button.ToolTip>
                                     <ToolTip ToolTipService.ShowOnDisabled="False">
                                         <TextBlock Text="{ns:Loc LblRescanDevices}" />
@@ -60,21 +70,17 @@
                                     </Path>
                                 </Grid>
                             </Button>
-                            <Grid Height="40" Width="40" Grid.Column="3">
-                                <Button Command="{Binding ChooseTelescopeCommand}"  
-                                        IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}" 
-                                        Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                    <Button.ToolTip>
-                                        <ToolTip ToolTipService.ShowOnDisabled="False">
-                                            <TextBlock Text="{ns:Loc LblConnect}" />
-                                        </ToolTip>
-                                    </Button.ToolTip>
-                                    <Grid>
-                                        <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Data="{StaticResource PowerSVG}" Stretch="Uniform" Margin="5">
-
-                                        </Path>
-                                    </Grid>
-                                </Button>
+                            <Grid Height="40" Width="40" Grid.Column="4">
+                                <ninactrl:CancellableButton 
+                                    IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                    Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                    Command="{Binding ChooseTelescopeCommand}" 
+                                    CancelCommand="{Binding CancelChooseTelescopeCommand}" 
+                                    ButtonImage="{StaticResource PowerSVG}" 
+                                    CancelButtonImage="{StaticResource CancelSVG}" 
+                                    ToolTip="{ns:Loc LblConnect}"
+                                    ButtonForegroundBrush="{StaticResource ButtonForegroundDisabledBrush}"
+                                />
                                 <Grid Visibility="{Binding Telescope, Converter={StaticResource NullToVisibilityConverter}}">
                                     <Button  Command="{Binding DisconnectCommand}" 
                                              IsEnabled="{Binding Telescope.Connected}"

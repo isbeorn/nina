@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyFocuser {
@@ -246,21 +247,23 @@ namespace NINA.Model.MyFocuser {
             }
         }
 
-        public bool Connect() {
-            try {
-                _focuser = new Focuser(Id);
-                Connected = true;
-                if (Connected) {
-                    init();
-                    RaiseAllPropertiesChanged();
-                    Notification.ShowSuccess(Locale.Loc.Instance["LblFocuserConnected"]);
+        public async Task<bool> Connect(CancellationToken token) {
+            return await Task<bool>.Run(() => {
+                try {
+                    _focuser = new Focuser(Id);
+                    Connected = true;
+                    if (Connected) {
+                        init();
+                        RaiseAllPropertiesChanged();
+                        Notification.ShowSuccess(Locale.Loc.Instance["LblFocuserConnected"]);
+                    }
+                } catch (ASCOM.DriverAccessCOMException ex) {
+                    Notification.ShowError(ex.Message);
+                } catch (Exception ex) {
+                    Notification.ShowError("Unable to connect to focuser " + ex.Message);
                 }
-            } catch (ASCOM.DriverAccessCOMException ex) {
-                Notification.ShowError(ex.Message);
-            } catch (Exception ex) {
-                Notification.ShowError("Unable to connect to focuser " + ex.Message);
-            }
-            return Connected;
+                return Connected;
+            });            
         }
 
         private void init() {

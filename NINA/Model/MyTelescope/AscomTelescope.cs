@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace NINA.Model.MyTelescope {
     class AscomTelescope : BaseINPC, ITelescope, IDisposable {
@@ -882,24 +883,6 @@ namespace NINA.Model.MyTelescope {
             }
         }
 
-
-        public bool Connect() {
-            try {
-                _telescope = new Telescope(Id);
-                Connected = true;
-                if (Connected) {
-                    init();
-                    RaiseAllPropertiesChanged();
-                    Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
-                }
-            } catch (ASCOM.DriverAccessCOMException ex) {
-                Notification.ShowError(ex.Message);
-            } catch (Exception ex) {
-                Notification.ShowError("Unable to connect to telescope " + ex.Message);
-            }
-            return Connected;
-        }
-
         public void Disconnect() {
             Connected = false;
             _telescope?.Dispose();
@@ -1183,6 +1166,25 @@ namespace NINA.Model.MyTelescope {
             } else {
                 Notification.ShowError("Telescope not connected to send command: " + command);
             }
+        }
+
+        public async Task<bool> Connect(CancellationToken token) {
+            return await Task<bool>.Run(() => {
+                try {
+                    _telescope = new Telescope(Id);
+                    Connected = true;
+                    if (Connected) {
+                        init();
+                        RaiseAllPropertiesChanged();
+                        Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
+                    }
+                } catch (ASCOM.DriverAccessCOMException ex) {
+                    Notification.ShowError(ex.Message);
+                } catch (Exception ex) {
+                    Notification.ShowError("Unable to connect to telescope " + ex.Message);
+                }
+                return Connected;
+            });
         }
     }
 

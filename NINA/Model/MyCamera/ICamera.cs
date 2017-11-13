@@ -54,9 +54,7 @@ namespace NINA.Model.MyCamera {
         void SetBinning(short x, short y);
         void StartExposure(double exposureTime, bool isLightFrame);
         void StopExposure();
-        void AbortExposure();
-        Task<bool> Connect(CancellationToken token);
-
+        void AbortExposure();        
         Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource); 
     }
 
