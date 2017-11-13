@@ -70,7 +70,8 @@ namespace NINA.Model.MyCamera {
             ushort[] flatArray = new ushort[arr.Length];
             ushort value;
 
-            unsafe {
+            unsafe
+            {
                 fixed (Int32* ptr = arr) {
                     int idx = 0, row = 0;
                     for (int i = 0; i < arr.Length; i++) {

@@ -344,7 +344,8 @@ namespace NINA.Model.MyCamera {
         }
 
         private void CopyToUShort(IntPtr source, ushort[] destination, int startIndex, int length) {
-            unsafe {
+            unsafe
+            {
                 var sourcePtr = (ushort*)source;
                 for (int i = startIndex; i < startIndex + length; ++i) {
                     destination[i] = *sourcePtr++;

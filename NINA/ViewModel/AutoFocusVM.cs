@@ -111,10 +111,10 @@ namespace NINA.ViewModel {
                 token.ThrowIfCancellationRequested();
 
                 FocusPoints.AddSorted(new DataPoint(_focusPosition, _imageStatistics.HFR), comparer);
-                if(i < nrOfSteps - 1) {
+                if (i < nrOfSteps - 1) {
                     Logger.Trace("Moving focuser to next autofocus position");
-                    await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative,-stepSize);
-                }                
+                    await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative, -stepSize);
+                }
 
                 token.ThrowIfCancellationRequested();
                 CalculateTrends();
@@ -145,7 +145,7 @@ namespace NINA.ViewModel {
 
                 Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, true);
 
-                var offsetSteps = Settings.FocuserAutoFocusInitialOffsetSteps;                
+                var offsetSteps = Settings.FocuserAutoFocusInitialOffsetSteps;
                 var offset = offsetSteps;
 
                 var nrOfSteps = offsetSteps + 1;
@@ -163,17 +163,17 @@ namespace NINA.ViewModel {
                         return false;
                     }
 
-                    var remainingSteps = Math.Min(Math.Abs(leftcount - rightcount),offsetSteps);
-                    if(leftcount == rightcount && leftcount < offsetSteps) {
+                    var remainingSteps = Math.Min(Math.Abs(leftcount - rightcount), offsetSteps);
+                    if (leftcount == rightcount && leftcount < offsetSteps) {
                         remainingSteps = offsetSteps - leftcount;
                     }
 
-                    if ((LeftTrend.DataPoints.Count() < offsetSteps && leftcount < rightcount) 
+                    if ((LeftTrend.DataPoints.Count() < offsetSteps && leftcount < rightcount)
                             || (leftcount == rightcount && remainingSteps > 0)) {
                         Logger.Trace("More datapoints needed to the left of the minimum");
                         //More points needed to the left
                         laststeps += remainingSteps;
-                        await GetFocusPoints(remainingSteps,progress,_autoFocusCancelToken.Token,-1);
+                        await GetFocusPoints(remainingSteps, progress, _autoFocusCancelToken.Token, -1);
                     } else if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
                         Logger.Trace("More datapoints needed to the right of the minimum");
                         //More points needed to the right                         
