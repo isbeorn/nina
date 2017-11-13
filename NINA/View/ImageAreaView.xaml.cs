@@ -113,7 +113,7 @@ namespace NINA.View {
 
         void RecalculateScalingFactors() {
             if (image?.ActualWidth > 0) {
-                var scale = sv.ViewportWidth / image.ActualWidth;
+                var scale = sv.ActualWidth / image.ActualWidth;
                 if (fittingScale != scale) {
                     var newScaleFactor = fittingScale / scale;
                     fittingScale = scale;
