@@ -116,14 +116,27 @@ namespace NINA.ViewModel {
             _updateTelescope.Stop();
             Telescope = (ITelescope)TelescopeChooserVM.SelectedDevice;
             _cancelChooseTelescopeSource = new CancellationTokenSource();
-            if (await Telescope?.Connect(_cancelChooseTelescopeSource.Token) == true) {
-                _updateTelescope.Start();
-                Settings.TelescopeId = Telescope.Id;
-                return true;
+            if(Telescope!= null) {
+                try {
+                    var connected = await Telescope?.Connect(_cancelChooseTelescopeSource.Token);
+                    _cancelChooseTelescopeSource.Token.ThrowIfCancellationRequested();
+                    if (connected) {
+                        Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
+                        _updateTelescope.Start();
+                        Settings.TelescopeId = Telescope.Id;
+                        return true;
+                    } else {
+                        Telescope = null;
+                        return false;
+                    }
+                } catch(OperationCanceledException) {
+                    if (Telescope?.Connected == true) { Disconnect(); }
+                    return false;
+                }               
             } else {
-                Telescope = null;
                 return false;
             }
+            
         }
 
         private void CancelChooseTelescope(object o) {
@@ -135,10 +148,14 @@ namespace NINA.ViewModel {
         private void DisconnectTelescope(object obj) {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);            
             if (diag == System.Windows.MessageBoxResult.OK) {
-                _updateTelescope.Stop();
-                Telescope.Disconnect();
-                Telescope = null;
+                Disconnect();
             }
+        }
+
+        public void Disconnect() {
+            _updateTelescope.Stop();
+            Telescope?.Disconnect();
+            Telescope = null;
         }
 
         private void StepMoveRate(object obj) {

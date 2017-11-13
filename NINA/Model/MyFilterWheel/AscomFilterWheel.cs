@@ -49,7 +49,6 @@ namespace NINA.Model.MyFilterWheel {
                     if (Connected) {
                         init();
                         RaiseAllPropertiesChanged();
-                        Notification.ShowSuccess(Locale.Loc.Instance["LblFilterwheelConnected"]);
                     }
                 } catch (ASCOM.DriverAccessCOMException ex) {
                     Notification.ShowError(ex.Message);

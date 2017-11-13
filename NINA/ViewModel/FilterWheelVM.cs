@@ -2,6 +2,7 @@
 using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,15 +131,27 @@ namespace NINA.ViewModel {
         private async Task<bool> ChooseFW() {
             FW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
             _cancelChooseFilterWheelSource = new CancellationTokenSource();
-            if (await FW?.Connect(_cancelChooseFilterWheelSource.Token) == true) {
-            
-                Settings.FilterWheelId = FW.Id;
-                if(FW.Position > -1) {
-                    SelectedFilter = FW.Filters[FW.Position];
+            if(FW != null) {
+                try {
+                    var connected = await FW?.Connect(_cancelChooseFilterWheelSource.Token);
+                    _cancelChooseFilterWheelSource.Token.ThrowIfCancellationRequested();
+                    if(connected) {
+                        Notification.ShowSuccess(Locale.Loc.Instance["LblFilterwheelConnected"]);
+                        Settings.FilterWheelId = FW.Id;
+                        if (FW.Position > -1) {
+                            SelectedFilter = FW.Filters[FW.Position];
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } catch(OperationCanceledException) {
+                    if (FW?.Connected == true) { Disconnect(); }                    
+                    return false;
                 }
-                return true;
+                
+
             } else {
-                FW = null;
                 return false;
             }
         }
@@ -152,10 +165,16 @@ namespace NINA.ViewModel {
         private void DisconnectFW(object obj) {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Filter Wheel?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);            
             if (diag == System.Windows.MessageBoxResult.OK) {
+                Disconnect();
+            }
+        }
+
+        public void Disconnect() {
+            if(FW != null) {
                 FW.Disconnect();
                 FW = null;
                 RaisePropertyChanged(nameof(FW));
-            }
+            }            
         }
 
         private FilterWheelChooserVM _filterWheelChooserVM;

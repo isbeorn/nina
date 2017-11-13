@@ -255,7 +255,6 @@ namespace NINA.Model.MyFocuser {
                     if (Connected) {
                         init();
                         RaiseAllPropertiesChanged();
-                        Notification.ShowSuccess(Locale.Loc.Instance["LblFocuserConnected"]);
                     }
                 } catch (ASCOM.DriverAccessCOMException ex) {
                     Notification.ShowError(ex.Message);

@@ -1,5 +1,6 @@
 ﻿using NINA.Model.MyFocuser;
 using NINA.Utility;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -81,19 +82,32 @@ namespace NINA.ViewModel {
         public async Task<bool> ChooseFocuser() {
             Focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
             _cancelChooseFocuserSource = new CancellationTokenSource();
-            if (await Focuser?.Connect(_cancelChooseFocuserSource.Token) == true) {
-                Connected = true;
+            if(Focuser != null) {
+                try {
+                    var connected = await Focuser?.Connect(_cancelChooseFocuserSource.Token);
+                    _cancelChooseFocuserSource.Token.ThrowIfCancellationRequested();
+                    if(connected) {                                                
+                        Connected = true;
+                        Notification.ShowSuccess(Locale.Loc.Instance["LblFocuserConnected"]);
+                        _cancelUpdateFocuserValues?.Cancel();
+                        _updateFocuserValuesProgress = new Progress<Dictionary<string, object>>(UpdateFocuserValues);
+                        _cancelUpdateFocuserValues = new CancellationTokenSource();
+                        _updateFocuserValuesTask = Task.Run(() => GetFocuserValues(_updateFocuserValuesProgress, _cancelUpdateFocuserValues.Token));
 
-                _cancelUpdateFocuserValues?.Cancel();
-                _updateFocuserValuesProgress = new Progress<Dictionary<string,object>>(UpdateFocuserValues);
-                _cancelUpdateFocuserValues = new CancellationTokenSource();
-                _updateFocuserValuesTask = Task.Run(() => GetFocuserValues(_updateFocuserValuesProgress,_cancelUpdateFocuserValues.Token));                
+                        TargetPosition = Focuser.Position;
+                        Settings.FocuserId = Focuser.Id;
+                        return true;
+                    } else {
+                        Connected = false;
+                        Focuser = null;
+                        return false;
+                    }
+                } catch(OperationCanceledException) {
+                    if (Connected) { Disconnect(); }
+                    return false;
+                }
                 
-                TargetPosition = Focuser.Position;
-                Settings.FocuserId = Focuser.Id;
-                return true;
             } else {
-                Focuser = null;
                 return false;
             }
         }

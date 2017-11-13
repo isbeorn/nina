@@ -1176,7 +1176,6 @@ namespace NINA.Model.MyTelescope {
                     if (Connected) {
                         init();
                         RaiseAllPropertiesChanged();
-                        Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
                     }
                 } catch (ASCOM.DriverAccessCOMException ex) {
                     Notification.ShowError(ex.Message);
