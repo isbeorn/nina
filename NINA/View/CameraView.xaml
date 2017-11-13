@@ -496,17 +496,26 @@
                                 </Grid>
 
 
-                                <StackPanel
-                                    Grid.Row="2"
-                                    HorizontalAlignment="Right"
-                                    Orientation="Horizontal">
-                                    <TextBlock
-                                        Margin="0,0,5,0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}"
-                                        Visibility="{Binding CoolingRunning, Converter={StaticResource VisibilityConverter}}" />
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid
+                                        Height="40"
+                                        Margin="5,0,5,0"
+                                        Visibility="{Binding CoolingRunning, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                        <ProgressBar
+                                            Maximum="1"
+                                            Minimum="0"
+                                            Value="{Binding CoolingProgress}" />
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}" />
+                                    </Grid>
                                     <ninactrl:CancellableButton
+                                        Grid.Column="1"
                                         Width="40"
                                         Height="40"
                                         HorizontalAlignment="Right"
@@ -515,7 +524,7 @@
                                         CancelCommand="{Binding CancelCoolCamCommand}"
                                         Command="{Binding CoolCamCommand}"
                                         ToolTip="{ns:Loc LblCoolCamBtnTooltip}" />
-                                </StackPanel>
+                                </Grid>
 
                             </Grid>
                         </StackPanel>
