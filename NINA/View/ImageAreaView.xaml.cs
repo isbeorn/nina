@@ -35,7 +35,7 @@ namespace NINA.View {
             sv.PreviewMouseLeftButtonDown += OnMouseLeftButtonDown;
             sv.MouseMove += OnMouseMove;
             scaleTransform.ScaleX = DEFAULTSCALE;
-            scaleTransform.ScaleY = DEFAULTSCALE;            
+            scaleTransform.ScaleY = DEFAULTSCALE;
         }
 
         void OnMouseMove(object sender, MouseEventArgs e) {
@@ -72,7 +72,7 @@ namespace NINA.View {
             }
             if (e.Delta < 0) {
                 val -= .25;
-            }           
+            }
 
             zoom(val);
 
@@ -87,7 +87,7 @@ namespace NINA.View {
             scaleTransform.ScaleX = val;
             scaleTransform.ScaleY = val;
 
-                        
+
         }
 
         void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
@@ -156,7 +156,7 @@ namespace NINA.View {
                                                          sv.ViewportHeight / 2);
             lastCenterPositionOnTarget =
                   sv.TranslatePoint(centerOfViewport, grid);
-                    
+
         }
         private void ButtonZoomOut_Click(object sender, RoutedEventArgs e) {
             zoom(scaleTransform.ScaleX - 0.25);

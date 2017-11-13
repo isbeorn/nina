@@ -14,7 +14,7 @@ using System.Threading;
 
 namespace NINA.Model.MyTelescope {
     class AscomTelescope : BaseINPC, ITelescope, IDisposable {
-        public AscomTelescope(string telescopeId, string name) {            
+        public AscomTelescope(string telescopeId, string name) {
             Id = telescopeId;
             Name = name;
         }
@@ -852,7 +852,7 @@ namespace NINA.Model.MyTelescope {
 
         private bool _connected;
         public bool Connected {
-            get {               
+            get {
                 if (_connected) {
                     bool val = false;
                     try {
@@ -863,9 +863,9 @@ namespace NINA.Model.MyTelescope {
                         }
                     } catch (Exception) {
                         Disconnect();
-                    } 
+                    }
                     return val;
-                    
+
                 } else {
                     return false;
                 }
@@ -892,7 +892,7 @@ namespace NINA.Model.MyTelescope {
         public bool MeridianFlip(Coordinates targetCoordinates) {
             var success = false;
             try {
-                if(!Tracking) {
+                if (!Tracking) {
                     Tracking = true;
                 }
 
@@ -1049,8 +1049,8 @@ namespace NINA.Model.MyTelescope {
             RaisePropertyChanged(nameof(SiderealTimeString));
             RaisePropertyChanged(nameof(HoursToMeridianString));
             RaisePropertyChanged(nameof(AtPark));
-            RaisePropertyChanged(nameof(Tracking));            
-            
+            RaisePropertyChanged(nameof(Tracking));
+
 
         }
 
@@ -1146,11 +1146,11 @@ namespace NINA.Model.MyTelescope {
             if (HasSetupDialog) {
                 try {
                     bool dispose = false;
-                    if(_telescope == null) {
+                    if (_telescope == null) {
                         _telescope = new Telescope(Id);
-                    }                    
+                    }
                     _telescope.SetupDialog();
-                    if(dispose) {
+                    if (dispose) {
                         _telescope.Dispose();
                         _telescope = null;
                     }
@@ -1161,8 +1161,8 @@ namespace NINA.Model.MyTelescope {
         }
 
         public void SendCommandString(string command) {
-            if(Connected) {
-                _telescope.CommandString(command,true);
+            if (Connected) {
+                _telescope.CommandString(command, true);
             } else {
                 Notification.ShowError("Telescope not connected to send command: " + command);
             }

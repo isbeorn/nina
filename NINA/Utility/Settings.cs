@@ -7,8 +7,8 @@ using System.Linq;
 using System.Windows.Media;
 
 namespace NINA.Utility {
-    static class Settings  {
-        
+    static class Settings {
+
         static Settings() {
             ColorSchemas = ColorSchemas.ReadColorSchemas();
 
@@ -34,7 +34,8 @@ namespace NINA.Utility {
         public static FileTypeEnum FileType {
             get {
                 return (FileTypeEnum)Properties.Settings.Default.FileType;
-            } set {
+            }
+            set {
                 Properties.Settings.Default.FileType = (int)value;
                 Properties.Settings.Default.Save();
             }
@@ -42,7 +43,7 @@ namespace NINA.Utility {
         }
 
         public static string AstrometryAPIKey {
-            get {                
+            get {
                 return Properties.Settings.Default.AstrometryAPIKey;
             }
             set {
@@ -203,7 +204,7 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Save();
             }
         }
-        
+
         public static string CameraId {
             get {
                 return Properties.Settings.Default.CameraId;
@@ -309,12 +310,11 @@ namespace NINA.Utility {
             }
         }
 
-        public static string ColorSchemaName
-        {
+        public static string ColorSchemaName {
             get {
                 return Properties.Settings.Default.ColorSchemaType;
             }
-            set {                
+            set {
                 Properties.Settings.Default.ColorSchemaType = value;
                 ColorSchema = ColorSchemas.Items.Where(x => x.Name == value).FirstOrDefault();
                 Properties.Settings.Default.Save();
@@ -327,7 +327,7 @@ namespace NINA.Utility {
             }
             set {
                 Properties.Settings.Default.AlternativeColorSchemaType = value;
-                AlternativeColorSchema = ColorSchemas.Items.Where(x => x.Name == value).FirstOrDefault();                
+                AlternativeColorSchema = ColorSchemas.Items.Where(x => x.Name == value).FirstOrDefault();
                 Properties.Settings.Default.Save();
             }
         }
@@ -337,16 +337,16 @@ namespace NINA.Utility {
         private static ColorSchema _colorSchema;
         public static ColorSchema ColorSchema {
             get {
-                if(_colorSchema == null) {
+                if (_colorSchema == null) {
                     _colorSchema = ColorSchemas.Items.Where(x => x.Name == ColorSchemaName).FirstOrDefault();
-                    if(_colorSchema == null) {
+                    if (_colorSchema == null) {
                         _colorSchema = ColorSchemas.CreateDefaultSchema();
                     }
                 }
                 return _colorSchema;
             }
             set {
-                _colorSchema = value;                
+                _colorSchema = value;
             }
         }
 
@@ -369,15 +369,15 @@ namespace NINA.Utility {
 
 
         public static Color PrimaryColor {
-            get {                
+            get {
                 return ColorSchema.PrimaryColor;
             }
-            set {                
-                if(ColorSchemaName == "Custom") {
+            set {
+                if (ColorSchemaName == "Custom") {
                     ColorSchema.PrimaryColor = value;
                     Properties.Settings.Default.PrimaryColor = value;
                     Properties.Settings.Default.Save();
-                }                
+                }
             }
         }
 
@@ -500,7 +500,7 @@ namespace NINA.Utility {
                     AlternativeColorSchema.SecondaryColor = value;
                     Properties.Settings.Default.AltSecondaryColor = value;
                     Properties.Settings.Default.Save();
-                }               
+                }
             }
         }
 
@@ -633,7 +633,7 @@ namespace NINA.Utility {
         }
 
         public static string DatabaseLocation {
-            get {                
+            get {
                 return Environment.ExpandEnvironmentVariables(Properties.Settings.Default.DatabaseLocation);
             }
             set {
@@ -660,7 +660,7 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Longitude = value;
                 Properties.Settings.Default.Save();
             }
-        }        
+        }
 
         public static string SkyAtlasImageRepository {
             get {
@@ -814,7 +814,7 @@ namespace NINA.Utility {
             }
         }
 
-        
+
 
 
     }

@@ -37,7 +37,7 @@ namespace NINA.ViewModel {
             CoolCamCommand = new AsyncCommand<bool>(() => CoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
             RefreshCameraListCommand = new RelayCommand(RefreshCameraList);
-            
+
             CoolingRunning = false;
             CoolerPowerHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
@@ -59,8 +59,8 @@ namespace NINA.ViewModel {
 
             Duration = Duration - ((double)delta.TotalMilliseconds / (1000 * 60));
 
-            if(Duration < 0) { Duration = 0; }
-                        
+            if (Duration < 0) { Duration = 0; }
+
             double newTemp = GetY(_startPoint, _endPoint, new Vector2(-_startPoint.X, _startPoint.Y), Duration);
             Cam.SetCCDTemperature = newTemp;
 
@@ -158,7 +158,7 @@ namespace NINA.ViewModel {
                     _endPoint = new Vector2(0, TargetTemp);
                     Cam.SetCCDTemperature = currentTemp;
                     _initalDuration = Duration;
-                    
+
                     CoolingRunning = true;
                     do {
                         CoolCamera_Tick(progress);
@@ -222,79 +222,78 @@ namespace NINA.ViewModel {
         private async Task<bool> ChooseCamera() {
             Cam = (ICamera)CameraChooserVM.SelectedDevice;
             _cancelConnectCameraSource = new CancellationTokenSource();
-            if(Cam != null) {
+            if (Cam != null) {
                 try {
                     var connected = await Cam.Connect(_cancelConnectCameraSource.Token);
                     _cancelConnectCameraSource.Token.ThrowIfCancellationRequested();
                     if (connected) {
                         Connected = true;
                         RaisePropertyChanged(nameof(Cam));
-                        
+
                         Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
 
                         _cancelUpdateCameraValues?.Cancel();
-                        _updateCameraValuesProgress = new Progress<Dictionary<string,object>>(UpdateCameraValues);
+                        _updateCameraValuesProgress = new Progress<Dictionary<string, object>>(UpdateCameraValues);
                         _cancelUpdateCameraValues = new CancellationTokenSource();
-                        _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress,_cancelUpdateCameraValues.Token));
+                        _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
 
                         Settings.CameraId = Cam.Id;
                         return true;
-                    }
-                    else {
+                    } else {
                         Cam = null;
                         return false;
                     }
-                } catch(OperationCanceledException) {
-                    if(Connected) { Disconnect(); }
+                } catch (OperationCanceledException) {
+                    if (Connected) { Disconnect(); }
                     Connected = false;
                     return false;
                 }
-                
-                
+
+
             } else {
                 return false;
             }
         }
 
         private void CancelConnectCamera(object o) {
-            _cancelConnectCameraSource?.Cancel();            
+            _cancelConnectCameraSource?.Cancel();
         }
 
-        private void UpdateCameraValues(Dictionary<string,object> cameraValues) {
+        private void UpdateCameraValues(Dictionary<string, object> cameraValues) {
 
             object o = null;
-            cameraValues.TryGetValue(nameof(Connected),out o);
+            cameraValues.TryGetValue(nameof(Connected), out o);
             Connected = (bool)(o ?? false);
 
-            cameraValues.TryGetValue(nameof(CoolerOn),out o);
+            cameraValues.TryGetValue(nameof(CoolerOn), out o);
             CoolerOn = (bool)(o ?? false);
 
-            cameraValues.TryGetValue(nameof(CCDTemperature),out o);
+            cameraValues.TryGetValue(nameof(CCDTemperature), out o);
             CCDTemperature = (double)(o ?? double.NaN);
 
-            cameraValues.TryGetValue(nameof(CoolerPower),out o);
+            cameraValues.TryGetValue(nameof(CoolerPower), out o);
             CoolerPower = (double)(o ?? double.NaN);
 
-            cameraValues.TryGetValue(nameof(CameraState),out o);
+            cameraValues.TryGetValue(nameof(CameraState), out o);
             CameraState = (string)(o ?? string.Empty);
 
             DateTime x = DateTime.Now;
-            CoolerPowerHistory.Add(new KeyValuePair<DateTime,double>(x,CoolerPower));
-            CCDTemperatureHistory.Add(new KeyValuePair<DateTime,double>(x,CCDTemperature));
+            CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CoolerPower));
+            CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, CCDTemperature));
         }
 
-        private void GetCameraValues(IProgress<Dictionary<string,object>> progress,CancellationToken token) {
-            Dictionary<string,object> cameraValues = new Dictionary<string,object>();
+        private void GetCameraValues(IProgress<Dictionary<string, object>> progress, CancellationToken token) {
+            Dictionary<string, object> cameraValues = new Dictionary<string, object>();
             try {
                 do {
                     token.ThrowIfCancellationRequested();
-                    
+
                     cameraValues.Clear();
-                    cameraValues.Add(nameof(Connected),_cam?.Connected ?? false);
-                    cameraValues.Add(nameof(CoolerOn),_cam?.CoolerOn ?? false);
-                    cameraValues.Add(nameof(CCDTemperature),_cam?.CCDTemperature ?? double.NaN);
-                    cameraValues.Add(nameof(CoolerPower),_cam?.CoolerPower ?? double.NaN);
-                    cameraValues.Add(nameof(CameraState),_cam?.CameraState ?? string.Empty);
+                    cameraValues.Add(nameof(Connected), _cam?.Connected ?? false);
+                    cameraValues.Add(nameof(CoolerOn), _cam?.CoolerOn ?? false);
+                    cameraValues.Add(nameof(CCDTemperature), _cam?.CCDTemperature ?? double.NaN);
+                    cameraValues.Add(nameof(CoolerPower), _cam?.CoolerPower ?? double.NaN);
+                    cameraValues.Add(nameof(CameraState), _cam?.CameraState ?? string.Empty);
 
 
                     //cameraValues.Add(nameof(FullWellCapacity),_cam?.FullWellCapacity ?? double.NaN);
@@ -314,7 +313,7 @@ namespace NINA.ViewModel {
 
             } finally {
                 cameraValues.Clear();
-                cameraValues.Add(nameof(Connected),false);
+                cameraValues.Add(nameof(Connected), false);
                 progress.Report(cameraValues);
             }
         }
@@ -328,9 +327,9 @@ namespace NINA.ViewModel {
                 var prevVal = _connected;
                 _connected = value;
                 RaisePropertyChanged();
-                if(prevVal != _connected) {
-                    Mediator.Instance.Notify(MediatorMessages.CameraConnectedChanged,_connected);
-                }                
+                if (prevVal != _connected) {
+                    Mediator.Instance.Notify(MediatorMessages.CameraConnectedChanged, _connected);
+                }
             }
         }
 
@@ -342,7 +341,7 @@ namespace NINA.ViewModel {
             private set {
                 _cameraState = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.CameraStateChanged,_connected);
+                Mediator.Instance.Notify(MediatorMessages.CameraStateChanged, _connected);
             }
         }
 
@@ -354,7 +353,7 @@ namespace NINA.ViewModel {
             private set {
                 _cCDTemperature = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.CameraTemperatureChanged,_cCDTemperature);
+                Mediator.Instance.Notify(MediatorMessages.CameraTemperatureChanged, _cCDTemperature);
             }
         }
 
@@ -366,12 +365,12 @@ namespace NINA.ViewModel {
             private set {
                 _coolerPower = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.CameraCoolerPowerChanged,_coolerPower);
+                Mediator.Instance.Notify(MediatorMessages.CameraCoolerPowerChanged, _coolerPower);
             }
         }
 
         private bool _coolerOn;
-        private IProgress<Dictionary<string,object>> _updateCameraValuesProgress;
+        private IProgress<Dictionary<string, object>> _updateCameraValuesProgress;
         private CancellationTokenSource _cancelUpdateCameraValues;
         private Task _updateCameraValuesTask;
         private CancellationTokenSource _cancelConnectCameraSource;
@@ -382,12 +381,12 @@ namespace NINA.ViewModel {
             }
             set {
                 _coolerOn = value;
-                if(_cam?.Connected == true) {
+                if (_cam?.Connected == true) {
                     _cam.CoolerOn = value;
-                }               
-                
+                }
+
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.CameraCoolerPowerChanged,_coolerOn);
+                Mediator.Instance.Notify(MediatorMessages.CameraCoolerPowerChanged, _coolerOn);
             }
         }
 
@@ -402,7 +401,7 @@ namespace NINA.ViewModel {
         public void Disconnect() {
             _cancelUpdateCameraValues?.Cancel();
             _cancelCoolCameraSource?.Cancel();
-            CoolingRunning = false;            
+            CoolingRunning = false;
             Cam?.Disconnect();
             Cam = null;
         }
@@ -424,7 +423,7 @@ namespace NINA.ViewModel {
 
     class CameraChooserVM : EquipmentChooserVM {
         public CameraChooserVM() : base() {
-            
+
         }
 
         public override void GetEquipment() {
@@ -486,6 +485,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        
+
     }
 }

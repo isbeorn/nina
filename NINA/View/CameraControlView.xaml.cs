@@ -171,6 +171,6 @@ namespace NINA.View {
             }
         }
 
-        
+
     }
 }

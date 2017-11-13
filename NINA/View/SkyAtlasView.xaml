@@ -1,14 +1,16 @@
-﻿<UserControl x:Class="NINA.View.SkyAtlasView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:NINA.View"
-             xmlns:ns ="clr-namespace:NINA.Locale"
-             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
-             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"   
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+﻿<UserControl
+    x:Class="NINA.View.SkyAtlasView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -17,49 +19,72 @@
 
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
+                <RowDefinition Height="2*" />
                 <RowDefinition Height="270" />
             </Grid.RowDefinitions>
-            <!-- Filter area -->
-            <Border  BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
+            <!--  Filter area  -->
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="5">
-                        <ninactrl:HintTextBox Text="{Binding SearchObjectName, UpdateSourceTrigger=PropertyChanged}" HintText="{ns:Loc LblObjectNameHint}" 
-                                      Foreground="{StaticResource PrimaryBrush}"
-                                      VerticalContentAlignment="Center" 
-                                      HorizontalAlignment="Stretch">
+                        <ninactrl:HintTextBox
+                            HorizontalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            Foreground="{StaticResource PrimaryBrush}"
+                            HintText="{ns:Loc LblObjectNameHint}"
+                            Text="{Binding SearchObjectName, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox.InputBindings>
-                                <KeyBinding Command="{Binding Path=SearchCommand}" Key="Enter" />
+                                <KeyBinding Key="Enter" Command="{Binding Path=SearchCommand}" />
                             </TextBox.InputBindings>
                         </ninactrl:HintTextBox>
-                        <Expander Header="{ns:Loc LblObjectType}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                            <ScrollViewer  Grid.Column="1" MaxHeight="300">
-                                <ItemsControl ItemsSource="{Binding ObjectTypes}" >
+                        <Expander
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            Header="{ns:Loc LblObjectType}">
+                            <ScrollViewer Grid.Column="1" MaxHeight="300">
+                                <ItemsControl ItemsSource="{Binding ObjectTypes}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate>                                        
+                                        <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <CheckBox IsChecked="{Binding Selected}" Style="{StaticResource CheckmarkAndEmptyCheckbox}" Width="20" Height="20"/>
-                                                <TextBlock Text="{Binding Name}"  Margin="10 0 0 0"/>
-                                            </StackPanel>                                        
+                                                <CheckBox
+                                                    Width="20"
+                                                    Height="20"
+                                                    IsChecked="{Binding Selected}"
+                                                    Style="{StaticResource CheckmarkAndEmptyCheckbox}" />
+                                                <TextBlock Margin="10,0,0,0" Text="{Binding Name}" />
+                                            </StackPanel>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                            </ScrollViewer>                            
+                            </ScrollViewer>
                         </Expander>
-                        <Expander Header="{ns:Loc LblConstellation}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <Expander
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            Header="{ns:Loc LblConstellation}">
                             <ComboBox ItemsSource="{Binding Constellations}" SelectedItem="{Binding SelectedConstellation}" />
                         </Expander>
-                        <Expander Header="{ns:Loc LblCoordinates}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <Expander
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            Header="{ns:Loc LblCoordinates}">
                             <StackPanel>
                                 <StackPanel>
-                                    <TextBlock Text="{ns:Loc LblRightAscension}"/>
+                                    <TextBlock Text="{ns:Loc LblRightAscension}" />
                                     <UniformGrid Columns="2">
                                         <TextBlock Text="{ns:Loc LblFrom}" />
-                                        <ComboBox ItemsSource="{Binding RAFrom}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedRAFrom}" SelectedValuePath="Key" />
+                                        <ComboBox
+                                            DisplayMemberPath="Value"
+                                            ItemsSource="{Binding RAFrom}"
+                                            SelectedValue="{Binding SelectedRAFrom}"
+                                            SelectedValuePath="Key" />
                                     </UniformGrid>
                                     <UniformGrid Columns="2">
                                         <TextBlock Text="{ns:Loc LblThrough}" />
-                                        <ComboBox ItemsSource="{Binding RAThrough}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedRAThrough}" SelectedValuePath="Key"  />
+                                        <ComboBox
+                                            DisplayMemberPath="Value"
+                                            ItemsSource="{Binding RAThrough}"
+                                            SelectedValue="{Binding SelectedRAThrough}"
+                                            SelectedValuePath="Key" />
                                     </UniformGrid>
                                 </StackPanel>
 
@@ -67,16 +92,27 @@
                                     <TextBlock Text="{ns:Loc LblDeclination}" />
                                     <UniformGrid Columns="2">
                                         <TextBlock Text="{ns:Loc LblFrom}" />
-                                        <ComboBox ItemsSource="{Binding DecFrom}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedDecFrom}" SelectedValuePath="Key" />
+                                        <ComboBox
+                                            DisplayMemberPath="Value"
+                                            ItemsSource="{Binding DecFrom}"
+                                            SelectedValue="{Binding SelectedDecFrom}"
+                                            SelectedValuePath="Key" />
                                     </UniformGrid>
                                     <UniformGrid Columns="2">
                                         <TextBlock Text="{ns:Loc LblThrough}" />
-                                        <ComboBox ItemsSource="{Binding DecThrough}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedDecThrough}" SelectedValuePath="Key" />
+                                        <ComboBox
+                                            DisplayMemberPath="Value"
+                                            ItemsSource="{Binding DecThrough}"
+                                            SelectedValue="{Binding SelectedDecThrough}"
+                                            SelectedValuePath="Key" />
                                     </UniformGrid>
                                 </StackPanel>
                             </StackPanel>
                         </Expander>
-                        <Expander Header="{ns:Loc LblSurfaceBrightness }" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <Expander
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            Header="{ns:Loc LblSurfaceBrightness}">
                             <StackPanel>
                                 <UniformGrid Columns="2">
                                     <TextBlock Text="{ns:Loc LblFrom}" />
@@ -88,19 +124,33 @@
                                 </UniformGrid>
                             </StackPanel>
                         </Expander>
-                        <Expander Header="{ns:Loc LblApparentSize}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <Expander
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            Header="{ns:Loc LblApparentSize}">
                             <StackPanel>
                                 <UniformGrid Columns="2">
                                     <TextBlock Text="{ns:Loc LblFrom}" />
-                                    <ComboBox ItemsSource="{Binding SizesFrom}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedSizeFrom}" SelectedValuePath="Key" />
+                                    <ComboBox
+                                        DisplayMemberPath="Value"
+                                        ItemsSource="{Binding SizesFrom}"
+                                        SelectedValue="{Binding SelectedSizeFrom}"
+                                        SelectedValuePath="Key" />
                                 </UniformGrid>
                                 <UniformGrid Columns="2">
                                     <TextBlock Text="{ns:Loc LblThrough}" />
-                                    <ComboBox ItemsSource="{Binding SizesThrough}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedSizeThrough}" SelectedValuePath="Key" />
+                                    <ComboBox
+                                        DisplayMemberPath="Value"
+                                        ItemsSource="{Binding SizesThrough}"
+                                        SelectedValue="{Binding SelectedSizeThrough}"
+                                        SelectedValuePath="Key" />
                                 </UniformGrid>
                             </StackPanel>
                         </Expander>
-                        <Expander Header="{ns:Loc LblApparentMagnitude}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <Expander
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            Header="{ns:Loc LblApparentMagnitude}">
                             <StackPanel>
                                 <UniformGrid Columns="2">
                                     <TextBlock Text="{ns:Loc LblFrom}" />
@@ -113,105 +163,152 @@
                             </StackPanel>
                         </Expander>
 
-                        <Expander Header="{ns:Loc LblMinimumAltitude}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <Expander
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            Header="{ns:Loc LblMinimumAltitude}">
                             <StackPanel>
                                 <UniformGrid Columns="2">
                                     <TextBlock Text="{ns:Loc LblFrom}" />
-                                    <ComboBox ItemsSource="{Binding AltitudeTimesFrom}" ItemStringFormat="yyyy-MM-dd HH:mm" SelectedItem="{Binding SelectedAltitudeTimeFrom}" />
+                                    <ComboBox
+                                        ItemStringFormat="yyyy-MM-dd HH:mm"
+                                        ItemsSource="{Binding AltitudeTimesFrom}"
+                                        SelectedItem="{Binding SelectedAltitudeTimeFrom}" />
                                 </UniformGrid>
                                 <UniformGrid Columns="2">
                                     <TextBlock Text="{ns:Loc LblThrough}" />
-                                    <ComboBox ItemsSource="{Binding AltitudeTimesThrough}" ItemStringFormat="yyyy-MM-dd HH:mm" SelectedItem="{Binding SelectedAltitudeTimeThrough}" />
+                                    <ComboBox
+                                        ItemStringFormat="yyyy-MM-dd HH:mm"
+                                        ItemsSource="{Binding AltitudeTimesThrough}"
+                                        SelectedItem="{Binding SelectedAltitudeTimeThrough}" />
                                 </UniformGrid>
                                 <UniformGrid Columns="2">
                                     <TextBlock Text="{ns:Loc LblAltitude}" />
-                                    <ComboBox ItemsSource="{Binding MinimumAltitudeDegrees}" DisplayMemberPath="Value" SelectedValue="{Binding SelectedMinimumAltitudeDegrees}" SelectedValuePath="Key" />
+                                    <ComboBox
+                                        DisplayMemberPath="Value"
+                                        ItemsSource="{Binding MinimumAltitudeDegrees}"
+                                        SelectedValue="{Binding SelectedMinimumAltitudeDegrees}"
+                                        SelectedValuePath="Key" />
                                 </UniformGrid>
                             </StackPanel>
                         </Expander>
 
-                        <Expander Header="{ns:Loc LblReferenceDate}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <Expander
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            Header="{ns:Loc LblReferenceDate}">
                             <UniformGrid Columns="2">
-                                <TextBlock Text="{ns:Loc LblReferenceDate}" VerticalAlignment="Center" />
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReferenceDate}" />
                                 <DatePicker SelectedDate="{Binding SelectedDate}" />
                             </UniformGrid>
                         </Expander>
-                        
 
 
-                        <ninactrl:CancellableButton 
-                        Height="40" Margin="5" 
-                        Visibility="{Binding SearchCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" 
-                        Command="{Binding SearchCommand}" 
-                        CancelCommand="{Binding CancelSearchCommand}"                 
-                        ButtonText="{ns:Loc LblSearch}" 
-                        CancelButtonImage="{StaticResource CancelSVG}" 
-                         />
+
+                        <ninactrl:CancellableButton
+                            Height="40"
+                            Margin="5"
+                            ButtonText="{ns:Loc LblSearch}"
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            CancelCommand="{Binding CancelSearchCommand}"
+                            Command="{Binding SearchCommand}"
+                            Visibility="{Binding SearchCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
 
                     </StackPanel>
                 </ScrollViewer>
             </Border>
 
-            <Border Grid.Row="1" BorderThickness="1" BorderBrush="{StaticResource BorderBrush}" Margin="0 5 0 0">
+            <Border
+                Grid.Row="1"
+                Margin="0,5,0,0"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1">
                 <StackPanel>
-                    <Grid Margin="0 5 0 0">
-                        <Path Width="49" Height="49" Fill="Yellow"  
-                              Data="{StaticResource NewMoonSVG}"
-                              Stretch="Uniform" />
-                        <Path Width="50" Height="50" Fill="Black"  
-                              Data="{Binding MoonPhase, Converter={StaticResource MoonPhaseToGeometryConverter}}" 
-                              Stretch="Uniform" />
+                    <Grid Margin="0,5,0,0">
+                        <Path
+                            Width="49"
+                            Height="49"
+                            Data="{StaticResource NewMoonSVG}"
+                            Fill="Yellow"
+                            Stretch="Uniform" />
+                        <Path
+                            Width="50"
+                            Height="50"
+                            Data="{Binding MoonPhase, Converter={StaticResource MoonPhaseToGeometryConverter}}"
+                            Fill="Black"
+                            Stretch="Uniform" />
                     </Grid>
-                    
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblIllumination}" VerticalAlignment="Center"></TextBlock>
-                            <TextBlock Text="{Binding Illumination, StringFormat={}{0:P2}}"></TextBlock>
+
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblIllumination}" />
+                            <TextBlock Text="{Binding Illumination, StringFormat={}{0:P2}}" />
                         </UniformGrid>
                     </Border>
 
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblMoonRise}" VerticalAlignment="Center"></TextBlock>
-                            <TextBlock Text="{Binding MoonRiseAndSet.RiseDate, StringFormat={}{0:HH:mm}}"></TextBlock>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMoonRise}" />
+                            <TextBlock Text="{Binding MoonRiseAndSet.RiseDate, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
 
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblMoonSet}" VerticalAlignment="Center"></TextBlock>
-                            <TextBlock Text="{Binding MoonRiseAndSet.SetDate, StringFormat={}{0:HH:mm}}"></TextBlock>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMoonSet}" />
+                            <TextBlock Text="{Binding MoonRiseAndSet.SetDate, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
 
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblDawn}" VerticalAlignment="Center"></TextBlock>
-                            <TextBlock Text="{Binding TwilightRiseAndSet.RiseDate, StringFormat={}{0:HH:mm}}"></TextBlock>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDawn}" />
+                            <TextBlock Text="{Binding TwilightRiseAndSet.RiseDate, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
 
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblSunRise}" VerticalAlignment="Center"></TextBlock>
-                            <TextBlock Text="{Binding SunRiseAndSet.RiseDate, StringFormat={}{0:HH:mm}}"></TextBlock>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSunRise}" />
+                            <TextBlock Text="{Binding SunRiseAndSet.RiseDate, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
 
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblSunSet}" VerticalAlignment="Center"></TextBlock>
-                            <TextBlock Text="{Binding SunRiseAndSet.SetDate, StringFormat={}{0:HH:mm}}"></TextBlock>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSunSet}" />
+                            <TextBlock Text="{Binding SunRiseAndSet.SetDate, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
 
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblDusk}" VerticalAlignment="Center"></TextBlock>
-                            <TextBlock Text="{Binding TwilightRiseAndSet.SetDate, StringFormat={}{0:HH:mm}}"></TextBlock>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDusk}" />
+                            <TextBlock Text="{Binding TwilightRiseAndSet.SetDate, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
-                    
+
 
 
 
@@ -220,19 +317,23 @@
             </Border>
         </Grid>
 
-        <ninactrl:LoadingControl 
-           Grid.Column="1"
-           HorizontalAlignment="Center" VerticalAlignment="Center"
-           MaxHeight="100"
-           MaxWidth="100"
-           LoadingImageBrush="{StaticResource PrimaryBrush}" 
-           Visibility="{Binding SearchCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" 
-           />
+        <ninactrl:LoadingControl
+            Grid.Column="1"
+            MaxWidth="100"
+            MaxHeight="100"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            LoadingImageBrush="{StaticResource PrimaryBrush}"
+            Visibility="{Binding SearchCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
 
 
 
-        <!-- Search result area -->
-        <DataGrid Grid.Column="1" ItemsSource="{Binding SearchResult}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled">
+        <!--  Search result area  -->
+        <DataGrid
+            Grid.Column="1"
+            AutoGenerateColumns="False"
+            HorizontalScrollBarVisibility="Disabled"
+            ItemsSource="{Binding SearchResult}">
             <DataGrid.CellStyle>
                 <Style TargetType="{x:Type DataGridCell}">
                     <Setter Property="TextBlock.TextAlignment" Value="Center" />
@@ -245,23 +346,35 @@
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Width="*" Header="{ns:Loc LblName}" CanUserSort="False" >
+                <DataGridTemplateColumn
+                    Width="*"
+                    CanUserSort="False"
+                    Header="{ns:Loc LblName}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <DataGrid ItemsSource="{Binding AlsoKnownAs}" 
-                                      AutoGenerateColumns="False" 
-                                      HorizontalScrollBarVisibility="Hidden" 
-                                      BorderBrush="Transparent" BorderThickness="0"
-                                      HorizontalGridLinesBrush="Transparent"
-                                      VerticalGridLinesBrush="Transparent"
-                                      IsHitTestVisible="False" HeadersVisibility="None"
-                                      VerticalAlignment="Center"
-                                     >
+                            <DataGrid
+                                VerticalAlignment="Center"
+                                AutoGenerateColumns="False"
+                                BorderBrush="Transparent"
+                                BorderThickness="0"
+                                HeadersVisibility="None"
+                                HorizontalGridLinesBrush="Transparent"
+                                HorizontalScrollBarVisibility="Hidden"
+                                IsHitTestVisible="False"
+                                ItemsSource="{Binding AlsoKnownAs}"
+                                VerticalGridLinesBrush="Transparent">
                                 <DataGrid.Columns>
-                                    <DataGridTemplateColumn Width="*" Header="" CanUserSort="False">
+                                    <DataGridTemplateColumn
+                                        Width="*"
+                                        CanUserSort="False"
+                                        Header="">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding}" TextAlignment="Center" VerticalAlignment="Center" Margin="5 0 5 0"/>
+                                                <TextBlock
+                                                    Margin="5,0,5,0"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding}"
+                                                    TextAlignment="Center" />
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
@@ -271,13 +384,19 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Width="320" Header="{ns:Loc LblDetails}" CanUserSort="False">
+                <DataGridTemplateColumn
+                    Width="320"
+                    CanUserSort="False"
+                    Header="{ns:Loc LblDetails}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <Border.Background>
-                                    <ImageBrush x:Name="PART_Image" Stretch="Uniform" ImageSource="{Binding Image}" />
-                                    
+                                    <ImageBrush
+                                        x:Name="PART_Image"
+                                        ImageSource="{Binding Image}"
+                                        Stretch="Uniform" />
+
                                 </Border.Background>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -285,54 +404,74 @@
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
 
-                                    <!-- will be displayed when no image is available -->
-                                    <TextBlock x:Name="PART_Textblock" 
-                                               Text="{ns:Loc LblNoImage}" 
-                                               HorizontalAlignment="Center" 
-                                               VerticalAlignment="Center" Foreground="{StaticResource ButtonForegroundDisabledBrush}"
-                                               Grid.RowSpan="2" 
-                                               Visibility="Collapsed" />
+                                    <!--  will be displayed when no image is available  -->
+                                    <TextBlock
+                                        x:Name="PART_Textblock"
+                                        Grid.RowSpan="2"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                        Text="{ns:Loc LblNoImage}"
+                                        Visibility="Collapsed" />
 
                                     <StackPanel VerticalAlignment="Top">
-                                        
+
                                         <Grid>
-                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                <TextBlock Text="{ns:Loc LblRA}" Foreground="White">
+                                            <StackPanel
+                                                Margin="0,6,0,6"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <TextBlock Foreground="White" Text="{ns:Loc LblRA}">
                                                     <TextBlock.Effect>
                                                         <DropShadowEffect
-                                                          ShadowDepth="0"
-                                                          Opacity="1"
-                                                          Color="Black"
-                                                         BlurRadius="5"/>
+                                                            BlurRadius="5"
+                                                            Opacity="1"
+                                                            ShadowDepth="0"
+                                                            Color="Black" />
                                                     </TextBlock.Effect>
                                                 </TextBlock>
-                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding Coordinates.RAString}" Margin="5,0,0,0"  Foreground="White">
+                                                <TextBlock
+                                                    MinWidth="40"
+                                                    Margin="5,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="White"
+                                                    Text="{Binding Coordinates.RAString}">
                                                     <TextBlock.Effect>
                                                         <DropShadowEffect
-                                                          ShadowDepth="0"
-                                                          Opacity="1"
-                                                          Color="Black"
-                                                         BlurRadius="5"/>
+                                                            BlurRadius="5"
+                                                            Opacity="1"
+                                                            ShadowDepth="0"
+                                                            Color="Black" />
                                                     </TextBlock.Effect>
                                                 </TextBlock>
                                             </StackPanel>
-                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                <TextBlock Text="{ns:Loc LblType}" Foreground="White">
+                                            <StackPanel
+                                                Margin="0,6,0,6"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <TextBlock Foreground="White" Text="{ns:Loc LblType}">
                                                     <TextBlock.Effect>
                                                         <DropShadowEffect
-                                                          ShadowDepth="0"
-                                                          Opacity="1"
-                                                          Color="Black"
-                                                         BlurRadius="5"/>
+                                                            BlurRadius="5"
+                                                            Opacity="1"
+                                                            ShadowDepth="0"
+                                                            Color="Black" />
                                                     </TextBlock.Effect>
                                                 </TextBlock>
-                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding DSOType}" Margin="5,0,0,0"  Foreground="White">
+                                                <TextBlock
+                                                    MinWidth="40"
+                                                    Margin="5,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="White"
+                                                    Text="{Binding DSOType}">
                                                     <TextBlock.Effect>
                                                         <DropShadowEffect
-                                                          ShadowDepth="0"
-                                                          Opacity="1"
-                                                          Color="Black"
-                                                         BlurRadius="5"/>
+                                                            BlurRadius="5"
+                                                            Opacity="1"
+                                                            ShadowDepth="0"
+                                                            Color="Black" />
                                                     </TextBlock.Effect>
                                                 </TextBlock>
                                             </StackPanel>
@@ -340,114 +479,183 @@
 
 
                                         <Grid>
-                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                <TextBlock Text="{ns:Loc LblDec}" Foreground="White">
+                                            <StackPanel
+                                                Margin="0,6,0,6"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <TextBlock Foreground="White" Text="{ns:Loc LblDec}">
                                                     <TextBlock.Effect>
                                                         <DropShadowEffect
-                                                          ShadowDepth="0"
-                                                          Opacity="1"
-                                                          Color="Black"
-                                                         BlurRadius="5"/>
+                                                            BlurRadius="5"
+                                                            Opacity="1"
+                                                            ShadowDepth="0"
+                                                            Color="Black" />
                                                     </TextBlock.Effect>
                                                 </TextBlock>
-                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding Coordinates.DecString}" Margin="5,0,0,0"  Foreground="White">
+                                                <TextBlock
+                                                    MinWidth="40"
+                                                    Margin="5,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="White"
+                                                    Text="{Binding Coordinates.DecString}">
                                                     <TextBlock.Effect>
                                                         <DropShadowEffect
-                                                          ShadowDepth="0"
-                                                          Opacity="1"
-                                                          Color="Black"
-                                                         BlurRadius="5"/>
+                                                            BlurRadius="5"
+                                                            Opacity="1"
+                                                            ShadowDepth="0"
+                                                            Color="Black" />
                                                     </TextBlock.Effect>
                                                 </TextBlock>
                                             </StackPanel>
-                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                <TextBlock Text="{ns:Loc LblConstellation}" Foreground="White">
+                                            <StackPanel
+                                                Margin="0,6,0,6"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <TextBlock Foreground="White" Text="{ns:Loc LblConstellation}">
                                                     <TextBlock.Effect>
                                                         <DropShadowEffect
-                                                          ShadowDepth="0"
-                                                          Opacity="1"
-                                                          Color="Black"
-                                                         BlurRadius="5"/>
+                                                            BlurRadius="5"
+                                                            Opacity="1"
+                                                            ShadowDepth="0"
+                                                            Color="Black" />
                                                     </TextBlock.Effect>
                                                 </TextBlock>
-                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding Constellation}" Margin="5,0,0,0"  Foreground="White">
+                                                <TextBlock
+                                                    MinWidth="40"
+                                                    Margin="5,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="White"
+                                                    Text="{Binding Constellation}">
                                                     <TextBlock.Effect>
                                                         <DropShadowEffect
-                                                          ShadowDepth="0"
-                                                          Opacity="1"
-                                                          Color="Black"
-                                                         BlurRadius="5"/>
+                                                            BlurRadius="5"
+                                                            Opacity="1"
+                                                            ShadowDepth="0"
+                                                            Color="Black" />
                                                     </TextBlock.Effect>
                                                 </TextBlock>
                                             </StackPanel>
                                         </Grid>
 
-                                                                        
+
                                     </StackPanel>
                                     <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
-                                        
+
                                         <Grid>
-                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                <Path Width="20" Height="20" Fill="{StaticResource ButtonForegroundBrush}"  Data="{StaticResource LightBulbSVG}" Stretch="Uniform" ToolTip="{ns:Loc LblMagnitude}" />
-                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding Magnitude}" Margin="5,0,0,0" Foreground="White" >
+                                            <StackPanel
+                                                Margin="0,6,0,6"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <Path
+                                                    Width="20"
+                                                    Height="20"
+                                                    Data="{StaticResource LightBulbSVG}"
+                                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                                    Stretch="Uniform"
+                                                    ToolTip="{ns:Loc LblMagnitude}" />
+                                                <TextBlock
+                                                    MinWidth="40"
+                                                    Margin="5,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="White"
+                                                    Text="{Binding Magnitude}">
                                                     <TextBlock.Effect>
                                                         <DropShadowEffect
-                                                          ShadowDepth="0"
-                                                          Opacity="1"
-                                                          Color="Black"
-                                                         BlurRadius="5"/>
+                                                            BlurRadius="5"
+                                                            Opacity="1"
+                                                            ShadowDepth="0"
+                                                            Color="Black" />
                                                     </TextBlock.Effect>
                                                 </TextBlock>
                                             </StackPanel>
-                                            <StackPanel Orientation="Horizontal" Margin="0 6 0 6" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                <Path Width="20" Height="20" Fill="{StaticResource ButtonForegroundBrush}"  Data="{StaticResource Stretch}" Stretch="Uniform" ToolTip="{ns:Loc LblSize}" Margin="5" />
-                                                <TextBlock VerticalAlignment="Center" MinWidth="40" Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" 
-                                                           Margin="5,0,0,0"  Foreground="White">
+                                            <StackPanel
+                                                Margin="0,6,0,6"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <Path
+                                                    Width="20"
+                                                    Height="20"
+                                                    Margin="5"
+                                                    Data="{StaticResource Stretch}"
+                                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                                    Stretch="Uniform"
+                                                    ToolTip="{ns:Loc LblSize}" />
+                                                <TextBlock
+                                                    MinWidth="40"
+                                                    Margin="5,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="White"
+                                                    Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}">
                                                     <TextBlock.Effect>
                                                         <DropShadowEffect
-                                                          ShadowDepth="0"
-                                                          Opacity="1"
-                                                          Color="Black"
-                                                         BlurRadius="5"/>
+                                                            BlurRadius="5"
+                                                            Opacity="1"
+                                                            ShadowDepth="0"
+                                                            Color="Black" />
                                                     </TextBlock.Effect>
                                                 </TextBlock>
                                             </StackPanel>
                                         </Grid>
-                                        
+
                                     </StackPanel>
                                 </Grid>
                             </Border>
                             <DataTemplate.Triggers>
                                 <DataTrigger Binding="{Binding ImageSource, ElementName=PART_Image}" Value="{x:Null}">
                                     <Setter TargetName="PART_Textblock" Property="Visibility" Value="Visible" />
-                                    <!-- Here is the 'override' content -->
+                                    <!--  Here is the 'override' content  -->
                                 </DataTrigger>
                             </DataTemplate.Triggers>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
-                <DataGridTemplateColumn Width="3*" Header="{ns:Loc LblAltitude}" CanUserSort="False">
+
+                <DataGridTemplateColumn
+                    Width="3*"
+                    CanUserSort="False"
+                    Header="{ns:Loc LblAltitude}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <local:AltitudeChart DataContext="{Binding}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
-                <DataGridTemplateColumn Width="1.5*" Header="" CanUserSort="False">
+
+                <DataGridTemplateColumn
+                    Width="1.5*"
+                    CanUserSort="False"
+                    Header="">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <UniformGrid Rows="2" Columns="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                                <Button Margin="5" MinHeight="50" HorizontalAlignment="Stretch" Command="{Binding SetSequenceCoordinatesCommand}" >
-                                    <TextBlock Text ="{ns:Loc LblSetAsSequenceTarget}" TextWrapping="Wrap" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                            <UniformGrid
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Columns="1"
+                                Rows="2">
+                                <Button
+                                    MinHeight="50"
+                                    Margin="5"
+                                    HorizontalAlignment="Stretch"
+                                    Command="{Binding SetSequenceCoordinatesCommand}">
+                                    <TextBlock
+                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                        Text="{ns:Loc LblSetAsSequenceTarget}"
+                                        TextWrapping="Wrap" />
                                 </Button>
 
-                                <Button Margin="5" MinHeight="50" HorizontalAlignment="Stretch" Command="{Binding SlewToCoordinatesCommand}" >
-                                    <TextBlock Text ="{ns:Loc LblSlew}" Foreground="{StaticResource ButtonForegroundBrush}"></TextBlock>
+                                <Button
+                                    MinHeight="50"
+                                    Margin="5"
+                                    HorizontalAlignment="Stretch"
+                                    Command="{Binding SlewToCoordinatesCommand}">
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSlew}" />
                                 </Button>
                             </UniformGrid>
-                            
+
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

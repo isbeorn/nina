@@ -14,12 +14,12 @@ using NINA.Utility.Notification;
 
 namespace NINA.PlateSolving {
     class LocalPlateSolver : IPlateSolver {
-        
+
 
         double _lowarcsecperpixel;
         double _higharcsecperpixel;
         double _searchradius;
-        
+
         Coordinates _target;
 
         static string TMPIMGFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA";
@@ -50,7 +50,7 @@ namespace NINA.PlateSolving {
             options.Add("--objs 100");
             options.Add("-u arcsecperpix");
             options.Add("--no-plots");
-            options.Add("-r");            
+            options.Add("-r");
             options.Add(string.Format("-L {0}", _lowarcsecperpixel.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
             options.Add(string.Format("-H {0}", _higharcsecperpixel.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
 
@@ -63,17 +63,17 @@ namespace NINA.PlateSolving {
         }
 
         private PlateSolveResult Solve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
-                     
+
             PlateSolveResult result = new PlateSolveResult();
             try {
                 progress.Report("Solving...");
                 string filepath = TMPIMGFILEPATH + "\\tmp.jpg";
-                
+
                 using (FileStream fs = new FileStream(filepath, FileMode.Create)) {
                     image.CopyTo(fs);
                 }
 
-                var cygwinbashpath = Path.GetFullPath(Settings.CygwinLocation + "\\bin\\bash.exe");                
+                var cygwinbashpath = Path.GetFullPath(Settings.CygwinLocation + "\\bin\\bash.exe");
 
                 if (!File.Exists(cygwinbashpath)) {
                     Notification.ShowError(string.Format("cygwin bash not found at {0}", cygwinbashpath));
@@ -105,30 +105,30 @@ namespace NINA.PlateSolving {
                     Dictionary<string, string> wcsinfo = new Dictionary<string, string>();
                     while (!process.StandardOutput.EndOfStream) {
                         var line = process.StandardOutput.ReadLine();
-                        if(line != null) {                            
+                        if (line != null) {
                             var valuepair = line.Split(' ');
-                            if (valuepair != null && valuepair.Length == 2) {                                
+                            if (valuepair != null && valuepair.Length == 2) {
                                 wcsinfo[valuepair[0]] = valuepair[1];
-                            }                                                      
+                            }
                         }
                     }
 
                     double ra = 0, dec = 0;
-                    if(wcsinfo.ContainsKey("ra_center")) {
+                    if (wcsinfo.ContainsKey("ra_center")) {
                         ra = double.Parse(wcsinfo["ra_center"], CultureInfo.InvariantCulture);
                     }
-                    if(wcsinfo.ContainsKey("dec_center")) {
+                    if (wcsinfo.ContainsKey("dec_center")) {
                         dec = double.Parse(wcsinfo["dec_center"], CultureInfo.InvariantCulture);
                     }
                     if (wcsinfo.ContainsKey("orientation_center")) {
                         result.Orientation = double.Parse(wcsinfo["orientation_center"], CultureInfo.InvariantCulture);
                     }
-                    if(wcsinfo.ContainsKey("pixscale")) {
+                    if (wcsinfo.ContainsKey("pixscale")) {
                         result.Pixscale = double.Parse(wcsinfo["pixscale"], CultureInfo.InvariantCulture);
                     }
 
                     result.Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
-                                        
+
                     progress.Report("Solved");
 
                     /* This info does not get the center info. - removed
@@ -137,8 +137,7 @@ namespace NINA.PlateSolving {
                         result.Ra = double.Parse(solvedHDU.Header.FindCard("CRVAL1").Value, System.Globalization.CultureInfo.InvariantCulture);
                         result.Dec = double.Parse(solvedHDU.Header.FindCard("CRVAL2").Value, System.Globalization.CultureInfo.InvariantCulture);
                     */
-                }
-                else {
+                } else {
                     result.Success = false;
                 }
             } catch (OperationCanceledException ex) {

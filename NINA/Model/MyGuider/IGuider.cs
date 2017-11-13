@@ -25,7 +25,7 @@ namespace NINA.Model.MyGuider {
         string Host { get; }
         int Inst { get; }
     }
-    
+
     public interface IGuiderAppState {
         string State { get; }
     }

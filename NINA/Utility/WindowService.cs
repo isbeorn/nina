@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace NINA.Utility
-{
+namespace NINA.Utility {
     /// <summary>
     /// A window should be associated to a viewmodel by the DataTemplates.xaml
     /// </summary>
@@ -36,10 +35,10 @@ namespace NINA.Utility
                 mainwindow.Opacity = 0.8;
                 _win.ShowDialog();
                 mainwindow.Opacity = 1;
-                
-            }));            
-        }  
-        
+
+            }));
+        }
+
         public async Task Close() {
             await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                 _win?.Close();

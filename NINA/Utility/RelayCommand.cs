@@ -5,10 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace NINA.Utility
-{
-    public class RelayCommand : ICommand
-    {
+namespace NINA.Utility {
+    public class RelayCommand : ICommand {
         #region Fields
 
         /// <summary>
@@ -31,8 +29,7 @@ namespace NINA.Utility
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         public RelayCommand(Action<object> execute)
-            : this(execute, DefaultCanExecute)
-        {
+            : this(execute, DefaultCanExecute) {
         }
 
         /// <summary>
@@ -41,15 +38,12 @@ namespace NINA.Utility
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         /// <param name="canExecute">The execution status logic.</param>
-        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
-        {
-            if (execute == null)
-            {
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute) {
+            if (execute == null) {
                 throw new ArgumentNullException("execute");
             }
 
-            if (canExecute == null)
-            {
+            if (canExecute == null) {
                 throw new ArgumentNullException("canExecute");
             }
 
@@ -69,16 +63,13 @@ namespace NINA.Utility
         /// the local OnCanExecuteChanged method AND
         /// the CommandManager RequerySuggested event
         /// </remarks>
-        public event EventHandler CanExecuteChanged
-        {
-            add
-            {
+        public event EventHandler CanExecuteChanged {
+            add {
                 CommandManager.RequerySuggested += value;
                 this.CanExecuteChangedInternal += value;
             }
 
-            remove
-            {
+            remove {
                 CommandManager.RequerySuggested -= value;
                 this.CanExecuteChangedInternal -= value;
             }
@@ -94,8 +85,7 @@ namespace NINA.Utility
         /// </summary>
         /// <param name="parameter">the parameter that represents the validation method</param>
         /// <returns>true if the command can be executed</returns>
-        public bool CanExecute(object parameter)
-        {
+        public bool CanExecute(object parameter) {
             return this.canExecute != null && this.canExecute(parameter);
         }
 
@@ -103,8 +93,7 @@ namespace NINA.Utility
         /// Execute the encapsulated command
         /// </summary>
         /// <param name="parameter">the parameter that represents the execution method</param>
-        public void Execute(object parameter)
-        {
+        public void Execute(object parameter) {
             this.execute(parameter);
         }
 
@@ -113,11 +102,9 @@ namespace NINA.Utility
         /// <summary>
         /// Raises the can execute changed.
         /// </summary>
-        public void OnCanExecuteChanged()
-        {
+        public void OnCanExecuteChanged() {
             EventHandler handler = this.CanExecuteChangedInternal;
-            if (handler != null)
-            {
+            if (handler != null) {
                 //DispatcherHelper.BeginInvokeOnUIThread(() => handler.Invoke(this, EventArgs.Empty));
                 handler.Invoke(this, EventArgs.Empty);
             }
@@ -126,8 +113,7 @@ namespace NINA.Utility
         /// <summary>
         /// Destroys this instance.
         /// </summary>
-        public void Destroy()
-        {
+        public void Destroy() {
             this.canExecute = _ => false;
             this.execute = _ => { return; };
         }
@@ -137,8 +123,7 @@ namespace NINA.Utility
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         /// <returns>Always true</returns>
-        private static bool DefaultCanExecute(object parameter)
-        {
+        private static bool DefaultCanExecute(object parameter) {
             return true;
         }
     }

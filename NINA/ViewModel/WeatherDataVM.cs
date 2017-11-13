@@ -28,8 +28,8 @@ namespace NINA.ViewModel {
                     if (Settings.WeatherDataType == WeatherDataEnum.OPENWEATHERMAP) {
                         WeatherData = new OpenWeatherMapData();
                     }
-                } 
-                
+                }
+
                 return _weatherData;
             }
             set {
@@ -37,7 +37,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-        
+
         public IAsyncCommand UpdateWeatherDataCommand { get; private set; }
     }
 }

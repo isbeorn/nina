@@ -25,7 +25,7 @@ namespace NINA.ViewModel {
         private ObservableCollection<DockableVM> _documents;
         public ObservableCollection<DockableVM> Documents {
             get {
-                if(_documents == null) {
+                if (_documents == null) {
                     _documents = new ObservableCollection<DockableVM>();
                 }
                 return _documents;
@@ -56,7 +56,7 @@ namespace NINA.ViewModel {
             if (!_dockloaded) {
                 _dockmanager = (Xceed.Wpf.AvalonDock.DockingManager)o;
                 var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
-                serializer.LayoutSerializationCallback += (s,args) => {
+                serializer.LayoutSerializationCallback += (s, args) => {
 
                     args.Content = args.Content;
                 };

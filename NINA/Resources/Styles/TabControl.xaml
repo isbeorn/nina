@@ -1,18 +1,19 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    >
-    
-    <Style TargetType="{x:Type TabItem}" x:Key="LeftTabItem">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="LeftTabItem" TargetType="{x:Type TabItem}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TabItem">
-                    <Border Name="PART_Border" Margin="0,-1,0,0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 1 0 1">
+                    <Border
+                        Name="PART_Border"
+                        Margin="0,-1,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,1,0,1">
                         <Grid Name="PART_Panel">
-                            <ContentPresenter 
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
-                                        ContentSource="Header"
-                                        />
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                ContentSource="Header" />
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -31,18 +32,22 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type TabItem}" x:Key="TopTabItem">
+    <Style x:Key="TopTabItem" TargetType="{x:Type TabItem}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TabItem">
-                    <Border Name="PART_Border" Margin="-1,2,0,0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1 1 1 0">
-                        <Grid  >
+                    <Border
+                        Name="PART_Border"
+                        Margin="-1,2,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1,1,1,0">
+                        <Grid>
                             <Grid Name="PART_Panel">
-                                <ContentPresenter 
-                                    VerticalAlignment="Center"
+                                <ContentPresenter
+                                    Margin="10,3"
                                     HorizontalAlignment="Center"
-                                    ContentSource="Header"
-                                    Margin="10,3"/>
+                                    VerticalAlignment="Center"
+                                    ContentSource="Header" />
 
                             </Grid>
                         </Grid>
@@ -71,12 +76,20 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <TabPanel IsItemsHost="true"  HorizontalAlignment="Left" MinWidth="80" />
-            <Border Grid.Column="1" BorderThickness="1 0 0 0" BorderBrush="{StaticResource BorderBrush}">
-                <ContentPresenter x:Name="ContentPresenter" Margin="2,2,0,0"
-                                            VerticalAlignment="Stretch"
-                                            HorizontalAlignment="Stretch"
-                                            ContentSource="SelectedContent"  />
+            <TabPanel
+                MinWidth="80"
+                HorizontalAlignment="Left"
+                IsItemsHost="true" />
+            <Border
+                Grid.Column="1"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1,0,0,0">
+                <ContentPresenter
+                    x:Name="ContentPresenter"
+                    Margin="2,2,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    ContentSource="SelectedContent" />
             </Border>
 
         </Grid>
@@ -89,13 +102,18 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Border Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="{StaticResource BorderBrush}">
-                <ContentPresenter  x:Name="ContentPresenter" Margin="1 0 0 0"
-                                            VerticalAlignment="Stretch"
-                                            HorizontalAlignment="Stretch"
-                                            ContentSource="SelectedContent" />
+            <Border
+                Grid.Row="1"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,1,0,0">
+                <ContentPresenter
+                    x:Name="ContentPresenter"
+                    Margin="1,0,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    ContentSource="SelectedContent" />
             </Border>
-            <TabPanel IsItemsHost="true" VerticalAlignment="Top"  />
+            <TabPanel VerticalAlignment="Top" IsItemsHost="true" />
         </Grid>
     </ControlTemplate>
 
@@ -105,13 +123,11 @@
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
         <Style.Triggers>
             <Trigger Property="TabStripPlacement" Value="Left">
-                <Setter Property="Template" 
-						Value="{StaticResource LeftTabTemplate}" />
+                <Setter Property="Template" Value="{StaticResource LeftTabTemplate}" />
                 <Setter Property="ItemContainerStyle" Value="{StaticResource LeftTabItem}" />
             </Trigger>
             <Trigger Property="TabStripPlacement" Value="Top">
-                <Setter Property="Template" 
-						Value="{StaticResource TopTabTemplate}" />
+                <Setter Property="Template" Value="{StaticResource TopTabTemplate}" />
                 <Setter Property="ItemContainerStyle" Value="{StaticResource TopTabItem}" />
             </Trigger>
         </Style.Triggers>

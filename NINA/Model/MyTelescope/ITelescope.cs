@@ -29,7 +29,7 @@ namespace NINA.Model.MyTelescope {
         double SiteLatitude { get; }
         double SiteLongitude { get; }
         double SiteElevation { get; }
-        
+
         bool MeridianFlip(Coordinates targetCoordinates);
         void MoveAxis(TelescopeAxes axis, double rate);
         void Park();

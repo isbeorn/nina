@@ -62,15 +62,15 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;
-                CaptureSequence seq = args[0] == null ? new CaptureSequence(this.SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, this.SnapFilter, this.SnapBin,1) : (CaptureSequence)args[0];
+                CaptureSequence seq = args[0] == null ? new CaptureSequence(this.SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, this.SnapFilter, this.SnapBin, 1) : (CaptureSequence)args[0];
                 IProgress<string> progress = (IProgress<string>)args[1];
-                CancellationTokenSource token = (CancellationTokenSource)args[2];                
+                CancellationTokenSource token = (CancellationTokenSource)args[2];
 
                 await SolveWithCapture(seq, progress, token);
             }, AsyncMediatorMessages.SolveWithCapture);
 
             Mediator.Instance.RegisterAsync(async (object o) => {
-                var args = (object[])o;                
+                var args = (object[])o;
                 CancellationTokenSource token = (CancellationTokenSource)args[0];
                 IProgress<string> progress = (IProgress<string>)args[1];
                 Repeat = true;
@@ -78,12 +78,12 @@ namespace NINA.ViewModel {
             }, AsyncMediatorMessages.CaputureSolveSyncAndReslew);
 
             Mediator.Instance.RegisterAsync(async (object o) => {
-                var args = (object[])o;                
+                var args = (object[])o;
                 IProgress<string> progress = (IProgress<string>)args[0];
-                CancellationTokenSource token = (CancellationTokenSource)args[1];                
+                CancellationTokenSource token = (CancellationTokenSource)args[1];
                 await Solve(progress, token);
             }, AsyncMediatorMessages.Solve);
-            
+
             Mediator.Instance.Register((object o) => {
                 SyncronizeTelescope();
             }, MediatorMessages.SyncronizeTelescope);
@@ -109,7 +109,7 @@ namespace NINA.ViewModel {
             }
             set {
                 _syncScope = value;
-                if(!_syncScope && SlewToTarget) {
+                if (!_syncScope && SlewToTarget) {
                     SlewToTarget = false;
                 }
                 RaisePropertyChanged();
@@ -126,7 +126,7 @@ namespace NINA.ViewModel {
                 if (_slewToTarget && !SyncScope) {
                     SyncScope = true;
                 }
-                if(!_slewToTarget && Repeat) {
+                if (!_slewToTarget && Repeat) {
                     Repeat = false;
                 }
                 RaisePropertyChanged();
@@ -140,7 +140,7 @@ namespace NINA.ViewModel {
             }
             set {
                 _repeat = value;
-                if(_repeat && !SlewToTarget) {
+                if (_repeat && !SlewToTarget) {
                     SlewToTarget = true;
                 }
                 RaisePropertyChanged();
@@ -219,7 +219,7 @@ namespace NINA.ViewModel {
 
                 Coordinates solved = PlateSolveResult.Coordinates;
                 solved = solved.Transform(Settings.EpochType);  //Transform to JNow if required
-                                
+
                 if (Telescope.Sync(solved.RA, solved.Dec) == true) {
                     Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeSynced"]);
                     success = true;
@@ -262,7 +262,7 @@ namespace NINA.ViewModel {
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
-            
+
             await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, progress, canceltoken });
 
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
@@ -283,7 +283,7 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="progress"></param>
         /// <returns></returns>
-        private async Task<bool> CaptureSolveSyncAndReslew(CancellationTokenSource tokensource, IProgress<string> progress) {            
+        private async Task<bool> CaptureSolveSyncAndReslew(CancellationTokenSource tokensource, IProgress<string> progress) {
             bool solvedSuccessfully = false;
             bool repeatPlateSolve = false;
             do {
@@ -291,7 +291,7 @@ namespace NINA.ViewModel {
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 solvedSuccessfully = await SolveWithCapture(seq, progress, tokensource);
 
-                if (solvedSuccessfully) {                    
+                if (solvedSuccessfully) {
                     if (SyncScope) {
                         if (Telescope?.Connected != true) {
                             Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
@@ -302,9 +302,9 @@ namespace NINA.ViewModel {
                             Telescope.SlewToCoordinates(coords.RA, coords.Dec);
                         }
                     }
-                } 
+                }
 
-                if(solvedSuccessfully && Repeat && Math.Abs(Astrometry.DegreeToArcmin(PlateSolveResult.RaError)) > RepeatThreshold) {
+                if (solvedSuccessfully && Repeat && Math.Abs(Astrometry.DegreeToArcmin(PlateSolveResult.RaError)) > RepeatThreshold) {
                     repeatPlateSolve = true;
                     progress.Report("Telescope not inside tolerance. Repeating...");
                     //Let the scope settle
@@ -329,9 +329,9 @@ namespace NINA.ViewModel {
                 solved = solved.Transform(Settings.EpochType);
 
                 var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
-                
+
                 PlateSolveResult.RaError = coords.RADegrees - solved.RADegrees;
-                PlateSolveResult.DecError = coords.Dec - solved.Dec;                
+                PlateSolveResult.DecError = coords.Dec - solved.Dec;
             }
         }
 
@@ -343,13 +343,13 @@ namespace NINA.ViewModel {
         /// <returns>true: success; false: fail</returns>
         public async Task<bool> Solve(IProgress<string> progress, CancellationTokenSource canceltoken) {
             var solver = GetPlateSolver();
-            if(solver == null) {
+            if (solver == null) {
                 return false;
             }
-                
+
             BitmapSource source = Image;
             BitmapFrame image = null;
-                
+
             image = BitmapFrame.Create(source);
 
             /* Read image into memorystream */
@@ -360,7 +360,7 @@ namespace NINA.ViewModel {
                 encoder.Save(ms);
                 ms.Seek(0, SeekOrigin.Begin);
 
-                PlateSolveResult = await solver.SolveAsync(ms, progress, canceltoken);                
+                PlateSolveResult = await solver.SolveAsync(ms, progress, canceltoken);
             }
 
             if (!PlateSolveResult?.Success == true) {
@@ -411,15 +411,15 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-                
+
         public IAsyncCommand SolveCommand { get; private set; }
-        
+
         public ICommand CancelSolveCommand { get; private set; }
 
         private AsyncObservableLimitedSizedStack<PlateSolveResult> _plateSolveResultList;
         public AsyncObservableLimitedSizedStack<PlateSolveResult> PlateSolveResultList {
             get {
-                if(_plateSolveResultList == null) {
+                if (_plateSolveResultList == null) {
                     _plateSolveResultList = new AsyncObservableLimitedSizedStack<PlateSolveResult>(15);
                 }
                 return _plateSolveResultList;
@@ -439,7 +439,7 @@ namespace NINA.ViewModel {
             set {
                 _plateSolveResult = value;
 
-                if(_plateSolveResult.Success) { 
+                if (_plateSolveResult.Success) {
                     CalculateError();
                 }
                 PlateSolveResultList.Add(_plateSolveResult);

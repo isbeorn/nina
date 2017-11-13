@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace NINA.ViewModel {
-    public class BaseVM :BaseINPC {
+    public class BaseVM : BaseINPC {
 
         public BaseVM() {
-            
-        }
-                
-       
 
-        
+        }
+
+
+
+
 
 
     }

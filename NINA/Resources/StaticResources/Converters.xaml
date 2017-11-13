@@ -1,17 +1,17 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converters ="clr-namespace:NINA.Utility.Converters" 
-                    >
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:NINA.Utility.Converters">
 
-    <BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
+    <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
     <converters:BooleanToVisibilityHiddenConverter x:Key="BooleanToVisibilityHiddenConverter" />
     <converters:BooleanToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
     <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
-    <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
-    <converters:InverseNullToVisibilityConverter x:Key="InverseNullToVisibilityConverter"/>
+    <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+    <converters:InverseNullToVisibilityConverter x:Key="InverseNullToVisibilityConverter" />
     <converters:DatabindingDebugConverter x:Key="DebugConverter" />
-    <converters:InverseNullToBooleanConverter x:Key="InverseNullToBooleanConverter" />    
+    <converters:InverseNullToBooleanConverter x:Key="InverseNullToBooleanConverter" />
     <converters:SetAlphaToColorConverter x:Key="SetAlphaToColorConverter" />
     <converters:NullToVisibilityCollapsedConverter x:Key="NullToVisibilityCollapsedConverter" />
     <converters:CollectionContainsItemsToVisibilityConverter x:Key="CollectionContainsItemsToVisibilityConverter" />

@@ -16,7 +16,7 @@ using System.Windows.Threading;
 namespace NINA.ViewModel {
     class FocuserVM : DockableVM {
 
-        public FocuserVM () {
+        public FocuserVM() {
             Title = "LblFocuser";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
 
@@ -27,15 +27,15 @@ namespace NINA.ViewModel {
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList);
             MoveFocuserCommand = new AsyncCommand<bool>(() => MoveFocuser(TargetPosition), (p) => Connected && TempComp == false);
             HaltFocuserCommand = new RelayCommand(HaltFocuser);
-            
+
             Mediator.Instance.RegisterAsync(async (object o) => {
                 int offset = (int)o;
-                await MoveFocuserRelative(offset);                
-            },AsyncMediatorMessages.MoveFocuserRelative);
+                await MoveFocuserRelative(offset);
+            }, AsyncMediatorMessages.MoveFocuserRelative);
             Mediator.Instance.RegisterAsync(async (object o) => {
                 int position = (int)o;
                 await MoveFocuser(position);
-            },AsyncMediatorMessages.MoveFocuserAbsolute);
+            }, AsyncMediatorMessages.MoveFocuserAbsolute);
         }
 
         private void HaltFocuser(object obj) {
@@ -48,33 +48,33 @@ namespace NINA.ViewModel {
         private async Task<bool> MoveFocuser(int position) {
             _cancelMove = new CancellationTokenSource();
             await Task.Run(() => {
-                try {                    
+                try {
                     while (Focuser.Position != position) {
                         IsMoving = true;
                         _cancelMove.Token.ThrowIfCancellationRequested();
                         Focuser.Move(position);
                     }
                     Position = position;
-                } catch(OperationCanceledException) {
+                } catch (OperationCanceledException) {
 
                 }
-                
+
             });
             return true;
         }
 
         private async Task MoveFocuserRelative(int offset) {
-            if(Focuser?.Connected == true) {
+            if (Focuser?.Connected == true) {
                 var pos = Focuser.Position + offset;
-                await MoveFocuser(pos);                
+                await MoveFocuser(pos);
             }
         }
 
-        private void UpdateFocuser_Tick(object sender, EventArgs e) {            
+        private void UpdateFocuser_Tick(object sender, EventArgs e) {
             if (Focuser?.Connected == true) {
                 Focuser.UpdateValues();
                 this.Position = Focuser.Position;
-            }          
+            }
         }
 
         CancellationTokenSource _cancelChooseFocuserSource;
@@ -82,11 +82,11 @@ namespace NINA.ViewModel {
         public async Task<bool> ChooseFocuser() {
             Focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
             _cancelChooseFocuserSource = new CancellationTokenSource();
-            if(Focuser != null) {
+            if (Focuser != null) {
                 try {
                     var connected = await Focuser?.Connect(_cancelChooseFocuserSource.Token);
                     _cancelChooseFocuserSource.Token.ThrowIfCancellationRequested();
-                    if(connected) {                                                
+                    if (connected) {
                         Connected = true;
                         Notification.ShowSuccess(Locale.Loc.Instance["LblFocuserConnected"]);
                         _cancelUpdateFocuserValues?.Cancel();
@@ -102,11 +102,11 @@ namespace NINA.ViewModel {
                         Focuser = null;
                         return false;
                     }
-                } catch(OperationCanceledException) {
+                } catch (OperationCanceledException) {
                     if (Connected) { Disconnect(); }
                     return false;
                 }
-                
+
             } else {
                 return false;
             }
@@ -116,56 +116,56 @@ namespace NINA.ViewModel {
             _cancelChooseFocuserSource?.Cancel();
         }
 
-        private void GetFocuserValues(IProgress<Dictionary<string,object>> p, CancellationToken token) {
-            Dictionary<string,object> focuserValues = new Dictionary<string,object>();
+        private void GetFocuserValues(IProgress<Dictionary<string, object>> p, CancellationToken token) {
+            Dictionary<string, object> focuserValues = new Dictionary<string, object>();
             try {
                 do {
                     token.ThrowIfCancellationRequested();
-                    
+
                     focuserValues.Clear();
-                    focuserValues.Add(nameof(Connected),_focuser?.Connected ?? false);
-                    focuserValues.Add(nameof(Position),_focuser?.Position ?? 0);
-                    focuserValues.Add(nameof(Temperature),_focuser?.Temperature ?? double.NaN);
-                    focuserValues.Add(nameof(IsMoving),_focuser?.IsMoving ?? false);
-                    focuserValues.Add(nameof(TempComp),_focuser?.TempComp ?? false);
+                    focuserValues.Add(nameof(Connected), _focuser?.Connected ?? false);
+                    focuserValues.Add(nameof(Position), _focuser?.Position ?? 0);
+                    focuserValues.Add(nameof(Temperature), _focuser?.Temperature ?? double.NaN);
+                    focuserValues.Add(nameof(IsMoving), _focuser?.IsMoving ?? false);
+                    focuserValues.Add(nameof(TempComp), _focuser?.TempComp ?? false);
 
                     p.Report(focuserValues);
 
-                    token.ThrowIfCancellationRequested();                    
+                    token.ThrowIfCancellationRequested();
 
                     //Update after one second + the time it takes to read the values
                     Thread.Sleep(500);
 
                 } while (Connected == true);
-            } catch(OperationCanceledException) {
+            } catch (OperationCanceledException) {
 
             } finally {
                 focuserValues.Clear();
-                focuserValues.Add(nameof(Connected),false);
+                focuserValues.Add(nameof(Connected), false);
                 p.Report(focuserValues);
             }
         }
 
-        private void UpdateFocuserValues(Dictionary<string,object> focuserValues) {
+        private void UpdateFocuserValues(Dictionary<string, object> focuserValues) {
             object o = null;
-            focuserValues.TryGetValue(nameof(Connected),out o);
+            focuserValues.TryGetValue(nameof(Connected), out o);
             Connected = (bool)(o ?? false);
 
-            focuserValues.TryGetValue(nameof(Position),out o);
+            focuserValues.TryGetValue(nameof(Position), out o);
             Position = (int)(o ?? 0);
 
-            focuserValues.TryGetValue(nameof(Temperature),out o);
+            focuserValues.TryGetValue(nameof(Temperature), out o);
             Temperature = (double)(o ?? double.NaN);
 
-            focuserValues.TryGetValue(nameof(IsMoving),out o);
+            focuserValues.TryGetValue(nameof(IsMoving), out o);
             IsMoving = (bool)(o ?? false);
 
-            focuserValues.TryGetValue(nameof(TempComp),out o);
+            focuserValues.TryGetValue(nameof(TempComp), out o);
             TempComp = (bool)(o ?? false);
         }
 
-        
-               
+
+
 
         private bool _connected;
         public bool Connected {
@@ -175,7 +175,7 @@ namespace NINA.ViewModel {
             private set {
                 _connected = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.FocuserConnectedChanged,_connected);
+                Mediator.Instance.Notify(MediatorMessages.FocuserConnectedChanged, _connected);
             }
         }
 
@@ -187,7 +187,7 @@ namespace NINA.ViewModel {
             private set {
                 _position = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.FocuserPositionChanged,_position);
+                Mediator.Instance.Notify(MediatorMessages.FocuserPositionChanged, _position);
             }
         }
 
@@ -197,9 +197,9 @@ namespace NINA.ViewModel {
                 return _temperature;
             }
             private set {
-                _temperature = value;          
+                _temperature = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.FocuserTemperatureChanged,_temperature);
+                Mediator.Instance.Notify(MediatorMessages.FocuserTemperatureChanged, _temperature);
             }
         }
 
@@ -211,7 +211,7 @@ namespace NINA.ViewModel {
             private set {
                 _isMoving = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.FocuserIsMovingChanged,_isMoving);
+                Mediator.Instance.Notify(MediatorMessages.FocuserIsMovingChanged, _isMoving);
             }
         }
 
@@ -227,7 +227,7 @@ namespace NINA.ViewModel {
                     _focuser.TempComp = _tempComp;
                 }
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.FocuserIsMovingChanged,_tempComp);
+                Mediator.Instance.Notify(MediatorMessages.FocuserIsMovingChanged, _tempComp);
             }
         }
 
@@ -243,20 +243,20 @@ namespace NINA.ViewModel {
         }
 
         private void DisconnectDiag(object obj) {
-            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Focuser?","",System.Windows.MessageBoxButton.OKCancel,System.Windows.MessageBoxResult.Cancel);
+            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Focuser?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
                 Disconnect();
             }
         }
 
-        public void Disconnect() {            
-            
+        public void Disconnect() {
+
             Connected = false;
             _cancelUpdateFocuserValues?.Cancel();
             Focuser?.Disconnect();
             Focuser = null;
             RaisePropertyChanged(nameof(Focuser));
-            
+
         }
 
         public void RefreshFocuserList(object obj) {
@@ -287,7 +287,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        IProgress<Dictionary<string,object>> _updateFocuserValuesProgress;
+        IProgress<Dictionary<string, object>> _updateFocuserValuesProgress;
         private CancellationTokenSource _cancelUpdateFocuserValues;
         private Task _updateFocuserValuesTask;
 
@@ -296,10 +296,10 @@ namespace NINA.ViewModel {
         public ICommand ChooseFocuserCommand { get; private set; }
         public ICommand CancelChooseFocuserCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
-                
+
         public ICommand MoveFocuserCommand { get; private set; }
-        
-        public ICommand HaltFocuserCommand { get; private set; }        
+
+        public ICommand HaltFocuserCommand { get; private set; }
     }
 
     class FocuserChooserVM : EquipmentChooserVM {

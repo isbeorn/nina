@@ -40,8 +40,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-                
-        public ICommand SetupDialogCommand { get; private set; } 
+
+        public ICommand SetupDialogCommand { get; private set; }
 
         private void OpenSetupDialog(object o) {
             if (SelectedDevice?.HasSetupDialog == true) {

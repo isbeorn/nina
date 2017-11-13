@@ -19,7 +19,7 @@ namespace NINA.ViewModel {
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
-            
+
             RegisterMediatorMessages();
 
             InitAvalonDockLayout();
@@ -27,11 +27,11 @@ namespace NINA.ViewModel {
             MeridianFlipVM = new MeridianFlipVM();
         }
 
-        public void InitAvalonDockLayout() {            
+        public void InitAvalonDockLayout() {
             DockManagerVM.Documents.Add(ImagingVM.ImageControl);
             DockManagerVM.Anchorables.Add(CameraVM);
             DockManagerVM.Anchorables.Add(TelescopeVM);
-            DockManagerVM.Anchorables.Add(PlatesolveVM);            
+            DockManagerVM.Anchorables.Add(PlatesolveVM);
             DockManagerVM.Anchorables.Add(PolarAlignVM);
             DockManagerVM.Anchorables.Add(WeatherDataVM);
             DockManagerVM.Anchorables.Add(GuiderVM);
@@ -44,14 +44,14 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(AutoFocusVM);
         }
 
-        
+
 
         private void RegisterMediatorMessages() {
             Mediator.Instance.Register((object o) => {
                 Status = (string)o;
             }, MediatorMessages.StatusUpdate);
         }
-        
+
 
 
         public string Version {
@@ -63,7 +63,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string _status;        
+        private string _status;
         public string Status {
             get {
                 return _status;
@@ -78,8 +78,7 @@ namespace NINA.ViewModel {
         private static void MaximizeWindow(object obj) {
             if (Application.Current.MainWindow.WindowState == WindowState.Maximized) {
                 Application.Current.MainWindow.WindowState = WindowState.Normal;
-            }
-            else {
+            } else {
                 Application.Current.MainWindow.WindowState = WindowState.Maximized;
             }
         }
@@ -91,8 +90,8 @@ namespace NINA.ViewModel {
         private void ExitApplication(object obj) {
             DockManagerVM.SaveAvalonDockLayout();
             if (CameraVM?.Cam?.Connected == true) {
-                var diag = MyMessageBox.MyMessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);                
-                if(diag == MessageBoxResult.OK) {
+                var diag = MyMessageBox.MyMessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
+                if (diag == MessageBoxResult.OK) {
                     DisconnectEquipment();
                     Application.Current.Shutdown();
                 }
@@ -100,7 +99,7 @@ namespace NINA.ViewModel {
                 DisconnectEquipment();
                 Application.Current.Shutdown();
             }
-            
+
         }
 
         private void DisconnectEquipment() {
@@ -114,7 +113,7 @@ namespace NINA.ViewModel {
         private DockManagerVM _dockManagerVM;
         public DockManagerVM DockManagerVM {
             get {
-                if(_dockManagerVM == null) {
+                if (_dockManagerVM == null) {
                     _dockManagerVM = new DockManagerVM();
                 }
                 return _dockManagerVM;
@@ -135,11 +134,11 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-        
+
         private CameraVM _cameraVM;
         public CameraVM CameraVM {
             get {
-                if(_cameraVM == null) {
+                if (_cameraVM == null) {
                     _cameraVM = new CameraVM();
 
                 }
@@ -197,7 +196,7 @@ namespace NINA.ViewModel {
         private SequenceVM _seqVM;
         public SequenceVM SeqVM {
             get {
-                if(_seqVM == null) {
+                if (_seqVM == null) {
                     _seqVM = new SequenceVM();
                 }
                 return _seqVM;
@@ -229,7 +228,8 @@ namespace NINA.ViewModel {
                     _polarAlignVM = new PolarAlignmentVM();
                 }
                 return _polarAlignVM;
-            } set {
+            }
+            set {
                 _polarAlignVM = value;
                 RaisePropertyChanged();
             }
@@ -271,7 +271,7 @@ namespace NINA.ViewModel {
                 }
                 return _guiderVM;
             }
-            set {                
+            set {
                 _guiderVM = value;
                 RaisePropertyChanged();
             }
@@ -338,8 +338,8 @@ namespace NINA.ViewModel {
         public ICommand MaximizeWindowCommand { get; private set; }
 
         public ICommand ExitCommand { get; private set; }
-                
-        
+
+
 
 
     }

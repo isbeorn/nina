@@ -72,7 +72,7 @@ namespace NINA.Utility.AvalonDock {
 
             if (item is ImageStatisticsVM)
                 return ImageStatisticsTemplate;
-            
+
             if (item is ImageControlVM)
                 return ImageControlTemplate;
 

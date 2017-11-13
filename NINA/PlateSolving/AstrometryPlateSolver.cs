@@ -27,13 +27,13 @@ namespace NINA.PlateSolving {
 
         public AstrometryPlateSolver(string domain, string apikey) {
             this._domain = domain;
-            this._apikey = apikey; 
+            this._apikey = apikey;
 
         }
 
         private async Task<JObject> Authenticate(CancellationTokenSource canceltoken) {
 
-            string response = string.Empty;            
+            string response = string.Empty;
             string json = "{\"apikey\":\"" + _apikey + "\"}";
             json = Utility.Utility.EncodeUrl(json);
             string body = "request-json=" + json;
@@ -98,7 +98,7 @@ namespace NINA.PlateSolving {
                     if (imagesubmission.GetValue("status")?.ToString() == "success") {
                         subid = imagesubmission.GetValue("subid").ToString();
 
-                        
+
                         progress.Report("Waiting for plate solve to start ...");
                         while (true) {
                             canceltoken.Token.ThrowIfCancellationRequested();
@@ -138,43 +138,36 @@ namespace NINA.PlateSolving {
                                 progress.Report("Getting plate solve result ...");
                                 JObject job = await GetJobInfo(jobid, canceltoken);
                                 JobResult jobinfo = job.ToObject<JobResult>();
-                                
+
                                 result.Orientation = jobinfo.calibration.orientation;
                                 result.Pixscale = jobinfo.calibration.pixscale;
                                 result.Coordinates = new Utility.Astrometry.Coordinates(jobinfo.calibration.ra, jobinfo.calibration.dec, Utility.Astrometry.Epoch.J2000, Utility.Astrometry.Coordinates.RAType.Degrees);
                                 result.Radius = jobinfo.calibration.radius;
-                                                                
+
                                 progress.Report("Solved");
-                            }
-                            else {
+                            } else {
                                 result.Success = false;
                                 progress.Report("Plate solve failed");
                             }
-                        }
-                        else {
+                        } else {
                             result.Success = false;
                             progress.Report("Failed to get job result");
                         }
-                    }
-                    else {
+                    } else {
                         result.Success = false;
                         progress.Report("Failed to get submission");
                     }
-                }
-                else {
+                } else {
                     result.Success = false;
                     progress.Report("Authorization failed ...");
                 }
 
-            }
-
-            catch (System.OperationCanceledException ex) {
+            } catch (System.OperationCanceledException ex) {
                 Logger.Trace(ex.Message);
                 result.Success = false;
                 progress.Report("Cancelled");
-            }
-            finally {
-               
+            } finally {
+
             }
             return result;
         }

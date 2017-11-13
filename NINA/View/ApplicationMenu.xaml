@@ -1,13 +1,15 @@
-﻿<UserControl x:Class="NINA.View.ApplicationMenu"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:NINA.View"
-             xmlns:vm="clr-namespace:NINA.ViewModel"
-             xmlns:util="clr-namespace:NINA.Utility"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+﻿<UserControl
+    x:Class="NINA.View.ApplicationMenu"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:util="clr-namespace:NINA.Utility"
+    xmlns:vm="clr-namespace:NINA.ViewModel"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
 
     <ItemsControl ItemsSource="{Binding Views}">
 
@@ -19,21 +21,33 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
             <DataTemplate DataType="{x:Type vm:BaseVM}">
-                
-                <Button Command="{Binding ToggleViewCommand, Source={StaticResource AppVM}}" CommandParameter="{Binding Name}"  Margin="1">
-                    <Grid  VerticalAlignment="Center">
+
+                <Button
+                    Margin="1"
+                    Command="{Binding ToggleViewCommand, Source={StaticResource AppVM}}"
+                    CommandParameter="{Binding Name}">
+                    <Grid VerticalAlignment="Center">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*" />
                             <RowDefinition Height="50" />
                         </Grid.RowDefinitions>
-                        <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding ImageGeometry}" Stretch="Uniform" Margin="5"/>
+                        <Path
+                            Margin="5"
+                            Data="{Binding ImageGeometry}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform" />
 
 
                         <!--<Image Source="{Binding ImageURI}" />-->
-                        <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="{Binding Name}" FontSize="36" Foreground="{StaticResource ButtonForegroundBrush}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            HorizontalAlignment="Center"
+                            FontSize="36"
+                            Foreground="{StaticResource ButtonForegroundBrush}"
+                            Text="{Binding Name}" />
                     </Grid>
                 </Button>
-                
+
             </DataTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>

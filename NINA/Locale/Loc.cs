@@ -21,7 +21,7 @@ namespace NINA.Locale {
 
         }
 
-        public void ReloadLocale() {            
+        public void ReloadLocale() {
             try {
                 _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + Settings.Language.Name + ".xaml", UriKind.Relative) };
             } catch (System.IO.IOException) {
@@ -45,19 +45,19 @@ namespace NINA.Locale {
         new Lazy<Loc>(() => new Loc());
 
         public static Loc Instance { get { return lazy.Value; } }
-        
+
         ResourceDictionary _locale = null;
-                        
+
         public string this[string key] {
             get {
-                return _locale[key]?.ToString() ?? "MISSING LABEL " + key ;                
+                return _locale[key]?.ToString() ?? "MISSING LABEL " + key;
             }
         }
-        
+
     }
 
     public class LocExtension : Binding {
-        public LocExtension(string name) : base ($"[{name}]") {
+        public LocExtension(string name) : base($"[{name}]") {
             this.Mode = BindingMode.OneWay;
             this.Source = Loc.Instance;
         }

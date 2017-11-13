@@ -20,8 +20,8 @@ namespace NINA.View {
     /// </summary>
     public partial class CameraCoolingChartsView : UserControl {
         public CameraCoolingChartsView() {
-            InitializeComponent();         
-        }        
+            InitializeComponent();
+        }
     }
-   
+
 }

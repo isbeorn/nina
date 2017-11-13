@@ -7,18 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyFilterWheel {
-    interface IFilterWheel :IDevice {
+    interface IFilterWheel : IDevice {
         bool Connected { get; }
         string Description { get; }
-        string DriverInfo { get;  }
+        string DriverInfo { get; }
         string DriverVersion { get; }
-        short InterfaceVersion { get;  }
-        int[] FocusOffsets { get;  }
+        short InterfaceVersion { get; }
+        int[] FocusOffsets { get; }
         string[] Names { get; }
         short Position { get; set; }
         ArrayList SupportedActions { get; }
         AsyncObservableCollection<FilterInfo> Filters { get; }
-        
+
 
     }
 

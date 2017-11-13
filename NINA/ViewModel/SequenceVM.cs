@@ -9,13 +9,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace NINA.ViewModel{
+namespace NINA.ViewModel {
     class SequenceVM : DockableVM {
 
         public SequenceVM() {
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SequenceSVG"];
-            
+
             ContentId = nameof(SequenceVM);
             AddSequenceCommand = new RelayCommand(AddSequence);
             RemoveSequenceCommand = new RelayCommand(RemoveSequence);
@@ -55,11 +55,11 @@ namespace NINA.ViewModel{
                 var args = (object[])o;
                 if (args.Length == 1) {
                     var dso = (DeepSkyObject)args[0];
-                    var sequenceDso = new DeepSkyObject(dso.AlsoKnownAs.FirstOrDefault(),dso.Coordinates);
+                    var sequenceDso = new DeepSkyObject(dso.AlsoKnownAs.FirstOrDefault(), dso.Coordinates);
                     await Task.Run(() => {
-                        sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now),Settings.Latitude,Settings.Longitude);
+                        sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), Settings.Latitude, Settings.Longitude);
                     });
-                    
+
                     Sequence.SetSequenceTarget(sequenceDso);
                 }
             }, AsyncMediatorMessages.SetSequenceCoordinates);
@@ -68,10 +68,10 @@ namespace NINA.ViewModel{
         private CaptureSequenceList _sequence;
         public CaptureSequenceList Sequence {
             get {
-                if(_sequence == null) {
+                if (_sequence == null) {
                     var seq = new CaptureSequence();
-                    _sequence = new CaptureSequenceList(seq);                    
-                    SelectedSequenceIdx = _sequence.Count - 1;                    
+                    _sequence = new CaptureSequenceList(seq);
+                    SelectedSequenceIdx = _sequence.Count - 1;
                 }
                 return _sequence;
             }
@@ -95,10 +95,10 @@ namespace NINA.ViewModel{
         private ObservableCollection<string> _imageTypes;
         public ObservableCollection<string> ImageTypes {
             get {
-                if(_imageTypes == null) {
+                if (_imageTypes == null) {
                     _imageTypes = new ObservableCollection<string>();
 
-                    Type type = typeof(Model.CaptureSequence.ImageTypes); 
+                    Type type = typeof(Model.CaptureSequence.ImageTypes);
                     foreach (var p in type.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)) {
                         var v = p.GetValue(null);
                         _imageTypes.Add(v.ToString());
@@ -119,22 +119,22 @@ namespace NINA.ViewModel{
 
         private void RemoveSequence(object obj) {
             var idx = SelectedSequenceIdx;
-            if(idx > -1) { 
-                Sequence.RemoveAt(idx);            
-                if(idx < Sequence.Count - 1) {
+            if (idx > -1) {
+                Sequence.RemoveAt(idx);
+                if (idx < Sequence.Count - 1) {
                     SelectedSequenceIdx = idx;
                 } else {
                     SelectedSequenceIdx = Sequence.Count - 1;
                 }
             }
         }
-                
+
         public ICommand AddSequenceCommand { get; private set; }
-        
+
         public ICommand RemoveSequenceCommand { get; private set; }
-        
+
         public IAsyncCommand StartSequenceCommand { get; private set; }
-        
+
         public ICommand CancelSequenceCommand { get; private set; }
     }
 }

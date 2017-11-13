@@ -10,8 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NINA.PlateSolving
-{
+namespace NINA.PlateSolving {
     class Platesolve2Solver : IPlateSolver {
 
         double _arcdegwidth;
@@ -86,7 +85,7 @@ namespace NINA.PlateSolving
         /// <returns>PlateSolveResult</returns>
         private PlateSolveResult ExtractResult() {
             PlateSolveResult result = new PlateSolveResult() { Success = false };
-            if (File.Exists(TMPSOLUTIONFILEPATH)) {                
+            if (File.Exists(TMPSOLUTIONFILEPATH)) {
                 using (var s = new StreamReader(TMPSOLUTIONFILEPATH)) {
                     string line;
                     int linenr = 0;
@@ -97,7 +96,7 @@ namespace NINA.PlateSolving
 
                                 double ra, dec;
                                 int status;
-                                if(resultArr.Length == 5) {
+                                if (resultArr.Length == 5) {
                                     /* workaround for when decimal separator is comma instead of point. 
                                      won't work when result contains even numbers tho... */
                                     status = int.Parse(resultArr[4]);
@@ -108,7 +107,7 @@ namespace NINA.PlateSolving
                                     }
 
                                     ra = double.Parse(resultArr[0] + "." + resultArr[1], CultureInfo.InvariantCulture);
-                                    dec = double.Parse(resultArr[2] + "." + resultArr[3], CultureInfo.InvariantCulture);                                    
+                                    dec = double.Parse(resultArr[2] + "." + resultArr[3], CultureInfo.InvariantCulture);
                                 } else {
                                     status = int.Parse(resultArr[2]);
                                     if (status != 1) {
@@ -138,7 +137,7 @@ namespace NINA.PlateSolving
                                 } else {
                                     result.Pixscale = double.Parse(resultArr[0], CultureInfo.InvariantCulture);
                                     result.Orientation = double.Parse(resultArr[1], CultureInfo.InvariantCulture);
-                                }                                
+                                }
                             }
                         }
                         linenr++;
@@ -167,7 +166,7 @@ namespace NINA.PlateSolving
                 canceltoken.Token.ThrowIfCancellationRequested();
 
                 //Start platesolve2
-                if (!StartPlatesolve2Process()) {                    
+                if (!StartPlatesolve2Process()) {
                     return result;
                 }
 

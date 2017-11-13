@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
     interface ICamera : IDevice {
-        
+
         bool HasShutter { get; }
         bool Connected { get; }
         double CCDTemperature { get; }
@@ -49,12 +49,12 @@ namespace NINA.Model.MyCamera {
 
         AsyncObservableCollection<BinningMode> BinningModes { get; }
 
-       
+
         void UpdateValues();
         void SetBinning(short x, short y);
         void StartExposure(double exposureTime, bool isLightFrame);
         void StopExposure();
-        void AbortExposure();        
-        Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource); 
+        void AbortExposure();
+        Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource);
     }
 }

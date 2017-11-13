@@ -17,7 +17,7 @@ namespace NINA.View {
     /// <summary>
     /// Interaction logic for SkyAtlasView.xaml
     /// </summary>
-    public partial class SkyAtlasView: UserControl {
+    public partial class SkyAtlasView : UserControl {
         public SkyAtlasView() {
             InitializeComponent();
         }

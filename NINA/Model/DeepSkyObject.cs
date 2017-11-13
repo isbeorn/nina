@@ -19,7 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace NINA.Model {
-    public class DeepSkyObject:BaseINPC {
+    public class DeepSkyObject : BaseINPC {
 
         private DeepSkyObject() {
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(() => SetSequenceCoordinates());
@@ -28,10 +28,10 @@ namespace NINA.Model {
 
         public DeepSkyObject(string name) : this() {
             Name = name;
-                      
+
         }
 
-        public DeepSkyObject(string name, Coordinates coords) : this(name) {            
+        public DeepSkyObject(string name, Coordinates coords) : this(name) {
             Coordinates = coords;
         }
 
@@ -116,7 +116,7 @@ namespace NINA.Model {
             get {
                 if (_altitudes == null) {
                     _altitudes = new List<DataPoint>();
-                    CalculateAltitude(_referenceDate,_latitude,_longitude);
+                    CalculateAltitude(_referenceDate, _latitude, _longitude);
                 }
                 return _altitudes;
             }
@@ -125,11 +125,11 @@ namespace NINA.Model {
                 RaisePropertyChanged();
             }
         }
-        
+
         private List<string> _alsoKnownAs;
         public List<string> AlsoKnownAs {
             get {
-                if(_alsoKnownAs == null) {
+                if (_alsoKnownAs == null) {
                     _alsoKnownAs = new List<string>();
                 }
                 return _alsoKnownAs;
@@ -144,30 +144,30 @@ namespace NINA.Model {
         double _latitude;
         double _longitude;
 
-        public void SetDateAndPosition(DateTime start,double latitude,double longitude) {
+        public void SetDateAndPosition(DateTime start, double latitude, double longitude) {
             this._referenceDate = start;
             this._latitude = latitude;
             this._longitude = longitude;
         }
 
         private async Task<bool> SetSequenceCoordinates() {
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SetSequenceCoordinates,new object[] { this });
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SetSequenceCoordinates, new object[] { this });
             return true;
         }
 
         private void SlewToCoordinates(object obj) {
-            Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates,Coordinates);
+            Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates, Coordinates);
         }
 
-        private void CalculateAltitude(DateTime start, double latitude,double longitude) {            
-            var siderealTime = Astrometry.GetLocalSiderealTime(start,longitude);
+        private void CalculateAltitude(DateTime start, double latitude, double longitude) {
+            var siderealTime = Astrometry.GetLocalSiderealTime(start, longitude);
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
-            
-            for (double angle = hourAngle;angle < hourAngle + 24;angle += 0.1) {
+
+            for (double angle = hourAngle; angle < hourAngle + 24; angle += 0.1) {
                 var degAngle = Astrometry.HoursToDegrees(angle);
-                var altitude = Astrometry.GetAltitude(degAngle,latitude, this.Coordinates.Dec);
-                Altitudes.Add(new DataPoint(DateTimeAxis.ToDouble(start),altitude));                
-                start = start.AddHours(0.1);                
+                var altitude = Astrometry.GetAltitude(degAngle, latitude, this.Coordinates.Dec);
+                Altitudes.Add(new DataPoint(DateTimeAxis.ToDouble(start), altitude));
+                start = start.AddHours(0.1);
             }
 
             MaxAltitude = Altitudes.OrderByDescending((x) => x.Y).FirstOrDefault();
@@ -176,16 +176,15 @@ namespace NINA.Model {
         }
 
         private void CalculateTransit(double latitude) {
-            var alt0 = Astrometry.GetAltitude(0,latitude,this.Coordinates.Dec);
-            var alt180 = Astrometry.GetAltitude(180,latitude,this.Coordinates.Dec);
+            var alt0 = Astrometry.GetAltitude(0, latitude, this.Coordinates.Dec);
+            var alt180 = Astrometry.GetAltitude(180, latitude, this.Coordinates.Dec);
             double transit;
             if (alt0 > alt180) {
-                transit = Astrometry.GetAzimuth(0,alt0,latitude,this.Coordinates.Dec);
+                transit = Astrometry.GetAzimuth(0, alt0, latitude, this.Coordinates.Dec);
+            } else {
+                transit = Astrometry.GetAzimuth(180, alt180, latitude, this.Coordinates.Dec);
             }
-            else {
-                transit = Astrometry.GetAzimuth(180,alt180,latitude,this.Coordinates.Dec);
-            }
-            DoesTransitSouth = Convert.ToInt32(transit) == 180;            
+            DoesTransitSouth = Convert.ToInt32(transit) == 180;
         }
 
         private bool _doesTransitSouth;
@@ -208,7 +207,7 @@ namespace NINA.Model {
         private BitmapSource _image;
         public BitmapSource Image {
             get {
-                if(_image == null) {                    
+                if (_image == null) {
                     /*var size = Astrometry.ArcsecToArcmin(this.Size ?? 300);
                     if (size > 25) { size = 25; }
                     size = Math.Max(15,size);
@@ -219,9 +218,9 @@ namespace NINA.Model {
                         this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
                         (size * 9.0 / 16.0).ToString(CultureInfo.InvariantCulture),
                         size.ToString(CultureInfo.InvariantCulture));*/
-                    var file = _imageDirectory + "\\" + this.Name +".gif";
-                    if(File.Exists(file)) {
-                        _dispatcher.BeginInvoke(DispatcherPriority.Normal,new Action(() => {
+                    var file = _imageDirectory + "\\" + this.Name + ".gif";
+                    if (File.Exists(file)) {
+                        _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                             //var img = new BitmapImage(new Uri(file));                            
                             _image = new BitmapImage(new Uri(file));
                             _image.Freeze();
@@ -229,10 +228,10 @@ namespace NINA.Model {
                         }));
                     }
 
-                    
+
                 }
                 return _image;
-                
+
             }
         }
 
@@ -264,5 +263,5 @@ namespace NINA.Model {
         public ICommand SetSequenceCoordinatesCommand { get; private set; }
         /* Should be moved out of the model */
         public ICommand SlewToCoordinatesCommand { get; private set; }
-    }    
+    }
 }

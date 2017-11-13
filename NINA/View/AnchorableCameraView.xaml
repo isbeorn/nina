@@ -1,90 +1,150 @@
-﻿<UserControl x:Class="NINA.View.AnchorableCameraView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:ns="clr-namespace:NINA.Locale"
-             xmlns:local="clr-namespace:NINA.View"
-             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+﻿<UserControl
+    x:Class="NINA.View.AnchorableCameraView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Locale"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <Grid  IsEnabled="{Binding Cam.Connected}">
-                <StackPanel Orientation="Vertical" IsEnabled="{Binding Cam.CanSetCCDTemperature}">
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblConnected}" VerticalAlignment="Center"></TextBlock>
-                            <CheckBox IsChecked="{Binding Connected, FallbackValue=False, Mode=OneWay}" HorizontalAlignment="Left" Height="20" Width="20" BorderBrush="Transparent" Style="{StaticResource CheckmarkCheckbox}" Margin="5" />
+            <Grid IsEnabled="{Binding Cam.Connected}">
+                <StackPanel IsEnabled="{Binding Cam.CanSetCCDTemperature}" Orientation="Vertical">
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
+                            <CheckBox
+                                Width="20"
+                                Height="20"
+                                Margin="5"
+                                HorizontalAlignment="Left"
+                                BorderBrush="Transparent"
+                                IsChecked="{Binding Connected, FallbackValue=False, Mode=OneWay}"
+                                Style="{StaticResource CheckmarkCheckbox}" />
                         </UniformGrid>
                     </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" >
-                            <TextBlock Text="{ns:Loc LblCoolerOn}" VerticalAlignment="Center"></TextBlock>
-                            <CheckBox IsChecked="{Binding CoolerOn}" Width="75" Height="25" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCoolerOn}" />
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding CoolerOn}" />
                         </UniformGrid>
                     </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center" >
-                            <TextBlock Text="{ns:Loc LblCoolerPower}"></TextBlock>
-                            <TextBlock Text="{Binding CoolerPower, StringFormat=\{0:#.00\}%}" Margin="5,0,0,0" Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}"/>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblCoolerPower}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                Text="{Binding CoolerPower, StringFormat=\{0:#.00\}%}"
+                                Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblChipTempShort}"></TextBlock>
-                            <TextBlock Text="{Binding CCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}"/>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblChipTempShort}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                Text="{Binding CCDTemperature, StringFormat=\{0:#.00\}}"
+                                Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblTargetTempShort}" />
-                            <TextBlock Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}" Margin="5,0,0,0" MinWidth="20" Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}"/>
+                            <TextBlock
+                                MinWidth="20"
+                                Margin="5,0,0,0"
+                                Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}"
+                                Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>
 
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="5">
-                    </Border>
+                    <Border
+                        MinHeight="5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1" />
 
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblTargetTempShort}" VerticalAlignment="Center"></TextBlock>
-                            <ninactrl:StepperControl                             
-                                Value="{Binding TargetTemp, Mode=TwoWay}" 
-                                MinValue="-50" 
-                                MaxValue="20" 
-                                StepSize="0.5" 
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetTempShort}" />
+                            <ninactrl:StepperControl
                                 AddSVG="{StaticResource AddSVG}"
+                                ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                MaxValue="20"
+                                MinValue="-50"
+                                StepSize="0.5"
                                 SubstractSVG="{StaticResource SubstractSVG}"
-                                ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"/>
+                                Value="{Binding TargetTemp, Mode=TwoWay}" />
                         </UniformGrid>
                     </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
-                        <UniformGrid Columns="2" VerticalAlignment="Center">
-                            <TextBlock Text="{ns:Loc LblDuration}" VerticalAlignment="Center"></TextBlock>
-                            <ninactrl:StepperControl                             
-                                Value="{Binding Duration, Mode=TwoWay}" 
-                                MinValue="0" 
-                                StepSize="0.5" 
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDuration}" />
+                            <ninactrl:StepperControl
                                 AddSVG="{StaticResource AddSVG}"
+                                ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                MinValue="0"
+                                StepSize="0.5"
                                 SubstractSVG="{StaticResource SubstractSVG}"
-                                ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"/>
+                                Value="{Binding Duration, Mode=TwoWay}" />
                         </UniformGrid>
                     </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0 0 0 1" MinHeight="30">
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
                         <StackPanel VerticalAlignment="Center">
-                            <Grid Visibility="{Binding CoolingRunning, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Margin="10" Height="35">
-                                <ProgressBar Minimum="0" Maximum="1" Value="{Binding CoolingProgress}"/>
-                                <TextBlock Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}" HorizontalAlignment="Center" VerticalAlignment="Center"   />
-                            </Grid>                            
-                            <ninactrl:CancellableButton 
-                                Command="{Binding CoolCamCommand}" 
-                                CancelCommand="{Binding CancelCoolCamCommand}" 
-                                ButtonImage="{StaticResource ThermometerSVG}" 
-                                CancelButtonImage="{StaticResource CancelSVG}"                             
-                                VerticalAlignment="Center" Height="35" Margin="10"
-                                ToolTip="{ns:Loc LblCoolCamBtnTooltip}"
-                                />
+                            <Grid
+                                Height="35"
+                                Margin="10"
+                                Visibility="{Binding CoolingRunning, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <ProgressBar
+                                    Maximum="1"
+                                    Minimum="0"
+                                    Value="{Binding CoolingProgress}" />
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}" />
+                            </Grid>
+                            <ninactrl:CancellableButton
+                                Height="35"
+                                Margin="10"
+                                VerticalAlignment="Center"
+                                ButtonImage="{StaticResource ThermometerSVG}"
+                                CancelButtonImage="{StaticResource CancelSVG}"
+                                CancelCommand="{Binding CancelCoolCamCommand}"
+                                Command="{Binding CoolCamCommand}"
+                                ToolTip="{ns:Loc LblCoolCamBtnTooltip}" />
                         </StackPanel>
                     </Border>
                 </StackPanel>

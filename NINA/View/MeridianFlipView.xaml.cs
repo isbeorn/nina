@@ -13,15 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace NINA.View
-{
+namespace NINA.View {
     /// <summary>
     /// Interaction logic for MeridianFlipView.xaml
     /// </summary>
-    public partial class MeridianFlipView : UserControl
-    {
-        public MeridianFlipView()
-        {
+    public partial class MeridianFlipView : UserControl {
+        public MeridianFlipView() {
             InitializeComponent();
         }
     }
@@ -32,7 +29,7 @@ namespace NINA.View
         public DataTemplate DefaultTemplate { get; set; }
         public DataTemplate FlipDataTemplate { get; set; }
         public DataTemplate SettleTemplate { get; set; }
-        
+
 
         public override DataTemplate SelectTemplate(object item,
                    DependencyObject container) {

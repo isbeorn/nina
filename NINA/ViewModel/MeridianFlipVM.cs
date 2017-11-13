@@ -13,10 +13,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace NINA.ViewModel
-{
-    class MeridianFlipVM : BaseVM
-    {
+namespace NINA.ViewModel {
+    class MeridianFlipVM : BaseVM {
         public MeridianFlipVM() {
             CancelCommand = new RelayCommand(Cancel);
             RegisterMediatorMessages();
@@ -34,7 +32,7 @@ namespace NINA.ViewModel
             Mediator.Instance.RegisterAsync(async (object o) => {
                 object[] args = o as object[];
                 CaptureSequence seq = (CaptureSequence)args[0];
-                CancellationTokenSource source = (CancellationTokenSource)args[1];                
+                CancellationTokenSource source = (CancellationTokenSource)args[1];
                 await CheckMeridianFlip(seq, source);
             }, AsyncMediatorMessages.CheckMeridianFlip);
         }
@@ -51,7 +49,7 @@ namespace NINA.ViewModel
                 _status = value;
                 RaisePropertyChanged();
             }
-        }        
+        }
 
         private AutomatedWorkflow _steps;
         public AutomatedWorkflow Steps {
@@ -74,7 +72,7 @@ namespace NINA.ViewModel
                 RaisePropertyChanged();
             }
         }
-        
+
         private bool ShouldFlip(double exposureTime) {
             if (Settings.AutoMeridianFlip) {
                 if (Telescope?.Connected == true) {
@@ -86,7 +84,7 @@ namespace NINA.ViewModel
             }
             return false;
         }
-        
+
         private TimeSpan _remainingTime;
         public TimeSpan RemainingTime {
             get {
@@ -111,7 +109,7 @@ namespace NINA.ViewModel
         /// <param name="progress">progress reporter</param>
         /// <returns></returns>
         public async Task CheckMeridianFlip(CaptureSequence seq, CancellationTokenSource tokensource) {
-            if(ShouldFlip(seq.ExposureTime)) {
+            if (ShouldFlip(seq.ExposureTime)) {
                 var service = new WindowService();
                 this._tokensource = tokensource;
                 this._progress = new Progress<string>(p => Status = p);
@@ -121,7 +119,7 @@ namespace NINA.ViewModel
                 await flip;
 
                 await service.Close();
-            }           
+            }
         }
 
         private Coordinates _targetCoordinates;
@@ -131,8 +129,8 @@ namespace NINA.ViewModel
             progress.Report("Stop Scope tracking");
             _targetCoordinates = Telescope.Coordinates;
             Telescope.Tracking = false;
-            do {                                
-                RemainingTime = TimeSpan.FromSeconds(timeToFlip );
+            do {
+                RemainingTime = TimeSpan.FromSeconds(timeToFlip);
                 //progress.Report(string.Format("Next exposure paused until passing meridian. Remaining time: {0} seconds", RemainingTime));
                 await Task.Delay(1000, tokenSource.Token);
                 timeToFlip -= 1;
@@ -151,7 +149,7 @@ namespace NINA.ViewModel
 
             return flipsuccess;
         }
-        
+
 
         private async Task<bool> Recenter(CancellationTokenSource tokenSource, IProgress<string> progress) {
             if (Settings.RecenterAfterFlip) {
@@ -162,30 +160,30 @@ namespace NINA.ViewModel
         }
 
         private async Task<bool> StopAutoguider(CancellationTokenSource tokenSource, IProgress<string> progress) {
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.PauseGuider,tokenSource.Token);
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.PauseGuider, tokenSource.Token);
             return true;
         }
 
         private async Task<bool> SelectNewGuideStar(CancellationTokenSource tokenSource, IProgress<string> progress) {
             progress.Report("Select new Guidestar");
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.AutoSelectGuideStar,tokenSource.Token);
-            
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.AutoSelectGuideStar, tokenSource.Token);
+
             return true;
         }
 
         private async Task<bool> ResumeAutoguider(CancellationTokenSource tokenSource, IProgress<string> progress) {
 
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ResumeGuider,tokenSource.Token);
-            
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ResumeGuider, tokenSource.Token);
+
             return true;
-        }        
+        }
 
         private async Task<bool> Settle(CancellationTokenSource tokenSource, IProgress<string> progress) {
             RemainingTime = TimeSpan.FromSeconds(Settings.MeridianFlipSettleTime);
             do {
                 progress.Report(Locale.Loc.Instance["LblSettle"] + " " + RemainingTime.ToString(@"hh\:mm\:ss"));
                 RemainingTime = TimeSpan.FromSeconds(RemainingTime.TotalSeconds - 1);
-                
+
                 await Task.Delay(1000, tokenSource.Token);
 
             } while (RemainingTime.TotalSeconds >= 1);
@@ -194,20 +192,20 @@ namespace NINA.ViewModel
 
         private async Task<bool> DoMeridianFlip() {
             try {
-                Steps = new AutomatedWorkflow();                
+                Steps = new AutomatedWorkflow();
 
                 Steps.Add(new WorkflowStep("StopAutoguider", Locale.Loc.Instance["LblStopAutoguider"], () => StopAutoguider(_tokensource, _progress)));
-                
+
                 Steps.Add(new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(_tokensource, _progress)));
                 Steps.Add(new WorkflowStep("Flip", Locale.Loc.Instance["LblFlip"], () => DoFilp(_tokensource, _progress)));
                 if (Settings.RecenterAfterFlip) {
                     Steps.Add(new WorkflowStep("Recenter", Locale.Loc.Instance["LblRecenter"], () => Recenter(_tokensource, _progress)));
                 }
 
-                
+
                 Steps.Add(new WorkflowStep("SelectNewGuideStar", Locale.Loc.Instance["LblSelectNewGuideStar"], () => SelectNewGuideStar(_tokensource, _progress)));
                 Steps.Add(new WorkflowStep("ResumeAutoguider", Locale.Loc.Instance["LblResumeAutoguider"], () => ResumeAutoguider(_tokensource, _progress)));
-                          
+
                 Steps.Add(new WorkflowStep("Settle", Locale.Loc.Instance["LblSettle"], () => Settle(_tokensource, _progress)));
 
                 await Steps.Process();
@@ -233,7 +231,7 @@ namespace NINA.ViewModel
     public class AutomatedWorkflow : BaseINPC, ICollection<WorkflowStep> {
         private AsyncObservableLimitedSizedStack<WorkflowStep> _internalStack;
 
-        public AutomatedWorkflow () {
+        public AutomatedWorkflow() {
             _internalStack = new AsyncObservableLimitedSizedStack<WorkflowStep>(int.MaxValue);
         }
 
@@ -283,11 +281,11 @@ namespace NINA.ViewModel
             var item = _internalStack.First();
             do {
                 ActiveStep = item.Value;
-                success = await ActiveStep.Process() && success;                
+                success = await ActiveStep.Process() && success;
                 item = item.Next;
             }
             while (item != null);
-            
+
             return success;
         }
 

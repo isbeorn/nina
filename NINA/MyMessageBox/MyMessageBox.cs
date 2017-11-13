@@ -61,19 +61,19 @@ namespace NINA.MyMessageBox {
             return Show(messageBoxText, caption, MessageBoxButton.OK, MessageBoxResult.OK);
         }
 
-        public static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button,  MessageBoxResult defaultresult) {
+        public static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button, MessageBoxResult defaultresult) {
 
-            
+
             var MyMessageBox = new MyMessageBox();
             MyMessageBox.Title = caption;
             MyMessageBox.Text = messageBoxText;
 
-            if(button == MessageBoxButton.OKCancel) {
+            if (button == MessageBoxButton.OKCancel) {
                 MyMessageBox.CancelVisibility = System.Windows.Visibility.Visible;
             } else {
                 MyMessageBox.CancelVisibility = System.Windows.Visibility.Hidden;
             }
-            
+
 
             System.Windows.Window win = new MyMessageBoxView {
                 DataContext = MyMessageBox
@@ -94,7 +94,7 @@ namespace NINA.MyMessageBox {
                 return MessageBoxResult.Cancel;
             } else {
                 return defaultresult;
-            }   
+            }
         }
 
         private static void Win_SizeChanged(object sender, SizeChangedEventArgs e) {

@@ -8,16 +8,16 @@ using System.Windows;
 using System.Windows.Controls;
 
 namespace NINA.Utility {
-    public class GreaterZeroRule : ValidationRule {        
+    public class GreaterZeroRule : ValidationRule {
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo) {
             double dbl = 0.0d;
             Double.TryParse(value.ToString(), out dbl);
-            if(dbl < 0) {
+            if (dbl < 0) {
                 return new ValidationResult(false, "Value must be greater than or equals 0");
             } else {
                 return new ValidationResult(true, null);
-            }            
+            }
         }
     }
 
@@ -30,8 +30,7 @@ namespace NINA.Utility {
                 return new ValidationResult(false, "Value must be greater than or equals 0");
             } else if (intval > 24) {
                 return new ValidationResult(false, "Value must be less than or equals 24");
-            }
-            else {
+            } else {
                 return new ValidationResult(true, null);
             }
         }
@@ -44,11 +43,9 @@ namespace NINA.Utility {
             int.TryParse(value.ToString(), out intval);
             if (intval < 0) {
                 return new ValidationResult(false, "Value must be greater than or equals 0");
-            }
-            else if (intval > 59) {
+            } else if (intval > 59) {
                 return new ValidationResult(false, "Value must be less than or equals 59");
-            }
-            else {
+            } else {
                 return new ValidationResult(true, null);
             }
         }
@@ -61,11 +58,9 @@ namespace NINA.Utility {
             double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out doubleval);
             if (doubleval < 0) {
                 return new ValidationResult(false, "Value must be greater than or equals 0");
-            }
-            else if (doubleval >= 60) {
+            } else if (doubleval >= 60) {
                 return new ValidationResult(false, "Value must be less than 60");
-            }
-            else {
+            } else {
                 return new ValidationResult(true, null);
             }
         }
@@ -78,11 +73,9 @@ namespace NINA.Utility {
             int.TryParse(value.ToString(), out intval);
             if (intval < -90) {
                 return new ValidationResult(false, "Value must be greater than or equals -90");
-            }
-            else if (intval > 90) {
+            } else if (intval > 90) {
                 return new ValidationResult(false, "Value must be less than or equals 90");
-            }
-            else {
+            } else {
                 return new ValidationResult(true, null);
             }
         }

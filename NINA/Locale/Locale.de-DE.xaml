@@ -1,7 +1,8 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:NINA.Resources"
-                    xmlns:s="clr-namespace:System;assembly=mscorlib">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:NINA.Resources"
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
 
     <s:String x:Key="LblName">Name</s:String>
     <s:String x:Key="LblCameraState">Kamera Status</s:String>
@@ -70,9 +71,9 @@
     <s:String x:Key="LblZoomStretch">Passe Bildgröße an Fläche an</s:String>
     <s:String x:Key="LblFocuser">Okularauszug</s:String>
 
-    
+
     <s:String x:Key="LblCamera">Kamera</s:String>
-   
+
     <s:String x:Key="LblChipTempShort">Chip Temp.</s:String>
     <s:String x:Key="LblTargetTempShort">Zieltemp.</s:String>
     <s:String x:Key="LblIsMoving">Bewegt sich</s:String>
@@ -206,7 +207,7 @@
     <s:String x:Key="LblRadius">Radius</s:String>
     <s:String x:Key="LblPixelScale">Pixel Maßstab</s:String>
     <s:String x:Key="LblOrientation">Orientierung</s:String>
-    <s:String x:Key="LblSync">Sync</s:String>    
+    <s:String x:Key="LblSync">Sync</s:String>
     <s:String x:Key="LblRepeatUntil">Wiederholen bis</s:String>
     <s:String x:Key="LblErrorLT">Fehler &lt;</s:String>
     <s:String x:Key="LblArcmin">Winkelminuten</s:String>

@@ -1,14 +1,12 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    >
-    
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <ControlTemplate x:Key="validationTemplate">
         <DockPanel>
-            <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
-            <AdornedElementPlaceholder/>
+            <TextBlock FontSize="20" Foreground="Red">!</TextBlock>
+            <AdornedElementPlaceholder />
         </DockPanel>
     </ControlTemplate>
-    
+
     <Style TargetType="{x:Type TextBox}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
@@ -20,18 +18,27 @@
                         <ItemsControl ItemsSource="{Binding (Validation.Errors), RelativeSource={RelativeSource Mode=TemplatedParent}}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="!" Foreground="Red" Margin="5"/>
+                                    <TextBlock
+                                        Margin="5"
+                                        Foreground="Red"
+                                        Text="!" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Border Grid.Column="0" Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0" Padding="2">
-                            <ScrollViewer x:Name="PART_ContentHost" Focusable="False" 
-                                    ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                    ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                    Background="{TemplateBinding Background}" />
-                        </Border>                        
+                        <Border
+                            Grid.Column="0"
+                            Padding="2"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="0">
+                            <ScrollViewer
+                                x:Name="PART_ContentHost"
+                                Background="{TemplateBinding Background}"
+                                Focusable="False"
+                                ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden" />
+                        </Border>
                     </DockPanel>
                 </ControlTemplate>
             </Setter.Value>
@@ -41,10 +48,7 @@
                 <Setter Property="Opacity" Value="0.6" />
             </Trigger>
             <Trigger Property="Validation.HasError" Value="true">
-                <Setter Property="ToolTip" 
-                        Value="{Binding RelativeSource={RelativeSource Self}, 
-                            Path=(Validation.Errors).CurrentItem.ErrorContent}">
-                </Setter>
+                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
                 <Setter Property="BorderBrush" Value="Red" />
             </Trigger>
         </Style.Triggers>

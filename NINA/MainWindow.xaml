@@ -1,88 +1,125 @@
-﻿<Window x:Class="NINA.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:view="clr-namespace:NINA.View"
-        xmlns:util="clr-namespace:NINA.Utility"
-        
-        xmlns:local="clr-namespace:NINA"   
-        Name="ThisWindow"        
-        Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy" 
-        MinHeight="720" MinWidth="1280" 
-        Background="{StaticResource BackgroundBrush}" Icon="/NINA;component/Resources/observatory.png" 
-        Style="{StaticResource MainWindow}">
+﻿<Window
+    x:Class="NINA.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:NINA"
+    xmlns:util="clr-namespace:NINA.Utility"
+    xmlns:view="clr-namespace:NINA.View"
+    Name="ThisWindow"
+    Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy"
+    MinWidth="1280"
+    MinHeight="720"
+    Background="{StaticResource BackgroundBrush}"
+    Icon="/NINA;component/Resources/observatory.png"
+    Style="{StaticResource MainWindow}">
 
-    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0" >
-        <Grid DataContext="{StaticResource AppVM}">            
-            <TabControl TabStripPlacement="Left">                
+    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+        <Grid DataContext="{StaticResource AppVM}">
+            <TabControl TabStripPlacement="Left">
                 <TabItem>
                     <TabItem.Header>
                         <Grid>
-                            <Grid  Height="50" Width="50">
-                                <Path Style="{StaticResource TabItemPath}" Data="{StaticResource CameraSVG}" Stretch="Uniform" Margin="5"  >
-                                </Path>
+                            <Grid Width="50" Height="50">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource CameraSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}" />
                             </Grid>
 
-                            <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
-                                    Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                    Opacity="0.5" 
-                                    Data="{StaticResource PowerSVG}" 
-                                    Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                            </Path>
+                            <Path
+                                Width="10"
+                                Height="10"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Data="{StaticResource PowerSVG}"
+                                Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                Opacity="0.5"
+                                Stretch="Uniform"
+                                Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
                             <Grid Visibility="{Binding CameraVM.Cam, Converter={StaticResource NullToVisibilityConverter}}">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" 
-                                        Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource VisibilityConverter}}"                                          
-                                        Data="{StaticResource PowerSVG}" 
-                                        Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                                </Path>
-                            </Grid>                            
+                                <Path
+                                    Width="10"
+                                    Height="10"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Data="{StaticResource PowerSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource VisibilityConverter}}" />
+                            </Grid>
                         </Grid>
                     </TabItem.Header>
-                    <TabItem.Content>                        
-                        <view:CameraView DataContext="{Binding CameraVM}" ></view:CameraView>
+                    <TabItem.Content>
+                        <view:CameraView DataContext="{Binding CameraVM}" />
                     </TabItem.Content>
                 </TabItem>
                 <TabItem>
                     <TabItem.Header>
-                        <UniformGrid Columns="2" Height="50">
+                        <UniformGrid Height="50" Columns="2">
                             <Grid>
-                                <Grid  Height="25" Width="25">
-                                    <Path Style="{StaticResource TabItemPath}" Data="{StaticResource FWSVG}" Stretch="Uniform" Margin="2.5" >
-                                    </Path>
+                                <Grid Width="25" Height="25">
+                                    <Path
+                                        Margin="2.5"
+                                        Data="{StaticResource FWSVG}"
+                                        Stretch="Uniform"
+                                        Style="{StaticResource TabItemPath}" />
                                 </Grid>
-                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" Margin="0 0 0 5"
-                                            Visibility="{Binding  FilterWheelVM.FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                            Opacity="0.5" 
-                                            Data="{StaticResource PowerSVG}" 
-                                            Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                                </Path>
+                                <Path
+                                    Width="10"
+                                    Height="10"
+                                    Margin="0,0,0,5"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Data="{StaticResource PowerSVG}"
+                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Opacity="0.5"
+                                    Stretch="Uniform"
+                                    Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
-                                <Grid Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}" Margin="0 0 0 5">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" 
-                                                Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}"                                          
-                                                Data="{StaticResource PowerSVG}" 
-                                                Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                                    </Path>
+                                <Grid Margin="0,0,0,5" Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}">
+                                    <Path
+                                        Width="10"
+                                        Height="10"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        Data="{StaticResource PowerSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform"
+                                        Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}" />
                                 </Grid>
                             </Grid>
                             <Grid>
-                                <Grid  Height="25" Width="25">
-                                    <Path Style="{StaticResource TabItemPath}" Data="{StaticResource FocusSVG}" Stretch="Uniform" Margin="2.5" >
-                                    </Path>
+                                <Grid Width="25" Height="25">
+                                    <Path
+                                        Margin="2.5"
+                                        Data="{StaticResource FocusSVG}"
+                                        Stretch="Uniform"
+                                        Style="{StaticResource TabItemPath}" />
                                 </Grid>
-                                <Path Fill="{StaticResource ButtonForegroundDisabledBrush}"  Margin="0 0 0 5"
-                                            Visibility="{Binding  FocuserVM.Focuser.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                            Opacity="0.5" 
-                                            Data="{StaticResource PowerSVG}" 
-                                            Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                                </Path>
+                                <Path
+                                    Width="10"
+                                    Height="10"
+                                    Margin="0,0,0,5"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Data="{StaticResource PowerSVG}"
+                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Opacity="0.5"
+                                    Stretch="Uniform"
+                                    Visibility="{Binding FocuserVM.Focuser.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
-                                <Grid Visibility="{Binding FocuserVM.Focuser, Converter={StaticResource NullToVisibilityConverter}}" Margin="0 0 0 5">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" 
-                                                Visibility="{Binding FocuserVM.Focuser.Connected, Converter={StaticResource VisibilityConverter}}"                                          
-                                                Data="{StaticResource PowerSVG}" 
-                                                Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                                    </Path>
+                                <Grid Margin="0,0,0,5" Visibility="{Binding FocuserVM.Focuser, Converter={StaticResource NullToVisibilityConverter}}">
+                                    <Path
+                                        Width="10"
+                                        Height="10"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        Data="{StaticResource PowerSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform"
+                                        Visibility="{Binding FocuserVM.Focuser.Connected, Converter={StaticResource VisibilityConverter}}" />
                                 </Grid>
                             </Grid>
                         </UniformGrid>
@@ -97,104 +134,138 @@
                 <TabItem>
                     <TabItem.Header>
                         <Grid>
-                            <Grid  Height="50" Width="50">
-                                <Path Style="{StaticResource TabItemPath}" Data="{StaticResource TelescopeSVG}" Stretch="Uniform" Margin="5" >
-                                </Path>
+                            <Grid Width="50" Height="50">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource TelescopeSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}" />
                             </Grid>
-                            <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
-                                            Visibility="{Binding  TelescopeVM.Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                            Opacity="0.5" 
-                                            Data="{StaticResource PowerSVG}" 
-                                            Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                            </Path>
+                            <Path
+                                Width="10"
+                                Height="10"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Data="{StaticResource PowerSVG}"
+                                Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                Opacity="0.5"
+                                Stretch="Uniform"
+                                Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
                             <Grid Visibility="{Binding TelescopeVM.Telescope, Converter={StaticResource NullToVisibilityConverter}}">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" 
-                                                Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource VisibilityConverter}}"                                          
-                                                Data="{StaticResource PowerSVG}" 
-                                                Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                                </Path>
+                                <Path
+                                    Width="10"
+                                    Height="10"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Data="{StaticResource PowerSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
                     </TabItem.Header>
-                    <TabItem.Content>                        
-                        <view:TelescopeView DataContext="{Binding TelescopeVM}" />                            
-                        
+                    <TabItem.Content>
+                        <view:TelescopeView DataContext="{Binding TelescopeVM}" />
+
                     </TabItem.Content>
                 </TabItem>
                 <TabItem>
                     <TabItem.Header>
                         <Grid>
-                            <Grid Height="50" Width="50">
-                                <Path Style="{StaticResource TabItemPath}" Data="{StaticResource GuiderSVG}" Stretch="Uniform" Margin="5"  >
-                                </Path>
+                            <Grid Width="50" Height="50">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource GuiderSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}" />
                             </Grid>
-                            <Path Fill="{StaticResource ButtonForegroundDisabledBrush}" 
-                                        Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                        Opacity="0.5" 
-                                        Data="{StaticResource PowerSVG}" 
-                                        Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                            </Path>
+                            <Path
+                                Width="10"
+                                Height="10"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Data="{StaticResource PowerSVG}"
+                                Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                Opacity="0.5"
+                                Stretch="Uniform"
+                                Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
                             <Grid Visibility="{Binding GuiderVM.Guider, Converter={StaticResource NullToVisibilityConverter}}">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" 
-                                            Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource VisibilityConverter}}"                                          
-                                            Data="{StaticResource PowerSVG}" 
-                                            Stretch="Uniform" Height="10" Width="10" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
-                                </Path>
+                                <Path
+                                    Width="10"
+                                    Height="10"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Data="{StaticResource PowerSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform"
+                                    Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
 
                     </TabItem.Header>
                     <TabItem.Content>
-                        <view:GuiderView DataContext="{Binding GuiderVM}" ></view:GuiderView>
+                        <view:GuiderView DataContext="{Binding GuiderVM}" />
                     </TabItem.Content>
                 </TabItem>
-                
-                <TabItem >
-                    <TabItem.Header>
-                        <Grid Height="50" Width="50">
-                            <Path Style="{StaticResource TabItemPath}" Data="{StaticResource MapSVG}" Stretch="Uniform" Margin="5">
-                            </Path>
-                        </Grid>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:SkyAtlasView DataContext="{Binding SkyAtlasVM}" ></view:SkyAtlasView>
-                    </TabItem.Content>
-                </TabItem>
-                
+
                 <TabItem>
                     <TabItem.Header>
-                        <Grid Height="50" Width="50">
-                            <Path Style="{StaticResource TabItemPath}" Data="{StaticResource SequenceSVG}" Stretch="Uniform" Margin="5">
-                            </Path>
+                        <Grid Width="50" Height="50">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource MapSVG}"
+                                Stretch="Uniform"
+                                Style="{StaticResource TabItemPath}" />
                         </Grid>
                     </TabItem.Header>
                     <TabItem.Content>
-                        <view:SequenceView DataContext="{Binding SeqVM}" ></view:SequenceView>
+                        <view:SkyAtlasView DataContext="{Binding SkyAtlasVM}" />
                     </TabItem.Content>
                 </TabItem>
-                
+
                 <TabItem>
                     <TabItem.Header>
-                        <Grid Height="50" Width="50">
-                            <Path Style="{StaticResource TabItemPath}" Data="{StaticResource PictureSVG}" Stretch="Uniform"  Margin="5">
-                            </Path>
+                        <Grid Width="50" Height="50">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource SequenceSVG}"
+                                Stretch="Uniform"
+                                Style="{StaticResource TabItemPath}" />
                         </Grid>
                     </TabItem.Header>
                     <TabItem.Content>
-                        <view:OverView x:Name="Overview" DataContext="{Binding DockManagerVM}"></view:OverView>
+                        <view:SequenceView DataContext="{Binding SeqVM}" />
+                    </TabItem.Content>
+                </TabItem>
+
+                <TabItem>
+                    <TabItem.Header>
+                        <Grid Width="50" Height="50">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource PictureSVG}"
+                                Stretch="Uniform"
+                                Style="{StaticResource TabItemPath}" />
+                        </Grid>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <view:OverView x:Name="Overview" DataContext="{Binding DockManagerVM}" />
                     </TabItem.Content>
                 </TabItem>
                 <TabItem>
                     <TabItem.Header>
-                        <Grid Height="50" Width="50">
-                            <Path Style="{StaticResource TabItemPath}" Data="{StaticResource SettingsSVG}" Stretch="Uniform" Margin="5">
-                            </Path>
+                        <Grid Width="50" Height="50">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource SettingsSVG}"
+                                Stretch="Uniform"
+                                Style="{StaticResource TabItemPath}" />
                         </Grid>
                     </TabItem.Header>
                     <TabItem.Content>
-                        <view:OptionsView DataContext="{Binding OptionsVM}" ></view:OptionsView>
+                        <view:OptionsView DataContext="{Binding OptionsVM}" />
                     </TabItem.Content>
                 </TabItem>
             </TabControl>

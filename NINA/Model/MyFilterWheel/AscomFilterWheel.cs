@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace NINA.Model.MyFilterWheel {
-    class AscomFilterWheel : BaseINPC, IFilterWheel, IDisposable  {
+    class AscomFilterWheel : BaseINPC, IFilterWheel, IDisposable {
 
-        public AscomFilterWheel(string filterWheelId, string name) {           
+        public AscomFilterWheel(string filterWheelId, string name) {
             Id = filterWheelId;
             Name = name;
         }
@@ -37,10 +37,10 @@ namespace NINA.Model.MyFilterWheel {
                 _id = value;
                 RaisePropertyChanged();
             }
-        } 
+        }
 
         private FilterWheel _filterwheel;
-        
+
         public async Task<bool> Connect(CancellationToken token) {
             return await Task<bool>.Run(() => {
                 try {
@@ -56,7 +56,7 @@ namespace NINA.Model.MyFilterWheel {
                     Notification.ShowError("Unable to connect to filter wheel " + ex.Message);
                 }
                 return Connected;
-            });            
+            });
         }
 
         private bool _connected;
@@ -83,8 +83,8 @@ namespace NINA.Model.MyFilterWheel {
                 try {
                     _connected = value;
                     _filterwheel.Connected = value;
-                    
-                } catch(Exception ex) {
+
+                } catch (Exception ex) {
                     Notification.ShowError(ex.Message + "\n Please reconnect filter wheel!");
                     _connected = false;
                 }
@@ -143,24 +143,24 @@ namespace NINA.Model.MyFilterWheel {
 
         public short Position {
             get {
-                if(Connected) {
+                if (Connected) {
                     return _filterwheel.Position;
                 } else {
                     return -1;
                 }
             }
             set {
-                if(Connected) {
-                    try {                        
+                if (Connected) {
+                    try {
                         _filterwheel.Position = value;
-                    } catch(ASCOM.DriverAccessCOMException ex) {
+                    } catch (ASCOM.DriverAccessCOMException ex) {
                         Notification.ShowWarning(ex.Message);
                     }
                 }
-                
+
                 RaisePropertyChanged();
             }
-        }       
+        }
 
         public ArrayList SupportedActions {
             get {
@@ -181,7 +181,7 @@ namespace NINA.Model.MyFilterWheel {
             _filterwheel.Dispose();
         }
 
-      
+
         private AsyncObservableCollection<FilterInfo> _filters;
         public AsyncObservableCollection<FilterInfo> Filters {
             get {
@@ -202,14 +202,14 @@ namespace NINA.Model.MyFilterWheel {
             if (HasSetupDialog) {
                 try {
                     bool dispose = false;
-                    if(_filterwheel == null) {
+                    if (_filterwheel == null) {
                         _filterwheel = new FilterWheel(Id);
-                    }                    
+                    }
                     _filterwheel.SetupDialog();
-                    if(dispose) {
+                    if (dispose) {
                         _filterwheel.Dispose();
                         _filterwheel = null;
-                    }                    
+                    }
                 } catch (Exception ex) {
                     Notification.ShowError(ex.Message);
                 }
@@ -218,5 +218,5 @@ namespace NINA.Model.MyFilterWheel {
     }
 
 
-    
+
 }

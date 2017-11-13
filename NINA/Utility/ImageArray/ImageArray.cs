@@ -141,7 +141,7 @@ namespace NINA.Utility {
     //        }
     //        return stretchedArr;
     //    }
-          
+
     //    public async Task<T[]> stretchArrayAsync(ImageArray<T> source) {
     //        return await Task<T[]>.Run(() => stretchArrayAsync(source));
     //    }
@@ -196,12 +196,12 @@ namespace NINA.Utility {
 
     //            h.AddValue("EXPOSURE", duration, "");
     //            /*
-                 
+
     //             h.AddValue("OBJECT", 32768, "");
     //             */
 
-                
-                    
+
+
 
     //            dynamic[][] curl = new dynamic[this.Y][];
     //            dynamic val;
@@ -211,7 +211,7 @@ namespace NINA.Utility {
     //                for (int j = 0; j < this.X; j++) {
     //                    val = this.FlatArray[idx];
     //                    curl[i][j] = Convert.ChangeType(minvalue + val, targetType.GetType());  
-                       
+
     //                    idx++;
     //                }
     //            }

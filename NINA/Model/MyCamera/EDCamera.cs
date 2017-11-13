@@ -27,7 +27,7 @@ namespace NINA.Model.MyCamera {
             Name = info.szDeviceDescription;
         }
 
-        
+
 
         private IntPtr _cam;
 
@@ -250,7 +250,7 @@ namespace NINA.Model.MyCamera {
             set {
                 var iso = ISOSpeeds.Where((x) => x.Key == value).FirstOrDefault().Value;
                 if (HasError(SetProperty(EDSDK.PropID_ISOSpeed, iso))) {
-                    Notification.ShowError("Could not set ISO.");                    
+                    Notification.ShowError("Could not set ISO.");
                 }
                 RaisePropertyChanged();
             }
@@ -260,12 +260,12 @@ namespace NINA.Model.MyCamera {
         private ArrayList _gains;
         public ArrayList Gains {
             get {
-                if(_gains == null) {
+                if (_gains == null) {
                     _gains = new ArrayList();
                 }
                 return _gains;
             }
-        }        
+        }
 
         private AsyncObservableCollection<BinningMode> _binningModes;
         public AsyncObservableCollection<BinningMode> BinningModes {
@@ -311,14 +311,14 @@ namespace NINA.Model.MyCamera {
                 return false;
             } else {
                 Connected = true;
-                if(!Initialize()) { Disconnect(); }
+                if (!Initialize()) { Disconnect(); }
                 RaiseAllPropertiesChanged();
                 return true;
             }
         }
 
         private bool Initialize() {
-            if(IsManualMode()) {
+            if (IsManualMode()) {
                 GetShutterSpeeds();
                 GetISOSpeeds();
                 SetSaveLocation();
@@ -326,7 +326,7 @@ namespace NINA.Model.MyCamera {
                 return true;
             } else {
                 return false;
-            }          
+            }
         }
 
         protected event EDSDK.EdsObjectEventHandler SDKObjectEvent;
@@ -379,7 +379,7 @@ namespace NINA.Model.MyCamera {
             UInt32 mode;
             EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_AEModeSelect, 0, out mode);
             bool isManual = (mode == 3);
-            if(!isManual) {
+            if (!isManual) {
                 Notification.ShowError("Camera is not set to manual mode! Please set it to manual mode before connecting");
             }
             return isManual;
@@ -406,9 +406,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void Disconnect() {            
+        public void Disconnect() {
             uint err = EDSDK.EdsCloseSession(_cam);
-           
+
             Connected = false;
         }
 
@@ -484,12 +484,12 @@ namespace NINA.Model.MyCamera {
                 Debug.Print("Write temp file: " + sw.Elapsed);
                 sw.Restart();
 
-                var iarr = await new DCRaw().ConvertToImageArray(fileextension,tokenSource.Token);
+                var iarr = await new DCRaw().ConvertToImageArray(fileextension, tokenSource.Token);
 
                 Debug.Print("Get Pixels from temp tiff: " + sw.Elapsed);
                 sw.Restart();
                 tokenSource.Token.ThrowIfCancellationRequested();
-               
+
                 if (pointer != IntPtr.Zero) {
                     EDSDK.EdsRelease(pointer);
                     pointer = IntPtr.Zero;
@@ -527,7 +527,7 @@ namespace NINA.Model.MyCamera {
             }
 
             /* Start exposure */
-            if(HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF))) {
+            if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF))) {
                 Notification.ShowError("Could not start camera exposure");
             }
             DateTime d = DateTime.Now;
@@ -537,15 +537,15 @@ namespace NINA.Model.MyCamera {
                 do {
                     Thread.Sleep(100);
                 } while ((DateTime.Now - d).TotalMilliseconds < exposureTime);
-                                
-                if(HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF))) {
+
+                if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF))) {
                     Notification.ShowError("Could not stop camera exposure");
                 }
-                
+
             });
 
         }
-        
+
 
         private void SetExposureTime(double exposureTime) {
             double key;
@@ -558,7 +558,7 @@ namespace NINA.Model.MyCamera {
 
             /* Shutter speed to Bulb */
             if (HasError(SetProperty(EDSDK.PropID_Tv, ShutterSpeeds[key]))) {
-                Notification.ShowError("Unable to set exposure time");                
+                Notification.ShowError("Unable to set exposure time");
             }
         }
 
@@ -613,8 +613,7 @@ namespace NINA.Model.MyCamera {
                 uint err = EDSDK.EdsOpenSession(_cam);
                 if (err != (uint)EDSDK.EDS_ERR.OK) {
                     return false;
-                }
-                else {
+                } else {
                     Connected = true;
                     if (!Initialize()) {
                         Disconnect();

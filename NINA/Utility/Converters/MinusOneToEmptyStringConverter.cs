@@ -6,18 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace NINA.Utility.Converters
-{
+namespace NINA.Utility.Converters {
     public class MinusOneToEmptyStringConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            if((short)value == -1) {
+            if ((short)value == -1) {
                 return "";
             }
             return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            if(value.ToString() == string.Empty) {
+            if (value.ToString() == string.Empty) {
                 return -1;
             }
             return value;

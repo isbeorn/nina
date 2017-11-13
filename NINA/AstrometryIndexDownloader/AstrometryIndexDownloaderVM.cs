@@ -68,7 +68,7 @@ namespace NINA.AstrometryIndexDownloader {
 
         private async Task<bool> Download(IProgress<string> progress) {
             var l = GetFullIndexList();
-            
+
             ProcessedFiles = 0;
             try {
                 System.IO.DirectoryInfo i = new System.IO.DirectoryInfo(_destinationfolder);
@@ -86,10 +86,10 @@ namespace NINA.AstrometryIndexDownloader {
                     ProcessedFiles++;
                     if (!success) {
                         break;
-                    }                                                    
+                    }
                 }
             } catch (OperationCanceledException) {
-                
+
             }
             progress.Report("Finished");
             return true;
@@ -99,14 +99,14 @@ namespace NINA.AstrometryIndexDownloader {
             var url = new Uri(INDEXESURL + file.Name);
             var success = false;
             using (var client = new WebClient()) {
-                try {                    
+                try {
                     await client.DownloadFileTaskAsync(url, _destinationfolder + file.Name);
                     success = true;
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     Logger.Error(ex.Message, ex.StackTrace);
                     System.Windows.MessageBox.Show(ex.Message);
                 }
-                
+
             }
             return success;
         }

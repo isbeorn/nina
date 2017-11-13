@@ -13,7 +13,7 @@ namespace NINA.PlateSolving {
         Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken);
     }
 
-    
+
 
     public class PlateSolveResult {
         public PlateSolveResult() {
@@ -21,7 +21,7 @@ namespace NINA.PlateSolving {
             SolveTime = DateTime.Now;
         }
 
-        public DateTime SolveTime { get; private set; }        
+        public DateTime SolveTime { get; private set; }
 
         public double Orientation { get; set; }
 
@@ -36,7 +36,7 @@ namespace NINA.PlateSolving {
         public double RaError { get; set; }
 
         public double DecError { get; set; }
-        
+
         public string RaErrorString {
             get {
                 return Utility.Utility.AscomUtil.DegreesToHMS(RaError);
@@ -47,7 +47,7 @@ namespace NINA.PlateSolving {
                 return Astrometry.DegreeToArcsec(RaError) / Pixscale;
             }
         }
-        
+
         public double DecPixError {
             get {
                 return Astrometry.DegreeToArcsec(DecError) / Pixscale;

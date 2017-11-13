@@ -7,8 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace NINA.Utility.ValidationRules
-{
+namespace NINA.Utility.ValidationRules {
     public class FileExistsRule : ValidationRule {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo) {
             var dir = value.ToString();

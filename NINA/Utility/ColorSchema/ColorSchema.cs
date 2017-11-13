@@ -11,8 +11,7 @@ using System.Windows.Media;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace NINA.Utility
-{
+namespace NINA.Utility {
 
     [XmlRoot("ColorSchemas")]
     public class ColorSchemas {
@@ -37,7 +36,7 @@ namespace NINA.Utility
 
                 } catch (Exception e) {
                     schemas = new ColorSchemas();
-                    Logger.Error("Could not load color schema xml" + e.Message, e.StackTrace);                    
+                    Logger.Error("Could not load color schema xml" + e.Message, e.StackTrace);
                 }
             } else {
                 schemas = new ColorSchemas();
@@ -87,7 +86,7 @@ namespace NINA.Utility
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF443730"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606")
-        };
+            };
         }
 
         public ColorSchema CreateDefaultSchema() {
@@ -112,8 +111,8 @@ namespace NINA.Utility
 
         [XmlAttribute("Name")]
         public String Name { get; set; }
-        
-        [XmlElement(Type = typeof(XmlColor))]        
+
+        [XmlElement(Type = typeof(XmlColor))]
         public Color PrimaryColor { get; set; }
         [XmlElement(Type = typeof(XmlColor))]
         public Color SecondaryColor { get; set; }
@@ -172,7 +171,7 @@ namespace NINA.Utility
             }
             set {
                 try {
-                    _color = (Color)ColorConverter.ConvertFromString(value);         
+                    _color = (Color)ColorConverter.ConvertFromString(value);
                 } catch (Exception) {
                     _color = Colors.Black;
                 }

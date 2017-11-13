@@ -19,7 +19,7 @@ namespace NINA.ViewModel {
             Title = "LblTelescope";
             ContentId = nameof(TelescopeVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
-            
+
             ChooseTelescopeCommand = new AsyncCommand<bool>(() => ChooseTelescope());
             CancelChooseTelescopeCommand = new RelayCommand(CancelChooseTelescope);
             DisconnectCommand = new RelayCommand(DisconnectTelescope);
@@ -38,25 +38,24 @@ namespace NINA.ViewModel {
             _updateTelescope.Tick += UpdateTelescope_Tick;
 
             Mediator.Instance.Register((object o) => {
-                if(o != null) {
+                if (o != null) {
                     SlewToCoordinates((Coordinates)o);
                 }
-                
-            },MediatorMessages.SlewToCoordinates);
+
+            }, MediatorMessages.SlewToCoordinates);
 
             Mediator.Instance.Register((object o) => {
                 bool start = (bool)o;
                 SendToSnapPort(start);
-            },MediatorMessages.TelescopeSnapPort);
+            }, MediatorMessages.TelescopeSnapPort);
         }
 
         private void SendToSnapPort(bool start) {
-            if(Telescope?.Connected == true) {
+            if (Telescope?.Connected == true) {
                 string command = string.Empty;
                 if (start) {
                     command = Settings.TelescopeSnapPortStart;
-                }
-                else {
+                } else {
                     command = Settings.TelescopeSnapPortStop;
                 }
                 _telescope?.SendCommandString(command);
@@ -69,14 +68,14 @@ namespace NINA.ViewModel {
             TelescopeChooserVM.GetEquipment();
         }
 
-        private void UpdateTelescope_Tick(object sender, EventArgs e) {            
+        private void UpdateTelescope_Tick(object sender, EventArgs e) {
             if (Telescope?.Connected == true) {
                 Telescope.UpdateValues();
-            }            
+            }
         }
 
         private async Task<bool> ParkTelescope() {
-            return await Task.Run<bool>(() => { Telescope.Park(); return true; }); 
+            return await Task.Run<bool>(() => { Telescope.Park(); return true; });
 
         }
 
@@ -86,7 +85,7 @@ namespace NINA.ViewModel {
 
         private DispatcherTimer _updateTelescope;
 
-       private ITelescope _telescope;
+        private ITelescope _telescope;
         public ITelescope Telescope {
             get {
                 return _telescope;
@@ -101,7 +100,7 @@ namespace NINA.ViewModel {
         private TelescopeChooserVM _telescopeChooserVM;
         public TelescopeChooserVM TelescopeChooserVM {
             get {
-                if(_telescopeChooserVM == null) {
+                if (_telescopeChooserVM == null) {
                     _telescopeChooserVM = new TelescopeChooserVM();
                 }
                 return _telescopeChooserVM;
@@ -116,7 +115,7 @@ namespace NINA.ViewModel {
             _updateTelescope.Stop();
             Telescope = (ITelescope)TelescopeChooserVM.SelectedDevice;
             _cancelChooseTelescopeSource = new CancellationTokenSource();
-            if(Telescope!= null) {
+            if (Telescope != null) {
                 try {
                     var connected = await Telescope?.Connect(_cancelChooseTelescopeSource.Token);
                     _cancelChooseTelescopeSource.Token.ThrowIfCancellationRequested();
@@ -129,14 +128,14 @@ namespace NINA.ViewModel {
                         Telescope = null;
                         return false;
                     }
-                } catch(OperationCanceledException) {
+                } catch (OperationCanceledException) {
                     if (Telescope?.Connected == true) { Disconnect(); }
                     return false;
-                }               
+                }
             } else {
                 return false;
             }
-            
+
         }
 
         private void CancelChooseTelescope(object o) {
@@ -146,7 +145,7 @@ namespace NINA.ViewModel {
         CancellationTokenSource _cancelChooseTelescopeSource;
 
         private void DisconnectTelescope(object obj) {
-            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);            
+            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
                 Disconnect();
             }
@@ -160,7 +159,7 @@ namespace NINA.ViewModel {
 
         private void StepMoveRate(object obj) {
             string cmd = obj.ToString();
-            if(cmd == "+") {
+            if (cmd == "+") {
                 Telescope.MovingRate++;
             } else {
                 Telescope.MovingRate--;
@@ -169,7 +168,7 @@ namespace NINA.ViewModel {
 
         private void Move(object obj) {
             string cmd = obj.ToString();
-            if(cmd == "W") {                                
+            if (cmd == "W") {
                 Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -Telescope.MovingRate);
             }
             if (cmd == "O") {
@@ -178,7 +177,7 @@ namespace NINA.ViewModel {
             if (cmd == "N") {
                 Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, Telescope.MovingRate);
             }
-            if (cmd == "S") {                
+            if (cmd == "S") {
                 Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, -Telescope.MovingRate);
             }
         }
@@ -203,7 +202,7 @@ namespace NINA.ViewModel {
             Telescope.StopSlew();
         }
 
-        private int _targetDeclinationDegrees;        
+        private int _targetDeclinationDegrees;
         public int TargetDeclinationDegrees {
             get {
                 return _targetDeclinationDegrees;
@@ -273,9 +272,9 @@ namespace NINA.ViewModel {
 
         private void SlewToCoordinates(Coordinates coords) {
             coords = coords.Transform(Settings.EpochType);
-            if(Telescope?.Connected == true) {
-                Telescope.SlewToCoordinatesAsync(coords.RA,coords.Dec);
-            }            
+            if (Telescope?.Connected == true) {
+                Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
+            }
         }
 
         private void SlewToCoordinates(object obj) {
@@ -285,25 +284,25 @@ namespace NINA.ViewModel {
             var coords = new Coordinates(targetRightAscencion, targetDeclination, Epoch.J2000, Coordinates.RAType.Hours);
             SlewToCoordinates(coords);
         }
-        
+
         public ICommand SlewToCoordinatesCommand { get; private set; }
 
         public ICommand ChooseTelescopeCommand { get; private set; }
         public ICommand CancelChooseTelescopeCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
-        
+
         public ICommand MoveCommand { get; private set; }
-        
+
         public ICommand StopMoveCommand { get; private set; }
-        
+
         public IAsyncCommand ParkCommand { get; private set; }
-        
+
         public ICommand UnparkCommand { get; private set; }
-        
+
         public ICommand StopSlewCommand { get; private set; }
-        
+
         public ICommand StepperMoveRateCommand { get; private set; }
-        
+
         public ICommand RefreshTelescopeListCommand { get; private set; }
     }
 

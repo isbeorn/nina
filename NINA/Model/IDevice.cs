@@ -13,6 +13,6 @@ namespace NINA.Model {
         string Name { get; }
         Task<bool> Connect(CancellationToken token);
         void Disconnect();
-        void SetupDialog();             
+        void SetupDialog();
     }
 }

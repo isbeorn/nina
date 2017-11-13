@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Utility.Astrometry {
-    public class Astrometry {       
+    public class Astrometry {
 
         private static ASCOM.Astrometry.AstroUtils.AstroUtils _astroUtils;
         public static ASCOM.Astrometry.AstroUtils.AstroUtils AstroUtils {
@@ -48,7 +48,7 @@ namespace NINA.Utility.Astrometry {
         public static double ToDegree(double angle) {
             return angle * (180.0 / Math.PI);
         }
-        
+
 
         public static double DegreeToArcmin(double degree) {
             return degree * 60;
@@ -83,12 +83,12 @@ namespace NINA.Utility.Astrometry {
         }
 
         public static double GetLocalSiderealTimeNow(double longitude) {
-            return GetLocalSiderealTime(DateTime.Now,longitude);            
+            return GetLocalSiderealTime(DateTime.Now, longitude);
         }
 
         public static double GetJulianDate(DateTime date) {
             var utcdate = date.ToUniversalTime();
-            return NOVAS31.JulianDate((short)utcdate.Year,(short)utcdate.Month,(short)utcdate.Day,utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0);
+            return NOVAS31.JulianDate((short)utcdate.Year, (short)utcdate.Month, (short)utcdate.Day, utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace NINA.Utility.Astrometry {
         /// <param name="date"></param>
         /// <param name="longitude"></param>
         /// <returns>Sidereal Time in hours</returns>
-        public static double GetLocalSiderealTime(DateTime date, double longitude) {            
+        public static double GetLocalSiderealTime(DateTime date, double longitude) {
             var jd = GetJulianDate(date);
 
             /*
@@ -111,7 +111,7 @@ namespace NINA.Utility.Astrometry {
             double jd_low = jd - jd_high;
 
             double lst = 0;
-            NOVAS31.SiderealTime(jd_high,jd_low,NOVAS31.DeltaT(jd),ASCOM.Astrometry.GstType.GreenwichApparentSiderealTime,ASCOM.Astrometry.Method.EquinoxBased,ASCOM.Astrometry.Accuracy.Full,ref lst);
+            NOVAS31.SiderealTime(jd_high, jd_low, NOVAS31.DeltaT(jd), ASCOM.Astrometry.GstType.GreenwichApparentSiderealTime, ASCOM.Astrometry.Method.EquinoxBased, ASCOM.Astrometry.Accuracy.Full, ref lst);
             lst = lst + DegreesToHours(longitude);
             return lst;
         }
@@ -189,7 +189,7 @@ namespace NINA.Utility.Astrometry {
              * Arraylist(2) - Integer - Number of set events in this 24 hour period
              * Arraylist(3) onwards - Double - Values of rise events in hours Arraylist
              * (3 + NumberOfRiseEvents) onwards - Double - Values of set events in hours*/
-            var times = AstroUtils.EventTimes(type,d,m,y,Settings.Latitude,Settings.Longitude,TimeZone.CurrentTimeZone.GetUtcOffset(date).Hours + TimeZone.CurrentTimeZone.GetUtcOffset(date).Minutes / 60.0);
+            var times = AstroUtils.EventTimes(type, d, m, y, Settings.Latitude, Settings.Longitude, TimeZone.CurrentTimeZone.GetUtcOffset(date).Hours + TimeZone.CurrentTimeZone.GetUtcOffset(date).Minutes / 60.0);
 
             if (times.Count > 3) {
                 int nrOfRiseEvents = (int)times[1];
@@ -198,20 +198,19 @@ namespace NINA.Utility.Astrometry {
                 double[] rises = new double[nrOfRiseEvents];
                 double[] sets = new double[nrOfSetEvents];
 
-                for (int i = 0;i < nrOfRiseEvents;i++) {
+                for (int i = 0; i < nrOfRiseEvents; i++) {
                     rises[i] = (double)times[i + 3];
                 }
 
-                for (int i = 0;i < nrOfSetEvents;i++) {
+                for (int i = 0; i < nrOfSetEvents; i++) {
                     sets[i] = (double)times[i + 3 + nrOfRiseEvents];
                 }
 
                 if (rises.Count() > 0 && sets.Count() > 0) {
                     var rise = rises[0];
                     var set = sets[0];
-                    return new RiseAndSetAstroEvent(date,rise,set);
-                }
-                else {
+                    return new RiseAndSetAstroEvent(date, rise, set);
+                } else {
                     return null;
                 }
 
@@ -221,21 +220,21 @@ namespace NINA.Utility.Astrometry {
         }
 
         public static RiseAndSetAstroEvent GetNightTimes(DateTime date) {
-            return GetRiseAndSetEvent(date,EventType.AstronomicalTwilight);
+            return GetRiseAndSetEvent(date, EventType.AstronomicalTwilight);
         }
 
         public static RiseAndSetAstroEvent GetMoonRiseAndSet(DateTime date) {
-            return GetRiseAndSetEvent(date,EventType.MoonRiseMoonSet);
+            return GetRiseAndSetEvent(date, EventType.MoonRiseMoonSet);
         }
 
         public static RiseAndSetAstroEvent GetSunRiseAndSet(DateTime date) {
-            return GetRiseAndSetEvent(date,EventType.SunRiseSunset);
+            return GetRiseAndSetEvent(date, EventType.SunRiseSunset);
         }
 
         public static MoonPhase GetMoonPhase(DateTime date) {
             var phase = AstroUtils.MoonPhase(GetJulianDate(date));
-            
-            if((phase >= -180.0 && phase < -135.0) || phase == 180.0) {
+
+            if ((phase >= -180.0 && phase < -135.0) || phase == 180.0) {
                 return MoonPhase.FullMoon;
             } else if (phase >= -135.0 && phase < -90.0) {
                 return MoonPhase.WaningGibbous;
@@ -274,14 +273,14 @@ namespace NINA.Utility.Astrometry {
 
         public class RiseAndSetAstroEvent {
             public RiseAndSetAstroEvent(DateTime referenceDate, double rise, double set) {
-                RiseDate = new DateTime(referenceDate.Year,referenceDate.Month,referenceDate.Day, referenceDate.Hour, referenceDate.Minute, referenceDate.Second);
-                if(RiseDate.Hour + RiseDate.Minute / 60.0 + RiseDate.Second / 60.0 / 60.0 > rise) {
+                RiseDate = new DateTime(referenceDate.Year, referenceDate.Month, referenceDate.Day, referenceDate.Hour, referenceDate.Minute, referenceDate.Second);
+                if (RiseDate.Hour + RiseDate.Minute / 60.0 + RiseDate.Second / 60.0 / 60.0 > rise) {
                     RiseDate = RiseDate.AddDays(1);
                 }
                 RiseDate = RiseDate.Date;
                 RiseDate = RiseDate.AddHours(rise);
 
-                SetDate = new DateTime(referenceDate.Year,referenceDate.Month,referenceDate.Day,referenceDate.Hour,referenceDate.Minute,referenceDate.Second);
+                SetDate = new DateTime(referenceDate.Year, referenceDate.Month, referenceDate.Day, referenceDate.Hour, referenceDate.Minute, referenceDate.Second);
                 if (SetDate.Hour + SetDate.Minute / 60.0 + SetDate.Second / 60.0 / 60.0 > set) {
                     SetDate = SetDate.AddDays(1);
                 }
@@ -348,7 +347,7 @@ namespace NINA.Utility.Astrometry {
             this.Dec = dec;
             this.Epoch = epoch;
 
-            if (ratype == RAType.Degrees) {                
+            if (ratype == RAType.Degrees) {
                 this.RA = (this.RA * 24) / 360;
             }
         }
@@ -363,7 +362,7 @@ namespace NINA.Utility.Astrometry {
                 return this;
             }
 
-            if(targetEpoch == Epoch.JNOW) {
+            if (targetEpoch == Epoch.JNOW) {
                 return TransformToJNOW();
             } else if (targetEpoch == Epoch.J2000) {
                 return TransformToJ2000();

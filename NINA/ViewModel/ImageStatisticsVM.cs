@@ -32,5 +32,5 @@ namespace NINA.ViewModel {
         public void Add(ImageStatistics stats) {
             Statistics = stats;
         }
-    }    
+    }
 }

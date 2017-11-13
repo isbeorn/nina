@@ -1,41 +1,55 @@
-﻿<UserControl x:Class="NINA.View.OptionsView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:NINA.View"
-             xmlns:model="clr-namespace:NINA.Model"
-             xmlns:util="clr-namespace:NINA.Utility"
-             xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
-             xmlns:astrometry="clr-namespace:NINA.Utility.Astrometry"
-             xmlns:ns="clr-namespace:NINA.Locale"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Background="{StaticResource BackgroundBrush}">
+﻿<UserControl
+    x:Class="NINA.View.OptionsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:astrometry="clr-namespace:NINA.Utility.Astrometry"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="clr-namespace:NINA.Model"
+    xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
+    xmlns:util="clr-namespace:NINA.Utility"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    Background="{StaticResource BackgroundBrush}"
+    mc:Ignorable="d">
     <TabControl TabStripPlacement="Top">
         <TabItem>
             <TabItem.Header>
-                <TextBlock Text="{ns:Loc LblGeneral}" Style="{StaticResource TabItemTextBox}" />
+                <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblGeneral}" />
             </TabItem.Header>
             <UniformGrid Columns="2" Rows="3">
-                <GroupBox Header="{ns:Loc LblGeneral}">                    
+                <GroupBox Header="{ns:Loc LblGeneral}">
                     <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
-                            <TextBlock VerticalAlignment="Center" Width="140" Text="{ns:Loc LblLanguage}" />
-                            <ComboBox Margin="10,0,0,0" ItemsSource="{Binding AvailableLanguages}" DisplayMemberPath="DisplayName" SelectedItem="{Binding Language}"/>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                Width="140"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblLanguage}" />
+                            <ComboBox
+                                Margin="10,0,0,0"
+                                DisplayMemberPath="DisplayName"
+                                ItemsSource="{Binding AvailableLanguages}"
+                                SelectedItem="{Binding Language}" />
                         </StackPanel>
-                        
-                        <Grid Margin="0 5 0 0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="140"/>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSkyAtlasImageDirectory}"></TextBlock>
 
-                            <TextBox Margin="10,0,0,0" Grid.Column="1" VerticalAlignment="Center" VerticalContentAlignment="Center" >
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSkyAtlasImageDirectory}" />
+
+                            <TextBox
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
                                 <TextBox.Text>
-                                    <Binding Path="SkyAtlasImageRepository" UpdateSourceTrigger="LostFocus" >
+                                    <Binding Path="SkyAtlasImageRepository" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
                                             <rules:DirectoryExistsRule />
                                         </Binding.ValidationRules>
@@ -43,157 +57,469 @@
                                 </TextBox.Text>
                             </TextBox>
 
-                            <Button Grid.Column="2" Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Command="{Binding OpenSkyAtlasImageRepositoryDiagCommand}">
-                                <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="4,17,4,4"/>
+                            <Button
+                                Grid.Column="2"
+                                Width="30"
+                                Height="30"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding OpenSkyAtlasImageRepositoryDiagCommand}">
+                                <Path
+                                    Margin="4,17,4,4"
+                                    Data="{StaticResource DotsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
                             </Button>
-                            
+
                         </Grid>
                     </StackPanel>
-                                     
+
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblAstrometry}">
-                    <StackPanel Margin="0 5 0 0">
+                    <StackPanel Margin="0,5,0,0">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblEpoch}"></TextBlock>
-                            <ComboBox Name="epochcombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Epoch} }}" SelectedItem="{Binding EpochType}" Margin="10,0,0,0"/>
+                            <TextBlock
+                                Width="100"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblEpoch}" />
+                            <ComboBox
+                                Name="epochcombo"
+                                Margin="10,0,0,0"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Epoch}}}"
+                                SelectedItem="{Binding EpochType}" />
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
-                            <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblHemisphere}"></TextBlock>
-                            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Hemisphere} }}" SelectedItem="{Binding HemisphereType}" Margin="10,0,0,0"/>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                Width="100"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblHemisphere}" />
+                            <ComboBox
+                                Margin="10,0,0,0"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Hemisphere}}}"
+                                SelectedItem="{Binding HemisphereType}" />
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
-                            <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblLatitude}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" MinWidth="120" VerticalAlignment="Center" Text="{Binding Latitude}" Margin="10,0,0,0"/>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                Width="100"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblLatitude}" />
+                            <TextBox
+                                MinWidth="120"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding Latitude}" />
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
-                            <TextBlock VerticalAlignment="Center" Width="100" Text="{ns:Loc LblLongitude}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" MinWidth="120" VerticalAlignment="Center" Text="{Binding Longitude}" Margin="10,0,0,0"/>
-                        </StackPanel>                        
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                Width="100"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblLongitude}" />
+                            <TextBox
+                                MinWidth="120"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding Longitude}" />
+                        </StackPanel>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblCurrentUIColorSchema}">
                     <UniformGrid Columns="2">
-                        <ComboBox ItemsSource="{Binding ColorSchemas.Items}" DisplayMemberPath="Name" SelectedValue="{Binding ColorSchemaName}" SelectedValuePath="Name" Grid.ColumnSpan="2" Margin="0,5,0,0"/>
+                        <ComboBox
+                            Grid.ColumnSpan="2"
+                            Margin="0,5,0,0"
+                            DisplayMemberPath="Name"
+                            ItemsSource="{Binding ColorSchemas.Items}"
+                            SelectedValue="{Binding ColorSchemaName}"
+                            SelectedValuePath="Name" />
                         <Grid />
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblPrimary}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding PrimaryColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource PrimaryBrush}"></Button>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" >
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblSecondary}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding SecondaryColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource SecondaryBrush}"></Button>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblBorder}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding BorderColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource BorderBrush}"></Button>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblBackground}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding BackgroundColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource BackgroundBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPrimary}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding PrimaryColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource PrimaryBrush}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonBackground}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding ButtonBackgroundColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonBackgroundBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSecondary}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding SecondaryColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource SecondaryBrush}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonHighlight}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding ButtonBackgroundSelectedColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonBackgroundSelectedBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBorder}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding BorderColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource BorderBrush}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBackground}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding BackgroundColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource BackgroundBrush}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonBackground}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding ButtonBackgroundColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource ButtonBackgroundBrush}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonHighlight}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding ButtonBackgroundSelectedColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource ButtonBackgroundSelectedBrush}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonForeground}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding ButtonForegroundColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonForegroundBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonForeground}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding ButtonForegroundColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource ButtonForegroundBrush}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonForegroundDisabled}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding ButtonForegroundDisabledColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource ButtonForegroundDisabledBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonForegroundDisabled}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding ButtonForegroundDisabledColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource ButtonForegroundDisabledBrush}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblNotificationWarning}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding NotificationWarningColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource NotificationWarningBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationWarning}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding NotificationWarningColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource NotificationWarningBrush}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblNotificationError}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding NotificationErrorColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource NotificationErrorBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationError}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding NotificationErrorColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource NotificationErrorBrush}" />
                         </StackPanel>
                     </UniformGrid>
 
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblAlternativeUIColorSchema}">
                     <UniformGrid Columns="2">
-                        <ComboBox ItemsSource="{Binding ColorSchemas.Items}" DisplayMemberPath="Name" SelectedValue="{Binding AlternativeColorSchemaName}" SelectedValuePath="Name" Grid.ColumnSpan="2" Margin="0,5,0,0"/>                        
+                        <ComboBox
+                            Grid.ColumnSpan="2"
+                            Margin="0,5,0,0"
+                            DisplayMemberPath="Name"
+                            ItemsSource="{Binding ColorSchemas.Items}"
+                            SelectedValue="{Binding AlternativeColorSchemaName}"
+                            SelectedValuePath="Name" />
                         <Grid />
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblPrimary}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltPrimaryColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltPrimaryBrush}"></Button>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" >
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblSecondary}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltSecondaryColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltSecondaryBrush}"></Button>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblBorder}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltBorderColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltBorderBrush}"></Button>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblBackground}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltBackgroundColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltBackgroundBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPrimary}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding AltPrimaryColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AltPrimaryBrush}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonBackground}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonBackgroundColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonBackgroundBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSecondary}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding AltSecondaryColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AltSecondaryBrush}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonHighlight}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonBackgroundSelectedColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonBackgroundSelectedBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBorder}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding AltBorderColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AltBorderBrush}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBackground}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding AltBackgroundColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AltBackgroundBrush}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonBackground}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding AltButtonBackgroundColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AltButtonBackgroundBrush}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonHighlight}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding AltButtonBackgroundSelectedColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AltButtonBackgroundSelectedBrush}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonForeground}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonForegroundColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonForegroundBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonForeground}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding AltButtonForegroundColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AltButtonForegroundBrush}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblButtonForegroundDisabled}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltButtonForegroundDisabledColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltButtonForegroundDisabledBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblButtonForegroundDisabled}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding AltButtonForegroundDisabledColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AltButtonForegroundDisabledBrush}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblNotificationWarning}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltNotificationWarningColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltNotificationWarningBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationWarning}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding AltNotificationWarningColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AltNotificationWarningBrush}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Width="155" Text="{ns:Loc LblNotificationError}"></TextBlock>
-                            <TextBox HorizontalAlignment="Center" Width="70" VerticalAlignment="Center" Text="{Binding AltNotificationErrorColor}" />
-                            <Button Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" Background="{StaticResource AltNotificationErrorBrush}"></Button>
+                            <TextBlock
+                                Width="155"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNotificationError}" />
+                            <TextBox
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding AltNotificationErrorColor}" />
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AltNotificationErrorBrush}" />
                         </StackPanel>
                     </UniformGrid>
-                </GroupBox>                
+                </GroupBox>
                 <GroupBox Header="{ns:Loc LblPHD2Settings}">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -206,17 +532,41 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <TextBlock  VerticalAlignment="Center" Width="100" Text="{ns:Loc LblPHD2ServerUrl}"></TextBlock>
-                        <TextBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PHD2ServerUrl}" />
+                        <TextBlock
+                            Width="100"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPHD2ServerUrl}" />
+                        <TextBox
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Text="{Binding PHD2ServerUrl}" />
 
 
-                        <TextBlock Grid.Row="1" VerticalAlignment="Center" Width="100" Text="{ns:Loc LblPHD2ServerPort}"></TextBlock>
-                        <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding PHD2ServerPort}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Width="100"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPHD2ServerPort}" />
+                        <TextBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Text="{Binding PHD2ServerPort}" />
 
-                        <TextBlock Grid.Row="2" VerticalAlignment="Center" Width="100" Text="{ns:Loc LblDitherPixels}"></TextBlock>
-                        <TextBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                        <TextBlock
+                            Grid.Row="2"
+                            Width="100"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblDitherPixels}" />
+                        <TextBox
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center">
                             <TextBox.Text>
-                                <Binding Path="DitherPixels" UpdateSourceTrigger="LostFocus" >
+                                <Binding Path="DitherPixels" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
                                         <rules:GreaterZeroRule />
                                     </Binding.ValidationRules>
@@ -224,25 +574,38 @@
                             </TextBox.Text>
                         </TextBox>
 
-                        <TextBlock Grid.Row="3" VerticalAlignment="Center" Width="100" Text="{ns:Loc LblDitherRAOnly}"></TextBlock>
-                        <CheckBox Grid.Row="3" Grid.Column="1" Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding DitherRAOnly}" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Width="100"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblDitherRAOnly}" />
+                        <CheckBox
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Width="75"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            IsChecked="{Binding DitherRAOnly}" />
 
                     </Grid>
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblWeatherData}">
-                    <StackPanel Margin="0 5 0 0">
-                        <ComboBox Name="weatherdatacombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:WeatherDataEnum}}}" SelectedItem="{Binding WeatherDataType}" />
-                        <UniformGrid Columns="2" Margin="0 5 0 0">
+                    <StackPanel Margin="0,5,0,0">
+                        <ComboBox
+                            Name="weatherdatacombo"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:WeatherDataEnum}}}"
+                            SelectedItem="{Binding WeatherDataType}" />
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock Text="{ns:Loc LblURL}" />
-                            <TextBox Text="{Binding OpenWeatherMapUrl}" HorizontalAlignment="Stretch" />
+                            <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapUrl}" />
                         </UniformGrid>
-                        <UniformGrid Columns="2"  Margin="0 5 0 0">
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock Text="{ns:Loc LblAPIKey}" />
-                            <TextBox Text="{Binding OpenWeatherMapAPIKey}" HorizontalAlignment="Stretch" />
+                            <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapAPIKey}" />
                         </UniformGrid>
-                        <UniformGrid Columns="2"  Margin="0 5 0 0">
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock Text="{ns:Loc LblLocation}" />
-                            <TextBox Text="{Binding OpenWeatherMapLocation}" HorizontalAlignment="Stretch" />
+                            <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapLocation}" />
                         </UniformGrid>
                     </StackPanel>
                 </GroupBox>
@@ -250,15 +613,15 @@
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Text="{ns:Loc LblImaging}" Style="{StaticResource TabItemTextBox}" />
+                <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblImaging}" />
             </TabItem.Header>
             <UniformGrid Columns="2">
                 <GroupBox Header="{ns:Loc LblFileSettings}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="50" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40" />
@@ -267,26 +630,80 @@
                             <RowDefinition Height="40" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <TextBlock VerticalAlignment="Center" Grid.Column="0" Text="{ns:Loc LblSaveImageAs}"></TextBlock>
-                        <ComboBox Grid.Column="1" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:FileTypeEnum}}}" SelectedItem="{Binding FileType}"/>
+                        <TextBlock
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblSaveImageAs}" />
+                        <ComboBox
+                            Grid.Column="1"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:FileTypeEnum}}}"
+                            SelectedItem="{Binding FileType}" />
 
-                        <TextBlock Grid.Row="1" VerticalAlignment="Center" Grid.Column="0" Text="{ns:Loc LblImageFilePath}"></TextBlock>
-                        <TextBox Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Text="{Binding ImageFilePath}"></TextBox>
-                        <Button Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Grid.Column="2" Command="{Binding OpenImageFileDiagCommand}">
-                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="4,17,4,4"/>
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblImageFilePath}" />
+                        <TextBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Text="{Binding ImageFilePath}" />
+                        <Button
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Width="30"
+                            Height="30"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Command="{Binding OpenImageFileDiagCommand}">
+                            <Path
+                                Margin="4,17,4,4"
+                                Data="{StaticResource DotsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform" />
                         </Button>
 
-                        <TextBlock VerticalAlignment="Center" Grid.Column="0" Grid.Row="3" Text="{ns:Loc LblImageFilePattern}"></TextBlock>
-                        <TextBox Text="{Binding ImageFilePattern}" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3"></TextBox>
-                        <Button VerticalAlignment="Center" HorizontalAlignment="Center" Height="30" Width="30" Grid.Column="2" Grid.Row="3" Command="{Binding PreviewFileCommand}">
-                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource PreviewSVG}" Stretch="Uniform" Margin="5"/>
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblImageFilePattern}" />
+                        <TextBox
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Text="{Binding ImageFilePattern}" />
+                        <Button
+                            Grid.Row="3"
+                            Grid.Column="2"
+                            Width="30"
+                            Height="30"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Command="{Binding PreviewFileCommand}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource PreviewSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform" />
                         </Button>
 
-                        <ListView Grid.Row="4" Grid.ColumnSpan="3" Margin="0 5 0 0" ItemsSource="{Binding ImagePatterns}">
+                        <ListView
+                            Grid.Row="4"
+                            Grid.ColumnSpan="3"
+                            Margin="0,5,0,0"
+                            ItemsSource="{Binding ImagePatterns}">
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="{ns:Loc LblPatternName}" Width="Auto" DisplayMemberBinding="{Binding Key}" />
-                                    <GridViewColumn Header="{ns:Loc LblDescription}" Width="Auto" DisplayMemberBinding="{Binding Description}" />
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding Key}"
+                                        Header="{ns:Loc LblPatternName}" />
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding Description}"
+                                        Header="{ns:Loc LblDescription}" />
                                 </GridView>
                             </ListView.View>
                         </ListView>
@@ -295,61 +712,108 @@
                 <StackPanel Orientation="Vertical">
                     <GroupBox Header="{ns:Loc LblFocuser}">
                         <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblFocuserUseFilterWheelOffsets}">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblFocuserUseFilterWheelOffsets}">
                                     <TextBlock.ToolTip>
                                         <TextBlock Text="{ns:Loc LblFocuserUseFilterWheelOffsetsTooltip}" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding FocuserUseFilterWheelOffsets}" />
+                                <CheckBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding FocuserUseFilterWheelOffsets}" />
                             </StackPanel>
-                            
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblFocuserAutoFocusStepSize}">
+
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblFocuserAutoFocusStepSize}">
                                     <TextBlock.ToolTip>
                                         <TextBlock Text="{ns:Loc LblFocuserAutoFocusStepSizeTooltip}" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <TextBox  Width="75" Height="25" HorizontalAlignment="Left"  Text="{Binding FocuserAutoFocusStepSize}" />
+                                <TextBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    Text="{Binding FocuserAutoFocusStepSize}" />
                             </StackPanel>
 
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblFocuserAutoFocusInitialOffsetSteps}">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblFocuserAutoFocusInitialOffsetSteps}">
                                     <TextBlock.ToolTip>
                                         <TextBlock Text="{ns:Loc LblFocuserAutoFocusInitialOffsetStepsTooltip}" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <TextBox  Width="75" Height="25" HorizontalAlignment="Left"  Text="{Binding FocuserAutoFocusInitialOffsetSteps}" />
+                                <TextBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    Text="{Binding FocuserAutoFocusInitialOffsetSteps}" />
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusExposureTime}">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAutoFocusExposureTime}">
                                     <TextBlock.ToolTip>
                                         <TextBlock Text="{ns:Loc LblAutoFocusExposureTimeTooltip}" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <TextBox  Width="75" Height="25" HorizontalAlignment="Left">
+                                <TextBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left">
                                     <TextBox.Text>
-                                        <Binding Path="FocuserAutoFocusExposureTime" UpdateSourceTrigger="LostFocus" >
+                                        <Binding Path="FocuserAutoFocusExposureTime" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:GreaterZeroRule />
                                             </Binding.ValidationRules>
                                         </Binding>
                                     </TextBox.Text>
                                 </TextBox>
-                            </StackPanel>                            
+                            </StackPanel>
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Header="{ns:Loc LblAutoMeridianFlip}">
                         <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20" MinWidth="200"  VerticalAlignment="Center" Text="{ns:Loc LblEnabled}"></TextBlock>
-                                <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding AutoMeridianFlip}" />
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblEnabled}" />
+                                <CheckBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding AutoMeridianFlip}" />
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20" MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblMinutesAfterMeridian}"></TextBlock>
-                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblMinutesAfterMeridian}" />
+                                <TextBox
+                                    MinWidth="75"
+                                    MinHeight="20"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="MinutesAfterMeridian" UpdateSourceTrigger="LostFocus" >
+                                        <Binding Path="MinutesAfterMeridian" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:GreaterZeroRule />
                                             </Binding.ValidationRules>
@@ -357,15 +821,31 @@
                                     </TextBox.Text>
                                 </TextBox>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblRecenterAfterFlip}"></TextBlock>
-                                <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding RecenterAfterFlip}" />
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblRecenterAfterFlip}" />
+                                <CheckBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding RecenterAfterFlip}" />
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblScopeSettleTimeAfterFlip}"></TextBlock>
-                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblScopeSettleTimeAfterFlip}" />
+                                <TextBox
+                                    MinWidth="75"
+                                    MinHeight="20"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="MeridianFlipSettleTime" UpdateSourceTrigger="LostFocus" >
+                                        <Binding Path="MeridianFlipSettleTime" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:GreaterZeroRule />
                                             </Binding.ValidationRules>
@@ -373,11 +853,19 @@
                                     </TextBox.Text>
                                 </TextBox>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblPauseTimeBeforeMeridian}"></TextBlock>
-                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblPauseTimeBeforeMeridian}" />
+                                <TextBox
+                                    MinWidth="75"
+                                    MinHeight="20"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="PauseTimeBeforeMeridian" UpdateSourceTrigger="LostFocus" >
+                                        <Binding Path="PauseTimeBeforeMeridian" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:GreaterZeroRule />
                                             </Binding.ValidationRules>
@@ -389,15 +877,23 @@
                     </GroupBox>
                     <GroupBox Header="{ns:Loc LblImageOptions}">
                         <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblAutoStretchFactor}">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAutoStretchFactor}">
                                     <TextBlock.ToolTip>
                                         <TextBlock Text="{ns:Loc LblAutoStretchFactorTooltip}" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                <TextBox
+                                    MinWidth="75"
+                                    MinHeight="20"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="AutoStretchFactor" UpdateSourceTrigger="LostFocus" >
+                                        <Binding Path="AutoStretchFactor" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:GreaterZeroRule />
                                             </Binding.ValidationRules>
@@ -405,44 +901,78 @@
                                     </TextBox.Text>
                                 </TextBox>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblAnnotateImage}">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAnnotateImage}">
                                     <TextBlock.ToolTip>
                                         <TextBlock Text="{ns:Loc LblAnnotateImageTooltip}" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding AnnotateImage}" />
+                                <CheckBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding AnnotateImage}" />
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
 
                     <GroupBox Header="{ns:Loc LblCameraOptions}">
                         <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblUseSnapPort}">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblUseSnapPort}">
                                     <TextBlock.ToolTip>
                                         <TextBlock Text="" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <CheckBox  Width="75" Height="25" HorizontalAlignment="Left"  IsChecked="{Binding UseTelescopeSnapPort}" />
+                                <CheckBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding UseTelescopeSnapPort}" />
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblSnapPortStart}">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblSnapPortStart}">
                                     <TextBlock.ToolTip>
                                         <TextBlock Text="" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding TelescopeSnapPortStart}" />
+                                <TextBox
+                                    MinWidth="75"
+                                    MinHeight="20"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding TelescopeSnapPortStart}" />
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock MinHeight="20"  MinWidth="200" VerticalAlignment="Center" Text="{ns:Loc LblSnapPortStop}">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblSnapPortStop}">
                                     <TextBlock.ToolTip>
                                         <TextBlock Text="" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <TextBox MinHeight="20" MinWidth="75" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding TelescopeSnapPortStop}" />
+                                <TextBox
+                                    MinWidth="75"
+                                    MinHeight="20"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding TelescopeSnapPortStop}" />
                             </StackPanel>
-                            
+
                         </StackPanel>
                     </GroupBox>
 
@@ -452,19 +982,23 @@
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Text="{ns:Loc LblPlateSolving}" Style="{StaticResource TabItemTextBox}" />
+                <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblPlateSolving}" />
             </TabItem.Header>
             <GroupBox Header="{ns:Loc LblPlateSolving}">
-                <Grid Margin="0 5 0 0">
+                <Grid Margin="0,5,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <ComboBox Name="platesolvecombo" ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:PlateSolverEnum}}}" SelectedItem="{Binding PlateSolverType}" Grid.ColumnSpan="2"/>
+                    <ComboBox
+                        Name="platesolvecombo"
+                        Grid.ColumnSpan="2"
+                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:PlateSolverEnum}}}"
+                        SelectedItem="{Binding PlateSolverType}" />
 
-                    <!-- Astrometry.Net -->
-                    <Grid Grid.Row="1" Margin="0 10 0 0">
+                    <!--  Astrometry.Net  -->
+                    <Grid Grid.Row="1" Margin="0,10,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -472,33 +1006,41 @@
                         <Grid.Style>
                             <Style TargetType="{x:Type Grid}">
                                 <Style.Triggers>
-                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="1">
-                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    <DataTrigger Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="1">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
-                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="2">
-                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    <DataTrigger Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="2">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblAPIKey}"></TextBlock>
-                                <TextBox  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding AstrometryAPIKey}" MinWidth="130"/>
-                            </StackPanel>                            
-                            <StackPanel Margin="0 5 0 5" MaxHeight="150">
+                                <TextBlock
+                                    Width="130"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAPIKey}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    MinWidth="130"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding AstrometryAPIKey}" />
+                            </StackPanel>
+                            <StackPanel MaxHeight="150" Margin="0,5,0,5">
                                 <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
                                 <TextBlock MaxHeight="73" HorizontalAlignment="Left">
                                     <Hyperlink NavigateUri="http://www.astrometry.net/" RequestNavigate="Hyperlink_RequestNavigate">
-                                        <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform"  />
+                                        <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform" />
                                     </Hyperlink>
                                 </TextBlock>
-                            </StackPanel>                            
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
 
-                    <!-- Local -->
-                    <Grid Grid.Row="1" Margin="0 5 0 0">
+                    <!--  Local  -->
+                    <Grid Grid.Row="1" Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -506,17 +1048,17 @@
                         <Grid.Style>
                             <Style TargetType="{x:Type Grid}">
                                 <Style.Triggers>
-                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
-                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    <DataTrigger Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
-                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="2">
-                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    <DataTrigger Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="2">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
                         <StackPanel Orientation="Vertical">
-                            <Grid Margin="0 6 0 6" VerticalAlignment="Center">
+                            <Grid Margin="0,6,0,6" VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition />
@@ -524,10 +1066,19 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock   HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblCygwinDirectory}"></TextBlock>
-                                <TextBox  Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" MinWidth="130" >
+                                <TextBlock
+                                    Width="130"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblCygwinDirectory}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Grid.ColumnSpan="2"
+                                    MinWidth="130"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="CygwinLocation" UpdateSourceTrigger="LostFocus" >
+                                        <Binding Path="CygwinLocation" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:DirectoryExistsRule />
                                             </Binding.ValidationRules>
@@ -536,16 +1087,37 @@
                                 </TextBox>
 
 
-                                <Button Margin="5 0 0 0" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" Width="30" Command="{Binding OpenCygwinFileDiagCommand}">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="4,17,4,4"/>
+                                <Button
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="30"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding OpenCygwinFileDiagCommand}">
+                                    <Path
+                                        Margin="4,17,4,4"
+                                        Data="{StaticResource DotsSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
                                 </Button>
                             </Grid>
-                            <UniformGrid Columns="2" >
-                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Text="{ns:Loc LblFocalLength}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock
+                                        Width="130"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblFocalLength}" />
+                                    <TextBox
+                                        MinWidth="80"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center">
                                         <TextBox.Text>
-                                            <Binding Path="AnsvrFocalLength" UpdateSourceTrigger="LostFocus" >
+                                            <Binding Path="AnsvrFocalLength" UpdateSourceTrigger="LostFocus">
                                                 <Binding.ValidationRules>
                                                     <rules:GreaterZeroRule />
                                                 </Binding.ValidationRules>
@@ -554,12 +1126,22 @@
                                     </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
-                            <UniformGrid Columns="2" >
-                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblPixelSize}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock
+                                        Width="130"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblPixelSize}" />
+                                    <TextBox
+                                        MinWidth="80"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center">
                                         <TextBox.Text>
-                                            <Binding Path="AnsvrPixelSize" UpdateSourceTrigger="LostFocus" >
+                                            <Binding Path="AnsvrPixelSize" UpdateSourceTrigger="LostFocus">
                                                 <Binding.ValidationRules>
                                                     <rules:GreaterZeroRule />
                                                 </Binding.ValidationRules>
@@ -568,12 +1150,22 @@
                                     </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
-                            <UniformGrid Columns="2" >
-                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblSearchRadius}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock
+                                        Width="130"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblSearchRadius}" />
+                                    <TextBox
+                                        MinWidth="80"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center">
                                         <TextBox.Text>
-                                            <Binding Path="AnsvrSearchRadius" UpdateSourceTrigger="LostFocus" >
+                                            <Binding Path="AnsvrSearchRadius" UpdateSourceTrigger="LostFocus">
                                                 <Binding.ValidationRules>
                                                     <rules:GreaterZeroRule />
                                                 </Binding.ValidationRules>
@@ -582,35 +1174,38 @@
                                     </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
-                            
-                            
-                            <StackPanel Margin="0 5 0 5" MaxHeight="150">
+
+
+                            <StackPanel MaxHeight="150" Margin="0,5,0,5">
                                 <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
                                 <TextBlock MaxHeight="73" HorizontalAlignment="Left">
                                     <Hyperlink NavigateUri="http://www.astrometry.net/" RequestNavigate="Hyperlink_RequestNavigate">
-                                        <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform"  />
+                                        <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform" />
                                     </Hyperlink>
-                                </TextBlock>                                    
+                                </TextBlock>
                             </StackPanel>
-                            
-                            
+
+
 
                         </StackPanel>
                         <Grid Grid.Column="1">
-                            <Grid.RowDefinitions >
+                            <Grid.RowDefinitions>
                                 <RowDefinition />
                                 <RowDefinition Height="40" />
                             </Grid.RowDefinitions>
                             <ListView ItemsSource="{Binding IndexFiles}">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="{ns:Loc LblIndexFile}" Width="Auto" DisplayMemberBinding="{Binding}" />
+                                        <GridViewColumn
+                                            Width="Auto"
+                                            DisplayMemberBinding="{Binding}"
+                                            Header="{ns:Loc LblIndexFile}" />
                                     </GridView>
                                 </ListView.View>
                             </ListView>
                             <Button Grid.Row="1" Command="{Binding DownloadIndexesCommand}">
                                 <Button.Content>
-                                    <TextBlock Text="{ns:Loc LblDownloadMoreIndexFiles}" Foreground="{StaticResource ButtonForegroundBrush}" />
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblDownloadMoreIndexFiles}" />
                                 </Button.Content>
 
                             </Button>
@@ -618,8 +1213,8 @@
 
                     </Grid>
 
-                    <!-- Platesolve2 -->
-                    <Grid Grid.Row="1" Margin="0 5 0 0">
+                    <!--  Platesolve2  -->
+                    <Grid Grid.Row="1" Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -627,17 +1222,17 @@
                         <Grid.Style>
                             <Style TargetType="{x:Type Grid}">
                                 <Style.Triggers>
-                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
-                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    <DataTrigger Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
-                                    <DataTrigger  Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="1">
-                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    <DataTrigger Binding="{Binding ElementName=platesolvecombo, Path=SelectedItem}" Value="1">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
                         <StackPanel Orientation="Vertical">
-                            <Grid Margin="0 6 0 6" VerticalAlignment="Center">
+                            <Grid Margin="0,6,0,6" VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition />
@@ -645,10 +1240,19 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock   HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblPlatesolve2Directory}"></TextBlock>
-                                <TextBox  Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" MinWidth="130">
+                                <TextBlock
+                                    Width="130"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblPlatesolve2Directory}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Grid.ColumnSpan="2"
+                                    MinWidth="130"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="PS2Location" UpdateSourceTrigger="LostFocus" >
+                                        <Binding Path="PS2Location" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:FileExistsRule />
                                             </Binding.ValidationRules>
@@ -657,16 +1261,37 @@
                                 </TextBox>
 
 
-                                <Button Margin="5 0 0 0" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" Width="30" Command="{Binding OpenPS2FileDiagCommand}">
-                                    <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{StaticResource DotsSVG}" Stretch="Uniform" Margin="4,17,4,4"/>
+                                <Button
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="30"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding OpenPS2FileDiagCommand}">
+                                    <Path
+                                        Margin="4,17,4,4"
+                                        Data="{StaticResource DotsSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
                                 </Button>
                             </Grid>
-                            <UniformGrid Columns="2" >
-                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" Width="130" Text="{ns:Loc LblFocalLength}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock
+                                        Width="130"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblFocalLength}" />
+                                    <TextBox
+                                        MinWidth="80"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center">
                                         <TextBox.Text>
-                                            <Binding Path="PS2FocalLength" UpdateSourceTrigger="LostFocus" >
+                                            <Binding Path="PS2FocalLength" UpdateSourceTrigger="LostFocus">
                                                 <Binding.ValidationRules>
                                                     <rules:GreaterZeroRule />
                                                 </Binding.ValidationRules>
@@ -675,12 +1300,22 @@
                                     </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
-                            <UniformGrid Columns="2" >
-                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblPixelSize}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock
+                                        Width="130"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblPixelSize}" />
+                                    <TextBox
+                                        MinWidth="80"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center">
                                         <TextBox.Text>
-                                            <Binding Path="PS2PixelSize" UpdateSourceTrigger="LostFocus" >
+                                            <Binding Path="PS2PixelSize" UpdateSourceTrigger="LostFocus">
                                                 <Binding.ValidationRules>
                                                     <rules:GreaterZeroRule />
                                                 </Binding.ValidationRules>
@@ -689,12 +1324,22 @@
                                     </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
-                            <UniformGrid Columns="2" >
-                                <UniformGrid Columns="2" Margin="0 6 0 6" VerticalAlignment="Center">
-                                    <TextBlock  HorizontalAlignment="Left"   VerticalAlignment="Center" Width="130" Text="{ns:Loc LblRegions}"></TextBlock>
-                                    <TextBox MinWidth="80"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock
+                                        Width="130"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblRegions}" />
+                                    <TextBox
+                                        MinWidth="80"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center">
                                         <TextBox.Text>
-                                            <Binding Path="PS2Regions" UpdateSourceTrigger="LostFocus" >
+                                            <Binding Path="PS2Regions" UpdateSourceTrigger="LostFocus">
                                                 <Binding.ValidationRules>
                                                     <rules:GreaterZeroRule />
                                                 </Binding.ValidationRules>

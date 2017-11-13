@@ -1,43 +1,51 @@
-﻿<UserControl x:Class="NINA.View.OverView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"    
-             
-             xmlns:view="clr-namespace:NINA.View"
-             xmlns:vm="clr-namespace:NINA.ViewModel"
-             xmlns:local="clr-namespace:NINA.View"
-             xmlns:util="clr-namespace:NINA.Utility.AvalonDock"
-            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+﻿<UserControl
+    x:Class="NINA.View.OverView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:util="clr-namespace:NINA.Utility.AvalonDock"
+    xmlns:view="clr-namespace:NINA.View"
+    xmlns:vm="clr-namespace:NINA.ViewModel"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
-        <dock:BoolToVisibilityConverter x:Key="btvc"/>
+        <dock:BoolToVisibilityConverter x:Key="btvc" />
     </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="40" />
         </Grid.ColumnDefinitions>
 
         <ItemsControl Grid.Column="1" ItemsSource="{Binding Anchorables}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <ToggleButton IsChecked="{Binding IsVisible, Mode=OneWay}" Command="{Binding HideCommand}" Height="40" Margin="2.5">
+                    <ToggleButton
+                        Height="40"
+                        Margin="2.5"
+                        Command="{Binding HideCommand}"
+                        IsChecked="{Binding IsVisible, Mode=OneWay}">
                         <ToggleButton.ToolTip>
                             <TextBlock Text="{Binding Title}" />
                         </ToggleButton.ToolTip>
                         <ToggleButton.Style>
-                            <Style TargetType="ToggleButton" BasedOn="{StaticResource TB}" >
+                            <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
                                 <Style.Triggers>
                                     <Trigger Property="IsChecked" Value="True">
                                         <Setter Property="Content">
                                             <Setter.Value>
-                                                <Path Fill="{StaticResource PrimaryBrush}" Data="{Binding ImageGeometry}" Stretch="Uniform" Margin="5">
-                                                </Path>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{Binding ImageGeometry}"
+                                                    Fill="{StaticResource PrimaryBrush}"
+                                                    Stretch="Uniform" />
                                             </Setter.Value>
                                         </Setter>
                                         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
@@ -45,8 +53,12 @@
                                     <Trigger Property="IsChecked" Value="False">
                                         <Setter Property="Content">
                                             <Setter.Value>
-                                                <Path Fill="{StaticResource PrimaryBrush}" Opacity="0.4" Data="{Binding ImageGeometry}" Stretch="Uniform" Margin="5">
-                                                </Path>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{Binding ImageGeometry}"
+                                                    Fill="{StaticResource PrimaryBrush}"
+                                                    Opacity="0.4"
+                                                    Stretch="Uniform" />
                                             </Setter.Value>
                                         </Setter>
                                         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
@@ -58,12 +70,13 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        
-        
-        <dock:DockingManager x:Name="dockManager"
-                            DataContext="{Binding}"
-                            DocumentsSource="{Binding Documents}"
-                            AnchorablesSource="{Binding Anchorables}">
+
+
+        <dock:DockingManager
+            x:Name="dockManager"
+            AnchorablesSource="{Binding Anchorables}"
+            DataContext="{Binding}"
+            DocumentsSource="{Binding Documents}">
             <!--<dock:DockingManager.Theme>
                 <dock:MetroTheme/>
             </dock:DockingManager.Theme>-->
@@ -72,9 +85,9 @@
                     <i:InvokeCommandAction Command="{Binding LoadAvalonDockLayoutCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type dock:DockingManager}}}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            
+
             <dock:DockingManager.Resources>
-                
+
 
                 <!--<DataTemplate DataType="{x:Type vm:ImagingVM}">
                     <view:AnchorableCameraControlView />
@@ -97,10 +110,10 @@
                 <DataTemplate DataType="ImageStatistics">
                     <view:AnchorableImageStatisticsView />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:ImageControlVM}">                    
+                <DataTemplate DataType="{x:Type vm:ImageControlVM}">
                     <view:ImageControlView />
                 </DataTemplate>
-                
+
                 <DataTemplate DataType="{x:Type vm:GuiderVM}">
                     <view:AnchorableGuideriew />
                 </DataTemplate>-->
@@ -110,83 +123,83 @@
                 <util:PaneTemplateSelector>
                     <util:PaneTemplateSelector.CameraTemplate>
                         <DataTemplate>
-                            <view:AnchorableCameraView />
+                            <local:AnchorableCameraView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.CameraTemplate>
                     <util:PaneTemplateSelector.TelescopeTemplate>
                         <DataTemplate>
-                            <view:AnchorableTelescopeView />
+                            <local:AnchorableTelescopeView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.TelescopeTemplate>
                     <util:PaneTemplateSelector.ImageControlTemplate>
                         <DataTemplate>
-                            <view:ImageAreaView />
+                            <local:ImageAreaView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ImageControlTemplate>
 
                     <util:PaneTemplateSelector.PlatesolveTemplate>
                         <DataTemplate>
-                            <view:AnchorablePlateSolveView />
+                            <local:AnchorablePlateSolveView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.PlatesolveTemplate>
 
                     <util:PaneTemplateSelector.PolarAlignmentTemplate>
                         <DataTemplate>
-                            <view:AnchorablePolarAlignmentView />
+                            <local:AnchorablePolarAlignmentView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.PolarAlignmentTemplate>
 
                     <util:PaneTemplateSelector.GuiderTemplate>
                         <DataTemplate>
-                            <view:AnchorableGuiderView />
+                            <local:AnchorableGuiderView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.GuiderTemplate>
 
                     <util:PaneTemplateSelector.FilterWheelTemplate>
                         <DataTemplate>
-                            <view:AnchorableFilterWheelView />
+                            <local:AnchorableFilterWheelView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.FilterWheelTemplate>
 
                     <util:PaneTemplateSelector.ImagingTemplate>
                         <DataTemplate>
-                            <view:AnchorableCameraControlView />
+                            <local:AnchorableCameraControlView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ImagingTemplate>
 
                     <util:PaneTemplateSelector.ImageHistoryTemplate>
                         <DataTemplate>
-                            <view:AnchorableImageHistoryView />
+                            <local:AnchorableImageHistoryView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ImageHistoryTemplate>
 
                     <util:PaneTemplateSelector.ImageStatisticsTemplate>
                         <DataTemplate>
-                            <view:AnchorableImageStatisticsView />
+                            <local:AnchorableImageStatisticsView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ImageStatisticsTemplate>
 
                     <util:PaneTemplateSelector.SequenceTemplate>
                         <DataTemplate>
-                            <view:AnchorableSequenceView />
+                            <local:AnchorableSequenceView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.SequenceTemplate>
 
                     <util:PaneTemplateSelector.WeatherDataTemplate>
                         <DataTemplate>
-                            <view:AnchorableWeatherDataView />
+                            <local:AnchorableWeatherDataView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.WeatherDataTemplate>
 
                     <util:PaneTemplateSelector.FocuserTemplate>
                         <DataTemplate>
-                            <view:AnchorableFocuserView />
+                            <local:AnchorableFocuserView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.FocuserTemplate>
 
                     <util:PaneTemplateSelector.AutoFocusTemplate>
                         <DataTemplate>
-                            <view:AnchorableAutoFocusView />
+                            <local:AnchorableAutoFocusView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.AutoFocusTemplate>
 
@@ -196,16 +209,16 @@
             <dock:DockingManager.LayoutItemContainerStyleSelector>
                 <util:PaneStyleSelector>
                     <util:PaneStyleSelector.AnchorableStyle>
-                        <Style TargetType="{x:Type dock:LayoutAnchorableItem}" >
+                        <Style TargetType="{x:Type dock:LayoutAnchorableItem}">
                             <Setter Property="Title" Value="{Binding Model.Title}" />
                             <Setter Property="HideCommand" Value="{Binding Model.HideCommand}" />
-                            <Setter Property="Visibility" Value="{Binding Model.IsVisible, ConverterParameter={x:Static Visibility.Hidden}, Converter={StaticResource btvc}, Mode=TwoWay}"/>
+                            <Setter Property="Visibility" Value="{Binding Model.IsVisible, ConverterParameter={x:Static Visibility.Hidden}, Converter={StaticResource btvc}, Mode=TwoWay}" />
                             <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
                             <Setter Property="ContentId" Value="{Binding Model.ContentId}" />
                         </Style>
                     </util:PaneStyleSelector.AnchorableStyle>
                     <util:PaneStyleSelector.DocumentStyle>
-                        <Style TargetType="{x:Type dock:LayoutItem}" >
+                        <Style TargetType="{x:Type dock:LayoutItem}">
                             <Setter Property="Title" Value="{Binding Model.Title}" />
                             <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
                             <Setter Property="ContentId" Value="{Binding Model.ContentId}" />
@@ -222,22 +235,21 @@
                                             </Path>
                                         </Grid>
                                     </Grid>
-                                    <TextBlock Text="{Binding Content.Title}" />                                   
+                                    <TextBlock Text="{Binding Content.Title}" />
                                 </DataTemplate>
                             </dock:DockingManager.DocumentHeaderTemplate>-->
 
 
             <dock:DockingManager.LayoutUpdateStrategy>
-                <util:LayoutInitializer/>
+                <util:LayoutInitializer />
             </dock:DockingManager.LayoutUpdateStrategy>
-            
+
             <dock:LayoutRoot>
                 <dock:LayoutPanel Orientation="Horizontal">
                     <!--<dock:LayoutAnchorablePane Name="ToolsPaneLeft" DockWidth="*">
                     </dock:LayoutAnchorablePane>-->
-                    <dock:LayoutDocumentPane DockWidth="4*"/>
-                    <dock:LayoutAnchorablePane Name="ToolsPane" DockWidth="*">
-                    </dock:LayoutAnchorablePane>
+                    <dock:LayoutDocumentPane DockWidth="4*" />
+                    <dock:LayoutAnchorablePane Name="ToolsPane" DockWidth="*" />
                 </dock:LayoutPanel>
             </dock:LayoutRoot>
         </dock:DockingManager>

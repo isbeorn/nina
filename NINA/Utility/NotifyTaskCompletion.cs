@@ -17,8 +17,7 @@ namespace NINA.Utility {
         private async Task WatchTaskAsync(Task task) {
             try {
                 await task;
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Logger.Error(ex.Message, ex.StackTrace);
             }
             var propertyChanged = PropertyChanged;
@@ -29,15 +28,13 @@ namespace NINA.Utility {
             propertyChanged(this, new PropertyChangedEventArgs(nameof(IsNotCompleted)));
             if (task.IsCanceled) {
                 propertyChanged(this, new PropertyChangedEventArgs(nameof(IsCanceled)));
-            }
-            else if (task.IsFaulted) {
+            } else if (task.IsFaulted) {
                 propertyChanged(this, new PropertyChangedEventArgs(nameof(IsFaulted)));
                 propertyChanged(this, new PropertyChangedEventArgs(nameof(Exception)));
                 propertyChanged(this,
                   new PropertyChangedEventArgs(nameof(InnerException)));
                 propertyChanged(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));
-            }
-            else {
+            } else {
                 propertyChanged(this,
                   new PropertyChangedEventArgs(nameof(IsSuccessfullyCompleted)));
                 propertyChanged(this, new PropertyChangedEventArgs(nameof(Result)));

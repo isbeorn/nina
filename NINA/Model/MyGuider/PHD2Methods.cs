@@ -29,7 +29,7 @@ namespace NINA.Model.MyGuider {
         /// 3: SETTLE TIME: int - minimum time to be in-range before considering guiding to be stable
         /// 4: SETTLE TIMEOUT: int - time limit before settling is considered to have failed
         /// </summary>
-        public static string DITHER = "{{\"method\": \"dither\", \"params\": [{0}, {1}, {{\"pixels\": 1.5, \"time\": 8, \"timeout\": 40}}], \"id\": " + PHD2EventId.DITHER + "}}\r\n";        
+        public static string DITHER = "{{\"method\": \"dither\", \"params\": [{0}, {1}, {{\"pixels\": 1.5, \"time\": 8, \"timeout\": 40}}], \"id\": " + PHD2EventId.DITHER + "}}\r\n";
 
 
         public static string LOOP = "{{\"method\": \"loop\", \"id\": " + PHD2EventId.LOOP + "}}\r\n";
@@ -52,12 +52,12 @@ namespace NINA.Model.MyGuider {
         public static string PAUSE = "{{\"method\": \"set_paused\", \"params\": [{0}], \"id\": " + PHD2EventId.PAUSE + "}}\r\n";
 
 
-        public static string GET_STAR_IMAGE = "{\"method\": \"get_star_image\",\"id\": " + PHD2EventId.GET_STAR_IMAGE + "}\r\n";        
+        public static string GET_STAR_IMAGE = "{\"method\": \"get_star_image\",\"id\": " + PHD2EventId.GET_STAR_IMAGE + "}\r\n";
 
 
         public static string GET_EXPOSURE = "{\"method\": \"get_exposure\",\"id\": " + PHD2EventId.GET_EXPOSURE + "}\r\n";
-        public static string GET_APP_STATE = "{\"method\": \"get_app_state\",\"id\": " + PHD2EventId.GET_APP_STATE + "}\r\n";        
-        
+        public static string GET_APP_STATE = "{\"method\": \"get_app_state\",\"id\": " + PHD2EventId.GET_APP_STATE + "}\r\n";
+
 
 
 

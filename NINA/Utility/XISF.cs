@@ -14,7 +14,7 @@ namespace NINA.Utility {
         public XISF(XISFHeader header) {
             this.Header = header;
         }
-        
+
         public bool Save(Stream s) {
             Header.Save(s);
             return true;
@@ -67,7 +67,7 @@ namespace NINA.Utility {
         /// <param name="comment">optional comment</param>
         public void AddMetaDataProperty(string id, string type, string value, string comment = "") {
             string[] prop = { id, type };
-            AddProperty(MetaData, prop, value, comment);            
+            AddProperty(MetaData, prop, value, comment);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace NINA.Utility {
         /// <param name="value">value of that specific property</param>
         /// <param name="comment">optional comment</param>
         public void AddMetaDataProperty(string[] property, string value, string comment = "") {
-            AddProperty(MetaData, property, value, comment);            
+            AddProperty(MetaData, property, value, comment);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace NINA.Utility {
         /// <param name="autoaddfits">default: true; if fitskey available automatically add FITSHeader</param>
         public void AddImageProperty(string[] property, string value, string comment = "", bool autoaddfits = true) {
             AddProperty(Image, property, value, comment);
-            if(property.Length > 2 && autoaddfits) {
+            if (property.Length > 2 && autoaddfits) {
                 AddImageFITSKeyword(property[2], value, comment);
             }
         }
@@ -98,7 +98,7 @@ namespace NINA.Utility {
             Image.Add(new XElement("FITSKeyword",
                         new XAttribute("name", name),
                         new XAttribute("value", value),
-                        new XAttribute("comment", comment)));            
+                        new XAttribute("comment", comment)));
         }
 
         private void AddProperty(XElement elem, string[] property, string value, string comment = "") {
@@ -135,19 +135,19 @@ namespace NINA.Utility {
                     new XAttribute("location", "embedded"),
                     new XAttribute("colorSpace", "Gray")
                     );
-            
+
             byte[] result = new byte[arr.FlatArray.Length * sizeof(ushort)];
             Buffer.BlockCopy(arr.FlatArray, 0, result, 0, result.Length);
-            
+
             var base64 = Convert.ToBase64String(result);
-            
+
             var data = new XElement("Data", new XAttribute("encoding", "base64"), base64);
-            
+
             image.Add(data);
             Image = image;
             Xisf.Add(image);
 
-            AddImageFITSKeyword("IMAGETYP", imageType);            
+            AddImageFITSKeyword("IMAGETYP", imageType);
         }
 
         public void Save(Stream s) {

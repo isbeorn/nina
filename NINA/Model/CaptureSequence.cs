@@ -50,24 +50,24 @@ namespace NINA.Model {
         }
 
         public CaptureSequence Next() {
-            if(this.Count == 0) { return null; }
+            if (this.Count == 0) { return null; }
 
             CaptureSequence seq = null;
-            
-            if(Mode == SequenceMode.STANDARD) {
+
+            if (Mode == SequenceMode.STANDARD) {
                 seq = ActiveSequence ?? this.First();
-                if(seq.ExposureCount > 0) {
+                if (seq.ExposureCount > 0) {
                     //There are exposures remaining. Reduce by 1 and return
-                    seq.ExposureCount--;                        
+                    seq.ExposureCount--;
                 } else {
                     //No exposures remaining. Get next Sequence, reduce by 1 and return
                     var idx = this.IndexOf(seq) + 1;
-                    if(idx < this.Count) {
+                    if (idx < this.Count) {
                         seq = this[idx];
                         seq.ExposureCount--;
                     } else {
                         seq = null;
-                    }                        
+                    }
                 }
             } else if (Mode == SequenceMode.ROTATE) {
                 if (this.Count == this.Where(x => x.ExposureCount == 0).Count()) {
@@ -76,12 +76,12 @@ namespace NINA.Model {
                     return null;
                 }
 
-                seq = ActiveSequence;                
-                if(seq == null) {
+                seq = ActiveSequence;
+                if (seq == null) {
                     seq = this.First();
                 } else {
                     var idx = (this.IndexOf(seq) + 1) % this.Count;
-                    seq = this[idx];                    
+                    seq = this[idx];
                     seq.ExposureCount--;
                 }
 
@@ -90,11 +90,11 @@ namespace NINA.Model {
                     return this.Next(); //Search for next sequence where exposurecount > 0
                 }
             }
-            
+
             ActiveSequence = seq;
             return seq;
         }
-        
+
         private Coordinates _coordinates;
         public Coordinates Coordinates {
             get {
@@ -153,9 +153,9 @@ namespace NINA.Model {
         STANDARD,
         [Description("LblSequenceModeRotate")]
         ROTATE
-    }    
+    }
 
-    public class CaptureSequence :BaseINPC {
+    public class CaptureSequence : BaseINPC {
         public static class ImageTypes {
             public const string LIGHT = "LIGHT";
             public const string FLAT = "FLAT";
@@ -168,7 +168,7 @@ namespace NINA.Model {
         public CaptureSequence() {
             ExposureTime = 1;
             ImageType = ImageTypes.LIGHT;
-            TotalExposureCount = 1;            
+            TotalExposureCount = 1;
             Dither = false;
             DitherAmount = 1;
             Gain = -1;
@@ -192,7 +192,7 @@ namespace NINA.Model {
         private string _imageType;
         private MyFilterWheel.FilterInfo _filterType;
         private MyCamera.BinningMode _binning;
-        private int _exposureCount;        
+        private int _exposureCount;
 
         public double ExposureTime {
             get {
@@ -229,7 +229,7 @@ namespace NINA.Model {
 
         public MyCamera.BinningMode Binning {
             get {
-                if(_binning == null) {
+                if (_binning == null) {
                     _binning = new MyCamera.BinningMode(1, 1);
                 }
                 return _binning;
@@ -241,7 +241,7 @@ namespace NINA.Model {
             }
         }
 
-        
+
         /// <summary>
         /// Remaining Exposure Count
         /// </summary>
@@ -250,7 +250,7 @@ namespace NINA.Model {
                 return _exposureCount;
             }
 
-            set {                
+            set {
                 _exposureCount = value;
                 if (_exposureCount < 0) { _exposureCount = 0; }
                 RaisePropertyChanged();
@@ -270,7 +270,7 @@ namespace NINA.Model {
             }
         }
 
-        private int _totalExposureCount;        
+        private int _totalExposureCount;
         /// <summary>
         /// Total exposures of a sequence
         /// </summary>

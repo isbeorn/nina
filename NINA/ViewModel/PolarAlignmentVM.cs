@@ -28,7 +28,7 @@ namespace NINA.ViewModel {
             _updateValues.Start();
 
             MeasureAzimuthErrorCommand = new AsyncCommand<bool>(
-                () => MeasurePolarError(new Progress<string>(p => AzimuthPolarErrorStatus = p),Direction.AZIMUTH),
+                () => MeasurePolarError(new Progress<string>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH),
                 (p) => (Telescope?.Connected == true && Cam?.Connected == true));
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<string>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE),
@@ -48,7 +48,7 @@ namespace NINA.ViewModel {
             CancelMeasureAzimuthErrorCommand = new RelayCommand(
                 CancelMeasurePolarError,
                 (p) => _cancelMeasureErrorToken != null);
-            
+
             MeridianOffset = 0;
             Declination = 0;
             DARVSlewDuration = 60;
@@ -161,21 +161,21 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-                
+
         public IAsyncCommand MeasureAzimuthErrorCommand { get; private set; }
-        
+
         public ICommand CancelMeasureAzimuthErrorCommand { get; private set; }
-        
+
         private CancellationTokenSource _cancelMeasureErrorToken;
-        
+
         public IAsyncCommand MeasureAltitudeErrorCommand { get; private set; }
-        
+
         public ICommand CancelMeasureAltitudeErrorCommand { get; private set; }
-        
+
         public IAsyncCommand DARVSlewCommand { get; private set; }
 
         private CancellationTokenSource _cancelDARVSlewToken;
-        
+
         public ICommand CancelDARVSlewCommand { get; private set; }
 
         private double _dARVSlewRate;
@@ -188,7 +188,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-                
+
         public ICommand SlewToMeridianOffsetCommand { get; private set; }
 
         private double _meridianOffset;
@@ -335,27 +335,25 @@ namespace NINA.ViewModel {
                     TimeSpan duration = TimeSpan.FromSeconds((int)(DARVSlewDuration / 2) - 2);
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, rate);
-                    
+
                     await Task.Delay(duration, canceltoken.Token);
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
-                                        
+
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken.Token);
 
                     progress.Report("Slewing back...");
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -rate);
-                                        
+
                     await Task.Delay(duration, canceltoken.Token);
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
-                                        
+
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken.Token);
-                }
-                catch (OperationCanceledException ex) {
+                } catch (OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
-                }
-                finally {
+                } finally {
                     progress.Report("Restoring start position...");
                     Telescope.SlewToCoordinates(startPosition.RA, startPosition.Dec);
                 }
@@ -380,35 +378,32 @@ namespace NINA.ViewModel {
                         Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
                         var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, null, null, 1);
-                        var capture = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, cameraprogress, _cancelDARVSlewToken });                        
+                        var capture = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, cameraprogress, _cancelDARVSlewToken });
                         var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken);
 
                         await Task.WhenAll(capture, slew);
 
                         Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
                         Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
-                    }
-                    catch (OperationCanceledException ex) {
+                    } catch (OperationCanceledException ex) {
                         Logger.Trace(ex.Message);
                     }
 
-                }
-                else {
+                } else {
                     Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
                 }
-            }
-            else {
+            } else {
                 Notification.ShowError("No camera connected for DARV alignment!");
             }
             return true;
         }
 
-        private void Canceldarvslew(object o) {            
-                _cancelDARVSlewToken?.Cancel();            
+        private void Canceldarvslew(object o) {
+            _cancelDARVSlewToken?.Cancel();
         }
 
-        private void CancelMeasurePolarError(object o) {            
-                _cancelMeasureErrorToken?.Cancel();            
+        private void CancelMeasurePolarError(object o) {
+            _cancelMeasureErrorToken?.Cancel();
         }
 
         private AltitudeSite _altitudeSiteType;
@@ -422,7 +417,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        
+
 
         private async Task<bool> MeasurePolarError(IProgress<string> progress, Direction direction) {
             if (Cam?.Connected == true) {
@@ -449,56 +444,45 @@ namespace NINA.ViewModel {
                                 if (AltitudeSiteType == AltitudeSite.EAST) {
                                     if (poleErr < 0) {
                                         msg = poleErrString + " too low";
-                                    }
-                                    else {
+                                    } else {
                                         msg = poleErrString + " too high";
                                     }
-                                }
-                                else {
+                                } else {
                                     if (poleErr < 0) {
                                         msg = poleErrString + " too high";
-                                    }
-                                    else {
+                                    } else {
                                         msg = poleErrString + " too low";
                                     }
                                 }
 
-                            }
-                            else {
+                            } else {
                                 if (AltitudeSiteType == AltitudeSite.EAST) {
                                     if (poleErr < 0) {
                                         msg = poleErrString + " too high";
-                                    }
-                                    else {
+                                    } else {
                                         msg = poleErrString + " too low";
                                     }
-                                }
-                                else {
+                                } else {
                                     if (poleErr < 0) {
                                         msg = poleErrString + " too low";
-                                    }
-                                    else {
+                                    } else {
                                         msg = poleErrString + " too high";
                                     }
                                 }
                             }
 
-                        }
-                        else if (direction == Direction.AZIMUTH) {
+                        } else if (direction == Direction.AZIMUTH) {
                             //if northern
                             if (Settings.HemisphereType == Hemisphere.NORTHERN) {
                                 if (poleErr < 0) {
                                     msg = poleErrString + " too east";
-                                }
-                                else {
+                                } else {
                                     msg = poleErrString + " too west";
                                 }
-                            }
-                            else {
+                            } else {
                                 if (poleErr < 0) {
                                     msg = poleErrString + " too west";
-                                }
-                                else {
+                                } else {
                                     msg = poleErrString + " too east";
                                 }
                             }
@@ -507,8 +491,7 @@ namespace NINA.ViewModel {
 
                         progress.Report(msg);
 
-                    }
-                    catch (OperationCanceledException ex) {
+                    } catch (OperationCanceledException ex) {
                         Logger.Trace(ex.Message);
                         progress.Report("Canceled");
                     }
@@ -524,13 +507,11 @@ namespace NINA.ViewModel {
                      *              poleError < 0 -> too east
                      *              poleError > 0 -> too west
                      */
-                }
-                else {
+                } else {
                     Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
                 }
 
-            }
-            else {
+            } else {
                 Notification.ShowError("No camera connected to measure alignment error!");
             }
 
@@ -582,7 +563,7 @@ namespace NINA.ViewModel {
                 canceltoken.Token.ThrowIfCancellationRequested();
 
                 seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { seq, progress, canceltoken});                
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { seq, progress, canceltoken });
 
                 canceltoken.Token.ThrowIfCancellationRequested();
 
@@ -600,11 +581,9 @@ namespace NINA.ViewModel {
                 poleError = 3.81 * 3600.0 * decError / (4 * movementdeg * Math.Cos(Astrometry.ToRadians(startPosition.Dec)));
                 // Convert pole error from arcminutes to degrees
                 poleError = Astrometry.ArcminToDegree(poleError);
-            }
-            catch (OperationCanceledException ex) {
+            } catch (OperationCanceledException ex) {
                 Logger.Trace(ex.Message);
-            }
-            finally {
+            } finally {
                 //progress.Report("Slewing back to origin...");
                 Telescope.SlewToCoordinates(startPosition.RA, startPosition.Dec);
                 //progress.Report("Done");
@@ -619,28 +598,27 @@ namespace NINA.ViewModel {
             double slew_ra = curSiderealTime + (MeridianOffset * 24.0 / 360.0);
             if (slew_ra >= 24.0) {
                 slew_ra -= 24.0;
-            }
-            else if (slew_ra < 0.0) {
+            } else if (slew_ra < 0.0) {
                 slew_ra += 24.0;
             }
 
             Telescope.SlewToCoordinatesAsync(slew_ra, Declination);
         }
 
-        private void UpdateValues_Tick(object sender, EventArgs e) {            
+        private void UpdateValues_Tick(object sender, EventArgs e) {
 
             var ascomutil = Utility.Utility.AscomUtil;
-            
+
             var polaris = new Coordinates(ascomutil.HMSToHours("02:31:49.09456"), ascomutil.DMSToDegrees("89:15:50.7923"), Epoch.J2000, Coordinates.RAType.Hours);
             polaris = polaris.Transform(Epoch.JNOW);
-            
+
             var lst = Astrometry.GetLocalSiderealTimeNow(Settings.Longitude);
             var hour_angle = Astrometry.GetHourAngle(lst, polaris.RA);
-            
+
             Rotation = -Astrometry.HoursToDegrees(hour_angle);
             HourAngleTime = ascomutil.HoursToHMS(hour_angle);
 
-            
+
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyWeatherData {
-    class OpenWeatherMapData : BaseINPC, IWeatherData {        
+    class OpenWeatherMapData : BaseINPC, IWeatherData {
         public double Latitude { get; private set; }
 
         public double Longitude { get; private set; }
@@ -34,24 +34,24 @@ namespace NINA.Model.MyWeatherData {
             get {
                 return Math.Pow((Humidity / 100), 1.0d / 8.0d) * (112 + 0.9 * Temperature) + 0.1 * Temperature - 112;
             }
-        }        
+        }
 
         public async Task<bool> Update() {
             var apikey = Settings.OpenWeatherMapAPIKey;
             var location = Settings.OpenWeatherMapLocation;
 
-            if(string.IsNullOrEmpty(apikey)) {
+            if (string.IsNullOrEmpty(apikey)) {
                 Notification.ShowError("Unable to get weather data! No API Key set");
                 return false;
             }
-            if(string.IsNullOrEmpty(location)) {
+            if (string.IsNullOrEmpty(location)) {
                 Notification.ShowError("Unable to get weather data! No location set");
                 return false;
             }
 
             var url = Settings.OpenWeatherMapUrl + "?appid={0}&q={1}";
             string result = await Utility.Utility.HttpGetRequest(new CancellationTokenSource(), url, apikey, location);
-            
+
             JObject o = JObject.Parse(result);
             var openweatherdata = o.ToObject<OpenWeatherDataResponse>();
 
@@ -71,7 +71,7 @@ namespace NINA.Model.MyWeatherData {
         }
 
         public class OpenWeatherDataResponse {
-            public OpenWeatherDataResponseCoord coord { get; set; }            
+            public OpenWeatherDataResponseCoord coord { get; set; }
             public OpenWeatherDataResponseMain main { get; set; }
             public OpenWeatherDataResponseWind wind { get; set; }
             public OpenWeatherDataResponseClouds clouds { get; set; }
@@ -80,7 +80,7 @@ namespace NINA.Model.MyWeatherData {
             public string name { get; set; }
 
 
-            public  class OpenWeatherDataResponseMain {
+            public class OpenWeatherDataResponseMain {
                 public double temp { get; set; }
                 public double pressure { get; set; }
                 public double humidity { get; set; }

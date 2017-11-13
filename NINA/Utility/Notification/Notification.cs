@@ -68,7 +68,7 @@ namespace NINA.Utility.Notification {
             dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                 var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
                 var brush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorBrush"];
-                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol,brush));
+                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush));
             }));
         }
     }

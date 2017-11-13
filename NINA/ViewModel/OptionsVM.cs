@@ -13,7 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NINA.ViewModel {
-    public  class OptionsVM : DockableVM {
+    public class OptionsVM : DockableVM {
         public OptionsVM() {
             Title = "LblOptions";
             ContentId = nameof(OptionsVM);
@@ -38,7 +38,7 @@ namespace NINA.ViewModel {
             p.Add(new ImagePattern("$$SENSORTEMP$$", "Temperature of the Camera", "-15"));
             p.Add(new ImagePattern("$$EXPOSURETIME$$", "Exposure Time in seconds", string.Format("{0:0.00}", 10.21234)));
             p.Add(new ImagePattern("$$TARGETNAME$$", "Target Name if available", "M33"));
-            p.Add(new ImagePattern("$$GAIN$$","Camera Gain","1600"));
+            p.Add(new ImagePattern("$$GAIN$$", "Camera Gain", "1600"));
             ImagePatterns = p;
 
             ScanForIndexFiles();
@@ -62,7 +62,7 @@ namespace NINA.ViewModel {
             var diag = new System.Windows.Forms.FolderBrowserDialog();
             diag.SelectedPath = ImageFilePath;
             System.Windows.Forms.DialogResult result = diag.ShowDialog();
-            if(result == System.Windows.Forms.DialogResult.OK) {
+            if (result == System.Windows.Forms.DialogResult.OK) {
                 ImageFilePath = diag.SelectedPath + "\\";
             }
         }
@@ -70,10 +70,10 @@ namespace NINA.ViewModel {
         private void OpenCygwinFileDiag(object o) {
             System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
             dialog.SelectedPath = Settings.CygwinLocation;
-            
+
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                CygwinLocation = dialog.SelectedPath;                
-            }            
+                CygwinLocation = dialog.SelectedPath;
+            }
         }
 
         private void OpenPS2FileDiag(object o) {
@@ -94,18 +94,18 @@ namespace NINA.ViewModel {
                         IndexFiles.Add(f.Name);
                     }
                 }
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 Logger.Error(ex.Message, ex.StackTrace);
             }
-            
+
         }
-        
-        
+
+
 
         private ObservableCollection<string> _indexfiles;
         public ObservableCollection<string> IndexFiles {
             get {
-                if(_indexfiles == null) {
+                if (_indexfiles == null) {
                     _indexfiles = new ObservableCollection<string>();
                 }
                 return _indexfiles;
@@ -119,9 +119,9 @@ namespace NINA.ViewModel {
         public ICommand DownloadIndexesCommand { get; private set; }
 
         public ICommand OpenCygwinFileDiagCommand { get; private set; }
-        
+
         public ICommand OpenPS2FileDiagCommand { get; private set; }
-        
+
         public ICommand OpenImageFileDiagCommand { get; private set; }
 
         public ICommand PreviewFileCommand { get; private set; }
@@ -134,7 +134,7 @@ namespace NINA.ViewModel {
             MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), "Example File Name", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
         }
 
-        private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {            
+        private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
             new CultureInfo("en-GB"),
             new CultureInfo("en-US"),
             new CultureInfo("de-DE")
@@ -169,17 +169,17 @@ namespace NINA.ViewModel {
             }
         }
 
-        
+
         public string ImageFilePattern {
             get {
-                return Settings.ImageFilePattern;                
+                return Settings.ImageFilePattern;
             }
             set {
-                Settings.ImageFilePattern  = value;
+                Settings.ImageFilePattern = value;
                 RaisePropertyChanged();
             }
         }
-        
+
         public string PHD2ServerUrl {
             get {
                 return Settings.PHD2ServerUrl;
@@ -235,7 +235,7 @@ namespace NINA.ViewModel {
             get {
                 return Settings.HemisphereType;
             }
-            set {                
+            set {
                 Settings.HemisphereType = value;
                 RaisePropertyChanged();
                 Latitude = Latitude;
@@ -279,7 +279,7 @@ namespace NINA.ViewModel {
                 return Settings.PS2Location;
             }
             set {
-                Settings.PS2Location = value;                
+                Settings.PS2Location = value;
                 RaisePropertyChanged();
             }
         }
@@ -372,7 +372,7 @@ namespace NINA.ViewModel {
                 Settings.AstrometryAPIKey = value;
                 RaisePropertyChanged();
             }
-        }        
+        }
 
         public int PHD2ServerPort {
             get {
@@ -383,7 +383,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-    
+
         private void ToggleColors(object o) {
             var s = ColorSchemaName;
             var a = PrimaryColor;
@@ -416,12 +416,12 @@ namespace NINA.ViewModel {
             AltButtonForegroundDisabledColor = h;
         }
 
-        public string ColorSchemaName { 
+        public string ColorSchemaName {
             get {
                 return Settings.ColorSchemaName;
             }
-            set {               
-                Settings.ColorSchemaName = value;                
+            set {
+                Settings.ColorSchemaName = value;
                 RaiseAllPropertiesChanged();
             }
         }
@@ -437,12 +437,12 @@ namespace NINA.ViewModel {
                 return Settings.AltColorSchemaName;
             }
             set {
-                
+
                 Settings.AltColorSchemaName = value;
                 RaiseAllPropertiesChanged();
             }
         }
-        
+
 
         public Color PrimaryColor {
             get {
@@ -452,7 +452,7 @@ namespace NINA.ViewModel {
                 Settings.PrimaryColor = value;
                 RaisePropertyChanged();
             }
-            
+
         }
         public Color SecondaryColor {
             get {
@@ -488,7 +488,8 @@ namespace NINA.ViewModel {
         public FileTypeEnum FileType {
             get {
                 return Settings.FileType;
-            } set {
+            }
+            set {
                 Settings.FileType = value;
                 RaisePropertyChanged();
             }
@@ -733,7 +734,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-        
+
 
         public bool RecenterAfterFlip {
             get {
@@ -750,12 +751,12 @@ namespace NINA.ViewModel {
                 return Settings.Latitude;
             }
             set {
-                if((HemisphereType == Hemisphere.SOUTHERN && value > 0) || (HemisphereType == Hemisphere.NORTHERN && value < 0)) {
+                if ((HemisphereType == Hemisphere.SOUTHERN && value > 0) || (HemisphereType == Hemisphere.NORTHERN && value < 0)) {
                     value = -value;
                 }
                 Settings.Latitude = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged,null);
+                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 
@@ -766,7 +767,7 @@ namespace NINA.ViewModel {
             set {
                 Settings.Longitude = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged,null);
+                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 
@@ -866,7 +867,7 @@ namespace NINA.ViewModel {
         public bool UseTelescopeSnapPort {
             get {
                 return Settings.UseTelescopeSnapPort;
-            } 
+            }
             set {
                 Settings.UseTelescopeSnapPort = value;
                 RaisePropertyChanged();

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Timers;
 
 namespace NINA.Utility {
-    public class Ticker: BaseINPC {
+    public class Ticker : BaseINPC {
 
         public Ticker(double interval) {
             _timer = new Timer();
@@ -30,7 +30,7 @@ namespace NINA.Utility {
             }
         }
 
-        void timer_Elapsed(object sender,ElapsedEventArgs e) {
+        void timer_Elapsed(object sender, ElapsedEventArgs e) {
             RaisePropertyChanged(nameof(Now));
             RaisePropertyChanged(nameof(OxyNow));
         }
@@ -38,6 +38,6 @@ namespace NINA.Utility {
         public void Stop() {
             _timer.Stop();
         }
-        
+
     }
 }

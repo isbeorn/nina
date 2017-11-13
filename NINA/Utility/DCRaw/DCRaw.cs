@@ -37,26 +37,25 @@ namespace NINA.Utility.DCRaw {
                 }
 
                 var file = TMPIMGFILEPATH + ".tiff";
-                
+
                 if (File.Exists(file)) {
-                    TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(file),BitmapCreateOptions.PreservePixelFormat,BitmapCacheOption.OnLoad);
+                    TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(file), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
                     BitmapFrame bmp = TifDec.Frames[0];
                     ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
-                    bmp.CopyPixels(pixels,2 * bmp.PixelWidth,0);
-                    iarr = await ImageArray.CreateInstance(pixels,(int)bmp.PixelWidth,(int)bmp.PixelHeight, true);
+                    bmp.CopyPixels(pixels, 2 * bmp.PixelWidth, 0);
+                    iarr = await ImageArray.CreateInstance(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, true);
 
 
-                }
-                else {
+                } else {
                     Notification.Notification.ShowError("Error occured during DCRaw conversion");
                 }
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 Notification.Notification.ShowError(ex.Message);
-                Logger.Error(ex.Message,ex.StackTrace);
+                Logger.Error(ex.Message, ex.StackTrace);
             }
             return iarr;
         }
     }
 
-    
+
 }

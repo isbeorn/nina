@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.ViewModel {
-    public class ImageHistoryVM :DockableVM {
+    public class ImageHistoryVM : DockableVM {
 
         public ImageHistoryVM() {
             Title = "LblImageHistory";
@@ -31,11 +31,11 @@ namespace NINA.ViewModel {
         }
 
         public void Add(ImageStatistics stats) {
-            if(stats?.DetectedStars > 0 && stats.Id == 0) {
+            if (stats?.DetectedStars > 0 && stats.Id == 0) {
                 stats.Id = _nextStatHistoryId;
                 _nextStatHistoryId++;
                 this.ImgStatHistory.Add(stats);
-            }            
+            }
         }
     }
 }

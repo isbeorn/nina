@@ -1,41 +1,51 @@
-﻿<UserControl x:Class="NINA.View.HistogramView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:NINA.View"
-             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf" 
-             xmlns:ns="clr-namespace:NINA.Locale"
-             xmlns:cam="clr-namespace:NINA.Model.MyCamera"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+﻿<UserControl
+    x:Class="NINA.View.HistogramView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cam="clr-namespace:NINA.Model.MyCamera"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
     <Grid>
-        <oxy:Plot 
-                  Background="{StaticResource BackgroundBrush}"
-                  PlotAreaBackground="{StaticResource BackgroundBrush}" 
-                  PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
-                  
-                  >
+        <oxy:Plot
+            Background="{StaticResource BackgroundBrush}"
+            PlotAreaBackground="{StaticResource BackgroundBrush}"
+            PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
             <oxy:Plot.Axes>
-                <oxy:LinearAxis  Position="Left"    IsZoomEnabled="False" IsPanEnabled="False" IsAxisVisible="False"                    
-                                 IntervalLength = "50"
-                                 TextColor="Transparent"
-                                 AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"                                                                  
-                                 />
-                <oxy:LinearAxis Position="Bottom"  Minimum="0" IsZoomEnabled="False" IsPanEnabled="False" IsAxisVisible="False"
-                                MajorGridlineStyle="Solid"
-                                 MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
-                                 MinorGridlineStyle="Solid"
-                                 MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
-                                MajorStep="{x:Static cam:ImageStatistics.HistogramMajorStep}" MinorStep="{x:Static cam:ImageStatistics.HistogramMinorStep}"
-                                TextColor="Transparent"
-                                 Maximum="{x:Static cam:ImageStatistics.HistogramResolution}" />                
+                <oxy:LinearAxis
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    IntervalLength="50"
+                    IsAxisVisible="False"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    Position="Left"
+                    TextColor="Transparent" />
+                <oxy:LinearAxis
+                    IsAxisVisible="False"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                    MajorGridlineStyle="Solid"
+                    MajorStep="{x:Static cam:ImageStatistics.HistogramMajorStep}"
+                    Maximum="{x:Static cam:ImageStatistics.HistogramResolution}"
+                    Minimum="0"
+                    MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
+                    MinorGridlineStyle="Solid"
+                    MinorStep="{x:Static cam:ImageStatistics.HistogramMinorStep}"
+                    Position="Bottom"
+                    TextColor="Transparent" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LinearBarSeries ItemsSource="{Binding Histogram}"
-                                DataFieldX="Key" 
-                                DataFieldY="Value"     
-                                BarWidth="0.001"                                />
+                <oxy:LinearBarSeries
+                    BarWidth="0.001"
+                    DataFieldX="Key"
+                    DataFieldY="Value"
+                    ItemsSource="{Binding Histogram}" />
             </oxy:Plot.Series>
         </oxy:Plot>
     </Grid>

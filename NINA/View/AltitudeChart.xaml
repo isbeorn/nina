@@ -1,99 +1,99 @@
-﻿<UserControl x:Class="NINA.View.AltitudeChart"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"   
-             xmlns:local="clr-namespace:NINA.View"
-             xmlns:util="clr-namespace:NINA.Utility"
-             xmlns:ns="clr-namespace:NINA.Locale"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    
-    <Grid>        
-        <oxy:Plot MinHeight="180"
-                                        Background="{StaticResource BackgroundBrush}"
-                                        PlotAreaBackground="{StaticResource BackgroundBrush}" 
-                                        PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
-                                       
-                                        >
+﻿<UserControl
+    x:Class="NINA.View.AltitudeChart"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+    xmlns:util="clr-namespace:NINA.Utility"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+
+    <Grid>
+        <oxy:Plot
+            MinHeight="180"
+            Background="{StaticResource BackgroundBrush}"
+            PlotAreaBackground="{StaticResource BackgroundBrush}"
+            PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
             <oxy:Plot.Axes>
-                <oxy:LinearAxis  Position="Left"  IsZoomEnabled="False" IsPanEnabled="False"
-                                                        Maximum="90" 
-                                                        Minimum="0"   
-                                                        StartPosition="0"
-                                                        EndPosition="1"
-                                                        IntervalLength = "30"
-                                                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                        AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
-                                 
-                                                        MajorStep="30"
-                                                        MajorGridlineStyle="LongDash"
-                                                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
-                                                   
-                                                        />
-                <oxy:DateTimeAxis 
-                                                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                                                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
-                                                    StringFormat="HH" 
-                                                    IntervalType="Hours" 
-                                                    MajorStep="0.125" 
-                                                    Position="Bottom" 
-                                                    IsZoomEnabled="False" 
-                                                    IsPanEnabled="False" />
+                <oxy:LinearAxis
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    EndPosition="1"
+                    IntervalLength="30"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
+                    MajorGridlineStyle="LongDash"
+                    MajorStep="30"
+                    Maximum="90"
+                    Minimum="0"
+                    Position="Left"
+                    StartPosition="0"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                <oxy:DateTimeAxis
+                    AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    IntervalType="Hours"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    MajorStep="0.125"
+                    Position="Bottom"
+                    StringFormat="HH"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:AreaSeries 
-                    ItemsSource="{Binding Source={StaticResource AppVM}, 
-                    Path=SkyAtlasVM.TwilightDuration}"  
-                    DataFieldX="Key" 
-                    DataFieldY="Value" 
-                    TrackerFormatString="X: {2:HH:mm}h"
-                    Color="#FF73737E" 
+                <oxy:AreaSeries
                     Color2="Transparent"
-                    />
-                
-                <oxy:AreaSeries 
-                    ItemsSource="{Binding Source={StaticResource AppVM}, 
-                    Path=SkyAtlasVM.NightDuration}"  
-                    DataFieldX="Key" 
-                    DataFieldY="Value" 
+                    DataFieldX="Key"
+                    DataFieldY="Value"
+                    ItemsSource="{Binding Source={StaticResource AppVM}, Path=SkyAtlasVM.TwilightDuration}"
                     TrackerFormatString="X: {2:HH:mm}h"
-                    Color="Black"  
-                    Color2="Transparent"
-                    />
+                    Color="#FF73737E" />
 
-                <oxy:LineSeries 
-                    ItemsSource="{Binding Altitudes}"                                                 
-                    DataFieldX="Key"                                                 
-                    DataFieldY="Value" 
-                    TrackerFormatString="X: {2:HH:mm}h&#x0a;Y: {4:0.00}°" 
-                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"  />
+                <oxy:AreaSeries
+                    Color2="Transparent"
+                    DataFieldX="Key"
+                    DataFieldY="Value"
+                    ItemsSource="{Binding Source={StaticResource AppVM}, Path=SkyAtlasVM.NightDuration}"
+                    TrackerFormatString="X: {2:HH:mm}h"
+                    Color="Black" />
+
+                <oxy:LineSeries
+                    DataFieldX="Key"
+                    DataFieldY="Value"
+                    ItemsSource="{Binding Altitudes}"
+                    TrackerFormatString="X: {2:HH:mm}h&#x0a;Y: {4:0.00}°"
+                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
             </oxy:Plot.Series>
             <oxy:Plot.Annotations>
-                <oxy:LineAnnotation 
-                    Type="Vertical"                                     
-                    X="{Binding Source={StaticResource AppVM}, Path=SkyAtlasVM.Ticker.OxyNow}" MaximumY="90" Color="{Binding Path=Color, Source={StaticResource BorderBrush}}" 
-                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"              
-                    Text="{ns:Loc LblNow}" />
-                <oxy:PointAnnotation 
-                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"  
-                    Text="{Binding MaxAltitude.Y, StringFormat=\{0:0\}°}"                     
-                    Shape="Circle" 
+                <oxy:LineAnnotation
+                    MaximumY="90"
+                    Text="{ns:Loc LblNow}"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    Type="Vertical"
+                    X="{Binding Source={StaticResource AppVM}, Path=SkyAtlasVM.Ticker.OxyNow}"
+                    Color="{Binding Path=Color, Source={StaticResource BorderBrush}}" />
+                <oxy:PointAnnotation
                     Fill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    X="{Binding MaxAltitude.X}" 
+                    Shape="Circle"
+                    Text="{Binding MaxAltitude.Y, StringFormat=\{0:0\}°}"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    X="{Binding MaxAltitude.X}"
                     Y="{Binding MaxAltitude.Y}" />
-                <oxy:PointAnnotation 
-                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"  Margin="0,10,0,0"
-                    Text="{Binding DoesTransitSouth, Mode=OneWay, Converter={StaticResource BoolToLabelConverter}, ConverterParameter=LblTransitSouth|LblTransitNorth, StringFormat={}&#x0a;{0}}"                     
-                    Shape="Circle" 
+                <oxy:PointAnnotation
+                    Margin="0,10,0,0"
                     Fill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    X="{Binding MaxAltitude.X}" 
+                    Shape="Circle"
+                    Text="{Binding DoesTransitSouth, Mode=OneWay, Converter={StaticResource BoolToLabelConverter}, ConverterParameter=LblTransitSouth|LblTransitNorth, StringFormat={}&#x0a;{0}}"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    X="{Binding MaxAltitude.X}"
                     Y="{Binding MaxAltitude.Y}" />
             </oxy:Plot.Annotations>
         </oxy:Plot>
-        
+
     </Grid>
 </UserControl>

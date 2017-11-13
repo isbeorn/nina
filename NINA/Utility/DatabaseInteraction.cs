@@ -16,7 +16,7 @@ namespace NINA.Utility {
         private string _connectionString;
 
         public DatabaseInteraction() {
-            _connectionString = string.Format(@"Data Source={0};foreign keys=true;",Settings.DatabaseLocation);
+            _connectionString = string.Format(@"Data Source={0};foreign keys=true;", Settings.DatabaseLocation);
         }
 
         public async Task<ICollection<string>> GetConstellations(CancellationToken token) {
@@ -39,7 +39,7 @@ namespace NINA.Utility {
                     }
                 }
             } catch (Exception ex) {
-                Logger.Error(ex.Message,ex.StackTrace);
+                Logger.Error(ex.Message, ex.StackTrace);
                 Notification.Notification.ShowError(ex.Message);
             }
 
@@ -68,7 +68,7 @@ namespace NINA.Utility {
 
 
             } catch (Exception ex) {
-                Logger.Error(ex.Message,ex.StackTrace);
+                Logger.Error(ex.Message, ex.StackTrace);
                 Notification.Notification.ShowError(ex.Message);
             }
 
@@ -126,7 +126,7 @@ namespace NINA.Utility {
 
             if (dsotypes != null && dsotypes.Count > 0) {
                 query += " AND dsotype IN (";
-                for (int i = 0;i < dsotypes.Count;i++) {
+                for (int i = 0; i < dsotypes.Count; i++) {
                     query += "$dsotype" + i.ToString() + ",";
                 }
                 query = query.Remove(query.Length - 1);
@@ -150,7 +150,7 @@ namespace NINA.Utility {
             }
 
             query += " GROUP BY id ";
-            
+
             if (searchobjectname != null && searchobjectname != string.Empty) {
                 searchobjectname = "%" + searchobjectname + "%";
                 query += " HAVING aka LIKE $searchobjectname OR group_concat(cataloguenr.catalogue || cataloguenr.designation) LIKE $searchobjectname";
@@ -167,22 +167,22 @@ namespace NINA.Utility {
                     using (SQLiteCommand command = connection.CreateCommand()) {
                         command.CommandText = query;
 
-                        command.Parameters.AddWithValue("$constellation",constellation);
-                        command.Parameters.AddWithValue("$rafrom",rafrom);
-                        command.Parameters.AddWithValue("$rathru",rathru);
-                        command.Parameters.AddWithValue("$decfrom",decfrom);
-                        command.Parameters.AddWithValue("$decthru",decthru);
-                        command.Parameters.AddWithValue("$sizefrom",sizefrom);
-                        command.Parameters.AddWithValue("$sizethru",sizethru);
-                        command.Parameters.AddWithValue("$brightnessfrom",brightnessfrom);
-                        command.Parameters.AddWithValue("$brightnessthru",brightnessthru);
-                        command.Parameters.AddWithValue("$magnitudefrom",magnitudefrom);
-                        command.Parameters.AddWithValue("$magnitudethru",magnitudethru);
-                        command.Parameters.AddWithValue("$searchobjectname",searchobjectname);
+                        command.Parameters.AddWithValue("$constellation", constellation);
+                        command.Parameters.AddWithValue("$rafrom", rafrom);
+                        command.Parameters.AddWithValue("$rathru", rathru);
+                        command.Parameters.AddWithValue("$decfrom", decfrom);
+                        command.Parameters.AddWithValue("$decthru", decthru);
+                        command.Parameters.AddWithValue("$sizefrom", sizefrom);
+                        command.Parameters.AddWithValue("$sizethru", sizethru);
+                        command.Parameters.AddWithValue("$brightnessfrom", brightnessfrom);
+                        command.Parameters.AddWithValue("$brightnessthru", brightnessthru);
+                        command.Parameters.AddWithValue("$magnitudefrom", magnitudefrom);
+                        command.Parameters.AddWithValue("$magnitudethru", magnitudethru);
+                        command.Parameters.AddWithValue("$searchobjectname", searchobjectname);
 
                         if (dsotypes != null && dsotypes.Count > 0) {
-                            for (int i = 0;i < dsotypes.Count;i++) {
-                                command.Parameters.AddWithValue("$dsotype" + i.ToString(),dsotypes[i]);
+                            for (int i = 0; i < dsotypes.Count; i++) {
+                                command.Parameters.AddWithValue("$dsotype" + i.ToString(), dsotypes[i]);
                             }
                         }
 
@@ -193,7 +193,7 @@ namespace NINA.Utility {
 
                             var dso = new DeepSkyObject(reader.GetString(0));
 
-                            var coords = new Coordinates(reader.GetDouble(1),reader.GetDouble(2),Epoch.J2000,Coordinates.RAType.Degrees);
+                            var coords = new Coordinates(reader.GetDouble(1), reader.GetDouble(2), Epoch.J2000, Coordinates.RAType.Degrees);
                             dso.Coordinates = coords;
                             dso.DSOType = reader.GetString(3);
 
@@ -205,10 +205,10 @@ namespace NINA.Utility {
                                 dso.Size = reader.GetDouble(5);
                             }
 
-                            if(!reader.IsDBNull(6)) {
+                            if (!reader.IsDBNull(6)) {
                                 var akas = reader.GetString(6);
-                                if(akas != string.Empty) {
-                                    foreach(var name in akas.Split(',')) {
+                                if (akas != string.Empty) {
+                                    foreach (var name in akas.Split(',')) {
                                         dso.AlsoKnownAs.Add(name);
                                     }
                                 }
@@ -223,7 +223,7 @@ namespace NINA.Utility {
                     }
                 }
             } catch (Exception ex) {
-                Logger.Error(ex.Message,ex.StackTrace);
+                Logger.Error(ex.Message, ex.StackTrace);
                 Notification.Notification.ShowError(ex.Message);
             }
 

@@ -7,10 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NINA.PlateSolving
-{
-    static class PlateSolverFactory
-    {
+namespace NINA.PlateSolving {
+    static class PlateSolverFactory {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
         /// <summary>
@@ -32,8 +30,8 @@ namespace NINA.PlateSolving
                 } else {
                     Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * binning);
                 }
-            } else if (Settings.PlateSolverType == PlateSolverEnum.PLATESOLVE2) {                  
-                if(coords == null) {
+            } else if (Settings.PlateSolverType == PlateSolverEnum.PLATESOLVE2) {
+                if (coords == null) {
                     Notification.ShowError("No coordinates available. Platesolve2 requires coordinates to solve!");
                 }
                 Platesolver = new Platesolve2Solver(Settings.PS2FocalLength, Settings.PS2PixelSize * binning, width, height, Settings.PS2Regions, coords);

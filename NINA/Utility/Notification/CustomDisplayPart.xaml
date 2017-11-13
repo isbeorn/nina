@@ -1,22 +1,37 @@
-﻿<core:NotificationDisplayPart x:Class="NINA.Utility.Notification.CustomDisplayPart"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:NINA.Utility.Notification"    
-             xmlns:core="clr-namespace:ToastNotifications.Core;assembly=ToastNotifications"
-             mc:Ignorable="d"  Background="{Binding Color}"
-             d:DesignHeight="60" d:DesignWidth="250"
-             d:DataContext="{d:DesignInstance local:CustomNotification, IsDesignTimeCreatable=False}" >
-    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" >
+﻿<core:NotificationDisplayPart
+    x:Class="NINA.Utility.Notification.CustomDisplayPart"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:core="clr-namespace:ToastNotifications.Core;assembly=ToastNotifications"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.Utility.Notification"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{d:DesignInstance local:CustomNotification,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="60"
+    d:DesignWidth="250"
+    Background="{Binding Color}"
+    mc:Ignorable="d">
+    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
         <Grid Margin="5" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Path Margin="5" Width="40" Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding Symbol}" Stretch="Uniform" Visibility="{Binding Symbol, Converter={StaticResource NullToVisibilityCollapsedConverter}}"/>
-            <TextBlock VerticalAlignment="Center" Grid.Column="1"  Text="{Binding Message}" TextWrapping="Wrap" Foreground="{StaticResource ButtonForegroundBrush}" />
+            <Path
+                Width="40"
+                Margin="5"
+                Data="{Binding Symbol}"
+                Fill="{StaticResource ButtonForegroundBrush}"
+                Stretch="Uniform"
+                Visibility="{Binding Symbol, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+            <TextBlock
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Foreground="{StaticResource ButtonForegroundBrush}"
+                Text="{Binding Message}"
+                TextWrapping="Wrap" />
         </Grid>
-        
+
     </Border>
 </core:NotificationDisplayPart>

@@ -22,7 +22,7 @@ namespace NINA.Utility {
 
         public void Register(Action<Object> callback,
               MediatorMessages message) {
-            if(!_internalList.ContainsKey(message)) {
+            if (!_internalList.ContainsKey(message)) {
                 _internalList[message] = new List<Action<object>>();
             }
             _internalList[message].Add(callback);
@@ -44,7 +44,7 @@ namespace NINA.Utility {
             }
             _internalAsyncList[message].Add(callback);
         }
-        
+
 
         public async Task NotifyAsync(AsyncMediatorMessages message, object args) {
             if (_internalAsyncList.ContainsKey(message)) {
@@ -54,7 +54,7 @@ namespace NINA.Utility {
                 }
             }
         }
-        
+
     }
     public enum MediatorMessages {
         StatusUpdate = 1,

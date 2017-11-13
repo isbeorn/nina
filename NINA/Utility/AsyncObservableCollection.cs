@@ -26,8 +26,7 @@ namespace NINA.Utility {
             if (SynchronizationContext.Current == _synchronizationContext) {
                 // Execute the CollectionChanged event on the current thread
                 RaiseCollectionChanged(e);
-            }
-            else {
+            } else {
                 // Raises the CollectionChanged event on the creator thread
                 _synchronizationContext.Send(RaiseCollectionChanged, e);
             }
@@ -42,8 +41,7 @@ namespace NINA.Utility {
             if (SynchronizationContext.Current == _synchronizationContext) {
                 // Execute the PropertyChanged event on the current thread
                 RaisePropertyChanged(e);
-            }
-            else {
+            } else {
                 // Raises the PropertyChanged event on the creator thread
                 _synchronizationContext.Send(RaisePropertyChanged, e);
             }
@@ -54,15 +52,15 @@ namespace NINA.Utility {
             base.OnPropertyChanged((PropertyChangedEventArgs)param);
         }
 
-        public void AddSorted(T item,IComparer<T> comparer = null) {
+        public void AddSorted(T item, IComparer<T> comparer = null) {
             if (comparer == null)
                 comparer = Comparer<T>.Default;
 
             int i = 0;
-            while (i < this.Count && comparer.Compare(this[i],item) < 0)
+            while (i < this.Count && comparer.Compare(this[i], item) < 0)
                 i++;
 
-            this.Insert(i,item);
+            this.Insert(i, item);
         }
     }
 }

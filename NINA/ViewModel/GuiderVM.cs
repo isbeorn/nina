@@ -20,16 +20,16 @@ namespace NINA.ViewModel {
         public GuiderVM() : base() {
             Title = "LblGuider";
             ContentId = nameof(GuiderVM);
-            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];            
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
             ConnectGuiderCommand = new AsyncCommand<bool>(
-                async () => 
-                    await Task.Run<bool>(() => Connect()), 
-                (object o) => 
+                async () =>
+                    await Task.Run<bool>(() => Connect()),
+                (object o) =>
                     !(Guider?.Connected == true)
             );
             DisconnectGuiderCommand = new RelayCommand((object o) => Disconnect(), (object o) => Guider?.Connected == true);
 
-            
+
 
             /*SetUpPlotModels();*/
 
@@ -44,27 +44,27 @@ namespace NINA.ViewModel {
             Mediator.Instance.RegisterAsync(async (object o) => {
                 CancellationToken token = (CancellationToken)o;
                 await Dither(token);
-            },AsyncMediatorMessages.DitherGuider);
+            }, AsyncMediatorMessages.DitherGuider);
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 CancellationToken token = (CancellationToken)o;
                 await Pause(token);
-            },AsyncMediatorMessages.PauseGuider);
+            }, AsyncMediatorMessages.PauseGuider);
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 CancellationToken token = (CancellationToken)o;
                 await Resume(token);
-            },AsyncMediatorMessages.ResumeGuider);
+            }, AsyncMediatorMessages.ResumeGuider);
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 CancellationToken token = (CancellationToken)o;
                 await AutoSelectGuideStar(token);
-            },AsyncMediatorMessages.AutoSelectGuideStar);
+            }, AsyncMediatorMessages.AutoSelectGuideStar);
         }
 
         private async Task AutoSelectGuideStar(CancellationToken token) {
             await Guider?.AutoSelectGuideStar();
-            await Task.Delay(TimeSpan.FromSeconds(5),token);
+            await Task.Delay(TimeSpan.FromSeconds(5), token);
         }
 
         private async Task Pause(CancellationToken token) {
@@ -100,15 +100,15 @@ namespace NINA.ViewModel {
         private bool Disconnect() {
             GuideStepsHistory.Clear();
             GuideStepsHistoryMinimal.Clear();
-            var discon =  Guider.Disconnect();
+            var discon = Guider.Disconnect();
             Guider = null;
             return discon;
         }
 
-        private void Guider_PropertyChanged(object sender, PropertyChangedEventArgs e) {        
+        private void Guider_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == "GuideStep") {
                 GuideStepsHistoryMinimal.Add(Guider.GuideStep);
-                GuideStepsHistory.Add(Guider.GuideStep);              
+                GuideStepsHistory.Add(Guider.GuideStep);
             }
         }
 
@@ -131,16 +131,16 @@ namespace NINA.ViewModel {
             });
             return true;
         }
-        
+
 
         public AsyncObservableLimitedSizedStack<IGuideStep> GuideStepsHistory { get; set; }
         public AsyncObservableLimitedSizedStack<IGuideStep> GuideStepsHistoryMinimal { get; set; }
 
         private IGuider _guider;
         public IGuider Guider {
-            get {                
+            get {
                 return _guider;
-            } 
+            }
             set {
                 _guider = value;
                 RaisePropertyChanged();
@@ -160,22 +160,22 @@ namespace NINA.ViewModel {
             }
 
             set {
-                _maxY = value;                
+                _maxY = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(MinY));
             }
         }
 
-        
+
         public double MinY {
             get {
                 return -MaxY;
             }
         }
 
-        
+
         public ICommand ConnectGuiderCommand { get; private set; }
-        
+
         public ICommand DisconnectGuiderCommand { get; private set; }
     }
 }

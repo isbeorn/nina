@@ -16,7 +16,7 @@ using ZWOptical.ASISDK;
 namespace NINA.EquipmentChooser {
     class EquipmentChooserVM : BaseVM {
         private EquipmentChooserVM(EquipmentType equipment) {
-            if(equipment == EquipmentType.Camera) {                
+            if (equipment == EquipmentType.Camera) {
                 GetCameras();
             } else if (equipment == EquipmentType.Telescope) {
                 GetTelescopes();
@@ -40,7 +40,7 @@ namespace NINA.EquipmentChooser {
         }
 
         private void OpenSetupDialog(object o) {
-            if(SelectedDevice?.HasSetupDialog == true) {
+            if (SelectedDevice?.HasSetupDialog == true) {
                 SelectedDevice.SetupDialog();
             }
         }
@@ -75,7 +75,7 @@ namespace NINA.EquipmentChooser {
                 } catch (Exception) {
                     //only add telescopes which are supported. e.g. x86 drivers will not work in x64
                 }
-            }            
+            }
 
             if (Devices.Count > 0) {
                 var selected = (from device in Devices where device.Id == Settings.TelescopeId select device).First();
@@ -104,13 +104,13 @@ namespace NINA.EquipmentChooser {
             } else {
                 return null;
             }
-            
+
         }
 
         private ObservableCollection<Model.IDevice> _devices;
         public ObservableCollection<Model.IDevice> Devices {
             get {
-                if(_devices == null) {
+                if (_devices == null) {
                     _devices = new ObservableCollection<Model.IDevice>();
                 }
                 return _devices;
@@ -142,7 +142,7 @@ namespace NINA.EquipmentChooser {
             }
 
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
-                
+
                 try {
                     AscomCamera cam = new AscomCamera(device.Key, "ASCOM --- " + device.Value);
                     Devices.Add(cam);
@@ -152,7 +152,7 @@ namespace NINA.EquipmentChooser {
             }
 
 
-            
+
             /*IntPtr cameraList;
             uint err = EDSDK.EdsGetCameraList(out cameraList);
             if (err == EDSDK.EDS_ERR_OK) {
@@ -168,28 +168,28 @@ namespace NINA.EquipmentChooser {
 
 
                     Devices.Add(new EDCamera(cam, info));*/
-                    /*err = EDSDK.EdsOpenSession(cam);                        
+            /*err = EDSDK.EdsOpenSession(cam);                        
 
-                    IntPtr saveTo = (IntPtr)EDSDK.EdsSaveTo.Host;
-                    err = EDSDK.EdsSetPropertyData(cam, EDSDK.PropID_SaveTo, 0, 4, saveTo);
+            IntPtr saveTo = (IntPtr)EDSDK.EdsSaveTo.Host;
+            err = EDSDK.EdsSetPropertyData(cam, EDSDK.PropID_SaveTo, 0, 4, saveTo);
 
-                    EDSDK.EdsCapacity capacity = new EDSDK.EdsCapacity();
-                    capacity.NumberOfFreeClusters = 0x7FFFFFFF;
-                    capacity.BytesPerSector = 0x1000;
-                    capacity.Reset = 1;
-                    err = EDSDK.EdsSetCapacity(cam, capacity);
+            EDSDK.EdsCapacity capacity = new EDSDK.EdsCapacity();
+            capacity.NumberOfFreeClusters = 0x7FFFFFFF;
+            capacity.BytesPerSector = 0x1000;
+            capacity.Reset = 1;
+            err = EDSDK.EdsSetCapacity(cam, capacity);
 
-                    err = EDSDK.EdsSendCommand(cam, EDSDK.CameraCommand_TakePicture, 0);
+            err = EDSDK.EdsSendCommand(cam, EDSDK.CameraCommand_TakePicture, 0);
 
-                    err = EDSDK.EdsCloseSession(cam);*/
-               /* }
+            err = EDSDK.EdsCloseSession(cam);*/
+            /* }
 
-                    
-            }*/
-                    
 
-            
-            
+         }*/
+
+
+
+
 
 
 
@@ -201,7 +201,7 @@ namespace NINA.EquipmentChooser {
                 } else {
                     SelectedDevice = Devices.First();
                 }
-            }            
+            }
         }
 
 

@@ -40,34 +40,34 @@ namespace NINA.Model.MyFocuser {
                 RaisePropertyChanged();
             }
         }
-        
+
         public bool IsMoving {
             get {
-                if(Connected) {
+                if (Connected) {
                     return _focuser.IsMoving;
                 } else {
                     return false;
-                }                
+                }
             }
         }
 
         public int MaxIncrement {
             get {
-                if(Connected) {
+                if (Connected) {
                     return _focuser.MaxIncrement;
                 } else {
                     return -1;
-                }                
+                }
             }
         }
 
         public int MaxStep {
             get {
-                if(Connected) {
+                if (Connected) {
                     return _focuser.MaxStep;
                 } else {
                     return -1;
-                }                
+                }
             }
         }
 
@@ -79,7 +79,7 @@ namespace NINA.Model.MyFocuser {
                     if (Connected && _canGetPosition) {
                         pos = _focuser.Position;
                     }
-                } catch(PropertyNotImplementedException) {
+                } catch (PropertyNotImplementedException) {
                     _canGetPosition = false;
                 }
                 return pos;
@@ -103,24 +103,24 @@ namespace NINA.Model.MyFocuser {
 
         public bool TempCompAvailable {
             get {
-                if(Connected) {
+                if (Connected) {
                     return _focuser.TempCompAvailable;
                 } else {
                     return false;
-                }                
+                }
             }
         }
 
         public bool TempComp {
             get {
-                if(Connected) {
+                if (Connected) {
                     return _focuser.TempComp;
                 } else {
                     return false;
-                }                
+                }
             }
             set {
-                if(Connected && _focuser.TempCompAvailable) {
+                if (Connected && _focuser.TempCompAvailable) {
                     _focuser.TempComp = value;
                 }
             }
@@ -164,7 +164,7 @@ namespace NINA.Model.MyFocuser {
             private set {
                 try {
                     _focuser.Connected = value;
-                    _connected = value;                    
+                    _connected = value;
 
                 } catch (Exception ex) {
                     Notification.ShowError(ex.Message + "\n Please reconnect focuser!");
@@ -175,7 +175,7 @@ namespace NINA.Model.MyFocuser {
         }
 
         public void Move(int position) {
-            if(Connected && !TempComp) {
+            if (Connected && !TempComp) {
                 _focuser.Move(position);
             }
         }
@@ -185,11 +185,11 @@ namespace NINA.Model.MyFocuser {
             if (Connected && _canHalt) {
                 try {
                     _focuser.Halt();
-                } catch(MethodNotImplementedException) {
+                } catch (MethodNotImplementedException) {
                     _canHalt = false;
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     Logger.Error(ex.Message);
-                }                
+                }
             }
         }
 
@@ -202,7 +202,7 @@ namespace NINA.Model.MyFocuser {
 
         public string Description {
             get {
-                if(Connected) {
+                if (Connected) {
                     return _focuser.Description;
                 } else {
                     return string.Empty;
@@ -262,7 +262,7 @@ namespace NINA.Model.MyFocuser {
                     Notification.ShowError("Unable to connect to focuser " + ex.Message);
                 }
                 return Connected;
-            });            
+            });
         }
 
         private void init() {
@@ -273,7 +273,7 @@ namespace NINA.Model.MyFocuser {
         }
 
         public void Disconnect() {
-            Connected = false;           
+            Connected = false;
             _focuser?.Dispose();
             _focuser = null;
         }

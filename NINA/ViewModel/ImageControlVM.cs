@@ -48,7 +48,7 @@ namespace NINA.ViewModel {
 
                 _plateSolveToken = new CancellationTokenSource();
                 if (!AutoStretch) {
-                    AutoStretch = true;                    
+                    AutoStretch = true;
                 }
                 var args = new object[] { new Progress<string>(p => Status = p), _plateSolveToken };
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.Solve, args);
@@ -215,8 +215,8 @@ namespace NINA.ViewModel {
 
         public async Task PrepareImage(IProgress<string> progress, CancellationTokenSource canceltoken) {
             if (ImgArr != null) {
-                BitmapSource source = ImageAnalysis.CreateSourceFromArray(ImgArr,System.Windows.Media.PixelFormats.Gray16);
-                
+                BitmapSource source = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
+
 
                 if (AutoStretch) {
                     source = await StretchAsync(source);
@@ -226,17 +226,17 @@ namespace NINA.ViewModel {
                     var analysis = new ImageAnalysis(source, ImgArr);
                     await analysis.DetectStarsAsync(progress, canceltoken.Token);
 
-                    if(Settings.AnnotateImage) {
+                    if (Settings.AnnotateImage) {
                         source = analysis.GetAnnotatedImage();
-                    }                    
+                    }
 
                     ImgArr.Statistics.HFR = analysis.AverageHFR;
                     ImgArr.Statistics.DetectedStars = analysis.DetectedStars;
                 }
 
-                if(ImgArr.IsBayered) {
+                if (ImgArr.IsBayered) {
                     source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
-                }               
+                }
 
                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                     Image = null;
@@ -298,7 +298,7 @@ namespace NINA.ViewModel {
 
                 p.Add(new OptionsVM.ImagePattern("$$TARGETNAME$$", "Target Name if available", targetname));
 
-                p.Add(new OptionsVM.ImagePattern("$$GAIN$$","Camera Gain",Cam?.Gain.ToString() ?? string.Empty));
+                p.Add(new OptionsVM.ImagePattern("$$GAIN$$", "Camera Gain", Cam?.Gain.ToString() ?? string.Empty));
 
                 string filename = Utility.Utility.GetImageFileString(p);
                 string completefilename = Settings.ImageFilePath + filename;
@@ -398,8 +398,8 @@ namespace NINA.ViewModel {
             string newFullPath = fullPath;
 
             while (File.Exists(newFullPath)) {
-                string tempFileName = string.Format("{0}({1})",fileNameOnly,count++);
-                newFullPath = Path.Combine(path,tempFileName + extension);
+                string tempFileName = string.Format("{0}({1})", fileNameOnly, count++);
+                newFullPath = Path.Combine(path, tempFileName + extension);
             }
             return newFullPath;
         }
@@ -411,7 +411,7 @@ namespace NINA.ViewModel {
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 var uniquePath = GetUniqueFilePath(path + ".tif");
-                
+
                 using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     TiffBitmapEncoder encoder = new TiffBitmapEncoder();
                     encoder.Compression = TiffCompressOption.None;
@@ -493,11 +493,11 @@ namespace NINA.ViewModel {
                 header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, duration.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
                 XISF img = new XISF(header);
-                
+
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 var uniquePath = GetUniqueFilePath(path + ".xisf");
 
-                using (FileStream fs = new FileStream(uniquePath,FileMode.Create)) {
+                using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     img.Save(fs);
                 }
 

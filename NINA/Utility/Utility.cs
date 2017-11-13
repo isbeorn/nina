@@ -25,8 +25,8 @@ namespace NINA.Utility {
         private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
             new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
 
-        public static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }       
-                        
+        public static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }
+
         /// <summary>
         /// Replaces makros from Settings.ImageFilePattern into actual values based on input
         /// e.g.: $$Filter$$ -> "Red"
@@ -35,7 +35,7 @@ namespace NINA.Utility {
         /// <returns></returns>
         public static string GetImageFileString(ICollection<ViewModel.OptionsVM.ImagePattern> patterns) {
             string s = Settings.ImageFilePattern;
-            foreach(ViewModel.OptionsVM.ImagePattern p in patterns) {
+            foreach (ViewModel.OptionsVM.ImagePattern p in patterns) {
                 s = s.Replace(p.Key, p.Value);
             }
             return s;
@@ -51,14 +51,13 @@ namespace NINA.Utility {
             using (canceltoken.Token.Register(() => request.Abort(), useSynchronizationContext: false)) {
                 try {
                     request = (HttpWebRequest)WebRequest.Create(url);
-                    
+
                     response = (HttpWebResponse)await request.GetResponseAsync();
-             
+
                     using (var streamReader = new StreamReader(response.GetResponseStream())) {
                         result = streamReader.ReadToEnd();
                     }
-                }
-                catch (Exception ex) {                    
+                } catch (Exception ex) {
                     canceltoken.Token.ThrowIfCancellationRequested();
 
                     //Logger.Error(ex.Message);
@@ -68,8 +67,8 @@ namespace NINA.Utility {
                         response.Close();
                         response = null;
                     }
-                    
-                    
+
+
                 } finally {
                     request = null;
                 }
@@ -99,7 +98,7 @@ namespace NINA.Utility {
                 try {
                     request = (HttpWebRequest)WebRequest.Create(url);
 
-                    response = (HttpWebResponse)await request.GetResponseAsync();                    
+                    response = (HttpWebResponse)await request.GetResponseAsync();
 
                     using (BinaryReader reader = new BinaryReader(response.GetResponseStream())) {
                         Byte[] lnByte = reader.ReadBytes(1 * 1024 * 1024 * 10);
@@ -112,18 +111,16 @@ namespace NINA.Utility {
                             bitmap.Freeze();
                         }
                     }
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     canceltoken.Token.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message, ex.StackTrace);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
-                    
+
                     response?.Close();
                     response = null;
-                    
-                    
-                }
-                finally {
+
+
+                } finally {
                     request = null;
                 }
             }
@@ -140,7 +137,7 @@ namespace NINA.Utility {
         /// <returns>result body of post request</returns>
         public static async Task<string> HttpPostRequest(string url, string body, CancellationTokenSource canceltoken) {
             string result = string.Empty;
-            
+
             HttpWebRequest request = null;
             HttpWebResponse response = null;
             using (canceltoken.Token.Register(() => request.Abort(), useSynchronizationContext: false)) {
@@ -158,17 +155,15 @@ namespace NINA.Utility {
                     using (var streamReader = new StreamReader(response.GetResponseStream())) {
                         result = streamReader.ReadToEnd();
                     }
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     canceltoken.Token.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message, ex.StackTrace);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
-                    
+
                     response?.Close();
                     response = null;
-                    
-                }
-                finally {
+
+                } finally {
                     request = null;
                 }
             }
@@ -189,7 +184,7 @@ namespace NINA.Utility {
         /// <param name="canceltoken"></param>
         /// <returns></returns>
         public static async Task<string> HttpUploadFile(string url, MemoryStream file, string paramName, string contentType, NameValueCollection nvc, CancellationTokenSource canceltoken) {
-            string result = string.Empty;            
+            string result = string.Empty;
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
             byte[] boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
 
@@ -235,17 +230,15 @@ namespace NINA.Utility {
                     using (var streamReader = new StreamReader(wresp.GetResponseStream())) {
                         result = streamReader.ReadToEnd();
                     }
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     canceltoken.Token.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message, ex.StackTrace);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
-                    
+
                     wresp?.Close();
                     wresp = null;
-                    
-                }
-                finally {
+
+                } finally {
                     wr = null;
                 }
             }
@@ -262,7 +255,7 @@ namespace NINA.Utility {
             System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
-        }        
+        }
     }
     public enum FileTypeEnum {
         TIFF,

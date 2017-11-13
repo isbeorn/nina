@@ -13,8 +13,8 @@ using NINA.Utility.Notification;
 using System.Collections;
 
 namespace NINA.Model.MyCamera {
-    public class ASICamera : BaseINPC, ICamera{
-        
+    public class ASICamera : BaseINPC, ICamera {
+
         public ASICamera(int cameraId) {
             _cameraId = cameraId;
             Id = cameraId.ToString();
@@ -68,7 +68,7 @@ namespace NINA.Model.MyCamera {
                 return Info.MechanicalShutter != ASICameraDll.ASI_BOOL.ASI_FALSE;
             }
         }
-        
+
         private bool _connected;
         public bool Connected {
             get {
@@ -86,20 +86,20 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-    public double SetCCDTemperature {
+        public double SetCCDTemperature {
             get {
                 if (CanSetCCDTemperature) {
                     return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
                 } else {
                     return double.MinValue;
                 }
-            } 
+            }
             set {
-                if(CanSetCCDTemperature) {
+                if (CanSetCCDTemperature) {
                     if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP, (int)value)) {
                         RaisePropertyChanged();
                     }
-                }                
+                }
             }
         }
         public short BinX {
@@ -149,11 +149,11 @@ namespace NINA.Model.MyCamera {
 
         public SensorType SensorType {
             get {
-                if(Info.IsColorCam == ASICameraDll.ASI_BOOL.ASI_TRUE) {
+                if (Info.IsColorCam == ASICameraDll.ASI_BOOL.ASI_TRUE) {
                     return SensorType.RGGB;
                 } else {
                     return SensorType.Monochrome;
-                }                
+                }
             }
         }
 
@@ -170,12 +170,12 @@ namespace NINA.Model.MyCamera {
 
         public double ExposureMin {
             get {
-                return (double)GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE) / 1000000;                
-            }            
+                return (double)GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE) / 1000000;
+            }
         }
         public double ExposureMax {
             get {
-                return (double)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE) / 1000000;                
+                return (double)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE) / 1000000;
             }
         }
 
@@ -186,7 +186,7 @@ namespace NINA.Model.MyCamera {
         }
         public short MaxBinY {
             get {
-                return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);                
+                return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
             }
         }
 
@@ -203,7 +203,7 @@ namespace NINA.Model.MyCamera {
 
         public bool CanSetCCDTemperature {
             get {
-                var val =  GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);                
+                var val = GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);
                 if (val > 0) {
                     return true;
                 } else {
@@ -214,8 +214,8 @@ namespace NINA.Model.MyCamera {
 
         public bool CoolerOn {
             get {
-                var value = GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);                
-                return value == 0 ? false : true ;
+                var value = GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);
+                return value == 0 ? false : true;
             }
             set {
                 if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON, value ? 1 : 0)) {
@@ -233,9 +233,9 @@ namespace NINA.Model.MyCamera {
         private AsyncObservableCollection<BinningMode> _binningModes;
         public AsyncObservableCollection<BinningMode> BinningModes {
             get {
-                if(_binningModes == null) {
+                if (_binningModes == null) {
                     _binningModes = new AsyncObservableCollection<BinningMode>();
-                    foreach(int f in SupportedBinFactors) {
+                    foreach (int f in SupportedBinFactors) {
                         _binningModes.Add(new BinningMode((short)f, (short)f));
                     }
                 }
@@ -253,7 +253,7 @@ namespace NINA.Model.MyCamera {
         [System.Obsolete("Use async Connect")]
         public bool Connect() {
             var success = false;
-            try { 
+            try {
                 ASICameraDll.OpenCamera(_cameraId);
                 ASICameraDll.InitCamera(_cameraId);
                 _info = ASICameraDll.GetCameraProperties(_cameraId);
@@ -344,8 +344,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private void CopyToUShort(IntPtr source, ushort[] destination, int startIndex, int length) {
-            unsafe
-            {
+            unsafe {
                 var sourcePtr = (ushort*)source;
                 for (int i = startIndex; i < startIndex + length; ++i) {
                     destination[i] = *sourcePtr++;
@@ -361,7 +360,7 @@ namespace NINA.Model.MyCamera {
             var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
             binningControl.IsAuto = false;
             binningControl.Value = x;
-            
+
         }
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
@@ -414,7 +413,7 @@ namespace NINA.Model.MyCamera {
         public short GainMax {
             get {
                 return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
-            } 
+            }
         }
 
         public short GainMin {
@@ -458,10 +457,10 @@ namespace NINA.Model.MyCamera {
 
         public int USBLimit {
             get {
-                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);                
+                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
             }
             set {
-                if(SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD, value)) {
+                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD, value)) {
                     RaisePropertyChanged();
                 }
             }
@@ -521,7 +520,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void SetupDialog() {
-            
+
         }
 
         public void Initialize() {
@@ -543,7 +542,7 @@ namespace NINA.Model.MyCamera {
                         Notification.ShowError("Only 16 bit Monochrome sensors supported currently");
                         return false;
                     }
-                    this.CaptureAreaInfo = new CaptureAreaInfo(this.Resolution,1,ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+                    this.CaptureAreaInfo = new CaptureAreaInfo(this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
                     RaisePropertyChanged(nameof(Connected));
                     RaiseAllPropertiesChanged();
                 } catch (Exception ex) {

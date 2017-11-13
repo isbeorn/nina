@@ -62,7 +62,7 @@ namespace NINA.Utility {
         }
 
         public ObservableLimitedSizedStack(int maxSize, IEnumerable<T> collection) {
-            if(collection.Count() > maxSize) {
+            if (collection.Count() > maxSize) {
                 throw new Exception("Collection exceeds maximum size");
             }
             _underLyingLinkedList = new LinkedList<T>(collection);
@@ -79,7 +79,7 @@ namespace NINA.Utility {
         }
 
         private LinkedList<T> _underLyingLinkedList;
-        
+
         public int Count {
             get { return _underLyingLinkedList.Count; }
         }
@@ -122,7 +122,7 @@ namespace NINA.Utility {
         public Type GetLinkedListType() {
             return _underLyingLinkedList.GetType();
         }
-        
+
         public event NotifyCollectionChangedEventHandler CollectionChanged;
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
             this.CollectionChanged?.Invoke(this, e);
@@ -142,14 +142,14 @@ namespace NINA.Utility {
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
 
         IEnumerator IEnumerable.GetEnumerator() {
             return (_underLyingLinkedList as IEnumerable).GetEnumerator();
         }
 
         public bool Remove(T item) {
-            return _underLyingLinkedList.Remove(item);            
+            return _underLyingLinkedList.Remove(item);
         }
 
         public IEnumerator<T> GetEnumerator() {

@@ -34,9 +34,9 @@ namespace NINA.ViewModel {
             SnapExposureDuration = 1;
             SnapCommand = new AsyncCommand<bool>(() => CaptureImage(new Progress<string>(p => Status = p)));
             CancelSnapCommand = new RelayCommand(CancelCaptureImage);
-            
+
             ImageControl = new ImageControlVM();
-            
+
             RegisterMediatorMessages();
         }
 
@@ -56,16 +56,16 @@ namespace NINA.ViewModel {
                 bool save = (bool)args[1];
                 IProgress<string> progress = (IProgress<string>)args[2];
                 CancellationTokenSource token = (CancellationTokenSource)args[3];
-                
+
                 await CaptureImage(seq, save, progress, token);
             }, AsyncMediatorMessages.CaptureImage);
 
 
-            Mediator.Instance.Register((object o) => _cameraConnected = (bool)o,MediatorMessages.CameraConnectedChanged);
+            Mediator.Instance.Register((object o) => _cameraConnected = (bool)o, MediatorMessages.CameraConnectedChanged);
             Mediator.Instance.Register((object o) => {
                 Cam = (ICamera)o;
             }, MediatorMessages.CameraChanged);
-                        
+
         }
 
         private bool _cameraConnected;
@@ -113,7 +113,8 @@ namespace NINA.ViewModel {
         public ICamera Cam {
             get {
                 return _cam;
-            } set {
+            }
+            set {
                 _cam = value;
                 RaisePropertyChanged();
             }
@@ -131,7 +132,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private int _exposureSeconds; 
+        private int _exposureSeconds;
         public int ExposureSeconds {
             get {
                 return _exposureSeconds;
@@ -149,23 +150,24 @@ namespace NINA.ViewModel {
             }
 
             set {
-                _expStatus = value;                
+                _expStatus = value;
                 RaisePropertyChanged();
             }
         }
 
-        private bool _isExposing; 
+        private bool _isExposing;
         public bool IsExposing {
             get {
                 return _isExposing;
-            } set {
+            }
+            set {
                 _isExposing = value;
                 RaisePropertyChanged();
 
                 Mediator.Instance.Notify(MediatorMessages.IsExposingUpdate, _isExposing);
             }
-        }        
-        
+        }
+
         public IAsyncCommand SnapCommand { get; private set; }
 
         public ICommand CancelSnapCommand { get; private set; }
@@ -179,16 +181,15 @@ namespace NINA.ViewModel {
         private async Task ChangeFilter(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
 
             progress.Report(ExposureStatus.FILTERCHANGE);
-            if(seq.FilterType != null) {
+            if (seq.FilterType != null) {
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ChangeFilterWheelPosition, new object[] { seq.FilterType, tokenSource });
-            }            
+            }
         }
 
         private void SetBinning(CaptureSequence seq) {
             if (seq.Binning == null) {
                 Cam.SetBinning(1, 1);
-            }
-            else {
+            } else {
                 Cam.SetBinning(seq.Binning.X, seq.Binning.Y);
             }
         }
@@ -224,8 +225,8 @@ namespace NINA.ViewModel {
             } finally {
                 IsExposing = false;
             }
-            
-            
+
+
         }
 
         private async Task<ImageArray> Download(CancellationTokenSource tokenSource, IProgress<string> progress) {
@@ -233,15 +234,15 @@ namespace NINA.ViewModel {
             return await Cam.DownloadExposure(tokenSource);
         }
 
-        
+
 
 
 
         private async Task<bool> Save(CaptureSequenceList seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
-            progress.Report(ExposureStatus.SAVING);           
+            progress.Report(ExposureStatus.SAVING);
 
-            await ImageControl.SaveToDisk(seq, tokenSource, progress);            
-                        
+            await ImageControl.SaveToDisk(seq, tokenSource, progress);
+
             return true;
         }
 
@@ -254,8 +255,8 @@ namespace NINA.ViewModel {
             tokenSource.Token.ThrowIfCancellationRequested();
             return true;
         }
-                
-        public  async Task<bool> StartSequence(CaptureSequenceList sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
+
+        public async Task<bool> StartSequence(CaptureSequenceList sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
             if (_cameraConnected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
                 return false;
@@ -310,7 +311,7 @@ namespace NINA.ViewModel {
                         }
 
                         /*Dither*/
-                        var ditherTask = Dither(seq,tokenSource,progress);
+                        var ditherTask = Dither(seq, tokenSource, progress);
 
                         /*Download Image */
                         ImageArray arr = await Download(tokenSource, progress);
@@ -330,7 +331,7 @@ namespace NINA.ViewModel {
                         if (_cameraConnected != true) {
                             tokenSource.Cancel();
                             throw new OperationCanceledException();
-                        }                        
+                        }
 
                         /*Save to disk*/
                         if (bSave) {
@@ -340,7 +341,7 @@ namespace NINA.ViewModel {
                         //Wait for dither to finish. Runs in parallel to save.
                         progress.Report(ExposureStatus.DITHERING);
                         await ditherTask;
-                        
+
 
                         if (_cameraConnected != true) {
                             tokenSource.Cancel();
@@ -362,14 +363,14 @@ namespace NINA.ViewModel {
                 }
                 return true;
             });
-                     
+
         }
 
         private void SetGain(CaptureSequence seq) {
             if (seq.Gain != -1) {
                 Cam.Gain = seq.Gain;
             } else {
-                
+
             }
         }
 
@@ -396,7 +397,7 @@ namespace NINA.ViewModel {
             set { _imageControl = value; RaisePropertyChanged(); }
         }
 
-        
+
 
         private Model.MyFilterWheel.FilterInfo _snapFilter;
         public Model.MyFilterWheel.FilterInfo SnapFilter {
@@ -412,7 +413,7 @@ namespace NINA.ViewModel {
         private BinningMode _snapBin;
         public BinningMode SnapBin {
             get {
-                if(_snapBin == null) {
+                if (_snapBin == null) {
                     _snapBin = new BinningMode(1, 1);
                 }
                 return _snapBin;
@@ -423,7 +424,7 @@ namespace NINA.ViewModel {
             }
         }
 
-       
+
 
         public async Task<bool> CaptureImage(IProgress<string> progress) {
             _captureImageToken = new CancellationTokenSource();
@@ -432,8 +433,8 @@ namespace NINA.ViewModel {
                 return false;
             } else {
                 do {
-                    CaptureSequenceList seq = new CaptureSequenceList(new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));                    
-                    await StartSequence(seq,  SnapSave, _captureImageToken, progress);
+                    CaptureSequenceList seq = new CaptureSequenceList(new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
+                    await StartSequence(seq, SnapSave, _captureImageToken, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop);
                 return true;
@@ -444,8 +445,7 @@ namespace NINA.ViewModel {
             if (IsExposing) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
                 return false;
-            }
-            else {
+            } else {
                 var list = new CaptureSequenceList(seq);
                 return await StartSequence(list, bsave, token, progress);
             }
