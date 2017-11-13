@@ -12,6 +12,8 @@ using System.Windows.Threading;
 
 namespace NINA.Utility {
     public class AsyncObservableCollection<T> : ObservableCollection<T> {
+        private SynchronizationContext _synchronizationContext = new DispatcherSynchronizationContext(
+                    Application.Current.Dispatcher);
 
         public AsyncObservableCollection() {
         }
@@ -21,11 +23,14 @@ namespace NINA.Utility {
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
-            Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Normal, new Action(() => {
-                    RaiseCollectionChanged(e);
-                })
-            );
+            if (SynchronizationContext.Current == _synchronizationContext) {
+                // Execute the CollectionChanged event on the current thread
+                RaiseCollectionChanged(e);
+            }
+            else {
+                // Raises the CollectionChanged event on the creator thread
+                _synchronizationContext.Send(RaiseCollectionChanged, e);
+            }
         }
 
         private void RaiseCollectionChanged(object param) {
@@ -34,11 +39,14 @@ namespace NINA.Utility {
         }
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
-            Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Normal, new Action(() => {
-                    RaisePropertyChanged(e);
-                })
-            );
+            if (SynchronizationContext.Current == _synchronizationContext) {
+                // Execute the PropertyChanged event on the current thread
+                RaisePropertyChanged(e);
+            }
+            else {
+                // Raises the PropertyChanged event on the creator thread
+                _synchronizationContext.Send(RaisePropertyChanged, e);
+            }
         }
 
         private void RaisePropertyChanged(object param) {
