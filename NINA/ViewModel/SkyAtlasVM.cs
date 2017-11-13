@@ -20,16 +20,16 @@ namespace NINA.ViewModel {
 
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
-                        
-            InitializeFilters();            
+
+            InitializeFilters();
 
             Mediator.Instance.Register((object o) => {
                 _nightDuration = null; //Clear cache
                 SelectedDate = DateTime.Now;
                 InitializeElevationFilters();
                 ResetRiseAndSetTimes();
-            },MediatorMessages.LocationChanged);
-            
+            }, MediatorMessages.LocationChanged);
+
         }
 
         private void ResetRiseAndSetTimes() {
@@ -53,7 +53,7 @@ namespace NINA.ViewModel {
         private Ticker _ticker;
         public Ticker Ticker {
             get {
-                if(_ticker == null) {
+                if (_ticker == null) {
                     _ticker = new Ticker(30000);
                 }
                 return _ticker;
@@ -63,10 +63,10 @@ namespace NINA.ViewModel {
         private AsyncObservableCollection<DataPoint> _nightDuration;
         public AsyncObservableCollection<DataPoint> NightDuration {
             get {
-                if(_nightDuration == null) {
+                if (_nightDuration == null) {
 
                     var twilight = TwilightRiseAndSet;
-                    if (twilight != null) { 
+                    if (twilight != null) {
                         _nightDuration = new AsyncObservableCollection<DataPoint>() {
                         new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate), 90),
                         new DataPoint(DateTimeAxis.ToDouble(twilight.SetDate), 90) };
@@ -87,19 +87,18 @@ namespace NINA.ViewModel {
                     var night = TwilightRiseAndSet;
                     if (twilight != null) {
                         _twilightDuration = new AsyncObservableCollection<DataPoint>();
-                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.SetDate),90));
+                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.SetDate), 90));
 
-                        if(night != null) {
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate),90));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate),0));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate),0));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate),90));
+                        if (night != null) {
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate), 90));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate), 0));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate), 0));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate), 90));
                         }
 
-                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate),90));
-                        
-                    }
-                    else {
+                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate), 90));
+
+                    } else {
                         _twilightDuration = new AsyncObservableCollection<DataPoint>();
                     }
                 }
@@ -125,7 +124,7 @@ namespace NINA.ViewModel {
         private Astrometry.RiseAndSetAstroEvent _moonRiseAndSet;
         public Astrometry.RiseAndSetAstroEvent MoonRiseAndSet {
             get {
-                if(_moonRiseAndSet == null) {
+                if (_moonRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
                     _moonRiseAndSet = Astrometry.GetMoonRiseAndSet(d);
                 }
@@ -140,7 +139,7 @@ namespace NINA.ViewModel {
         private double? _illumination;
         public double? Illumination {
             get {
-                if(_illumination == null) {
+                if (_illumination == null) {
                     var d = GetReferenceDate(SelectedDate);
                     _illumination = Astrometry.GetMoonIllumination(d);
                 }
@@ -155,9 +154,9 @@ namespace NINA.ViewModel {
         private Astrometry.MoonPhase _moonPhase;
         public Astrometry.MoonPhase MoonPhase {
             get {
-                if(_moonPhase == Astrometry.MoonPhase.Unknown) {
+                if (_moonPhase == Astrometry.MoonPhase.Unknown) {
                     var d = GetReferenceDate(SelectedDate);
-                    _moonPhase = Astrometry.GetMoonPhase(d);                    
+                    _moonPhase = Astrometry.GetMoonPhase(d);
                 }
                 return _moonPhase;
             }
@@ -198,11 +197,10 @@ namespace NINA.ViewModel {
         public static DateTime GetReferenceDate(DateTime reference) {
             DateTime d = reference;
             if (d.Hour > 12) {
-                d = new DateTime(d.Year, d.Month, d.Day,12,0,0);
-            }
-            else {
+                d = new DateTime(d.Year, d.Month, d.Day, 12, 0, 0);
+            } else {
                 var tmp = d.AddDays(-1);
-                d = new DateTime(tmp.Year,tmp.Month,tmp.Day,12,0,0);
+                d = new DateTime(tmp.Year, tmp.Month, tmp.Day, 12, 0, 0);
             }
             return d;
         }
@@ -218,8 +216,8 @@ namespace NINA.ViewModel {
                         SelectedConstellation,
                         SelectedRAFrom,
                         SelectedRAThrough,
-                        Nullable.Compare(SelectedDecFrom, SelectedDecThrough) > 0? SelectedDecThrough : SelectedDecFrom,
-                        Nullable.Compare(SelectedDecFrom,SelectedDecThrough) > 0 ? SelectedDecFrom : SelectedDecThrough,
+                        Nullable.Compare(SelectedDecFrom, SelectedDecThrough) > 0 ? SelectedDecThrough : SelectedDecFrom,
+                        Nullable.Compare(SelectedDecFrom, SelectedDecThrough) > 0 ? SelectedDecFrom : SelectedDecThrough,
                         SelectedSizeFrom,
                         SelectedSizeThrough,
                         types,
@@ -235,29 +233,31 @@ namespace NINA.ViewModel {
 
                     DateTime d = GetReferenceDate(SelectedDate);
 
-                    Parallel.ForEach(result,(obj) => {
+                    Parallel.ForEach(result, (obj) => {
                         var cloneDate = d;
-                        obj.SetDateAndPosition(cloneDate,latitude,longitude);  
+                        obj.SetDateAndPosition(cloneDate, latitude, longitude);
                         _searchTokenSource.Token.ThrowIfCancellationRequested();
                     });
 
                     /* Check if Altitude Filter is not default */
-            if (!(SelectedAltitudeTimeFrom == DateTime.MinValue && SelectedAltitudeTimeThrough == DateTime.MaxValue && SelectedMinimumAltitudeDegrees == 0)) {
-                        /* Apply Altitude Filter */
-                        SearchResult = new AsyncObservableCollection<DeepSkyObject>(result.Where((x) => {
+                    if (!(SelectedAltitudeTimeFrom == DateTime.MinValue && SelectedAltitudeTimeThrough == DateTime.MaxValue && SelectedMinimumAltitudeDegrees == 0)) {
+                        var filteredList = result.Where((x) => {
                             return x.Altitudes.Where((y) => {
                                 return (y.X > DateTimeAxis.ToDouble(SelectedAltitudeTimeFrom) && y.X < DateTimeAxis.ToDouble(SelectedAltitudeTimeThrough));
                             }).All((z) => {
                                 return z.Y > SelectedMinimumAltitudeDegrees;
                             });
-                        }));
-                    }
-                    else {
+                        });
+
+                        var count = filteredList.Count();
+                        /* Apply Altitude Filter */
+                        SearchResult = new AsyncObservableCollection<DeepSkyObject>(filteredList);
+                    } else {
                         SearchResult = result;
                     }
-                } catch(OperationCanceledException) {
+                } catch (OperationCanceledException) {
 
-                }                
+                }
                 return true;
             });
         }
@@ -279,44 +279,44 @@ namespace NINA.ViewModel {
             SelectedAltitudeTimeFrom = DateTime.MinValue;
             SelectedAltitudeTimeThrough = DateTime.MaxValue;
             SelectedMinimumAltitudeDegrees = 0;
-            
+
             var d = GetReferenceDate(SelectedDate);
 
             AltitudeTimesFrom.Add(DateTime.MinValue);
             AltitudeTimesThrough.Add(DateTime.MaxValue);
 
-            for (int i = 0; i <= 24; i++) {                            
+            for (int i = 0; i <= 24; i++) {
                 AltitudeTimesFrom.Add(d);
                 AltitudeTimesThrough.Add(d);
                 d = d.AddHours(1);
             }
 
-            for (int i = 0;i <= 90;i += 10) {
-                MinimumAltitudeDegrees.Add(new KeyValuePair<double,string>(i,i + "°"));
+            for (int i = 0; i <= 90; i += 10) {
+                MinimumAltitudeDegrees.Add(new KeyValuePair<double, string>(i, i + "°"));
             }
         }
 
         private void InitializeSizeFilters() {
             SizesFrom = new AsyncObservableCollection<KeyValuePair<string, string>>();
-            SizesThrough = new AsyncObservableCollection<KeyValuePair<string,string>>();
+            SizesThrough = new AsyncObservableCollection<KeyValuePair<string, string>>();
 
-            SizesFrom.Add(new KeyValuePair<string,string>(string.Empty,string.Empty));
-            SizesThrough.Add(new KeyValuePair<string,string>(string.Empty,string.Empty));
+            SizesFrom.Add(new KeyValuePair<string, string>(string.Empty, string.Empty));
+            SizesThrough.Add(new KeyValuePair<string, string>(string.Empty, string.Empty));
 
 
-            SizesFrom.Add(new KeyValuePair<string,string>("1","1 " + Locale.Loc.Instance["LblArcsec"]));
-            SizesFrom.Add(new KeyValuePair<string,string>("5","5 " + Locale.Loc.Instance["LblArcsec"]));
-            SizesFrom.Add(new KeyValuePair<string,string>("10","10 " + Locale.Loc.Instance["LblArcsec"]));
-            SizesFrom.Add(new KeyValuePair<string,string>("30","30 " + Locale.Loc.Instance["LblArcsec"]));
-            SizesFrom.Add(new KeyValuePair<string,string>("60","1 " + Locale.Loc.Instance["LblArcmin"]));
-            SizesFrom.Add(new KeyValuePair<string,string>("300","5 " + Locale.Loc.Instance["LblArcmin"]));
-            SizesFrom.Add(new KeyValuePair<string,string>("600","10 " + Locale.Loc.Instance["LblArcmin"]));
-            SizesFrom.Add(new KeyValuePair<string,string>("1800","30 " + Locale.Loc.Instance["LblArcmin"]));
-            SizesFrom.Add(new KeyValuePair<string,string>("3600","1 " + Locale.Loc.Instance["LblDegree"]));
-            SizesFrom.Add(new KeyValuePair<string,string>("18000","5 " + Locale.Loc.Instance["LblDegree"]));
-            SizesFrom.Add(new KeyValuePair<string,string>("36000","10 " + Locale.Loc.Instance["LblDegree"]));
+            SizesFrom.Add(new KeyValuePair<string, string>("1", "1 " + Locale.Loc.Instance["LblArcsec"]));
+            SizesFrom.Add(new KeyValuePair<string, string>("5", "5 " + Locale.Loc.Instance["LblArcsec"]));
+            SizesFrom.Add(new KeyValuePair<string, string>("10", "10 " + Locale.Loc.Instance["LblArcsec"]));
+            SizesFrom.Add(new KeyValuePair<string, string>("30", "30 " + Locale.Loc.Instance["LblArcsec"]));
+            SizesFrom.Add(new KeyValuePair<string, string>("60", "1 " + Locale.Loc.Instance["LblArcmin"]));
+            SizesFrom.Add(new KeyValuePair<string, string>("300", "5 " + Locale.Loc.Instance["LblArcmin"]));
+            SizesFrom.Add(new KeyValuePair<string, string>("600", "10 " + Locale.Loc.Instance["LblArcmin"]));
+            SizesFrom.Add(new KeyValuePair<string, string>("1800", "30 " + Locale.Loc.Instance["LblArcmin"]));
+            SizesFrom.Add(new KeyValuePair<string, string>("3600", "1 " + Locale.Loc.Instance["LblDegree"]));
+            SizesFrom.Add(new KeyValuePair<string, string>("18000", "5 " + Locale.Loc.Instance["LblDegree"]));
+            SizesFrom.Add(new KeyValuePair<string, string>("36000", "10 " + Locale.Loc.Instance["LblDegree"]));
 
-            SizesThrough = new AsyncObservableCollection<KeyValuePair<string,string>>(SizesFrom);
+            SizesThrough = new AsyncObservableCollection<KeyValuePair<string, string>>(SizesFrom);
         }
 
         private void InitializeBrightnessFilters() {
@@ -325,8 +325,8 @@ namespace NINA.ViewModel {
 
             BrightnessFrom.Add(string.Empty);
             BrightnessThrough.Add(string.Empty);
-            
-            for (var i = 2;i < 19;i++) {
+
+            for (var i = 2; i < 19; i++) {
                 BrightnessFrom.Add(i.ToString());
                 BrightnessThrough.Add(i.ToString());
             }
@@ -341,7 +341,7 @@ namespace NINA.ViewModel {
         private void InitializeObjectTypeFilters() {
             var l = new DatabaseInteraction().GetObjectTypes(new System.Threading.CancellationToken());
             ObjectTypes = new AsyncObservableCollection<DSOObjectType>();
-            foreach(var t in l.Result) {
+            foreach (var t in l.Result) {
                 ObjectTypes.Add(new DSOObjectType(t));
             }
         }
@@ -353,7 +353,7 @@ namespace NINA.ViewModel {
             MagnitudesFrom.Add(string.Empty);
             MagnitudesThrough.Add(string.Empty);
 
-            for(var i = 1; i < 22; i++) {
+            for (var i = 1; i < 22; i++) {
                 MagnitudesFrom.Add(i.ToString());
                 MagnitudesThrough.Add(i.ToString());
             }
@@ -361,31 +361,31 @@ namespace NINA.ViewModel {
 
 
         private void InitializeRADecFilters() {
-            RAFrom = new AsyncObservableCollection<KeyValuePair<double?,string>>();
-            RAThrough = new AsyncObservableCollection<KeyValuePair<double?,string>>();
-            DecFrom = new AsyncObservableCollection<KeyValuePair<double?,string>>();
-            DecThrough = new AsyncObservableCollection<KeyValuePair<double?,string>>();
+            RAFrom = new AsyncObservableCollection<KeyValuePair<double?, string>>();
+            RAThrough = new AsyncObservableCollection<KeyValuePair<double?, string>>();
+            DecFrom = new AsyncObservableCollection<KeyValuePair<double?, string>>();
+            DecThrough = new AsyncObservableCollection<KeyValuePair<double?, string>>();
 
-            RAFrom.Add(new KeyValuePair<double?,string>(null,string.Empty));
-            RAThrough.Add(new KeyValuePair<double?,string>(null,string.Empty));
-            DecFrom.Add(new KeyValuePair<double?,string>(null,string.Empty));
-            DecThrough.Add(new KeyValuePair<double?,string>(null,string.Empty));
-            
+            RAFrom.Add(new KeyValuePair<double?, string>(null, string.Empty));
+            RAThrough.Add(new KeyValuePair<double?, string>(null, string.Empty));
+            DecFrom.Add(new KeyValuePair<double?, string>(null, string.Empty));
+            DecThrough.Add(new KeyValuePair<double?, string>(null, string.Empty));
+
             SelectedRAFrom = null;
             SelectedRAThrough = null;
             SelectedDecFrom = null;
             SelectedDecThrough = null;
 
-            for (int i = 0;i < 25;i++) {
+            for (int i = 0; i < 25; i++) {
 
                 Astrometry.HoursToDegrees(i);
 
-                RAFrom.Add(new KeyValuePair<double?,string>(Astrometry.HoursToDegrees(i), i.ToString()));
-                RAThrough.Add(new KeyValuePair<double?,string>(Astrometry.HoursToDegrees(i),i.ToString()));
+                RAFrom.Add(new KeyValuePair<double?, string>(Astrometry.HoursToDegrees(i), i.ToString()));
+                RAThrough.Add(new KeyValuePair<double?, string>(Astrometry.HoursToDegrees(i), i.ToString()));
             }
-            for (int i = -90;i < 91;i = i + 5) {
-                DecFrom.Add(new KeyValuePair<double?,string>(i,i.ToString()));
-                DecThrough.Add(new KeyValuePair<double?,string>(i,i.ToString()));
+            for (int i = -90; i < 91; i = i + 5) {
+                DecFrom.Add(new KeyValuePair<double?, string>(i, i.ToString()));
+                DecThrough.Add(new KeyValuePair<double?, string>(i, i.ToString()));
             }
         }
 
@@ -393,10 +393,10 @@ namespace NINA.ViewModel {
         private AsyncObservableCollection<DSOObjectType> _objectTypes;
         private AsyncObservableCollection<string> _constellations;
         private string _selectedConstellation;
-        private AsyncObservableCollection<KeyValuePair<double?,string>> _rAFrom;
-        private AsyncObservableCollection<KeyValuePair<double?,string>> _rAThrough;
-        private AsyncObservableCollection<KeyValuePair<double?,string>> _decFrom;
-        private AsyncObservableCollection<KeyValuePair<double?,string>> _decThrough;
+        private AsyncObservableCollection<KeyValuePair<double?, string>> _rAFrom;
+        private AsyncObservableCollection<KeyValuePair<double?, string>> _rAThrough;
+        private AsyncObservableCollection<KeyValuePair<double?, string>> _decFrom;
+        private AsyncObservableCollection<KeyValuePair<double?, string>> _decThrough;
         private double? _selectedRAFrom;
         private double? _selectedRAThrough;
         private double? _selectedDecFrom;
@@ -405,8 +405,8 @@ namespace NINA.ViewModel {
         private AsyncObservableCollection<string> _brightnessThrough;
         private string _selectedBrightnessFrom;
         private string _selectedBrightnessThrough;
-        private AsyncObservableCollection<KeyValuePair<string,string>> _sizesFrom;
-        private AsyncObservableCollection<KeyValuePair<string,string>> _sizesThrough;
+        private AsyncObservableCollection<KeyValuePair<string, string>> _sizesFrom;
+        private AsyncObservableCollection<KeyValuePair<string, string>> _sizesThrough;
         private string _selectedSizeFrom;
         private string _selectedSizeThrough;
         private AsyncObservableCollection<string> _magnitudesFrom;
@@ -416,7 +416,7 @@ namespace NINA.ViewModel {
         private AsyncObservableCollection<DeepSkyObject> _searchResult;
         private AsyncObservableCollection<DateTime> _altitudeTimesFrom;
         private AsyncObservableCollection<DateTime> _altitudeTimesThrough;
-        private AsyncObservableCollection<KeyValuePair<double,string>> _minimumAltitudeDegrees;
+        private AsyncObservableCollection<KeyValuePair<double, string>> _minimumAltitudeDegrees;
         private DateTime _selectedAltitudeTimeFrom;
         private DateTime _selectedAltitudeTimeThrough;
         private double _selectedMinimumAltitudeDegrees;
@@ -439,7 +439,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-        public AsyncObservableCollection<KeyValuePair<double,string>> MinimumAltitudeDegrees {
+        public AsyncObservableCollection<KeyValuePair<double, string>> MinimumAltitudeDegrees {
             get {
                 return _minimumAltitudeDegrees;
             }
@@ -522,7 +522,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public AsyncObservableCollection<KeyValuePair<double?,string>> RAFrom {
+        public AsyncObservableCollection<KeyValuePair<double?, string>> RAFrom {
             get {
                 return _rAFrom;
             }
@@ -533,7 +533,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public AsyncObservableCollection<KeyValuePair<double?,string>> RAThrough {
+        public AsyncObservableCollection<KeyValuePair<double?, string>> RAThrough {
             get {
                 return _rAThrough;
             }
@@ -544,7 +544,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public AsyncObservableCollection<KeyValuePair<double?,string>> DecFrom {
+        public AsyncObservableCollection<KeyValuePair<double?, string>> DecFrom {
             get {
                 return _decFrom;
             }
@@ -555,7 +555,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public AsyncObservableCollection<KeyValuePair<double?,string>> DecThrough {
+        public AsyncObservableCollection<KeyValuePair<double?, string>> DecThrough {
             get {
                 return _decThrough;
             }
@@ -654,7 +654,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public AsyncObservableCollection<KeyValuePair<string,string>> SizesFrom {
+        public AsyncObservableCollection<KeyValuePair<string, string>> SizesFrom {
             get {
                 return _sizesFrom;
             }
@@ -665,7 +665,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public AsyncObservableCollection<KeyValuePair<string,string>> SizesThrough {
+        public AsyncObservableCollection<KeyValuePair<string, string>> SizesThrough {
             get {
                 return _sizesThrough;
             }
@@ -745,7 +745,7 @@ namespace NINA.ViewModel {
         public ICommand SearchCommand { get; private set; }
 
         public ICommand CancelSearchCommand { get; private set; }
-        
+
         public AsyncObservableCollection<DeepSkyObject> SearchResult {
             get {
                 return _searchResult;

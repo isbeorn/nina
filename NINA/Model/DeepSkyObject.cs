@@ -111,11 +111,11 @@ namespace NINA.Model {
             }
         }
 
-        private AsyncObservableCollection<DataPoint> _altitudes;
-        public AsyncObservableCollection<DataPoint> Altitudes {
+        private List<DataPoint> _altitudes;
+        public List<DataPoint> Altitudes {
             get {
                 if (_altitudes == null) {
-                    _altitudes = new AsyncObservableCollection<DataPoint>();
+                    _altitudes = new List<DataPoint>();
                     CalculateAltitude(_referenceDate,_latitude,_longitude);
                 }
                 return _altitudes;
@@ -126,11 +126,11 @@ namespace NINA.Model {
             }
         }
         
-        private AsyncObservableCollection<string> _alsoKnownAs;
-        public AsyncObservableCollection<string> AlsoKnownAs {
+        private List<string> _alsoKnownAs;
+        public List<string> AlsoKnownAs {
             get {
                 if(_alsoKnownAs == null) {
-                    _alsoKnownAs = new AsyncObservableCollection<string>();
+                    _alsoKnownAs = new List<string>();
                 }
                 return _alsoKnownAs;
             }
