@@ -49,19 +49,19 @@
     <NotificationErrorColor Color="#FFDB0606" />
   </ColorSchema>
   <ColorSchema Name="Persian">
-    <PrimaryColor Color="#FFFFFFFF" />
+    <PrimaryColor Color="#FFECF0F1" />
     <SecondaryColor Color="#FF9E9E9E" />
     <BorderColor Color="#AABCBCBC" />
     <BackgroundColor Color="#FF263238" />
     <ButtonBackgroundColor Color="#FF00796B" />
     <ButtonBackgroundSelectedColor Color="#FF00A592" />
-    <ButtonForegroundColor Color="#FFD8D8D8" />
+    <ButtonForegroundColor Color="#FFECF0F1" />
     <ButtonForegroundDisabledColor Color="#FF9E9E9E" />
     <NotificationWarningColor Color="#FFF5A300" />
     <NotificationErrorColor Color="#FFDB0606" />
   </ColorSchema>
   <ColorSchema Name="Persian Faint">
-    <PrimaryColor Color="#FFECF0F1" />
+    <PrimaryColor Color="#FFBDC3C7" />
     <SecondaryColor Color="#FF1D2731" />
     <BorderColor Color="#AA3F4141" />
     <BackgroundColor Color="#FF263238" />
@@ -84,7 +84,7 @@
     <NotificationWarningColor Color="#FFF5A300" />
     <NotificationErrorColor Color="#FFDB0606" />
   </ColorSchema>
-  <ColorSchema Name="Black Coral">    
+  <ColorSchema Name="Black Coral">
     <PrimaryColor Color="#FFDEDEE8" />
     <SecondaryColor Color="#FF592941" />
     <BorderColor Color="#FF656F87" />
