@@ -20,6 +20,7 @@
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="40" />
@@ -77,9 +78,20 @@
                         Stretch="Uniform" />
                 </Grid>
             </Button>
+            <Button
+                Grid.Column="3"
+                Margin="2.5"
+                Click="ButtonZoomOneToOne_Click">
+                <Button.ToolTip>
+                    <ToolTip ToolTipService.ShowOnDisabled="False">
+                        <TextBlock Text="{ns:Loc LblOneToOne}" />
+                    </ToolTip>
+                </Button.ToolTip>
+                <TextBlock Text="1:1" />
+            </Button>
 
             <ninactrl:CancellableButton
-                Grid.Column="4"
+                Grid.Column="5"
                 Margin="2.5"
                 ButtonImage="{StaticResource PlatesolveSVG}"
                 CancelButtonImage="{StaticResource CancelSVG}"
@@ -88,7 +100,7 @@
                 ToolTip="{ns:Loc LblPlateSolveImage}" />
 
             <ToggleButton
-                Grid.Column="5"
+                Grid.Column="6"
                 Margin="2.5"
                 IsChecked="{Binding ShowCrossHair}">
                 <ToggleButton.ToolTip>
@@ -127,7 +139,7 @@
             </ToggleButton>
 
             <ToggleButton
-                Grid.Column="6"
+                Grid.Column="7"
                 Margin="2.5"
                 Command="{Binding PrepareImageCommand}"
                 IsChecked="{Binding AutoStretch}">
@@ -167,7 +179,7 @@
             </ToggleButton>
 
             <ToggleButton
-                Grid.Column="7"
+                Grid.Column="8"
                 Margin="2.5"
                 Command="{Binding PrepareImageCommand}"
                 IsChecked="{Binding DetectStars}">
@@ -284,8 +296,7 @@
                     Stretch="Uniform" />
                 <Grid x:Name="grid">
                     <Image
-                        Width="{Binding ActualWidth, ElementName=sv}"
-                        Height="{Binding ActualHeight, ElementName=sv}"
+                        x:Name="image"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         RenderOptions.BitmapScalingMode="HighQuality"

@@ -22,11 +22,12 @@ namespace NINA.View {
         Point? lastMousePositionOnTarget;
         Point? lastDragPoint;
 
-        const double DEFAULTSCALE = 0.975;
+        double fittingScale = 1;
 
         public ImageAreaView() {
             InitializeComponent();
 
+            sv.SizeChanged += Sv_SizeChanged;
             sv.ScrollChanged += OnsvScrollChanged;
             sv.MouseLeftButtonUp += OnMouseLeftButtonUp;
             sv.PreviewMouseLeftButtonUp += OnMouseLeftButtonUp;
@@ -34,8 +35,12 @@ namespace NINA.View {
 
             sv.PreviewMouseLeftButtonDown += OnMouseLeftButtonDown;
             sv.MouseMove += OnMouseMove;
-            scaleTransform.ScaleX = DEFAULTSCALE;
-            scaleTransform.ScaleY = DEFAULTSCALE;
+            scaleTransform.ScaleX = fittingScale;
+            scaleTransform.ScaleY = fittingScale;
+        }
+
+        private void Sv_SizeChanged(object sender, SizeChangedEventArgs e) {
+            RecalculateScalingFactors();
         }
 
         void OnMouseMove(object sender, MouseEventArgs e) {
@@ -68,13 +73,13 @@ namespace NINA.View {
 
             var val = scaleTransform.ScaleX;
             if (e.Delta > 0) {
-                val += .25;
+                val += val * .25;
             }
             if (e.Delta < 0) {
-                val -= .25;
+                val -= val * .25;
             }
 
-            zoom(val);
+            Zoom(val);
 
             var centerOfViewport = new Point(sv.ViewportWidth / 2,
                                              sv.ViewportHeight / 2);
@@ -82,8 +87,8 @@ namespace NINA.View {
             e.Handled = true;
         }
 
-        private void zoom(double val) {
-            if (val < 0.25) { val = 0.25; }
+        private void Zoom(double val) {
+            if (val < 0) { val = 0; }
             scaleTransform.ScaleX = val;
             scaleTransform.ScaleY = val;
 
@@ -104,6 +109,17 @@ namespace NINA.View {
             var centerOfViewport = new Point(sv.ViewportWidth / 2,
                                              sv.ViewportHeight / 2);
             lastCenterPositionOnTarget = sv.TranslatePoint(centerOfViewport, grid);
+        }
+
+        void RecalculateScalingFactors() {
+            if (image?.ActualWidth > 0) {
+                var scale = sv.ViewportWidth / image.ActualWidth;
+                if (fittingScale != scale) {
+                    var newScaleFactor = fittingScale / scale;
+                    fittingScale = scale;
+                    Zoom(scaleTransform.ScaleX * newScaleFactor);
+                }
+            }
         }
 
         void OnsvScrollChanged(object sender, ScrollChangedEventArgs e) {
@@ -151,7 +167,7 @@ namespace NINA.View {
         }
 
         private void ButtonZoomIn_Click(object sender, RoutedEventArgs e) {
-            zoom(scaleTransform.ScaleX + 0.25);
+            Zoom(scaleTransform.ScaleX + scaleTransform.ScaleX * 0.25);
             var centerOfViewport = new Point(sv.ViewportWidth / 2,
                                                          sv.ViewportHeight / 2);
             lastCenterPositionOnTarget =
@@ -159,14 +175,19 @@ namespace NINA.View {
 
         }
         private void ButtonZoomOut_Click(object sender, RoutedEventArgs e) {
-            zoom(scaleTransform.ScaleX - 0.25);
+            Zoom(scaleTransform.ScaleX - scaleTransform.ScaleX * 0.25);
             var centerOfViewport = new Point(sv.ViewportWidth / 2,
                                                          sv.ViewportHeight / 2);
             lastCenterPositionOnTarget =
                   sv.TranslatePoint(centerOfViewport, grid);
         }
         private void ButtonZoomReset_Click(object sender, RoutedEventArgs e) {
-            zoom(DEFAULTSCALE);
+            RecalculateScalingFactors();
+            Zoom(fittingScale);
+        }
+
+        private void ButtonZoomOneToOne_Click(object sender, RoutedEventArgs e) {
+            Zoom(1);
         }
     }
 }
