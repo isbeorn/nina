@@ -30,7 +30,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         LoadingImageBrush="{StaticResource PrimaryBrush}"
-                        Visibility="{Binding ChoosFocuserCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
+                        Visibility="{Binding ChooseFocuserCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
                     <ComboBox
                         Grid.Column="1"
                         MinHeight="40"
