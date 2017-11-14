@@ -27,17 +27,6 @@
                                     Style="{StaticResource TabItemPath}" />
                             </Grid>
 
-                            <Path
-                                Width="10"
-                                Height="10"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                Data="{StaticResource PowerSVG}"
-                                Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                Opacity="0.5"
-                                Stretch="Uniform"
-                                Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
-
                             <Grid Visibility="{Binding CameraVM.Cam, Converter={StaticResource NullToVisibilityConverter}}">
                                 <Path
                                     Width="10"
@@ -45,8 +34,8 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Bottom"
                                     Data="{StaticResource PowerSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}"
                                     Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -66,17 +55,6 @@
                                         Stretch="Uniform"
                                         Style="{StaticResource TabItemPath}" />
                                 </Grid>
-                                <Path
-                                    Width="10"
-                                    Height="10"
-                                    Margin="0,0,0,5"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Bottom"
-                                    Data="{StaticResource PowerSVG}"
-                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                    Opacity="0.5"
-                                    Stretch="Uniform"
-                                    Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
                                 <Grid Margin="0,0,0,5" Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}">
                                     <Path
@@ -85,8 +63,8 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
                                         Data="{StaticResource PowerSVG}"
-                                        Fill="{StaticResource ButtonForegroundBrush}"
                                         Stretch="Uniform"
+                                        Style="{StaticResource TabItemPath}"
                                         Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}" />
                                 </Grid>
                             </Grid>
@@ -98,17 +76,6 @@
                                         Stretch="Uniform"
                                         Style="{StaticResource TabItemPath}" />
                                 </Grid>
-                                <Path
-                                    Width="10"
-                                    Height="10"
-                                    Margin="0,0,0,5"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Bottom"
-                                    Data="{StaticResource PowerSVG}"
-                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                    Opacity="0.5"
-                                    Stretch="Uniform"
-                                    Visibility="{Binding FocuserVM.Focuser.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
                                 <Grid Margin="0,0,0,5" Visibility="{Binding FocuserVM.Focuser, Converter={StaticResource NullToVisibilityConverter}}">
                                     <Path
@@ -117,8 +84,8 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Bottom"
                                         Data="{StaticResource PowerSVG}"
-                                        Fill="{StaticResource ButtonForegroundBrush}"
                                         Stretch="Uniform"
+                                        Style="{StaticResource TabItemPath}"
                                         Visibility="{Binding FocuserVM.Focuser.Connected, Converter={StaticResource VisibilityConverter}}" />
                                 </Grid>
                             </Grid>
@@ -141,16 +108,6 @@
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}" />
                             </Grid>
-                            <Path
-                                Width="10"
-                                Height="10"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                Data="{StaticResource PowerSVG}"
-                                Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                Opacity="0.5"
-                                Stretch="Uniform"
-                                Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
                             <Grid Visibility="{Binding TelescopeVM.Telescope, Converter={StaticResource NullToVisibilityConverter}}">
                                 <Path
@@ -159,8 +116,8 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Bottom"
                                     Data="{StaticResource PowerSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}"
                                     Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>
@@ -180,16 +137,6 @@
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}" />
                             </Grid>
-                            <Path
-                                Width="10"
-                                Height="10"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                Data="{StaticResource PowerSVG}"
-                                Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                Opacity="0.5"
-                                Stretch="Uniform"
-                                Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
                             <Grid Visibility="{Binding GuiderVM.Guider, Converter={StaticResource NullToVisibilityConverter}}">
                                 <Path
@@ -198,8 +145,8 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Bottom"
                                     Data="{StaticResource PowerSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}"
                                     Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource VisibilityConverter}}" />
                             </Grid>
                         </Grid>

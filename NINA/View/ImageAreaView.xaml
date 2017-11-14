@@ -87,7 +87,7 @@
                         <TextBlock Text="{ns:Loc LblOneToOne}" />
                     </ToolTip>
                 </Button.ToolTip>
-                <TextBlock Text="1:1" />
+                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="1:1" />
             </Button>
 
             <ninactrl:CancellableButton
