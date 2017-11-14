@@ -262,7 +262,7 @@ namespace NINA.ViewModel {
         public async Task<bool> StartSequence(CaptureSequenceList sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
 
             //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
-            await semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync(tokenSource.Token);
 
             if (_cameraConnected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
@@ -398,7 +398,7 @@ namespace NINA.ViewModel {
             semaphoreSlim.Release();
             await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CheckMeridianFlip, new object[] { seq, tokenSource });
             /*Reaquire lock*/
-            await semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync(tokenSource.Token);
         }
 
         ImageControlVM _imageControl;
