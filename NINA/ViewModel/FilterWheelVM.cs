@@ -110,7 +110,7 @@ namespace NINA.ViewModel {
             get {
                 return _fW;
             }
-            set {
+            private set {
                 _fW = value;
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.FilterWheelChanged, _fW);
@@ -129,13 +129,14 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> ChooseFW() {
-            FW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
+            var fW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
             _cancelChooseFilterWheelSource = new CancellationTokenSource();
-            if (FW != null) {
+            if (fW != null) {
                 try {
-                    var connected = await FW?.Connect(_cancelChooseFilterWheelSource.Token);
+                    var connected = await fW?.Connect(_cancelChooseFilterWheelSource.Token);
                     _cancelChooseFilterWheelSource.Token.ThrowIfCancellationRequested();
                     if (connected) {
+                        this.FW = fW;
                         Notification.ShowSuccess(Locale.Loc.Instance["LblFilterwheelConnected"]);
                         Settings.FilterWheelId = FW.Id;
                         if (FW.Position > -1) {
@@ -143,10 +144,11 @@ namespace NINA.ViewModel {
                         }
                         return true;
                     } else {
+                        this.FW = null;
                         return false;
                     }
                 } catch (OperationCanceledException) {
-                    if (FW?.Connected == true) { Disconnect(); }
+                    if (fW?.Connected == true) { Disconnect(); }
                     return false;
                 }
 

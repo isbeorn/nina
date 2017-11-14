@@ -90,7 +90,7 @@ namespace NINA.ViewModel {
             get {
                 return _telescope;
             }
-            set {
+            private set {
                 _telescope = value;
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.TelescopeChanged, _telescope);
@@ -113,13 +113,14 @@ namespace NINA.ViewModel {
 
         private async Task<bool> ChooseTelescope() {
             _updateTelescope.Stop();
-            Telescope = (ITelescope)TelescopeChooserVM.SelectedDevice;
+            var telescope = (ITelescope)TelescopeChooserVM.SelectedDevice;
             _cancelChooseTelescopeSource = new CancellationTokenSource();
-            if (Telescope != null) {
+            if (telescope != null) {
                 try {
-                    var connected = await Telescope?.Connect(_cancelChooseTelescopeSource.Token);
+                    var connected = await telescope?.Connect(_cancelChooseTelescopeSource.Token);
                     _cancelChooseTelescopeSource.Token.ThrowIfCancellationRequested();
                     if (connected) {
+                        Telescope = telescope;
                         Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
                         _updateTelescope.Start();
                         Settings.TelescopeId = Telescope.Id;
@@ -129,7 +130,7 @@ namespace NINA.ViewModel {
                         return false;
                     }
                 } catch (OperationCanceledException) {
-                    if (Telescope?.Connected == true) { Disconnect(); }
+                    if (telescope?.Connected == true) { Disconnect(); }
                     return false;
                 }
             } else {

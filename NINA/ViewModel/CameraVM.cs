@@ -207,29 +207,29 @@ namespace NINA.ViewModel {
             }
         }
 
-
         private Model.MyCamera.ICamera _cam;
         public Model.MyCamera.ICamera Cam {
             get {
                 return _cam;
             }
-            set {
+            private set {
                 _cam = value;
+                RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.CameraChanged, _cam);
             }
         }
 
         private async Task<bool> ChooseCamera() {
-            Cam = (ICamera)CameraChooserVM.SelectedDevice;
+
+            var cam = (ICamera)CameraChooserVM.SelectedDevice;
             _cancelConnectCameraSource = new CancellationTokenSource();
-            if (Cam != null) {
+            if (cam != null) {
                 try {
-                    var connected = await Cam.Connect(_cancelConnectCameraSource.Token);
+                    var connected = await cam.Connect(_cancelConnectCameraSource.Token);
                     _cancelConnectCameraSource.Token.ThrowIfCancellationRequested();
                     if (connected) {
+                        this.Cam = cam;
                         Connected = true;
-                        RaisePropertyChanged(nameof(Cam));
-
                         Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
 
                         _cancelUpdateCameraValues?.Cancel();
@@ -237,10 +237,11 @@ namespace NINA.ViewModel {
                         _cancelUpdateCameraValues = new CancellationTokenSource();
                         _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
 
-                        Settings.CameraId = Cam.Id;
+                        Settings.CameraId = this.Cam.Id;
                         return true;
+
                     } else {
-                        Cam = null;
+                        this.Cam = null;
                         return false;
                     }
                 } catch (OperationCanceledException) {

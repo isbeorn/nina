@@ -80,13 +80,14 @@ namespace NINA.ViewModel {
         CancellationTokenSource _cancelChooseFocuserSource;
 
         public async Task<bool> ChooseFocuser() {
-            Focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
+            var focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
             _cancelChooseFocuserSource = new CancellationTokenSource();
-            if (Focuser != null) {
+            if (focuser != null) {
                 try {
-                    var connected = await Focuser?.Connect(_cancelChooseFocuserSource.Token);
+                    var connected = await focuser?.Connect(_cancelChooseFocuserSource.Token);
                     _cancelChooseFocuserSource.Token.ThrowIfCancellationRequested();
                     if (connected) {
+                        this.Focuser = focuser;
                         Connected = true;
                         Notification.ShowSuccess(Locale.Loc.Instance["LblFocuserConnected"]);
                         _cancelUpdateFocuserValues?.Cancel();
@@ -99,7 +100,7 @@ namespace NINA.ViewModel {
                         return true;
                     } else {
                         Connected = false;
-                        Focuser = null;
+                        this.Focuser = null;
                         return false;
                     }
                 } catch (OperationCanceledException) {
@@ -268,7 +269,7 @@ namespace NINA.ViewModel {
             get {
                 return _focuser;
             }
-            set {
+            private set {
                 _focuser = value;
                 RaisePropertyChanged();
             }
