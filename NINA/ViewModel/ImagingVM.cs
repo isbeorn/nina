@@ -256,13 +256,17 @@ namespace NINA.ViewModel {
             return true;
         }
 
+        //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
+        static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+
         public async Task<bool> StartSequence(CaptureSequenceList sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
+
+            //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
+            await semaphoreSlim.WaitAsync();
+
             if (_cameraConnected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
-                return false;
-            }
-            if (IsExposing) {
-                Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
+                semaphoreSlim.Release();
                 return false;
             }
 
@@ -360,6 +364,7 @@ namespace NINA.ViewModel {
                     }
                 } finally {
                     progress.Report(ExposureStatus.IDLE);
+                    semaphoreSlim.Release();
                 }
                 return true;
             });
@@ -388,7 +393,12 @@ namespace NINA.ViewModel {
         /// <returns></returns>
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
             progress.Report("Check Meridian Flip");
+
+            /*Release lock in case meridian flip has to be done and thus a platesolve */
+            semaphoreSlim.Release();
             await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CheckMeridianFlip, new object[] { seq, tokenSource });
+            /*Reaquire lock*/
+            await semaphoreSlim.WaitAsync();
         }
 
         ImageControlVM _imageControl;
@@ -428,27 +438,21 @@ namespace NINA.ViewModel {
 
         public async Task<bool> CaptureImage(IProgress<string> progress) {
             _captureImageToken = new CancellationTokenSource();
-            if (IsExposing) {
-                Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
-                return false;
-            } else {
-                do {
-                    CaptureSequenceList seq = new CaptureSequenceList(new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                    await StartSequence(seq, SnapSave, _captureImageToken, progress);
-                    _captureImageToken.Token.ThrowIfCancellationRequested();
-                } while (Loop);
-                return true;
-            }
+
+            do {
+                CaptureSequenceList seq = new CaptureSequenceList(new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
+                await StartSequence(seq, SnapSave, _captureImageToken, progress);
+                _captureImageToken.Token.ThrowIfCancellationRequested();
+            } while (Loop);
+            return true;
+
         }
 
         public async Task<bool> CaptureImage(CaptureSequence seq, bool bsave, IProgress<string> progress, CancellationTokenSource token) {
-            if (IsExposing) {
-                Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
-                return false;
-            } else {
-                var list = new CaptureSequenceList(seq);
-                return await StartSequence(list, bsave, token, progress);
-            }
+
+            var list = new CaptureSequenceList(seq);
+            return await StartSequence(list, bsave, token, progress);
+
         }
 
         public static class ExposureStatus {
