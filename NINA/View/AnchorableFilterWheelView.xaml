@@ -24,6 +24,7 @@
                         HorizontalAlignment="Left"
                         BorderBrush="Transparent"
                         IsChecked="{Binding FW.Connected, FallbackValue=False, Mode=OneWay}"
+                        IsEnabled="False"
                         Style="{StaticResource CheckmarkCheckbox}" />
                 </UniformGrid>
             </Border>

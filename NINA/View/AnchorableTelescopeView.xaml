@@ -24,6 +24,7 @@
                         HorizontalAlignment="Left"
                         BorderBrush="Transparent"
                         IsChecked="{Binding Telescope.Connected, FallbackValue=False, Mode=OneWay}"
+                        IsEnabled="False"
                         Style="{StaticResource CheckmarkCheckbox}" />
                 </UniformGrid>
             </Border>
@@ -40,6 +41,7 @@
                         HorizontalAlignment="Left"
                         BorderBrush="Transparent"
                         IsChecked="{Binding Telescope.Tracking, FallbackValue=False, Mode=OneWay}"
+                        IsEnabled="False"
                         Style="{StaticResource CheckmarkCheckbox}" />
                 </UniformGrid>
             </Border>

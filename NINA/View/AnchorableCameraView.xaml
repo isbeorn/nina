@@ -27,6 +27,7 @@
                                 HorizontalAlignment="Left"
                                 BorderBrush="Transparent"
                                 IsChecked="{Binding Connected, FallbackValue=False, Mode=OneWay}"
+                                IsEnabled="False"
                                 Style="{StaticResource CheckmarkCheckbox}" />
                         </UniformGrid>
                     </Border>
@@ -41,7 +42,8 @@
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
-                                IsChecked="{Binding CoolerOn}" />
+                                IsChecked="{Binding CoolerOn}"
+                                IsEnabled="False" />
                         </UniformGrid>
                     </Border>
                     <Border
