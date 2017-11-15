@@ -209,5 +209,8 @@
     <Setting Name="TelescopeSnapPortStop" Type="System.String" Scope="User">
       <Value Profile="(Default)">:SNAP1,0#</Value>
     </Setting>
+    <Setting Name="UpdateSettings" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

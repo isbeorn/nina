@@ -10,6 +10,12 @@ namespace NINA.Utility {
     static class Settings {
 
         static Settings() {
+            if (NINA.Properties.Settings.Default.UpdateSettings) {
+                NINA.Properties.Settings.Default.Upgrade();
+                NINA.Properties.Settings.Default.UpdateSettings = false;
+                NINA.Properties.Settings.Default.Save();
+            }
+
             ColorSchemas = ColorSchemas.ReadColorSchemas();
 
             System.Threading.Thread.CurrentThread.CurrentUICulture = Language;
