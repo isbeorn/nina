@@ -33,6 +33,8 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => _focusPosition = (int)o, MediatorMessages.FocuserPositionChanged);
             Mediator.Instance.Register((object o) => _focuserConnected = (bool)o, MediatorMessages.FocuserConnectedChanged);
             Mediator.Instance.Register((object o) => _cameraConnected = (bool)o, MediatorMessages.CameraConnectedChanged);
+            Mediator.Instance.Register((object o) => _temperature = (double)o, MediatorMessages.FocuserTemperatureChanged);
+            
         }
 
         private CancellationTokenSource _autoFocusCancelToken;
@@ -89,6 +91,7 @@ namespace NINA.ViewModel {
         private int _focusPosition;
         private bool _focuserConnected;
         private bool _cameraConnected;
+        private double _temperature;
 
         private async Task GetFocusPoints(int nrOfSteps, IProgress<string> progress, CancellationToken token, int offset = 0) {
             var stepSize = Settings.FocuserAutoFocusStepSize;
@@ -128,7 +131,7 @@ namespace NINA.ViewModel {
             LeftTrend = new TrendLine(leftTrendPoints);
             RightTrend = new TrendLine(rightTrendPoints);
         }
-
+        
         private async Task<bool> StartAutoFocus(IProgress<string> progress) {
             if (!(_focuserConnected && _cameraConnected)) {
                 Notification.ShowError(Locale.Loc.Instance["LblAutoFocusGearNotConnected"]);
@@ -197,6 +200,8 @@ namespace NINA.ViewModel {
 
                 progress.Report((string.Format("Ideal Position: {0}, Theoretical HFR: {1}", p.X, Math.Round(p.Y, 2))));
 
+                LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = p, Temperature = _temperature, Timestamp = DateTime.Now };
+
                 //Todo when data is too noisy for trend lines find something else
 
 
@@ -211,12 +216,29 @@ namespace NINA.ViewModel {
             return true;
         }
 
+        private AutoFocusPoint _lastAutoFocusPoint;
+        public AutoFocusPoint LastAutoFocusPoint {
+            get {
+                return _lastAutoFocusPoint;
+            }
+            set {
+                _lastAutoFocusPoint = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private void CancelAutoFocus(object obj) {
             _autoFocusCancelToken?.Cancel();
         }
 
         public ICommand StartAutoFocusCommand { get; private set; }
         public ICommand CancelAutoFocusCommand { get; private set; }
+    }
+
+    public class AutoFocusPoint {
+        public DataPoint Focuspoint { get; set; }
+        public DateTime Timestamp { get; set; }
+        public double Temperature { get; set; }
     }
 
     public class FocusPointComparer : IComparer<DataPoint> {
