@@ -114,9 +114,12 @@
                 CancelButtonImage="{StaticResource CancelSVG}"
                 CancelCommand="{Binding CancelSequenceCommand}"
                 Command="{Binding StartSequenceCommand}"
+                IsPaused="{Binding IsPaused}"
                 LoadingImageBrush="{StaticResource PrimaryBrush}"
                 PauseButtonImage="{StaticResource LightBulbSVG}"
                 PauseCommand="{Binding PauseSequenceCommand}"
+                ResumeButtonImage="{StaticResource PlaySVG}"
+                ResumeCommand="{Binding ResumeSequenceCommand}"
                 ToolTip="{ns:Loc LblTooltipStartSequence}" />
         </StackPanel>
     </ScrollViewer>

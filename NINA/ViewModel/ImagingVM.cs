@@ -21,6 +21,7 @@ using System.ComponentModel;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
 using NINA.Utility.Notification;
+using Nito.AsyncEx;
 
 namespace NINA.ViewModel {
     class ImagingVM : DockableVM {
@@ -47,7 +48,11 @@ namespace NINA.ViewModel {
                 bool save = (bool)args[1];
                 CancellationTokenSource token = (CancellationTokenSource)args[2];
                 IProgress<string> progress = (IProgress<string>)args[3];
-                await StartSequence(seq, save, token, progress);
+                PauseToken pauseToken;
+                if (args.Length >= 5) {
+                    pauseToken = (PauseToken)args[4];
+                }
+                await StartSequence(seq, save, token, progress, pauseToken);
             }, AsyncMediatorMessages.StartSequence);
 
             Mediator.Instance.RegisterAsync(async (object o) => {
@@ -259,7 +264,7 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public async Task<bool> StartSequence(CaptureSequenceList sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        public async Task<bool> StartSequence(CaptureSequenceList sequence, bool bSave, CancellationTokenSource tokenSource, IProgress<string> progress, PauseToken pauseToken = new PauseToken()) {
 
             //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
             await semaphoreSlim.WaitAsync(tokenSource.Token);
@@ -351,6 +356,15 @@ namespace NINA.ViewModel {
                             tokenSource.Cancel();
                             throw new OperationCanceledException();
                         }
+
+                        if (pauseToken.IsPaused) {
+                            semaphoreSlim.Release();
+                            progress.Report("Paused");
+                            await pauseToken.WaitWhilePausedAsync(tokenSource.Token);
+                            progress.Report("Resume sequence");
+                            await semaphoreSlim.WaitAsync(tokenSource.Token);
+                        }
+
                     }
                 } catch (System.OperationCanceledException ex) {
                     Logger.Trace(ex.Message);

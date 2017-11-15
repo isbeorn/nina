@@ -396,40 +396,50 @@
 
             </DataGrid.Columns>
         </DataGrid>
-        <StackPanel
-            Grid.Row="2"
-            Margin="0,5,0,5"
-            Orientation="Horizontal">
-            <Button Width="40" Command="{Binding AddSequenceCommand}">
-                <Button.ToolTip>
-                    <ToolTip ToolTipService.ShowOnDisabled="True">
-                        <TextBlock Text="{ns:Loc LblTooltipAddSequence}" />
-                    </ToolTip>
-                </Button.ToolTip>
-                <Path
-                    Margin="5"
-                    Data="{StaticResource AddSVG}"
-                    Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform" />
-            </Button>
-            <Button Width="40" Command="{Binding RemoveSequenceCommand}">
-                <Button.ToolTip>
-                    <ToolTip ToolTipService.ShowOnDisabled="True">
-                        <TextBlock Text="{ns:Loc LblTooltipRemoveSequence}" />
-                    </ToolTip>
-                </Button.ToolTip>
-                <Path
-                    Margin="5"
-                    Data="{StaticResource SubstractSVG}"
-                    Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform" />
-            </Button>
-            <ninactrl:CancellableButton
-                ButtonImage="{StaticResource PlaySVG}"
-                CancelButtonImage="{StaticResource CancelSVG}"
-                CancelCommand="{Binding CancelSequenceCommand}"
-                Command="{Binding StartSequenceCommand}"
-                ToolTip="{ns:Loc LblTooltipStartSequence}" />
-        </StackPanel>
+        <DockPanel Grid.Row="2" Margin="5">
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                <Button Width="40" Command="{Binding AddSequenceCommand}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipAddSequence}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource AddSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+                <Button Width="40" Command="{Binding RemoveSequenceCommand}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipRemoveSequence}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SubstractSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+
+            </StackPanel>
+            <Grid DockPanel.Dock="Right" MinWidth="300" HorizontalAlignment="Right">
+                <ninactrl:AsyncProcessButton
+                    ButtonImage="{StaticResource PlaySVG}"
+                    CancelButtonImage="{StaticResource CancelSVG}"
+                    CancelCommand="{Binding CancelSequenceCommand}"
+                    Command="{Binding StartSequenceCommand}"
+                    IsPaused="{Binding IsPaused}"
+                    LoadingImageBrush="{StaticResource PrimaryBrush}"
+                    PauseButtonImage="{StaticResource LightBulbSVG}"
+                    PauseCommand="{Binding PauseSequenceCommand}"
+                    ResumeButtonImage="{StaticResource PlaySVG}"
+                    ResumeCommand="{Binding ResumeSequenceCommand}"
+                    ToolTip="{ns:Loc LblTooltipStartSequence}" />
+            </Grid>
+
+        </DockPanel>
+
     </Grid>
 </UserControl>

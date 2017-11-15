@@ -1,5 +1,6 @@
 ﻿using NINA.Model;
 using NINA.Utility;
+using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,15 +22,39 @@ namespace NINA.ViewModel {
             RemoveSequenceCommand = new RelayCommand(RemoveSequence);
             StartSequenceCommand = new AsyncCommand<bool>(() => StartSequence(new Progress<string>(p => Status = p)));
             CancelSequenceCommand = new RelayCommand(CancelSequence);
+            PauseSequenceCommand = new RelayCommand(PauseSequence);
+            ResumeSequenceCommand = new RelayCommand(ResumeSequence);
 
             RegisterMediatorMessages();
         }
 
-        private void CancelSequence(object obj) {
-            _canceltoken?.Cancel();
+        private void ResumeSequence(object obj) {
+            if (_pauseTokenSource != null) {
+                _pauseTokenSource.IsPaused = false;
+                RaisePropertyChanged(nameof(IsPaused));
+            }
         }
 
+        private void PauseSequence(object obj) {
+            if (_pauseTokenSource != null) {
+                _pauseTokenSource.IsPaused = true;
+                RaisePropertyChanged(nameof(IsPaused));
+            }
+        }
+
+        private void CancelSequence(object obj) {
+            _canceltoken?.Cancel();
+            RaisePropertyChanged(nameof(IsPaused));
+        }
+
+        private PauseTokenSource _pauseTokenSource;
         private CancellationTokenSource _canceltoken;
+
+        public bool IsPaused {
+            get {
+                return _pauseTokenSource?.IsPaused ?? false;
+            }
+        }
 
         private string _status;
         public string Status {
@@ -46,7 +71,8 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StartSequence(IProgress<string> progress) {
             _canceltoken = new CancellationTokenSource();
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartSequence, new object[] { this.Sequence, true, _canceltoken, progress });
+            _pauseTokenSource = new PauseTokenSource();
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartSequence, new object[] { this.Sequence, true, _canceltoken, progress, _pauseTokenSource.Token });
             return true;
         }
 
@@ -136,5 +162,7 @@ namespace NINA.ViewModel {
         public IAsyncCommand StartSequenceCommand { get; private set; }
 
         public ICommand CancelSequenceCommand { get; private set; }
+        public ICommand PauseSequenceCommand { get; private set; }
+        public ICommand ResumeSequenceCommand { get; private set; }
     }
 }

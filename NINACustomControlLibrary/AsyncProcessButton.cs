@@ -13,6 +13,41 @@ namespace NINACustomControlLibrary {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AsyncProcessButton), new FrameworkPropertyMetadata(typeof(AsyncProcessButton)));
         }
 
+        public static readonly DependencyProperty ResumeCommandProperty =
+                    DependencyProperty.Register(nameof(ResumeCommand), typeof(ICommand), typeof(AsyncProcessButton), new UIPropertyMetadata(null));
+
+        public ICommand ResumeCommand {
+            get {
+                return (ICommand)GetValue(ResumeCommandProperty);
+            }
+            set {
+                SetValue(ResumeCommandProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty ResumeButtonImageProperty =
+           DependencyProperty.Register(nameof(ResumeButtonImage), typeof(Geometry), typeof(AsyncProcessButton), new UIPropertyMetadata(null));
+
+        public Geometry ResumeButtonImage {
+            get {
+                return (Geometry)GetValue(ResumeButtonImageProperty);
+            }
+            set {
+                SetValue(ResumeButtonImageProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty IsPausedProperty =
+           DependencyProperty.Register(nameof(IsPaused), typeof(bool), typeof(AsyncProcessButton), new UIPropertyMetadata(false));
+
+        public bool IsPaused {
+            get {
+                return (bool)GetValue(IsPausedProperty);
+            }
+            set {
+                SetValue(IsPausedProperty, value);
+            }
+        }
 
         public static readonly DependencyProperty PauseCommandProperty =
                     DependencyProperty.Register(nameof(PauseCommand), typeof(ICommand), typeof(AsyncProcessButton), new UIPropertyMetadata(null));
