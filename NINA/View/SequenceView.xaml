@@ -424,7 +424,10 @@
                 </Button>
 
             </StackPanel>
-            <Grid DockPanel.Dock="Right" MinWidth="300" HorizontalAlignment="Right">
+            <Grid
+                MinWidth="300"
+                HorizontalAlignment="Right"
+                DockPanel.Dock="Right">
                 <ninactrl:AsyncProcessButton
                     ButtonImage="{StaticResource PlaySVG}"
                     CancelButtonImage="{StaticResource CancelSVG}"
@@ -432,7 +435,7 @@
                     Command="{Binding StartSequenceCommand}"
                     IsPaused="{Binding IsPaused}"
                     LoadingImageBrush="{StaticResource PrimaryBrush}"
-                    PauseButtonImage="{StaticResource LightBulbSVG}"
+                    PauseButtonImage="{StaticResource PauseSVG}"
                     PauseCommand="{Binding PauseSequenceCommand}"
                     ResumeButtonImage="{StaticResource PlaySVG}"
                     ResumeCommand="{Binding ResumeSequenceCommand}"

@@ -116,7 +116,7 @@
                 Command="{Binding StartSequenceCommand}"
                 IsPaused="{Binding IsPaused}"
                 LoadingImageBrush="{StaticResource PrimaryBrush}"
-                PauseButtonImage="{StaticResource LightBulbSVG}"
+                PauseButtonImage="{StaticResource PauseSVG}"
                 PauseCommand="{Binding PauseSequenceCommand}"
                 ResumeButtonImage="{StaticResource PlaySVG}"
                 ResumeCommand="{Binding ResumeSequenceCommand}"

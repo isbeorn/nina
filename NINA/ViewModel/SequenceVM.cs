@@ -72,6 +72,7 @@ namespace NINA.ViewModel {
         private async Task<bool> StartSequence(IProgress<string> progress) {
             _canceltoken = new CancellationTokenSource();
             _pauseTokenSource = new PauseTokenSource();
+            RaisePropertyChanged(nameof(IsPaused));
             await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartSequence, new object[] { this.Sequence, true, _canceltoken, progress, _pauseTokenSource.Token });
             return true;
         }
