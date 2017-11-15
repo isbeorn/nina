@@ -433,6 +433,7 @@
                     CancelButtonImage="{StaticResource CancelSVG}"
                     CancelCommand="{Binding CancelSequenceCommand}"
                     Command="{Binding StartSequenceCommand}"
+                    IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Connected, FallbackValue=False}"
                     IsPaused="{Binding IsPaused}"
                     LoadingImageBrush="{StaticResource PrimaryBrush}"
                     PauseButtonImage="{StaticResource PauseSVG}"
