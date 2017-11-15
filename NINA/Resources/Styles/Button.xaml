@@ -12,14 +12,16 @@
                     <Border
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
                         CornerRadius="0">
                         <Border Background="{TemplateBinding Background}" CornerRadius="0">
                             <Grid>
                                 <ContentPresenter
                                     x:Name="MyContentPresenter"
                                     Margin="0,0,0,0"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                     Content="{TemplateBinding Content}" />
                             </Grid>
                         </Border>

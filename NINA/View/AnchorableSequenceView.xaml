@@ -107,13 +107,16 @@
 
             </GroupBox>
 
-            <ninactrl:CancellableButton
+            <ninactrl:AsyncProcessButton
                 Height="35"
                 Margin="10,0,10,0"
                 ButtonImage="{StaticResource PlaySVG}"
                 CancelButtonImage="{StaticResource CancelSVG}"
                 CancelCommand="{Binding CancelSequenceCommand}"
                 Command="{Binding StartSequenceCommand}"
+                LoadingImageBrush="{StaticResource PrimaryBrush}"
+                PauseButtonImage="{StaticResource LightBulbSVG}"
+                PauseCommand="{Binding PauseSequenceCommand}"
                 ToolTip="{ns:Loc LblTooltipStartSequence}" />
         </StackPanel>
     </ScrollViewer>

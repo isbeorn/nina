@@ -8,5 +8,6 @@
         <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/CancellableButton.Generic.xaml" />
         <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/HintTextBox.Generic.xaml" />
         <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/LoadingControl.Generic.xaml" />
-    </ResourceDictionary.MergedDictionaries>    
+        <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/AsyncProcessButton.Generic.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
