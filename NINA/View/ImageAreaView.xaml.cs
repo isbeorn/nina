@@ -38,7 +38,7 @@ namespace NINA.View {
             sv.MouseMove += OnMouseMove;
             scaleTransform.ScaleX = fittingScale;
             scaleTransform.ScaleY = fittingScale;
-            tbScale.Text = val.ToString("P0", CultureInfo.InvariantCulture);
+            tbScale.Text = 1d.ToString("P0", CultureInfo.InvariantCulture);
         }
 
         private void Sv_SizeChanged(object sender, SizeChangedEventArgs e) {
