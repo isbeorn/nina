@@ -354,16 +354,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string OpenWeatherMapLocation {
-            get {
-                return Settings.OpenWeatherMapLocation;
-            }
-            set {
-                Settings.OpenWeatherMapLocation = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public string AstrometryAPIKey {
             get {
                 return Settings.AstrometryAPIKey;

@@ -36,7 +36,7 @@
                     BorderThickness="0,0,0,1">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblTemperature}" />
-                        <TextBlock Margin="5,0,0,0" Text="{Binding Temperature, StringFormat=\{0:#.00\}%}" />
+                        <TextBlock Margin="5,0,0,0" Text="{Binding Temperature, StringFormat=\{0:#.00\}°C}" />
                     </UniformGrid>
                 </Border>
                 <Border
@@ -54,7 +54,7 @@
                     BorderThickness="0,0,0,1">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblDewpoint}" />
-                        <TextBlock Margin="5,0,0,0" Text="{Binding Dewpoint, StringFormat=\{0:#.00\}}" />
+                        <TextBlock Margin="5,0,0,0" Text="{Binding Dewpoint, StringFormat=\{0:#.00\}°C}" />
                     </UniformGrid>
                 </Border>
                 <Border

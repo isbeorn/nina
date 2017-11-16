@@ -121,16 +121,6 @@ namespace NINA.Utility {
             }
         }
 
-        public static string OpenWeatherMapLocation {
-            get {
-                return Properties.Settings.Default.OpenWeatherMapLocation;
-            }
-            set {
-                Properties.Settings.Default.OpenWeatherMapLocation = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
         public static Epoch EpochType {
             get {
                 return (Epoch)Properties.Settings.Default.EpochType;

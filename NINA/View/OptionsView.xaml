@@ -603,10 +603,6 @@
                             <TextBlock Text="{ns:Loc LblAPIKey}" />
                             <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapAPIKey}" />
                         </UniformGrid>
-                        <UniformGrid Margin="0,5,0,0" Columns="2">
-                            <TextBlock Text="{ns:Loc LblLocation}" />
-                            <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapLocation}" />
-                        </UniformGrid>
                     </StackPanel>
                 </GroupBox>
             </UniformGrid>

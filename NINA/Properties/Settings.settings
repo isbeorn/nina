@@ -125,9 +125,6 @@
     <Setting Name="OpenWeatherMapUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://api.openweathermap.org/data/2.5/weather</Value>
     </Setting>
-    <Setting Name="OpenWeatherMapLocation" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="ColorSchemaType" Type="System.String" Scope="User">
       <Value Profile="(Default)">Light</Value>
     </Setting>
