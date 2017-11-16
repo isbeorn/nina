@@ -202,22 +202,23 @@ namespace NINA.ViewModel {
         private async Task Capture(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
             IsExposing = true;
             try {
-                double duration = seq.ExposureTime;
-                progress.Report(string.Format(ExposureStatus.EXPOSING, 0, duration));
+                double duration = seq.ExposureTime;                
                 bool isLight = false;
                 if (Cam.HasShutter) {
                     isLight = true;
                 }
                 Cam.StartExposure(duration, isLight);
-                ExposureSeconds = 1;
-                progress.Report(string.Format(ExposureStatus.EXPOSING, 1, duration));
+                var start = DateTime.Now;
+                ExposureSeconds = 0;
+                progress.Report(string.Format(ExposureStatus.EXPOSING, ExposureSeconds, duration));
                 /* Wait for Capture */
                 if (duration >= 1) {
                     await Task.Run(async () => {
                         do {
-                            await Task.Delay(1000, tokenSource.Token);
+                            await Task.Delay(500, tokenSource.Token);
+                            var deltaT = DateTime.Now.Subtract(start);
                             tokenSource.Token.ThrowIfCancellationRequested();
-                            ExposureSeconds += 1;
+                            ExposureSeconds = (int)deltaT.TotalSeconds;
                             progress.Report(string.Format(ExposureStatus.EXPOSING, ExposureSeconds, duration));
                         } while ((ExposureSeconds < duration) && Cam.Connected);
                     });
