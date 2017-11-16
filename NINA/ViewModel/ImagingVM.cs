@@ -22,6 +22,9 @@ using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
 using NINA.Utility.Notification;
 using Nito.AsyncEx;
+using System.Security;
+using System.Security.Permissions;
+using System.Security.AccessControl;
 
 namespace NINA.ViewModel {
     class ImagingVM : DockableVM {
@@ -280,6 +283,10 @@ namespace NINA.ViewModel {
 
 
                 try {
+                    /* Validate if preconditions are met */
+                    if(!CheckPreconditions(bSave)) {
+                        return false;
+                    }
 
                     /* delay sequence start by given amount */
                     var delay = sequence.Delay;
@@ -385,6 +392,49 @@ namespace NINA.ViewModel {
             });
 
         }
+
+        private bool CheckPreconditions(bool bSave) {
+            bool valid = true;
+            if(bSave) {
+                valid = HasWritePermission(Settings.ImageFilePath);
+            }
+            return valid;
+        }
+
+        public bool HasWritePermission(string dir) {
+            bool Allow = false;
+            bool Deny = false;
+            DirectorySecurity acl = null;
+
+            if(Directory.Exists(dir)) {
+                acl = Directory.GetAccessControl(dir);
+            }
+
+            if (acl == null) {
+                Notification.ShowError(Locale.Loc.Instance["LblDirectoryNotFound"]);
+                return false;
+            }
+                
+            AuthorizationRuleCollection arc = acl.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
+            if (arc == null)
+                return false;
+            foreach (FileSystemAccessRule rule in arc) {
+                if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write)
+                    continue;
+                if (rule.AccessControlType == AccessControlType.Allow)
+                    Allow = true;
+                else if (rule.AccessControlType == AccessControlType.Deny)
+                    Deny = true;
+            }
+
+            if(Allow && !Deny) {
+                return true;
+            } else {
+                Notification.ShowError(Locale.Loc.Instance["LblDirectoryNotWritable"]);
+                return false;
+            }            
+        }
+
 
         private void SetGain(CaptureSequence seq) {
             if (seq.Gain != -1) {

@@ -333,5 +333,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints">Die HFR Werte der Fokuspunkte liegen zu dicht beieinander. Entweder ist der Okularauszug zu weit außerhalb des Fokuses oder die Schrittgröße ist zu klein eingestellt.</s:String>
     <s:String x:Key="LblOneToOne">Skaliere Bild 1:1</s:String>
     <s:String x:Key="LblDevicePollingInterval">Gerätepolling Interval</s:String>
+    <s:String x:Key="LblDirectoryNotFound">Verzeichnis zum speichern des Bildes wurde nicht gefunden!</s:String>
+    <s:String x:Key="LblDirectoryNotWritable">Verzeichnis zum speichern des Bildes hat keine Schreibrechte!</s:String>
 
 </ResourceDictionary>
