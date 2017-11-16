@@ -851,5 +851,17 @@ namespace NINA.Properties {
                 this["UpdateSettings"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.5")]
+        public double DevicePollingInterval {
+            get {
+                return ((double)(this["DevicePollingInterval"]));
+            }
+            set {
+                this["DevicePollingInterval"] = value;
+            }
+        }
     }
 }

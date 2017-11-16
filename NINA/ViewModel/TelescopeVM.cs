@@ -34,7 +34,7 @@ namespace NINA.ViewModel {
             StopSlewCommand = new RelayCommand(StopSlew);
 
             _updateTelescope = new DispatcherTimer();
-            _updateTelescope.Interval = TimeSpan.FromMilliseconds(300);
+            _updateTelescope.Interval = TimeSpan.FromMilliseconds((int)(Settings.DevicePollingInterval * 1000));
             _updateTelescope.Tick += UpdateTelescope_Tick;
 
             Mediator.Instance.Register((object o) => {

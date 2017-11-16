@@ -133,9 +133,8 @@ namespace NINA.ViewModel {
                     p.Report(focuserValues);
 
                     token.ThrowIfCancellationRequested();
-
-                    //Update after one second + the time it takes to read the values
-                    Thread.Sleep(500);
+                    
+                    Thread.Sleep((int)(Settings.DevicePollingInterval * 1000));
 
                 } while (Connected == true);
             } catch (OperationCanceledException) {

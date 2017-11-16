@@ -884,5 +884,17 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double DevicePollingInterval {
+            get {
+                return Settings.DevicePollingInterval;
+            }
+            set {
+                if(value > 0) {
+                    Settings.DevicePollingInterval = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
     }
 }

@@ -144,40 +144,43 @@ namespace NINA.ViewModel {
 
         private async Task<bool> CoolCamera(IProgress<double> progress) {
             _cancelCoolCameraSource = new CancellationTokenSource();
-            Cam.CoolerOn = true;
-            if (Duration == 0) {
-                Cam.SetCCDTemperature = TargetTemp;
-                progress.Report(1);
-            } else {
-                try {
-
-
-                    _deltaT = DateTime.Now;
-                    double currentTemp = Cam.CCDTemperature;
-                    _startPoint = new Vector2(Duration, currentTemp);
-                    _endPoint = new Vector2(0, TargetTemp);
-                    Cam.SetCCDTemperature = currentTemp;
-                    _initalDuration = Duration;
-
-                    CoolingRunning = true;
-                    do {
-                        CoolCamera_Tick(progress);
-                        await Task.Delay(TimeSpan.FromMilliseconds(300), _cancelCoolCameraSource.Token);
-                        _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
-                    } while (Duration > 0);
-
-
-                } catch (OperationCanceledException ex) {
-                    Cam.SetCCDTemperature = Cam.CCDTemperature;
-                    Logger.Trace(ex.Message);
-
-                } finally {
+            return await Task<bool>.Run(async () => {
+                Cam.CoolerOn = true;
+                if (Duration == 0) {
+                    Cam.SetCCDTemperature = TargetTemp;
                     progress.Report(1);
-                    Duration = 0;
-                    CoolingRunning = false;
+                } else {
+                    try {
+
+
+                        _deltaT = DateTime.Now;
+                        double currentTemp = Cam.CCDTemperature;
+                        _startPoint = new Vector2(Duration, currentTemp);
+                        _endPoint = new Vector2(0, TargetTemp);
+                        Cam.SetCCDTemperature = currentTemp;
+                        _initalDuration = Duration;
+
+                        CoolingRunning = true;
+                        do {
+                            CoolCamera_Tick(progress);
+                            await Task.Delay(TimeSpan.FromMilliseconds(300), _cancelCoolCameraSource.Token);
+                            _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
+                        } while (Duration > 0);
+
+
+                    } catch (OperationCanceledException ex) {
+                        Cam.SetCCDTemperature = Cam.CCDTemperature;
+                        Logger.Trace(ex.Message);
+
+                    } finally {
+                        progress.Report(1);
+                        Duration = 0;
+                        CoolingRunning = false;
+                    }
                 }
-            }
-            return true;
+                return true;
+            });
+            
 
         }
 
@@ -307,7 +310,7 @@ namespace NINA.ViewModel {
                     token.ThrowIfCancellationRequested();
 
                     //Update after one second + the time it takes to read the values
-                    Thread.Sleep(500);
+                    Thread.Sleep((int)(Settings.DevicePollingInterval * 1000));
 
                 } while (Connected == true);
             } catch (OperationCanceledException) {

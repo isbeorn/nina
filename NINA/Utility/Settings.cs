@@ -810,6 +810,15 @@ namespace NINA.Utility {
             }
         }
 
+        public static double DevicePollingInterval {
+            get {
+                return Properties.Settings.Default.DevicePollingInterval;
+            }
+            set {
+                Properties.Settings.Default.DevicePollingInterval = value;
+                Properties.Settings.Default.Save();
+            }
+        }
 
 
 
