@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,7 @@ namespace NINA.View {
             sv.MouseMove += OnMouseMove;
             scaleTransform.ScaleX = fittingScale;
             scaleTransform.ScaleY = fittingScale;
+            tbScale.Text = val.ToString("P0", CultureInfo.InvariantCulture);
         }
 
         private void Sv_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -91,6 +93,8 @@ namespace NINA.View {
             if (val < 0) { val = 0; }
             scaleTransform.ScaleX = val;
             scaleTransform.ScaleY = val;
+
+            tbScale.Text = val.ToString("P0", CultureInfo.InvariantCulture);
 
 
         }

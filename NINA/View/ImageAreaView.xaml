@@ -21,6 +21,7 @@
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="40" />
@@ -90,8 +91,14 @@
                 <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="1:1" />
             </Button>
 
+            <TextBlock
+                x:Name="tbScale"
+                Grid.Column="4"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+
             <ninactrl:CancellableButton
-                Grid.Column="5"
+                Grid.Column="6"
                 Margin="2.5"
                 ButtonImage="{StaticResource PlatesolveSVG}"
                 CancelButtonImage="{StaticResource CancelSVG}"
@@ -100,7 +107,7 @@
                 ToolTip="{ns:Loc LblPlateSolveImage}" />
 
             <ToggleButton
-                Grid.Column="6"
+                Grid.Column="7"
                 Margin="2.5"
                 IsChecked="{Binding ShowCrossHair}">
                 <ToggleButton.ToolTip>
@@ -139,7 +146,7 @@
             </ToggleButton>
 
             <ToggleButton
-                Grid.Column="7"
+                Grid.Column="8"
                 Margin="2.5"
                 Command="{Binding PrepareImageCommand}"
                 IsChecked="{Binding AutoStretch}">
@@ -179,7 +186,7 @@
             </ToggleButton>
 
             <ToggleButton
-                Grid.Column="8"
+                Grid.Column="9"
                 Margin="2.5"
                 Command="{Binding PrepareImageCommand}"
                 IsChecked="{Binding DetectStars}">
