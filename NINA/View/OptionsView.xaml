@@ -948,45 +948,58 @@
                                     </TextBlock.ToolTip>
                                 </TextBlock>
                                 <CheckBox
+                                    x:Name="snapPortCheckbox"
                                     Width="75"
                                     Height="25"
                                     HorizontalAlignment="Left"
                                     IsChecked="{Binding UseTelescopeSnapPort}" />
                             </StackPanel>
-                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                                <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblSnapPortStart}">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="" />
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                                <TextBox
-                                    MinWidth="75"
-                                    MinHeight="20"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding TelescopeSnapPortStart}" />
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel.Style>
+                                    <Style TargetType="{x:Type StackPanel}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=snapPortCheckbox, Path=IsChecked}" Value="False">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                    <TextBlock
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblSnapPortStart}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox
+                                        MinWidth="75"
+                                        MinHeight="20"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding TelescopeSnapPortStart}" />
+                                </StackPanel>
+                                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                    <TextBlock
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblSnapPortStop}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox
+                                        MinWidth="75"
+                                        MinHeight="20"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding TelescopeSnapPortStop}" />
+                                </StackPanel>
                             </StackPanel>
-                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                                <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblSnapPortStop}">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="" />
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                                <TextBox
-                                    MinWidth="75"
-                                    MinHeight="20"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding TelescopeSnapPortStop}" />
-                            </StackPanel>
+
 
                         </StackPanel>
                     </GroupBox>
