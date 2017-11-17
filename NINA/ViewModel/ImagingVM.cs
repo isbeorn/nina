@@ -504,11 +504,12 @@ namespace NINA.ViewModel {
         public async Task<bool> CaptureImage(IProgress<string> progress) {
             _captureImageToken = new CancellationTokenSource();
 
+            var success = true;
             do {
                 CaptureSequenceList seq = new CaptureSequenceList(new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                await StartSequence(seq, SnapSave, _captureImageToken, progress);
+                success = await StartSequence(seq, SnapSave, _captureImageToken, progress);
                 _captureImageToken.Token.ThrowIfCancellationRequested();
-            } while (Loop);
+            } while (Loop && success);
             return true;
 
         }

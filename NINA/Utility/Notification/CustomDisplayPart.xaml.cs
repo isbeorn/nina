@@ -26,5 +26,10 @@ namespace NINA.Utility.Notification {
             DataContext = customNotification; // this allows to bind ui with data in notification
             InitializeComponent();
         }
+
+        private void OnClose(object sender, RoutedEventArgs e) {
+
+            _customNotification.Close();
+        }
     }
 }

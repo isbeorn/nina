@@ -17,6 +17,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Path
                 Width="40"
@@ -31,7 +32,23 @@
                 Foreground="{StaticResource ButtonForegroundBrush}"
                 Text="{Binding Message}"
                 TextWrapping="Wrap" />
-        </Grid>
 
+            <Button
+                x:Name="CloseButton"
+                Grid.Column="2"
+                Padding="1"
+                VerticalAlignment="Top"
+                Background="{Binding Color}"
+                Click="OnClose"
+                Visibility="Visible">
+                <Path
+                    Width="10"
+                    Margin="5"
+                    Data="{StaticResource CancelSVG}"
+                    Fill="{StaticResource ButtonForegroundBrush}"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Uniform" />
+            </Button>
+        </Grid>
     </Border>
 </core:NotificationDisplayPart>

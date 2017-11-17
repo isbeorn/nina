@@ -25,7 +25,8 @@ namespace NINA {
         public MainWindow() {
             InitializeComponent();
             SourceInitialized += (s, a) => {
-                Notification.ShowInformation(Locale.Loc.Instance["LblWelcome"]);
+                Notification.Initialize();
+                //Notification.ShowInformation(Locale.Loc.Instance["LblWelcome"]);
             };
         }
 
