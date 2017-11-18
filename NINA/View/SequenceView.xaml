@@ -129,6 +129,7 @@
             AutoGenerateColumns="False"
             CanUserAddRows="False"
             HorizontalScrollBarVisibility="Disabled"
+            IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
             ItemsSource="{Binding Sequence}"
             SelectedIndex="{Binding SelectedSequenceIdx}">
             <DataGrid.Columns>

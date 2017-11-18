@@ -288,6 +288,8 @@ namespace NINA.ViewModel {
                         return false;
                     }
 
+                     sequence.IsRunning = true;
+
                     /* delay sequence start by given amount */
                     var delay = sequence.Delay;
                     while (delay > 0) {
@@ -366,11 +368,13 @@ namespace NINA.ViewModel {
                         }
 
                         if (pauseToken.IsPaused) {
+                            sequence.IsRunning = false;
                             semaphoreSlim.Release();
                             progress.Report("Paused");
                             await pauseToken.WaitWhilePausedAsync(tokenSource.Token);
                             progress.Report("Resume sequence");
                             await semaphoreSlim.WaitAsync(tokenSource.Token);
+                            sequence.IsRunning = true;
                         }
 
                     }
@@ -386,6 +390,7 @@ namespace NINA.ViewModel {
                     }
                 } finally {
                     progress.Report(ExposureStatus.IDLE);
+                    sequence.IsRunning = false;
                     semaphoreSlim.Release();
                 }
                 return true;

@@ -49,7 +49,18 @@ namespace NINA.Model {
             }
         }
 
-        public CaptureSequence Next() {
+        private bool _isRunning;
+        public bool IsRunning {
+            get {
+                return _isRunning;
+            }
+            set {
+                _isRunning = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(IsRunning)));
+            }
+        }
+
+        public CaptureSequence Next() {            
             if (this.Count == 0) { return null; }
 
             CaptureSequence seq = null;
