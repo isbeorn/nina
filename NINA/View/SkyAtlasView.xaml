@@ -21,6 +21,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="270" />
+                <RowDefinition Height="60" />
             </Grid.RowDefinitions>
             <!--  Filter area  -->
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
@@ -313,6 +314,21 @@
 
 
 
+                </StackPanel>
+            </Border>
+            <Border
+                Grid.Row="2"
+                Margin="0,5,0,0"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1">
+
+                <StackPanel VerticalAlignment="Center" Orientation="Vertical">
+                    <TextBlock Text="{ns:Loc LblDataProvidedBy}" />
+                    <TextBlock>
+                        <Hyperlink NavigateUri="http://www.saguaroastro.org/content/downloads.htm" RequestNavigate="Hyperlink_RequestNavigate">
+                            Saguaro Astronomy Club Database version 8.1
+                        </Hyperlink>
+                    </TextBlock>
                 </StackPanel>
             </Border>
         </Grid>

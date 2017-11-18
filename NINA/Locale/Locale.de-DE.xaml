@@ -335,5 +335,6 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblDevicePollingInterval">Gerätepolling Interval</s:String>
     <s:String x:Key="LblDirectoryNotFound">Verzeichnis zum speichern des Bildes wurde nicht gefunden!</s:String>
     <s:String x:Key="LblDirectoryNotWritable">Verzeichnis zum speichern des Bildes hat keine Schreibrechte!</s:String>
+    <s:String x:Key="LblDataProvidedBy">Initiales Set von DSO Daten wurde bereitgestellt von:</s:String>
 
 </ResourceDictionary>
