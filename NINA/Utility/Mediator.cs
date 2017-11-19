@@ -102,7 +102,8 @@ namespace NINA.Utility {
         AutoSelectGuideStar = 13,
         SetSequenceCoordinates = 14,
         MoveFocuserRelative = 15,
-        MoveFocuserAbsolute = 16
+        MoveFocuserAbsolute = 16,
+        SlewToCoordinates = 17
     }
 
 }

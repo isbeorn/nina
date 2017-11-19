@@ -44,6 +44,12 @@ namespace NINA.ViewModel {
 
             }, MediatorMessages.SlewToCoordinates);
 
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                if (o != null) {
+                    await SlewToCoordinatesAsync((Coordinates)o);
+                }
+            }, AsyncMediatorMessages.SlewToCoordinates);
+
             Mediator.Instance.Register((object o) => {
                 bool start = (bool)o;
                 SendToSnapPort(start);
@@ -268,6 +274,15 @@ namespace NINA.ViewModel {
             set {
                 _targetRightAscencionSeconds = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        private async Task SlewToCoordinatesAsync(Coordinates coords) {
+            coords = coords.Transform(Settings.EpochType);
+            if (Telescope?.Connected == true) {
+                await Task.Run(() => {
+                    Telescope.SlewToCoordinates(coords.RA, coords.Dec);
+                });                
             }
         }
 

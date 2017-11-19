@@ -73,6 +73,14 @@ namespace NINA.ViewModel {
             _canceltoken = new CancellationTokenSource();
             _pauseTokenSource = new PauseTokenSource();
             RaisePropertyChanged(nameof(IsPaused));
+
+            if(Sequence.SlewToTarget) {
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SlewToCoordinates, Sequence.Coordinates);
+                if (Sequence.CenterTarget) {
+                    await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaputureSolveSyncAndReslew, new object[] { _canceltoken, progress });
+                } 
+            }
+
             await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartSequence, new object[] { this.Sequence, true, _canceltoken, progress, _pauseTokenSource.Token });
             return true;
         }

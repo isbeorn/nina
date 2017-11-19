@@ -355,7 +355,7 @@ namespace NINA.ViewModel {
                     Logger.Trace(ex.Message);
                 } finally {
                     progress.Report("Restoring start position...");
-                    Telescope.SlewToCoordinates(startPosition.RA, startPosition.Dec);
+                    await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SlewToCoordinates, startPosition);
                 }
 
                 progress.Report(string.Empty);
@@ -549,7 +549,7 @@ namespace NINA.ViewModel {
 
                 Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, Settings.EpochType, Coordinates.RAType.Hours);
                 progress.Report("Slewing...");
-                Telescope.SlewToCoordinates(targetPosition.RA, targetPosition.Dec);
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SlewToCoordinates, targetPosition);
 
 
                 canceltoken.Token.ThrowIfCancellationRequested();
@@ -585,7 +585,7 @@ namespace NINA.ViewModel {
                 Logger.Trace(ex.Message);
             } finally {
                 //progress.Report("Slewing back to origin...");
-                Telescope.SlewToCoordinates(startPosition.RA, startPosition.Dec);
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SlewToCoordinates, startPosition);
                 //progress.Report("Done");
             }
 

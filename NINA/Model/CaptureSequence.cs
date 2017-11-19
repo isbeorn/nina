@@ -60,7 +60,7 @@ namespace NINA.Model {
             }
         }
 
-        public CaptureSequence Next() {            
+        public CaptureSequence Next() {
             if (this.Count == 0) { return null; }
 
             CaptureSequence seq = null;
@@ -154,6 +154,29 @@ namespace NINA.Model {
             set {
                 _delay = value;
                 OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(Delay)));
+            }
+        }
+
+        private bool _slewToTarget;
+        public bool SlewToTarget {
+            get {
+                return _slewToTarget;
+            }
+            set {
+                _slewToTarget = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(SlewToTarget)));
+            }
+        }
+
+        private bool _centerTarget;
+        public bool CenterTarget {
+            get {
+                return _centerTarget;
+            }
+            set {
+                _centerTarget = value;
+                if(_centerTarget) { SlewToTarget = _centerTarget; }
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(CenterTarget)));
             }
         }
     }

@@ -299,7 +299,7 @@ namespace NINA.ViewModel {
                         }
                         var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
                         if (SyncronizeTelescope() && SlewToTarget) {
-                            Telescope.SlewToCoordinates(coords.RA, coords.Dec);
+                            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SlewToCoordinates, coords);
                         }
                     }
                 }
