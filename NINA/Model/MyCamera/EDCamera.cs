@@ -532,11 +532,13 @@ namespace NINA.Model.MyCamera {
             }
             DateTime d = DateTime.Now;
             /*Stop Exposure after exposure time */
-            Task.Run(() => {
+            Task.Run(async () => {
                 exposureTime = exposureTime * 1000;
+                var elapsed = 0.0d;
                 do {
-                    Thread.Sleep(100);
-                } while ((DateTime.Now - d).TotalMilliseconds < exposureTime);
+                    var delta = await Utility.Utility.Delay(100, new CancellationToken());
+                    elapsed += delta.TotalMilliseconds;
+                } while (elapsed < exposureTime);
 
                 if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF))) {
                     Notification.ShowError("Could not stop camera exposure");

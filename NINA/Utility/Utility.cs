@@ -256,6 +256,17 @@ namespace NINA.Utility {
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
         }
+
+        public static async Task<TimeSpan> Delay(int milliseconds, CancellationToken token) {
+            var t = new TimeSpan(0, 0, 0, 0, milliseconds);
+            return await Delay(t, token);
+        }
+
+        public static async Task<TimeSpan> Delay(TimeSpan span, CancellationToken token) {
+            var now = DateTime.Now;
+            await Task.Delay(span, token);
+            return DateTime.Now.Subtract(now);
+        }
     }
     public enum FileTypeEnum {
         TIFF,

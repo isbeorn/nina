@@ -131,9 +131,11 @@ namespace NINA.ViewModel {
             Mediator.Instance.Notify(MediatorMessages.SetTelescopeTracking, false);            
             do {
                 RemainingTime = TimeSpan.FromSeconds(timeToFlip);
+                
                 //progress.Report(string.Format("Next exposure paused until passing meridian. Remaining time: {0} seconds", RemainingTime));
-                await Task.Delay(1000, tokenSource.Token);
-                timeToFlip -= 1;
+                var delta = await Utility.Utility.Delay(1000, tokenSource.Token);
+                
+                timeToFlip -= delta.TotalSeconds;
 
             } while (RemainingTime.TotalSeconds >= 1);
             progress.Report("Resume Scope tracking");
@@ -182,9 +184,10 @@ namespace NINA.ViewModel {
             RemainingTime = TimeSpan.FromSeconds(Settings.MeridianFlipSettleTime);
             do {
                 progress.Report(Locale.Loc.Instance["LblSettle"] + " " + RemainingTime.ToString(@"hh\:mm\:ss"));
-                RemainingTime = TimeSpan.FromSeconds(RemainingTime.TotalSeconds - 1);
 
-                await Task.Delay(1000, tokenSource.Token);
+                var delta = await Utility.Utility.Delay(1000, tokenSource.Token);
+
+                RemainingTime = TimeSpan.FromSeconds(RemainingTime.TotalSeconds - delta.TotalSeconds);
 
             } while (RemainingTime.TotalSeconds >= 1);
             return true;

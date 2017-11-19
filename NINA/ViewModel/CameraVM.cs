@@ -48,14 +48,16 @@ namespace NINA.ViewModel {
             CameraChooserVM.GetEquipment();
         }
 
-        private void CoolCamera_Tick(IProgress<double> progress) {
+        private async Task CoolCamera_Tick(IProgress<double> progress, CancellationToken token) {
+
+            
+                        
 
             double currentTemp = Cam.CCDTemperature;
             double deltaTemp = currentTemp - TargetTemp;
 
 
-            DateTime now = DateTime.Now;
-            TimeSpan delta = now.Subtract(_deltaT);
+            var delta = await Utility.Utility.Delay(300, token);
 
             Duration = Duration - ((double)delta.TotalMilliseconds / (1000 * 60));
 
@@ -65,9 +67,7 @@ namespace NINA.ViewModel {
             Cam.SetCCDTemperature = newTemp;
 
             progress.Report(1 - (Duration / _initalDuration));
-
-            _deltaT = DateTime.Now;
-
+            
 
         }
 
@@ -125,9 +125,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-
-        private DateTime _deltaT;
+                
 
         private bool _coolingRunning;
         public bool CoolingRunning {
@@ -151,9 +149,7 @@ namespace NINA.ViewModel {
                     progress.Report(1);
                 } else {
                     try {
-
-
-                        _deltaT = DateTime.Now;
+                        
                         double currentTemp = Cam.CCDTemperature;
                         _startPoint = new Vector2(Duration, currentTemp);
                         _endPoint = new Vector2(0, TargetTemp);
@@ -162,8 +158,8 @@ namespace NINA.ViewModel {
 
                         CoolingRunning = true;
                         do {
-                            CoolCamera_Tick(progress);
-                            await Task.Delay(TimeSpan.FromMilliseconds(300), _cancelCoolCameraSource.Token);
+                            await CoolCamera_Tick(progress, _cancelCoolCameraSource.Token);
+                            
                             _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
                         } while (Duration > 0);
 

@@ -212,18 +212,19 @@ namespace NINA.ViewModel {
                 }
                 Cam.StartExposure(duration, isLight);
                 var start = DateTime.Now;
+                var elapsed = 0.0d;
                 ExposureSeconds = 0;
                 progress.Report(string.Format(ExposureStatus.EXPOSING, ExposureSeconds, duration));
                 /* Wait for Capture */
                 if (duration >= 1) {
                     await Task.Run(async () => {
                         do {
-                            await Task.Delay(500, tokenSource.Token);
-                            var deltaT = DateTime.Now.Subtract(start);
+                            var delta = await Utility.Utility.Delay(500, tokenSource.Token);
+                            elapsed += delta.TotalSeconds;
+                            ExposureSeconds = (int)elapsed;                            
                             tokenSource.Token.ThrowIfCancellationRequested();
-                            ExposureSeconds = (int)deltaT.TotalSeconds;
                             progress.Report(string.Format(ExposureStatus.EXPOSING, ExposureSeconds, duration));
-                        } while ((ExposureSeconds < duration) && Cam.Connected);
+                        } while ((elapsed < duration) && Cam.Connected);
                     });
                 }
                 tokenSource.Token.ThrowIfCancellationRequested();
