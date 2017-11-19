@@ -180,6 +180,17 @@ namespace NINA.Model {
                 OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(CenterTarget)));
             }
         }
+
+        private bool _startGuiding;
+        public bool StartGuiding {
+            get {
+                return _startGuiding;
+            }
+            set {
+                _startGuiding = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(StartGuiding)));
+            }            
+        }
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]

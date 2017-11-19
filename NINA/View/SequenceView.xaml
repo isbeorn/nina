@@ -82,6 +82,22 @@
                         </UniformGrid>
                     </Border>
 
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblStartGuiding}" />
+                                <CheckBox
+                                    Width="75"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding StartGuiding}" />
+                            </UniformGrid>
+                        </UniformGrid>
+                    </Border>
+
                     <StackPanel Visibility="{Binding Coordinates, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                             <UniformGrid Columns="2">

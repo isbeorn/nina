@@ -146,6 +146,17 @@ namespace NINA.Model.MyGuider {
             }
         }
 
+        private bool _isCalibrating;
+        public bool IsCalibrating {
+            get {
+                return _isCalibrating;
+            }
+            set {
+                _isCalibrating = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public async Task<bool> Connect() {
 
             try {
@@ -190,6 +201,16 @@ namespace NINA.Model.MyGuider {
                 await SendMessage(String.Format(PHD2Methods.AUTO_SELECT_STAR));
             }
             return true;
+        }
+
+        public async Task<bool> StartGuiding() {
+            if (Connected) {
+                if(AppState.State == "Guiding") { return true; }
+                IsCalibrating = true;
+                return await SendMessage(String.Format(PHD2Methods.GUIDE, false.ToString().ToLower()));
+            } else {
+                return false;
+            }
         }
 
         private async Task<bool> SendMessage(string msg) {
@@ -274,6 +295,10 @@ namespace NINA.Model.MyGuider {
 
                                             break;
                                         }
+                                    case PHD2EventId.GUIDE: {
+                                            PhdMethodResponse phdresp = o.ToObject<PhdMethodResponse>();
+                                            break;
+                                        }
                                     case PHD2EventId.GET_STAR_IMAGE: {
                                             /*PhdMethodResponse phdresp = o.ToObject<PhdMethodResponse>();                                        
 
@@ -324,6 +349,7 @@ namespace NINA.Model.MyGuider {
                                             GuidingDithered = null;
                                             Settling = null;
                                             IsDithering = false;
+                                            IsCalibrating = false;
                                             SettleDone = o.ToObject<PhdEventSettleDone>();
                                             if (SettleDone.Error != null) {
                                                 Notification.ShowError("PHD2 Error: " + SettleDone.Error);

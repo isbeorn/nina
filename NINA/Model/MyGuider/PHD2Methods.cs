@@ -44,7 +44,7 @@ namespace NINA.Model.MyGuider {
         /// 3: SETTLE TIMEOUT: int - time limit before settling is considered to have failed
         /// 
         /// </summary>
-        public static string GUIDE = "{{\"method\": \"guide\", \"params\": [{\"pixels\": 1.5, \"time\": 8, \"timeout\": 40}, {0}], \"id\": " + PHD2EventId.GUIDE + "}}\r\n";
+        public static string GUIDE = "{{\"method\": \"guide\", \"params\": [{{\"pixels\": 1.5, \"time\": 8, \"timeout\": 60}}, {0}], \"id\": " + PHD2EventId.GUIDE + "}}\r\n";
 
         public static string CLEAR_CALIBRATION = "{\"method\": \"clear_calibration\", \"params\": [\"both\"], \"id\": " + PHD2EventId.CLEAR_CALIBRATION + "}}\r\n";
 

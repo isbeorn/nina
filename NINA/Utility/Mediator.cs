@@ -104,7 +104,8 @@ namespace NINA.Utility {
         SetSequenceCoordinates = 14,
         MoveFocuserRelative = 15,
         MoveFocuserAbsolute = 16,
-        SlewToCoordinates = 17
+        SlewToCoordinates = 17,
+        StartGuider = 18
     }
 
 }

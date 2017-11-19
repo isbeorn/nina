@@ -10,12 +10,14 @@ namespace NINA.Model.MyGuider {
         bool Connected { get; }
         bool Paused { get; }
         bool IsDithering { get; set; }
+        bool IsCalibrating { get; set; }
         IGuideStep GuideStep { get; }
 
         Task<bool> Connect();
         Task<bool> AutoSelectGuideStar();
         bool Disconnect();
         Task<bool> Pause(bool pause);
+        Task<bool> StartGuiding();
         Task<bool> Dither();
     }
 

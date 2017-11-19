@@ -60,6 +60,11 @@ namespace NINA.ViewModel {
                 CancellationToken token = (CancellationToken)o;
                 await AutoSelectGuideStar(token);
             }, AsyncMediatorMessages.AutoSelectGuideStar);
+
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                CancellationToken token = (CancellationToken)o;
+                await StartGuiding(token);
+            }, AsyncMediatorMessages.StartGuider);
         }
 
         private async Task AutoSelectGuideStar(CancellationToken token) {
@@ -79,16 +84,14 @@ namespace NINA.ViewModel {
             if (Guider?.Connected == true) {
                 await Guider?.Pause(false);
 
-                var time = 0;
+                var elapsed = new TimeSpan();
                 while (Guider?.Paused == true) {
-                    await Task.Delay(500, token);
-                    time += 500;
-                    if (time > 20000) {
+                    elapsed += await Utility.Utility.Delay(500, token);
+                    if (elapsed.TotalSeconds > 60) {
                         //Failsafe when phd is not sending resume message
                         Notification.ShowWarning(Locale.Loc.Instance["LblGuiderNoResume"]/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);
                         break;
                     }
-                    token.ThrowIfCancellationRequested();
                 }
             }
                 
@@ -119,24 +122,40 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> Dither(CancellationToken token) {
-            await Guider?.Dither();
-            var time = 0;
-            await Task.Run<bool>(async () => {
-                while (Guider?.IsDithering == true) {
-                    await Task.Delay(100, token);
-                    time += 100;
-
-                    if (time > 20000) {
-                        //Failsafe when phd is not sending settlingdone message
-                        Notification.ShowWarning(Locale.Loc.Instance["LblGuiderNoSettleDone"]);
-                        Guider.IsDithering = false;
+        private async Task<bool> StartGuiding(CancellationToken token) {
+            if (Guider?.Connected == true) {
+                await Guider.StartGuiding();
+                return await Task.Run<bool>(async () => {                    
+                    while (Guider?.IsCalibrating == true) {
+                        await Task.Delay(1000, token);                        
                     }
-                    token.ThrowIfCancellationRequested();
-                }
-                return true;
-            });
-            return true;
+                    return true;
+                });
+
+            } else {
+                return false;
+            }
+        }
+
+        private async Task<bool> Dither(CancellationToken token) {
+            if(Guider?.Connected == true) {
+                await Guider.Dither();
+                return await Task.Run<bool>(async () => {
+                    var elapsed = new TimeSpan();
+                    while (Guider?.IsDithering == true) {
+                        elapsed += await Utility.Utility.Delay(500, token);
+
+                        if (elapsed.TotalSeconds > 60) {
+                            //Failsafe when phd is not sending settlingdone message
+                            Notification.ShowWarning(Locale.Loc.Instance["LblGuiderNoSettleDone"]);
+                            Guider.IsDithering = false;
+                        }
+                    }
+                    return true;
+                });
+            } else {
+                return false;
+            }
         }
 
 
