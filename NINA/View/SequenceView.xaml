@@ -42,17 +42,6 @@
                                 Margin="0,6,0,6"
                                 VerticalAlignment="Center"
                                 Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetName}" />
-                                <TextBox Margin="5,0,0,0" Text="{Binding TargetName}" />
-                            </UniformGrid>
-                        </UniformGrid>
-                    </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                        <UniformGrid Columns="2">
-                            <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSequenceDelay}" />
                                 <TextBox Margin="5,0,0,0">
                                     <TextBox.Text>
@@ -111,10 +100,6 @@
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding SlewToTarget}" />
                                 </UniformGrid>
-                            </UniformGrid>
-                        </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                            <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
@@ -147,11 +132,22 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetName}" />
+                                <TextBox Margin="5,0,0,0" Text="{Binding TargetName}" />
+                            </UniformGrid>
+                        </UniformGrid>
+                    </Border>
                     <Border
-                        Grid.Row="0"
+                        Grid.Row="1"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0,0,0,1">
                         <UniformGrid Columns="2">
@@ -204,7 +200,7 @@
 
                     </Border>
                     <Border
-                        Grid.Row="1"
+                        Grid.Row="2"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0,0,0,1">
                         <UniformGrid Columns="2">
@@ -259,7 +255,7 @@
                     </Border>
 
                     <Grid
-                        Grid.Row="2"
+                        Grid.Row="3"
                         Margin="0,0,0,0"
                         Visibility="{Binding AltitudeVisible, Converter={StaticResource VisibilityConverter}}">
                         <local:AltitudeChart
