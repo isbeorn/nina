@@ -164,6 +164,7 @@ namespace NINA.Model {
             }
             set {
                 _slewToTarget = value;
+                if (!_slewToTarget) { CenterTarget = _slewToTarget; }
                 OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(SlewToTarget)));
             }
         }
