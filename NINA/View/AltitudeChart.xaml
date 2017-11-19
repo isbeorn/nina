@@ -15,6 +15,7 @@
     <Grid>
         <oxy:Plot
             MinHeight="180"
+            VerticalAlignment="Stretch"
             Background="{StaticResource BackgroundBrush}"
             PlotAreaBackground="{StaticResource BackgroundBrush}"
             PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">

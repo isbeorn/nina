@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Collections;
 using NINA.Utility.Astrometry;
 using System.ComponentModel;
+using NINA.ViewModel;
 
 namespace NINA.Model {
 
@@ -15,6 +16,8 @@ namespace NINA.Model {
         public CaptureSequenceList() {
             TargetName = string.Empty;
             Mode = SequenceMode.STANDARD;
+            Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Hours);
+            AltitudeVisible = false;
         }
 
         public CaptureSequenceList(CaptureSequence seq) : this() {
@@ -22,9 +25,8 @@ namespace NINA.Model {
         }
 
         public void SetSequenceTarget(DeepSkyObject dso) {
-            DSO = dso;
-            TargetName = DSO.Name;
-            Coordinates = DSO.Coordinates;
+            TargetName = dso.Name;
+            Coordinates = dso.Coordinates;
         }
 
         private string _targetName;
@@ -113,8 +115,105 @@ namespace NINA.Model {
             }
             set {
                 _coordinates = value;
-                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(Coordinates)));
+                RaiseCoordinatesChanged();
             }
+        }
+
+        public int RAHours {
+            get {
+                return (int)Math.Abs(Math.Truncate(_coordinates.RA));
+            }
+            set {
+                if (value >= 0) {
+                    _coordinates.RA = _coordinates.RA - RAHours + value;
+                    RaiseCoordinatesChanged();
+                }
+
+            }
+        }
+
+        public int RAMinutes {
+            get {
+                return (int)Math.Abs(Math.Truncate((_coordinates.RA - RAHours) * 60));
+            }
+            set {
+                if (value >= 0) {
+                    _coordinates.RA = _coordinates.RA - RAMinutes / 60.0d + value / 60.0d;
+                    RaiseCoordinatesChanged();
+                }
+
+            }
+        }
+
+        public int RASeconds {
+            get {
+                return (int)Math.Abs(Math.Truncate((_coordinates.RA - RAHours - RAMinutes / 60.0d) * 60d * 60d));
+            }
+            set {
+                if (value >= 0) {
+                    _coordinates.RA = _coordinates.RA - RASeconds / (60.0d * 60.0d) + value / (60.0d * 60.0d);
+                    RaiseCoordinatesChanged();
+                }
+
+            }
+        }
+
+
+
+        public int DecDegrees {
+            get {
+                return (int)(Math.Truncate(_coordinates.Dec));
+            }
+            set {
+                _coordinates.Dec = _coordinates.Dec - DecDegrees + value;
+                RaiseCoordinatesChanged();
+            }
+        }
+
+        public int DecMinutes {
+            get {
+                return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees) * 60));
+            }
+            set {
+                if (_coordinates.Dec < 0) {
+                    _coordinates.Dec = _coordinates.Dec + DecMinutes / 60.0d - value / 60.0d;
+                } else {
+                    _coordinates.Dec = _coordinates.Dec - DecMinutes / 60.0d + value / 60.0d;
+                }
+
+                RaiseCoordinatesChanged();
+            }
+        }
+
+        public int DecSeconds {
+            get {
+                if (_coordinates.Dec >= 0) {
+                    return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees - DecMinutes / 60.0d) * 60d * 60d));
+                } else {
+                    return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees + DecMinutes / 60.0d) * 60d * 60d));
+                }
+            }
+            set {
+                if (_coordinates.Dec < 0) {
+                    _coordinates.Dec = _coordinates.Dec + DecSeconds / (60.0d * 60.0d) - value / (60.0d * 60.0d);
+                } else {
+                    _coordinates.Dec = _coordinates.Dec - DecSeconds / (60.0d * 60.0d) + value / (60.0d * 60.0d);
+                }
+
+                RaiseCoordinatesChanged();
+            }
+        }
+
+        private void RaiseCoordinatesChanged() {
+            OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(Coordinates)));
+            OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(RAHours)));
+            OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(RAMinutes)));
+            OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(RASeconds)));
+            OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(DecDegrees)));
+            OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(DecMinutes)));
+            OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(DecSeconds)));
+            AltitudeVisible = true;
+            DSO = new DeepSkyObject(this.TargetName, Coordinates);
         }
 
         private DeepSkyObject _dso;
@@ -124,6 +223,7 @@ namespace NINA.Model {
             }
             set {
                 _dso = value;
+                _dso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), Settings.Latitude, Settings.Longitude);
                 OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(DSO)));
             }
         }
@@ -176,7 +276,7 @@ namespace NINA.Model {
             }
             set {
                 _centerTarget = value;
-                if(_centerTarget) { SlewToTarget = _centerTarget; }
+                if (_centerTarget) { SlewToTarget = _centerTarget; }
                 OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(CenterTarget)));
             }
         }
@@ -189,7 +289,18 @@ namespace NINA.Model {
             set {
                 _startGuiding = value;
                 OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(StartGuiding)));
-            }            
+            }
+        }
+
+        private bool _altitudeVisisble;
+        public bool AltitudeVisible {
+            get {
+                return _altitudeVisisble;
+            }
+            private set {
+                _altitudeVisisble = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(AltitudeVisible)));
+            }
         }
     }
 

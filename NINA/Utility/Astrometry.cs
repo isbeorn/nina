@@ -302,7 +302,7 @@ namespace NINA.Utility.Astrometry {
         /// <summary>
         /// Right Ascension in hours
         /// </summary>
-        public double RA { get; private set; }
+        public double RA { get; set; }
 
         public string RAString {
             get {
@@ -322,7 +322,7 @@ namespace NINA.Utility.Astrometry {
         /// <summary>
         /// Declination in Degrees
         /// </summary>
-        public double Dec { get; private set; }
+        public double Dec { get; set; }
 
         public string DecString {
             get {

@@ -97,30 +97,7 @@
                             </UniformGrid>
                         </UniformGrid>
                     </Border>
-
                     <StackPanel Visibility="{Binding Coordinates, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                            <UniformGrid Columns="2">
-                                <UniformGrid
-                                    Margin="0,6,0,6"
-                                    VerticalAlignment="Center"
-                                    Columns="2">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Coordinates.RAString}" />
-                                </UniformGrid>
-                            </UniformGrid>
-                        </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                            <UniformGrid Columns="2">
-                                <UniformGrid
-                                    Margin="0,6,0,6"
-                                    VerticalAlignment="Center"
-                                    Columns="2">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Coordinates.DecString}" />
-                                </UniformGrid>
-                            </UniformGrid>
-                        </Border>
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                             <UniformGrid Columns="2">
                                 <UniformGrid
@@ -156,17 +133,142 @@
 
 
             </GroupBox>
-            <GroupBox Visibility="{Binding Sequence.DSO, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+            <GroupBox DataContext="{Binding Sequence}" Visibility="{Binding DSO, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                 <GroupBox.Header>
                     <Grid Height="40" Margin="5">
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="20"
-                            Text="{ns:Loc LblAltitude}" />
+                            Text="{ns:Loc LblTarget}" />
                     </Grid>
 
                 </GroupBox.Header>
-                <local:AltitudeChart DataContext="{Binding Sequence.DSO}" />
+                <Grid Visibility="{Binding Coordinates, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Border
+                        Grid.Row="0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <Binding Path="RAHours" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:HoursRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <Binding Path="RAMinutes" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:MinutesRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <Binding Path="RASeconds" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:SecondsRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </StackPanel>
+
+                            </UniformGrid>
+                        </UniformGrid>
+
+                    </Border>
+                    <Border
+                        Grid.Row="1"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <Binding Path="DecDegrees" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:DegreesRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <Binding Path="DecMinutes" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:MinutesRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBox
+                                        MinWidth="40"
+                                        Margin="5,0,0,0"
+                                        TextAlignment="Right">
+                                        <TextBox.Text>
+                                            <Binding Path="DecSeconds" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:SecondsRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+
+                                    </TextBox>
+                                </StackPanel>
+
+                            </UniformGrid>
+                        </UniformGrid>
+
+                    </Border>
+
+                    <Grid
+                        Grid.Row="2"
+                        Margin="0,0,0,0"
+                        Visibility="{Binding AltitudeVisible, Converter={StaticResource VisibilityConverter}}">
+                        <local:AltitudeChart
+                            Grid.Row="2"
+                            Margin="0,0,0,-20"
+                            DataContext="{Binding DSO}" />
+                    </Grid>
+
+                </Grid>
             </GroupBox>
         </UniformGrid>
 
