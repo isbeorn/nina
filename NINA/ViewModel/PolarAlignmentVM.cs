@@ -602,7 +602,9 @@ namespace NINA.ViewModel {
                 slew_ra += 24.0;
             }
 
-            Telescope.SlewToCoordinatesAsync(slew_ra, Declination);
+            var coords = new Coordinates(slew_ra, Declination, Epoch.JNOW, Coordinates.RAType.Hours);
+
+            Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates, coords);
         }
 
         private void UpdateValues_Tick(object sender, EventArgs e) {

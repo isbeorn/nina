@@ -44,6 +44,12 @@ namespace NINA.ViewModel {
 
             }, MediatorMessages.SlewToCoordinates);
 
+            Mediator.Instance.Register((object o) => {
+                if(Telescope?.Connected == true) {
+                    Telescope.Tracking = (bool)o;
+                }                
+            }, MediatorMessages.SetTelescopeTracking);
+
             Mediator.Instance.RegisterAsync(async (object o) => {
                 if (o != null) {
                     await SlewToCoordinatesAsync((Coordinates)o);

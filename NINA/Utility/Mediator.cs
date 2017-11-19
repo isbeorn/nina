@@ -83,7 +83,8 @@ namespace NINA.Utility {
         CameraConnectedChanged = 29,
         CameraTemperatureChanged = 30,
         CameraCoolerPowerChanged = 31,
-        CameraStateChanged = 32
+        CameraStateChanged = 32,
+        SetTelescopeTracking = 33
     };
 
     public enum AsyncMediatorMessages {

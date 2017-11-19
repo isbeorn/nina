@@ -63,28 +63,35 @@ namespace NINA.ViewModel {
         }
 
         private async Task AutoSelectGuideStar(CancellationToken token) {
-            await Guider?.AutoSelectGuideStar();
-            await Task.Delay(TimeSpan.FromSeconds(5), token);
+            if(Guider?.Connected == true) {
+                await Guider?.AutoSelectGuideStar();
+                await Task.Delay(TimeSpan.FromSeconds(5), token);
+            }            
         }
 
         private async Task Pause(CancellationToken token) {
-            await Guider?.Pause(true);
+            if(Guider?.Connected == true) {
+                await Guider?.Pause(true);
+            }            
         }
 
         private async Task Resume(CancellationToken token) {
-            await Guider?.Pause(false);
+            if (Guider?.Connected == true) {
+                await Guider?.Pause(false);
 
-            var time = 0;
-            while (Guider?.Paused == true) {
-                await Task.Delay(500, token);
-                time += 500;
-                if (time > 20000) {
-                    //Failsafe when phd is not sending resume message
-                    Notification.ShowWarning(Locale.Loc.Instance["LblGuiderNoResume"]/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);
-                    break;
+                var time = 0;
+                while (Guider?.Paused == true) {
+                    await Task.Delay(500, token);
+                    time += 500;
+                    if (time > 20000) {
+                        //Failsafe when phd is not sending resume message
+                        Notification.ShowWarning(Locale.Loc.Instance["LblGuiderNoResume"]/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);
+                        break;
+                    }
+                    token.ThrowIfCancellationRequested();
                 }
-                token.ThrowIfCancellationRequested();
             }
+                
         }
 
         private static Dispatcher Dispatcher = Dispatcher.CurrentDispatcher;
