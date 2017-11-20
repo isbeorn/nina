@@ -32,8 +32,7 @@ namespace NINA.ViewModel {
             Mediator.Instance.RegisterAsync(async (object o) => {
                 object[] args = o as object[];
                 CaptureSequence seq = (CaptureSequence)args[0];
-                CancellationTokenSource source = (CancellationTokenSource)args[1];
-                await CheckMeridianFlip(seq, source);
+                await CheckMeridianFlip(seq);
             }, AsyncMediatorMessages.CheckMeridianFlip);
         }
 
@@ -108,10 +107,10 @@ namespace NINA.ViewModel {
         /// <param name="tokenSource">cancel token</param>
         /// <param name="progress">progress reporter</param>
         /// <returns></returns>
-        public async Task CheckMeridianFlip(CaptureSequence seq, CancellationTokenSource tokensource) {
+        public async Task CheckMeridianFlip(CaptureSequence seq) {
             if (ShouldFlip(seq.ExposureTime)) {
                 var service = new WindowService();
-                this._tokensource = tokensource;
+                this._tokensource = new CancellationTokenSource();
                 this._progress = new Progress<string>(p => Status = p);
                 var flip = DoMeridianFlip();
 

@@ -301,7 +301,7 @@ namespace NINA.ViewModel {
 
                     CaptureSequence seq;
                     while ((seq = sequence.Next()) != null) {
-                        await CheckMeridianFlip(seq, tokenSource, progress);
+                        await CheckMeridianFlip(seq, tokenSource.Token, progress);
 
                         /*Change Filter*/
                         await ChangeFilter(seq, tokenSource, progress);
@@ -462,14 +462,14 @@ namespace NINA.ViewModel {
         /// <param name="tokenSource">cancel token</param>
         /// <param name="progress">progress reporter</param>
         /// <returns></returns>
-        private async Task CheckMeridianFlip(CaptureSequence seq, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
             progress.Report("Check Meridian Flip");
 
             /*Release lock in case meridian flip has to be done and thus a platesolve */
             semaphoreSlim.Release();
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CheckMeridianFlip, new object[] { seq, tokenSource });
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CheckMeridianFlip, new object[] { seq });
             /*Reaquire lock*/
-            await semaphoreSlim.WaitAsync(tokenSource.Token);
+            await semaphoreSlim.WaitAsync(token);
         }
 
         ImageControlVM _imageControl;
