@@ -74,11 +74,11 @@
   </ColorSchema>
   <ColorSchema Name="High Contrast">
     <PrimaryColor Color="#FFFFFFFF" />
-    <SecondaryColor Color="#FF00FF11" />
+    <SecondaryColor Color="#FF00b7b1" />
     <BorderColor Color="#FFFF9900" />
     <BackgroundColor Color="#FF000000" />
     <ButtonBackgroundColor Color="#FFFF0000" />
-    <ButtonBackgroundSelectedColor Color="#FF00FF11" />
+    <ButtonBackgroundSelectedColor Color="#FF00b7b1" />
     <ButtonForegroundColor Color="#FFFFFFFF" />
     <ButtonForegroundDisabledColor Color="#FF9E9E9E" />
     <NotificationWarningColor Color="#FFF5A300" />
