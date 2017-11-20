@@ -24,7 +24,7 @@
                                     x:Name="OnText"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Foreground="{StaticResource PrimaryBrush}"
+                                    Foreground="{StaticResource ButtonForegroundBrush}"
                                     Text="{ns:Loc LblOn}" />
                             </Border>
                             <Border
@@ -45,7 +45,7 @@
                             <Setter TargetName="On" Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
                             <Setter TargetName="OnText" Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
                             <Setter TargetName="Off" Property="Background" Value="{StaticResource ButtonForegroundBrush}" />
-                            <Setter TargetName="OffText" Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+                            <Setter TargetName="OffText" Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
