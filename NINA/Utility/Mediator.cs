@@ -105,7 +105,8 @@ namespace NINA.Utility {
         MoveFocuserRelative = 15,
         MoveFocuserAbsolute = 16,
         SlewToCoordinates = 17,
-        StartGuider = 18
+        StartGuider = 18,
+        StartAutoFocus = 19
     }
 
 }

@@ -340,4 +340,5 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblCenterTarget">Ziel zentrieren</s:String>
     <s:String x:Key="LblStartGuiding">Nachführung starten</s:String>
     <s:String x:Key="LblTarget">Ziel (J2000)</s:String>
+    <s:String x:Key="LblAutoFocusOnStart">Autofokus beim Start</s:String>
 </ResourceDictionary>

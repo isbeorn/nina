@@ -269,6 +269,17 @@ namespace NINA.Model {
             }
         }
 
+        private bool _autoFocusOnStart;
+        public bool AutoFocusOnStart {
+            get {
+                return _autoFocusOnStart;
+            }
+            set {
+                _autoFocusOnStart = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(_autoFocusOnStart)));
+            }
+        }
+
         private bool _centerTarget;
         public bool CenterTarget {
             get {

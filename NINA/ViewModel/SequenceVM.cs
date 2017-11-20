@@ -83,6 +83,10 @@ namespace NINA.ViewModel {
                 } 
             }
 
+            if(Sequence.AutoFocusOnStart) {
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartAutoFocus, new object[] { _canceltoken.Token, progress });
+            }
+
             if(Sequence.StartGuiding) {
                 progress.Report(Locale.Loc.Instance["LblStartGuiding"]);
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartGuider, _canceltoken.Token);

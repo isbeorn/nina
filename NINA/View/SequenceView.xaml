@@ -113,6 +113,21 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusOnStart}" />
+                                    <CheckBox
+                                        Width="75"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        IsChecked="{Binding AutoFocusOnStart}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
                     </StackPanel>
                 </StackPanel>
 
