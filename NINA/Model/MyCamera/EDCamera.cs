@@ -412,12 +412,12 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
             return await Task<ImageArray>.Run(async () => {
 
                 while (!DownloadReady) {
                     await Task.Delay(100);
-                    tokenSource.Token.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
                 }
 
                 var sw = Stopwatch.StartNew();
@@ -452,7 +452,7 @@ namespace NINA.Model.MyCamera {
                 if (HasError(EDSDK.EdsDownloadComplete(this.DirectoryItem))) {
                     return null;
                 }
-                tokenSource.Token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
                 Debug.Print("Download from Camera: " + sw.Elapsed);
                 sw.Restart();
@@ -484,11 +484,11 @@ namespace NINA.Model.MyCamera {
                 Debug.Print("Write temp file: " + sw.Elapsed);
                 sw.Restart();
 
-                var iarr = await new DCRaw().ConvertToImageArray(fileextension, tokenSource.Token);
+                var iarr = await new DCRaw().ConvertToImageArray(fileextension, token);
 
                 Debug.Print("Get Pixels from temp tiff: " + sw.Elapsed);
                 sw.Restart();
-                tokenSource.Token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
                 if (pointer != IntPtr.Zero) {
                     EDSDK.EdsRelease(pointer);

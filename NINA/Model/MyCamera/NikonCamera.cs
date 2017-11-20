@@ -482,10 +482,10 @@ namespace NINA.Model.MyCamera {
             _nikonManagers?.Clear();
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
             await _downloadExposure.Task;
 
-            var iarr = await new DCRaw().ConvertToImageArray(_fileExtension, tokenSource.Token);
+            var iarr = await new DCRaw().ConvertToImageArray(_fileExtension, token);
             return iarr;
         }
 

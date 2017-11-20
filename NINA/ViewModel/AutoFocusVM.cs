@@ -109,7 +109,7 @@ namespace NINA.ViewModel {
 
                 Logger.Trace("Starting Exposure for autofocus");
                 var seq = new CaptureSequence(Settings.FocuserAutoFocusExposureTime, CaptureSequence.ImageTypes.SNAP, null, null, 1);
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, progress, _autoFocusCancelToken });
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, progress, _autoFocusCancelToken.Token });
 
                 token.ThrowIfCancellationRequested();
 

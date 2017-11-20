@@ -88,7 +88,7 @@ namespace NINA.ViewModel {
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartGuider, _canceltoken.Token);
             }
 
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartSequence, new object[] { this.Sequence, true, _canceltoken, progress, _pauseTokenSource.Token });
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartSequence, new object[] { this.Sequence, true, _canceltoken.Token, progress, _pauseTokenSource.Token });
             return true;
         }
 

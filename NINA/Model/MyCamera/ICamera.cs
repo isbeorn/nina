@@ -55,6 +55,6 @@ namespace NINA.Model.MyCamera {
         void StartExposure(double exposureTime, bool isLightFrame);
         void StopExposure();
         void AbortExposure();
-        Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource);
+        Task<ImageArray> DownloadExposure(CancellationToken token);
     }
 }

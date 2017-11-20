@@ -263,7 +263,7 @@ namespace NINA.ViewModel {
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
 
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, progress, canceltoken });
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, progress, canceltoken.Token });
 
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);

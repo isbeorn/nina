@@ -159,7 +159,7 @@ namespace NINA.ViewModel {
 
             }
             _prepImageCancellationSource = new CancellationTokenSource();
-            _prepImageTask = PrepareImage(null, _prepImageCancellationSource);
+            _prepImageTask = PrepareImage(null, _prepImageCancellationSource.Token);
             await _prepImageTask;
             return true;
         }
@@ -213,7 +213,7 @@ namespace NINA.ViewModel {
 
         public ICommand CancelPlateSolveImageCommand { get; private set; }
 
-        public async Task PrepareImage(IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public async Task PrepareImage(IProgress<string> progress, CancellationToken token) {
             if (ImgArr != null) {
                 BitmapSource source = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
 
@@ -224,7 +224,7 @@ namespace NINA.ViewModel {
 
                 if (DetectStars) {
                     var analysis = new ImageAnalysis(source, ImgArr);
-                    await analysis.DetectStarsAsync(progress, canceltoken.Token);
+                    await analysis.DetectStarsAsync(progress, token);
 
                     if (Settings.AnnotateImage) {
                         source = analysis.GetAnnotatedImage();
@@ -264,17 +264,17 @@ namespace NINA.ViewModel {
             return source;
         }
 
-        public async Task<bool> SaveToDisk(CaptureSequenceList sequence, CancellationTokenSource tokenSource, IProgress<string> progress) {
+        public async Task<bool> SaveToDisk(CaptureSequenceList sequence, CancellationToken token, IProgress<string> progress) {
 
             var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
             var activeCaptureSequence = sequence.ActiveSequence;
             var framenr = sequence.ActiveSequence.ProgressExposureCount;
-            return await SaveToDisk(activeCaptureSequence.ExposureTime, filter, activeCaptureSequence.ImageType, activeCaptureSequence.Binning.Name, Cam.CCDTemperature, framenr, tokenSource, progress, sequence.TargetName);
+            return await SaveToDisk(activeCaptureSequence.ExposureTime, filter, activeCaptureSequence.ImageType, activeCaptureSequence.Binning.Name, Cam.CCDTemperature, framenr, token, progress, sequence.TargetName);
 
         }
 
 
-        public async Task<bool> SaveToDisk(double exposuretime, string filter, string imageType, string binning, double ccdtemp, int framenr, CancellationTokenSource tokenSource, IProgress<string> progress, string targetname = "") {
+        public async Task<bool> SaveToDisk(double exposuretime, string filter, string imageType, string binning, double ccdtemp, int framenr, CancellationToken token, IProgress<string> progress, string targetname = "") {
             progress.Report("Saving...");
             await Task.Run(() => {
 
@@ -322,7 +322,7 @@ namespace NINA.ViewModel {
 
             });
 
-            tokenSource.Token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
             return true;
         }
 

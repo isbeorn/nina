@@ -314,12 +314,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationTokenSource tokenSource) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
             return await Task.Run<ImageArray>(async () => {
                 try {
                     ASICameraDll.ExposureStatus status;
                     do {
-                        await Task.Delay(100, tokenSource.Token);
+                        await Task.Delay(100, token);
                         status = ExposureStatus;
                     } while (status == ASICameraDll.ExposureStatus.ExpWorking);
 

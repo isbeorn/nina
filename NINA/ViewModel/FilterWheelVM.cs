@@ -30,8 +30,8 @@ namespace NINA.ViewModel {
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;
                 if (args[0] != null) {
-                    CancellationTokenSource token = null;
-                    if (args.Length > 1) { token = (CancellationTokenSource)args[1]; }
+                    CancellationToken token;
+                    if (args.Length > 1) { token = (CancellationToken)args[1]; }
                     FilterInfo filter = (FilterInfo)args[0];
 
                     await ChangeFilter(filter, token);
@@ -51,12 +51,12 @@ namespace NINA.ViewModel {
 
             }
             _changeFilterCancellationSource = new CancellationTokenSource();
-            _changeFilterTask = ChangeFilter(filter, _changeFilterCancellationSource);
+            _changeFilterTask = ChangeFilter(filter, _changeFilterCancellationSource.Token);
 
             return true;
         }
 
-        private async Task<bool> ChangeFilter(FilterInfo filter, CancellationTokenSource token = null) {
+        private async Task<bool> ChangeFilter(FilterInfo filter, CancellationToken token = new CancellationToken()) {
             var prevFilter = SelectedFilter;
 
             if (FW?.Connected == true && FW?.Position != filter.Position) {
@@ -73,7 +73,7 @@ namespace NINA.ViewModel {
                 var changeFilter = Task.Run(async () => {
                     while (FW.Position == -1) {
                         await Task.Delay(1000);
-                        token?.Token.ThrowIfCancellationRequested();
+                        token.ThrowIfCancellationRequested();
                     }
                 });
 
