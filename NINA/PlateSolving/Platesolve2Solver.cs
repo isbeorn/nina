@@ -154,7 +154,7 @@ namespace NINA.PlateSolving {
         /// <param name="progress"></param>
         /// <param name="canceltoken"></param>
         /// <returns></returns>
-        private PlateSolveResult Solve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        private PlateSolveResult Solve(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken) {
             PlateSolveResult result = new PlateSolveResult() { Success = false };
             try {
                 progress.Report("Solving...");
@@ -163,14 +163,14 @@ namespace NINA.PlateSolving {
                     image.CopyTo(fs);
                 }
 
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken.ThrowIfCancellationRequested();
 
                 //Start platesolve2
                 if (!StartPlatesolve2Process()) {
                     return result;
                 }
 
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken.ThrowIfCancellationRequested();
 
                 //Extract solution coordinates
                 result = ExtractResult();
@@ -185,7 +185,7 @@ namespace NINA.PlateSolving {
             return result;
         }
 
-        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken) {
             return await Task<PlateSolveResult>.Run(() => Solve(image, progress, canceltoken));
         }
     }

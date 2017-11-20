@@ -62,7 +62,7 @@ namespace NINA.PlateSolving {
             return string.Join(" ", options);
         }
 
-        private PlateSolveResult Solve(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        private PlateSolveResult Solve(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken) {
 
             PlateSolveResult result = new PlateSolveResult();
             try {
@@ -95,7 +95,7 @@ namespace NINA.PlateSolving {
 
                 while (!process.StandardOutput.EndOfStream) {
                     progress.Report(process.StandardOutput.ReadLine());
-                    canceltoken.Token.ThrowIfCancellationRequested();
+                    canceltoken.ThrowIfCancellationRequested();
                 }
 
                 filepath = TMPIMGFILEPATH + "\\tmp.wcs";
@@ -152,7 +152,7 @@ namespace NINA.PlateSolving {
             return result;
         }
 
-        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken) {
             return await Task<PlateSolveResult>.Run(() => Solve(image, progress, canceltoken));
         }
     }

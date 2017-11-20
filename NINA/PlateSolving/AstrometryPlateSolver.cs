@@ -31,7 +31,7 @@ namespace NINA.PlateSolving {
 
         }
 
-        private async Task<JObject> Authenticate(CancellationTokenSource canceltoken) {
+        private async Task<JObject> Authenticate(CancellationToken canceltoken) {
 
             string response = string.Empty;
             string json = "{\"apikey\":\"" + _apikey + "\"}";
@@ -44,7 +44,7 @@ namespace NINA.PlateSolving {
             return o;
         }
 
-        private async Task<JObject> SubmitImage(MemoryStream ms, string session, CancellationTokenSource canceltoken) {
+        private async Task<JObject> SubmitImage(MemoryStream ms, string session, CancellationToken canceltoken) {
             NameValueCollection nvc = new NameValueCollection();
             nvc.Add("request-json", "{\"publicly_visible\": \"n\", \"allow_modifications\": \"d\", \"session\": \"" + session + "\", \"allow_commercial_use\": \"d\"}");
             string response = await Utility.Utility.HttpUploadFile(_domain + UPLOADURL, ms, "file", "image/jpeg", nvc, canceltoken);
@@ -53,32 +53,32 @@ namespace NINA.PlateSolving {
             return o;
         }
 
-        private async Task<JObject> GetSubmissionStatus(string subid, CancellationTokenSource canceltoken) {
+        private async Task<JObject> GetSubmissionStatus(string subid, CancellationToken canceltoken) {
             string response = await Utility.Utility.HttpGetRequest(canceltoken, _domain + SUBMISSIONURL, subid);
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
-        private async Task<JObject> GetJobStatus(string jobid, CancellationTokenSource canceltoken) {
+        private async Task<JObject> GetJobStatus(string jobid, CancellationToken canceltoken) {
             string response = await Utility.Utility.HttpGetRequest(canceltoken, _domain + JOBSTATUSURL, jobid);
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
-        private async Task<JObject> GetJobInfo(string jobid, CancellationTokenSource canceltoken) {
+        private async Task<JObject> GetJobInfo(string jobid, CancellationToken canceltoken) {
             string response = await Utility.Utility.HttpGetRequest(canceltoken, _domain + JOBINFOURL, jobid);
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
-        private async Task<BitmapImage> GetJobImage(string jobid, CancellationTokenSource canceltoken) {
+        private async Task<BitmapImage> GetJobImage(string jobid, CancellationToken canceltoken) {
             return await Utility.Utility.HttpGetImage(canceltoken, _domain + ANNOTATEDIMAGEURL, jobid);
         }
 
-        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken) {
             PlateSolveResult result = new PlateSolveResult();
 
             try {
@@ -101,7 +101,7 @@ namespace NINA.PlateSolving {
 
                         progress.Report("Waiting for plate solve to start ...");
                         while (true) {
-                            canceltoken.Token.ThrowIfCancellationRequested();
+                            canceltoken.ThrowIfCancellationRequested();
 
                             JObject submissionstatus = await GetSubmissionStatus(subid, canceltoken);
 
@@ -123,7 +123,7 @@ namespace NINA.PlateSolving {
                             string jobstatus = string.Empty;
                             progress.Report("Solving ...");
                             while (true) {
-                                canceltoken.Token.ThrowIfCancellationRequested();
+                                canceltoken.ThrowIfCancellationRequested();
                                 JObject ojobstatus = await GetJobStatus(jobid, canceltoken);
                                 jobstatus = ojobstatus.GetValue("status").ToString();
 

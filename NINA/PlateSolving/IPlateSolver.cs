@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.PlateSolving {
     interface IPlateSolver {
-        Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationTokenSource canceltoken);
+        Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken);
     }
 
 

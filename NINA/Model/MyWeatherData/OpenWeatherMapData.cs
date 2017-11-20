@@ -47,7 +47,7 @@ namespace NINA.Model.MyWeatherData {
             }
 
             var url = Settings.OpenWeatherMapUrl + "?appid={0}&lat={1}&lon={2}";
-            string result = await Utility.Utility.HttpGetRequest(new CancellationTokenSource(), url, apikey, latitude, longitude);
+            string result = await Utility.Utility.HttpGetRequest(new CancellationToken(), url, apikey, latitude, longitude);
 
             JObject o = JObject.Parse(result);
             var openweatherdata = o.ToObject<OpenWeatherDataResponse>();

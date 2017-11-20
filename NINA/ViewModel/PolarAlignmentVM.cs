@@ -321,12 +321,12 @@ namespace NINA.ViewModel {
 
         }
 
-        private async Task<bool> DarvTelescopeSlew(IProgress<string> progress, CancellationTokenSource canceltoken) {
+        private async Task<bool> DarvTelescopeSlew(IProgress<string> progress, CancellationToken canceltoken) {
             return await Task.Run<bool>(async () => {
                 Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
                 try {
                     //wait 5 seconds for camera to have a starting indicator
-                    await Task.Delay(TimeSpan.FromSeconds(5), canceltoken.Token);
+                    await Task.Delay(TimeSpan.FromSeconds(5), canceltoken);
 
                     double rate = DARVSlewRate;
                     progress.Report("Slewing...");
@@ -336,21 +336,21 @@ namespace NINA.ViewModel {
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, rate);
 
-                    await Task.Delay(duration, canceltoken.Token);
+                    await Task.Delay(duration, canceltoken);
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
 
-                    await Task.Delay(TimeSpan.FromSeconds(1), canceltoken.Token);
+                    await Task.Delay(TimeSpan.FromSeconds(1), canceltoken);
 
                     progress.Report("Slewing back...");
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -rate);
 
-                    await Task.Delay(duration, canceltoken.Token);
+                    await Task.Delay(duration, canceltoken);
 
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
 
-                    await Task.Delay(TimeSpan.FromSeconds(1), canceltoken.Token);
+                    await Task.Delay(TimeSpan.FromSeconds(1), canceltoken);
                 } catch (OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
                 } finally {
@@ -379,7 +379,7 @@ namespace NINA.ViewModel {
 
                         var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, null, null, 1);
                         var capture = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, cameraprogress, _cancelDARVSlewToken.Token });
-                        var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken);
+                        var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken.Token);
 
                         await Task.WhenAll(capture, slew);
 
@@ -427,7 +427,7 @@ namespace NINA.ViewModel {
                     _cancelMeasureErrorToken = new CancellationTokenSource();
                     try {
 
-                        double poleErr = await CalculatePoleError(progress, _cancelMeasureErrorToken);
+                        double poleErr = await CalculatePoleError(progress, _cancelMeasureErrorToken.Token);
                         string poleErrString = Deg2str(Math.Abs(poleErr), 4);
                         _cancelMeasureErrorToken.Token.ThrowIfCancellationRequested();
                         if (double.IsNaN(poleErr)) {
@@ -518,7 +518,7 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private async Task<double> CalculatePoleError(IProgress<string> progress, CancellationTokenSource canceltoken) {
+        private async Task<double> CalculatePoleError(IProgress<string> progress, CancellationToken canceltoken) {
 
 
             Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
@@ -533,7 +533,7 @@ namespace NINA.ViewModel {
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { seq, progress, canceltoken });
 
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken.ThrowIfCancellationRequested();
 
 
                 PlateSolving.PlateSolveResult startSolveResult = PlateSolveResult;
@@ -552,7 +552,7 @@ namespace NINA.ViewModel {
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SlewToCoordinates, targetPosition);
 
 
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken.ThrowIfCancellationRequested();
 
 
                 progress.Report("Settling...");
@@ -560,12 +560,12 @@ namespace NINA.ViewModel {
 
                 progress.Report("Solving image...");
 
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken.ThrowIfCancellationRequested();
 
                 seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { seq, progress, canceltoken });
 
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken.ThrowIfCancellationRequested();
 
 
                 PlateSolving.PlateSolveResult targetSolveResult = PlateSolveResult;

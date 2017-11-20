@@ -64,14 +64,14 @@ namespace NINA.ViewModel {
                 var args = (object[])o;
                 CaptureSequence seq = args[0] == null ? new CaptureSequence(this.SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, this.SnapFilter, this.SnapBin, 1) : (CaptureSequence)args[0];
                 IProgress<string> progress = (IProgress<string>)args[1];
-                CancellationTokenSource token = (CancellationTokenSource)args[2];
+                CancellationToken token = (CancellationToken)args[2];
 
                 await SolveWithCapture(seq, progress, token);
             }, AsyncMediatorMessages.SolveWithCapture);
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;
-                CancellationTokenSource token = (CancellationTokenSource)args[0];
+                CancellationToken token = (CancellationToken)args[0];
                 IProgress<string> progress = (IProgress<string>)args[1];
                 Repeat = true;
                 await CaptureSolveSyncAndReslew(token, progress);
@@ -80,7 +80,7 @@ namespace NINA.ViewModel {
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;
                 IProgress<string> progress = (IProgress<string>)args[0];
-                CancellationTokenSource token = (CancellationTokenSource)args[1];
+                CancellationToken token = (CancellationToken)args[1];
                 await Solve(progress, token);
             }, AsyncMediatorMessages.Solve);
 
@@ -256,26 +256,26 @@ namespace NINA.ViewModel {
         /// <param name="filter"></param>
         /// <param name="binning"></param>
         /// <returns></returns>
-        private async Task<bool> SolveWithCapture(CaptureSequence seq, IProgress<string> progress, CancellationTokenSource canceltoken) {
+        private async Task<bool> SolveWithCapture(CaptureSequence seq, IProgress<string> progress, CancellationToken canceltoken) {
             var oldAutoStretch = _autoStretch;
             var oldDetectStars = _detectStars;
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
 
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, progress, canceltoken.Token });
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, progress, canceltoken });
 
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
 
-            canceltoken.Token.ThrowIfCancellationRequested();
+            canceltoken.ThrowIfCancellationRequested();
 
             return await Solve(progress, canceltoken); ;
         }
 
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<string> progress) {
             _solveCancelToken = new CancellationTokenSource();
-            return await this.CaptureSolveSyncAndReslew(_solveCancelToken, progress);
+            return await this.CaptureSolveSyncAndReslew(_solveCancelToken.Token, progress);
         }
 
         /// <summary>
@@ -283,13 +283,13 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="progress"></param>
         /// <returns></returns>
-        private async Task<bool> CaptureSolveSyncAndReslew(CancellationTokenSource tokensource, IProgress<string> progress) {
+        private async Task<bool> CaptureSolveSyncAndReslew(CancellationToken token, IProgress<string> progress) {
             bool solvedSuccessfully = false;
             bool repeatPlateSolve = false;
             do {
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
-                solvedSuccessfully = await SolveWithCapture(seq, progress, tokensource);
+                solvedSuccessfully = await SolveWithCapture(seq, progress, token);
 
                 if (solvedSuccessfully) {
                     if (SyncScope) {
@@ -341,7 +341,7 @@ namespace NINA.ViewModel {
         /// <param name="progress"></param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
-        public async Task<bool> Solve(IProgress<string> progress, CancellationTokenSource canceltoken) {
+        public async Task<bool> Solve(IProgress<string> progress, CancellationToken canceltoken) {
             var solver = GetPlateSolver();
             if (solver == null) {
                 return false;

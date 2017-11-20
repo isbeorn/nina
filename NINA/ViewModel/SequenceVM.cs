@@ -79,7 +79,7 @@ namespace NINA.ViewModel {
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SlewToCoordinates, Sequence.Coordinates);
                 if (Sequence.CenterTarget) {
                     progress.Report(Locale.Loc.Instance["LblCenterTarget"]);
-                    await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaputureSolveSyncAndReslew, new object[] { _canceltoken, progress });
+                    await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaputureSolveSyncAndReslew, new object[] { _canceltoken.Token, progress });
                 } 
             }
 

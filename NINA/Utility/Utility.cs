@@ -42,13 +42,13 @@ namespace NINA.Utility {
         }
 
 
-        public static async Task<string> HttpGetRequest(CancellationTokenSource canceltoken, string url, params object[] parameters) {
+        public static async Task<string> HttpGetRequest(CancellationToken canceltoken, string url, params object[] parameters) {
             string result = string.Empty;
 
             url = string.Format(url, parameters);
             HttpWebRequest request = null;
             HttpWebResponse response = null;
-            using (canceltoken.Token.Register(() => request.Abort(), useSynchronizationContext: false)) {
+            using (canceltoken.Register(() => request.Abort(), useSynchronizationContext: false)) {
                 try {
                     request = (HttpWebRequest)WebRequest.Create(url);
 
@@ -58,7 +58,7 @@ namespace NINA.Utility {
                         result = streamReader.ReadToEnd();
                     }
                 } catch (Exception ex) {
-                    canceltoken.Token.ThrowIfCancellationRequested();
+                    canceltoken.ThrowIfCancellationRequested();
 
                     //Logger.Error(ex.Message);
                     //Notification.ShowError(string.Format("Unable to connect to {0}", url));
@@ -88,13 +88,13 @@ namespace NINA.Utility {
         /// <param name="url"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public static async Task<BitmapImage> HttpGetImage(CancellationTokenSource canceltoken, string url, params object[] parameters) {
+        public static async Task<BitmapImage> HttpGetImage(CancellationToken canceltoken, string url, params object[] parameters) {
             BitmapImage bitmap = null;
 
             url = string.Format(url, parameters);
             HttpWebRequest request = null;
             HttpWebResponse response = null;
-            using (canceltoken.Token.Register(() => request.Abort(), useSynchronizationContext: false)) {
+            using (canceltoken.Register(() => request.Abort(), useSynchronizationContext: false)) {
                 try {
                     request = (HttpWebRequest)WebRequest.Create(url);
 
@@ -112,7 +112,7 @@ namespace NINA.Utility {
                         }
                     }
                 } catch (Exception ex) {
-                    canceltoken.Token.ThrowIfCancellationRequested();
+                    canceltoken.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message, ex.StackTrace);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
 
@@ -135,12 +135,12 @@ namespace NINA.Utility {
         /// <param name="body"></param>
         /// <param name="canceltoken"></param>
         /// <returns>result body of post request</returns>
-        public static async Task<string> HttpPostRequest(string url, string body, CancellationTokenSource canceltoken) {
+        public static async Task<string> HttpPostRequest(string url, string body, CancellationToken canceltoken) {
             string result = string.Empty;
 
             HttpWebRequest request = null;
             HttpWebResponse response = null;
-            using (canceltoken.Token.Register(() => request.Abort(), useSynchronizationContext: false)) {
+            using (canceltoken.Register(() => request.Abort(), useSynchronizationContext: false)) {
                 try {
                     request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/x-www-form-urlencoded";
@@ -156,7 +156,7 @@ namespace NINA.Utility {
                         result = streamReader.ReadToEnd();
                     }
                 } catch (Exception ex) {
-                    canceltoken.Token.ThrowIfCancellationRequested();
+                    canceltoken.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message, ex.StackTrace);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
 
@@ -183,7 +183,7 @@ namespace NINA.Utility {
         /// <param name="nvc"></param>
         /// <param name="canceltoken"></param>
         /// <returns></returns>
-        public static async Task<string> HttpUploadFile(string url, MemoryStream file, string paramName, string contentType, NameValueCollection nvc, CancellationTokenSource canceltoken) {
+        public static async Task<string> HttpUploadFile(string url, MemoryStream file, string paramName, string contentType, NameValueCollection nvc, CancellationToken canceltoken) {
             string result = string.Empty;
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
             byte[] boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
@@ -215,23 +215,23 @@ namespace NINA.Utility {
             int bytesRead = 0;
             while ((bytesRead = file.Read(buffer, 0, buffer.Length)) != 0) {
                 rs.Write(buffer, 0, bytesRead);
-                canceltoken.Token.ThrowIfCancellationRequested();
+                canceltoken.ThrowIfCancellationRequested();
             }
             file.Close();
 
             byte[] trailer = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
             rs.Write(trailer, 0, trailer.Length);
             rs.Close();
-            canceltoken.Token.ThrowIfCancellationRequested();
+            canceltoken.ThrowIfCancellationRequested();
             WebResponse wresp = null;
-            using (canceltoken.Token.Register(() => wr.Abort(), useSynchronizationContext: false)) {
+            using (canceltoken.Register(() => wr.Abort(), useSynchronizationContext: false)) {
                 try {
                     wresp = await wr.GetResponseAsync();
                     using (var streamReader = new StreamReader(wresp.GetResponseStream())) {
                         result = streamReader.ReadToEnd();
                     }
                 } catch (Exception ex) {
-                    canceltoken.Token.ThrowIfCancellationRequested();
+                    canceltoken.ThrowIfCancellationRequested();
                     Logger.Error(ex.Message, ex.StackTrace);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
 

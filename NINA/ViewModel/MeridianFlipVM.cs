@@ -123,7 +123,7 @@ namespace NINA.ViewModel {
 
         private Coordinates _targetCoordinates;
 
-        private async Task<bool> PassMeridian(CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> PassMeridian(CancellationToken token, IProgress<string> progress) {
             var timeToFlip = Telescope.TimeToMeridianFlip * 60 * 60;
             progress.Report("Stop Scope tracking");
             _targetCoordinates = Telescope.Coordinates;
@@ -132,7 +132,7 @@ namespace NINA.ViewModel {
                 RemainingTime = TimeSpan.FromSeconds(timeToFlip);
                 
                 //progress.Report(string.Format("Next exposure paused until passing meridian. Remaining time: {0} seconds", RemainingTime));
-                var delta = await Utility.Utility.Delay(1000, tokenSource.Token);
+                var delta = await Utility.Utility.Delay(1000, token);
                 
                 timeToFlip -= delta.TotalSeconds;
 
@@ -142,49 +142,49 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private async Task<bool> DoFilp(CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> DoFilp(CancellationToken token, IProgress<string> progress) {
             progress.Report("Flipping Scope");
             var flipsuccess = Telescope.MeridianFlip(_targetCoordinates);
 
-            await Settle(tokenSource, progress);
+            await Settle(token, progress);
 
             return flipsuccess;
         }
 
 
-        private async Task<bool> Recenter(CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> Recenter(CancellationToken token, IProgress<string> progress) {
             if (Settings.RecenterAfterFlip) {
                 progress.Report("Initiating platesolve");
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaputureSolveSyncAndReslew, new object[] { tokenSource, progress });
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaputureSolveSyncAndReslew, new object[] { token, progress });
             }
             return true;
         }
 
-        private async Task<bool> StopAutoguider(CancellationTokenSource tokenSource, IProgress<string> progress) {
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.PauseGuider, tokenSource.Token);
+        private async Task<bool> StopAutoguider(CancellationToken token, IProgress<string> progress) {
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.PauseGuider, token);
             return true;
         }
 
-        private async Task<bool> SelectNewGuideStar(CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> SelectNewGuideStar(CancellationToken token, IProgress<string> progress) {
             progress.Report("Select new Guidestar");
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.AutoSelectGuideStar, tokenSource.Token);
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.AutoSelectGuideStar, token);
 
             return true;
         }
 
-        private async Task<bool> ResumeAutoguider(CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> ResumeAutoguider(CancellationToken token, IProgress<string> progress) {
 
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ResumeGuider, tokenSource.Token);
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ResumeGuider, token);
 
             return true;
         }
 
-        private async Task<bool> Settle(CancellationTokenSource tokenSource, IProgress<string> progress) {
+        private async Task<bool> Settle(CancellationToken token, IProgress<string> progress) {
             RemainingTime = TimeSpan.FromSeconds(Settings.MeridianFlipSettleTime);
             do {
                 progress.Report(Locale.Loc.Instance["LblSettle"] + " " + RemainingTime.ToString(@"hh\:mm\:ss"));
 
-                var delta = await Utility.Utility.Delay(1000, tokenSource.Token);
+                var delta = await Utility.Utility.Delay(1000, token);
 
                 RemainingTime = TimeSpan.FromSeconds(RemainingTime.TotalSeconds - delta.TotalSeconds);
 
@@ -194,25 +194,26 @@ namespace NINA.ViewModel {
 
         private async Task<bool> DoMeridianFlip() {
             try {
+                var token = _tokensource.Token;
                 Steps = new AutomatedWorkflow();
 
-                Steps.Add(new WorkflowStep("StopAutoguider", Locale.Loc.Instance["LblStopAutoguider"], () => StopAutoguider(_tokensource, _progress)));
+                Steps.Add(new WorkflowStep("StopAutoguider", Locale.Loc.Instance["LblStopAutoguider"], () => StopAutoguider(token, _progress)));
 
-                Steps.Add(new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(_tokensource, _progress)));
-                Steps.Add(new WorkflowStep("Flip", Locale.Loc.Instance["LblFlip"], () => DoFilp(_tokensource, _progress)));
+                Steps.Add(new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(token, _progress)));
+                Steps.Add(new WorkflowStep("Flip", Locale.Loc.Instance["LblFlip"], () => DoFilp(token, _progress)));
                 if (Settings.RecenterAfterFlip) {
-                    Steps.Add(new WorkflowStep("Recenter", Locale.Loc.Instance["LblRecenter"], () => Recenter(_tokensource, _progress)));
+                    Steps.Add(new WorkflowStep("Recenter", Locale.Loc.Instance["LblRecenter"], () => Recenter(token, _progress)));
                 }
 
 
-                Steps.Add(new WorkflowStep("SelectNewGuideStar", Locale.Loc.Instance["LblSelectNewGuideStar"], () => SelectNewGuideStar(_tokensource, _progress)));
-                Steps.Add(new WorkflowStep("ResumeAutoguider", Locale.Loc.Instance["LblResumeAutoguider"], () => ResumeAutoguider(_tokensource, _progress)));
+                Steps.Add(new WorkflowStep("SelectNewGuideStar", Locale.Loc.Instance["LblSelectNewGuideStar"], () => SelectNewGuideStar(token, _progress)));
+                Steps.Add(new WorkflowStep("ResumeAutoguider", Locale.Loc.Instance["LblResumeAutoguider"], () => ResumeAutoguider(token, _progress)));
 
-                Steps.Add(new WorkflowStep("Settle", Locale.Loc.Instance["LblSettle"], () => Settle(_tokensource, _progress)));
+                Steps.Add(new WorkflowStep("Settle", Locale.Loc.Instance["LblSettle"], () => Settle(token, _progress)));
 
                 await Steps.Process();
             } catch (Exception) {
-                await ResumeAutoguider(new CancellationTokenSource(), _progress);
+                await ResumeAutoguider(new CancellationToken(), _progress);
                 Mediator.Instance.Notify(MediatorMessages.SetTelescopeTracking, true);
                 return false;
             }
