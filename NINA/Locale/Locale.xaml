@@ -338,5 +338,5 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblStartGuiding">Start guiding</s:String>
     <s:String x:Key="LblTarget">Target (J2000)</s:String>
     <s:String x:Key="LblAutoFocusOnStart">Autofocus on start</s:String>
-
+    <s:String x:Key="LblSwitchingFilter">Switching filter</s:String>
 </ResourceDictionary>

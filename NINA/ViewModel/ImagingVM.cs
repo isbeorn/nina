@@ -187,10 +187,8 @@ namespace NINA.ViewModel {
         CancellationTokenSource _captureImageToken;
 
         private async Task ChangeFilter(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
-
-            progress.Report(ExposureStatus.FILTERCHANGE);
             if (seq.FilterType != null) {
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ChangeFilterWheelPosition, new object[] { seq.FilterType, token });
+                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ChangeFilterWheelPosition, new object[] { seq.FilterType, token, progress });
             }
         }
 
