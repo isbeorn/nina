@@ -101,7 +101,7 @@
                                         IsChecked="{Binding SlewToTarget}" />
                                 </UniformGrid>
                                 <UniformGrid
-                                    Margin="0,6,0,6"
+                                    Margin="5,6,0,6"
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCenterTarget}" />
@@ -125,6 +125,56 @@
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding AutoFocusOnStart}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0,0,0,1"
+                            DataContext="{Binding Source={StaticResource AppVM}, Path=SeqVM}">
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblEstimatedDownloadTime}" />
+                                    <TextBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        Text="{Binding EstimatedDownloadTime}" />
+                                </UniformGrid>
+                                <UniformGrid
+                                    Margin="5,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblETA}" />
+                                    <Grid VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="30" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding ETA, Mode=OneWay}" />
+                                        <Button
+                                            Grid.Column="1"
+                                            Width="20"
+                                            Height="20"
+                                            Margin="5"
+                                            Command="{Binding UpdateETACommand}"
+                                            IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                                            <Grid>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{StaticResource LoopSVG}"
+                                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                                    Stretch="Uniform" />
+                                            </Grid>
+                                        </Button>
+                                    </Grid>
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>

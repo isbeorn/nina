@@ -28,6 +28,18 @@
                     <TextBlock Text="{Binding ElementName=pbSequences, Path=Maximum}" />
                 </StackPanel>
             </Grid>
+            <UniformGrid
+                Margin="5,6,0,6"
+                VerticalAlignment="Center"
+                Columns="2">
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblETA}" />
+                <TextBlock
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="{Binding ETA, Mode=OneWay}" />
+
+            </UniformGrid>
 
 
             <GroupBox Header="{ns:Loc LblActiveSequenceDetails}">

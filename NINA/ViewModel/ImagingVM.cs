@@ -299,6 +299,7 @@ namespace NINA.ViewModel {
 
                     CaptureSequence seq;
                     while ((seq = sequence.Next()) != null) {
+                        Stopwatch nonImagingTimeSW = Stopwatch.StartNew();
                         await CheckMeridianFlip(seq, token, progress);
 
                         /*Change Filter*/
@@ -318,8 +319,12 @@ namespace NINA.ViewModel {
                             throw new OperationCanceledException();
                         }
 
+                        nonImagingTimeSW.Stop();
+
                         /*Capture*/
                         await Capture(seq, token, progress);
+
+                        nonImagingTimeSW.Start();
 
                         if (_cameraConnected != true) {
                             throw new OperationCanceledException();
@@ -359,6 +364,11 @@ namespace NINA.ViewModel {
                         if (_cameraConnected != true) {
                             throw new OperationCanceledException();
                         }
+
+                        nonImagingTimeSW.Stop();
+                        if(bSave) {
+                            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.AddSequenceActualDownloadTime, nonImagingTimeSW.Elapsed);
+                        }                        
 
                         if (pauseToken.IsPaused) {
                             sequence.IsRunning = false;

@@ -106,7 +106,8 @@ namespace NINA.Utility {
         MoveFocuserAbsolute = 16,
         SlewToCoordinates = 17,
         StartGuider = 18,
-        StartAutoFocus = 19
+        StartAutoFocus = 19,
+        AddSequenceActualDownloadTime = 20
     }
 
 }

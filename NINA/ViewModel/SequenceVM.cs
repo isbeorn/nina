@@ -16,6 +16,8 @@ namespace NINA.ViewModel {
         public SequenceVM() {
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SequenceSVG"];
+            
+            EstimatedDownloadTime = Settings.EstimatedDownloadTime;
 
             ContentId = nameof(SequenceVM);
             AddSequenceCommand = new RelayCommand(AddSequence);
@@ -24,6 +26,7 @@ namespace NINA.ViewModel {
             CancelSequenceCommand = new RelayCommand(CancelSequence);
             PauseSequenceCommand = new RelayCommand(PauseSequence);
             ResumeSequenceCommand = new RelayCommand(ResumeSequence);
+            UpdateETACommand = new RelayCommand((object o) => RaisePropertyChanged(nameof(ETA)));
 
             RegisterMediatorMessages();
         }
@@ -69,10 +72,49 @@ namespace NINA.ViewModel {
             }
         }
 
+
+
+        public async Task AddDownloadTime(TimeSpan t) {
+            await Task.Run(() => {
+                lock (_actualDownloadTimes) {
+                    _actualDownloadTimes.Add(t);
+
+                    double doubleAverageTicks = _actualDownloadTimes.Average(timeSpan => timeSpan.Ticks);
+                    long longAverageTicks = Convert.ToInt64(doubleAverageTicks);
+                    EstimatedDownloadTime = new TimeSpan(longAverageTicks);
+                }
+            });
+        }
+
+        private List<TimeSpan> _actualDownloadTimes = new List<TimeSpan>();
+        public TimeSpan EstimatedDownloadTime {
+            get {
+                return Settings.EstimatedDownloadTime;
+            }
+            set {
+                Settings.EstimatedDownloadTime = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ETA));
+
+            }
+        }
+
+        public DateTime ETA {
+            get {
+                TimeSpan time = new TimeSpan();
+                foreach (CaptureSequence s in Sequence) {
+                    time = time.Add(TimeSpan.FromSeconds(s.ExposureCount * (s.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
+                }
+                return DateTime.Now.AddSeconds(time.TotalSeconds);
+            }
+        }
+
         private async Task<bool> StartSequence(IProgress<string> progress) {
             _canceltoken = new CancellationTokenSource();
             _pauseTokenSource = new PauseTokenSource();
             RaisePropertyChanged(nameof(IsPaused));
+
+            RaisePropertyChanged(nameof(ETA));
 
             if(Sequence.SlewToTarget) {
                 progress.Report(Locale.Loc.Instance["LblSlewToTarget"]);
@@ -109,6 +151,11 @@ namespace NINA.ViewModel {
                     Sequence.SetSequenceTarget(sequenceDso);
                 }
             }, AsyncMediatorMessages.SetSequenceCoordinates);
+
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                var t = (TimeSpan)o;
+                await AddDownloadTime(t);
+            }, AsyncMediatorMessages.AddSequenceActualDownloadTime);
         }
 
         private CaptureSequenceList _sequence;
@@ -184,5 +231,6 @@ namespace NINA.ViewModel {
         public ICommand CancelSequenceCommand { get; private set; }
         public ICommand PauseSequenceCommand { get; private set; }
         public ICommand ResumeSequenceCommand { get; private set; }
+        public ICommand UpdateETACommand { get; private set; }
     }
 }

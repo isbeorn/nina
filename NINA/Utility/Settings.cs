@@ -820,8 +820,15 @@ namespace NINA.Utility {
             }
         }
 
-
-
+        public static TimeSpan EstimatedDownloadTime {
+            get {
+                return Properties.Settings.Default.EstimatedDownloadTime;
+            }
+            set {
+                Properties.Settings.Default.EstimatedDownloadTime = value;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 
 }
