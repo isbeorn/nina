@@ -267,6 +267,7 @@
     </Compile>
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
+    <Compile Include="Model\DummyDevice.cs" />
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
     <Compile Include="Model\MyCamera\ImageArray.cs" />

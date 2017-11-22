@@ -1,4 +1,5 @@
-﻿using NINA.Model.MyFocuser;
+﻿using NINA.Model;
+using NINA.Model.MyFocuser;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using System;
@@ -80,6 +81,13 @@ namespace NINA.ViewModel {
         CancellationTokenSource _cancelChooseFocuserSource;
 
         public async Task<bool> ChooseFocuser() {
+            _cancelUpdateFocuserValues?.Cancel();
+
+            if (FocuserChooserVM.SelectedDevice.Id == "No_Device") {
+                Settings.FocuserId = FocuserChooserVM.SelectedDevice.Id;
+                return false;
+            }
+
             var focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
             _cancelChooseFocuserSource = new CancellationTokenSource();
             if (focuser != null) {
@@ -90,7 +98,6 @@ namespace NINA.ViewModel {
                         this.Focuser = focuser;
                         Connected = true;
                         Notification.ShowSuccess(Locale.Loc.Instance["LblFocuserConnected"]);
-                        _cancelUpdateFocuserValues?.Cancel();
                         _updateFocuserValuesProgress = new Progress<Dictionary<string, object>>(UpdateFocuserValues);
                         _cancelUpdateFocuserValues = new CancellationTokenSource();
                         _updateFocuserValuesTask = Task.Run(() => GetFocuserValues(_updateFocuserValuesProgress, _cancelUpdateFocuserValues.Token));
@@ -305,6 +312,9 @@ namespace NINA.ViewModel {
     class FocuserChooserVM : EquipmentChooserVM {
         public override void GetEquipment() {
             Devices.Clear();
+
+            Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoFocuser"]));
+
             var ascomDevices = new ASCOM.Utilities.Profile();
 
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Focuser")) {

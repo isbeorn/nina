@@ -25,7 +25,7 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ASCOM.Simulator.Camera")]
+        [global::System.Configuration.DefaultSettingValueAttribute("No_Device")]
         public string CameraId {
             get {
                 return ((string)(this["CameraId"]));
@@ -37,7 +37,7 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ASCOM.Simulator.FilterWheel")]
+        [global::System.Configuration.DefaultSettingValueAttribute("No_Device")]
         public string FilterWheelId {
             get {
                 return ((string)(this["FilterWheelId"]));
@@ -182,7 +182,7 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ASCOM.Simulator.Telescope")]
+        [global::System.Configuration.DefaultSettingValueAttribute("No_Device")]
         public string TelescopeId {
             get {
                 return ((string)(this["TelescopeId"]));
@@ -542,7 +542,7 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ASCOM.Simulator.Focuser")]
+        [global::System.Configuration.DefaultSettingValueAttribute("No_Device")]
         public string FocuserId {
             get {
                 return ((string)(this["FocuserId"]));

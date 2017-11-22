@@ -340,4 +340,8 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblEstimatedDownloadTime">Estimated Download Time</s:String>
     <s:String x:Key="LblETA">Estimated Finish Time</s:String>
     <s:String x:Key="LblUnexpectedError">Unexpected error occurred</s:String>
+    <s:String x:Key="LblNoCamera">No Camera</s:String>
+    <s:String x:Key="LblNoFilterwheel">No Filterwheel</s:String>
+    <s:String x:Key="LblNoFocuser">No Focuser</s:String>
+    <s:String x:Key="LblNoTelescope">No Telescope</s:String>
 </ResourceDictionary>

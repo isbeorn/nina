@@ -144,6 +144,12 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> ChooseFW() {
+
+            if (FilterWheelChooserVM.SelectedDevice.Id == "No_Device") {
+                Settings.FilterWheelId = FilterWheelChooserVM.SelectedDevice.Id;
+                return false;
+            }
+
             var fW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
             _cancelChooseFilterWheelSource = new CancellationTokenSource();
             if (fW != null) {
@@ -216,6 +222,9 @@ namespace NINA.ViewModel {
     class FilterWheelChooserVM : EquipmentChooserVM {
         public override void GetEquipment() {
             Devices.Clear();
+
+            Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoFilterwheel"]));
+
             var ascomDevices = new ASCOM.Utilities.Profile();
 
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("FilterWheel")) {

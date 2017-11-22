@@ -219,7 +219,13 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> ChooseCamera() {
+            _cancelUpdateCameraValues?.Cancel();
 
+            if (CameraChooserVM.SelectedDevice.Id == "No_Device") {
+                Settings.CameraId = CameraChooserVM.SelectedDevice.Id;
+                return false;
+            }
+                
             var cam = (ICamera)CameraChooserVM.SelectedDevice;
             _cancelConnectCameraSource = new CancellationTokenSource();
             if (cam != null) {
@@ -230,8 +236,7 @@ namespace NINA.ViewModel {
                         this.Cam = cam;
                         Connected = true;
                         Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
-
-                        _cancelUpdateCameraValues?.Cancel();
+                                                
                         _updateCameraValuesProgress = new Progress<Dictionary<string, object>>(UpdateCameraValues);
                         _cancelUpdateCameraValues = new CancellationTokenSource();
                         _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
@@ -428,6 +433,8 @@ namespace NINA.ViewModel {
 
         public override void GetEquipment() {
             Devices.Clear();
+
+            Devices.Add(new Model.DummyDevice(Locale.Loc.Instance["LblNoCamera"]));
 
             /* ASI */
             Logger.Trace("Adding ASI Cameras");

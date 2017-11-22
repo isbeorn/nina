@@ -125,6 +125,12 @@ namespace NINA.ViewModel {
 
         private async Task<bool> ChooseTelescope() {
             _updateTelescope.Stop();
+
+            if (TelescopeChooserVM.SelectedDevice.Id == "No_Device") {
+                Settings.TelescopeId = TelescopeChooserVM.SelectedDevice.Id;
+                return false;
+            }
+
             var telescope = (ITelescope)TelescopeChooserVM.SelectedDevice;
             _cancelChooseTelescopeSource = new CancellationTokenSource();
             if (telescope != null) {
@@ -331,6 +337,9 @@ namespace NINA.ViewModel {
     class TelescopeChooserVM : EquipmentChooserVM {
         public override void GetEquipment() {
             Devices.Clear();
+
+            Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoTelescope"]));
+
             var ascomDevices = new ASCOM.Utilities.Profile();
 
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Telescope")) {

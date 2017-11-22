@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="CameraId" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ASCOM.Simulator.Camera</Value>
+      <Value Profile="(Default)">No_Device</Value>
     </Setting>
     <Setting Name="FilterWheelId" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ASCOM.Simulator.FilterWheel</Value>
+      <Value Profile="(Default)">No_Device</Value>
     </Setting>
     <Setting Name="ImageFilePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -42,7 +42,7 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="TelescopeId" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ASCOM.Simulator.Telescope</Value>
+      <Value Profile="(Default)">No_Device</Value>
     </Setting>
     <Setting Name="ButtonBackgroundColor" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF0B3C5D</Value>
@@ -132,7 +132,7 @@
       <Value Profile="(Default)">Dark</Value>
     </Setting>
     <Setting Name="FocuserId" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ASCOM.Simulator.Focuser</Value>
+      <Value Profile="(Default)">No_Device</Value>
     </Setting>
     <Setting Name="PS2FocalLength" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">750</Value>
