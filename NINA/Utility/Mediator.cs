@@ -105,7 +105,11 @@ namespace NINA.Utility {
         MoveFocuserAbsolute = 16,
         SlewToCoordinates = 17,
         StartGuider = 18,
-        StartAutoFocus = 19
+        StartAutoFocus = 19,
+        ConnectFilterWheel = 20,
+        ConnectFocuser = 21,
+        ConnectTelescope = 22,
+        ConnectCamera = 23
     }
 
 }

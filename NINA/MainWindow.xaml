@@ -13,6 +13,10 @@
     Icon="/NINA;component/Resources/observatory.png"
     Style="{StaticResource MainWindow}">
 
+    <Window.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding Source={StaticResource AppVM}, Path=ConnectAllDevicesCommand}" />
+        <KeyBinding Key="F9" Command="{Binding Source={StaticResource AppVM}, Path=DisconnectAllDevicesCommand}" />
+    </Window.InputBindings>
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
         <Grid DataContext="{StaticResource AppVM}">
             <TabControl TabStripPlacement="Left">

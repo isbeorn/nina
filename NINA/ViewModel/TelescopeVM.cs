@@ -60,6 +60,10 @@ namespace NINA.ViewModel {
                 bool start = (bool)o;
                 SendToSnapPort(start);
             }, MediatorMessages.TelescopeSnapPort);
+
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                await ChooseTelescopeCommand.ExecuteAsync(o);
+            }, AsyncMediatorMessages.ConnectTelescope);
         }
 
         private void SendToSnapPort(bool start) {
@@ -122,39 +126,44 @@ namespace NINA.ViewModel {
             }
         }
 
-
+        private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
         private async Task<bool> ChooseTelescope() {
-            _updateTelescope.Stop();
+            await ss.WaitAsync();
+            try {
+                Disconnect();
+                _updateTelescope.Stop();
 
-            if (TelescopeChooserVM.SelectedDevice.Id == "No_Device") {
-                Settings.TelescopeId = TelescopeChooserVM.SelectedDevice.Id;
-                return false;
-            }
-
-            var telescope = (ITelescope)TelescopeChooserVM.SelectedDevice;
-            _cancelChooseTelescopeSource = new CancellationTokenSource();
-            if (telescope != null) {
-                try {
-                    var connected = await telescope?.Connect(_cancelChooseTelescopeSource.Token);
-                    _cancelChooseTelescopeSource.Token.ThrowIfCancellationRequested();
-                    if (connected) {
-                        Telescope = telescope;
-                        Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
-                        _updateTelescope.Start();
-                        Settings.TelescopeId = Telescope.Id;
-                        return true;
-                    } else {
-                        Telescope = null;
-                        return false;
-                    }
-                } catch (OperationCanceledException) {
-                    if (telescope?.Connected == true) { Disconnect(); }
+                if (TelescopeChooserVM.SelectedDevice.Id == "No_Device") {
+                    Settings.TelescopeId = TelescopeChooserVM.SelectedDevice.Id;
                     return false;
                 }
-            } else {
-                return false;
-            }
 
+                var telescope = (ITelescope)TelescopeChooserVM.SelectedDevice;
+                _cancelChooseTelescopeSource = new CancellationTokenSource();
+                if (telescope != null) {
+                    try {
+                        var connected = await telescope?.Connect(_cancelChooseTelescopeSource.Token);
+                        _cancelChooseTelescopeSource.Token.ThrowIfCancellationRequested();
+                        if (connected) {
+                            Telescope = telescope;
+                            Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
+                            _updateTelescope.Start();
+                            Settings.TelescopeId = Telescope.Id;
+                            return true;
+                        } else {
+                            Telescope = null;
+                            return false;
+                        }
+                    } catch (OperationCanceledException) {
+                        if (telescope?.Connected == true) { Disconnect(); }
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } finally {
+                ss.Release();
+            } 
         }
 
         private void CancelChooseTelescope(object o) {
@@ -315,7 +324,7 @@ namespace NINA.ViewModel {
 
         public ICommand SlewToCoordinatesCommand { get; private set; }
 
-        public ICommand ChooseTelescopeCommand { get; private set; }
+        public IAsyncCommand ChooseTelescopeCommand { get; private set; }
         public ICommand CancelChooseTelescopeCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
 

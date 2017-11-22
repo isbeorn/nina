@@ -38,6 +38,10 @@ namespace NINA.ViewModel {
                     await ChangeFilter(filter, token, progress);
                 }
             }, AsyncMediatorMessages.ChangeFilterWheelPosition);
+
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                await ChooseFWCommand.ExecuteAsync(o);
+            }, AsyncMediatorMessages.ConnectFilterWheel);
         }
 
         private CancellationTokenSource _changeFilterCancellationSource;
@@ -143,40 +147,47 @@ namespace NINA.ViewModel {
             }
         }
 
+        private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
         private async Task<bool> ChooseFW() {
+            await ss.WaitAsync();
+            try {
+                Disconnect();
 
-            if (FilterWheelChooserVM.SelectedDevice.Id == "No_Device") {
-                Settings.FilterWheelId = FilterWheelChooserVM.SelectedDevice.Id;
-                return false;
-            }
-
-            var fW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
-            _cancelChooseFilterWheelSource = new CancellationTokenSource();
-            if (fW != null) {
-                try {
-                    var connected = await fW?.Connect(_cancelChooseFilterWheelSource.Token);
-                    _cancelChooseFilterWheelSource.Token.ThrowIfCancellationRequested();
-                    if (connected) {
-                        this.FW = fW;
-                        Notification.ShowSuccess(Locale.Loc.Instance["LblFilterwheelConnected"]);
-                        Settings.FilterWheelId = FW.Id;
-                        if (FW.Position > -1) {
-                            SelectedFilter = FW.Filters[FW.Position];
-                        }
-                        return true;
-                    } else {
-                        this.FW = null;
-                        return false;
-                    }
-                } catch (OperationCanceledException) {
-                    if (fW?.Connected == true) { Disconnect(); }
+                if (FilterWheelChooserVM.SelectedDevice.Id == "No_Device") {
+                    Settings.FilterWheelId = FilterWheelChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
+                var fW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
+                _cancelChooseFilterWheelSource = new CancellationTokenSource();
+                if (fW != null) {
+                    try {
+                        var connected = await fW?.Connect(_cancelChooseFilterWheelSource.Token);
+                        _cancelChooseFilterWheelSource.Token.ThrowIfCancellationRequested();
+                        if (connected) {
+                            this.FW = fW;
+                            Notification.ShowSuccess(Locale.Loc.Instance["LblFilterwheelConnected"]);
+                            Settings.FilterWheelId = FW.Id;
+                            if (FW.Position > -1) {
+                                SelectedFilter = FW.Filters[FW.Position];
+                            }
+                            return true;
+                        } else {
+                            this.FW = null;
+                            return false;
+                        }
+                    } catch (OperationCanceledException) {
+                        if (fW?.Connected == true) { Disconnect(); }
+                        return false;
+                    }
 
-            } else {
-                return false;
-            }
+
+                } else {
+                    return false;
+                }
+            } finally {
+                ss.Release();
+            }            
         }
 
         private void CancelChooseFW(object o) {
@@ -213,7 +224,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public ICommand ChooseFWCommand { get; private set; }
+        public IAsyncCommand ChooseFWCommand { get; private set; }
         public ICommand CancelChooseFWCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
         public ICommand RefreshFWListCommand { get; private set; }

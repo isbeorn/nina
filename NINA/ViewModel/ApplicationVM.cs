@@ -19,6 +19,27 @@ namespace NINA.ViewModel {
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
+            ConnectAllDevicesCommand = new AsyncCommand<bool>(async () => {
+                var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblReconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
+                if (diag == MessageBoxResult.OK) {
+                    return await Task<bool>.Run(async () => {
+                        var cam = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ConnectCamera, null);
+                        var fw = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ConnectFilterWheel, null);
+                        var telescope = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ConnectTelescope, null);
+                        var focuser = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ConnectFocuser, null);
+                        await Task.WhenAll(cam, fw, telescope, focuser);
+                        return true;
+                    });
+                } else {
+                    return false;
+                }                
+            });
+            DisconnectAllDevicesCommand = new RelayCommand((object o) => {
+                var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblDisconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
+                if (diag == MessageBoxResult.OK) {
+                    DisconnectEquipment();
+                }
+            });
 
             RegisterMediatorMessages();
 
@@ -324,9 +345,7 @@ namespace NINA.ViewModel {
         public ICommand MaximizeWindowCommand { get; private set; }
 
         public ICommand ExitCommand { get; private set; }
-
-
-
-
+        public ICommand ConnectAllDevicesCommand { get; private set; }
+        public ICommand DisconnectAllDevicesCommand { get; private set; }
     }
 }

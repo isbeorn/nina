@@ -37,6 +37,10 @@ namespace NINA.ViewModel {
                 int position = (int)o;
                 await MoveFocuser(position);
             }, AsyncMediatorMessages.MoveFocuserAbsolute);
+
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                await ChooseFocuserCommand.ExecuteAsync(o);
+            }, AsyncMediatorMessages.ConnectFocuser);
         }
 
         private void HaltFocuser(object obj) {
@@ -80,43 +84,50 @@ namespace NINA.ViewModel {
 
         CancellationTokenSource _cancelChooseFocuserSource;
 
+        private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
         public async Task<bool> ChooseFocuser() {
-            _cancelUpdateFocuserValues?.Cancel();
+            await ss.WaitAsync();
+            try {
+                Disconnect();
+                _cancelUpdateFocuserValues?.Cancel();
 
-            if (FocuserChooserVM.SelectedDevice.Id == "No_Device") {
-                Settings.FocuserId = FocuserChooserVM.SelectedDevice.Id;
-                return false;
-            }
-
-            var focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
-            _cancelChooseFocuserSource = new CancellationTokenSource();
-            if (focuser != null) {
-                try {
-                    var connected = await focuser?.Connect(_cancelChooseFocuserSource.Token);
-                    _cancelChooseFocuserSource.Token.ThrowIfCancellationRequested();
-                    if (connected) {
-                        this.Focuser = focuser;
-                        Connected = true;
-                        Notification.ShowSuccess(Locale.Loc.Instance["LblFocuserConnected"]);
-                        _updateFocuserValuesProgress = new Progress<Dictionary<string, object>>(UpdateFocuserValues);
-                        _cancelUpdateFocuserValues = new CancellationTokenSource();
-                        _updateFocuserValuesTask = Task.Run(() => GetFocuserValues(_updateFocuserValuesProgress, _cancelUpdateFocuserValues.Token));
-
-                        TargetPosition = Focuser.Position;
-                        Settings.FocuserId = Focuser.Id;
-                        return true;
-                    } else {
-                        Connected = false;
-                        this.Focuser = null;
-                        return false;
-                    }
-                } catch (OperationCanceledException) {
-                    if (Connected) { Disconnect(); }
+                if (FocuserChooserVM.SelectedDevice.Id == "No_Device") {
+                    Settings.FocuserId = FocuserChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
-            } else {
-                return false;
+                var focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
+                _cancelChooseFocuserSource = new CancellationTokenSource();
+                if (focuser != null) {
+                    try {
+                        var connected = await focuser?.Connect(_cancelChooseFocuserSource.Token);
+                        _cancelChooseFocuserSource.Token.ThrowIfCancellationRequested();
+                        if (connected) {
+                            this.Focuser = focuser;
+                            Connected = true;
+                            Notification.ShowSuccess(Locale.Loc.Instance["LblFocuserConnected"]);
+                            _updateFocuserValuesProgress = new Progress<Dictionary<string, object>>(UpdateFocuserValues);
+                            _cancelUpdateFocuserValues = new CancellationTokenSource();
+                            _updateFocuserValuesTask = Task.Run(() => GetFocuserValues(_updateFocuserValuesProgress, _cancelUpdateFocuserValues.Token));
+
+                            TargetPosition = Focuser.Position;
+                            Settings.FocuserId = Focuser.Id;
+                            return true;
+                        } else {
+                            Connected = false;
+                            this.Focuser = null;
+                            return false;
+                        }
+                    } catch (OperationCanceledException) {
+                        if (Connected) { Disconnect(); }
+                        return false;
+                    }
+
+                } else {
+                    return false;
+                }
+            } finally {
+                ss.Release();
             }
         }
 
@@ -260,6 +271,9 @@ namespace NINA.ViewModel {
 
             Connected = false;
             _cancelUpdateFocuserValues?.Cancel();
+            do {
+                Task.Delay(100);
+            } while (!_updateFocuserValuesTask?.IsCompleted == true);
             Focuser?.Disconnect();
             Focuser = null;
             RaisePropertyChanged(nameof(Focuser));
@@ -300,7 +314,7 @@ namespace NINA.ViewModel {
 
         public ICommand RefreshFocuserListCommand { get; private set; }
 
-        public ICommand ChooseFocuserCommand { get; private set; }
+        public IAsyncCommand ChooseFocuserCommand { get; private set; }
         public ICommand CancelChooseFocuserCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
 

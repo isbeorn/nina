@@ -349,4 +349,6 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblNoFilterwheel">Kein Filterrad</s:String>
     <s:String x:Key="LblNoFocuser">Kein Okularauszug</s:String>
     <s:String x:Key="LblNoTelescope">Kein Teleskop</s:String>
+    <s:String x:Key="LblReconnectAll">Alle Geräte neu verbinden?</s:String>
+    <s:String x:Key="LblDisconnectAll">Alle Geräte trennen?</s:String>
 </ResourceDictionary>

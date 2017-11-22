@@ -42,6 +42,11 @@ namespace NINA.ViewModel {
             CoolerPowerHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
 
+
+
+            Mediator.Instance.RegisterAsync(async (object o) => {
+                await ChooseCameraCommand.ExecuteAsync(o);
+            }, AsyncMediatorMessages.ConnectCamera);
         }
 
         private void RefreshCameraList(object obj) {
@@ -218,46 +223,53 @@ namespace NINA.ViewModel {
             }
         }
 
+        private readonly SemaphoreSlim ss = new SemaphoreSlim(1,1);
         private async Task<bool> ChooseCamera() {
-            _cancelUpdateCameraValues?.Cancel();
+            await ss.WaitAsync();
+            try {
+                Disconnect();
+                _cancelUpdateCameraValues?.Cancel();
 
-            if (CameraChooserVM.SelectedDevice.Id == "No_Device") {
-                Settings.CameraId = CameraChooserVM.SelectedDevice.Id;
-                return false;
-            }
-                
-            var cam = (ICamera)CameraChooserVM.SelectedDevice;
-            _cancelConnectCameraSource = new CancellationTokenSource();
-            if (cam != null) {
-                try {
-                    var connected = await cam.Connect(_cancelConnectCameraSource.Token);
-                    _cancelConnectCameraSource.Token.ThrowIfCancellationRequested();
-                    if (connected) {
-                        this.Cam = cam;
-                        Connected = true;
-                        Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
-                                                
-                        _updateCameraValuesProgress = new Progress<Dictionary<string, object>>(UpdateCameraValues);
-                        _cancelUpdateCameraValues = new CancellationTokenSource();
-                        _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
-
-                        Settings.CameraId = this.Cam.Id;
-                        return true;
-
-                    } else {
-                        this.Cam = null;
-                        return false;
-                    }
-                } catch (OperationCanceledException) {
-                    if (Connected) { Disconnect(); }
-                    Connected = false;
+                if (CameraChooserVM.SelectedDevice.Id == "No_Device") {
+                    Settings.CameraId = CameraChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
+                var cam = (ICamera)CameraChooserVM.SelectedDevice;
+                _cancelConnectCameraSource = new CancellationTokenSource();
+                if (cam != null) {
+                    try {
+                        var connected = await cam.Connect(_cancelConnectCameraSource.Token);
+                        _cancelConnectCameraSource.Token.ThrowIfCancellationRequested();
+                        if (connected) {
+                            this.Cam = cam;
+                            Connected = true;
+                            Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
 
-            } else {
-                return false;
-            }
+                            _updateCameraValuesProgress = new Progress<Dictionary<string, object>>(UpdateCameraValues);
+                            _cancelUpdateCameraValues = new CancellationTokenSource();
+                            _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
+
+                            Settings.CameraId = this.Cam.Id;
+                            return true;
+
+                        } else {
+                            this.Cam = null;
+                            return false;
+                        }
+                    } catch (OperationCanceledException) {
+                        if (Connected) { Disconnect(); }
+                        Connected = false;
+                        return false;
+                    }
+
+
+                } else {
+                    return false;
+                }
+            } finally {
+                ss.Release();
+            }            
         }
 
         private void CancelConnectCamera(object o) {
@@ -386,8 +398,8 @@ namespace NINA.ViewModel {
             }
             set {
                 _coolerOn = value;
-                if (_cam?.Connected == true) {
-                    _cam.CoolerOn = value;
+                if (Connected == true) {
+                    Cam.CoolerOn = value;
                 }
 
                 RaisePropertyChanged();
@@ -406,6 +418,9 @@ namespace NINA.ViewModel {
         public void Disconnect() {
             _cancelUpdateCameraValues?.Cancel();
             _cancelCoolCameraSource?.Cancel();
+            do {
+                Task.Delay(100);
+            } while (!_updateCameraValuesTask?.IsCompleted == true);
             CoolingRunning = false;
             Cam?.Disconnect();
             Cam = null;
@@ -416,7 +431,7 @@ namespace NINA.ViewModel {
 
         public ICommand CoolCamCommand { get; private set; }
 
-        public ICommand ChooseCameraCommand { get; private set; }
+        public IAsyncCommand ChooseCameraCommand { get; private set; }
 
         public ICommand DisconnectCommand { get; private set; }
 
