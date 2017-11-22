@@ -326,14 +326,14 @@ namespace NINA.Model.MyCamera {
                     int size = Resolution.Width * Resolution.Height * 2;
                     IntPtr pointer = Marshal.AllocHGlobal(size);
                     int buffersize = (Resolution.Width * Resolution.Height * 16 + 7) / 8;
-                    GetExposureData(pointer, buffersize);
-
-                    ushort[] arr = new ushort[size / 2];
-                    CopyToUShort(pointer, arr, 0, size / 2);
-                    Marshal.FreeHGlobal(pointer);
-                    return await ImageArray.CreateInstance(arr, Resolution.Width, Resolution.Height, SensorType != SensorType.Monochrome);
-
-
+                    if(GetExposureData(pointer, buffersize)) {
+                        ushort[] arr = new ushort[size / 2];
+                        CopyToUShort(pointer, arr, 0, size / 2);
+                        Marshal.FreeHGlobal(pointer);
+                        return await ImageArray.CreateInstance(arr, Resolution.Width, Resolution.Height, SensorType != SensorType.Monochrome);
+                    } else {
+                        Notification.ShowError("Error retrieving image data from camera!");
+                    }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Notification.ShowError(ex.Message);
