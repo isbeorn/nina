@@ -291,20 +291,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private FrameFocusVM _frameFocusVM;
-        public FrameFocusVM FrameFocusVM {
-            get {
-                if (_frameFocusVM == null) {
-                    _frameFocusVM = new FrameFocusVM();
-                }
-                return _frameFocusVM;
-            }
-            set {
-                _frameFocusVM = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private AutoFocusVM _autoFocusVM;
         public AutoFocusVM AutoFocusVM {
             get {

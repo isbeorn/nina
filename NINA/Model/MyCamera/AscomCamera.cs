@@ -262,7 +262,7 @@ namespace NINA.Model.MyCamera {
                     try {
                         val = _camera.Connected;
                         if (_connected != val) {
-                            Notification.ShowWarning(Locale.Loc.Instance["LblCameraConnectionLost"]);
+                            Notification.ShowError(Locale.Loc.Instance["LblCameraConnectionLost"]);
                             Disconnect();
                         }
                     } catch (Exception) {

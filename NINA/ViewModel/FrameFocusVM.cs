@@ -140,9 +140,9 @@ namespace NINA.ViewModel {
             } else {
                 do {
                     _captureImageToken = new CancellationTokenSource();
-                    CaptureSequenceList seq = new CaptureSequenceList(new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1));
+                    var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
 
-                    await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartSequence, new object[] { seq, false, _captureImageToken.Token, progress });
+                    await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, _captureImageToken.Token, progress });
 
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop);

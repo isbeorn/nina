@@ -1,10 +1,15 @@
 ﻿using NINA.Model;
 using NINA.Utility;
+using NINA.Utility.Exceptions;
+using NINA.Utility.Notification;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +21,7 @@ namespace NINA.ViewModel {
         public SequenceVM() {
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SequenceSVG"];
-            
+
             EstimatedDownloadTime = Settings.EstimatedDownloadTime;
 
             ContentId = nameof(SequenceVM);
@@ -26,7 +31,7 @@ namespace NINA.ViewModel {
             CancelSequenceCommand = new RelayCommand(CancelSequence);
             PauseSequenceCommand = new RelayCommand(PauseSequence);
             ResumeSequenceCommand = new RelayCommand(ResumeSequence);
-            UpdateETACommand = new RelayCommand((object o) => RaisePropertyChanged(nameof(ETA)));
+            UpdateETACommand = new RelayCommand((object o) => CalculateETA());
 
             RegisterMediatorMessages();
         }
@@ -73,17 +78,27 @@ namespace NINA.ViewModel {
         }
 
 
-
+        Mutex mutex = new Mutex();
         public async Task AddDownloadTime(TimeSpan t) {
             await Task.Run(() => {
-                lock (_actualDownloadTimes) {
-                    _actualDownloadTimes.Add(t);
+                var s = Stopwatch.StartNew();
+                mutex.WaitOne();
+                _actualDownloadTimes.Add(t);
 
-                    double doubleAverageTicks = _actualDownloadTimes.Average(timeSpan => timeSpan.Ticks);
-                    long longAverageTicks = Convert.ToInt64(doubleAverageTicks);
-                    EstimatedDownloadTime = new TimeSpan(longAverageTicks);
-                }
+                double doubleAverageTicks = _actualDownloadTimes.Average(timeSpan => timeSpan.Ticks);
+                long longAverageTicks = Convert.ToInt64(doubleAverageTicks);
+                EstimatedDownloadTime = new TimeSpan(longAverageTicks);
+                mutex.ReleaseMutex();
             });
+        }
+
+        private void CalculateETA() {
+            TimeSpan time = new TimeSpan();
+            foreach (CaptureSequence s in Sequence) {
+                var exposureCount = s.ExposureCount;
+                time = time.Add(TimeSpan.FromSeconds(s.ExposureCount * (s.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
+            }
+            ETA = DateTime.Now.AddSeconds(time.TotalSeconds);
         }
 
         private List<TimeSpan> _actualDownloadTimes = new List<TimeSpan>();
@@ -94,18 +109,18 @@ namespace NINA.ViewModel {
             set {
                 Settings.EstimatedDownloadTime = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(ETA));
-
+                CalculateETA();
             }
         }
 
+        private DateTime _eta;
         public DateTime ETA {
             get {
-                TimeSpan time = new TimeSpan();
-                foreach (CaptureSequence s in Sequence) {
-                    time = time.Add(TimeSpan.FromSeconds(s.ExposureCount * (s.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
-                }
-                return DateTime.Now.AddSeconds(time.TotalSeconds);
+                return _eta;
+            }
+            private set {
+                _eta = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -114,28 +129,147 @@ namespace NINA.ViewModel {
             _pauseTokenSource = new PauseTokenSource();
             RaisePropertyChanged(nameof(IsPaused));
 
-            RaisePropertyChanged(nameof(ETA));
+            CalculateETA();
 
-            if(Sequence.SlewToTarget) {
+            if (Sequence.SlewToTarget) {
                 progress.Report(Locale.Loc.Instance["LblSlewToTarget"]);
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SlewToCoordinates, Sequence.Coordinates);
                 if (Sequence.CenterTarget) {
                     progress.Report(Locale.Loc.Instance["LblCenterTarget"]);
                     await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaputureSolveSyncAndReslew, new object[] { _canceltoken.Token, progress });
-                } 
+                }
             }
 
-            if(Sequence.AutoFocusOnStart) {
+            if (Sequence.AutoFocusOnStart) {
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartAutoFocus, new object[] { _canceltoken.Token, progress });
             }
 
-            if(Sequence.StartGuiding) {
+            if (Sequence.StartGuiding) {
                 progress.Report(Locale.Loc.Instance["LblStartGuiding"]);
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartGuider, _canceltoken.Token);
             }
 
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartSequence, new object[] { this.Sequence, true, _canceltoken.Token, progress, _pauseTokenSource.Token });
-            return true;
+            return await ProcessSequence(_canceltoken.Token, _pauseTokenSource.Token, progress);
+        }
+
+        //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
+        static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+
+        private async Task<bool> ProcessSequence(CancellationToken ct, PauseToken pt, IProgress<string> progress) {
+
+            return await Task.Run<bool>(async () => {
+                try {
+                    //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
+                    await semaphoreSlim.WaitAsync(ct);
+
+                    /* Validate if preconditions are met */
+                    if (!CheckPreconditions()) {
+                        return false;
+                    }
+
+                    Sequence.IsRunning = true;
+
+                    /* delay sequence start by given amount */
+                    var delay = Sequence.Delay;
+                    while (delay > 0) {
+                        await Task.Delay(TimeSpan.FromSeconds(1), ct);
+                        delay--;
+                        progress.Report(string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay));
+                    }
+
+                    CaptureSequence seq;
+                    while ((seq = Sequence.Next()) != null) {
+                        Stopwatch seqDuration = Stopwatch.StartNew();
+                        await CheckMeridianFlip(seq, ct, progress);
+
+                        await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, true, progress, ct });
+
+                        seqDuration.Stop();
+
+                        await AddDownloadTime(seqDuration.Elapsed.Subtract(TimeSpan.FromSeconds(seq.ExposureTime)));
+
+                        if (pt.IsPaused) {
+                            Sequence.IsRunning = false;
+                            semaphoreSlim.Release();
+                            progress.Report("Paused");
+                            await pt.WaitWhilePausedAsync(ct);
+                            progress.Report("Resume sequence");
+                            await semaphoreSlim.WaitAsync(ct);
+                            Sequence.IsRunning = true;
+                        }
+
+                    }
+                } catch (OperationCanceledException) {
+                } catch (CameraConnectionLostException) {
+                } catch (Exception ex) {
+                    Logger.Error(ex.Message, ex.StackTrace);
+                    Notification.ShowError(ex.Message);
+                } finally {
+                    progress.Report(string.Empty);
+                    Sequence.IsRunning = false;
+                    semaphoreSlim.Release();
+                }
+                return true;
+            });
+        }
+
+        /// <summary>
+        /// Checks if auto meridian flip should be considered and executes it
+        /// 1) Compare next exposure length with time to meridian - If exposure length is greater than time to flip the system will wait
+        /// 2) Pause Guider
+        /// 3) Execute the flip
+        /// 4) If recentering is enabled, platesolve current position, sync and recenter to old target position
+        /// 5) Resume Guider
+        /// </summary>
+        /// <param name="seq">Current Sequence row</param>
+        /// <param name="tokenSource">cancel token</param>
+        /// <param name="progress">progress reporter</param>
+        /// <returns></returns>
+        private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
+            progress.Report("Check Meridian Flip");
+            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CheckMeridianFlip, new object[] { seq });
+        }
+
+        private bool CheckPreconditions() {
+            bool valid = true;
+
+            valid = HasWritePermission(Settings.ImageFilePath);
+
+            return valid;
+        }
+
+        public bool HasWritePermission(string dir) {
+            bool Allow = false;
+            bool Deny = false;
+            DirectorySecurity acl = null;
+
+            if (Directory.Exists(dir)) {
+                acl = Directory.GetAccessControl(dir);
+            }
+
+            if (acl == null) {
+                Notification.ShowError(Locale.Loc.Instance["LblDirectoryNotFound"]);
+                return false;
+            }
+
+            AuthorizationRuleCollection arc = acl.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
+            if (arc == null)
+                return false;
+            foreach (FileSystemAccessRule rule in arc) {
+                if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write)
+                    continue;
+                if (rule.AccessControlType == AccessControlType.Allow)
+                    Allow = true;
+                else if (rule.AccessControlType == AccessControlType.Deny)
+                    Deny = true;
+            }
+
+            if (Allow && !Deny) {
+                return true;
+            } else {
+                Notification.ShowError(Locale.Loc.Instance["LblDirectoryNotWritable"]);
+                return false;
+            }
         }
 
         private void RegisterMediatorMessages() {
@@ -151,11 +285,6 @@ namespace NINA.ViewModel {
                     Sequence.SetSequenceTarget(sequenceDso);
                 }
             }, AsyncMediatorMessages.SetSequenceCoordinates);
-
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                var t = (TimeSpan)o;
-                await AddDownloadTime(t);
-            }, AsyncMediatorMessages.AddSequenceActualDownloadTime);
         }
 
         private CaptureSequenceList _sequence;

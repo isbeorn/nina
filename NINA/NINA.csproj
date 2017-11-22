@@ -318,6 +318,7 @@
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
     <Compile Include="Utility\EDSDK\EDSDK.cs" />
+    <Compile Include="Utility\Exceptions\CameraConnectionLostException.cs" />
     <Compile Include="Utility\Notification\CustomDisplayPart.xaml.cs">
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
     </Compile>

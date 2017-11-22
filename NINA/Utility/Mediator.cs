@@ -88,7 +88,6 @@ namespace NINA.Utility {
     };
 
     public enum AsyncMediatorMessages {
-        StartSequence = 1,
         CaptureImage = 2,
         SolveWithCapture = 3,
         Sync = 4,
@@ -106,8 +105,7 @@ namespace NINA.Utility {
         MoveFocuserAbsolute = 16,
         SlewToCoordinates = 17,
         StartGuider = 18,
-        StartAutoFocus = 19,
-        AddSequenceActualDownloadTime = 20
+        StartAutoFocus = 19
     }
 
 }

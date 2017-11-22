@@ -25,6 +25,7 @@ using Nito.AsyncEx;
 using System.Security;
 using System.Security.Permissions;
 using System.Security.AccessControl;
+using NINA.Utility.Exceptions;
 
 namespace NINA.ViewModel {
     class ImagingVM : DockableVM {
@@ -36,8 +37,8 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
 
             SnapExposureDuration = 1;
-            SnapCommand = new AsyncCommand<bool>(() => CaptureImage(new Progress<string>(p => Status = p)));
-            CancelSnapCommand = new RelayCommand(CancelCaptureImage);
+            SnapCommand = new AsyncCommand<bool>(() => SnapImage(new Progress<string>(p => Status = p)));
+            CancelSnapCommand = new RelayCommand(CancelSnapImage);
 
             ImageControl = new ImageControlVM();
 
@@ -45,18 +46,6 @@ namespace NINA.ViewModel {
         }
 
         private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                var args = (object[])o;
-                CaptureSequenceList seq = (CaptureSequenceList)args[0];
-                bool save = (bool)args[1];
-                CancellationToken token = (CancellationToken)args[2];
-                IProgress<string> progress = (IProgress<string>)args[3];
-                PauseToken pauseToken;
-                if (args.Length >= 5) {
-                    pauseToken = (PauseToken)args[4];
-                }
-                await StartSequence(seq, save, token, progress, pauseToken);
-            }, AsyncMediatorMessages.StartSequence);
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 var args = (object[])o;
@@ -64,8 +53,12 @@ namespace NINA.ViewModel {
                 bool save = (bool)args[1];
                 IProgress<string> progress = (IProgress<string>)args[2];
                 CancellationToken token = (CancellationToken)args[3];
+                var targetname = string.Empty;
+                if (args.Length > 5) {
+                    targetname = args[5].ToString();
+                }
 
-                await CaptureImage(seq, save, progress, token);
+                await CaptureAndSaveImage(seq, save, token, progress, targetname);
             }, AsyncMediatorMessages.CaptureImage);
 
 
@@ -76,7 +69,18 @@ namespace NINA.ViewModel {
 
         }
 
+        ImageControlVM _imageControl;
+        public ImageControlVM ImageControl {
+            get { return _imageControl; }
+            set { _imageControl = value; RaisePropertyChanged(); }
+        }
+
         private bool _cameraConnected;
+        private bool CameraConnected {
+            get {
+                return Cam != null && _cameraConnected;
+            }
+        }
 
         private string _status;
         public string Status {
@@ -180,7 +184,7 @@ namespace NINA.ViewModel {
 
         public ICommand CancelSnapCommand { get; private set; }
 
-        private void CancelCaptureImage(object o) {
+        private void CancelSnapImage(object o) {
             _captureImageToken?.Cancel();
         }
 
@@ -203,7 +207,7 @@ namespace NINA.ViewModel {
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
             IsExposing = true;
             try {
-                double duration = seq.ExposureTime;                
+                double duration = seq.ExposureTime;
                 bool isLight = false;
                 if (Cam.HasShutter) {
                     isLight = true;
@@ -219,10 +223,10 @@ namespace NINA.ViewModel {
                         do {
                             var delta = await Utility.Utility.Delay(500, token);
                             elapsed += delta.TotalSeconds;
-                            ExposureSeconds = (int)elapsed;                            
+                            ExposureSeconds = (int)elapsed;
                             token.ThrowIfCancellationRequested();
                             progress.Report(string.Format(ExposureStatus.EXPOSING, ExposureSeconds, duration));
-                        } while ((elapsed < duration) && Cam.Connected);
+                        } while ((elapsed < duration) && Cam?.Connected == true);
                     });
                 }
                 token.ThrowIfCancellationRequested();
@@ -242,14 +246,10 @@ namespace NINA.ViewModel {
             return await Cam.DownloadExposure(token);
         }
 
-
-
-
-
-        private async Task<bool> Save(CaptureSequenceList seq, CancellationToken token, IProgress<string> progress) {
+        private async Task<bool> Save(CaptureSequence sequence, CancellationToken token, IProgress<string> progress, string targetname = "") {
             progress.Report(ExposureStatus.SAVING);
 
-            await ImageControl.SaveToDisk(seq, token, progress);
+            await ImageControl.SaveToDisk(sequence, token, progress, targetname);
 
             return true;
         }
@@ -267,12 +267,12 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public async Task<bool> StartSequence(CaptureSequenceList sequence, bool bSave, CancellationToken token, IProgress<string> progress, PauseToken pauseToken = new PauseToken()) {
+        public async Task<bool> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<string> progress) {
 
             //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
             await semaphoreSlim.WaitAsync(token);
 
-            if (_cameraConnected != true) {
+            if (CameraConnected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
                 semaphoreSlim.Release();
                 return false;
@@ -282,167 +282,86 @@ namespace NINA.ViewModel {
 
 
                 try {
-                    /* Validate if preconditions are met */
-                    if(!CheckPreconditions(bSave)) {
-                        return false;
+                    if (CameraConnected != true) {
+                        throw new CameraConnectionLostException();
                     }
 
-                     sequence.IsRunning = true;
+                    /*Change Filter*/
+                    await ChangeFilter(sequence, token, progress);
 
-                    /* delay sequence start by given amount */
-                    var delay = sequence.Delay;
-                    while (delay > 0) {
-                        await Task.Delay(TimeSpan.FromSeconds(1), token);
-                        delay--;
-                        progress.Report(string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay));
+                    if (CameraConnected != true) {
+                        throw new CameraConnectionLostException();
                     }
 
-                    CaptureSequence seq;
-                    while ((seq = sequence.Next()) != null) {
-                        Stopwatch nonImagingTimeSW = Stopwatch.StartNew();
-                        await CheckMeridianFlip(seq, token, progress);
+                    token.ThrowIfCancellationRequested();
 
-                        /*Change Filter*/
-                        await ChangeFilter(seq, token, progress);
+                    /*Set Camera Gain */
+                    SetGain(sequence);
 
-                        if (_cameraConnected != true) {
-                            throw new OperationCanceledException();
-                        }
+                    /*Set Camera Binning*/
+                    SetBinning(sequence);
 
-                        /*Set Camera Gain */
-                        SetGain(seq);
-
-                        /*Set Camera Binning*/
-                        SetBinning(seq);
-
-                        if (_cameraConnected != true) {
-                            throw new OperationCanceledException();
-                        }
-
-                        nonImagingTimeSW.Stop();
-
-                        /*Capture*/
-                        await Capture(seq, token, progress);
-
-                        nonImagingTimeSW.Start();
-
-                        if (_cameraConnected != true) {
-                            throw new OperationCanceledException();
-                        }
-
-                        /*Dither*/
-                        var ditherTask = Dither(seq, token, progress);
-
-                        /*Download Image */
-                        ImageArray arr = await Download(token, progress);
-                        if (arr == null) {
-                            throw new OperationCanceledException();
-                        }
-
-                        ImageControl.ImgArr = arr;
-
-                        /*Prepare Image for UI*/
-                        progress.Report(ImagingVM.ExposureStatus.PREPARING);
-
-                        await ImageControl.PrepareImage(progress, token);
-
-
-                        if (_cameraConnected != true) {
-                            throw new OperationCanceledException();
-                        }
-
-                        /*Save to disk*/
-                        if (bSave) {
-                            await Save(sequence, token, progress);
-                        }
-
-                        //Wait for dither to finish. Runs in parallel to save.
-                        progress.Report(ExposureStatus.DITHERING);
-                        await ditherTask;
-
-
-                        if (_cameraConnected != true) {
-                            throw new OperationCanceledException();
-                        }
-
-                        nonImagingTimeSW.Stop();
-                        if(bSave) {
-                            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.AddSequenceActualDownloadTime, nonImagingTimeSW.Elapsed);
-                        }                        
-
-                        if (pauseToken.IsPaused) {
-                            sequence.IsRunning = false;
-                            semaphoreSlim.Release();
-                            progress.Report("Paused");
-                            await pauseToken.WaitWhilePausedAsync(token);
-                            progress.Report("Resume sequence");
-                            await semaphoreSlim.WaitAsync(token);
-                            sequence.IsRunning = true;
-                        }
-
+                    if (CameraConnected != true) {
+                        throw new CameraConnectionLostException();
                     }
+
+                    /*Capture*/
+                    await Capture(sequence, token, progress);
+
+                    token.ThrowIfCancellationRequested();
+
+                    if (CameraConnected != true) {
+                        throw new CameraConnectionLostException();
+                    }
+
+                    /*Dither*/
+                    var ditherTask = Dither(sequence, token, progress);
+
+                    /*Download Image */
+                    ImageArray arr = await Download(token, progress);
+                    if (arr == null) {
+                        throw new OperationCanceledException();
+                    }
+
+                    ImageControl.ImgArr = arr;
+
+                    /*Prepare Image for UI*/
+                    progress.Report(ImagingVM.ExposureStatus.PREPARING);
+
+                    if (CameraConnected != true) {
+                        throw new CameraConnectionLostException();
+                    }
+
+                    await ImageControl.PrepareImage(progress, token);
+
+                    //Wait for dither to finish. Runs in parallel to download and save.
+                    progress.Report(Locale.Loc.Instance["LblDither"]);
+                    await ditherTask;
+
                 } catch (System.OperationCanceledException ex) {
                     Logger.Trace(ex.Message);
-                    if (_cameraConnected == true) {
-                        Cam.AbortExposure();
+                    if (Cam == null || _cameraConnected == true) {
+                        Cam?.AbortExposure();
                     }
+                    throw ex;
+                } catch (CameraConnectionLostException ex) {
+                    Notification.ShowError(Locale.Loc.Instance["LblCameraConnectionLost"]);
+                    throw ex;
                 } catch (Exception ex) {
-                    Notification.ShowError(ex.Message);
+                    Notification.ShowError(Locale.Loc.Instance["LblUnexpectedError"]);
+                    Logger.Error(ex.Message, ex.StackTrace);
                     if (_cameraConnected == true) {
                         Cam.AbortExposure();
                     }
+                    throw ex;
                 } finally {
                     progress.Report(ExposureStatus.IDLE);
-                    sequence.IsRunning = false;
                     semaphoreSlim.Release();
                 }
                 return true;
             });
 
         }
-
-        private bool CheckPreconditions(bool bSave) {
-            bool valid = true;
-            if(bSave) {
-                valid = HasWritePermission(Settings.ImageFilePath);
-            }
-            return valid;
-        }
-
-        public bool HasWritePermission(string dir) {
-            bool Allow = false;
-            bool Deny = false;
-            DirectorySecurity acl = null;
-
-            if(Directory.Exists(dir)) {
-                acl = Directory.GetAccessControl(dir);
-            }
-
-            if (acl == null) {
-                Notification.ShowError(Locale.Loc.Instance["LblDirectoryNotFound"]);
-                return false;
-            }
-                
-            AuthorizationRuleCollection arc = acl.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
-            if (arc == null)
-                return false;
-            foreach (FileSystemAccessRule rule in arc) {
-                if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write)
-                    continue;
-                if (rule.AccessControlType == AccessControlType.Allow)
-                    Allow = true;
-                else if (rule.AccessControlType == AccessControlType.Deny)
-                    Deny = true;
-            }
-
-            if(Allow && !Deny) {
-                return true;
-            } else {
-                Notification.ShowError(Locale.Loc.Instance["LblDirectoryNotWritable"]);
-                return false;
-            }            
-        }
-
 
         private void SetGain(CaptureSequence seq) {
             if (seq.Gain != -1) {
@@ -451,35 +370,6 @@ namespace NINA.ViewModel {
 
             }
         }
-
-        /// <summary>
-        /// Checks if auto meridian flip should be considered and executes it
-        /// 1) Compare next exposure length with time to meridian - If exposure length is greater than time to flip the system will wait
-        /// 2) Pause Guider
-        /// 3) Execute the flip
-        /// 4) If recentering is enabled, platesolve current position, sync and recenter to old target position
-        /// 5) Resume Guider
-        /// </summary>
-        /// <param name="seq">Current Sequence row</param>
-        /// <param name="tokenSource">cancel token</param>
-        /// <param name="progress">progress reporter</param>
-        /// <returns></returns>
-        private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
-            progress.Report("Check Meridian Flip");
-
-            /*Release lock in case meridian flip has to be done and thus a platesolve */
-            semaphoreSlim.Release();
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CheckMeridianFlip, new object[] { seq });
-            /*Reaquire lock*/
-            await semaphoreSlim.WaitAsync(token);
-        }
-
-        ImageControlVM _imageControl;
-        public ImageControlVM ImageControl {
-            get { return _imageControl; }
-            set { _imageControl = value; RaisePropertyChanged(); }
-        }
-
 
 
         private Model.MyFilterWheel.FilterInfo _snapFilter;
@@ -507,26 +397,32 @@ namespace NINA.ViewModel {
             }
         }
 
-
-
-        public async Task<bool> CaptureImage(IProgress<string> progress) {
+        public async Task<bool> SnapImage(IProgress<string> progress) {
             _captureImageToken = new CancellationTokenSource();
 
-            var success = true;
-            do {
-                CaptureSequenceList seq = new CaptureSequenceList(new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1));
-                success = await StartSequence(seq, SnapSave, _captureImageToken.Token, progress);
-                _captureImageToken.Token.ThrowIfCancellationRequested();
-            } while (Loop && success);
+            try {
+                var success = true;
+                do {
+                    var seq = new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                    success = await CaptureAndSaveImage(seq, SnapSave, _captureImageToken.Token, progress);
+                    _captureImageToken.Token.ThrowIfCancellationRequested();
+                } while (Loop && success);
+            } catch (OperationCanceledException) {
+
+            } finally {
+                progress.Report(string.Empty);
+            }
+
             return true;
 
         }
 
-        public async Task<bool> CaptureImage(CaptureSequence seq, bool bsave, IProgress<string> progress, CancellationToken token) {
-
-            var list = new CaptureSequenceList(seq);
-            return await StartSequence(list, bsave, token, progress);
-
+        public async Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<string> progress, string targetname = "") {
+            await CaptureImage(seq, ct, progress);
+            if (bsave) {
+                await Save(seq, ct, progress, targetname);
+            }
+            return true;
         }
 
         public static class ExposureStatus {

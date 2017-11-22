@@ -264,12 +264,11 @@ namespace NINA.ViewModel {
             return source;
         }
 
-        public async Task<bool> SaveToDisk(CaptureSequenceList sequence, CancellationToken token, IProgress<string> progress) {
+        public async Task<bool> SaveToDisk(CaptureSequence sequence, CancellationToken token, IProgress<string> progress, string targetname = "") {
 
             var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
-            var activeCaptureSequence = sequence.ActiveSequence;
-            var framenr = sequence.ActiveSequence.ProgressExposureCount;
-            return await SaveToDisk(activeCaptureSequence.ExposureTime, filter, activeCaptureSequence.ImageType, activeCaptureSequence.Binning.Name, Cam.CCDTemperature, framenr, token, progress, sequence.TargetName);
+            var framenr = sequence.ProgressExposureCount;
+            return await SaveToDisk(sequence.ExposureTime, filter, sequence.ImageType, sequence.Binning.Name, Cam.CCDTemperature, framenr, token, progress, targetname);
 
         }
 

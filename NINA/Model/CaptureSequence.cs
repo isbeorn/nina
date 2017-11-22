@@ -228,13 +228,18 @@ namespace NINA.Model {
             }
         }
 
+        private object lockobj = new object();
         private CaptureSequence _activeSequence;
         public CaptureSequence ActiveSequence {
             get {
-                return _activeSequence;
+                lock (lockobj) {
+                    return _activeSequence;
+                }
             }
             private set {
-                _activeSequence = value;
+                lock (lockobj) {
+                    _activeSequence = value;
+                }
                 OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(ActiveSequence)));
                 OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(ActiveSequenceIndex)));
             }
