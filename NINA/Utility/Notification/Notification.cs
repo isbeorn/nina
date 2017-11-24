@@ -21,14 +21,16 @@ using ToastNotifications.Utilities;
 namespace NINA.Utility.Notification {
     static class Notification {
         static Notification() {
-            dispatcher.Invoke(new Action(() => {
+            lock (_lock) {
                 Initialize();
-            }), DispatcherPriority.Send);
+            }
         }
 
         private static Dispatcher dispatcher = Application.Current.Dispatcher;
 
         static Notifier notifier;
+
+        static object _lock = new object();
 
         private static void Initialize() {
             notifier = new Notifier(cfg => {
@@ -43,8 +45,7 @@ namespace NINA.Utility.Notification {
                     offsetY: 40);
 
                 cfg.LifetimeSupervisor = new CustomLifetimeSupervisor();
-
-                cfg.Dispatcher = dispatcher;
+                
             });
         }
 
@@ -53,16 +54,20 @@ namespace NINA.Utility.Notification {
         }
 
         public static void ShowInformation(string message, TimeSpan lifetime) {
-            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                notifier.Notify<CustomNotification>(() => new CustomNotification(message));
-            }));
+            lock(_lock) {
+                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                    notifier.Notify<CustomNotification>(() => new CustomNotification(message));
+                }));
+            }
         }
 
         public static void ShowSuccess(string message) {
-            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CheckedCircledSVG"];
-                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol));
-            }));
+            lock (_lock) {
+                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                    var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CheckedCircledSVG"];
+                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol));
+                }));
+            }
         }
 
         public static void ShowWarning(string message) {
@@ -70,19 +75,23 @@ namespace NINA.Utility.Notification {
         }
 
         public static void ShowWarning(string message, TimeSpan lifetime) {
-            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
-                var brush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningBrush"];
-                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush));
-            }));
+            lock (_lock) {
+                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                    var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
+                    var brush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningBrush"];
+                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush));
+                }));
+            }
         }
 
         public static void ShowError(string message) {
-            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
-                var brush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorBrush"];
-                notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, true));
-            }));
+            lock (_lock) {
+                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                    var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
+                    var brush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorBrush"];
+                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, true));
+                }));
+            }
         }
     }
 

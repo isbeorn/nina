@@ -2,6 +2,8 @@
 bin/
 NINA/bin/
 NINA/obj/
+NINASetup_x86/Debug/
+NINASetup_x86/Release/
 NINASetup/Debug/
 NINASetup/Release/
 NINACustomControlLibrary/bin/
