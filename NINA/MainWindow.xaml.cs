@@ -23,11 +23,7 @@ namespace NINA {
     /// </summary>
     public partial class MainWindow : Window {
         public MainWindow() {
-            InitializeComponent();
-            SourceInitialized += (s, a) => {
-                Notification.Initialize();
-                //Notification.ShowInformation(Locale.Loc.Instance["LblWelcome"]);
-            };
+            InitializeComponent();            
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e) {

@@ -20,13 +20,17 @@ using ToastNotifications.Utilities;
 
 namespace NINA.Utility.Notification {
     static class Notification {
+        static Notification() {
+            dispatcher.Invoke(new Action(() => {
+                Initialize();
+            }), DispatcherPriority.Send);
+        }
 
-
-        private static Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
+        private static Dispatcher dispatcher = Application.Current.Dispatcher;
 
         static Notifier notifier;
 
-        public static void Initialize() {
+        private static void Initialize() {
             notifier = new Notifier(cfg => {
                 /*cfg.PositionProvider = new WindowPositionProvider(
                     parentWindow: Application.Current.MainWindow,
