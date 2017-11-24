@@ -25,6 +25,9 @@ namespace NINA.View {
 
         double fittingScale = 1;
 
+        //0: 100%; 1: fit to screen; 2: custom
+        int mode = 0;
+
         public ImageAreaView() {
             InitializeComponent();
 
@@ -71,6 +74,7 @@ namespace NINA.View {
         }
 
         void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
+            mode = 2;
             lastMousePositionOnTarget = Mouse.GetPosition(grid);
 
             var val = scaleTransform.ScaleX;
@@ -117,12 +121,16 @@ namespace NINA.View {
 
         void RecalculateScalingFactors() {
             if (image?.ActualWidth > 0) {
-                var scale = Math.Min(sv.ActualWidth / image.ActualWidth, sv.ActualHeight / image.ActualHeight);
-                if (fittingScale != scale) {
-                    var newScaleFactor = fittingScale / scale;
-                    fittingScale = scale;
-                    Zoom(scaleTransform.ScaleX * newScaleFactor);
-                }
+                if(mode == 0) {
+                    Zoom(1);
+                } else if (mode == 1) {
+                    var scale = Math.Min(sv.ActualWidth / image.ActualWidth, sv.ActualHeight / image.ActualHeight);
+                    if (fittingScale != scale) {
+                        var newScaleFactor = fittingScale / scale;
+                        fittingScale = scale;
+                        Zoom(fittingScale);
+                    }
+                }                 
             }
         }
 
@@ -171,6 +179,7 @@ namespace NINA.View {
         }
 
         private void ButtonZoomIn_Click(object sender, RoutedEventArgs e) {
+            mode = 2;
             Zoom(scaleTransform.ScaleX + scaleTransform.ScaleX * 0.25);
             var centerOfViewport = new Point(sv.ViewportWidth / 2,
                                                          sv.ViewportHeight / 2);
@@ -179,6 +188,7 @@ namespace NINA.View {
 
         }
         private void ButtonZoomOut_Click(object sender, RoutedEventArgs e) {
+            mode = 2;
             Zoom(scaleTransform.ScaleX - scaleTransform.ScaleX * 0.25);
             var centerOfViewport = new Point(sv.ViewportWidth / 2,
                                                          sv.ViewportHeight / 2);
@@ -186,11 +196,13 @@ namespace NINA.View {
                   sv.TranslatePoint(centerOfViewport, grid);
         }
         private void ButtonZoomReset_Click(object sender, RoutedEventArgs e) {
+            mode = 1;
             RecalculateScalingFactors();
             Zoom(fittingScale);
         }
 
         private void ButtonZoomOneToOne_Click(object sender, RoutedEventArgs e) {
+            mode = 0;
             Zoom(1);
         }
     }
