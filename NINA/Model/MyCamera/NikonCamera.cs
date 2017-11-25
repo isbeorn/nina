@@ -572,7 +572,13 @@ namespace NINA.Model.MyCamera {
                 var connected = false;
                 try {
                     _nikonManagers.Clear();
-                    foreach (string file in Directory.GetFiles("External/Nikon", "*.md3")) {
+
+                    string folder = "x64";
+                    if(DllLoader.IsX86()) {
+                        folder = "x86";
+                    }
+
+                    foreach (string file in Directory.GetFiles(string.Format("External/{0}/Nikon", folder), "*.md3")) {
                         NikonManager mgr = new NikonManager(file);
                         mgr.DeviceAdded += Mgr_DeviceAdded;
                         _nikonManagers.Add(mgr);

@@ -14,12 +14,16 @@ namespace NINA.Utility {
             String path;
 
             //IntPtr.Size will be 4 in 32-bit processes, 8 in 64-bit processes 
-            if (IntPtr.Size == 4)
+            if (IsX86())
                 path = System.AppDomain.CurrentDomain.BaseDirectory + "/External/x86/" + dllSubPath;
             else
                 path = System.AppDomain.CurrentDomain.BaseDirectory + "/External/x64/" + dllSubPath;
 
             LoadLibrary(path);
+        }
+
+        public static bool IsX86() {
+            return IntPtr.Size == 4;
         }
     }
 }
