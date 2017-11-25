@@ -13,12 +13,16 @@
     mc:Ignorable="d">
     <GroupBox>
         <GroupBox.Header>
-            <UniformGrid Columns="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
                 <TextBlock
                     VerticalAlignment="Center"
                     FontSize="20"
                     Text="{ns:Loc LblFilterWheel}" />
-                <Grid Margin="5">
+                <Grid Margin="5" Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition />
@@ -113,7 +117,7 @@
                         </Grid>
                     </Grid>
                 </Grid>
-            </UniformGrid>
+            </Grid>
         </GroupBox.Header>
         <Grid Background="{StaticResource BackgroundBrush}">
             <StackPanel>

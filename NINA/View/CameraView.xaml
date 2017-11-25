@@ -27,12 +27,16 @@
         <Grid Grid.RowSpan="2">
             <GroupBox>
                 <GroupBox.Header>
-                    <UniformGrid Columns="2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="20"
                             Text="{ns:Loc LblCamera}" />
-                        <Grid Margin="5">
+                        <Grid Grid.Column="1" Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition />
@@ -129,7 +133,7 @@
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </UniformGrid>
+                    </Grid>
                 </GroupBox.Header>
                 <Grid>
                     <StackPanel>
