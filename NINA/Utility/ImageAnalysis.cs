@@ -198,6 +198,11 @@ namespace NINA.Utility {
                 if (checker.IsCircle(points, out centerpoint, out radius)) {
                     s = new Star { Position = new AForge.Point(centerpoint.X * (float)_inverseResizefactor, centerpoint.Y * (float)_inverseResizefactor), radius = radius * _inverseResizefactor, Rectangle = rect };
                 } else { //Star is elongated
+                    var eccentricity = CalculateEccentricity(rect.Width, rect.Height);
+                    //Discard highly elliptical shapes.
+                    if(eccentricity > 0.8) {
+                        continue;
+                    }
                     s = new Star { Position = new AForge.Point(centerpoint.X * (float)_inverseResizefactor, centerpoint.Y * (float)_inverseResizefactor), radius = Math.Max(rect.Width, rect.Height) / 2, Rectangle = rect };
                 }
                 /* get pixeldata */
@@ -215,6 +220,13 @@ namespace NINA.Utility {
             }
 
             return starlist;
+        }
+
+        private double CalculateEccentricity(double width, double height) {
+            var x = Math.Max(width, height);
+            var y = Math.Min(width, height);
+            double focus = Math.Sqrt(Math.Pow(x, 2) - Math.Pow(y, 2));
+            return focus / x;
         }
 
         public BitmapSource GetAnnotatedImage() {
