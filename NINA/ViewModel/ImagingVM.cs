@@ -246,14 +246,6 @@ namespace NINA.ViewModel {
             return await Cam.DownloadExposure(token);
         }
 
-        private async Task<bool> Save(CaptureSequence sequence, CancellationToken token, IProgress<string> progress, string targetname = "") {
-            progress.Report(ExposureStatus.SAVING);
-
-            await ImageControl.SaveToDisk(sequence, token, progress, targetname);
-
-            return true;
-        }
-
         private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
             if (seq.Dither && ((seq.ExposureCount % seq.DitherAmount) == 0)) {
                 progress.Report(ExposureStatus.DITHERING);
@@ -267,7 +259,7 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public async Task<bool> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<string> progress) {
+        public async Task<bool> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<string> progress, bool bSave = false, string targetname = "") {
 
             //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
             await semaphoreSlim.WaitAsync(token);
@@ -321,9 +313,7 @@ namespace NINA.ViewModel {
                     ImageArray arr = await Download(token, progress);
                     if (arr == null) {
                         throw new OperationCanceledException();
-                    }
-
-                    ImageControl.ImgArr = arr;
+                    }                    
 
                     /*Prepare Image for UI*/
                     progress.Report(ImagingVM.ExposureStatus.PREPARING);
@@ -331,8 +321,16 @@ namespace NINA.ViewModel {
                     if (CameraConnected != true) {
                         throw new CameraConnectionLostException();
                     }
-
-                    await ImageControl.PrepareImage(progress, token);
+                    
+                    
+                    //Wait for previous prepare image task to complete
+                    if(_currentPrepareImageTask != null && !_currentPrepareImageTask.IsCompleted) {
+                        progress.Report("Waiting for previous image to finish processing");
+                        await _currentPrepareImageTask;
+                    }
+                    //async prepare image and save
+                    progress.Report("Prepare image saving");
+                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, progress, token, bSave, sequence, targetname);
 
                     //Wait for dither to finish. Runs in parallel to download and save.
                     progress.Report(Locale.Loc.Instance["LblDither"]);
@@ -362,6 +360,8 @@ namespace NINA.ViewModel {
             });
 
         }
+
+        Task _currentPrepareImageTask;
 
         private void SetGain(CaptureSequence seq) {
             if (seq.Gain != -1) {
@@ -418,10 +418,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<string> progress, string targetname = "") {
-            await CaptureImage(seq, ct, progress);
-            if (bsave) {
-                await Save(seq, ct, progress, targetname);
-            }
+            await CaptureImage(seq, ct, progress, bsave, targetname);            
             return true;
         }
 

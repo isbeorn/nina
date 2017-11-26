@@ -90,11 +90,9 @@ namespace NINA.ViewModel {
             get {
                 return _imgArr;
             }
-            set {
+            private set {
                 _imgArr = value;
                 RaisePropertyChanged();
-                ImgStatisticsVM.Add(ImgArr.Statistics);
-                Mediator.Instance.Notify(MediatorMessages.ImageStatisticsChanged, ImgArr.Statistics);
             }
         }
 
@@ -159,7 +157,7 @@ namespace NINA.ViewModel {
 
             }
             _prepImageCancellationSource = new CancellationTokenSource();
-            _prepImageTask = PrepareImage(null, _prepImageCancellationSource.Token);
+            _prepImageTask = PrepareImage(ImgArr, null, _prepImageCancellationSource.Token);
             await _prepImageTask;
             return true;
         }
@@ -213,48 +211,70 @@ namespace NINA.ViewModel {
 
         public ICommand CancelPlateSolveImageCommand { get; private set; }
 
-        public async Task PrepareImage(IProgress<string> progress, CancellationToken token) {
-            if (ImgArr != null) {
-                BitmapSource source = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
+        public static SemaphoreSlim ss = new SemaphoreSlim(1, 1);
+        
+        public async Task PrepareImage(
+                ImageArray iarr, 
+                IProgress<string> progress, 
+                CancellationToken token, 
+                bool bSave = false,
+                CaptureSequence sequence = null,
+                string targetname = "") {
+            try {
+                await ss.WaitAsync(token);
+            
+                if (iarr != null) {
+                
+                    BitmapSource source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
 
 
-                if (AutoStretch) {
-                    source = await StretchAsync(source);
-                }
-
-                if (DetectStars) {
-                    var analysis = new ImageAnalysis(source, ImgArr);
-                    await analysis.DetectStarsAsync(progress, token);
-
-                    if (Settings.AnnotateImage) {
-                        source = analysis.GetAnnotatedImage();
+                    if (AutoStretch) {
+                        source = await StretchAsync(iarr, source);
                     }
 
-                    ImgArr.Statistics.HFR = analysis.AverageHFR;
-                    ImgArr.Statistics.DetectedStars = analysis.DetectedStars;
-                }
+                    if (DetectStars) {
+                        var analysis = new ImageAnalysis(source, iarr);
+                        await analysis.DetectStarsAsync(progress, token);
 
-                if (ImgArr.IsBayered) {
-                    source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
-                }
+                        if (Settings.AnnotateImage) {
+                            source = analysis.GetAnnotatedImage();
+                        }
 
-                await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    Image = null;
-                    GC.Collect();
-                    Image = source;
-                    ImgHistoryVM.Add(ImgArr.Statistics);
-                }));
+                        iarr.Statistics.HFR = analysis.AverageHFR;
+                        iarr.Statistics.DetectedStars = analysis.DetectedStars;
+                    }
+
+                    if (iarr.IsBayered) {
+                        source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
+                    }
+
+                    await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                        Image = null;
+                        ImgArr = null;
+                        GC.Collect();
+                        ImgArr = iarr;
+                        Image = source;
+                        ImgStatisticsVM.Add(ImgArr.Statistics);
+                        ImgHistoryVM.Add(iarr.Statistics);
+                    }));
+
+                    if(bSave) {
+                        await SaveToDisk(sequence, token, progress, targetname);
+                    }
+                }
+            } finally {
+                ss.Release();
             }
         }
 
-        private async Task<BitmapSource> StretchAsync(BitmapSource source) {
-            return await Task<BitmapSource>.Run(() => Stretch(source));
+        private async Task<BitmapSource> StretchAsync(ImageArray iarr, BitmapSource source) {
+            return await Task<BitmapSource>.Run(() => Stretch(iarr, source));
         }
 
-        private BitmapSource Stretch(BitmapSource source) {
+        private BitmapSource Stretch(ImageArray iarr, BitmapSource source) {
             var img = ImageAnalysis.BitmapFromSource(source);
 
-            var filter = ImageAnalysis.GetColorRemappingFilter(ImgArr.Statistics.Mean, Settings.AutoStretchFactor);
+            var filter = ImageAnalysis.GetColorRemappingFilter(iarr.Statistics.Mean, Settings.AutoStretchFactor);
             filter.ApplyInPlace(img);
 
             source = null;

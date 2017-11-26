@@ -33,7 +33,11 @@ namespace NINA.ViewModel {
             );
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
 
-            Mediator.Instance.Register((object o) => _imageStatistics = (ImageStatistics)o, MediatorMessages.ImageStatisticsChanged);
+            Mediator.Instance.Register((object o) => {
+                _imageStatistics = (ImageStatistics)o;
+                _statisticsUpdatedEvent.Set();
+
+            }, MediatorMessages.ImageStatisticsChanged);
             Mediator.Instance.Register((object o) => _focusPosition = (int)o, MediatorMessages.FocuserPositionChanged);
             Mediator.Instance.Register((object o) => _focuserConnected = (bool)o, MediatorMessages.FocuserConnectedChanged);
             Mediator.Instance.Register((object o) => _cameraConnected = (bool)o, MediatorMessages.CameraConnectedChanged);
@@ -47,6 +51,8 @@ namespace NINA.ViewModel {
             }, AsyncMediatorMessages.StartAutoFocus);
             
         }
+
+        private ManualResetEvent _statisticsUpdatedEvent = new ManualResetEvent(false);
 
         private CancellationTokenSource _autoFocusCancelToken;
         private AsyncObservableCollection<DataPoint> _focusPoints;
@@ -120,7 +126,11 @@ namespace NINA.ViewModel {
 
                 Logger.Trace("Starting Exposure for autofocus");
                 var seq = new CaptureSequence(Settings.FocuserAutoFocusExposureTime, CaptureSequence.ImageTypes.SNAP, null, null, 1);
+
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, progress, token });
+
+                _statisticsUpdatedEvent.WaitOne();
+                _statisticsUpdatedEvent.Reset();
 
                 token.ThrowIfCancellationRequested();
 
