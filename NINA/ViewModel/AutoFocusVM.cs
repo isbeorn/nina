@@ -34,9 +34,7 @@ namespace NINA.ViewModel {
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
 
             Mediator.Instance.Register((object o) => {
-                _imageStatistics = (ImageStatistics)o;
-                _statisticsUpdatedEvent.Set();
-
+                _statisticsUpdatedEvent?.TrySetResult((ImageStatistics)o);
             }, MediatorMessages.ImageStatisticsChanged);
             Mediator.Instance.Register((object o) => _focusPosition = (int)o, MediatorMessages.FocuserPositionChanged);
             Mediator.Instance.Register((object o) => _focuserConnected = (bool)o, MediatorMessages.FocuserConnectedChanged);
@@ -52,7 +50,7 @@ namespace NINA.ViewModel {
             
         }
 
-        private ManualResetEvent _statisticsUpdatedEvent = new ManualResetEvent(false);
+        private TaskCompletionSource<ImageStatistics> _statisticsUpdatedEvent = new TaskCompletionSource<ImageStatistics>();
 
         private CancellationTokenSource _autoFocusCancelToken;
         private AsyncObservableCollection<DataPoint> _focusPoints;
@@ -103,8 +101,7 @@ namespace NINA.ViewModel {
         }
 
 
-
-        private ImageStatistics _imageStatistics;
+                
         private int _focusPosition;
         private bool _focuserConnected;
         private bool _cameraConnected;
@@ -127,14 +124,15 @@ namespace NINA.ViewModel {
                 Logger.Trace("Starting Exposure for autofocus");
                 var seq = new CaptureSequence(Settings.FocuserAutoFocusExposureTime, CaptureSequence.ImageTypes.SNAP, null, null, 1);
 
+                _statisticsUpdatedEvent = new TaskCompletionSource<ImageStatistics>();
+
                 await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, progress, token });
 
-                _statisticsUpdatedEvent.WaitOne();
-                _statisticsUpdatedEvent.Reset();
+                var stats = await _statisticsUpdatedEvent.Task;                
 
                 token.ThrowIfCancellationRequested();
 
-                FocusPoints.AddSorted(new DataPoint(_focusPosition, _imageStatistics.HFR), comparer);
+                FocusPoints.AddSorted(new DataPoint(_focusPosition, stats.HFR), comparer);
                 if (i < nrOfSteps - 1) {
                     Logger.Trace("Moving focuser to next autofocus position");
                     await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative, -stepSize);
@@ -157,7 +155,7 @@ namespace NINA.ViewModel {
             if (!(_focuserConnected && _cameraConnected)) {
                 Notification.ShowError(Locale.Loc.Instance["LblAutoFocusGearNotConnected"]);
                 return false;
-            }
+            }            
 
             Logger.Trace("Starting Autofocus");
             FocusPoints.Clear();

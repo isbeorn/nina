@@ -175,6 +175,8 @@ namespace NINA.Utility {
 
             } catch (OperationCanceledException) {
                 progress?.Report("Operation cancelled");
+            } finally {
+                progress?.Report(string.Empty);
             }
             return;
         }
@@ -184,10 +186,19 @@ namespace NINA.Utility {
             SimpleShapeChecker checker = new SimpleShapeChecker();
             List<Star> starlist = new List<Star>();
 
+            var avg = blobs.Average((x) => x.Area);
+            var sum = blobs.Sum(d => (d.Area - avg) * (d.Area - avg));
+            var stdev = Math.Sqrt(sum / blobs.Count());
+
             foreach (Blob blob in blobs) {
                 _token.ThrowIfCancellationRequested();
 
-                if (blob.Rectangle.Width > _maxStarSize || blob.Rectangle.Height > _maxStarSize || blob.Rectangle.Width < _minStarSize || blob.Rectangle.Height < _minStarSize) {
+                if (
+                    blob.Area > (avg + 1.5 * stdev)
+                    || blob.Rectangle.Width > _maxStarSize 
+                    || blob.Rectangle.Height > _maxStarSize 
+                    || blob.Rectangle.Width < _minStarSize 
+                    || blob.Rectangle.Height < _minStarSize) {
                     continue;
                 }
                 var points = _blobCounter.GetBlobsEdgePoints(blob);
