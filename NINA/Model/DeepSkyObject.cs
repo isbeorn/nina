@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Mediator;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;

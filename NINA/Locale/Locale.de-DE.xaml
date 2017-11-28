@@ -351,4 +351,5 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblNoTelescope">Kein Teleskop</s:String>
     <s:String x:Key="LblReconnectAll">Alle Geräte neu verbinden?</s:String>
     <s:String x:Key="LblDisconnectAll">Alle Geräte trennen?</s:String>
+    <s:String x:Key="LblStartGuidingFailed">Starten der Nachführung fehlgeschlagen</s:String>
 </ResourceDictionary>

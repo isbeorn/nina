@@ -3,6 +3,7 @@ using NINA.Model.MyTelescope;
 using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using System;
 using System.Collections;
@@ -161,22 +162,20 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> StopAutoguider(CancellationToken token, IProgress<string> progress) {
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.PauseGuider, token);
-            return true;
+            var result = await Mediator.Instance.Request(new PauseGuiderMessage() { Token = token, Pause = true });            
+            return result;
         }
 
         private async Task<bool> SelectNewGuideStar(CancellationToken token, IProgress<string> progress) {
             progress.Report("Select new Guidestar");
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.AutoSelectGuideStar, token);
-
-            return true;
+            return await Mediator.Instance.Request(new AutoSelectGuideStarMessage() { Token = token });
         }
 
         private async Task<bool> ResumeAutoguider(CancellationToken token, IProgress<string> progress) {
 
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ResumeGuider, token);
+            var result = await Mediator.Instance.Request(new PauseGuiderMessage() { Token = token, Pause = false });
 
-            return true;
+            return result;
         }
 
         private async Task<bool> Settle(CancellationToken token, IProgress<string> progress) {
@@ -212,7 +211,7 @@ namespace NINA.ViewModel {
                 Steps.Add(new WorkflowStep("Settle", Locale.Loc.Instance["LblSettle"], () => Settle(token, _progress)));
 
                 await Steps.Process();
-            } catch (Exception) {
+            } catch (Exception ex) {
                 await ResumeAutoguider(new CancellationToken(), _progress);
                 Mediator.Instance.Notify(MediatorMessages.SetTelescopeTracking, true);
                 return false;

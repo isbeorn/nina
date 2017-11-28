@@ -3,6 +3,7 @@ using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;

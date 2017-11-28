@@ -13,6 +13,7 @@ using NINA.Utility.DCRaw;
 using System.IO;
 using NINA.Utility.Notification;
 using System.Globalization;
+using NINA.Utility.Mediator;
 
 namespace NINA.Model.MyCamera {
     public class NikonCamera : BaseINPC, ICamera {

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NINA.Utility {
+namespace NINA.Utility.Mediator {
     class Mediator {
         private Mediator() { }
 
@@ -55,7 +54,53 @@ namespace NINA.Utility {
             }
         }
 
+
+        /// <summary>
+        /// Holds reference to handlers and identified by message type name
+        /// </summary>
+        private Dictionary<string, MessageHandle> _handlers = new Dictionary<string, MessageHandle>();
+
+        /// <summary>
+        /// Register handler to react on requests
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <returns></returns>
+        public bool RegisterAsyncRequest(MessageHandle handle) {
+            if (!_handlers.ContainsKey(handle.MessageType)) {
+                _handlers.Add(handle.MessageType, handle);
+                return true;
+            } else {
+                throw new Exception("Handle already registered");
+            }
+        }
+
+        /// <summary>
+        /// Request a value from a handler based on message
+        /// </summary>
+        /// <typeparam name="T">Has to match the return type of the handle.Send()</typeparam>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        private async Task<T> Request<T>(MediatorMessage<T> msg) {
+            var key = msg.GetType().Name;
+            if (_handlers.ContainsKey(key)) {
+                var entry = _handlers[key];
+                var handle = (MessageHandle<T>)entry;
+                return await handle.Send(msg);
+            } else {
+                return default(T);
+            }
+        }
+
+        public async Task<bool> Request(MediatorMessage<bool> msg) {
+            return await Request<bool>(msg);
+        }
+
+        /*public async Task<SomeTestResult> Request(MediatorMessage<SomeTestResult> msg) {
+            return await Request<SomeTestResult>(msg);
+        }*/
     }
+
+
     public enum MediatorMessages {
         StatusUpdate = 1,
         IsExposingUpdate = 2,
@@ -96,20 +141,14 @@ namespace NINA.Utility {
         Solve = 7,
         CheckMeridianFlip = 8,
         CaputureSolveSyncAndReslew = 9,
-        DitherGuider = 10,
-        PauseGuider = 11,
-        ResumeGuider = 12,
-        AutoSelectGuideStar = 13,
         SetSequenceCoordinates = 14,
         MoveFocuserRelative = 15,
         MoveFocuserAbsolute = 16,
         SlewToCoordinates = 17,
-        StartGuider = 18,
         StartAutoFocus = 19,
         ConnectFilterWheel = 20,
         ConnectFocuser = 21,
         ConnectTelescope = 22,
         ConnectCamera = 23
     }
-
 }

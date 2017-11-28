@@ -321,11 +321,12 @@
     <Compile Include="Utility\DllLoader.cs" />
     <Compile Include="Utility\EDSDK\EDSDK.cs" />
     <Compile Include="Utility\Exceptions\CameraConnectionLostException.cs" />
+    <Compile Include="Utility\Mediator\Mediator.cs" />
+    <Compile Include="Utility\Mediator\MessageHandle.cs" />
     <Compile Include="Utility\Notification\CustomDisplayPart.xaml.cs">
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
-    <Compile Include="Utility\Mediator.cs" />
     <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
     <Compile Include="Utility\ValidationRules\DirectoryExistsRule.cs" />

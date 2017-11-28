@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

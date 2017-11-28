@@ -2,6 +2,7 @@
 using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
+using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;

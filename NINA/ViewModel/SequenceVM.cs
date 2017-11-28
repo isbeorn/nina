@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Exceptions;
+using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using Nito.AsyncEx;
 using System;
@@ -146,7 +147,10 @@ namespace NINA.ViewModel {
 
             if (Sequence.StartGuiding) {
                 progress.Report(Locale.Loc.Instance["LblStartGuiding"]);
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartGuider, _canceltoken.Token);
+                var guiderStarted = await Mediator.Instance.Request(new StartGuiderMessage() { Token = _canceltoken.Token });
+                if(!guiderStarted) {
+                    Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
+                }
             }
 
             return await ProcessSequence(_canceltoken.Token, _pauseTokenSource.Token, progress);

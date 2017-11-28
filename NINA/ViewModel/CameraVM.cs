@@ -4,6 +4,7 @@ using Nikon;
 using NINA.EquipmentChooser;
 using NINA.Model.MyCamera;
 using NINA.Utility;
+using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.ViewModel;
 using OxyPlot;

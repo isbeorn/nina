@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using OxyPlot;
 using OxyPlot.Axes;

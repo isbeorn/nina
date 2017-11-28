@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NINA.Model.MyCamera;
+using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
     public class ImageStatisticsVM : DockableVM {

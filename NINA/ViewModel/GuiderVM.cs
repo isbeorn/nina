@@ -14,6 +14,7 @@ using NINA.Model.MyGuider;
 using System.Windows.Input;
 using System.Threading;
 using NINA.Utility.Notification;
+using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
     class GuiderVM : DockableVM {
@@ -41,46 +42,55 @@ namespace NINA.ViewModel {
         }
 
         private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                CancellationToken token = (CancellationToken)o;
-                await Dither(token);
-            }, AsyncMediatorMessages.DitherGuider);
 
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                CancellationToken token = (CancellationToken)o;
-                await Pause(token);
-            }, AsyncMediatorMessages.PauseGuider);
+            Mediator.Instance.RegisterAsyncRequest(
+                new DitherGuiderMessageHandle(async (DitherGuiderMessage msg) => {
+                    return await Dither(msg.Token);
+                })
+            );
 
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                CancellationToken token = (CancellationToken)o;
-                await Resume(token);
-            }, AsyncMediatorMessages.ResumeGuider);
+            Mediator.Instance.RegisterAsyncRequest(
+                new PauseGuiderMessageHandle(async (PauseGuiderMessage msg) => {
+                    if(msg.Pause) {
+                        return await Pause(msg.Token);
+                    } else {
+                        return await Resume(msg.Token);
+                    }
+                })
+            );
 
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                CancellationToken token = (CancellationToken)o;
-                await AutoSelectGuideStar(token);
-            }, AsyncMediatorMessages.AutoSelectGuideStar);
+            Mediator.Instance.RegisterAsyncRequest(
+                new AutoSelectGuideStarMessageHandle(async (AutoSelectGuideStarMessage msg) => {
+                    return await AutoSelectGuideStar(msg.Token);
+                })
+            );
 
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                CancellationToken token = (CancellationToken)o;
-                await StartGuiding(token);
-            }, AsyncMediatorMessages.StartGuider);
+            Mediator.Instance.RegisterAsyncRequest(
+                new StartGuiderMessageHandle(async (StartGuiderMessage msg) => {
+                    return await StartGuiding(msg.Token);
+                })
+            );
         }
 
-        private async Task AutoSelectGuideStar(CancellationToken token) {
+        private async Task<bool> AutoSelectGuideStar(CancellationToken token) {
             if(Guider?.Connected == true) {
-                await Guider?.AutoSelectGuideStar();
+                var result = await Guider?.AutoSelectGuideStar();
                 await Task.Delay(TimeSpan.FromSeconds(5), token);
-            }            
+                return result;
+            } else {
+                return false;
+            }          
         }
 
-        private async Task Pause(CancellationToken token) {
+        private async Task<bool> Pause(CancellationToken token) {
             if(Guider?.Connected == true) {
-                await Guider?.Pause(true);
-            }            
+                return await Guider?.Pause(true);
+            } else {
+                return false;
+            }    
         }
 
-        private async Task Resume(CancellationToken token) {
+        private async Task<bool> Resume(CancellationToken token) {
             if (Guider?.Connected == true) {
                 await Guider?.Pause(false);
 
@@ -93,6 +103,9 @@ namespace NINA.ViewModel {
                         break;
                     }
                 }
+                return true;
+            } else {
+                return false;
             }
                 
         }

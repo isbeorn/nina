@@ -26,6 +26,7 @@ using System.Security;
 using System.Security.Permissions;
 using System.Security.AccessControl;
 using NINA.Utility.Exceptions;
+using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
     class ImagingVM : DockableVM {
@@ -250,10 +251,10 @@ namespace NINA.ViewModel {
             if (seq.Dither && ((seq.ExposureCount % seq.DitherAmount) == 0)) {
                 progress.Report(ExposureStatus.DITHERING);
 
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.DitherGuider, token);
+                return await Mediator.Instance.Request(new DitherGuiderMessage() { Token = token });                
             }
             token.ThrowIfCancellationRequested();
-            return true;
+            return false;
         }
 
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
