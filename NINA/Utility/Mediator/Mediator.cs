@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.PlateSolving;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -58,14 +59,14 @@ namespace NINA.Utility.Mediator {
         /// <summary>
         /// Holds reference to handlers and identified by message type name
         /// </summary>
-        private Dictionary<string, MessageHandle> _handlers = new Dictionary<string, MessageHandle>();
+        private Dictionary<string, AsyncMessageHandle> _handlers = new Dictionary<string, AsyncMessageHandle>();
 
         /// <summary>
         /// Register handler to react on requests
         /// </summary>
         /// <param name="handle"></param>
         /// <returns></returns>
-        public bool RegisterAsyncRequest(MessageHandle handle) {
+        public bool RegisterAsyncRequest(AsyncMessageHandle handle) {
             if (!_handlers.ContainsKey(handle.MessageType)) {
                 _handlers.Add(handle.MessageType, handle);
                 return true;
@@ -80,28 +81,28 @@ namespace NINA.Utility.Mediator {
         /// <typeparam name="T">Has to match the return type of the handle.Send()</typeparam>
         /// <param name="msg"></param>
         /// <returns></returns>
-        private async Task<T> Request<T>(MediatorMessage<T> msg) {
+        private async Task<T> RequestAsync<T>(AsyncMediatorMessage<T> msg) {
             var key = msg.GetType().Name;
             if (_handlers.ContainsKey(key)) {
                 var entry = _handlers[key];
-                var handle = (MessageHandle<T>)entry;
+                var handle = (AsyncMessageHandle<T>)entry;
                 return await handle.Send(msg);
             } else {
                 return default(T);
             }
         }
 
-        public async Task<bool> Request(MediatorMessage<bool> msg) {
-            return await Request<bool>(msg);
+        public async Task<bool> RequestAsync(AsyncMediatorMessage<bool> msg) {
+            return await RequestAsync<bool>(msg);
         }
 
-        public async Task<int> Request(MediatorMessage<int> msg) {
-            return await Request<int>(msg);
+        public async Task<int> RequestAsync(AsyncMediatorMessage<int> msg) {
+            return await RequestAsync<int>(msg);
         }
-
-        /*public async Task<SomeTestResult> Request(MediatorMessage<SomeTestResult> msg) {
-            return await Request<SomeTestResult>(msg);
-        }*/
+        
+        public async Task<PlateSolveResult> RequestAsync(AsyncMediatorMessage<PlateSolveResult> msg) {
+            return await RequestAsync<PlateSolveResult>(msg);
+        }
     }
 
 
@@ -114,7 +115,6 @@ namespace NINA.Utility.Mediator {
         ImageChanged = 6,
         AutoStrechChanged = 7,
         DetectStarsChanged = 8,
-        PlateSolveResultChanged = 9,
         SyncronizeTelescope = 13,
         ChangeAutoStretch = 14,
         ChangeDetectStars = 15,
@@ -137,10 +137,6 @@ namespace NINA.Utility.Mediator {
 
     public enum AsyncMediatorMessages {
         CaptureImage = 2,
-        SolveWithCapture = 3,
-        ChangeFilterWheelPosition = 6,
-        Solve = 7,
-        CaputureSolveSyncAndReslew = 9,
         StartAutoFocus = 19,
         ConnectFilterWheel = 20,
         ConnectFocuser = 21,

@@ -60,30 +60,22 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 _detectStars = (bool)o;
             }, MediatorMessages.DetectStarsChanged);
-
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                var args = (object[])o;
-                CaptureSequence seq = args[0] == null ? new CaptureSequence(this.SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, this.SnapFilter, this.SnapBin, 1) : (CaptureSequence)args[0];
-                IProgress<string> progress = (IProgress<string>)args[1];
-                CancellationToken token = (CancellationToken)args[2];
-
-                await SolveWithCapture(seq, progress, token);
-            }, AsyncMediatorMessages.SolveWithCapture);
-
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                var args = (object[])o;
-                CancellationToken token = (CancellationToken)args[0];
-                IProgress<string> progress = (IProgress<string>)args[1];
-                Repeat = true;
-                await CaptureSolveSyncAndReslew(token, progress);
-            }, AsyncMediatorMessages.CaputureSolveSyncAndReslew);
-
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                var args = (object[])o;
-                IProgress<string> progress = (IProgress<string>)args[0];
-                CancellationToken token = (CancellationToken)args[1];
-                await Solve(progress, token);
-            }, AsyncMediatorMessages.Solve);
+            
+            Mediator.Instance.RegisterAsyncRequest(
+                new PlateSolveMessageHandle(async (PlateSolveMessage msg) => {
+                    if(msg.Sequence != null) {                        
+                        return await SolveWithCapture(msg.Sequence, msg.Progress, msg.Token);                        
+                    } else {
+                        if (msg.SyncReslewRepeat) {
+                            return await CaptureSolveSyncAndReslew(msg.Token, msg.Progress);
+                        } else {
+                            return await Solve(msg.Progress, msg.Token);
+                        }
+                        
+                    }
+                    
+                })
+            );
 
             Mediator.Instance.Register((object o) => {
                 SyncronizeTelescope();
@@ -257,7 +249,7 @@ namespace NINA.ViewModel {
         /// <param name="filter"></param>
         /// <param name="binning"></param>
         /// <returns></returns>
-        private async Task<bool> SolveWithCapture(CaptureSequence seq, IProgress<string> progress, CancellationToken canceltoken) {
+        private async Task<PlateSolveResult> SolveWithCapture(CaptureSequence seq, IProgress<string> progress, CancellationToken canceltoken) {
             var oldAutoStretch = _autoStretch;
             var oldDetectStars = _detectStars;
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
@@ -276,7 +268,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<string> progress) {
             _solveCancelToken = new CancellationTokenSource();
-            return await this.CaptureSolveSyncAndReslew(_solveCancelToken.Token, progress);
+            return await this.CaptureSolveSyncAndReslew(_solveCancelToken.Token, progress) != null;
         }
 
         /// <summary>
@@ -284,28 +276,28 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="progress"></param>
         /// <returns></returns>
-        private async Task<bool> CaptureSolveSyncAndReslew(CancellationToken token, IProgress<string> progress) {
-            bool solvedSuccessfully = false;
+        private async Task<PlateSolveResult> CaptureSolveSyncAndReslew(CancellationToken token, IProgress<string> progress) {
+            PlateSolveResult solveresult = null;
             bool repeatPlateSolve = false;
             do {
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
-                solvedSuccessfully = await SolveWithCapture(seq, progress, token);
+                solveresult = await SolveWithCapture(seq, progress, token);
 
-                if (solvedSuccessfully) {
+                if (solveresult != null && solveresult.Success) {
                     if (SyncScope) {
                         if (Telescope?.Connected != true) {
                             Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
-                            return false;
+                            return null;
                         }
                         var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
                         if (SyncronizeTelescope() && SlewToTarget) {
-                            await Mediator.Instance.Request(new SlewToCoordinatesMessage() { Coordinates = coords, Token = token });
+                            await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = coords, Token = token });
                         }
                     }
                 }
 
-                if (solvedSuccessfully && Repeat && Math.Abs(Astrometry.DegreeToArcmin(PlateSolveResult.RaError)) > RepeatThreshold) {
+                if (solveresult?.Success == true && Repeat && Math.Abs(Astrometry.DegreeToArcmin(solveresult.RaError)) > RepeatThreshold) {
                     repeatPlateSolve = true;
                     progress.Report("Telescope not inside tolerance. Repeating...");
                     //Let the scope settle
@@ -317,7 +309,7 @@ namespace NINA.ViewModel {
             } while (repeatPlateSolve);
 
             RaiseAllPropertiesChanged();
-            return solvedSuccessfully;
+            return solveresult;
         }
 
         /// <summary>
@@ -342,10 +334,10 @@ namespace NINA.ViewModel {
         /// <param name="progress"></param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
-        public async Task<bool> Solve(IProgress<string> progress, CancellationToken canceltoken) {
+        public async Task<PlateSolveResult> Solve(IProgress<string> progress, CancellationToken canceltoken) {
             var solver = GetPlateSolver();
             if (solver == null) {
-                return false;
+                return null;
             }
 
             BitmapSource source = Image;
@@ -368,7 +360,7 @@ namespace NINA.ViewModel {
                 Notification.ShowWarning(Locale.Loc.Instance["LblPlatesolveFailed"]);
             }
 
-            return PlateSolveResult?.Success ?? false;
+            return PlateSolveResult;
         }
 
         private CancellationTokenSource _solveCancelToken;
@@ -446,7 +438,6 @@ namespace NINA.ViewModel {
                 PlateSolveResultList.Add(_plateSolveResult);
 
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.PlateSolveResultChanged, _plateSolveResult);
             }
         }
     }

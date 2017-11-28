@@ -134,10 +134,10 @@ namespace NINA.ViewModel {
 
             if (Sequence.SlewToTarget) {
                 progress.Report(Locale.Loc.Instance["LblSlewToTarget"]);
-                await Mediator.Instance.Request(new SlewToCoordinatesMessage() { Coordinates = Sequence.Coordinates, Token = _canceltoken.Token });
+                await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = Sequence.Coordinates, Token = _canceltoken.Token });
                 if (Sequence.CenterTarget) {
                     progress.Report(Locale.Loc.Instance["LblCenterTarget"]);
-                    await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaputureSolveSyncAndReslew, new object[] { _canceltoken.Token, progress });
+                    await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = new Progress<string>(p => Status = p), Token = _canceltoken.Token });                    
                 }
             }
 
@@ -147,7 +147,7 @@ namespace NINA.ViewModel {
 
             if (Sequence.StartGuiding) {
                 progress.Report(Locale.Loc.Instance["LblStartGuiding"]);
-                var guiderStarted = await Mediator.Instance.Request(new StartGuiderMessage() { Token = _canceltoken.Token });
+                var guiderStarted = await Mediator.Instance.RequestAsync(new StartGuiderMessage() { Token = _canceltoken.Token });
                 if(!guiderStarted) {
                     Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
                 }
@@ -231,7 +231,7 @@ namespace NINA.ViewModel {
         /// <returns></returns>
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
             progress.Report("Check Meridian Flip");
-            await Mediator.Instance.Request(new CheckMeridianFlipMessage() { Sequence = seq, Token = token });;
+            await Mediator.Instance.RequestAsync(new CheckMeridianFlipMessage() { Sequence = seq, Token = token });;
         }
 
         private bool CheckPreconditions() {

@@ -111,7 +111,7 @@ namespace NINA.ViewModel {
             var stepSize = Settings.FocuserAutoFocusStepSize;
             if (offset != 0) {
                 //Move to initial position
-                _focusPosition = await Mediator.Instance.Request(new MoveFocuserMessage() { Position = offset * stepSize, Absolute = false, Token = token });
+                _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset * stepSize, Absolute = false, Token = token });
             }
 
 
@@ -135,7 +135,7 @@ namespace NINA.ViewModel {
                 FocusPoints.AddSorted(new DataPoint(_focusPosition, stats.HFR), comparer);
                 if (i < nrOfSteps - 1) {
                     Logger.Trace("Moving focuser to next autofocus position");
-                    _focusPosition = await Mediator.Instance.Request(new MoveFocuserMessage() { Position = -stepSize, Absolute = false, Token = token });
+                    _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = -stepSize, Absolute = false, Token = token });
                 }
 
                 token.ThrowIfCancellationRequested();
@@ -222,7 +222,7 @@ namespace NINA.ViewModel {
 
                 //Todo when data is too noisy for trend lines find something else
 
-                _focusPosition = await Mediator.Instance.Request(new MoveFocuserMessage() { Position = (int)p.X, Absolute = true, Token = token });
+                _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = (int)p.X, Absolute = true, Token = token });
             } catch (OperationCanceledException) {
                 FocusPoints.Clear();
             } catch (Exception ex) {

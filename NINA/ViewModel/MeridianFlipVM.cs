@@ -159,24 +159,24 @@ namespace NINA.ViewModel {
         private async Task<bool> Recenter(CancellationToken token, IProgress<string> progress) {
             if (Settings.RecenterAfterFlip) {
                 progress.Report("Initiating platesolve");
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaputureSolveSyncAndReslew, new object[] { token, progress });
+                await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = token });
             }
             return true;
         }
 
         private async Task<bool> StopAutoguider(CancellationToken token, IProgress<string> progress) {
-            var result = await Mediator.Instance.Request(new PauseGuiderMessage() { Token = token, Pause = true });            
+            var result = await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Token = token, Pause = true });            
             return result;
         }
 
         private async Task<bool> SelectNewGuideStar(CancellationToken token, IProgress<string> progress) {
             progress.Report("Select new Guidestar");
-            return await Mediator.Instance.Request(new AutoSelectGuideStarMessage() { Token = token });
+            return await Mediator.Instance.RequestAsync(new AutoSelectGuideStarMessage() { Token = token });
         }
 
         private async Task<bool> ResumeAutoguider(CancellationToken token, IProgress<string> progress) {
 
-            var result = await Mediator.Instance.Request(new PauseGuiderMessage() { Token = token, Pause = false });
+            var result = await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Token = token, Pause = false });
 
             return result;
         }

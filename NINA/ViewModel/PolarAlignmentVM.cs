@@ -77,11 +77,7 @@ namespace NINA.ViewModel {
             }, MediatorMessages.AutoStrechChanged);
             Mediator.Instance.Register((object o) => {
                 _detectStars = (bool)o;
-            }, MediatorMessages.DetectStarsChanged);
-
-            Mediator.Instance.Register((object o) => {
-                _plateSolveResult = (PlateSolving.PlateSolveResult)o;
-            }, MediatorMessages.PlateSolveResultChanged);
+            }, MediatorMessages.DetectStarsChanged);            
         }
 
         private string _status;
@@ -356,7 +352,7 @@ namespace NINA.ViewModel {
                     Logger.Trace(ex.Message);
                 } finally {
                     progress.Report("Restoring start position...");
-                    await Mediator.Instance.Request(new SlewToCoordinatesMessage() { Coordinates = startPosition, Token = canceltoken });
+                    await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = startPosition, Token = canceltoken });
                 }
 
                 progress.Report(string.Empty);
@@ -532,7 +528,7 @@ namespace NINA.ViewModel {
                 progress.Report("Solving image...");
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { seq, progress, canceltoken });
+                PlateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Sequence = seq, Progress = progress, Token = canceltoken });                
 
                 canceltoken.ThrowIfCancellationRequested();
 
@@ -550,7 +546,7 @@ namespace NINA.ViewModel {
 
                 Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, Settings.EpochType, Coordinates.RAType.Hours);
                 progress.Report("Slewing...");
-                await Mediator.Instance.Request(new SlewToCoordinatesMessage() { Coordinates = targetPosition, Token = canceltoken });
+                await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = targetPosition, Token = canceltoken });
 
 
                 canceltoken.ThrowIfCancellationRequested();
@@ -564,7 +560,7 @@ namespace NINA.ViewModel {
                 canceltoken.ThrowIfCancellationRequested();
 
                 seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SolveWithCapture, new object[] { seq, progress, canceltoken });
+                PlateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
 
                 canceltoken.ThrowIfCancellationRequested();
 
@@ -586,7 +582,7 @@ namespace NINA.ViewModel {
                 Logger.Trace(ex.Message);
             } finally {
                 //progress.Report("Slewing back to origin...");
-                await Mediator.Instance.Request(new SlewToCoordinatesMessage() { Coordinates = startPosition, Token = canceltoken });
+                await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = startPosition, Token = canceltoken });
                 //progress.Report("Done");
             }
 

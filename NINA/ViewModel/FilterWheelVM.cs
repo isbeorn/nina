@@ -28,17 +28,11 @@ namespace NINA.ViewModel {
         }
 
         private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                var args = (object[])o;
-                if (args[0] != null) {
-                    CancellationToken token;
-                    if (args.Length > 1) { token = (CancellationToken)args[1]; }
-                    FilterInfo filter = (FilterInfo)args[0];
-                    IProgress<string> progress = null;
-                    if (args.Length > 2) { progress = (IProgress<string>)args[2]; }
-                    await ChangeFilter(filter, token, progress);
-                }
-            }, AsyncMediatorMessages.ChangeFilterWheelPosition);
+            Mediator.Instance.RegisterAsyncRequest(
+                new ChangeFilterWheelPositionMessageHandle(async (ChangeFilterWheelPositionMessage msg) => {
+                    return await ChangeFilter(msg.Filter, msg.Token, msg.Progress);
+                })
+            );
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 await ChooseFWCommand.ExecuteAsync(o);
@@ -79,7 +73,7 @@ namespace NINA.ViewModel {
                     if (Settings.FocuserUseFilterWheelOffsets) {
                         if (prevFilter != null) {
                             int offset = filter.FocusOffset - prevFilter.FocusOffset;
-                            changeFocus = Mediator.Instance.Request(new MoveFocuserMessage() { Position = offset, Absolute = false, Token = token });                            
+                            changeFocus = Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset, Absolute = false, Token = token });                            
                         }
                     }
 

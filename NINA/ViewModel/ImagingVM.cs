@@ -193,7 +193,7 @@ namespace NINA.ViewModel {
 
         private async Task ChangeFilter(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
             if (seq.FilterType != null) {
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ChangeFilterWheelPosition, new object[] { seq.FilterType, token, progress });
+                await Mediator.Instance.RequestAsync(new ChangeFilterWheelPositionMessage() { Filter = seq.FilterType, Token = token, Progress = progress });
             }
         }
 
@@ -251,7 +251,7 @@ namespace NINA.ViewModel {
             if (seq.Dither && ((seq.ExposureCount % seq.DitherAmount) == 0)) {
                 progress.Report(ExposureStatus.DITHERING);
 
-                return await Mediator.Instance.Request(new DitherGuiderMessage() { Token = token });                
+                return await Mediator.Instance.RequestAsync(new DitherGuiderMessage() { Token = token });                
             }
             token.ThrowIfCancellationRequested();
             return false;

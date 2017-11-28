@@ -1,4 +1,6 @@
 ﻿using NINA.Model;
+using NINA.Model.MyFilterWheel;
+using NINA.PlateSolving;
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
@@ -12,107 +14,136 @@ namespace NINA.Utility.Mediator {
 
     
     /* Handler definition */
-    abstract class MessageHandle {
+    abstract class AsyncMessageHandle {
         public abstract string MessageType { get; }
     }
 
-    abstract class MessageHandle<TResult> : MessageHandle {
-        protected Func<MediatorMessage<TResult>, Task<TResult>> Callback { get; set; }
-        public async Task<TResult> Send(MediatorMessage<TResult> msg) {
+    abstract class AsyncMessageHandle<TResult> : AsyncMessageHandle {
+        protected Func<AsyncMediatorMessage<TResult>, Task<TResult>> Callback { get; set; }
+        public async Task<TResult> Send(AsyncMediatorMessage<TResult> msg) {
             return await Callback(msg);
         }
     }
 
 
     /* Specific handler */
-    class PauseGuiderMessageHandle : MessageHandle<bool> {
+    class PauseGuiderMessageHandle : AsyncMessageHandle<bool> {
         public PauseGuiderMessageHandle(Func<PauseGuiderMessage, Task<bool>> callback) {
             Callback = (f) => callback((PauseGuiderMessage)f);
         }
         public override string MessageType { get { return typeof(PauseGuiderMessage).Name; } }
     }
 
-    class StartGuiderMessageHandle : MessageHandle<bool> {
+    class StartGuiderMessageHandle : AsyncMessageHandle<bool> {
         public StartGuiderMessageHandle(Func<StartGuiderMessage, Task<bool>> callback) {
             Callback = (f) => callback((StartGuiderMessage)f);
         }
         public override string MessageType { get { return typeof(StartGuiderMessage).Name; } }
     }
 
-    class DitherGuiderMessageHandle : MessageHandle<bool> {
+    class DitherGuiderMessageHandle : AsyncMessageHandle<bool> {
         public DitherGuiderMessageHandle(Func<DitherGuiderMessage, Task<bool>> callback) {
             Callback = (f) => callback((DitherGuiderMessage)f);
         }
         public override string MessageType { get { return typeof(DitherGuiderMessage).Name; } }
     }
 
-    class AutoSelectGuideStarMessageHandle : MessageHandle<bool> {
+    class AutoSelectGuideStarMessageHandle : AsyncMessageHandle<bool> {
         public AutoSelectGuideStarMessageHandle(Func<AutoSelectGuideStarMessage, Task<bool>> callback) {
             Callback = (f) => callback((AutoSelectGuideStarMessage)f);
         }
         public override string MessageType { get { return typeof(AutoSelectGuideStarMessage).Name; } }
     }
 
-    class CheckMeridianFlipMessageHandle : MessageHandle<bool> {
+    class CheckMeridianFlipMessageHandle : AsyncMessageHandle<bool> {
         public CheckMeridianFlipMessageHandle(Func<CheckMeridianFlipMessage, Task<bool>> callback) {
             Callback = (f) => callback((CheckMeridianFlipMessage)f);
         }
         public override string MessageType { get { return typeof(CheckMeridianFlipMessage).Name; } }
     }
 
-    class SlewTocoordinatesMessageHandle : MessageHandle<bool> {
+    class SlewTocoordinatesMessageHandle : AsyncMessageHandle<bool> {
         public SlewTocoordinatesMessageHandle(Func<SlewToCoordinatesMessage, Task<bool>> callback) {
             Callback = (f) => callback((SlewToCoordinatesMessage)f);
         }
         public override string MessageType { get { return typeof(SlewToCoordinatesMessage).Name; } }
     }
 
-    class SetSequenceCoordinatesMessageHandle : MessageHandle<bool> {
+    class SetSequenceCoordinatesMessageHandle : AsyncMessageHandle<bool> {
         public SetSequenceCoordinatesMessageHandle(Func<SetSequenceCoordinatesMessage, Task<bool>> callback) {
             Callback = (f) => callback((SetSequenceCoordinatesMessage)f);
         }
         public override string MessageType { get { return typeof(SetSequenceCoordinatesMessage).Name; } }
     }
 
-    class MoveFocuserMessageHandle : MessageHandle<int> {
+    class MoveFocuserMessageHandle : AsyncMessageHandle<int> {
         public MoveFocuserMessageHandle(Func<MoveFocuserMessage, Task<int>> callback) {
             Callback = (f) => callback((MoveFocuserMessage)f);
         }
         public override string MessageType { get { return typeof(MoveFocuserMessage).Name; } }
     }
+
+    class PlateSolveMessageHandle : AsyncMessageHandle<PlateSolveResult> {
+        public PlateSolveMessageHandle(Func<PlateSolveMessage, Task<PlateSolveResult>> callback) {
+            Callback = (f) => callback((PlateSolveMessage)f);
+        }
+        public override string MessageType { get { return typeof(PlateSolveMessage).Name; } }
+    }
+
+    class ChangeFilterWheelPositionMessageHandle : AsyncMessageHandle<bool> {
+        public ChangeFilterWheelPositionMessageHandle(Func<ChangeFilterWheelPositionMessage, Task<bool>> callback) {
+            Callback = (f) => callback((ChangeFilterWheelPositionMessage)f);
+        }
+        public override string MessageType { get { return typeof(ChangeFilterWheelPositionMessage).Name; } }
+    }
+
     
 
+
     /* Message definition */
-    abstract class MediatorMessage<TMessageResult> {
+    abstract class AsyncMediatorMessage<TMessageResult> {
         public CancellationToken Token { get; set; } = default(CancellationToken);
     }
 
 
     /* Specific message */
-    class PauseGuiderMessage : MediatorMessage<bool> {
+    class PauseGuiderMessage : AsyncMediatorMessage<bool> {
         public bool Pause { get; set; }
     }
 
-    class StartGuiderMessage : MediatorMessage<bool> { }
+    class StartGuiderMessage : AsyncMediatorMessage<bool> { }
 
-    class DitherGuiderMessage : MediatorMessage<bool> { }
+    class DitherGuiderMessage : AsyncMediatorMessage<bool> { }
 
-    class AutoSelectGuideStarMessage : MediatorMessage<bool> { }
+    class AutoSelectGuideStarMessage : AsyncMediatorMessage<bool> { }
 
-    class CheckMeridianFlipMessage : MediatorMessage<bool> {
+    class CheckMeridianFlipMessage : AsyncMediatorMessage<bool> {
         public CaptureSequence Sequence { get; set; }
     }
 
-    class SlewToCoordinatesMessage : MediatorMessage<bool> {
+    class SlewToCoordinatesMessage : AsyncMediatorMessage<bool> {
         public Coordinates Coordinates { get; set; }
     }
 
-    class SetSequenceCoordinatesMessage : MediatorMessage<bool> {
+    class SetSequenceCoordinatesMessage : AsyncMediatorMessage<bool> {
         public DeepSkyObject DSO { get; set; }
     }
 
-    class MoveFocuserMessage : MediatorMessage<int> {
+    class MoveFocuserMessage : AsyncMediatorMessage<int> {
         public int Position { get; set; }
         public bool Absolute { get; set; } = true;
-    }    
+    }
+
+    class PlateSolveMessage : AsyncMediatorMessage<PlateSolveResult> {
+        public IProgress<string> Progress { get; set; }
+        public CaptureSequence Sequence { get; set; }
+        public bool SyncReslewRepeat { get; set; }
+    }
+
+    class ChangeFilterWheelPositionMessage : AsyncMediatorMessage<bool> {
+        public FilterInfo Filter { get; set; }
+        public IProgress<string> Progress { get; set; }
+    }
+
+
 }
