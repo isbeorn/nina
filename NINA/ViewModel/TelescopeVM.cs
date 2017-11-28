@@ -51,11 +51,11 @@ namespace NINA.ViewModel {
                 }                
             }, MediatorMessages.SetTelescopeTracking);
 
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                if (o != null) {
-                    await SlewToCoordinatesAsync((Coordinates)o);
-                }
-            }, AsyncMediatorMessages.SlewToCoordinates);
+            Mediator.Instance.RegisterAsyncRequest(
+                new SlewTocoordinatesMessageHandle(async (SlewToCoordinatesMessage msg) => {
+                    return await SlewToCoordinatesAsync(msg.Coordinates);
+                })
+            );
 
             Mediator.Instance.Register((object o) => {
                 bool start = (bool)o;
@@ -299,12 +299,15 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task SlewToCoordinatesAsync(Coordinates coords) {
+        private async Task<bool> SlewToCoordinatesAsync(Coordinates coords) {
             coords = coords.Transform(Settings.EpochType);
             if (Telescope?.Connected == true) {
                 await Task.Run(() => {
                     Telescope.SlewToCoordinates(coords.RA, coords.Dec);
-                });                
+                });
+                return true;
+            } else {
+                return false;
             }
         }
 

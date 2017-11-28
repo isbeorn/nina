@@ -79,7 +79,7 @@ namespace NINA.ViewModel {
                     if (Settings.FocuserUseFilterWheelOffsets) {
                         if (prevFilter != null) {
                             int offset = filter.FocusOffset - prevFilter.FocusOffset;
-                            changeFocus = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.MoveFocuserRelative, offset);
+                            changeFocus = Mediator.Instance.Request(new MoveFocuserMessage() { Position = offset, Absolute = false, Token = token });                            
                         }
                     }
 

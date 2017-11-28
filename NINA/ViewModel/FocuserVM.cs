@@ -27,17 +27,18 @@ namespace NINA.ViewModel {
             CancelChooseFocuserCommand = new RelayCommand(CancelChooseFocuser);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList);
-            MoveFocuserCommand = new AsyncCommand<bool>(() => MoveFocuser(TargetPosition), (p) => Connected && TempComp == false);
+            MoveFocuserCommand = new AsyncCommand<int>(() => MoveFocuser(TargetPosition), (p) => Connected && TempComp == false);
             HaltFocuserCommand = new RelayCommand(HaltFocuser);
 
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                int offset = (int)o;
-                await MoveFocuserRelative(offset);
-            }, AsyncMediatorMessages.MoveFocuserRelative);
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                int position = (int)o;
-                await MoveFocuser(position);
-            }, AsyncMediatorMessages.MoveFocuserAbsolute);
+            Mediator.Instance.RegisterAsyncRequest(
+                new MoveFocuserMessageHandle(async (MoveFocuserMessage msg) => {
+                    if(msg.Absolute) {
+                        return await MoveFocuser(msg.Position);
+                    } else {
+                        return await MoveFocuserRelative(msg.Position);
+                    }
+                })
+            );
 
             Mediator.Instance.RegisterAsync(async (object o) => {
                 await ChooseFocuserCommand.ExecuteAsync(o);
@@ -51,7 +52,7 @@ namespace NINA.ViewModel {
 
         CancellationTokenSource _cancelMove;
 
-        private async Task<bool> MoveFocuser(int position) {
+        private async Task<int> MoveFocuser(int position) {
             _cancelMove = new CancellationTokenSource();
             await Task.Run(() => {
                 try {
@@ -66,14 +67,15 @@ namespace NINA.ViewModel {
                 }
 
             });
-            return true;
+            return Position;
         }
 
-        private async Task MoveFocuserRelative(int offset) {
+        private async Task<int> MoveFocuserRelative(int offset) {
             if (Focuser?.Connected == true) {
                 var pos = Focuser.Position + offset;
                 await MoveFocuser(pos);
             }
+            return Position;
         }
 
         private void UpdateFocuser_Tick(object sender, EventArgs e) {
@@ -206,7 +208,6 @@ namespace NINA.ViewModel {
             private set {
                 _position = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.FocuserPositionChanged, _position);
             }
         }
 

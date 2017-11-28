@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NINA.Model;
+using NINA.Utility.Astrometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,6 +53,35 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(AutoSelectGuideStarMessage).Name; } }
     }
 
+    class CheckMeridianFlipMessageHandle : MessageHandle<bool> {
+        public CheckMeridianFlipMessageHandle(Func<CheckMeridianFlipMessage, Task<bool>> callback) {
+            Callback = (f) => callback((CheckMeridianFlipMessage)f);
+        }
+        public override string MessageType { get { return typeof(CheckMeridianFlipMessage).Name; } }
+    }
+
+    class SlewTocoordinatesMessageHandle : MessageHandle<bool> {
+        public SlewTocoordinatesMessageHandle(Func<SlewToCoordinatesMessage, Task<bool>> callback) {
+            Callback = (f) => callback((SlewToCoordinatesMessage)f);
+        }
+        public override string MessageType { get { return typeof(SlewToCoordinatesMessage).Name; } }
+    }
+
+    class SetSequenceCoordinatesMessageHandle : MessageHandle<bool> {
+        public SetSequenceCoordinatesMessageHandle(Func<SetSequenceCoordinatesMessage, Task<bool>> callback) {
+            Callback = (f) => callback((SetSequenceCoordinatesMessage)f);
+        }
+        public override string MessageType { get { return typeof(SetSequenceCoordinatesMessage).Name; } }
+    }
+
+    class MoveFocuserMessageHandle : MessageHandle<int> {
+        public MoveFocuserMessageHandle(Func<MoveFocuserMessage, Task<int>> callback) {
+            Callback = (f) => callback((MoveFocuserMessage)f);
+        }
+        public override string MessageType { get { return typeof(MoveFocuserMessage).Name; } }
+    }
+    
+
     /* Message definition */
     abstract class MediatorMessage<TMessageResult> {
         public CancellationToken Token { get; set; } = default(CancellationToken);
@@ -67,4 +98,21 @@ namespace NINA.Utility.Mediator {
     class DitherGuiderMessage : MediatorMessage<bool> { }
 
     class AutoSelectGuideStarMessage : MediatorMessage<bool> { }
+
+    class CheckMeridianFlipMessage : MediatorMessage<bool> {
+        public CaptureSequence Sequence { get; set; }
+    }
+
+    class SlewToCoordinatesMessage : MediatorMessage<bool> {
+        public Coordinates Coordinates { get; set; }
+    }
+
+    class SetSequenceCoordinatesMessage : MediatorMessage<bool> {
+        public DeepSkyObject DSO { get; set; }
+    }
+
+    class MoveFocuserMessage : MediatorMessage<int> {
+        public int Position { get; set; }
+        public bool Absolute { get; set; } = true;
+    }    
 }

@@ -30,11 +30,11 @@ namespace NINA.ViewModel {
                 Telescope = (ITelescope)o;
             }, MediatorMessages.TelescopeChanged);
 
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                object[] args = o as object[];
-                CaptureSequence seq = (CaptureSequence)args[0];
-                await CheckMeridianFlip(seq);
-            }, AsyncMediatorMessages.CheckMeridianFlip);
+            Mediator.Instance.RegisterAsyncRequest(
+                new CheckMeridianFlipMessageHandle(async (CheckMeridianFlipMessage msg) => {
+                    return await CheckMeridianFlip(msg.Sequence);
+                })
+            );
         }
 
         private IProgress<string> _progress;
@@ -108,7 +108,7 @@ namespace NINA.ViewModel {
         /// <param name="tokenSource">cancel token</param>
         /// <param name="progress">progress reporter</param>
         /// <returns></returns>
-        public async Task CheckMeridianFlip(CaptureSequence seq) {
+        public async Task<bool> CheckMeridianFlip(CaptureSequence seq) {            
             if (ShouldFlip(seq.ExposureTime)) {
                 var service = new WindowService();
                 this._tokensource = new CancellationTokenSource();
@@ -116,9 +116,12 @@ namespace NINA.ViewModel {
                 var flip = DoMeridianFlip();
 
                 service.ShowDialog(this, "Meridian Flip");
-                await flip;
+                var flipResult = await flip;
 
                 await service.Close();
+                return flipResult;
+            } else {
+                return false;
             }
         }
 

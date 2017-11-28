@@ -134,7 +134,7 @@ namespace NINA.ViewModel {
 
             if (Sequence.SlewToTarget) {
                 progress.Report(Locale.Loc.Instance["LblSlewToTarget"]);
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SlewToCoordinates, Sequence.Coordinates);
+                await Mediator.Instance.Request(new SlewToCoordinatesMessage() { Coordinates = Sequence.Coordinates, Token = _canceltoken.Token });
                 if (Sequence.CenterTarget) {
                     progress.Report(Locale.Loc.Instance["LblCenterTarget"]);
                     await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaputureSolveSyncAndReslew, new object[] { _canceltoken.Token, progress });
@@ -231,7 +231,7 @@ namespace NINA.ViewModel {
         /// <returns></returns>
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
             progress.Report("Check Meridian Flip");
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CheckMeridianFlip, new object[] { seq });
+            await Mediator.Instance.Request(new CheckMeridianFlipMessage() { Sequence = seq, Token = token });;
         }
 
         private bool CheckPreconditions() {
@@ -277,18 +277,17 @@ namespace NINA.ViewModel {
         }
 
         private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                var args = (object[])o;
-                if (args.Length == 1) {
-                    var dso = (DeepSkyObject)args[0];
-                    var sequenceDso = new DeepSkyObject(dso.AlsoKnownAs.FirstOrDefault(), dso.Coordinates);
+            Mediator.Instance.RegisterAsyncRequest(
+                new SetSequenceCoordinatesMessageHandle(async (SetSequenceCoordinatesMessage msg) => {
+                    var sequenceDso = new DeepSkyObject(msg.DSO.AlsoKnownAs.FirstOrDefault(), msg.DSO.Coordinates);
                     await Task.Run(() => {
                         sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), Settings.Latitude, Settings.Longitude);
                     });
 
                     Sequence.SetSequenceTarget(sequenceDso);
-                }
-            }, AsyncMediatorMessages.SetSequenceCoordinates);
+                    return true;
+                })
+            );
         }
 
         private CaptureSequenceList _sequence;

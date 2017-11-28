@@ -300,7 +300,7 @@ namespace NINA.ViewModel {
                         }
                         var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
                         if (SyncronizeTelescope() && SlewToTarget) {
-                            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SlewToCoordinates, coords);
+                            await Mediator.Instance.Request(new SlewToCoordinatesMessage() { Coordinates = coords, Token = token });
                         }
                     }
                 }

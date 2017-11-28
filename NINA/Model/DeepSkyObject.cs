@@ -152,8 +152,7 @@ namespace NINA.Model {
         }
 
         private async Task<bool> SetSequenceCoordinates() {
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.SetSequenceCoordinates, new object[] { this });
-            return true;
+            return await Mediator.Instance.Request(new SetSequenceCoordinatesMessage() { DSO = this });
         }
 
         private void SlewToCoordinates(object obj) {

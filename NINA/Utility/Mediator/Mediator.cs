@@ -95,6 +95,10 @@ namespace NINA.Utility.Mediator {
             return await Request<bool>(msg);
         }
 
+        public async Task<int> Request(MediatorMessage<int> msg) {
+            return await Request<int>(msg);
+        }
+
         /*public async Task<SomeTestResult> Request(MediatorMessage<SomeTestResult> msg) {
             return await Request<SomeTestResult>(msg);
         }*/
@@ -120,7 +124,6 @@ namespace NINA.Utility.Mediator {
         SlewToCoordinates = 21,
         AutoSelectGuideStar = 22,
         ImageStatisticsChanged = 23,
-        FocuserPositionChanged = 24,
         TelescopeSnapPort = 25,
         FocuserTemperatureChanged = 26,
         FocuserIsMovingChanged = 27,
@@ -135,16 +138,9 @@ namespace NINA.Utility.Mediator {
     public enum AsyncMediatorMessages {
         CaptureImage = 2,
         SolveWithCapture = 3,
-        Sync = 4,
-        SyncTelescopeAndReslew = 5,
         ChangeFilterWheelPosition = 6,
         Solve = 7,
-        CheckMeridianFlip = 8,
         CaputureSolveSyncAndReslew = 9,
-        SetSequenceCoordinates = 14,
-        MoveFocuserRelative = 15,
-        MoveFocuserAbsolute = 16,
-        SlewToCoordinates = 17,
         StartAutoFocus = 19,
         ConnectFilterWheel = 20,
         ConnectFocuser = 21,
