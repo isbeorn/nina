@@ -339,6 +339,7 @@
     <Compile Include="Utility\ValidationRules\ShortRangeRule.cs" />
     <Compile Include="Utility\WindowService.cs" />
     <Compile Include="Utility\XISF.cs" />
+    <Compile Include="ViewModel\ApplicationStatusVM.cs" />
     <Compile Include="ViewModel\AutoFocusVM.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />

@@ -69,12 +69,7 @@ namespace NINA.ViewModel {
 
 
         private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterRequest(
-                new StatusUpdateMessageHandle((StatusUpdateMessage msg) => {
-                    Status = msg.Status;
-                    return true;
-                })
-            );
+           
         }
 
 
@@ -88,13 +83,16 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string _status;
-        public string Status {
+        private ApplicationStatusVM _applicationStatusVM;
+        public ApplicationStatusVM ApplicationStatusVM {
             get {
-                return _status;
+                if(_applicationStatusVM == null) {
+                    _applicationStatusVM = new ApplicationStatusVM();
+                }
+                return _applicationStatusVM;
             }
             set {
-                _status = value;
+                _applicationStatusVM = value;
                 RaisePropertyChanged();
             }
         }
