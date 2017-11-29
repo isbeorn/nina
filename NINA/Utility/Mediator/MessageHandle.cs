@@ -17,7 +17,18 @@ namespace NINA.Utility.Mediator {
         }
     }
 
+    class StatusUpdateMessageHandle : MessageHandle<bool> {
+        public StatusUpdateMessageHandle(Func<StatusUpdateMessage, bool> callback) {
+            Callback = (f) => callback((StatusUpdateMessage)f);
+        }
+        public override string MessageType { get { return typeof(StatusUpdateMessage).Name; } }
+    }
+
     /* Message definition */
     abstract class MediatorMessage<TMessageResult> {
+    }
+
+    class StatusUpdateMessage : MediatorMessage<bool> {
+        public string Status { get; set; }
     }
 }

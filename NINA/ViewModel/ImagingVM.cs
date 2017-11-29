@@ -94,7 +94,7 @@ namespace NINA.ViewModel {
                 _status = value;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Notify(MediatorMessages.StatusUpdate, _status);
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
             }
         }
 

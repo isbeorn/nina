@@ -69,9 +69,12 @@ namespace NINA.ViewModel {
 
 
         private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((object o) => {
-                Status = (string)o;
-            }, MediatorMessages.StatusUpdate);
+            Mediator.Instance.RegisterRequest(
+                new StatusUpdateMessageHandle((StatusUpdateMessage msg) => {
+                    Status = msg.Status;
+                    return true;
+                })
+            );
         }
 
 

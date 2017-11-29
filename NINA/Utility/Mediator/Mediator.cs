@@ -55,7 +55,7 @@ namespace NINA.Utility.Mediator {
             } else {
                 throw new Exception("Handle already registered");
             }
-        }
+        }        
 
         /// <summary>
         /// Request a value from a handler based on message
@@ -65,13 +65,17 @@ namespace NINA.Utility.Mediator {
         /// <returns></returns>
         private T Request<T>(MediatorMessage<T> msg) {
             var key = msg.GetType().Name;
-            if (_asyncHandlers.ContainsKey(key)) {
+            if (_handlers.ContainsKey(key)) {
                 var entry = _handlers[key];
                 var handle = (MessageHandle<T>)entry;
                 return handle.Send(msg);
             } else {
                 return default(T);
             }
+        }
+
+        public bool Request(MediatorMessage<bool> msg) {
+            return Request<bool>(msg);
         }
 
 
@@ -142,7 +146,6 @@ namespace NINA.Utility.Mediator {
 
 
     public enum MediatorMessages {
-        StatusUpdate = 1,
         IsExposingUpdate = 2,
         TelescopeChanged = 3,
         CameraChanged = 4,
