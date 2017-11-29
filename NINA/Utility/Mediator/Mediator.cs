@@ -35,20 +35,20 @@ namespace NINA.Utility.Mediator {
                     callback(args);
                 }
             }
-        }        
+        }
 
 
         /// <summary>
         /// Holds reference to handlers and identified by message type name
         /// </summary>
-        private Dictionary<string, AsyncMessageHandle> _handlers = new Dictionary<string, AsyncMessageHandle>();
+        private Dictionary<string, MessageHandle> _handlers = new Dictionary<string, MessageHandle>();
 
         /// <summary>
         /// Register handler to react on requests
         /// </summary>
         /// <param name="handle"></param>
         /// <returns></returns>
-        public bool RegisterAsyncRequest(AsyncMessageHandle handle) {
+        public bool RegisterRequest(MessageHandle handle) {
             if (!_handlers.ContainsKey(handle.MessageType)) {
                 _handlers.Add(handle.MessageType, handle);
                 return true;
@@ -63,10 +63,47 @@ namespace NINA.Utility.Mediator {
         /// <typeparam name="T">Has to match the return type of the handle.Send()</typeparam>
         /// <param name="msg"></param>
         /// <returns></returns>
+        private T Request<T>(MediatorMessage<T> msg) {
+            var key = msg.GetType().Name;
+            if (_asyncHandlers.ContainsKey(key)) {
+                var entry = _handlers[key];
+                var handle = (MessageHandle<T>)entry;
+                return handle.Send(msg);
+            } else {
+                return default(T);
+            }
+        }
+
+
+        /// <summary>
+        /// Holds reference to handlers and identified by message type name
+        /// </summary>
+        private Dictionary<string, AsyncMessageHandle> _asyncHandlers = new Dictionary<string, AsyncMessageHandle>();
+
+        /// <summary>
+        /// Register handler to react on requests
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <returns></returns>
+        public bool RegisterAsyncRequest(AsyncMessageHandle handle) {
+            if (!_asyncHandlers.ContainsKey(handle.MessageType)) {
+                _asyncHandlers.Add(handle.MessageType, handle);
+                return true;
+            } else {
+                throw new Exception("Handle already registered");
+            }
+        }
+
+        /// <summary>
+        /// Request a value from a handler based on message
+        /// </summary>
+        /// <typeparam name="T">Has to match the return type of the handle.Send()</typeparam>
+        /// <param name="msg"></param>
+        /// <returns></returns>
         private async Task<T> RequestAsync<T>(AsyncMediatorMessage<T> msg) {
             var key = msg.GetType().Name;
-            if (_handlers.ContainsKey(key)) {
-                var entry = _handlers[key];
+            if (_asyncHandlers.ContainsKey(key)) {
+                var entry = _asyncHandlers[key];
                 var handle = (AsyncMessageHandle<T>)entry;
                 return await handle.Send(msg);
             } else {
