@@ -11,7 +11,7 @@ namespace NINA.Utility {
     /// A window should be associated to a viewmodel by the DataTemplates.xaml
     /// </summary>
     class WindowService : IWindowService {
-        private Dispatcher dispatcher = Application.Current.Dispatcher;
+        private Dispatcher dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
         public void ShowWindow(object viewModel) {
             var win = new Window();

@@ -26,7 +26,7 @@ namespace NINA.Utility.Notification {
             }
         }
 
-        private static Dispatcher dispatcher = Application.Current.Dispatcher;
+        private static Dispatcher dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
         static Notifier notifier;
 

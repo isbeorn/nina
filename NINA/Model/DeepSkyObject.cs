@@ -202,7 +202,7 @@ namespace NINA.Model {
 
         private static string _imageDirectory = Settings.SkyAtlasImageRepository;
 
-        Dispatcher _dispatcher = Application.Current.Dispatcher;
+        Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
         private BitmapSource _image;
         public BitmapSource Image {

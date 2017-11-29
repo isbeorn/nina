@@ -13,7 +13,7 @@ using System.Windows.Threading;
 namespace NINA.Utility {
     public class AsyncObservableCollection<T> : ObservableCollection<T> {
         private SynchronizationContext _synchronizationContext = new DispatcherSynchronizationContext(
-                    Application.Current.Dispatcher);
+                    Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher);
 
         public AsyncObservableCollection() {
         }

@@ -14,7 +14,7 @@ using System.Windows.Threading;
 namespace NINA.Utility {
     public class AsyncObservableLimitedSizedStack<T> : ObservableLimitedSizedStack<T>, INotifyCollectionChanged, IEnumerable {
         private SynchronizationContext _synchronizationContext = new DispatcherSynchronizationContext(
-                    Application.Current.Dispatcher);
+                    Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher);
 
         public AsyncObservableLimitedSizedStack(int maxSize) : base(maxSize) {
         }
