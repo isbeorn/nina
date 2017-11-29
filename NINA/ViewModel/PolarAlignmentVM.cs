@@ -375,7 +375,7 @@ namespace NINA.ViewModel {
                         Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
                         var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, null, null, 1);
-                        var capture = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, cameraprogress, _cancelDARVSlewToken.Token });
+                        var capture = Mediator.Instance.RequestAsync(new CapturePrepareAndSaveImageMessage() { Sequence = seq, Save = false, Progress = cameraprogress, Token = _cancelDARVSlewToken.Token });                        
                         var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken.Token);
 
                         await Task.WhenAll(capture, slew);

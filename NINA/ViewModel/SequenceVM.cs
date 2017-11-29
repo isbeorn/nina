@@ -137,12 +137,12 @@ namespace NINA.ViewModel {
                 await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = Sequence.Coordinates, Token = _canceltoken.Token });
                 if (Sequence.CenterTarget) {
                     progress.Report(Locale.Loc.Instance["LblCenterTarget"]);
-                    await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = new Progress<string>(p => Status = p), Token = _canceltoken.Token });                    
+                    await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });                    
                 }
             }
 
             if (Sequence.AutoFocusOnStart) {
-                await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.StartAutoFocus, new object[] { _canceltoken.Token, progress });
+                await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Token = _canceltoken.Token, Progress = progress });             
             }
 
             if (Sequence.StartGuiding) {
@@ -186,7 +186,15 @@ namespace NINA.ViewModel {
                         Stopwatch seqDuration = Stopwatch.StartNew();
                         await CheckMeridianFlip(seq, ct, progress);
 
-                        await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, true, progress, ct });
+                        await Mediator.Instance.RequestAsync(
+                            new CapturePrepareAndSaveImageMessage() {
+                                Sequence = seq,
+                                Save = true,
+                                TargetName = Sequence.TargetName,
+                                Progress = progress,
+                                Token = ct
+                            }
+                        );                        
 
                         seqDuration.Stop();
 

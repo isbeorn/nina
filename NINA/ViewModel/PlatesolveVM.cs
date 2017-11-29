@@ -49,11 +49,7 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 Cam = (ICamera)o;
             }, MediatorMessages.CameraChanged);
-
-            Mediator.Instance.Register((object o) => {
-                Image = (BitmapSource)o;
-            }, MediatorMessages.ImageChanged);
-
+            
             Mediator.Instance.Register((object o) => {
                 _autoStretch = (bool)o;
             }, MediatorMessages.AutoStrechChanged);
@@ -255,9 +251,8 @@ namespace NINA.ViewModel {
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
-
-            await Mediator.Instance.NotifyAsync(AsyncMediatorMessages.CaptureImage, new object[] { seq, false, progress, canceltoken });
-
+            Image = await Mediator.Instance.RequestAsync(new CaptureAndPrepareImageMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
+            
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
 

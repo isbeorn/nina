@@ -47,21 +47,23 @@ namespace NINA.ViewModel {
         }
 
         private void RegisterMediatorMessages() {
+            Mediator.Instance.RegisterAsyncRequest(
+                new CaptureImageMessageHandle(async (CaptureImageMessage msg) => {
+                    return await CaptureImage(msg.Sequence, msg.Token, msg.Progress);
+                })
+            );
 
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                var args = (object[])o;
-                CaptureSequence seq = (CaptureSequence)args[0];
-                bool save = (bool)args[1];
-                IProgress<string> progress = (IProgress<string>)args[2];
-                CancellationToken token = (CancellationToken)args[3];
-                var targetname = string.Empty;
-                if (args.Length > 5) {
-                    targetname = args[5].ToString();
-                }
+            Mediator.Instance.RegisterAsyncRequest(
+                new CapturePrepareAndSaveImageMessageHandle(async (CapturePrepareAndSaveImageMessage msg) => {
+                    return await CaptureAndSaveImage(msg.Sequence, msg.Save, msg.Token, msg.Progress, msg.TargetName);
+                })
+            );
 
-                await CaptureAndSaveImage(seq, save, token, progress, targetname);
-            }, AsyncMediatorMessages.CaptureImage);
-
+            Mediator.Instance.RegisterAsyncRequest(
+                new CaptureAndPrepareImageMessageHandle(async (CaptureAndPrepareImageMessage msg) => {
+                    return await CaptureAndPrepareImage(msg.Sequence, msg.Token, msg.Progress);
+                })
+            );
 
             Mediator.Instance.Register((object o) => _cameraConnected = (bool)o, MediatorMessages.CameraConnectedChanged);
             Mediator.Instance.Register((object o) => {
@@ -260,7 +262,17 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public async Task<bool> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<string> progress, bool bSave = false, string targetname = "") {
+
+        public async Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<string> progress) {
+            var iarr = await CaptureImage(sequence, token, progress);
+            if(iarr != null) {
+                return await _currentPrepareImageTask;
+            } else {
+                return null;
+            }
+        }
+
+        public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<string> progress, bool bSave = false, string targetname = "") {
 
             //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
             await semaphoreSlim.WaitAsync(token);
@@ -268,11 +280,11 @@ namespace NINA.ViewModel {
             if (CameraConnected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
                 semaphoreSlim.Release();
-                return false;
+                return null;
             }
 
-            return await Task.Run<bool>(async () => {
-
+            return await Task.Run<ImageArray>(async () => {
+                ImageArray arr = null;
 
                 try {
                     if (CameraConnected != true) {
@@ -311,7 +323,7 @@ namespace NINA.ViewModel {
                     var ditherTask = Dither(sequence, token, progress);
 
                     /*Download Image */
-                    ImageArray arr = await Download(token, progress);
+                    arr = await Download(token, progress);
                     if (arr == null) {
                         throw new OperationCanceledException();
                     }                    
@@ -357,12 +369,12 @@ namespace NINA.ViewModel {
                     progress.Report(ExposureStatus.IDLE);
                     semaphoreSlim.Release();
                 }
-                return true;
+                return arr;
             });
 
         }
 
-        Task _currentPrepareImageTask;
+        Task<BitmapSource> _currentPrepareImageTask;
 
         private void SetGain(CaptureSequence seq) {
             if (seq.Gain != -1) {

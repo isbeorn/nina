@@ -132,7 +132,6 @@ namespace NINA.ViewModel {
             private set {
                 _image = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.ImageChanged, _image);
             }
         }
 
@@ -213,19 +212,20 @@ namespace NINA.ViewModel {
 
         public static SemaphoreSlim ss = new SemaphoreSlim(1, 1);
         
-        public async Task PrepareImage(
+        public async Task<BitmapSource> PrepareImage(
                 ImageArray iarr, 
                 IProgress<string> progress, 
                 CancellationToken token, 
                 bool bSave = false,
                 CaptureSequence sequence = null,
                 string targetname = "") {
+            BitmapSource source = null;
             try {
                 await ss.WaitAsync(token);
             
                 if (iarr != null) {
                 
-                    BitmapSource source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
+                    source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
 
 
                     if (AutoStretch) {
@@ -265,13 +265,14 @@ namespace NINA.ViewModel {
             } finally {
                 ss.Release();
             }
+            return source;
         }
 
         private async Task<BitmapSource> StretchAsync(ImageArray iarr, BitmapSource source) {
             return await Task<BitmapSource>.Run(() => Stretch(iarr, source));
         }
 
-        private BitmapSource Stretch(ImageArray iarr, BitmapSource source) {
+        public static BitmapSource Stretch(ImageArray iarr, BitmapSource source) {
             var img = ImageAnalysis.BitmapFromSource(source);
 
             var filter = ImageAnalysis.GetColorRemappingFilter(iarr.Statistics.Mean, Settings.AutoStretchFactor);
@@ -286,7 +287,7 @@ namespace NINA.ViewModel {
 
         public async Task<bool> SaveToDisk(CaptureSequence sequence, CancellationToken token, IProgress<string> progress, string targetname = "") {
 
-            var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
+            var filter = sequence.FilterType?.Name ?? string.Empty;
             var framenr = sequence.ProgressExposureCount;
             return await SaveToDisk(sequence.ExposureTime, filter, sequence.ImageType, sequence.Binning.Name, Cam.CCDTemperature, framenr, token, progress, targetname);
 

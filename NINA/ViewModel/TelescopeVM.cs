@@ -62,9 +62,12 @@ namespace NINA.ViewModel {
                 SendToSnapPort(start);
             }, MediatorMessages.TelescopeSnapPort);
 
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                await ChooseTelescopeCommand.ExecuteAsync(o);
-            }, AsyncMediatorMessages.ConnectTelescope);
+            Mediator.Instance.RegisterAsyncRequest(
+                new ConnectTelescopeMessageHandle(async (ConnectTelescopeMessage msg) => {
+                    await ChooseTelescopeCommand.ExecuteAsync(null);
+                    return true;
+                })
+            );
         }
 
         private void SendToSnapPort(bool start) {

@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.PlateSolving;
 using NINA.Utility.Astrometry;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Utility.Mediator {
     
@@ -90,19 +92,84 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(PlateSolveMessage).Name; } }
     }
 
-    class ChangeFilterWheelPositionMessageHandle : AsyncMessageHandle<bool> {
-        public ChangeFilterWheelPositionMessageHandle(Func<ChangeFilterWheelPositionMessage, Task<bool>> callback) {
+    class ChangeFilterWheelPositionMessageHandle : AsyncMessageHandle<FilterInfo> {
+        public ChangeFilterWheelPositionMessageHandle(Func<ChangeFilterWheelPositionMessage, Task<FilterInfo>> callback) {
             Callback = (f) => callback((ChangeFilterWheelPositionMessage)f);
         }
         public override string MessageType { get { return typeof(ChangeFilterWheelPositionMessage).Name; } }
     }
 
-    
+    class StartAutoFocusMessageHandle : AsyncMessageHandle<bool> {
+        public StartAutoFocusMessageHandle(Func<StartAutoFocusMessage, Task<bool>> callback) {
+            Callback = (f) => callback((StartAutoFocusMessage)f);
+        }
+        public override string MessageType { get { return typeof(StartAutoFocusMessage).Name; } }
+    }
+
+    class ConnectCameraMessageHandle : AsyncMessageHandle<bool> {
+        public ConnectCameraMessageHandle(Func<ConnectCameraMessage, Task<bool>> callback) {
+            Callback = (f) => callback((ConnectCameraMessage)f);
+        }
+        public override string MessageType { get { return typeof(ConnectCameraMessage).Name; } }
+    }
+
+    class ConnectFilterWheelMessageHandle : AsyncMessageHandle<bool> {
+        public ConnectFilterWheelMessageHandle(Func<ConnectFilterWheelMessage, Task<bool>> callback) {
+            Callback = (f) => callback((ConnectFilterWheelMessage)f);
+        }
+        public override string MessageType { get { return typeof(ConnectFilterWheelMessage).Name; } }
+    }
+
+    class ConnectFocuserMessageHandle : AsyncMessageHandle<bool> {
+        public ConnectFocuserMessageHandle(Func<ConnectFocuserMessage, Task<bool>> callback) {
+            Callback = (f) => callback((ConnectFocuserMessage)f);
+        }
+        public override string MessageType { get { return typeof(ConnectFocuserMessage).Name; } }
+    }
+
+    class ConnectTelescopeMessageHandle : AsyncMessageHandle<bool> {
+        public ConnectTelescopeMessageHandle(Func<ConnectTelescopeMessage, Task<bool>> callback) {
+            Callback = (f) => callback((ConnectTelescopeMessage)f);
+        }
+        public override string MessageType { get { return typeof(ConnectTelescopeMessage).Name; } }
+    }
+
+
+
+
+    class CaptureImageMessageHandle : AsyncMessageHandle<ImageArray> {
+        public CaptureImageMessageHandle(Func<CaptureImageMessage, Task<ImageArray>> callback) {
+            Callback = (f) => callback((CaptureImageMessage)f);
+        }
+        public override string MessageType { get { return typeof(CaptureImageMessage).Name; } }
+    }
+
+    class CalculateHFRMessageHandle : AsyncMessageHandle<double> {
+        public CalculateHFRMessageHandle(Func<CalculateHFRMessage, Task<double>> callback) {
+            Callback = (f) => callback((CalculateHFRMessage)f);
+        }
+        public override string MessageType { get { return typeof(CalculateHFRMessage).Name; } }
+    }
+
+    class CaptureAndPrepareImageMessageHandle : AsyncMessageHandle<BitmapSource> {
+        public CaptureAndPrepareImageMessageHandle(Func<CaptureAndPrepareImageMessage, Task<BitmapSource>> callback) {
+            Callback = (f) => callback((CaptureAndPrepareImageMessage)f);
+        }
+        public override string MessageType { get { return typeof(CaptureAndPrepareImageMessage).Name; } }
+    }
+
+    class CapturePrepareAndSaveImageMessageHandle : AsyncMessageHandle<bool> {
+        public CapturePrepareAndSaveImageMessageHandle(Func<CapturePrepareAndSaveImageMessage, Task<bool>> callback) {
+            Callback = (f) => callback((CapturePrepareAndSaveImageMessage)f);
+        }
+        public override string MessageType { get { return typeof(CapturePrepareAndSaveImageMessage).Name; } }
+    }
 
 
     /* Message definition */
     abstract class AsyncMediatorMessage<TMessageResult> {
         public CancellationToken Token { get; set; } = default(CancellationToken);
+        public IProgress<string> Progress { get; set; }
     }
 
 
@@ -135,15 +202,41 @@ namespace NINA.Utility.Mediator {
     }
 
     class PlateSolveMessage : AsyncMediatorMessage<PlateSolveResult> {
-        public IProgress<string> Progress { get; set; }
         public CaptureSequence Sequence { get; set; }
         public bool SyncReslewRepeat { get; set; }
     }
 
-    class ChangeFilterWheelPositionMessage : AsyncMediatorMessage<bool> {
+    class ChangeFilterWheelPositionMessage : AsyncMediatorMessage<FilterInfo> {
         public FilterInfo Filter { get; set; }
-        public IProgress<string> Progress { get; set; }
     }
 
+    class StartAutoFocusMessage : AsyncMediatorMessage<bool> { }
+
+    class ConnectCameraMessage : AsyncMediatorMessage<bool> { }
+    class ConnectFilterWheelMessage : AsyncMediatorMessage<bool> { }
+    class ConnectFocuserMessage : AsyncMediatorMessage<bool> { }
+    class ConnectTelescopeMessage : AsyncMediatorMessage<bool> { }
+
+
+    
+
+    class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {
+        public CaptureSequence Sequence { get; set; }
+    }
+
+    //todo
+    class CalculateHFRMessage : AsyncMediatorMessage<double> {
+        public ImageArray ImageArray { get; set; }
+    }
+
+    class CaptureAndPrepareImageMessage : AsyncMediatorMessage<BitmapSource> {
+        public CaptureSequence Sequence { get; set; }
+    }
+    
+    class CapturePrepareAndSaveImageMessage : AsyncMediatorMessage<bool> {
+        public CaptureSequence Sequence { get; set; }
+        public bool Save { get; set; }
+        public string TargetName { get; set; }
+    }
 
 }

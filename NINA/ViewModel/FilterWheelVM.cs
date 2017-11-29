@@ -34,9 +34,12 @@ namespace NINA.ViewModel {
                 })
             );
 
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                await ChooseFWCommand.ExecuteAsync(o);
-            }, AsyncMediatorMessages.ConnectFilterWheel);
+            Mediator.Instance.RegisterAsyncRequest(
+                new ConnectFilterWheelMessageHandle(async (ConnectFilterWheelMessage msg) => {
+                    await ChooseFWCommand.ExecuteAsync(null);
+                    return true;
+                })
+            );
         }
 
         private CancellationTokenSource _changeFilterCancellationSource;
@@ -59,7 +62,7 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        private async Task<bool> ChangeFilter(FilterInfo filter, CancellationToken token = new CancellationToken(), IProgress<string> progress = null) {
+        private async Task<FilterInfo> ChangeFilter(FilterInfo filter, CancellationToken token = new CancellationToken(), IProgress<string> progress = null) {
             progress?.Report(Locale.Loc.Instance["LblSwitchingFilter"]);
 
             //Lock access so only one instance can change the filter
@@ -101,7 +104,7 @@ namespace NINA.ViewModel {
                 semaphoreSlim.Release();
             }
             progress?.Report(String.Empty);
-            return true;
+            return SelectedFilter;
         }
 
         private void RefreshFWList(object obj) {

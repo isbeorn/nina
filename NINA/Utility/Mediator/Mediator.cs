@@ -1,9 +1,12 @@
-﻿using NINA.PlateSolving;
+﻿using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
+using NINA.PlateSolving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Utility.Mediator {
     class Mediator {
@@ -16,9 +19,6 @@ namespace NINA.Utility.Mediator {
 
         Dictionary<MediatorMessages, List<Action<Object>>> _internalList
             = new Dictionary<MediatorMessages, List<Action<Object>>>();
-
-        Dictionary<AsyncMediatorMessages, List<Func<object, Task>>> _internalAsyncList
-            = new Dictionary<AsyncMediatorMessages, List<Func<object, Task>>>();
 
         public void Register(Action<Object> callback,
               MediatorMessages message) {
@@ -35,25 +35,7 @@ namespace NINA.Utility.Mediator {
                     callback(args);
                 }
             }
-        }
-
-        public void RegisterAsync(Func<object, Task> callback,
-              AsyncMediatorMessages message) {
-            if (!_internalAsyncList.ContainsKey(message)) {
-                _internalAsyncList[message] = new List<Func<object, Task>>();
-            }
-            _internalAsyncList[message].Add(callback);
-        }
-
-
-        public async Task NotifyAsync(AsyncMediatorMessages message, object args) {
-            if (_internalAsyncList.ContainsKey(message)) {
-                //forward the message to all listeners
-                foreach (Func<object, Task> callback in _internalAsyncList[message]) {
-                    await callback(args);
-                }
-            }
-        }
+        }        
 
 
         /// <summary>
@@ -103,6 +85,22 @@ namespace NINA.Utility.Mediator {
         public async Task<PlateSolveResult> RequestAsync(AsyncMediatorMessage<PlateSolveResult> msg) {
             return await RequestAsync<PlateSolveResult>(msg);
         }
+
+        public async Task<double> RequestAsync(AsyncMediatorMessage<double> msg) {
+            return await RequestAsync<double>(msg);
+        }
+
+        public async Task<ImageArray> RequestAsync(AsyncMediatorMessage<ImageArray> msg) {
+            return await RequestAsync<ImageArray>(msg);
+        }
+
+        public async Task<BitmapSource> RequestAsync(AsyncMediatorMessage<BitmapSource> msg) {
+            return await RequestAsync<BitmapSource>(msg);
+        }
+
+        public async Task<FilterInfo> RequestAsync(AsyncMediatorMessage<FilterInfo> msg) {
+            return await RequestAsync<FilterInfo>(msg);
+        }        
     }
 
 
@@ -112,7 +110,6 @@ namespace NINA.Utility.Mediator {
         TelescopeChanged = 3,
         CameraChanged = 4,
         FilterWheelChanged = 5,
-        ImageChanged = 6,
         AutoStrechChanged = 7,
         DetectStarsChanged = 8,
         SyncronizeTelescope = 13,
@@ -123,7 +120,6 @@ namespace NINA.Utility.Mediator {
         LocationChanged = 19,
         SlewToCoordinates = 21,
         AutoSelectGuideStar = 22,
-        ImageStatisticsChanged = 23,
         TelescopeSnapPort = 25,
         FocuserTemperatureChanged = 26,
         FocuserIsMovingChanged = 27,
@@ -134,13 +130,4 @@ namespace NINA.Utility.Mediator {
         CameraStateChanged = 32,
         SetTelescopeTracking = 33
     };
-
-    public enum AsyncMediatorMessages {
-        CaptureImage = 2,
-        StartAutoFocus = 19,
-        ConnectFilterWheel = 20,
-        ConnectFocuser = 21,
-        ConnectTelescope = 22,
-        ConnectCamera = 23
-    }
 }

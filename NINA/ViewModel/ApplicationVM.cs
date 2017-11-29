@@ -24,10 +24,10 @@ namespace NINA.ViewModel {
                 var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblReconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag == MessageBoxResult.OK) {
                     return await Task<bool>.Run(async () => {
-                        var cam = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ConnectCamera, null);
-                        var fw = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ConnectFilterWheel, null);
-                        var telescope = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ConnectTelescope, null);
-                        var focuser = Mediator.Instance.NotifyAsync(AsyncMediatorMessages.ConnectFocuser, null);
+                        var cam = Mediator.Instance.RequestAsync(new ConnectCameraMessage());
+                        var fw = Mediator.Instance.RequestAsync(new ConnectFilterWheelMessage()); 
+                        var telescope = Mediator.Instance.RequestAsync(new ConnectTelescopeMessage());
+                        var focuser = Mediator.Instance.RequestAsync(new ConnectFocuserMessage());
                         await Task.WhenAll(cam, fw, telescope, focuser);
                         return true;
                     });

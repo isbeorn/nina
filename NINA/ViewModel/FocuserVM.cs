@@ -40,9 +40,12 @@ namespace NINA.ViewModel {
                 })
             );
 
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                await ChooseFocuserCommand.ExecuteAsync(o);
-            }, AsyncMediatorMessages.ConnectFocuser);
+            Mediator.Instance.RegisterAsyncRequest(
+                new ConnectFocuserMessageHandle(async (ConnectFocuserMessage msg) => {
+                    await ChooseFocuserCommand.ExecuteAsync(null);
+                    return true;
+                })
+            );
         }
 
         private void HaltFocuser(object obj) {

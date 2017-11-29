@@ -44,10 +44,12 @@ namespace NINA.ViewModel {
             CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
 
 
-
-            Mediator.Instance.RegisterAsync(async (object o) => {
-                await ChooseCameraCommand.ExecuteAsync(o);
-            }, AsyncMediatorMessages.ConnectCamera);
+            Mediator.Instance.RegisterAsyncRequest(
+                new ConnectCameraMessageHandle(async (ConnectCameraMessage msg) => {
+                    await ChooseCameraCommand.ExecuteAsync(null);
+                    return true;
+                })
+            );
         }
 
         private void RefreshCameraList(object obj) {
