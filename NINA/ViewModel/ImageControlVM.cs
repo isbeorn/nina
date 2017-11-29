@@ -343,6 +343,7 @@ namespace NINA.ViewModel {
             });
 
             token.ThrowIfCancellationRequested();
+            progress.Report(string.Empty);
             return true;
         }
 
