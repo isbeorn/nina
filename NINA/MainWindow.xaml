@@ -19,6 +19,10 @@
     </Window.InputBindings>
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
         <Grid DataContext="{StaticResource AppVM}">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
             <TabControl TabStripPlacement="Left">
                 <TabItem>
                     <TabItem.Header>
@@ -220,6 +224,33 @@
                     </TabItem.Content>
                 </TabItem>
             </TabControl>
+
+            <Border
+                Grid.Row="1"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,1,0,0">
+
+                <ItemsControl VerticalAlignment="Center" ItemsSource="{Binding Path=ApplicationStatusVM.ApplicationStatus}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="5,0,5,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,1,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Source}" />
+                                    <TextBlock Margin="5,0,5,0" Text="{Binding Status}" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
         </Grid>
     </Border>
 </Window>

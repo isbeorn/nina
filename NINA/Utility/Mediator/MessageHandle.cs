@@ -30,5 +30,6 @@ namespace NINA.Utility.Mediator {
 
     class StatusUpdateMessage : MediatorMessage<bool> {
         public string Status { get; set; }
+        public string Source { get; set; }
     }
 }

@@ -70,7 +70,7 @@ namespace NINA.ViewModel {
             private set {
                 _status = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status, Source = Title });
             }
         }
 
