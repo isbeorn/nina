@@ -94,7 +94,7 @@ namespace NINA.ViewModel {
                 _status = value;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status, Source = Title });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status, Source = Title } });
             }
         }
 
@@ -275,6 +275,7 @@ namespace NINA.ViewModel {
         public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<string> progress, bool bSave = false, string targetname = "") {
 
             //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
+            progress.Report("Another process already uses Camera. Waiting for it to finish...");
             await semaphoreSlim.WaitAsync(token);
 
             if (CameraConnected != true) {
@@ -423,6 +424,7 @@ namespace NINA.ViewModel {
             } catch (OperationCanceledException) {
 
             } finally {
+                await _currentPrepareImageTask;
                 progress.Report(string.Empty);
             }
 

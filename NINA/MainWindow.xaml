@@ -243,8 +243,34 @@
                                 BorderBrush="{StaticResource BorderBrush}"
                                 BorderThickness="0,0,1,0">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Source}" />
-                                    <TextBlock Margin="5,0,5,0" Text="{Binding Status}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Source}" />
+                                    <TextBlock
+                                        Margin="5,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Text=":" />
+                                    <TextBlock
+                                        Margin="5,0,5,0"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding Status}" />
+                                    <!--<Grid
+                                        Height="25"
+                                        MinWidth="100"
+                                        Margin="5">
+                                        <ProgressBar
+                                            x:Name="pbProgress"
+                                            VerticalAlignment="Center"
+                                            Maximum="{Binding MaxStatusValue}"
+                                            Minimum="0"
+                                            Value="{Binding StatusValue, Mode=OneWay}" />
+                                        <StackPanel
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Orientation="Horizontal">
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress, Path=Value}" />
+                                            <TextBlock VerticalAlignment="Center" Text=" / " />
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress, Path=Maximum}" />
+                                        </StackPanel>
+                                    </Grid>-->
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

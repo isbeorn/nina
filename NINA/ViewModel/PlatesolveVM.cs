@@ -87,7 +87,7 @@ namespace NINA.ViewModel {
                 _status = value;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status, Source = Title });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status, Source = Title } });
             }
         }
 
@@ -354,7 +354,7 @@ namespace NINA.ViewModel {
             if (!PlateSolveResult?.Success == true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblPlatesolveFailed"]);
             }
-
+            progress.Report(string.Empty);
             return PlateSolveResult;
         }
 

@@ -74,7 +74,7 @@ namespace NINA.ViewModel {
                 _status = value;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status, Source = Title });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status, Source = Title } });
             }
         }
 
@@ -137,7 +137,11 @@ namespace NINA.ViewModel {
                 await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = Sequence.Coordinates, Token = _canceltoken.Token });
                 if (Sequence.CenterTarget) {
                     progress.Report(Locale.Loc.Instance["LblCenterTarget"]);
-                    await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });                    
+                    var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });                    
+                    if(result == null || !result.Success) {
+                        progress.Report(Locale.Loc.Instance["LblPlatesolveFailed"]);
+                        return false;
+                    }
                 }
             }
 

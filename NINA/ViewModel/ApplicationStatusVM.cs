@@ -1,4 +1,5 @@
-﻿using NINA.Utility;
+﻿using NINA.Model;
+using NINA.Utility;
 using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace NINA.ViewModel {
     class ApplicationStatusVM : DockableVM {
@@ -38,46 +41,33 @@ namespace NINA.ViewModel {
             }
         }
 
+        private static Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
+
         private void RegisterMediatorMessages() {
             Mediator.Instance.RegisterRequest(
                 new StatusUpdateMessageHandle((StatusUpdateMessage msg) => {
+                    _dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
+                        var status = msg.Status;
+                        var item = ApplicationStatus.Where((x) => x.Source == status.Source).FirstOrDefault();
+                        if (item != null) {
+                            if (status.Status != null && status.Status != string.Empty) {
+                                item.Status = status.Status;
+                            } else {
+                                ApplicationStatus.Remove(item);
+                            }
+                        } else {
+                            if(status.Status != null && status.Status != string.Empty) {
+                                ApplicationStatus.Add(new ApplicationStatus() { Source = status.Source, Status = status.Status });
+                            }
+                            
+                        }
 
-                    var item = ApplicationStatus.Where((x) => x.Source == msg.Source).FirstOrDefault();
-                    if(item != null) {
-                        item.Status = msg.Status;
-                    } else {
-                        ApplicationStatus.Add(new ApplicationStatus() { Source = msg.Source, Status = msg.Status });
-                    }
-                    
-
-                    RaisePropertyChanged(nameof(ApplicationStatus));
+                        RaisePropertyChanged(nameof(ApplicationStatus));                        
+                    }));
                     return true;
+
                 })
             );
-        }
-    }
-
-    public class ApplicationStatus : BaseINPC {
-        private string _source;
-        public string Source {
-            get {
-                return _source;
-            }
-            set {
-                _source = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string _status;
-        public string Status {
-            get {
-                return _status;
-            }
-            set {
-                _status = value;
-                RaisePropertyChanged();
-            }
         }
     }
 }

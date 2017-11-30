@@ -266,6 +266,7 @@
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Locale\Loc.cs" />
+    <Compile Include="Model\ApplicationStatus.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
     <Compile Include="Model\DummyDevice.cs" />
     <Compile Include="Model\IDevice.cs" />

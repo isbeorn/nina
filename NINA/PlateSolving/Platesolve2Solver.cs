@@ -174,9 +174,7 @@ namespace NINA.PlateSolving {
 
                 //Extract solution coordinates
                 result = ExtractResult();
-                progress.Report("Solved");
-            } catch (OperationCanceledException ex) {
-                progress.Report("Cancelled");
+            } catch (OperationCanceledException ex) {                
                 Logger.Trace(ex.Message);
             } catch (Exception ex) {
                 Logger.Error(ex.Message, ex.StackTrace);

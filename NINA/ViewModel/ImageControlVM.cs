@@ -198,7 +198,7 @@ namespace NINA.ViewModel {
             set {
                 _status = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status, Source = Title });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status, Source = Title } });
             }
         }
 
@@ -343,7 +343,6 @@ namespace NINA.ViewModel {
             });
 
             token.ThrowIfCancellationRequested();
-            progress.Report(string.Empty);
             return true;
         }
 
