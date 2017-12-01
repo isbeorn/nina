@@ -72,10 +72,7 @@ namespace NINA.ViewModel {
                     
                 })
             );
-
-            Mediator.Instance.Register((object o) => {
-                SyncronizeTelescope();
-            }, MediatorMessages.SyncronizeTelescope);
+            
         }
 
         private string _status;

@@ -76,9 +76,6 @@ namespace NINA.ViewModel {
                 Cam = (ICamera)o;
             }, MediatorMessages.CameraChanged);
             Mediator.Instance.Register((object o) => {
-                FW = (IFilterWheel)o;
-            }, MediatorMessages.FilterWheelChanged);
-            Mediator.Instance.Register((object o) => {
                 Telescope = (ITelescope)o;
             }, MediatorMessages.TelescopeChanged);
         }
@@ -203,7 +200,6 @@ namespace NINA.ViewModel {
         }
 
         private ICamera Cam { get; set; }
-        private IFilterWheel FW { get; set; }
         private ITelescope Telescope { get; set; }
 
         public IAsyncCommand PlateSolveImageCommand { get; private set; }
@@ -326,12 +322,12 @@ namespace NINA.ViewModel {
                 Stopwatch sw = Stopwatch.StartNew();
                 if (Settings.FileType == FileTypeEnum.FITS) {
                     if (imageType == "SNAP") imageType = "LIGHT";
-                    SaveFits(completefilename, imageType, exposuretime);
+                    SaveFits(completefilename, imageType, exposuretime, filter);
                 } else if (Settings.FileType == FileTypeEnum.TIFF) {
                     SaveTiff(completefilename);
                 } else if (Settings.FileType == FileTypeEnum.XISF) {
                     if (imageType == "SNAP") imageType = "LIGHT";
-                    SaveXisf(completefilename, imageType, exposuretime);
+                    SaveXisf(completefilename, imageType, exposuretime, filter);
                 } else {
                     SaveTiff(completefilename);
                 }
@@ -346,7 +342,7 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private void SaveFits(string path, string imagetype, double duration) {
+        private void SaveFits(string path, string imagetype, double duration, string filter) {
             try {
                 Header h = new Header();
                 h.AddValue("SIMPLE", "T", "C# FITS");
@@ -356,8 +352,7 @@ namespace NINA.ViewModel {
                 h.AddValue("NAXIS2", this.ImgArr.Statistics.Height, "");
                 h.AddValue("BZERO", 32768, "");
                 h.AddValue("EXTEND", "T", "Extensions are permitted");
-
-                var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
+                                
                 if (!string.IsNullOrEmpty(filter)) {
                     h.AddValue("FILTER", filter, "");
                 }
@@ -445,7 +440,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SaveXisf(String path, string imagetype, double duration) {
+        private void SaveXisf(String path, string imagetype, double duration, string filter) {
             try {
 
 
@@ -504,8 +499,7 @@ namespace NINA.ViewModel {
                     }
                 }
 
-
-                var filter = FW?.Filters?.ElementAt(FW.Position).Name ?? string.Empty;
+                
                 if (!string.IsNullOrEmpty(filter)) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, filter);
                 }

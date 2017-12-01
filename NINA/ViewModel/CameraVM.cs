@@ -361,7 +361,6 @@ namespace NINA.ViewModel {
             private set {
                 _cameraState = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.CameraStateChanged, _connected);
             }
         }
 
@@ -373,7 +372,6 @@ namespace NINA.ViewModel {
             private set {
                 _cCDTemperature = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.CameraTemperatureChanged, _cCDTemperature);
             }
         }
 
@@ -385,7 +383,6 @@ namespace NINA.ViewModel {
             private set {
                 _coolerPower = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.CameraCoolerPowerChanged, _coolerPower);
             }
         }
 
@@ -406,7 +403,6 @@ namespace NINA.ViewModel {
                 }
 
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.CameraCoolerPowerChanged, _coolerOn);
             }
         }
 

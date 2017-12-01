@@ -45,11 +45,16 @@ namespace NINA.ViewModel {
 
             }, MediatorMessages.SlewToCoordinates);
 
-            Mediator.Instance.Register((object o) => {
-                if(Telescope?.Connected == true) {
-                    Telescope.Tracking = (bool)o;
-                }                
-            }, MediatorMessages.SetTelescopeTracking);
+            Mediator.Instance.RegisterRequest(
+                new SetTelescopeTrackingMessageHandle((SetTelescopeTrackingMessage msg) => {
+                    if (Telescope?.Connected == true) {
+                        Telescope.Tracking = msg.Tracking;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
+            );
 
             Mediator.Instance.RegisterAsyncRequest(
                 new SlewTocoordinatesMessageHandle(async (SlewToCoordinatesMessage msg) => {
@@ -57,10 +62,11 @@ namespace NINA.ViewModel {
                 })
             );
 
-            Mediator.Instance.Register((object o) => {
-                bool start = (bool)o;
-                SendToSnapPort(start);
-            }, MediatorMessages.TelescopeSnapPort);
+            Mediator.Instance.RegisterRequest(
+                new SendSnapPortMessageHandle((SendSnapPortMessage msg) => {
+                    return SendToSnapPort(msg.Start);
+                })
+            );
 
             Mediator.Instance.RegisterAsyncRequest(
                 new ConnectTelescopeMessageHandle(async (ConnectTelescopeMessage msg) => {
@@ -70,7 +76,7 @@ namespace NINA.ViewModel {
             );
         }
 
-        private void SendToSnapPort(bool start) {
+        private bool SendToSnapPort(bool start) {
             if (Telescope?.Connected == true) {
                 string command = string.Empty;
                 if (start) {
@@ -79,8 +85,10 @@ namespace NINA.ViewModel {
                     command = Settings.TelescopeSnapPortStop;
                 }
                 _telescope?.SendCommandString(command);
+                return true;
             } else {
                 Notification.ShowError("Telescope not connected to send command string");
+                return false;
             }
         }
 

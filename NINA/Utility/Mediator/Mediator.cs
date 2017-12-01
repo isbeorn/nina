@@ -78,6 +78,10 @@ namespace NINA.Utility.Mediator {
             return Request<bool>(msg);
         }
 
+        public FilterInfo Request(MediatorMessage<FilterInfo> msg) {
+            return Request<FilterInfo>(msg);
+        }
+
 
         /// <summary>
         /// Holds reference to handlers and identified by message type name
@@ -146,28 +150,17 @@ namespace NINA.Utility.Mediator {
 
 
     public enum MediatorMessages {
-        IsExposingUpdate = 2,
         TelescopeChanged = 3,
         CameraChanged = 4,
-        FilterWheelChanged = 5,
         AutoStrechChanged = 7,
         DetectStarsChanged = 8,
-        SyncronizeTelescope = 13,
         ChangeAutoStretch = 14,
         ChangeDetectStars = 15,
-        ActiveSequenceChanged = 16,
         LocaleChanged = 18,
         LocationChanged = 19,
         SlewToCoordinates = 21,
-        AutoSelectGuideStar = 22,
-        TelescopeSnapPort = 25,
         FocuserTemperatureChanged = 26,
-        FocuserIsMovingChanged = 27,
         FocuserConnectedChanged = 28,
-        CameraConnectedChanged = 29,
-        CameraTemperatureChanged = 30,
-        CameraCoolerPowerChanged = 31,
-        CameraStateChanged = 32,
-        SetTelescopeTracking = 33
+        CameraConnectedChanged = 29
     };
 }

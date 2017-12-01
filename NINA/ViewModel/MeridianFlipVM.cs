@@ -131,7 +131,7 @@ namespace NINA.ViewModel {
             var timeToFlip = Telescope.TimeToMeridianFlip * 60 * 60;
             progress.Report("Stop Scope tracking");
             _targetCoordinates = Telescope.Coordinates;
-            Mediator.Instance.Notify(MediatorMessages.SetTelescopeTracking, false);            
+            Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = false });     
             do {
                 RemainingTime = TimeSpan.FromSeconds(timeToFlip);
                 
@@ -142,7 +142,7 @@ namespace NINA.ViewModel {
 
             } while (RemainingTime.TotalSeconds >= 1);
             progress.Report("Resume Scope tracking");
-            Mediator.Instance.Notify(MediatorMessages.SetTelescopeTracking, true); 
+            Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = true });
             return true;
         }
 
@@ -216,7 +216,7 @@ namespace NINA.ViewModel {
                 await Steps.Process();
             } catch (Exception ex) {
                 await ResumeAutoguider(new CancellationToken(), _progress);
-                Mediator.Instance.Notify(MediatorMessages.SetTelescopeTracking, true);
+                Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = true });
                 return false;
             }
             return true;

@@ -50,7 +50,7 @@ namespace NINA.ViewModel {
                         var status = msg.Status;
                         var item = ApplicationStatus.Where((x) => x.Source == status.Source).FirstOrDefault();
                         if (item != null) {
-                            if (status.Status != null && status.Status != string.Empty) {
+                            if (!string.IsNullOrEmpty(status.Status)) {
                                 item.Status = status.Status;
                             } else {
                                 ApplicationStatus.Remove(item);

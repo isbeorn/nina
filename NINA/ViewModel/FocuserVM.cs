@@ -234,7 +234,6 @@ namespace NINA.ViewModel {
             private set {
                 _isMoving = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.FocuserIsMovingChanged, _isMoving);
             }
         }
 
@@ -250,7 +249,6 @@ namespace NINA.ViewModel {
                     _focuser.TempComp = _tempComp;
                 }
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.FocuserIsMovingChanged, _tempComp);
             }
         }
 

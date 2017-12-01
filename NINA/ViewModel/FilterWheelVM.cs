@@ -40,6 +40,12 @@ namespace NINA.ViewModel {
                     return true;
                 })
             );
+
+            Mediator.Instance.RegisterRequest(
+                new GetCurrentFilterInfoMessageHandle((GetCurrentFilterInfoMessage msg) => {
+                    return SelectedFilter;
+                })
+            );
         }
 
         private CancellationTokenSource _changeFilterCancellationSource;
@@ -130,7 +136,6 @@ namespace NINA.ViewModel {
             private set {
                 _fW = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.FilterWheelChanged, _fW);
             }
         }
 

@@ -170,19 +170,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private bool _isExposing;
-        public bool IsExposing {
-            get {
-                return _isExposing;
-            }
-            set {
-                _isExposing = value;
-                RaisePropertyChanged();
-
-                Mediator.Instance.Notify(MediatorMessages.IsExposingUpdate, _isExposing);
-            }
-        }
-
         public IAsyncCommand SnapCommand { get; private set; }
 
         public ICommand CancelSnapCommand { get; private set; }
@@ -207,8 +194,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
-            IsExposing = true;
+        private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {            
             try {
                 double duration = seq.ExposureTime;
                 bool isLight = false;
@@ -237,8 +223,7 @@ namespace NINA.ViewModel {
                 Logger.Trace(ex.Message);
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
-            } finally {
-                IsExposing = false;
+            } finally {                
             }
 
 

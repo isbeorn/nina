@@ -512,7 +512,8 @@ namespace NINA.Model.MyCamera {
                     _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed, shutterspeed);
 
 
-                    Mediator.Instance.Notify(MediatorMessages.TelescopeSnapPort, true);
+                    var success = Mediator.Instance.Request(new SendSnapPortMessage() { Start = true });
+                    if(!success) { return; }
                     DateTime d = DateTime.Now;
 
                     /*Stop Exposure after exposure time */
@@ -522,7 +523,7 @@ namespace NINA.Model.MyCamera {
                             Thread.Sleep(100);
                         } while ((DateTime.Now - d).TotalMilliseconds < exposureTime);
 
-                        Mediator.Instance.Notify(MediatorMessages.TelescopeSnapPort, false);
+                        Mediator.Instance.Request(new SendSnapPortMessage() { Start = false });
                     });
 
                 } else {

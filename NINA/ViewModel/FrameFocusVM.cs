@@ -26,16 +26,9 @@ namespace NINA.ViewModel {
             SnapCommand = new AsyncCommand<bool>(() => Snap(new Progress<string>(p => Status = p)));
             Zoom = 1;
             SnapExposureDuration = 1;
-
-            RegisterMediatorMessages();
-        }
-
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((object o) => {
-                IsExposing = (bool)o;
-            }, MediatorMessages.IsExposingUpdate);
-
-        }
+            
+        }        
+                
 
         private string _status;
         public string Status {
@@ -47,17 +40,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
 
                 Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status, Source = Title } });
-            }
-        }
-
-        private bool _isExposing;
-        public bool IsExposing {
-            get {
-                return _isExposing;
-            }
-            set {
-                _isExposing = value;
-                RaisePropertyChanged();
             }
         }
 
@@ -135,20 +117,17 @@ namespace NINA.ViewModel {
 
 
         private async Task<bool> Snap(IProgress<string> progress) {
-            if (IsExposing) {
-                Notification.ShowWarning(Locale.Loc.Instance["LblCameraBusy"]);
-                return false;
-            } else {
-                do {
-                    _captureImageToken = new CancellationTokenSource();
-                    var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+            
+            do {
+                _captureImageToken = new CancellationTokenSource();
+                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
 
-                    await Mediator.Instance.RequestAsync(new CapturePrepareAndSaveImageMessage() { Sequence = seq, Save = false, Token = _captureImageToken.Token, Progress = progress });
+                await Mediator.Instance.RequestAsync(new CapturePrepareAndSaveImageMessage() { Sequence = seq, Save = false, Token = _captureImageToken.Token, Progress = progress });
 
-                    _captureImageToken.Token.ThrowIfCancellationRequested();
-                } while (Loop);
-                return true;
-            }
+                _captureImageToken.Token.ThrowIfCancellationRequested();
+            } while (Loop);
+            return true;
+            
 
         }
 
