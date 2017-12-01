@@ -28,7 +28,7 @@ namespace NINA.ViewModel {
     public class ImageControlVM : DockableVM {
 
         public ImageControlVM() {
-            Title = "LblImageArea";
+            Title = "LblImage";
 
             ContentId = nameof(ImageControlVM);
             CanClose = false;
@@ -36,6 +36,8 @@ namespace NINA.ViewModel {
             DetectStars = false;
             ShowCrossHair = false;
 
+            _progress = new Progress<string>(p => Status = p);
+            
             PrepareImageCommand = new AsyncCommand<bool>(() => PrepareImageHelper());
             PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage());
             CancelPlateSolveImageCommand = new RelayCommand(CancelPlateSolveImage);
@@ -51,12 +53,14 @@ namespace NINA.ViewModel {
                 if (!AutoStretch) {
                     AutoStretch = true;
                 }
-                await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Progress = new Progress<string>(p => Status = p), Token = _plateSolveToken.Token });
+                await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Progress = _progress, Token = _plateSolveToken.Token });
                 return true;
             } else {
                 return false;
             }
         }
+
+        private IProgress<string> _progress;
 
         private void CancelPlateSolveImage(object o) {
             _plateSolveToken?.Cancel();
@@ -153,7 +157,7 @@ namespace NINA.ViewModel {
 
             }
             _prepImageCancellationSource = new CancellationTokenSource();
-            _prepImageTask = PrepareImage(ImgArr, null, _prepImageCancellationSource.Token);
+            _prepImageTask = PrepareImage(ImgArr, _prepImageCancellationSource.Token);
             await _prepImageTask;
             return true;
         }
@@ -209,8 +213,7 @@ namespace NINA.ViewModel {
         public static SemaphoreSlim ss = new SemaphoreSlim(1, 1);
         
         public async Task<BitmapSource> PrepareImage(
-                ImageArray iarr, 
-                IProgress<string> progress, 
+                ImageArray iarr,  
                 CancellationToken token, 
                 bool bSave = false,
                 CaptureSequence sequence = null,
@@ -220,17 +223,18 @@ namespace NINA.ViewModel {
                 await ss.WaitAsync(token);
             
                 if (iarr != null) {
-                
+                    _progress.Report("Preparing image");
                     source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
 
 
                     if (AutoStretch) {
+                        _progress.Report("Stretching image");
                         source = await StretchAsync(iarr, source);
                     }
 
                     if (DetectStars) {
                         var analysis = new ImageAnalysis(source, iarr);
-                        await analysis.DetectStarsAsync(progress, token);
+                        await analysis.DetectStarsAsync(_progress, token);
 
                         if (Settings.AnnotateImage) {
                             source = analysis.GetAnnotatedImage();
@@ -241,6 +245,7 @@ namespace NINA.ViewModel {
                     }
 
                     if (iarr.IsBayered) {
+                        _progress.Report("Debayer image");
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
                     }
 
@@ -255,10 +260,11 @@ namespace NINA.ViewModel {
                     }));
 
                     if(bSave) {
-                        await SaveToDisk(sequence, token, progress, targetname);
+                        await SaveToDisk(sequence, token, targetname);
                     }
                 }
             } finally {
+                _progress.Report(string.Empty);
                 ss.Release();
             }
             return source;
@@ -281,17 +287,28 @@ namespace NINA.ViewModel {
             return source;
         }
 
-        public async Task<bool> SaveToDisk(CaptureSequence sequence, CancellationToken token, IProgress<string> progress, string targetname = "") {
+        public async Task<bool> SaveToDisk(CaptureSequence sequence, CancellationToken token, string targetname = "") {
 
             var filter = sequence.FilterType?.Name ?? string.Empty;
             var framenr = sequence.ProgressExposureCount;
-            return await SaveToDisk(sequence.ExposureTime, filter, sequence.ImageType, sequence.Binning.Name, Cam.CCDTemperature, framenr, token, progress, targetname);
-
+            var success = false;
+            try {
+                success = await SaveToDisk(sequence.ExposureTime, filter, sequence.ImageType, sequence.Binning.Name, Cam.CCDTemperature, framenr, token, targetname);
+            } catch(OperationCanceledException ex) {
+                throw new OperationCanceledException(ex.Message);
+            } catch(Exception ex) {                                
+                Notification.ShowError(ex.Message);
+                Logger.Error(ex.Message, ex.StackTrace);
+            }
+            finally {
+                _progress.Report(string.Empty);
+            }
+            return success;
         }
 
 
-        public async Task<bool> SaveToDisk(double exposuretime, string filter, string imageType, string binning, double ccdtemp, int framenr, CancellationToken token, IProgress<string> progress, string targetname = "") {
-            progress.Report("Saving...");
+        public async Task<bool> SaveToDisk(double exposuretime, string filter, string imageType, string binning, double ccdtemp, int framenr, CancellationToken token, string targetname = "") {
+            _progress.Report("Saving...");
             await Task.Run(() => {
 
                 List<OptionsVM.ImagePattern> p = new List<OptionsVM.ImagePattern>();

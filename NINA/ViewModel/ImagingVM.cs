@@ -329,7 +329,7 @@ namespace NINA.ViewModel {
                     }
                     //async prepare image and save
                     progress.Report("Prepare image saving");
-                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, progress, token, bSave, sequence, targetname);
+                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, sequence, targetname);
 
                     //Wait for dither to finish. Runs in parallel to download and save.
                     progress.Report(Locale.Loc.Instance["LblDither"]);
