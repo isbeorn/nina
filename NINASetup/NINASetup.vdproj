@@ -1012,24 +1012,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2AEF6414746FE057ECA57697ABB042ED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_ABB8851D030A86EB4B6DC60D5AB88B8F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_8AEB0CC274F529BA12D09B49FF6F4EF8"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_F489EF56455C9304D94DF7329635A60A"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1115,6 +1097,24 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_5ACCA52FF83B5BCD44B129066E9197B2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_2AEF6414746FE057ECA57697ABB042ED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_ABB8851D030A86EB4B6DC60D5AB88B8F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_8AEB0CC274F529BA12D09B49FF6F4EF8"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -5457,15 +5457,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:N.I.N.A. - Nighttime Imaging 'N' Astronomy"
-        "ProductCode" = "8:{D66260A4-BD41-4D4B-BAEC-1FC1067CB03F}"
-        "PackageCode" = "8:{F107487A-52B1-4A03-9A9D-02213EFEC921}"
+        "ProductCode" = "8:{82F45661-542E-44A7-8874-AFC0D9DCC157}"
+        "PackageCode" = "8:{91716F1F-9297-4BCD-BDC5-190455A6C671}"
         "UpgradeCode" = "8:{5DC025EA-3D24-4E6B-9F82-79718D70896A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.2.62"
+        "ProductVersion" = "8:1.2.70"
         "Manufacturer" = "8: "
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
