@@ -235,8 +235,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
-            if (seq.Dither && ((seq.ExposureCount % seq.DitherAmount) == 0)) {
-                progress.Report(ExposureStatus.DITHERING);
+            if (seq.Dither && ((seq.ExposureCount % seq.DitherAmount) == 0)) {                
 
                 return await Mediator.Instance.RequestAsync(new DitherGuiderMessage() { Token = token });                
             }
@@ -332,7 +331,7 @@ namespace NINA.ViewModel {
                     _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, sequence, targetname);
 
                     //Wait for dither to finish. Runs in parallel to download and save.
-                    progress.Report(Locale.Loc.Instance["LblDither"]);
+                    progress.Report("Waiting for dither to finish");
                     await ditherTask;
 
                 } catch (System.OperationCanceledException ex) {

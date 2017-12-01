@@ -166,7 +166,7 @@ namespace NINA.Model.MyGuider {
                 RaisePropertyChanged(nameof(Connected));
                 _tokenSource = new CancellationTokenSource();
 
-                Notification.ShowSuccess(Locale.Loc.Instance["LblPHD2Connected"]);
+                Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
 
 
 

@@ -152,6 +152,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> Dither(CancellationToken token) {
             if(Guider?.Connected == true) {
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new Model.ApplicationStatus() { Status = Locale.Loc.Instance["LblDither"], Source = Title } });
                 await Guider.Dither();
                 return await Task.Run<bool>(async () => {
                     var elapsed = new TimeSpan();
@@ -164,6 +165,7 @@ namespace NINA.ViewModel {
                             Guider.IsDithering = false;
                         }
                     }
+                    Mediator.Instance.Request(new StatusUpdateMessage() { Status = new Model.ApplicationStatus() { Status = string.Empty, Source = Title } });
                     return true;
                 });
             } else {
