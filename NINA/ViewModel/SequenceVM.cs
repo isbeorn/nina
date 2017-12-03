@@ -126,6 +126,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> StartSequence(IProgress<string> progress) {
+            _actualDownloadTimes.Clear();
             _canceltoken = new CancellationTokenSource();
             _pauseTokenSource = new PauseTokenSource();
             RaisePropertyChanged(nameof(IsPaused));
