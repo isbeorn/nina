@@ -328,7 +328,16 @@ namespace NINA.ViewModel {
                     }
                     //async prepare image and save
                     progress.Report("Prepare image saving");
-                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, sequence, targetname);
+
+                    var parameters = new ImageParameters() {
+                        Binning = sequence.Binning.Name,
+                        ExposureNumber = sequence.ProgressExposureCount,
+                        ExposureTime = sequence.ExposureTime,
+                        FilterName = sequence.FilterType?.Name ?? string.Empty,
+                        ImageType = sequence.ImageType,
+                        TargetName = targetname
+                    };
+                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters);
 
                     //Wait for dither to finish. Runs in parallel to download and save.
                     progress.Report("Waiting for dither to finish");

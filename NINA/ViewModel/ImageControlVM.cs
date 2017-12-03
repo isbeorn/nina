@@ -216,8 +216,7 @@ namespace NINA.ViewModel {
                 ImageArray iarr,  
                 CancellationToken token, 
                 bool bSave = false,
-                CaptureSequence sequence = null,
-                string targetname = "") {
+                ImageParameters parameters = null) {
             BitmapSource source = null;
             try {
                 await ss.WaitAsync(token);
@@ -260,7 +259,7 @@ namespace NINA.ViewModel {
                     }));
 
                     if(bSave) {
-                        await SaveToDisk(sequence, token, targetname);
+                        await SaveToDisk(parameters, token);
                     }
                 }
             } finally {
@@ -287,13 +286,13 @@ namespace NINA.ViewModel {
             return source;
         }
 
-        public async Task<bool> SaveToDisk(CaptureSequence sequence, CancellationToken token, string targetname = "") {
+        public async Task<bool> SaveToDisk(ImageParameters parameters, CancellationToken token) {
 
-            var filter = sequence.FilterType?.Name ?? string.Empty;
-            var framenr = sequence.ProgressExposureCount;
+            var filter = parameters.FilterName;
+            var framenr = parameters.ExposureNumber;
             var success = false;
             try {
-                success = await SaveToDisk(sequence.ExposureTime, filter, sequence.ImageType, sequence.Binning.Name, Cam.CCDTemperature, framenr, token, targetname);
+                success = await SaveToDiskAsync(parameters, token);
             } catch(OperationCanceledException ex) {
                 throw new OperationCanceledException(ex.Message);
             } catch(Exception ex) {                                
@@ -307,29 +306,29 @@ namespace NINA.ViewModel {
         }
 
 
-        public async Task<bool> SaveToDisk(double exposuretime, string filter, string imageType, string binning, double ccdtemp, int framenr, CancellationToken token, string targetname = "") {
+        private async Task<bool> SaveToDiskAsync(ImageParameters parameters, CancellationToken token) {
             _progress.Report("Saving...");
             await Task.Run(() => {
 
                 List<OptionsVM.ImagePattern> p = new List<OptionsVM.ImagePattern>();
 
-                p.Add(new OptionsVM.ImagePattern("$$FILTER$$", "Filtername", filter));
+                p.Add(new OptionsVM.ImagePattern("$$FILTER$$", "Filtername", parameters.FilterName));
 
-                p.Add(new OptionsVM.ImagePattern("$$EXPOSURETIME$$", "Exposure Time in seconds", string.Format("{0:0.00}", exposuretime)));
+                p.Add(new OptionsVM.ImagePattern("$$EXPOSURETIME$$", "Exposure Time in seconds", string.Format("{0:0.00}", parameters.ExposureTime)));
                 p.Add(new OptionsVM.ImagePattern("$$DATE$$", "Date with format YYYY-MM-DD", DateTime.Now.ToString("yyyy-MM-dd")));
                 p.Add(new OptionsVM.ImagePattern("$$DATETIME$$", "Date with format YYYY-MM-DD_HH-mm-ss", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")));
-                p.Add(new OptionsVM.ImagePattern("$$FRAMENR$$", "# of the Frame with format ####", string.Format("{0:0000}", framenr)));
-                p.Add(new OptionsVM.ImagePattern("$$IMAGETYPE$$", "Light, Flat, Dark, Bias", imageType));
+                p.Add(new OptionsVM.ImagePattern("$$FRAMENR$$", "# of the Frame with format ####", string.Format("{0:0000}", parameters.ExposureNumber)));
+                p.Add(new OptionsVM.ImagePattern("$$IMAGETYPE$$", "Light, Flat, Dark, Bias", parameters.ImageType));
 
-                if (binning == string.Empty) {
+                if (parameters.Binning == string.Empty) {
                     p.Add(new OptionsVM.ImagePattern("$$BINNING$$", "Binning of the camera", "1x1"));
                 } else {
-                    p.Add(new OptionsVM.ImagePattern("$$BINNING$$", "Binning of the camera", binning));
+                    p.Add(new OptionsVM.ImagePattern("$$BINNING$$", "Binning of the camera", parameters.Binning));
                 }
 
-                p.Add(new OptionsVM.ImagePattern("$$SENSORTEMP$$", "Temperature of the Camera", string.Format("{0:00}", ccdtemp)));
+                p.Add(new OptionsVM.ImagePattern("$$SENSORTEMP$$", "Temperature of the Camera", string.Format("{0:00}", Cam?.CCDTemperature)));
 
-                p.Add(new OptionsVM.ImagePattern("$$TARGETNAME$$", "Target Name if available", targetname));
+                p.Add(new OptionsVM.ImagePattern("$$TARGETNAME$$", "Target Name if available", parameters.TargetName));
 
                 p.Add(new OptionsVM.ImagePattern("$$GAIN$$", "Camera Gain", Cam?.Gain.ToString() ?? string.Empty));
 
@@ -338,13 +337,13 @@ namespace NINA.ViewModel {
 
                 Stopwatch sw = Stopwatch.StartNew();
                 if (Settings.FileType == FileTypeEnum.FITS) {
-                    if (imageType == "SNAP") imageType = "LIGHT";
-                    SaveFits(completefilename, imageType, exposuretime, filter);
+                    if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
+                    SaveFits(completefilename, parameters);
                 } else if (Settings.FileType == FileTypeEnum.TIFF) {
                     SaveTiff(completefilename);
                 } else if (Settings.FileType == FileTypeEnum.XISF) {
-                    if (imageType == "SNAP") imageType = "LIGHT";
-                    SaveXisf(completefilename, imageType, exposuretime, filter);
+                    if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
+                    SaveXisf(completefilename, parameters);
                 } else {
                     SaveTiff(completefilename);
                 }
@@ -359,7 +358,7 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private void SaveFits(string path, string imagetype, double duration, string filter) {
+        private void SaveFits(string path, ImageParameters parameters) {
             try {
                 Header h = new Header();
                 h.AddValue("SIMPLE", "T", "C# FITS");
@@ -370,8 +369,8 @@ namespace NINA.ViewModel {
                 h.AddValue("BZERO", 32768, "");
                 h.AddValue("EXTEND", "T", "Extensions are permitted");
                                 
-                if (!string.IsNullOrEmpty(filter)) {
-                    h.AddValue("FILTER", filter, "");
+                if (!string.IsNullOrEmpty(parameters.FilterName)) {
+                    h.AddValue("FILTER", parameters.FilterName, "");
                 }
 
                 if (Cam != null) {
@@ -388,8 +387,8 @@ namespace NINA.ViewModel {
                     h.AddValue("TEMPERAT", temp, "");
                 }
 
-                h.AddValue("IMAGETYP", imagetype, "");
-                h.AddValue("EXPOSURE", duration, "");
+                h.AddValue("IMAGETYP", parameters.ImageType, "");
+                h.AddValue("EXPOSURE", parameters.ExposureTime, "");
 
 
                 short[][] curl = new short[this.ImgArr.Statistics.Height][];
@@ -457,13 +456,13 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SaveXisf(String path, string imagetype, double duration, string filter) {
+        private void SaveXisf(String path, ImageParameters parameters) {
             try {
 
 
                 var header = new XISFHeader();
 
-                header.AddEmbeddedImage(ImgArr, imagetype);
+                header.AddEmbeddedImage(ImgArr, parameters.ImageType);
 
                 header.AddImageProperty(XISFImageProperty.Observation.Time.Start, DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture));
 
@@ -517,11 +516,11 @@ namespace NINA.ViewModel {
                 }
 
                 
-                if (!string.IsNullOrEmpty(filter)) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, filter);
+                if (!string.IsNullOrEmpty(parameters.FilterName)) {
+                    header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName);
                 }
 
-                header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, duration.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, parameters.ExposureTime.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
                 XISF img = new XISF(header);
 
@@ -539,5 +538,14 @@ namespace NINA.ViewModel {
             }
         }
 
+    }
+
+    public class ImageParameters {
+        public string FilterName { get; internal set; }
+        public int ExposureNumber { get; internal set; }
+        public string ImageType { get; internal set; }
+        public string Binning { get; internal set; }
+        public double ExposureTime { get; internal set; }
+        public string TargetName { get; internal set; }
     }
 }
