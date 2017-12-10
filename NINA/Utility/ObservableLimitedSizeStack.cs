@@ -69,19 +69,34 @@ namespace NINA.Utility {
             _maxSize = maxSize;
         }
 
+        protected ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+
         public void Add(T item) {
-            this._underLyingLinkedList.AddLast(item);
+            _lock.EnterWriteLock();
+            try {
 
-            if (this._underLyingLinkedList.Count > _maxSize)
-                this._underLyingLinkedList.RemoveFirst();
 
+                this._underLyingLinkedList.AddLast(item);
+
+                if (this._underLyingLinkedList.Count > _maxSize)
+                    this._underLyingLinkedList.RemoveFirst();
+            } finally {
+                _lock.ExitWriteLock();
+            }
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         private LinkedList<T> _underLyingLinkedList;
 
         public int Count {
-            get { return _underLyingLinkedList.Count; }
+            get {
+                _lock.EnterReadLock();
+                try {
+                    return _underLyingLinkedList.Count;
+                } finally {
+                    _lock.ExitReadLock();
+                }
+            }
         }
 
         public bool IsReadOnly {
@@ -91,16 +106,31 @@ namespace NINA.Utility {
         }
 
         public LinkedListNode<T> First() {
-            return _underLyingLinkedList.First;
+            _lock.EnterReadLock();
+            try {
+                return _underLyingLinkedList.First;
+            } finally {
+                _lock.ExitReadLock();
+            }            
         }
 
         public void Clear() {
-            _underLyingLinkedList.Clear();
+            _lock.EnterWriteLock();
+            try {
+                _underLyingLinkedList.Clear();
+            } finally {
+                _lock.EnterWriteLock();
+            }            
             OnCollectionChanged(NotifyCollectionChangedAction.Reset);
         }
 
         public bool Contains(T value) {
-            return _underLyingLinkedList.Contains(value);
+            _lock.EnterReadLock();
+            try {
+                return _underLyingLinkedList.Contains(value);
+            } finally {
+                _lock.ExitReadLock();
+            }            
         }
 
         public void CopyTo(T[] array, int index) {
@@ -125,8 +155,13 @@ namespace NINA.Utility {
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
-            this.CollectionChanged?.Invoke(this, e);
-            OnPropertyChanged(nameof(Count));
+            _lock.EnterReadLock();
+            try {
+                this.CollectionChanged?.Invoke(this, e);
+                OnPropertyChanged(nameof(Count));
+            } finally {
+                _lock.ExitReadLock();
+            }
         }
 
         private void OnPropertyChanged(string propertyname) {
@@ -149,7 +184,12 @@ namespace NINA.Utility {
         }
 
         public bool Remove(T item) {
-            return _underLyingLinkedList.Remove(item);
+            _lock.EnterWriteLock();
+            try {
+                return _underLyingLinkedList.Remove(item);
+            } finally {
+                _lock.EnterWriteLock();
+            }            
         }
 
         public IEnumerator<T> GetEnumerator() {
