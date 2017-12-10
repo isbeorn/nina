@@ -74,16 +74,14 @@ namespace NINA.Utility {
         public void Add(T item) {
             _lock.EnterWriteLock();
             try {
-
-
                 this._underLyingLinkedList.AddLast(item);
 
                 if (this._underLyingLinkedList.Count > _maxSize)
                     this._underLyingLinkedList.RemoveFirst();
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             } finally {
                 _lock.ExitWriteLock();
             }
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         private LinkedList<T> _underLyingLinkedList;
@@ -118,10 +116,10 @@ namespace NINA.Utility {
             _lock.EnterWriteLock();
             try {
                 _underLyingLinkedList.Clear();
+                OnCollectionChanged(NotifyCollectionChangedAction.Reset);
             } finally {
                 _lock.EnterWriteLock();
             }            
-            OnCollectionChanged(NotifyCollectionChangedAction.Reset);
         }
 
         public bool Contains(T value) {
@@ -134,34 +132,54 @@ namespace NINA.Utility {
         }
 
         public void CopyTo(T[] array, int index) {
-            _underLyingLinkedList.CopyTo(array, index);
+            _lock.EnterWriteLock();
+            try {
+                _underLyingLinkedList.CopyTo(array, index);
+            } finally {
+                _lock.EnterWriteLock();
+            }            
         }
 
         public bool LinkedListEquals(object obj) {
-            return _underLyingLinkedList.Equals(obj);
-        }
-
-        public LinkedListNode<T> Find(T value) {
-            return _underLyingLinkedList.Find(value);
-        }
-
-        public LinkedListNode<T> FindLast(T value) {
-            return _underLyingLinkedList.FindLast(value);
-        }
-
-        public Type GetLinkedListType() {
-            return _underLyingLinkedList.GetType();
-        }
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
             _lock.EnterReadLock();
             try {
-                this.CollectionChanged?.Invoke(this, e);
-                OnPropertyChanged(nameof(Count));
+                return _underLyingLinkedList.Equals(obj);
             } finally {
                 _lock.ExitReadLock();
             }
+        }
+
+        public LinkedListNode<T> Find(T value) {
+            _lock.EnterReadLock();
+            try {
+                return _underLyingLinkedList.Find(value);
+            } finally {
+                _lock.ExitReadLock();
+            }
+        }
+
+        public LinkedListNode<T> FindLast(T value) {
+            _lock.EnterReadLock();
+            try {
+                return _underLyingLinkedList.FindLast(value);
+            } finally {
+                _lock.ExitReadLock();
+            }            
+        }
+
+        public Type GetLinkedListType() {
+            _lock.EnterReadLock();
+            try {
+                return _underLyingLinkedList.GetType();
+            } finally {
+                _lock.ExitReadLock();
+            }            
+        }
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {            
+            this.CollectionChanged?.Invoke(this, e);
+            OnPropertyChanged(nameof(Count));
         }
 
         private void OnPropertyChanged(string propertyname) {
