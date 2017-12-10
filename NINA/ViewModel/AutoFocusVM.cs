@@ -27,7 +27,7 @@ namespace NINA.ViewModel {
                         
                         async () => {
                             _autoFocusCancelToken = new CancellationTokenSource();
-                            return await StartAutoFocus(_autoFocusCancelToken.Token, new Progress<string>(p => Status = p));
+                            return await StartAutoFocus(_autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
                         }
                     ),
                 (p) => { return _focuserConnected && _cameraConnected; }
@@ -62,15 +62,17 @@ namespace NINA.ViewModel {
 
         private DataPoint _minimum;
 
-        private string _status;
-        public string Status {
+        private ApplicationStatus _status;
+        public ApplicationStatus Status {
             get {
                 return _status;
             }
-            private set {
+            set {
                 _status = value;
+                _status.Source = Title;
                 RaisePropertyChanged();
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status, Source = Title } });
+
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
             }
         }
 
@@ -103,7 +105,7 @@ namespace NINA.ViewModel {
         private bool _cameraConnected;
         private double _temperature;
 
-        private async Task GetFocusPoints(int nrOfSteps, IProgress<string> progress, CancellationToken token, int offset = 0) {
+        private async Task GetFocusPoints(int nrOfSteps, IProgress<ApplicationStatus> progress, CancellationToken token, int offset = 0) {
             var stepSize = Settings.FocuserAutoFocusStepSize;
             if (offset != 0) {
                 //Move to initial position
@@ -149,7 +151,7 @@ namespace NINA.ViewModel {
             RightTrend = new TrendLine(rightTrendPoints);
         }
         
-        private async Task<bool> StartAutoFocus(CancellationToken token, IProgress<string> progress) {
+        private async Task<bool> StartAutoFocus(CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (!(_focuserConnected && _cameraConnected)) {
                 Notification.ShowError(Locale.Loc.Instance["LblAutoFocusGearNotConnected"]);
                 return false;
@@ -176,7 +178,7 @@ namespace NINA.ViewModel {
                 do {
                     if (leftcount == 0 && rightcount == 0) {
                         Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"]);
-                        progress.Report(Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"]);
+                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"] });
                         return false;
                     }
 
@@ -212,7 +214,7 @@ namespace NINA.ViewModel {
                 //Get Trendline Intersection
                 var p = LeftTrend.Intersect(RightTrend);
 
-                progress.Report((string.Format("Ideal Position: {0}, Theoretical HFR: {1}", p.X, Math.Round(p.Y, 2))));
+                progress.Report(new ApplicationStatus() { Status = string.Format("Ideal Position: {0}, Theoretical HFR: {1}", p.X, Math.Round(p.Y, 2)) });
 
                 LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = p, Temperature = _temperature, Timestamp = DateTime.Now };
 

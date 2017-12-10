@@ -28,7 +28,7 @@ namespace NINA.ViewModel {
             ContentId = nameof(SequenceVM);
             AddSequenceCommand = new RelayCommand(AddSequence);
             RemoveSequenceCommand = new RelayCommand(RemoveSequence);
-            StartSequenceCommand = new AsyncCommand<bool>(() => StartSequence(new Progress<string>(p => Status = p)));
+            StartSequenceCommand = new AsyncCommand<bool>(() => StartSequence(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSequenceCommand = new RelayCommand(CancelSequence);
             PauseSequenceCommand = new RelayCommand(PauseSequence);
             ResumeSequenceCommand = new RelayCommand(ResumeSequence);
@@ -65,16 +65,17 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string _status;
-        public string Status {
+        private ApplicationStatus _status;
+        public ApplicationStatus Status {
             get {
                 return _status;
             }
             set {
                 _status = value;
+                _status.Source = Title;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status, Source = Title } });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
             }
         }
 
@@ -125,7 +126,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> StartSequence(IProgress<string> progress) {
+        private async Task<bool> StartSequence(IProgress<ApplicationStatus> progress) {
             _actualDownloadTimes.Clear();
             _canceltoken = new CancellationTokenSource();
             _pauseTokenSource = new PauseTokenSource();
@@ -134,13 +135,13 @@ namespace NINA.ViewModel {
             CalculateETA();
 
             if (Sequence.SlewToTarget) {
-                progress.Report(Locale.Loc.Instance["LblSlewToTarget"]);
+                progress.Report(new ApplicationStatus() { Source = Locale.Loc.Instance["LblSlewToTarget"] });
                 await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = Sequence.Coordinates, Token = _canceltoken.Token });
                 if (Sequence.CenterTarget) {
-                    progress.Report(Locale.Loc.Instance["LblCenterTarget"]);
+                    progress.Report(new ApplicationStatus() { Source = Locale.Loc.Instance["LblCenterTarget"] });
                     var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });                    
                     if(result == null || !result.Success) {
-                        progress.Report(Locale.Loc.Instance["LblPlatesolveFailed"]);
+                        progress.Report(new ApplicationStatus() { Source = Locale.Loc.Instance["LblPlatesolveFailed"] });
                         return false;
                     }
                 }
@@ -151,7 +152,7 @@ namespace NINA.ViewModel {
             }
 
             if (Sequence.StartGuiding) {
-                progress.Report(Locale.Loc.Instance["LblStartGuiding"]);
+                progress.Report(new ApplicationStatus() { Source = Locale.Loc.Instance["LblStartGuiding"] });
                 var guiderStarted = await Mediator.Instance.RequestAsync(new StartGuiderMessage() { Token = _canceltoken.Token });
                 if(!guiderStarted) {
                     Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
@@ -164,7 +165,7 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        private async Task<bool> ProcessSequence(CancellationToken ct, PauseToken pt, IProgress<string> progress) {
+        private async Task<bool> ProcessSequence(CancellationToken ct, PauseToken pt, IProgress<ApplicationStatus> progress) {
 
             return await Task.Run<bool>(async () => {
                 try {
@@ -183,7 +184,7 @@ namespace NINA.ViewModel {
                     while (delay > 0) {
                         await Task.Delay(TimeSpan.FromSeconds(1), ct);
                         delay--;
-                        progress.Report(string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay));
+                        progress.Report(new ApplicationStatus() { Source = string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay) });
                     }
 
                     CaptureSequence seq;
@@ -208,9 +209,9 @@ namespace NINA.ViewModel {
                         if (pt.IsPaused) {
                             Sequence.IsRunning = false;
                             semaphoreSlim.Release();
-                            progress.Report("Paused");
+                            progress.Report(new ApplicationStatus() { Source = "Paused" });
                             await pt.WaitWhilePausedAsync(ct);
-                            progress.Report("Resume sequence");
+                            progress.Report(new ApplicationStatus() { Source = "Resume sequence" });
                             await semaphoreSlim.WaitAsync(ct);
                             Sequence.IsRunning = true;
                         }
@@ -222,7 +223,7 @@ namespace NINA.ViewModel {
                     Logger.Error(ex.Message, ex.StackTrace);
                     Notification.ShowError(ex.Message);
                 } finally {
-                    progress.Report(string.Empty);
+                    progress.Report(new ApplicationStatus() { Source = string.Empty });
                     Sequence.IsRunning = false;
                     semaphoreSlim.Release();
                 }
@@ -242,8 +243,8 @@ namespace NINA.ViewModel {
         /// <param name="tokenSource">cancel token</param>
         /// <param name="progress">progress reporter</param>
         /// <returns></returns>
-        private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
-            progress.Report("Check Meridian Flip");
+        private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            progress.Report(new ApplicationStatus() { Source = "Check Meridian Flip" });
             await Mediator.Instance.RequestAsync(new CheckMeridianFlipMessage() { Sequence = seq, Token = token });;
         }
 

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using NINA.Model;
 
 namespace NINA.PlateSolving {
     class AstrometryPlateSolver : IPlateSolver {
@@ -78,19 +79,19 @@ namespace NINA.PlateSolving {
             return await Utility.Utility.HttpGetImage(canceltoken, _domain + ANNOTATEDIMAGEURL, jobid);
         }
 
-        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken) {
+        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
             PlateSolveResult result = new PlateSolveResult();
 
             try {
 
-                progress.Report("Authenticating...");
+                progress.Report(new ApplicationStatus() { Status = "Authenticating..." });
                 JObject authentication = await Authenticate(canceltoken);
                 var status = authentication.GetValue("status");
                 string session = string.Empty;
                 if (status?.ToString() == "success") {
                     session = authentication.GetValue("session").ToString();
 
-                    progress.Report("Uploading Image...");
+                    progress.Report(new ApplicationStatus() { Status = "Uploading Image..." });
                     JObject imagesubmission = await SubmitImage(image, session, canceltoken);
 
                     string subid = string.Empty;
@@ -99,7 +100,7 @@ namespace NINA.PlateSolving {
                         subid = imagesubmission.GetValue("subid").ToString();
 
 
-                        progress.Report("Waiting for plate solve to start ...");
+                        progress.Report(new ApplicationStatus() { Status = "Waiting for plate solve to start ..." });
                         while (true) {
                             canceltoken.ThrowIfCancellationRequested();
 
@@ -121,7 +122,7 @@ namespace NINA.PlateSolving {
                         if (!string.IsNullOrWhiteSpace(jobid)) {
 
                             string jobstatus = string.Empty;
-                            progress.Report("Solving ...");
+                            progress.Report(new ApplicationStatus() { Status = "Solving ..." });
                             while (true) {
                                 canceltoken.ThrowIfCancellationRequested();
                                 JObject ojobstatus = await GetJobStatus(jobid, canceltoken);
@@ -135,7 +136,7 @@ namespace NINA.PlateSolving {
                             };
 
                             if (jobstatus == "success") {
-                                progress.Report("Getting plate solve result ...");
+                                progress.Report(new ApplicationStatus() { Status = "Getting plate solve result ..." });
                                 JObject job = await GetJobInfo(jobid, canceltoken);
                                 JobResult jobinfo = job.ToObject<JobResult>();
 
@@ -144,30 +145,29 @@ namespace NINA.PlateSolving {
                                 result.Coordinates = new Utility.Astrometry.Coordinates(jobinfo.calibration.ra, jobinfo.calibration.dec, Utility.Astrometry.Epoch.J2000, Utility.Astrometry.Coordinates.RAType.Degrees);
                                 result.Radius = jobinfo.calibration.radius;
 
-                                progress.Report("Solved");
+                                progress.Report(new ApplicationStatus() { Status = "Solved" });
                             } else {
                                 result.Success = false;
-                                progress.Report("Plate solve failed");
+                                progress.Report(new ApplicationStatus() { Status = "Plate solve failed" });
                             }
                         } else {
                             result.Success = false;
-                            progress.Report("Failed to get job result");
+                            progress.Report(new ApplicationStatus() { Status = "Failed to get job result" });
                         }
                     } else {
                         result.Success = false;
-                        progress.Report("Failed to get submission");
+                        progress.Report(new ApplicationStatus() { Status = "Failed to get submission" });
                     }
                 } else {
                     result.Success = false;
-                    progress.Report("Authorization failed ...");
+                    progress.Report(new ApplicationStatus() { Status = "Authorization failed ..." });
                 }
 
             } catch (System.OperationCanceledException ex) {
                 Logger.Trace(ex.Message);
                 result.Success = false;
-                progress.Report("Cancelled");
             } finally {
-
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return result;
         }

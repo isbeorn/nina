@@ -1,4 +1,5 @@
-﻿using NINA.Utility.Astrometry;
+﻿using NINA.Model;
+using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.PlateSolving {
     interface IPlateSolver {
-        Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken);
+        Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
     }
 
 

@@ -31,7 +31,7 @@ namespace NINA.ViewModel {
             SlewToTarget = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
 
-            SolveCommand = new AsyncCommand<bool>(() => CaptureSolveSyncAndReslew(new Progress<string>(p => Status = p)));
+            SolveCommand = new AsyncCommand<bool>(() => CaptureSolveSyncAndReslew(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSolveCommand = new RelayCommand(CancelSolve);
 
             SnapExposureDuration = 2;
@@ -75,16 +75,17 @@ namespace NINA.ViewModel {
             
         }
 
-        private string _status;
-        public string Status {
+        private ApplicationStatus _status;
+        public ApplicationStatus Status {
             get {
                 return _status;
             }
             set {
                 _status = value;
+                _status.Source = Title;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status, Source = Title } });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
             }
         }
 
@@ -242,7 +243,7 @@ namespace NINA.ViewModel {
         /// <param name="filter"></param>
         /// <param name="binning"></param>
         /// <returns></returns>
-        private async Task<PlateSolveResult> SolveWithCapture(CaptureSequence seq, IProgress<string> progress, CancellationToken canceltoken) {
+        private async Task<PlateSolveResult> SolveWithCapture(CaptureSequence seq, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
             var oldAutoStretch = _autoStretch;
             var oldDetectStars = _detectStars;
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
@@ -258,7 +259,7 @@ namespace NINA.ViewModel {
             return await Solve(progress, canceltoken); ;
         }
 
-        private async Task<bool> CaptureSolveSyncAndReslew(IProgress<string> progress) {
+        private async Task<bool> CaptureSolveSyncAndReslew(IProgress<ApplicationStatus> progress) {
             _solveCancelToken = new CancellationTokenSource();
             return await this.CaptureSolveSyncAndReslew(_solveCancelToken.Token, progress) != null;
         }
@@ -268,7 +269,7 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="progress"></param>
         /// <returns></returns>
-        private async Task<PlateSolveResult> CaptureSolveSyncAndReslew(CancellationToken token, IProgress<string> progress) {
+        private async Task<PlateSolveResult> CaptureSolveSyncAndReslew(CancellationToken token, IProgress<ApplicationStatus> progress) {
             PlateSolveResult solveresult = null;
             bool repeatPlateSolve = false;
             do {
@@ -291,7 +292,7 @@ namespace NINA.ViewModel {
 
                 if (solveresult?.Success == true && Repeat && Math.Abs(Astrometry.DegreeToArcmin(solveresult.RaError)) > RepeatThreshold) {
                     repeatPlateSolve = true;
-                    progress.Report("Telescope not inside tolerance. Repeating...");
+                    progress.Report(new ApplicationStatus() { Status = "Telescope not inside tolerance. Repeating..." });
                     //Let the scope settle
                     await Task.Delay(2000);
                 } else {
@@ -326,7 +327,7 @@ namespace NINA.ViewModel {
         /// <param name="progress"></param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
-        public async Task<PlateSolveResult> Solve(IProgress<string> progress, CancellationToken canceltoken) {
+        public async Task<PlateSolveResult> Solve(IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
             var solver = GetPlateSolver();
             if (solver == null) {
                 return null;
@@ -351,7 +352,7 @@ namespace NINA.ViewModel {
             if (!PlateSolveResult?.Success == true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblPlatesolveFailed"]);
             }
-            progress.Report(string.Empty);
+            progress.Report(new ApplicationStatus() { Status = string.Empty });
             return PlateSolveResult;
         }
 

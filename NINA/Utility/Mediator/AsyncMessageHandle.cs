@@ -169,7 +169,7 @@ namespace NINA.Utility.Mediator {
     /* Message definition */
     abstract class AsyncMediatorMessage<TMessageResult> {
         public CancellationToken Token { get; set; } = default(CancellationToken);
-        public IProgress<string> Progress { get; set; }
+        public new IProgress<ApplicationStatus> Progress { get; set; }
     }
 
 
@@ -218,9 +218,9 @@ namespace NINA.Utility.Mediator {
     class ConnectTelescopeMessage : AsyncMediatorMessage<bool> { }
 
 
-    
 
-    class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {
+
+    class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {        
         public CaptureSequence Sequence { get; set; }
     }
 

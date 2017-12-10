@@ -1,4 +1,5 @@
-﻿using NINA.Utility;
+﻿using NINA.Model;
+using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
 using System;
@@ -154,10 +155,10 @@ namespace NINA.PlateSolving {
         /// <param name="progress"></param>
         /// <param name="canceltoken"></param>
         /// <returns></returns>
-        private PlateSolveResult Solve(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken) {
+        private PlateSolveResult Solve(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
             PlateSolveResult result = new PlateSolveResult() { Success = false };
             try {
-                progress.Report("Solving...");
+                progress.Report(new ApplicationStatus() { Status = "Solving..." });
                 //Copy Image to local app data
                 using (FileStream fs = new FileStream(TMPIMGFILEPATH, FileMode.Create)) {
                     image.CopyTo(fs);
@@ -178,12 +179,14 @@ namespace NINA.PlateSolving {
                 Logger.Trace(ex.Message);
             } catch (Exception ex) {
                 Logger.Error(ex.Message, ex.StackTrace);
+            } finally {
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 
             return result;
         }
 
-        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken) {
+        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
             return await Task<PlateSolveResult>.Run(() => Solve(image, progress, canceltoken));
         }
     }

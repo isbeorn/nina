@@ -282,7 +282,7 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress, Path=Value, StringFormat=\{0:#.00\}}" />
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress, Path=Value, StringFormat=\{0:#\}}" />
                                             <TextBlock VerticalAlignment="Center" Text=" / " />
                                             <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=pbProgress, Path=Maximum}" />
                                             <StackPanel.Style>
@@ -298,7 +298,7 @@
                                         <Grid.Style>
                                             <Style TargetType="Grid">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Progress}" Value="0">
+                                                    <DataTrigger Binding="{Binding Progress}" Value="-1">
                                                         <Setter Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
                                                 </Style.Triggers>

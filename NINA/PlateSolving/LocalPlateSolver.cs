@@ -62,11 +62,11 @@ namespace NINA.PlateSolving {
             return string.Join(" ", options);
         }
 
-        private PlateSolveResult Solve(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken) {
+        private PlateSolveResult Solve(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
 
             PlateSolveResult result = new PlateSolveResult();
             try {
-                progress.Report("Solving...");
+                progress.Report(new ApplicationStatus() { Status = "Solving..." });
                 string filepath = TMPIMGFILEPATH + "\\tmp.jpg";
 
                 using (FileStream fs = new FileStream(filepath, FileMode.Create)) {
@@ -94,7 +94,7 @@ namespace NINA.PlateSolving {
                 process.Start();
 
                 while (!process.StandardOutput.EndOfStream) {
-                    progress.Report(process.StandardOutput.ReadLine());
+                    progress.Report(new ApplicationStatus() { Status = process.StandardOutput.ReadLine() });
                     canceltoken.ThrowIfCancellationRequested();
                 }
 
@@ -129,7 +129,7 @@ namespace NINA.PlateSolving {
 
                     result.Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
 
-                    progress.Report("Solved");
+                    progress.Report(new ApplicationStatus() { Status = "Solved" });
 
                     /* This info does not get the center info. - removed
                         Fits solvedFits = new Fits(TMPIMGFILEPATH + "\\tmp.wcs");
@@ -141,18 +141,19 @@ namespace NINA.PlateSolving {
                     result.Success = false;
                 }
             } catch (OperationCanceledException ex) {
-                progress.Report("Cancelled");
                 Logger.Trace(ex.Message);
                 result.Success = false;
             } catch (Exception ex) {
                 Logger.Error(ex.Message, ex.StackTrace);
                 result.Success = false;
+            } finally {
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 
             return result;
         }
 
-        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<string> progress, CancellationToken canceltoken) {
+        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
             return await Task<PlateSolveResult>.Run(() => Solve(image, progress, canceltoken));
         }
     }

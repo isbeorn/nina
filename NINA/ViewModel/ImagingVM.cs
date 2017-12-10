@@ -38,7 +38,7 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
 
             SnapExposureDuration = 1;
-            SnapCommand = new AsyncCommand<bool>(() => SnapImage(new Progress<string>(p => Status = p)));
+            SnapCommand = new AsyncCommand<bool>(() => SnapImage(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSnapCommand = new RelayCommand(CancelSnapImage);
 
             ImageControl = new ImageControlVM();
@@ -85,16 +85,17 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string _status;
-        public string Status {
+        private ApplicationStatus _status;
+        public ApplicationStatus Status {
             get {
                 return _status;
             }
             set {
                 _status = value;
+                _status.Source = Title;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status, Source = Title } });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
             }
         }
 
@@ -180,7 +181,7 @@ namespace NINA.ViewModel {
 
         CancellationTokenSource _captureImageToken;
 
-        private async Task ChangeFilter(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
+        private async Task ChangeFilter(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (seq.FilterType != null) {
                 await Mediator.Instance.RequestAsync(new ChangeFilterWheelPositionMessage() { Filter = seq.FilterType, Token = token, Progress = progress });
             }
@@ -194,7 +195,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {            
+        private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {            
             try {
                 double duration = seq.ExposureTime;
                 bool isLight = false;
@@ -205,7 +206,12 @@ namespace NINA.ViewModel {
                 var start = DateTime.Now;
                 var elapsed = 0.0d;
                 ExposureSeconds = 0;
-                progress.Report(string.Format(ExposureStatus.EXPOSING, ExposureSeconds, duration));
+                progress.Report(new ApplicationStatus() {
+                    Status = ExposureStatus.EXPOSING,
+                    Progress = ExposureSeconds,
+                    MaxProgress = (int)duration,
+                    ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
+                });
                 /* Wait for Capture */
                 if (duration >= 1) {
                     await Task.Run(async () => {
@@ -214,7 +220,13 @@ namespace NINA.ViewModel {
                             elapsed += delta.TotalSeconds;
                             ExposureSeconds = (int)elapsed;
                             token.ThrowIfCancellationRequested();
-                            progress.Report(string.Format(ExposureStatus.EXPOSING, ExposureSeconds, duration));
+
+                            progress.Report(new ApplicationStatus() {
+                                Status = ExposureStatus.EXPOSING,
+                                Progress = ExposureSeconds,
+                                MaxProgress = (int)duration,
+                                ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue                                
+                            });
                         } while ((elapsed < duration) && Cam?.Connected == true);
                     });
                 }
@@ -229,12 +241,12 @@ namespace NINA.ViewModel {
 
         }
 
-        private async Task<ImageArray> Download(CancellationToken token, IProgress<string> progress) {
-            progress.Report(ExposureStatus.DOWNLOADING);
+        private async Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
+            progress.Report(new ApplicationStatus() { Status = ExposureStatus.DOWNLOADING });
             return await Cam.DownloadExposure(token);
         }
 
-        private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<string> progress) {
+        private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (seq.Dither && ((seq.ExposureCount % seq.DitherAmount) == 0)) {                
 
                 return await Mediator.Instance.RequestAsync(new DitherGuiderMessage() { Token = token });                
@@ -247,7 +259,7 @@ namespace NINA.ViewModel {
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
 
-        public async Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<string> progress) {
+        public async Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             var iarr = await CaptureImage(sequence, token, progress);
             if(iarr != null) {
                 return await _currentPrepareImageTask;
@@ -256,10 +268,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<string> progress, bool bSave = false, string targetname = "") {
+        public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
 
             //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
-            progress.Report("Another process already uses Camera. Waiting for it to finish...");
+            progress.Report(new ApplicationStatus() { Status = "Another process already uses Camera. Waiting for it to finish..." });
             await semaphoreSlim.WaitAsync(token);
 
             if (CameraConnected != true) {
@@ -311,10 +323,10 @@ namespace NINA.ViewModel {
                     arr = await Download(token, progress);
                     if (arr == null) {
                         throw new OperationCanceledException();
-                    }                    
+                    }
 
                     /*Prepare Image for UI*/
-                    progress.Report(ImagingVM.ExposureStatus.PREPARING);
+                    progress.Report(new ApplicationStatus() { Status = ImagingVM.ExposureStatus.PREPARING });
 
                     if (CameraConnected != true) {
                         throw new CameraConnectionLostException();
@@ -323,11 +335,11 @@ namespace NINA.ViewModel {
                     
                     //Wait for previous prepare image task to complete
                     if(_currentPrepareImageTask != null && !_currentPrepareImageTask.IsCompleted) {
-                        progress.Report("Waiting for previous image to finish processing");
+                        progress.Report(new ApplicationStatus() { Status = "Waiting for previous image to finish processing" });
                         await _currentPrepareImageTask;
                     }
                     //async prepare image and save
-                    progress.Report("Prepare image saving");
+                    progress.Report(new ApplicationStatus() { Status = "Prepare image saving" });
 
                     var parameters = new ImageParameters() {
                         Binning = sequence.Binning.Name,
@@ -340,7 +352,7 @@ namespace NINA.ViewModel {
                     _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters);
 
                     //Wait for dither to finish. Runs in parallel to download and save.
-                    progress.Report("Waiting for dither to finish");
+                    progress.Report(new ApplicationStatus() { Status = "Waiting for dither to finish" });
                     await ditherTask;
 
                 } catch (System.OperationCanceledException ex) {
@@ -360,7 +372,7 @@ namespace NINA.ViewModel {
                     }
                     throw ex;
                 } finally {
-                    progress.Report(ExposureStatus.IDLE);
+                    progress.Report(new ApplicationStatus() { Status = string.Empty });
                     semaphoreSlim.Release();
                 }
                 return arr;
@@ -404,7 +416,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<bool> SnapImage(IProgress<string> progress) {
+        public async Task<bool> SnapImage(IProgress<ApplicationStatus> progress) {
             _captureImageToken = new CancellationTokenSource();
 
             try {
@@ -418,20 +430,20 @@ namespace NINA.ViewModel {
 
             } finally {
                 await _currentPrepareImageTask;
-                progress.Report(string.Empty);
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 
             return true;
 
         }
 
-        public async Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<string> progress, string targetname = "") {
+        public async Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
             await CaptureImage(seq, ct, progress, bsave, targetname);            
             return true;
         }
 
         public static class ExposureStatus {
-            public const string EXPOSING = "Exposing {0}/{1}...";
+            public const string EXPOSING = "Exposing...";
             public const string DOWNLOADING = "Downloading...";
             public const string FILTERCHANGE = "Switching Filter...";
             public const string PREPARING = "Preparing...";

@@ -23,23 +23,24 @@ namespace NINA.ViewModel {
             ContentId = nameof(FrameFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
             CancelSnapCommand = new RelayCommand(CancelCaptureImage);
-            SnapCommand = new AsyncCommand<bool>(() => Snap(new Progress<string>(p => Status = p)));
+            SnapCommand = new AsyncCommand<bool>(() => Snap(new Progress<ApplicationStatus>(p => Status = p)));
             Zoom = 1;
             SnapExposureDuration = 1;
             
-        }        
-                
+        }
 
-        private string _status;
-        public string Status {
+
+        private ApplicationStatus _status;
+        public ApplicationStatus Status {
             get {
                 return _status;
             }
             set {
                 _status = value;
+                _status.Source = Title;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status, Source = Title } });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
             }
         }
 
@@ -116,7 +117,7 @@ namespace NINA.ViewModel {
 
 
 
-        private async Task<bool> Snap(IProgress<string> progress) {
+        private async Task<bool> Snap(IProgress<ApplicationStatus> progress) {
             
             do {
                 _captureImageToken = new CancellationTokenSource();

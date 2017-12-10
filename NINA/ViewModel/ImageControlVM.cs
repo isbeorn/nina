@@ -36,7 +36,7 @@ namespace NINA.ViewModel {
             DetectStars = false;
             ShowCrossHair = false;
 
-            _progress = new Progress<string>(p => Status = p);
+            _progress = new Progress<ApplicationStatus>(p => Status = p);
             
             PrepareImageCommand = new AsyncCommand<bool>(() => PrepareImageHelper());
             PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage());
@@ -60,7 +60,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private IProgress<string> _progress;
+        private IProgress<ApplicationStatus> _progress;
 
         private void CancelPlateSolveImage(object o) {
             _plateSolveToken?.Cancel();
@@ -191,15 +191,17 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string _status;
-        public string Status {
+        private ApplicationStatus _status;
+        public ApplicationStatus Status {
             get {
                 return _status;
             }
             set {
                 _status = value;
+                _status.Source = Title;
                 RaisePropertyChanged();
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status, Source = Title } });
+
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
             }
         }
 
@@ -222,12 +224,12 @@ namespace NINA.ViewModel {
                 await ss.WaitAsync(token);
             
                 if (iarr != null) {
-                    _progress.Report("Preparing image");
+                    _progress.Report(new ApplicationStatus() { Status = "Preparing image" });
                     source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
 
 
                     if (AutoStretch) {
-                        _progress.Report("Stretching image");
+                        _progress.Report(new ApplicationStatus() { Status = "Stretching image" });
                         source = await StretchAsync(iarr, source);
                     }
 
@@ -244,7 +246,7 @@ namespace NINA.ViewModel {
                     }
 
                     if (iarr.IsBayered) {
-                        _progress.Report("Debayer image");
+                        _progress.Report(new ApplicationStatus() { Status = "Debayer image" });
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
                     }
 
@@ -263,7 +265,7 @@ namespace NINA.ViewModel {
                     }
                 }
             } finally {
-                _progress.Report(string.Empty);
+                _progress.Report(new ApplicationStatus() { Status = string.Empty });
                 ss.Release();
             }
             return source;
@@ -300,14 +302,14 @@ namespace NINA.ViewModel {
                 Logger.Error(ex.Message, ex.StackTrace);
             }
             finally {
-                _progress.Report(string.Empty);
+                _progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return success;
         }
 
 
         private async Task<bool> SaveToDiskAsync(ImageParameters parameters, CancellationToken token) {
-            _progress.Report("Saving...");
+            _progress.Report(new ApplicationStatus() { Status = "Saving..." });
             await Task.Run(() => {
 
                 List<OptionsVM.ImagePattern> p = new List<OptionsVM.ImagePattern>();

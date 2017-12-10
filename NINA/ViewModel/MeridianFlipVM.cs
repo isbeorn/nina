@@ -37,17 +37,20 @@ namespace NINA.ViewModel {
             );
         }
 
-        private IProgress<string> _progress;
+        private IProgress<ApplicationStatus> _progress;
         private CancellationTokenSource _tokensource;
 
-        private string _status;
-        public string Status {
+        private ApplicationStatus _status;
+        public ApplicationStatus Status {
             get {
                 return _status;
             }
             set {
                 _status = value;
+                _status.Source = "MeridianFlip";
                 RaisePropertyChanged();
+
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
             }
         }
 
@@ -112,7 +115,7 @@ namespace NINA.ViewModel {
             if (ShouldFlip(seq.ExposureTime)) {
                 var service = new WindowService();
                 this._tokensource = new CancellationTokenSource();
-                this._progress = new Progress<string>(p => Status = p);
+                this._progress = new Progress<ApplicationStatus>(p => Status = p);
                 var flip = DoMeridianFlip();
 
                 service.ShowDialog(this, "Meridian Flip");
@@ -127,9 +130,9 @@ namespace NINA.ViewModel {
 
         private Coordinates _targetCoordinates;
 
-        private async Task<bool> PassMeridian(CancellationToken token, IProgress<string> progress) {
+        private async Task<bool> PassMeridian(CancellationToken token, IProgress<ApplicationStatus> progress) {
             var timeToFlip = Telescope.TimeToMeridianFlip * 60 * 60;
-            progress.Report("Stop Scope tracking");
+            progress.Report(new ApplicationStatus() { Status = "Stop Scope tracking" });
             _targetCoordinates = Telescope.Coordinates;
             Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = false });     
             do {
@@ -141,13 +144,13 @@ namespace NINA.ViewModel {
                 timeToFlip -= delta.TotalSeconds;
 
             } while (RemainingTime.TotalSeconds >= 1);
-            progress.Report("Resume Scope tracking");
+            progress.Report(new ApplicationStatus() { Status = "Resume Scope tracking" });
             Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = true });
             return true;
         }
 
-        private async Task<bool> DoFilp(CancellationToken token, IProgress<string> progress) {
-            progress.Report("Flipping Scope");
+        private async Task<bool> DoFilp(CancellationToken token, IProgress<ApplicationStatus> progress) {
+            progress.Report(new ApplicationStatus() { Status = "Flipping Scope" });
             var flipsuccess = Telescope.MeridianFlip(_targetCoordinates);
 
             await Settle(token, progress);
@@ -156,35 +159,35 @@ namespace NINA.ViewModel {
         }
 
 
-        private async Task<bool> Recenter(CancellationToken token, IProgress<string> progress) {
+        private async Task<bool> Recenter(CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (Settings.RecenterAfterFlip) {
-                progress.Report("Initiating platesolve");
+                progress.Report(new ApplicationStatus() { Status = "Initiating platesolve" });
                 await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = token });
             }
             return true;
         }
 
-        private async Task<bool> StopAutoguider(CancellationToken token, IProgress<string> progress) {
+        private async Task<bool> StopAutoguider(CancellationToken token, IProgress<ApplicationStatus> progress) {
             var result = await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Token = token, Pause = true });            
             return result;
         }
 
-        private async Task<bool> SelectNewGuideStar(CancellationToken token, IProgress<string> progress) {
-            progress.Report("Select new Guidestar");
+        private async Task<bool> SelectNewGuideStar(CancellationToken token, IProgress<ApplicationStatus> progress) {
+            progress.Report(new ApplicationStatus() { Status = "Select new Guidestar" });
             return await Mediator.Instance.RequestAsync(new AutoSelectGuideStarMessage() { Token = token });
         }
 
-        private async Task<bool> ResumeAutoguider(CancellationToken token, IProgress<string> progress) {
+        private async Task<bool> ResumeAutoguider(CancellationToken token, IProgress<ApplicationStatus> progress) {
 
             var result = await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Token = token, Pause = false });
 
             return result;
         }
 
-        private async Task<bool> Settle(CancellationToken token, IProgress<string> progress) {
+        private async Task<bool> Settle(CancellationToken token, IProgress<ApplicationStatus> progress) {
             RemainingTime = TimeSpan.FromSeconds(Settings.MeridianFlipSettleTime);
             do {
-                progress.Report(Locale.Loc.Instance["LblSettle"] + " " + RemainingTime.ToString(@"hh\:mm\:ss"));
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSettle"] + " " + RemainingTime.ToString(@"hh\:mm\:ss") });
 
                 var delta = await Utility.Utility.Delay(1000, token);
 

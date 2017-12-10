@@ -29,16 +29,16 @@ namespace NINA.ViewModel {
             _updateValues.Start();
 
             MeasureAzimuthErrorCommand = new AsyncCommand<bool>(
-                () => MeasurePolarError(new Progress<string>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH),
+                () => MeasurePolarError(new Progress<ApplicationStatus>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH),
                 (p) => (Telescope?.Connected == true && Cam?.Connected == true));
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(
-                () => MeasurePolarError(new Progress<string>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE),
+                () => MeasurePolarError(new Progress<ApplicationStatus>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE),
                 (p) => (Telescope?.Connected == true && Cam?.Connected == true));
             SlewToMeridianOffsetCommand = new RelayCommand(
                 SlewToMeridianOffset,
                 (p) => (Telescope?.Connected == true));
             DARVSlewCommand = new AsyncCommand<bool>(
-                () => Darvslew(new Progress<string>(p => Status = p), new Progress<string>(p => DarvStatus = p)),
+                () => Darvslew(new Progress<ApplicationStatus>(p => Status = p), new Progress<string>(p => DarvStatus = p)),
                 (p) => (Telescope?.Connected == true && Cam?.Connected == true));
             CancelDARVSlewCommand = new RelayCommand(
                 Canceldarvslew,
@@ -77,16 +77,18 @@ namespace NINA.ViewModel {
             }, MediatorMessages.DetectStarsChanged);
         }
 
-        private string _status;
-        public string Status {
+        private ApplicationStatus _status;
+        public ApplicationStatus Status {
             get {
                 return _status;
             }
             set {
                 _status = value;
+                _status.Source = Title;
+                _status.Status = _status.Status + " " + _darvStatus;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _status + " " + _darvStatus, Source = Title } });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
             }
         }
 
@@ -255,29 +257,31 @@ namespace NINA.ViewModel {
 
 
 
-        private string _altitudepolarErrorStatus;
-        public string AltitudePolarErrorStatus {
+        private ApplicationStatus  _altitudepolarErrorStatus;
+        public ApplicationStatus AltitudePolarErrorStatus {
             get {
                 return _altitudepolarErrorStatus;
             }
 
             set {
                 _altitudepolarErrorStatus = value;
+                _altitudepolarErrorStatus.Source = Title;
                 RaisePropertyChanged();
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _altitudepolarErrorStatus, Source = Title } });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _altitudepolarErrorStatus  });
             }
         }
 
-        private string _azimuthpolarErrorStatus;
-        public string AzimuthPolarErrorStatus {
+        private ApplicationStatus _azimuthpolarErrorStatus;
+        public ApplicationStatus AzimuthPolarErrorStatus {
             get {
                 return _azimuthpolarErrorStatus;
             }
 
             set {
                 _azimuthpolarErrorStatus = value;
+                _azimuthpolarErrorStatus.Source = Title;
                 RaisePropertyChanged();
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new ApplicationStatus() { Status = _azimuthpolarErrorStatus, Source = Title } });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _azimuthpolarErrorStatus });
             }
         }
 
@@ -352,7 +356,7 @@ namespace NINA.ViewModel {
         private bool _autoStretch;
         private bool _detectStars;
 
-        private async Task<bool> Darvslew(IProgress<string> cameraprogress, IProgress<string> slewprogress) {
+        private async Task<bool> Darvslew(IProgress<ApplicationStatus> cameraprogress, IProgress<string> slewprogress) {
             if (Cam?.Connected == true) {
                 _cancelDARVSlewToken = new CancellationTokenSource();
                 try {
@@ -375,7 +379,7 @@ namespace NINA.ViewModel {
             } else {
                 Notification.ShowError(Locale.Loc.Instance["LblNoCameraConnected"]);
             }
-            cameraprogress.Report(string.Empty);
+            cameraprogress.Report(new ApplicationStatus() { Status = string.Empty });
             return true;
         }
 
@@ -400,7 +404,7 @@ namespace NINA.ViewModel {
 
 
 
-        private async Task<bool> MeasurePolarError(IProgress<string> progress, Direction direction) {
+        private async Task<bool> MeasurePolarError(IProgress<ApplicationStatus> progress, Direction direction) {
             if (Cam?.Connected == true) {
 
                 _cancelMeasureErrorToken = new CancellationTokenSource();
@@ -411,7 +415,7 @@ namespace NINA.ViewModel {
                     _cancelMeasureErrorToken.Token.ThrowIfCancellationRequested();
                     if (double.IsNaN(poleErr)) {
                         /* something went wrong */
-                        progress.Report(string.Empty);
+                        progress.Report(new ApplicationStatus() { Status = string.Empty });
                         return false;
                     }
 
@@ -468,11 +472,10 @@ namespace NINA.ViewModel {
 
                     }
 
-                    progress.Report(msg);
+                    progress.Report(new ApplicationStatus() { Status = msg });
 
                 } catch (OperationCanceledException ex) {
-                    Logger.Trace(ex.Message);
-                    progress.Report("Canceled");
+                    Logger.Trace(ex.Message);                    
                 }
 
                 /*  Altitude
@@ -493,7 +496,7 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private async Task<double> CalculatePoleError(IProgress<string> progress, CancellationToken canceltoken) {
+        private async Task<double> CalculatePoleError(IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
 
 
             Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
@@ -503,7 +506,7 @@ namespace NINA.ViewModel {
                 double movementdeg = 0.5d;
                 double movement = (movementdeg / 360) * 24;
 
-                progress.Report("Solving image...");
+                progress.Report(new ApplicationStatus() { Status = "Solving image..." });
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 PlateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
@@ -523,17 +526,17 @@ namespace NINA.ViewModel {
 
 
                 Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, Settings.EpochType, Coordinates.RAType.Hours);
-                progress.Report("Slewing...");
+                progress.Report(new ApplicationStatus() { Status = "Slewing..." });
                 await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = targetPosition, Token = canceltoken });
 
 
                 canceltoken.ThrowIfCancellationRequested();
 
 
-                progress.Report("Settling...");
+                progress.Report(new ApplicationStatus() { Status = "Settling..." });
                 await Task.Delay(3000);
 
-                progress.Report("Solving image...");
+                progress.Report(new ApplicationStatus() { Status = "Solving image..." });
 
                 canceltoken.ThrowIfCancellationRequested();
 

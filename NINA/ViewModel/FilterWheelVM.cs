@@ -68,8 +68,8 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        private async Task<FilterInfo> ChangeFilter(FilterInfo filter, CancellationToken token = new CancellationToken(), IProgress<string> progress = null) {
-            progress?.Report(Locale.Loc.Instance["LblSwitchingFilter"]);
+        private async Task<FilterInfo> ChangeFilter(FilterInfo filter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null) {
+            progress?.Report(new ApplicationStatus() { Source = Locale.Loc.Instance["LblSwitchingFilter"] });
 
             //Lock access so only one instance can change the filter
             await semaphoreSlim.WaitAsync(token);
@@ -109,7 +109,7 @@ namespace NINA.ViewModel {
                 //unlock access
                 semaphoreSlim.Release();
             }
-            progress?.Report(String.Empty);
+            progress?.Report(new ApplicationStatus() { Source = string.Empty });
             return SelectedFilter;
         }
 

@@ -30,7 +30,7 @@ namespace NINA.Model
             }
         }
 
-        private double _progress;
+        private double _progress = -1;
         public double Progress {
             get {
                 return _progress;

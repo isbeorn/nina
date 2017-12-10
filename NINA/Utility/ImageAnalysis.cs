@@ -2,6 +2,7 @@
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
+using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.ViewModel;
 using System;
@@ -117,16 +118,16 @@ namespace NINA.Utility {
 
 
 
-        public async Task DetectStarsAsync(IProgress<string> progress, CancellationToken token) {
+        public async Task DetectStarsAsync(IProgress<ApplicationStatus> progress, CancellationToken token) {
             _token = token;
             await Task.Run(() => DetectStars(progress));
         }
 
-        public void DetectStars(IProgress<string> progress) {
+        public void DetectStars(IProgress<ApplicationStatus> progress) {
             try {
 
                 Stopwatch overall = Stopwatch.StartNew();
-                progress?.Report("Preparing image for star detection");
+                progress?.Report(new ApplicationStatus() { Status = "Preparing image for star detection" });
 
                 Stopwatch sw = Stopwatch.StartNew();
 
@@ -145,12 +146,12 @@ namespace NINA.Utility {
                 /* prepare image for structure detection */
                 PrepareForStructureDetection(_bitmapToAnalyze);
 
-                progress?.Report("Detecting structures");
+                progress?.Report(new ApplicationStatus() { Status = "Detecting structures" });
 
                 /* get structure info */
                 _blobCounter = DetectStructures(_bitmapToAnalyze);
 
-                progress?.Report("Analyzing stars");
+                progress?.Report(new ApplicationStatus() { Status = "Analyzing stars" });
 
                 _starlist = IdentifyStars();
 
@@ -174,9 +175,9 @@ namespace NINA.Utility {
                 overall = null;
 
             } catch (OperationCanceledException) {
-                progress?.Report("Operation cancelled");
+
             } finally {
-                progress?.Report(string.Empty);
+                progress?.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return;
         }
