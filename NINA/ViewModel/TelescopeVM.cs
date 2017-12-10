@@ -150,6 +150,13 @@ namespace NINA.ViewModel {
                     return false;
                 }
 
+                Mediator.Instance.Request(new StatusUpdateMessage() {
+                    Status = new ApplicationStatus() {
+                        Source = Title,
+                        Status = Locale.Loc.Instance["LblConnecting"]
+                    }
+                });
+
                 var telescope = (ITelescope)TelescopeChooserVM.SelectedDevice;
                 _cancelChooseTelescopeSource = new CancellationTokenSource();
                 if (telescope != null) {
@@ -175,6 +182,12 @@ namespace NINA.ViewModel {
                 }
             } finally {
                 ss.Release();
+                Mediator.Instance.Request(new StatusUpdateMessage() {
+                    Status = new ApplicationStatus() {
+                        Source = Title,
+                        Status = string.Empty
+                    }
+                });
             } 
         }
 

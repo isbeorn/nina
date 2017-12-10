@@ -102,6 +102,13 @@ namespace NINA.ViewModel {
                     return false;
                 }
 
+                Mediator.Instance.Request(new StatusUpdateMessage() {
+                    Status = new ApplicationStatus() {
+                        Source = Title,
+                        Status = Locale.Loc.Instance["LblConnecting"]
+                    }
+                });
+
                 var focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
                 _cancelChooseFocuserSource = new CancellationTokenSource();
                 if (focuser != null) {
@@ -134,6 +141,12 @@ namespace NINA.ViewModel {
                 }
             } finally {
                 ss.Release();
+                Mediator.Instance.Request(new StatusUpdateMessage() {
+                    Status = new ApplicationStatus() {
+                        Source = Title,
+                        Status = string.Empty
+                    }
+                });
             }
         }
 

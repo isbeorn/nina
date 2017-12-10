@@ -52,12 +52,19 @@ namespace NINA.ViewModel {
                         if (item != null) {
                             if (!string.IsNullOrEmpty(status.Status)) {
                                 item.Status = status.Status;
+                                item.Progress = status.Progress;                                
                             } else {
                                 ApplicationStatus.Remove(item);
                             }
                         } else {
                             if(status.Status != null && status.Status != string.Empty) {
-                                ApplicationStatus.Add(new ApplicationStatus() { Source = status.Source, Status = status.Status });
+                                ApplicationStatus.Add(new ApplicationStatus() {
+                                    Source = status.Source,
+                                    Status = status.Status,
+                                    Progress = status.Progress,
+                                    MaxProgress = status.MaxProgress,
+                                    ProgressType = status.ProgressType
+                                });
                             }
                             
                         }

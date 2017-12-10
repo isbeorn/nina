@@ -30,26 +30,43 @@ namespace NINA.Model
             }
         }
 
-        private double _statusValue;
-        public double StatusValue {
+        private double _progress;
+        public double Progress {
             get {
-                return _statusValue;
+                return _progress;
             }
             set {
-                _statusValue = value;
+                _progress = value;
                 RaisePropertyChanged();
             }
         }
 
-        private int _maxStatusValue;
-        public int MaxStatusValue {
+        private int _maxProgress = 1;
+        public int MaxProgress {
             get {
-                return _maxStatusValue;
+                return _maxProgress;
             }
             set {
-                _maxStatusValue = value;
+                _maxProgress = value;
                 RaisePropertyChanged();
             }
+        }
+
+        private StatusProgressType _progressType = StatusProgressType.Percent;
+        public StatusProgressType ProgressType {
+            get {
+                return _progressType;
+            }
+            set {
+                _progressType = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        public enum StatusProgressType {
+            Percent,
+            ValueOfMaxValue
         }
 
 

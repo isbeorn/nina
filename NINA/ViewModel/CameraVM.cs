@@ -2,6 +2,7 @@
 using EDSDKLib;
 using Nikon;
 using NINA.EquipmentChooser;
+using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Mediator;
@@ -74,8 +75,17 @@ namespace NINA.ViewModel {
             double newTemp = GetY(_startPoint, _endPoint, new Vector2(-_startPoint.X, _startPoint.Y), Duration);
             Cam.SetCCDTemperature = newTemp;
 
-            progress.Report(1 - (Duration / _initalDuration));
-            
+            var percentage = 1 - (Duration / _initalDuration);
+            progress.Report(percentage);
+
+
+            Mediator.Instance.Request(new StatusUpdateMessage() {
+                Status = new ApplicationStatus() {
+                    Source = Title,
+                    Status = Locale.Loc.Instance["LblCooling"],
+                    Progress = percentage
+                }
+            });
 
         }
 
@@ -157,7 +167,7 @@ namespace NINA.ViewModel {
                     progress.Report(1);
                 } else {
                     try {
-                        
+
                         double currentTemp = Cam.CCDTemperature;
                         _startPoint = new Vector2(Duration, currentTemp);
                         _endPoint = new Vector2(0, TargetTemp);
@@ -180,6 +190,12 @@ namespace NINA.ViewModel {
                         progress.Report(1);
                         Duration = 0;
                         CoolingRunning = false;
+                        Mediator.Instance.Request(new StatusUpdateMessage() {
+                            Status = new ApplicationStatus() {
+                                Source = Title,
+                                Status = string.Empty
+                            }
+                        });
                     }
                 }
                 return true;
@@ -238,6 +254,13 @@ namespace NINA.ViewModel {
                     return false;
                 }
 
+                Mediator.Instance.Request(new StatusUpdateMessage() {
+                    Status = new ApplicationStatus() {
+                         Source = Title,
+                         Status = Locale.Loc.Instance["LblConnecting"]
+                    }
+                });
+
                 var cam = (ICamera)CameraChooserVM.SelectedDevice;
                 _cancelConnectCameraSource = new CancellationTokenSource();
                 if (cam != null) {
@@ -272,6 +295,12 @@ namespace NINA.ViewModel {
                 }
             } finally {
                 ss.Release();
+                Mediator.Instance.Request(new StatusUpdateMessage() {
+                    Status = new ApplicationStatus() {
+                        Source = Title,
+                        Status = string.Empty
+                    }
+                });
             }            
         }
 
