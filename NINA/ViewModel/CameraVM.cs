@@ -270,6 +270,10 @@ namespace NINA.ViewModel {
                         if (connected) {
                             this.Cam = cam;
                             Connected = true;
+                            if(Cam.CanSetCCDTemperature) {
+                                TargetTemp = Cam.SetCCDTemperature;
+                            }                                
+                            
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
 
                             _updateCameraValuesProgress = new Progress<Dictionary<string, object>>(UpdateCameraValues);
