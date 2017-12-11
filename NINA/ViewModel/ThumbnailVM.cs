@@ -34,8 +34,10 @@ namespace NINA.ViewModel {
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private Task<bool> AddThumbnail(AddThumbnailMessage msg) {
-            return Task<bool>.Run(async () => {                                
-                BitmapSource scaledBitmap = new TransformedBitmap(msg.Image, new ScaleTransform(0.2, 0.2));
+            return Task<bool>.Run(async () => {
+                var factor = 100 / msg.Image.Width;
+
+                BitmapSource scaledBitmap = new TransformedBitmap(msg.Image, new ScaleTransform(factor, factor));
                 scaledBitmap.Freeze();
                 
                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
@@ -68,26 +70,6 @@ namespace NINA.ViewModel {
                 _thumbnails = value;
                 RaisePropertyChanged();                
             }
-        }
-
-        private static BitmapSource CreateResizedImage(ImageSource source, int width, int height, int margin) {
-            var rect = new Rect(margin, margin, width - margin * 2, height - margin * 2);
-
-            var group = new DrawingGroup();
-            RenderOptions.SetBitmapScalingMode(group, BitmapScalingMode.HighQuality);
-            group.Children.Add(new ImageDrawing(source, rect));
-
-            var drawingVisual = new DrawingVisual();
-            using (var drawingContext = drawingVisual.RenderOpen())
-                drawingContext.DrawDrawing(group);
-
-            var resizedImage = new RenderTargetBitmap(
-                width, height,         // Resized dimensions
-                96, 96,                // Default DPI values
-                PixelFormats.Default); // Default pixel format
-            resizedImage.Render(drawingVisual);
-
-            return BitmapFrame.Create(resizedImage);
         }
 
     }
