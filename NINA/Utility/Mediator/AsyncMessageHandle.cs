@@ -264,9 +264,8 @@ namespace NINA.Utility.Mediator {
     }
 
     class SetImageMessage : AsyncMediatorMessage<bool> {
-        public BitmapSource Image { get; set; }
+        public ImageArray ImageArray { get; set; }
         public double Mean { get; set; }
-        public bool IsBayered { get; internal set; }
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using NINA.Utility;
+﻿using NINA.Model.MyCamera;
+using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using nom.tam.fits;
@@ -99,28 +100,27 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> SelectImage() {
-            var img = LoadOriginalImage();
-            if(img != null) {
-                return await Mediator.Instance.RequestAsync(new SetImageMessage() { Image = img, Mean = Mean, IsBayered = IsBayered });
+            var iarr = await LoadOriginalImage();
+            if(iarr != null) {
+                return await Mediator.Instance.RequestAsync(new SetImageMessage() { ImageArray = iarr, Mean = Mean });
             } else {
                 return false;
             }            
         }
 
-        private BitmapSource LoadOriginalImage() {
-            BitmapSource source = null;
+        private async Task<ImageArray> LoadOriginalImage() {
+            ImageArray iarr = null;
 
             try {
                 if(File.Exists(ImagePath.AbsolutePath)) {
-                    if(FileType == FileTypeEnum.FITS) {                        
-                        Notification.ShowWarning("Fits Not yet supported");
+                    if(FileType == FileTypeEnum.FITS) {
+                        iarr = await LoadFits();
                     } else if (FileType == FileTypeEnum.XISF) {
-                        Notification.ShowWarning("Xisf Not yet supported");
+                        Notification.ShowWarning("Xisf not yet supported for thumbnails");
                     } else if (FileType == FileTypeEnum.TIFF) {
-                        source = LoadTiff();
+                        iarr = await LoadTiff();
                     }
                     
-                    source.Freeze();
                 } else {
                     Notification.ShowError("File does not exist");
                 }                
@@ -129,14 +129,36 @@ namespace NINA.ViewModel {
                 Notification.ShowError(ex.Message);
             }
             
-            return source;
+            return iarr;
         }
 
-        private BitmapSource LoadTiff() {            
+        private async Task<ImageArray> LoadTiff() {            
             TiffBitmapDecoder TifDec = new TiffBitmapDecoder(ImagePath, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
             BitmapFrame bmp = TifDec.Frames[0];
-                 
-            return bmp;
+            int stride = bmp.PixelWidth * ((bmp.Format.BitsPerPixel + 7) / 8);
+            int arraySize = stride * bmp.PixelHeight;
+            ushort[] pixels = new ushort[(int)(bmp.Width * bmp.Height)];
+            bmp.CopyPixels(pixels, stride, 0);
+            var imgArr = await ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, IsBayered);
+            return imgArr;
+        }
+
+        private async Task<ImageArray> LoadFits() {
+            Fits f = new Fits(ImagePath);
+            ImageHDU hdu = (ImageHDU) f.ReadHDU();
+            Array[] arr = (Array[])hdu.Data.DataArray;
+
+            var width = hdu.Header.GetIntValue("NAXIS1");
+            var height = hdu.Header.GetIntValue("NAXIS2");
+            ushort[] pixels = new ushort[width * height];
+            var i = 0;
+            foreach (var row in arr) {
+                foreach(short val in row) {
+                    pixels[i++] = (ushort)(val + short.MaxValue);
+                }
+            }
+            var imgArr = await ImageArray.CreateInstance(pixels, width, height, IsBayered);
+            return imgArr;
         }
 
         

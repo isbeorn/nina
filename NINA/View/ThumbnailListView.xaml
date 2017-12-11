@@ -20,7 +20,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Margin="5" Command="{Binding SelectCommand}">
-                            <Grid>
+                            <Grid Margin="5">
                                 <Image Source="{Binding ThumbnailImage}" />
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal">

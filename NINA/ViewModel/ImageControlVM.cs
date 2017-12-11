@@ -86,16 +86,9 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsyncRequest(
                 new SetImageMessageHandle(async (SetImageMessage msg) => {
-                    await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                        var img = msg.Image;
-                        if (AutoStretch) {
-                            img = Stretch(msg.Mean, img);
-                        }
-                        if (msg.IsBayered) {
-                            img = ImageAnalysis.Debayer(img, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
-                        }                        
-                        Image = img;
-                    }));
+                    ImgArr = msg.ImageArray;
+
+                    await PrepareImage(ImgArr, new CancellationToken());
                     return true;
                 })
             );
