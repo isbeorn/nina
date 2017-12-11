@@ -53,7 +53,8 @@ namespace NINA.ViewModel {
                 if (!AutoStretch) {
                     AutoStretch = true;
                 }
-                await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Progress = _progress, Token = _plateSolveToken.Token });
+                await PrepareImageHelper();
+                await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Progress = _progress, Token = _plateSolveToken.Token, Image = Image });
                 return true;
             } else {
                 return false;
@@ -86,7 +87,14 @@ namespace NINA.ViewModel {
             Mediator.Instance.RegisterAsyncRequest(
                 new SetImageMessageHandle(async (SetImageMessage msg) => {
                     await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                        Image = Stretch(msg.Mean, msg.Image);
+                        var img = msg.Image;
+                        if (AutoStretch) {
+                            img = Stretch(msg.Mean, img);
+                        }
+                        if (msg.IsBayered) {
+                            img = ImageAnalysis.Debayer(img, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
+                        }                        
+                        Image = img;
                     }));
                     return true;
                 })
@@ -379,7 +387,8 @@ namespace NINA.ViewModel {
                         Image = Image,
                         FileType = Settings.FileType,
                         Mean = ImgArr.Statistics.Mean,
-                        HFR = ImgArr.Statistics.HFR
+                        HFR = ImgArr.Statistics.HFR,
+                        IsBayered = ImgArr.IsBayered
                     }
                 );
 

@@ -65,7 +65,7 @@ namespace NINA.ViewModel {
                         if (msg.SyncReslewRepeat) {
                             return await CaptureSolveSyncAndReslew(msg.Token, msg.Progress);
                         } else {
-                            return await Solve(msg.Progress, msg.Token);
+                            return await Solve(msg.Image ?? Image, msg.Progress, msg.Token);
                         }
                         
                     }
@@ -256,7 +256,7 @@ namespace NINA.ViewModel {
 
             canceltoken.ThrowIfCancellationRequested();
 
-            return await Solve(progress, canceltoken); ;
+            return await Solve(Image, progress, canceltoken); ;
         }
 
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<ApplicationStatus> progress) {
@@ -327,13 +327,12 @@ namespace NINA.ViewModel {
         /// <param name="progress"></param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
-        public async Task<PlateSolveResult> Solve(IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
-            var solver = GetPlateSolver();
+        public async Task<PlateSolveResult> Solve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+            var solver = GetPlateSolver(source);
             if (solver == null) {
                 return null;
             }
-
-            BitmapSource source = Image;
+            
             BitmapFrame image = null;
 
             image = BitmapFrame.Create(source);
@@ -361,16 +360,16 @@ namespace NINA.ViewModel {
             _solveCancelToken?.Cancel();
         }
 
-        private IPlateSolver GetPlateSolver() {
+        private IPlateSolver GetPlateSolver(BitmapSource img) {
             IPlateSolver solver = null;
-            if (Image != null) {
+            if (img != null) {
                 Coordinates coords = null;
                 if (Telescope?.Connected == true) {
                     coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
                 }
                 var binning = Cam?.BinX ?? 1;
 
-                solver = PlateSolverFactory.CreateInstance(binning, Image.Width, Image.Height, coords);
+                solver = PlateSolverFactory.CreateInstance(binning, img.Width, img.Height, coords);
             }
 
             return solver;

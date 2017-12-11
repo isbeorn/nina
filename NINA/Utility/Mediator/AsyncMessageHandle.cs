@@ -218,6 +218,7 @@ namespace NINA.Utility.Mediator {
     class PlateSolveMessage : AsyncMediatorMessage<PlateSolveResult> {
         public CaptureSequence Sequence { get; set; }
         public bool SyncReslewRepeat { get; set; }
+        public BitmapSource Image { get; internal set; }
     }
 
     class ChangeFilterWheelPositionMessage : AsyncMediatorMessage<FilterInfo> {
@@ -259,11 +260,13 @@ namespace NINA.Utility.Mediator {
         public Uri PathToImage { get; set; }
         public FileTypeEnum FileType { get; set; }
         public double HFR { get; internal set; }
+        public bool IsBayered { get; internal set; }
     }
 
     class SetImageMessage : AsyncMediatorMessage<bool> {
         public BitmapSource Image { get; set; }
         public double Mean { get; set; }
+        public bool IsBayered { get; internal set; }
     }
 
 }

@@ -38,7 +38,7 @@ namespace NINA.ViewModel {
                 scaledBitmap.Freeze();
                 
                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    Thumbnails.Add(new Thumbnail() { ThumbnailImage = scaledBitmap, ImagePath = msg.PathToImage, FileType = msg.FileType, Mean = msg.Mean, HFR = msg.HFR });
+                    Thumbnails.Add(new Thumbnail() { ThumbnailImage = scaledBitmap, ImagePath = msg.PathToImage, FileType = msg.FileType, Mean = msg.Mean, HFR = msg.HFR, IsBayered = msg.IsBayered });
                 }));                
                 return true;
             });            
@@ -101,7 +101,7 @@ namespace NINA.ViewModel {
         private async Task<bool> SelectImage() {
             var img = LoadOriginalImage();
             if(img != null) {
-                return await Mediator.Instance.RequestAsync(new SetImageMessage() { Image = img, Mean = Mean });
+                return await Mediator.Instance.RequestAsync(new SetImageMessage() { Image = img, Mean = Mean, IsBayered = IsBayered });
             } else {
                 return false;
             }            
@@ -145,6 +145,8 @@ namespace NINA.ViewModel {
         public double Mean { get; set; }
 
         public double HFR { get; set; }
+
+        public bool IsBayered { get; set; }
 
         public Uri ImagePath { get; set; }
 
