@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Locale"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -19,7 +20,36 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Margin="5" Command="{Binding SelectCommand}">
-                            <Image Source="{Binding ThumbnailImage}" />
+                            <Grid>
+                                <Image Source="{Binding ThumbnailImage}" />
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{ns:Loc LblMean}" />
+                                        <TextBlock Text="{Binding Mean, StringFormat=\{0:#\}}">
+                                            <!--<TextBlock.Effect>
+                                                <DropShadowEffect
+                                                    BlurRadius="5"
+                                                    Opacity="1"
+                                                    ShadowDepth="0"
+                                                    Color="Black" />
+                                            </TextBlock.Effect>-->
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{ns:Loc LblHFR}" />
+                                        <TextBlock Text="{Binding HFR, StringFormat=\{0:#.00\}}">
+                                            <!--<TextBlock.Effect>
+                                                <DropShadowEffect
+                                                    BlurRadius="5"
+                                                    Opacity="1"
+                                                    ShadowDepth="0"
+                                                    Color="Black" />
+                                            </TextBlock.Effect>-->
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+
                         </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

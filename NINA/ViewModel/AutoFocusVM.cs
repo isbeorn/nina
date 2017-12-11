@@ -126,7 +126,7 @@ namespace NINA.ViewModel {
                 var iarr = await Mediator.Instance.RequestAsync(new CaptureImageMessage() { Sequence = seq, Token = token, Progress = progress });
 
                 var source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
-                source = ImageControlVM.Stretch(iarr, source);
+                source = await ImageControlVM.StretchAsync(iarr, source);
                 var analysis = new ImageAnalysis(source, iarr);
                 await analysis.DetectStarsAsync(progress, token);
                 

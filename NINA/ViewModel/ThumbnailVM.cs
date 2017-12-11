@@ -25,19 +25,20 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsyncRequest(
                 new AddThumbnailMessageHandle((AddThumbnailMessage msg) => {
-                    return AddThumbnail(msg.Image, msg.PathToImage, msg.FileType);
+                    return AddThumbnail(msg);
                 })
             );
         }
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
-        private Task<bool> AddThumbnail(BitmapSource image, Uri pathToImage, FileTypeEnum fileType) {
-            return Task<bool>.Run(async () => {
-                var scaledBitmap = CreateResizedImage(image, 100, 100, 0);
+        private Task<bool> AddThumbnail(AddThumbnailMessage msg) {
+            return Task<bool>.Run(async () => {                                
+                BitmapSource scaledBitmap = new TransformedBitmap(msg.Image, new ScaleTransform(0.2, 0.2));
                 scaledBitmap.Freeze();
+                
                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    Thumbnails.Add(new Thumbnail() { ThumbnailImage = scaledBitmap, ImagePath = pathToImage, FileType = fileType });
+                    Thumbnails.Add(new Thumbnail() { ThumbnailImage = scaledBitmap, ImagePath = msg.PathToImage, FileType = msg.FileType, Mean = msg.Mean, HFR = msg.HFR });
                 }));                
                 return true;
             });            
@@ -68,7 +69,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private static BitmapFrame CreateResizedImage(ImageSource source, int width, int height, int margin) {
+        private static BitmapSource CreateResizedImage(ImageSource source, int width, int height, int margin) {
             var rect = new Rect(margin, margin, width - margin * 2, height - margin * 2);
 
             var group = new DrawingGroup();
@@ -100,7 +101,7 @@ namespace NINA.ViewModel {
         private async Task<bool> SelectImage() {
             var img = LoadOriginalImage();
             if(img != null) {
-                return await Mediator.Instance.RequestAsync(new SetImageMessage() { Image = img });
+                return await Mediator.Instance.RequestAsync(new SetImageMessage() { Image = img, Mean = Mean });
             } else {
                 return false;
             }            
@@ -138,27 +139,14 @@ namespace NINA.ViewModel {
             return bmp;
         }
 
-        private BitmapSource _thumbnailImage;
-        public BitmapSource ThumbnailImage {
-            get {
-                return _thumbnailImage;
-            }
-            set {
-                _thumbnailImage = value;
-                RaisePropertyChanged();
-            }
-        }
+        
+        public BitmapSource ThumbnailImage { get; set; }
 
-        private Uri _imagePath;
-        public Uri ImagePath {
-            get {
-                return _imagePath;
-            }
-            set {
-                _imagePath = value;
-                RaisePropertyChanged();
-            }
-        }
+        public double Mean { get; set; }
+
+        public double HFR { get; set; }
+
+        public Uri ImagePath { get; set; }
 
         public FileTypeEnum FileType { get; set; }
 

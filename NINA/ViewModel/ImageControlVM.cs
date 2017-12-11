@@ -86,7 +86,7 @@ namespace NINA.ViewModel {
             Mediator.Instance.RegisterAsyncRequest(
                 new SetImageMessageHandle(async (SetImageMessage msg) => {
                     await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                        Image = msg.Image;
+                        Image = Stretch(msg.Mean, msg.Image);
                     }));
                     return true;
                 })
@@ -280,19 +280,33 @@ namespace NINA.ViewModel {
             return source;
         }
 
-        private async Task<BitmapSource> StretchAsync(ImageArray iarr, BitmapSource source) {
-            return await Task<BitmapSource>.Run(() => Stretch(iarr, source));
+        public static async Task<BitmapSource> StretchAsync(ImageArray iarr, BitmapSource source) {
+            return await Task<BitmapSource>.Run(() => Stretch(iarr.Statistics.Mean, source, System.Windows.Media.PixelFormats.Gray16));
         }
 
-        public static BitmapSource Stretch(ImageArray iarr, BitmapSource source) {
-            var img = ImageAnalysis.BitmapFromSource(source);
+        public static async Task<BitmapSource> StretchAsync(double mean, BitmapSource source) {
+            return await Task<BitmapSource>.Run(() => Stretch(mean, source, System.Windows.Media.PixelFormats.Gray16));
+        }
 
-            var filter = ImageAnalysis.GetColorRemappingFilter(iarr.Statistics.Mean, Settings.AutoStretchFactor);
+        public static async Task<BitmapSource> StretchAsync(double mean, BitmapSource source, System.Windows.Media.PixelFormat pf) {
+            return await Task<BitmapSource>.Run(() => Stretch(mean, source, pf));
+        }
+
+        public static BitmapSource Stretch(double mean, BitmapSource source) {            
+            return Stretch(mean, source, System.Windows.Media.PixelFormats.Gray16);
+        }
+
+        public static BitmapSource Stretch(double mean, BitmapSource source, System.Windows.Media.PixelFormat pf) {
+            var img = ImageAnalysis.BitmapFromSource(source);
+            return Stretch(mean, img, pf);
+        }
+
+        public static BitmapSource Stretch(double mean, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf) {           
+
+            var filter = ImageAnalysis.GetColorRemappingFilter(mean, Settings.AutoStretchFactor);
             filter.ApplyInPlace(img);
 
-            source = null;
-
-            source = ImageAnalysis.ConvertBitmap(img, System.Windows.Media.PixelFormats.Gray16);
+            var source = ImageAnalysis.ConvertBitmap(img, pf);
             source.Freeze();
             return source;
         }
@@ -359,7 +373,15 @@ namespace NINA.ViewModel {
                     completefilename = SaveTiff(completefilename);
                 }
 
-                await Mediator.Instance.RequestAsync(new AddThumbnailMessage() { PathToImage = new Uri(completefilename), Image = Image, FileType = Settings.FileType });
+                await Mediator.Instance.RequestAsync(
+                    new AddThumbnailMessage() {
+                        PathToImage = new Uri(completefilename),
+                        Image = Image,
+                        FileType = Settings.FileType,
+                        Mean = ImgArr.Statistics.Mean,
+                        HFR = ImgArr.Statistics.HFR
+                    }
+                );
 
                 sw.Stop();
                 Debug.Print("Time to save: " + sw.Elapsed);

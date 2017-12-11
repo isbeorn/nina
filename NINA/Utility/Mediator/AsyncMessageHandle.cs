@@ -255,12 +255,15 @@ namespace NINA.Utility.Mediator {
 
     class AddThumbnailMessage : AsyncMediatorMessage<bool> {
         public BitmapSource Image { get; set; }
+        public double Mean { get; set; }
         public Uri PathToImage { get; set; }
         public FileTypeEnum FileType { get; set; }
+        public double HFR { get; internal set; }
     }
 
     class SetImageMessage : AsyncMediatorMessage<bool> {
         public BitmapSource Image { get; set; }
+        public double Mean { get; set; }
     }
 
 }
