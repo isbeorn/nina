@@ -98,7 +98,7 @@ namespace NINA.ViewModel {
                     if(FileType == FileTypeEnum.FITS) {
                         iarr = await LoadFits();
                     } else if (FileType == FileTypeEnum.XISF) {
-                        Notification.ShowWarning("Xisf not yet supported for thumbnails");
+                        iarr = await LoadXisf();
                     } else if (FileType == FileTypeEnum.TIFF) {
                         iarr = await LoadTiff();
                     }
@@ -111,6 +111,11 @@ namespace NINA.ViewModel {
                 Notification.ShowError(ex.Message);
             }
             
+            return iarr;
+        }
+
+        private async Task<ImageArray> LoadXisf() {
+            var iarr = await XISF.LoadImageArrayFromFile(ImagePath, IsBayered);
             return iarr;
         }
 

@@ -15,6 +15,25 @@ namespace NINA.Utility {
             this.Header = header;
         }
 
+        public static async Task<ImageArray> LoadImageArrayFromFile(Uri filePath, bool isBayered = false) {
+            using (FileStream fs = new FileStream(filePath.AbsolutePath, FileMode.Open)) {
+                byte[] arr = new byte[16];
+                fs.Read(arr, 0, 16);
+                var xml = XElement.Load(fs);
+                var imageTag = xml.Element("Image");
+                var geometry = imageTag.Attribute("geometry").Value.Split(':');
+                int width = Int32.Parse(geometry[0]);
+                int height = Int32.Parse(geometry[1]);
+
+                var base64Img = xml.Element("Image").Element("Data").Value;
+                byte[] encodedImg = Convert.FromBase64String(base64Img);
+                ushort[] img = new ushort[(int)Math.Ceiling(encodedImg.Length / 2.0)];
+                Buffer.BlockCopy(encodedImg,0, img, 0, encodedImg.Length);
+
+                return await ImageArray.CreateInstance(img, width, height, isBayered);
+            }
+        }
+
         public bool Save(Stream s) {
             Header.Save(s);
             return true;
