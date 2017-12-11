@@ -82,6 +82,15 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 Telescope = (ITelescope)o;
             }, MediatorMessages.TelescopeChanged);
+
+            Mediator.Instance.RegisterAsyncRequest(
+                new SetImageMessageHandle(async (SetImageMessage msg) => {
+                    await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                        Image = msg.Image;
+                    }));
+                    return true;
+                })
+            );
         }
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
@@ -310,7 +319,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> SaveToDiskAsync(ImageParameters parameters, CancellationToken token) {
             _progress.Report(new ApplicationStatus() { Status = "Saving..." });
-            await Task.Run(() => {
+            await Task.Run(async () => {
 
                 List<OptionsVM.ImagePattern> p = new List<OptionsVM.ImagePattern>();
 
@@ -340,15 +349,18 @@ namespace NINA.ViewModel {
                 Stopwatch sw = Stopwatch.StartNew();
                 if (Settings.FileType == FileTypeEnum.FITS) {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
-                    SaveFits(completefilename, parameters);
+                    completefilename = SaveFits(completefilename, parameters);
                 } else if (Settings.FileType == FileTypeEnum.TIFF) {
-                    SaveTiff(completefilename);
+                    completefilename = SaveTiff(completefilename);
                 } else if (Settings.FileType == FileTypeEnum.XISF) {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
-                    SaveXisf(completefilename, parameters);
+                    completefilename = SaveXisf(completefilename, parameters);
                 } else {
-                    SaveTiff(completefilename);
+                    completefilename = SaveTiff(completefilename);
                 }
+
+                await Mediator.Instance.RequestAsync(new AddThumbnailMessage() { PathToImage = new Uri(completefilename), Image = Image, FileType = Settings.FileType });
+
                 sw.Stop();
                 Debug.Print("Time to save: " + sw.Elapsed);
                 sw = null;
@@ -360,7 +372,7 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private void SaveFits(string path, ImageParameters parameters) {
+        private string SaveFits(string path, ImageParameters parameters) {
             try {
                 Header h = new Header();
                 h.AddValue("SIMPLE", "T", "C# FITS");
@@ -414,11 +426,11 @@ namespace NINA.ViewModel {
                 using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     fits.Write(fs);
                 }
-
+                return uniquePath;
             } catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
                 Logger.Error(ex.Message, ex.StackTrace);
-
+                return string.Empty;
             }
         }
 
@@ -437,7 +449,7 @@ namespace NINA.ViewModel {
             return newFullPath;
         }
 
-        private void SaveTiff(String path) {
+        private string SaveTiff(String path) {
 
             try {
                 BitmapSource bmpSource = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
@@ -451,14 +463,15 @@ namespace NINA.ViewModel {
                     encoder.Frames.Add(BitmapFrame.Create(bmpSource));
                     encoder.Save(fs);
                 }
+                return uniquePath;
             } catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
                 Logger.Error(ex.Message, ex.StackTrace);
-
+                return string.Empty;
             }
         }
 
-        private void SaveXisf(String path, ImageParameters parameters) {
+        private string SaveXisf(String path, ImageParameters parameters) {
             try {
 
 
@@ -532,11 +545,12 @@ namespace NINA.ViewModel {
                 using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     img.Save(fs);
                 }
+                return uniquePath;
 
             } catch (Exception ex) {
                 Notification.ShowError("Image file error: " + ex.Message);
                 Logger.Error(ex.Message, ex.StackTrace);
-
+                return string.Empty;
             }
         }
 

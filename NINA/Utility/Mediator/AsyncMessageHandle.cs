@@ -165,11 +165,25 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(CapturePrepareAndSaveImageMessage).Name; } }
     }
 
+    class AddThumbnailMessageHandle : AsyncMessageHandle<bool> {
+        public AddThumbnailMessageHandle(Func<AddThumbnailMessage, Task<bool>> callback) {
+            Callback = (f) => callback((AddThumbnailMessage)f);
+        }
+        public override string MessageType { get { return typeof(AddThumbnailMessage).Name; } }
+    }
+
+    class SetImageMessageHandle : AsyncMessageHandle<bool> {
+        public SetImageMessageHandle(Func<SetImageMessage, Task<bool>> callback) {
+            Callback = (f) => callback((SetImageMessage)f);
+        }
+        public override string MessageType { get { return typeof(SetImageMessage).Name; } }
+    }
+
 
     /* Message definition */
     abstract class AsyncMediatorMessage<TMessageResult> {
         public CancellationToken Token { get; set; } = default(CancellationToken);
-        public new IProgress<ApplicationStatus> Progress { get; set; }
+        public IProgress<ApplicationStatus> Progress { get; set; }
     }
 
 
@@ -237,6 +251,16 @@ namespace NINA.Utility.Mediator {
         public CaptureSequence Sequence { get; set; }
         public bool Save { get; set; }
         public string TargetName { get; set; }
+    }
+
+    class AddThumbnailMessage : AsyncMediatorMessage<bool> {
+        public BitmapSource Image { get; set; }
+        public Uri PathToImage { get; set; }
+        public FileTypeEnum FileType { get; set; }
+    }
+
+    class SetImageMessage : AsyncMediatorMessage<bool> {
+        public BitmapSource Image { get; set; }
     }
 
 }

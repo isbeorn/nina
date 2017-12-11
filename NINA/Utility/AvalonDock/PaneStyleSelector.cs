@@ -23,6 +23,8 @@ namespace NINA.Utility.AvalonDock {
 
             if (item is ImageControlVM) {
                 return DocumentStyle;
+            } else if (item is ThumbnailVM) {
+                return DocumentStyle;            
             } else {
                 return AnchorableStyle;
             }

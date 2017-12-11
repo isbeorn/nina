@@ -51,6 +51,7 @@ namespace NINA.ViewModel {
 
         public void InitAvalonDockLayout() {
             DockManagerVM.Documents.Add(ImagingVM.ImageControl);
+            DockManagerVM.Documents.Add(ThumbnailVM);
             DockManagerVM.Anchorables.Add(CameraVM);
             DockManagerVM.Anchorables.Add(TelescopeVM);
             DockManagerVM.Anchorables.Add(PlatesolveVM);
@@ -154,6 +155,20 @@ namespace NINA.ViewModel {
             }
             set {
                 _meridianFlipVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ThumbnailVM _thumbnailVM;
+        public ThumbnailVM ThumbnailVM {
+            get {
+                if(_thumbnailVM == null) {
+                    _thumbnailVM = new ThumbnailVM();
+                }
+                return _thumbnailVM;
+            }
+            set {
+                _thumbnailVM = value;
                 RaisePropertyChanged();
             }
         }

@@ -123,83 +123,90 @@
                 <util:PaneTemplateSelector>
                     <util:PaneTemplateSelector.CameraTemplate>
                         <DataTemplate>
-                            <local:AnchorableCameraView />
+                            <view:AnchorableCameraView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.CameraTemplate>
                     <util:PaneTemplateSelector.TelescopeTemplate>
                         <DataTemplate>
-                            <local:AnchorableTelescopeView />
+                            <view:AnchorableTelescopeView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.TelescopeTemplate>
+
                     <util:PaneTemplateSelector.ImageControlTemplate>
                         <DataTemplate>
-                            <local:ImageAreaView />
+                            <view:ImageAreaView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ImageControlTemplate>
 
+                    <util:PaneTemplateSelector.ThumbnailTemplate>
+                        <DataTemplate>
+                            <view:ThumbnailListView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.ThumbnailTemplate>
+
                     <util:PaneTemplateSelector.PlatesolveTemplate>
                         <DataTemplate>
-                            <local:AnchorablePlateSolveView />
+                            <view:AnchorablePlateSolveView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.PlatesolveTemplate>
 
                     <util:PaneTemplateSelector.PolarAlignmentTemplate>
                         <DataTemplate>
-                            <local:AnchorablePolarAlignmentView />
+                            <view:AnchorablePolarAlignmentView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.PolarAlignmentTemplate>
 
                     <util:PaneTemplateSelector.GuiderTemplate>
                         <DataTemplate>
-                            <local:AnchorableGuiderView />
+                            <view:AnchorableGuiderView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.GuiderTemplate>
 
                     <util:PaneTemplateSelector.FilterWheelTemplate>
                         <DataTemplate>
-                            <local:AnchorableFilterWheelView />
+                            <view:AnchorableFilterWheelView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.FilterWheelTemplate>
 
                     <util:PaneTemplateSelector.ImagingTemplate>
                         <DataTemplate>
-                            <local:AnchorableCameraControlView />
+                            <view:AnchorableCameraControlView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ImagingTemplate>
 
                     <util:PaneTemplateSelector.ImageHistoryTemplate>
                         <DataTemplate>
-                            <local:AnchorableImageHistoryView />
+                            <view:AnchorableImageHistoryView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ImageHistoryTemplate>
 
                     <util:PaneTemplateSelector.ImageStatisticsTemplate>
                         <DataTemplate>
-                            <local:AnchorableImageStatisticsView />
+                            <view:AnchorableImageStatisticsView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ImageStatisticsTemplate>
 
                     <util:PaneTemplateSelector.SequenceTemplate>
                         <DataTemplate>
-                            <local:AnchorableSequenceView />
+                            <view:AnchorableSequenceView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.SequenceTemplate>
 
                     <util:PaneTemplateSelector.WeatherDataTemplate>
                         <DataTemplate>
-                            <local:AnchorableWeatherDataView />
+                            <view:AnchorableWeatherDataView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.WeatherDataTemplate>
 
                     <util:PaneTemplateSelector.FocuserTemplate>
                         <DataTemplate>
-                            <local:AnchorableFocuserView />
+                            <view:AnchorableFocuserView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.FocuserTemplate>
 
                     <util:PaneTemplateSelector.AutoFocusTemplate>
                         <DataTemplate>
-                            <local:AnchorableAutoFocusView />
+                            <view:AnchorableAutoFocusView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.AutoFocusTemplate>
 
