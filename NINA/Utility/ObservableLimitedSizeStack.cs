@@ -118,7 +118,7 @@ namespace NINA.Utility {
                 _underLyingLinkedList.Clear();
                 OnCollectionChanged(NotifyCollectionChangedAction.Reset);
             } finally {
-                _lock.EnterWriteLock();
+                _lock.ExitWriteLock();
             }            
         }
 
@@ -136,7 +136,7 @@ namespace NINA.Utility {
             try {
                 _underLyingLinkedList.CopyTo(array, index);
             } finally {
-                _lock.EnterWriteLock();
+                _lock.ExitWriteLock();
             }            
         }
 
@@ -206,7 +206,7 @@ namespace NINA.Utility {
             try {
                 return _underLyingLinkedList.Remove(item);
             } finally {
-                _lock.EnterWriteLock();
+                _lock.ExitWriteLock();
             }            
         }
 
