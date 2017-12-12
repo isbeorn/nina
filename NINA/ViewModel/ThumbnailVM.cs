@@ -50,6 +50,7 @@ namespace NINA.ViewModel {
                         Mean = msg.Mean,
                         HFR = msg.HFR,
                         Filter = msg.Filter,
+                        StatisticsId = msg.StatisticsId,
                         IsBayered = msg.IsBayered };
                     Thumbnails.Add(thumbnail);
                     SelectedThumbnail = thumbnail;
@@ -113,7 +114,7 @@ namespace NINA.ViewModel {
                     } else if (FileType == FileTypeEnum.TIFF) {
                         iarr = await LoadTiff();
                     }
-                    
+                    iarr.Statistics.Id = StatisticsId;                    
                 } else {
                     Notification.ShowError("File does not exist");
                 }                
@@ -179,5 +180,7 @@ namespace NINA.ViewModel {
         public string Filter { get; set; }
 
         public double Duration { get; set; }
+
+        public int StatisticsId { get; set; }
     }
 }
