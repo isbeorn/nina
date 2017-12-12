@@ -11,7 +11,7 @@ namespace NINA.ViewModel {
 
         public ImageHistoryVM() {
             Title = "LblHFRHistory";
-            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistorySVG"];
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HFRHistorySVG"];
 
             ContentId = nameof(ImageHistoryVM);
             _nextStatHistoryId = 1;

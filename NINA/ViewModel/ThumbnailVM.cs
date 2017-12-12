@@ -23,7 +23,7 @@ namespace NINA.ViewModel {
             Title = "LblImageHistory";
             ContentId = nameof(ThumbnailVM);
             CanClose = false;
-            //ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ThumbnailSVG"];         
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistorySVG"];         
 
             Mediator.Instance.RegisterAsyncRequest(
                 new AddThumbnailMessageHandle((AddThumbnailMessage msg) => {
