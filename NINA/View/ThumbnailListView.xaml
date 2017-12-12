@@ -10,7 +10,11 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+        <ScrollViewer
+            x:Name="ScrollViewer"
+            HorizontalScrollBarVisibility="Auto"
+            ScrollChanged="ScrollViewer_ScrollChanged"
+            VerticalScrollBarVisibility="Disabled">
             <ItemsControl VerticalAlignment="Center" ItemsSource="{Binding Path=Thumbnails}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
