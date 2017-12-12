@@ -88,7 +88,7 @@ namespace NINA.ViewModel {
                 new SetImageMessageHandle(async (SetImageMessage msg) => {
                     ImgArr = msg.ImageArray;
 
-                    await PrepareImage(ImgArr, new CancellationToken());
+                    await PrepareImage(ImgArr, new CancellationToken(),false,null,true);
                     return true;
                 })
             );
@@ -228,7 +228,8 @@ namespace NINA.ViewModel {
                 ImageArray iarr,  
                 CancellationToken token, 
                 bool bSave = false,
-                ImageParameters parameters = null) {
+                ImageParameters parameters = null,
+                bool skipHistory = false) {
             BitmapSource source = null;
             try {
                 await ss.WaitAsync(token);
@@ -267,7 +268,9 @@ namespace NINA.ViewModel {
                         ImgArr = iarr;
                         Image = source;
                         ImgStatisticsVM.Add(ImgArr.Statistics);
-                        ImgHistoryVM.Add(iarr.Statistics);
+                        if(!skipHistory) {
+                            ImgHistoryVM.Add(iarr.Statistics);
+                        }                        
                     }));
 
                     if(bSave) {
