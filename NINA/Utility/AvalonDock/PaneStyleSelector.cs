@@ -22,9 +22,7 @@ namespace NINA.Utility.AvalonDock {
         public override System.Windows.Style SelectStyle(object item, System.Windows.DependencyObject container) {
 
             if (item is ImageControlVM) {
-                return DocumentStyle;
-            } else if (item is ThumbnailVM) {
-                return DocumentStyle;            
+                return DocumentStyle;      
             } else {
                 return AnchorableStyle;
             }

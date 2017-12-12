@@ -51,7 +51,7 @@ namespace NINA.ViewModel {
 
         public void InitAvalonDockLayout() {
             DockManagerVM.Documents.Add(ImagingVM.ImageControl);
-            DockManagerVM.Documents.Add(ThumbnailVM);
+            DockManagerVM.Anchorables.Add(ThumbnailVM);
             DockManagerVM.Anchorables.Add(CameraVM);
             DockManagerVM.Anchorables.Add(TelescopeVM);
             DockManagerVM.Anchorables.Add(PlatesolveVM);
