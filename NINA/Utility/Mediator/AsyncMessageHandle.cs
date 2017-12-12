@@ -262,6 +262,7 @@ namespace NINA.Utility.Mediator {
         public double HFR { get; internal set; }
         public bool IsBayered { get; internal set; }
         public double Duration { get; internal set; }
+        public string Filter { get; internal set; }
     }
 
     class SetImageMessage : AsyncMediatorMessage<bool> {

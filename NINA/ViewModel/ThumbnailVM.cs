@@ -1,4 +1,5 @@
 ﻿using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
@@ -48,6 +49,7 @@ namespace NINA.ViewModel {
                         Duration = msg.Duration,
                         Mean = msg.Mean,
                         HFR = msg.HFR,
+                        Filter = msg.Filter,
                         IsBayered = msg.IsBayered };
                     Thumbnails.Add(thumbnail);
                     SelectedThumbnail = thumbnail;
@@ -173,6 +175,8 @@ namespace NINA.ViewModel {
         public ICommand SelectCommand { get; set; }
 
         public DateTime Date { get; set; } = DateTime.Now;
+
+        public string Filter { get; set; }
 
         public double Duration { get; set; }
     }

@@ -382,7 +382,8 @@ namespace NINA.ViewModel {
                         Mean = ImgArr.Statistics.Mean,
                         HFR = ImgArr.Statistics.HFR,
                         Duration = parameters.ExposureTime,
-                        IsBayered = ImgArr.IsBayered
+                        IsBayered = ImgArr.IsBayered,
+                        Filter = parameters.FilterName
                     }
                 );
 

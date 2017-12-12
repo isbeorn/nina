@@ -42,52 +42,71 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="12" />
+                                    <RowDefinition Height="12" />
+                                    <RowDefinition Height="12" />
                                     <RowDefinition Height="*" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="12" />
+                                    <RowDefinition Height="12" />
                                 </Grid.RowDefinitions>
 
                                 <TextBlock
                                     Grid.Row="0"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    FontSize="12"
                                     Text="{ns:Loc LblMean}" />
                                 <TextBlock
                                     Grid.Row="0"
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
+                                    FontSize="12"
                                     Text="{Binding Mean, StringFormat=\{0:#\}}" />
 
                                 <TextBlock
                                     Grid.Row="1"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    FontSize="12"
                                     Text="{ns:Loc LblHFR}" />
                                 <TextBlock
                                     Grid.Row="1"
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
+                                    FontSize="12"
                                     Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Text="{ns:Loc LblFilter}" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Text="{Binding Filter}" />
                                 <TextBlock
                                     Grid.Row="4"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    FontSize="12"
                                     Text="{ns:Loc LblDuration}" />
                                 <TextBlock
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
                                     FontSize="12"
                                     Text="{Binding Duration, StringFormat='{}{0:#.00}s'}" />
                                 <TextBlock
-                                    Grid.Row="3"
+                                    Grid.Row="5"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    FontSize="12"
                                     Text="{ns:Loc LblTime}" />
                                 <TextBlock
-                                    Grid.Row="4"
+                                    Grid.Row="5"
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
                                     FontSize="12"
