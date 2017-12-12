@@ -69,7 +69,7 @@ namespace NINA.ViewModel {
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         private async Task<FilterInfo> ChangeFilter(FilterInfo filter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null) {
-            progress?.Report(new ApplicationStatus() { Source = Locale.Loc.Instance["LblSwitchingFilter"] });
+            progress?.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSwitchingFilter"] });
 
             //Lock access so only one instance can change the filter
             await semaphoreSlim.WaitAsync(token);
@@ -109,7 +109,7 @@ namespace NINA.ViewModel {
                 //unlock access
                 semaphoreSlim.Release();
             }
-            progress?.Report(new ApplicationStatus() { Source = string.Empty });
+            progress?.Report(new ApplicationStatus() { Status = string.Empty });
             return SelectedFilter;
         }
 

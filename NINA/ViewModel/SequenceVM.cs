@@ -135,13 +135,13 @@ namespace NINA.ViewModel {
             CalculateETA();
 
             if (Sequence.SlewToTarget) {
-                progress.Report(new ApplicationStatus() { Source = Locale.Loc.Instance["LblSlewToTarget"] });
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSlewToTarget"] });
                 await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = Sequence.Coordinates, Token = _canceltoken.Token });
                 if (Sequence.CenterTarget) {
-                    progress.Report(new ApplicationStatus() { Source = Locale.Loc.Instance["LblCenterTarget"] });
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
                     var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });                    
                     if(result == null || !result.Success) {
-                        progress.Report(new ApplicationStatus() { Source = Locale.Loc.Instance["LblPlatesolveFailed"] });
+                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlatesolveFailed"] });
                         return false;
                     }
                 }
@@ -152,7 +152,7 @@ namespace NINA.ViewModel {
             }
 
             if (Sequence.StartGuiding) {
-                progress.Report(new ApplicationStatus() { Source = Locale.Loc.Instance["LblStartGuiding"] });
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartGuiding"] });
                 var guiderStarted = await Mediator.Instance.RequestAsync(new StartGuiderMessage() { Token = _canceltoken.Token });
                 if(!guiderStarted) {
                     Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
@@ -184,7 +184,7 @@ namespace NINA.ViewModel {
                     while (delay > 0) {
                         await Task.Delay(TimeSpan.FromSeconds(1), ct);
                         delay--;
-                        progress.Report(new ApplicationStatus() { Source = string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay) });
+                        progress.Report(new ApplicationStatus() { Status = string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay) });
                     }
 
                     CaptureSequence seq;
@@ -209,9 +209,9 @@ namespace NINA.ViewModel {
                         if (pt.IsPaused) {
                             Sequence.IsRunning = false;
                             semaphoreSlim.Release();
-                            progress.Report(new ApplicationStatus() { Source = "Paused" });
+                            progress.Report(new ApplicationStatus() { Status = "Paused" });
                             await pt.WaitWhilePausedAsync(ct);
-                            progress.Report(new ApplicationStatus() { Source = "Resume sequence" });
+                            progress.Report(new ApplicationStatus() { Status = "Resume sequence" });
                             await semaphoreSlim.WaitAsync(ct);
                             Sequence.IsRunning = true;
                         }
@@ -223,7 +223,7 @@ namespace NINA.ViewModel {
                     Logger.Error(ex.Message, ex.StackTrace);
                     Notification.ShowError(ex.Message);
                 } finally {
-                    progress.Report(new ApplicationStatus() { Source = string.Empty });
+                    progress.Report(new ApplicationStatus() { Status = string.Empty });
                     Sequence.IsRunning = false;
                     semaphoreSlim.Release();
                 }
@@ -244,7 +244,7 @@ namespace NINA.ViewModel {
         /// <param name="progress">progress reporter</param>
         /// <returns></returns>
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            progress.Report(new ApplicationStatus() { Source = "Check Meridian Flip" });
+            progress.Report(new ApplicationStatus() { Status = "Check Meridian Flip" });
             await Mediator.Instance.RequestAsync(new CheckMeridianFlipMessage() { Sequence = seq, Token = token });;
         }
 
