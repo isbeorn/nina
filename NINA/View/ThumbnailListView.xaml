@@ -18,7 +18,7 @@
             <ItemsControl VerticalAlignment="Stretch" ItemsSource="{Binding Path=Thumbnails}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
+                        <WrapPanel Orientation="Vertical" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -45,7 +45,7 @@
                                     <RowDefinition Height="12" />
                                     <RowDefinition Height="12" />
                                     <RowDefinition Height="12" />
-                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="40" />
                                     <RowDefinition Height="12" />
                                     <RowDefinition Height="12" />
                                 </Grid.RowDefinitions>
