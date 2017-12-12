@@ -10,7 +10,7 @@ namespace NINA.ViewModel {
     public class ImageHistoryVM : DockableVM {
 
         public ImageHistoryVM() {
-            Title = "LblImageHistory";
+            Title = "LblHFRHistory";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistorySVG"];
 
             ContentId = nameof(ImageHistoryVM);

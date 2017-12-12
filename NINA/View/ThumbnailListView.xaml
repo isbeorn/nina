@@ -19,37 +19,24 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Margin="5" Command="{Binding SelectCommand}">
-                            <Grid Margin="5">
+                        <Button Command="{Binding SelectCommand}">
+                            <Grid Margin="2">
                                 <Image Source="{Binding ThumbnailImage}" />
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{ns:Loc LblMean}" />
-                                        <TextBlock Text="{Binding Mean, StringFormat=\{0:#\}}">
-                                            <!--<TextBlock.Effect>
-                                                <DropShadowEffect
-                                                    BlurRadius="5"
-                                                    Opacity="1"
-                                                    ShadowDepth="0"
-                                                    Color="Black" />
-                                            </TextBlock.Effect>-->
-                                        </TextBlock>
+                                        <TextBlock FontSize="12" Text="{ns:Loc LblMean}" />
+                                        <TextBlock FontSize="12" Text="{Binding Mean, StringFormat=\{0:#\}}" />
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{ns:Loc LblHFR}" />
-                                        <TextBlock Text="{Binding HFR, StringFormat=\{0:#.00\}}">
-                                            <!--<TextBlock.Effect>
-                                                <DropShadowEffect
-                                                    BlurRadius="5"
-                                                    Opacity="1"
-                                                    ShadowDepth="0"
-                                                    Color="Black" />
-                                            </TextBlock.Effect>-->
-                                        </TextBlock>
+                                        <TextBlock FontSize="12" Text="{ns:Loc LblHFR}" />
+                                        <TextBlock FontSize="12" Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
                                     </StackPanel>
                                 </StackPanel>
+                                <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
+                                    <TextBlock FontSize="12" Text="{ns:Loc LblTime}" />
+                                    <TextBlock FontSize="12" Text="{Binding Date, StringFormat='{}{0:HH:mm:ss}'}" />
+                                </StackPanel>
                             </Grid>
-
                         </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

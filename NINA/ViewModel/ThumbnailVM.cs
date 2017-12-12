@@ -19,7 +19,7 @@ using System.Windows.Threading;
 namespace NINA.ViewModel {
     class ThumbnailVM : DockableVM {
         public ThumbnailVM() : base() {
-            Title = "LblThumbnail";
+            Title = "LblImageHistory";
             ContentId = nameof(ThumbnailVM);
             CanClose = false;
             //ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ThumbnailSVG"];         
@@ -41,14 +41,16 @@ namespace NINA.ViewModel {
                 scaledBitmap.Freeze();
                 
                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    Thumbnails.Add(new Thumbnail() { ThumbnailImage = scaledBitmap, ImagePath = msg.PathToImage, FileType = msg.FileType, Mean = msg.Mean, HFR = msg.HFR, IsBayered = msg.IsBayered });
+                    var thumbnail = new Thumbnail() { ThumbnailImage = scaledBitmap, ImagePath = msg.PathToImage, FileType = msg.FileType, Mean = msg.Mean, HFR = msg.HFR, IsBayered = msg.IsBayered };
+                    Thumbnails.Add(thumbnail);
+                    SelectedThumbnail = thumbnail;
                 }));                
                 return true;
             });            
         }
 
-        private BitmapSource _selectedThumbnail;
-        public BitmapSource SelectedThumbnail {
+        private Thumbnail _selectedThumbnail;
+        public Thumbnail SelectedThumbnail {
             get {
                 return _selectedThumbnail;
             }
@@ -162,5 +164,7 @@ namespace NINA.ViewModel {
         public FileTypeEnum FileType { get; set; }
 
         public ICommand SelectCommand { get; set; }
+
+        public DateTime Date { get; set; } = DateTime.Now;
     }
 }

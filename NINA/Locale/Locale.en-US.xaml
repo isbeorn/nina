@@ -179,7 +179,7 @@
     <s:String x:Key="LblStatistics">Statistics</s:String>
     <s:String x:Key="LblFrameNFocus">Frame &amp; Focus</s:String>
     <s:String x:Key="LblOptions">Options</s:String>
-    <s:String x:Key="LblImageHistory">Image History</s:String>
+    <s:String x:Key="LblHFRHistory">HFR History</s:String>
     <s:String x:Key="LblWeather">Weather</s:String>
     <s:String x:Key="LblPolarAlignment">Polar Alignment</s:String>
     <s:String x:Key="LblImageArea">Image Area</s:String>
@@ -349,4 +349,5 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblStartGuidingFailed">Start guiding failed</s:String>
     <s:String x:Key="LblConnecting">Connecting</s:String>
     <s:String x:Key="LblCooling">Cooling</s:String>
+    <s:String x:Key="LblImageHistory">Image History</s:String>
 </ResourceDictionary>

@@ -184,7 +184,7 @@
     <s:String x:Key="LblStatistics">Statistiken</s:String>
     <s:String x:Key="LblFrameNFocus">Frame &amp; Fokus</s:String>
     <s:String x:Key="LblOptions">Optionen</s:String>
-    <s:String x:Key="LblImageHistory">Bildhistorie</s:String>
+    <s:String x:Key="LblHFRHistory">HRF Historie</s:String>
     <s:String x:Key="LblWeather">Wetter</s:String>
     <s:String x:Key="LblPolarAlignment">Polarausrichtung</s:String>
     <s:String x:Key="LblImageArea">Bildregion</s:String>
@@ -354,4 +354,5 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblStartGuidingFailed">Starten der Nachführung fehlgeschlagen</s:String>
     <s:String x:Key="LblConnecting">Connecting</s:String>
     <s:String x:Key="LblCooling">Cooling</s:String>
+    <s:String x:Key="LblImageHistory">Bildhistorie</s:String>
 </ResourceDictionary>
