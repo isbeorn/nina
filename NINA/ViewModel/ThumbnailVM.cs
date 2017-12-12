@@ -41,7 +41,14 @@ namespace NINA.ViewModel {
                 scaledBitmap.Freeze();
                 
                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    var thumbnail = new Thumbnail() { ThumbnailImage = scaledBitmap, ImagePath = msg.PathToImage, FileType = msg.FileType, Mean = msg.Mean, HFR = msg.HFR, IsBayered = msg.IsBayered };
+                    var thumbnail = new Thumbnail() {
+                        ThumbnailImage = scaledBitmap,
+                        ImagePath = msg.PathToImage,
+                        FileType = msg.FileType,
+                        Duration = msg.Duration,
+                        Mean = msg.Mean,
+                        HFR = msg.HFR,
+                        IsBayered = msg.IsBayered };
                     Thumbnails.Add(thumbnail);
                     SelectedThumbnail = thumbnail;
                 }));                
@@ -166,5 +173,7 @@ namespace NINA.ViewModel {
         public ICommand SelectCommand { get; set; }
 
         public DateTime Date { get; set; } = DateTime.Now;
+
+        public double Duration { get; set; }
     }
 }

@@ -261,6 +261,7 @@ namespace NINA.Utility.Mediator {
         public FileTypeEnum FileType { get; set; }
         public double HFR { get; internal set; }
         public bool IsBayered { get; internal set; }
+        public double Duration { get; internal set; }
     }
 
     class SetImageMessage : AsyncMediatorMessage<bool> {

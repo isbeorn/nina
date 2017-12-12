@@ -15,7 +15,7 @@
             HorizontalScrollBarVisibility="Auto"
             ScrollChanged="ScrollViewer_ScrollChanged"
             VerticalScrollBarVisibility="Disabled">
-            <ItemsControl VerticalAlignment="Center" ItemsSource="{Binding Path=Thumbnails}">
+            <ItemsControl VerticalAlignment="Stretch" ItemsSource="{Binding Path=Thumbnails}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" />
@@ -23,23 +23,76 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Command="{Binding SelectCommand}">
+                        <Button
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Command="{Binding SelectCommand}">
                             <Grid Margin="2">
-                                <Image Source="{Binding ThumbnailImage}" />
-                                <StackPanel Orientation="Vertical">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock FontSize="12" Text="{ns:Loc LblMean}" />
-                                        <TextBlock FontSize="12" Text="{Binding Mean, StringFormat=\{0:#\}}" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock FontSize="12" Text="{ns:Loc LblHFR}" />
-                                        <TextBlock FontSize="12" Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
-                                    <TextBlock FontSize="12" Text="{ns:Loc LblTime}" />
-                                    <TextBlock FontSize="12" Text="{Binding Date, StringFormat='{}{0:HH:mm:ss}'}" />
-                                </StackPanel>
+                                <Grid.ToolTip>
+                                    <TextBlock Text="{Binding ImagePath}" />
+                                </Grid.ToolTip>
+                                <Grid.Background>
+                                    <ImageBrush
+                                        x:Name="image"
+                                        ImageSource="{Binding ThumbnailImage}"
+                                        Stretch="UniformToFill" />
+                                </Grid.Background>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblMean}" />
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Mean, StringFormat=\{0:#\}}" />
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblHFR}" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
+                                <TextBlock
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblDuration}" />
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Text="{Binding Duration, StringFormat='{}{0:#.00}s'}" />
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblTime}" />
+                                <TextBlock
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Text="{Binding Date, StringFormat='{}{0:HH:mm:ss}'}" />
+
                             </Grid>
                         </Button>
                     </DataTemplate>

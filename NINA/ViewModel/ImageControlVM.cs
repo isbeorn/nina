@@ -381,6 +381,7 @@ namespace NINA.ViewModel {
                         FileType = Settings.FileType,
                         Mean = ImgArr.Statistics.Mean,
                         HFR = ImgArr.Statistics.HFR,
+                        Duration = parameters.ExposureTime,
                         IsBayered = ImgArr.IsBayered
                     }
                 );
