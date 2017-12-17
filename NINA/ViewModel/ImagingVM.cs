@@ -416,6 +416,17 @@ namespace NINA.ViewModel {
             }
         }
 
+        private short _snapGain = -1;
+        public short SnapGain {
+            get {
+                return _snapGain;
+            }
+            set {
+                _snapGain = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public async Task<bool> SnapImage(IProgress<ApplicationStatus> progress) {
             _captureImageToken = new CancellationTokenSource();
 
@@ -423,6 +434,7 @@ namespace NINA.ViewModel {
                 var success = true;
                 do {
                     var seq = new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                    seq.Gain = SnapGain;
                     success = await CaptureAndSaveImage(seq, SnapSave, _captureImageToken.Token, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop && success);
