@@ -7,10 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
-    xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
+    xmlns:util="clr-namespace:NINA.Utility"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
+
     <StackPanel x:Name="LayoutRoot" Orientation="{Binding MyOrientation}">
         <!--<Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -28,7 +29,7 @@
                         <TextBox.Text>
                             <Binding Mode="TwoWay" Path="MyExposureDuration">
                                 <Binding.ValidationRules>
-                                    <rules:GreaterZeroRule />
+                                    <util:GreaterZeroRule />
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
@@ -63,6 +64,42 @@
                         ItemsSource="{Binding MyBinningModes}"
                         SelectedItem="{Binding MySelectedBinningMode}"
                         SelectedValuePath="Name" />
+                </UniformGrid>
+            </Border>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1"
+                Visibility="{Binding MyCanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+                    <Grid Margin="5,0,0,0">
+
+
+                        <ComboBox
+                            ItemsSource="{Binding MyGains}"
+                            SelectedItem="{Binding MySelectedGain}"
+                            Visibility="{Binding MyGains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}" />
+                        <TextBox IsEnabled="{Binding MyCanSetGain}" Visibility="{Binding MyGains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}">
+                            <TextBox.Resources>
+                                <util:BindingProxy x:Key="proxy" Data="{Binding}" />
+                            </TextBox.Resources>
+                            <TextBox.Text>
+                                <Binding
+                                    Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                    Path="MySelectedGain"
+                                    UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <util:ShortRangeRule>
+                                            <util:ShortRangeRule.ValidRange>
+                                                <util:ShortRangeChecker Maximum="{Binding Source={StaticResource proxy}, Path=Data.MyMaxGain}" Minimum="{Binding Source={StaticResource proxy}, Path=Data.MyMinGain}" />
+                                            </util:ShortRangeRule.ValidRange>
+                                        </util:ShortRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
                 </UniformGrid>
             </Border>
         </StackPanel>

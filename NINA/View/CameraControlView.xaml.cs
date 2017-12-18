@@ -1,6 +1,7 @@
 ﻿using NINA.Model.MyCamera;
 using NINA.Utility;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -168,6 +169,79 @@ namespace NINA.View {
             }
             set {
                 SetValue(MyLoopProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty MyGainsProperty =
+            DependencyProperty.Register(nameof(MyGains), typeof(ICollection), typeof(CameraControlView), new UIPropertyMetadata(null));
+
+        public ICollection MyGains {
+            get {
+                return (ICollection)GetValue(MyGainsProperty);
+            }
+            set {
+                SetValue(MyGainsProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty MyCanGetGainProperty =
+            DependencyProperty.Register(nameof(MyCanGetGain), typeof(bool), typeof(CameraControlView), new UIPropertyMetadata(false));
+
+        public bool MyCanGetGain {
+            get {
+                return (bool)GetValue(MyCanGetGainProperty);
+            }
+            set {
+                SetValue(MyCanGetGainProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty MyCanSetGainProperty =
+            DependencyProperty.Register(nameof(MyCanSetGain), typeof(bool), typeof(CameraControlView), new UIPropertyMetadata(false));
+
+        public bool MyCanSetGain {
+            get {
+                return (bool)GetValue(MyCanSetGainProperty);
+            }
+            set {
+                SetValue(MyCanSetGainProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty MyMinGainProperty =
+            DependencyProperty.Register(nameof(MyMinGain), typeof(short), typeof(CameraControlView), new UIPropertyMetadata((short)-1));
+
+        public short MyMinGain {
+            get {
+                return (short)GetValue(MyMinGainProperty);
+            }
+            set {
+                SetValue(MyMinGainProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty MyMaxGainProperty =
+            DependencyProperty.Register(nameof(MyMaxGain), typeof(short), typeof(CameraControlView), new UIPropertyMetadata((short)-1));
+
+        public short MyMaxGain {
+            get {
+                return (short)GetValue(MyMaxGainProperty);
+            }
+            set {
+                SetValue(MyMaxGainProperty, value);
+            }
+        }
+
+
+        public static readonly DependencyProperty MySelectedGainProperty =
+            DependencyProperty.Register(nameof(MySelectedGain), typeof(short), typeof(CameraControlView), new UIPropertyMetadata((short)-1));
+
+        public short MySelectedGain {
+            get {
+                return (short)GetValue(MySelectedGainProperty);
+            }
+            set {
+                SetValue(MySelectedGainProperty, value);
             }
         }
 

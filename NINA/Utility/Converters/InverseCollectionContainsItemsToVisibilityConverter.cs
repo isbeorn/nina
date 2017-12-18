@@ -16,7 +16,7 @@ namespace NINA.Utility.Converters {
             if (targetType != typeof(Visibility))
                 throw new InvalidOperationException("The target must be Visibility");
             Visibility result;
-            if (((ICollection)value).Count == 0) {
+            if (value == null || ((ICollection)value).Count == 0) {
                 result = System.Windows.Visibility.Visible;
             } else {
                 result = System.Windows.Visibility.Collapsed;

@@ -170,11 +170,17 @@
 
                     <local:CameraControlView
                         MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}"
+                        MyCanGetGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanGetGain}"
+                        MyCanSetGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanSetGain}"
                         MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}"
                         MyFilters="{Binding Source={StaticResource AppVM}, Path=FilterWheelVM.FW.Filters}"
+                        MyGains="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains}"
+                        MyMaxGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}"
+                        MyMinGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}"
                         MyOrientation="Vertical"
                         MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
-                        MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}" />
+                        MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
+                        MySelectedGain="{Binding SnapGain, Mode=TwoWay}" />
 
                     <ninactrl:CancellableButton
                         Height="35"

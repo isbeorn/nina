@@ -233,6 +233,19 @@ namespace NINA.ViewModel {
             }
         }
 
+        private short _snapGain = -1;
+        public short SnapGain {
+            get {
+                return _snapGain;
+            }
+
+            set {
+                _snapGain = value;
+                RaisePropertyChanged();
+            }
+        }
+        
+
         public Model.MyFilterWheel.FilterInfo SnapFilter {
             get {
                 return _snapFilter;
@@ -365,7 +378,7 @@ namespace NINA.ViewModel {
                     Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
                     Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
-                    var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, null, null, 1);
+                    var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);                   
                     var capture = Mediator.Instance.RequestAsync(new CapturePrepareAndSaveImageMessage() { Sequence = seq, Save = false, Progress = cameraprogress, Token = _cancelDARVSlewToken.Token });
                     var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken.Token);
 
@@ -509,6 +522,7 @@ namespace NINA.ViewModel {
                 progress.Report(new ApplicationStatus() { Status = "Solving image..." });
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                seq.Gain = SnapGain;
                 PlateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
 
                 canceltoken.ThrowIfCancellationRequested();
@@ -541,6 +555,7 @@ namespace NINA.ViewModel {
                 canceltoken.ThrowIfCancellationRequested();
 
                 seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                seq.Gain = SnapGain;
                 PlateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
 
                 canceltoken.ThrowIfCancellationRequested();

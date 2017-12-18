@@ -184,6 +184,18 @@ namespace NINA.ViewModel {
             }
         }
 
+        private short _snapGain = -1;
+        public short SnapGain {
+            get {
+                return _snapGain;
+            }
+
+            set {
+                _snapGain = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private void ImageChanged(Object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == "Image") {
                 this.PlateSolveResult = null;
@@ -275,6 +287,7 @@ namespace NINA.ViewModel {
             do {
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                seq.Gain = SnapGain;
                 solveresult = await SolveWithCapture(seq, progress, token);
 
                 if (solveresult != null && solveresult.Success) {
