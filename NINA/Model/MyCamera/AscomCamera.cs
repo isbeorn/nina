@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -62,7 +63,7 @@ namespace NINA.Model.MyCamera {
                 foreach (object o in _camera.Gains) {
                     if (o.GetType() == typeof(string)) {
                         var gain = Regex.Match(o.ToString(), @"\d+").Value;
-                        Gains.Add(short.Parse(gain));
+                        Gains.Add(short.Parse(gain, CultureInfo.InvariantCulture));
                     }
                 }
             } catch (Exception) {
@@ -280,7 +281,7 @@ namespace NINA.Model.MyCamera {
                     _camera.Connected = value;
 
                 } catch (Exception ex) {
-                    Notification.ShowError(ex.Message + "\n Please reconnect camera!");
+                    Notification.ShowError(Locale.Loc.Instance["LblReconnectCamera"] + Environment.NewLine + ex.Message);
                     _connected = false;
                 }
                 RaisePropertyChanged();
@@ -868,7 +869,8 @@ namespace NINA.Model.MyCamera {
             } catch (ASCOM.DriverAccessCOMException ex) {
                 Notification.ShowError(ex.Message);
             } catch (Exception ex) {
-                Notification.ShowError("Unable to connect to camera " + ex.Message);
+                Logger.Error(ex.Message, ex.StackTrace);
+                Notification.ShowError(Locale.Loc.Instance["LblUnableToConnectCamera"] + ex.Message);
             }
             return Connected;
         }

@@ -456,8 +456,8 @@ namespace NINA.ViewModel {
                 }
                 return uniquePath;
             } catch (Exception ex) {
-                Notification.ShowError("Image file error: " + ex.Message);
                 Logger.Error(ex.Message, ex.StackTrace);
+                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
                 return string.Empty;
             }
         }
@@ -493,8 +493,8 @@ namespace NINA.ViewModel {
                 }
                 return uniquePath;
             } catch (Exception ex) {
-                Notification.ShowError("Image file error: " + ex.Message);
                 Logger.Error(ex.Message, ex.StackTrace);
+                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);                
                 return string.Empty;
             }
         }
@@ -532,16 +532,16 @@ namespace NINA.ViewModel {
                         /* Add offset as a comment. There is no dedicated keyword for this */
                         string offset = string.Empty;
                         if (Cam.Offset > 0) {
-                            offset = Cam.Offset.ToString();
+                            offset = Cam.Offset.ToString(CultureInfo.InvariantCulture);
                         }
-                        header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, Cam.Gain.ToString(), offset);
+                        header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, Cam.Gain.ToString(CultureInfo.InvariantCulture), offset);
                     }
 
                     if (Cam.BinX > 0) {
-                        header.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, Cam.BinX.ToString());
+                        header.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, Cam.BinX.ToString(CultureInfo.InvariantCulture));
                     }
                     if (Cam.BinY > 0) {
-                        header.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, Cam.BinY.ToString());
+                        header.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, Cam.BinY.ToString(CultureInfo.InvariantCulture));
                     }
 
                     var temp = Cam.CCDTemperature;
@@ -576,8 +576,8 @@ namespace NINA.ViewModel {
                 return uniquePath;
 
             } catch (Exception ex) {
-                Notification.ShowError("Image file error: " + ex.Message);
                 Logger.Error(ex.Message, ex.StackTrace);
+                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
                 return string.Empty;
             }
         }

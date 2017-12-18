@@ -76,7 +76,8 @@ namespace NINA.PlateSolving {
                 var cygwinbashpath = Path.GetFullPath(Settings.CygwinLocation + "\\bin\\bash.exe");
 
                 if (!File.Exists(cygwinbashpath)) {
-                    Notification.ShowError(string.Format("cygwin bash not found at {0}", cygwinbashpath));
+                    Logger.Error(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + cygwinbashpath);
+                    Notification.ShowError(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + cygwinbashpath);
                     result.Success = false;
                     return result;
                 }

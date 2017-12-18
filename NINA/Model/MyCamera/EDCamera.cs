@@ -250,7 +250,7 @@ namespace NINA.Model.MyCamera {
             set {
                 var iso = ISOSpeeds.Where((x) => x.Key == value).FirstOrDefault().Value;
                 if (HasError(SetProperty(EDSDK.PropID_ISOSpeed, iso))) {
-                    Notification.ShowError("Could not set ISO.");
+                    Notification.ShowError(Locale.Loc.Instance["LblUnableToSetISO"]);
                 }
                 RaisePropertyChanged();
             }
@@ -380,7 +380,7 @@ namespace NINA.Model.MyCamera {
             EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_AEModeSelect, 0, out mode);
             bool isManual = (mode == 3);
             if (!isManual) {
-                Notification.ShowError("Camera is not set to manual mode! Please set it to manual mode before connecting");
+                Notification.ShowError(Locale.Loc.Instance["LblEDCameraNotInManualMode"]);
             }
             return isManual;
         }
@@ -528,7 +528,7 @@ namespace NINA.Model.MyCamera {
 
             /* Start exposure */
             if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF))) {
-                Notification.ShowError("Could not start camera exposure");
+                Notification.ShowError(Locale.Loc.Instance["LblUnableToStartExposure"]);
             }
             DateTime d = DateTime.Now;
             /*Stop Exposure after exposure time */
@@ -560,7 +560,7 @@ namespace NINA.Model.MyCamera {
 
             /* Shutter speed to Bulb */
             if (HasError(SetProperty(EDSDK.PropID_Tv, ShutterSpeeds[key]))) {
-                Notification.ShowError("Unable to set exposure time");
+                Notification.ShowError(Locale.Loc.Instance["LblUnableToSetExposureTime"]);
             }
         }
 

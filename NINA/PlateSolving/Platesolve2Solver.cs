@@ -57,7 +57,7 @@ namespace NINA.PlateSolving {
             var ps2locaction = Path.GetFullPath(Settings.PS2Location);
 
             if (!File.Exists(ps2locaction)) {
-                Notification.ShowError(string.Format("platesolve2 not found at {0}", ps2locaction));
+                Notification.ShowError(Locale.Loc.Instance["LblPlatesolve2NotFound"] + Environment.NewLine + ps2locaction);
                 return false;
             }
 

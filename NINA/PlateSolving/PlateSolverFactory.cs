@@ -32,7 +32,7 @@ namespace NINA.PlateSolving {
                 }
             } else if (Settings.PlateSolverType == PlateSolverEnum.PLATESOLVE2) {
                 if (coords == null) {
-                    Notification.ShowError("No coordinates available. Platesolve2 requires coordinates to solve!");
+                    Notification.ShowError(Locale.Loc.Instance["LblPlatesolve2NoCoordinates"]);
                 }
                 Platesolver = new Platesolve2Solver(Settings.PS2FocalLength, Settings.PS2PixelSize * binning, width, height, Settings.PS2Regions, coords);
             }

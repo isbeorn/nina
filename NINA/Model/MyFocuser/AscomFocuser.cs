@@ -167,7 +167,8 @@ namespace NINA.Model.MyFocuser {
                     _connected = value;
 
                 } catch (Exception ex) {
-                    Notification.ShowError(ex.Message + "\n Please reconnect focuser!");
+                    Logger.Error(ex.Message, ex.StackTrace);
+                    Notification.ShowError(Locale.Loc.Instance["LblReconnectFocuser"] + Environment.NewLine + ex.Message);
                     _connected = false;
                 }
                 RaisePropertyChanged();

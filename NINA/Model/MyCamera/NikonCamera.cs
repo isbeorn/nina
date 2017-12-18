@@ -469,7 +469,7 @@ namespace NINA.Model.MyCamera {
 
             if (!_cameraConnected.Task.IsCompleted) {
                 CleanupUnusedManagers(null);
-                Notification.ShowError("No Nikon camera found!");
+                Notification.ShowError(Locale.Loc.Instance["LblNikonNotFound"]);
                 return false;
             }
 

@@ -89,7 +89,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private ushort[] FlipAndConvert3d(Array input) {
-            Notification.ShowError("Color sensor is not yet supported");
+            Notification.ShowError(Locale.Loc.Instance["LblColorSensorNotSupported"]);
             throw new NotSupportedException();
         }
     }

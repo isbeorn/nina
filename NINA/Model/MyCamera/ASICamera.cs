@@ -262,7 +262,7 @@ namespace NINA.Model.MyCamera {
 
                 var raw16 = from types in SupportedImageTypes where types == ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16 select types;
                 if (raw16.Count() == 0) {
-                    Notification.ShowError("Only 16 bit Monochrome sensors supported currently");
+                    Notification.ShowError(Locale.Loc.Instance["LblASIOnly16BitMono"]);
                     return false;
                 }
                 this.CaptureAreaInfo = new CaptureAreaInfo(this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);

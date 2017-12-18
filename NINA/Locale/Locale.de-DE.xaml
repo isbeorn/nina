@@ -48,7 +48,7 @@
     <s:String x:Key="LblTooltipAutoStretch">Schaltet automatisches Strecken des Histogramms an/aus (nur Anzeige)</s:String>
     <s:String x:Key="LblTooltipDetectStars">Schaltet automatisches Erkennen und Auswerten (Half-Flus-Radius) von Sternen an/aus</s:String>
     <s:String x:Key="LblTooltipCrossHair">Schaltet Fadenkreuz an/aus</s:String>
-    <s:String x:Key="LblPlateSolveImage">Plate solve current image</s:String>
+    <s:String x:Key="LblPlateSolveImage">Aktuelles Bild platesolven</s:String>
     <s:String x:Key="LblHFR">HFR</s:String>
     <s:String x:Key="LblDetectedStars">Erkannte Sterne</s:String>
     <s:String x:Key="LblImage">Bild</s:String>
@@ -236,7 +236,7 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblRescanDevices">Geräte erneut suchen</s:String>
     <s:String x:Key="LblReslewToTarget">Erneut zum Ziel schwenken</s:String>
     <s:String x:Key="LblWelcome">Willkommen bei Nighttime Imaging 'N' Astronomy!</s:String>
-    <s:String x:Key="LblMeridianFlipInit">Meridian flip initialisiert</s:String>
+    <s:String x:Key="LblMeridianFlipInit">Meridian Flip initialisiert</s:String>
     <s:String x:Key="LblCameraConnected">Kamera verbunden</s:String>
     <s:String x:Key="LblFilterwheelConnected">Filterrad verbunden</s:String>
     <s:String x:Key="LblFocuserConnected">Okularauszug verbunden</s:String>
@@ -355,4 +355,24 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblConnecting">Connecting</s:String>
     <s:String x:Key="LblCooling">Cooling</s:String>
     <s:String x:Key="LblImageHistory">Bildhistorie</s:String>
+    <s:String x:Key="LblReconnectCamera">Kamera bitte neu verbinden!</s:String>
+    <s:String x:Key="LblUnableToConnectCamera">Verbindung zur Kamera konnte nicht hergestellt werden</s:String>
+    <s:String x:Key="LblReconnectFilterwheel">Filterrad bitte neu verbinden!</s:String>
+    <s:String x:Key="LblReconnectFocuser">Okularauszug bitte neu verbinden!</s:String>
+    <s:String x:Key="LblReconnectTelescope">Teleskop bitte neu verbinden!</s:String>
+    <s:String x:Key="LblMeridianFlipFailed">Meridian Flip fehlgeschlagen</s:String>
+    <s:String x:Key="LblTelescopeNotTrackingForSync">Teleskop führt nicht nach. Sync ist nur verfügbar wenn die Nachführung aktiv ist!</s:String>
+    <s:String x:Key="LblTelescopeNotConnectedForCommand">Teleskop ist nicht verbunden um das Kommando zu senden</s:String>
+    <s:String x:Key="LblASIOnly16BitMono">Derzeit werden nur 16 bit Monochrome Sensoren unterstützt</s:String>
+    <s:String x:Key="LblUnableToSetISO">ISO konnte nicht gesetzt werden</s:String>
+    <s:String x:Key="LblEDCameraNotInManualMode">Kamera ist nicht im manuellen Modus! Bitte die Kamera auf den manuellen Modus umstellen</s:String>
+    <s:String x:Key="LblUnableToStartExposure">Kamerabelichtung konnte nicht gestartet werden</s:String>
+    <s:String x:Key="LblUnableToSetExposureTime">Belichtungszeit konnte nicht gesetzt werden</s:String>
+    <s:String x:Key="LblColorSensorNotSupported">Farbsensor ist derzeit nicht unterstützt</s:String>
+    <s:String x:Key="LblImageFileError">Bilddateifehler</s:String>
+    <s:String x:Key="LblCygwinBashNotFound">Cygwin bash wurde nicht gefunden</s:String>
+    <s:String x:Key="LblNikonNotFound">Es konnte keine Nikon Kamera gefunden werden</s:String>
+    <s:String x:Key="LblFileExample">Beispiel Dateiname</s:String>
+    <s:String x:Key="LblPlatesolve2NotFound">Platesolve2 exe wurde nicht gefunden werden</s:String>
+    <s:String x:Key="LblPlatesolve2NoCoordinates">Keine Koordinaten verfügbar. Platesolve2 benötigt Koordinaten zum platesolven!</s:String>
 </ResourceDictionary>

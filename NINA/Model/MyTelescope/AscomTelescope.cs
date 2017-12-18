@@ -876,7 +876,8 @@ namespace NINA.Model.MyTelescope {
                     _telescope.Connected = value;
 
                 } catch (Exception ex) {
-                    Notification.ShowError(ex.Message + "\n Please reconnect telescope!");
+                    Logger.Error(ex.Message, ex.StackTrace);
+                    Notification.ShowError(Locale.Loc.Instance["LblReconnectTelescope"] + Environment.NewLine + ex.Message);
                     _connected = false;
                 }
                 RaisePropertyChanged();
@@ -906,7 +907,7 @@ namespace NINA.Model.MyTelescope {
                 success = true;
 
             } catch (Exception) {
-                Notification.ShowError("Meridian Flip failed");
+                Notification.ShowError(Locale.Loc.Instance["LblMeridianFlipFailed"]);
             }
             return success;
         }
@@ -1023,7 +1024,7 @@ namespace NINA.Model.MyTelescope {
                         Notification.ShowError(ex.Message);
                     }
                 } else {
-                    Notification.ShowError("Telescope is not tracking. Sync is only available when tracking!");
+                    Notification.ShowError(Locale.Loc.Instance["LblTelescopeNotTrackingForSync"]);
                 }
 
             }
@@ -1164,7 +1165,7 @@ namespace NINA.Model.MyTelescope {
             if (Connected) {
                 _telescope.CommandString(command, true);
             } else {
-                Notification.ShowError("Telescope not connected to send command: " + command);
+                Notification.ShowError(Locale.Loc.Instance["LblTelescopeNotConnectedForCommand"] + ": " + command);
             }
         }
 

@@ -87,7 +87,7 @@ namespace NINA.ViewModel {
                 _telescope?.SendCommandString(command);
                 return true;
             } else {
-                Notification.ShowError("Telescope not connected to send command string");
+                Notification.ShowError(Locale.Loc.Instance["LblTelescopeNotConnectedForCommand"]);
                 return false;
             }
         }

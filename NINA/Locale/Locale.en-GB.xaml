@@ -350,4 +350,24 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblConnecting">Connecting</s:String>
     <s:String x:Key="LblCooling">Cooling</s:String>
     <s:String x:Key="LblImageHistory">Image History</s:String>
+    <s:String x:Key="LblReconnectCamera">Please reconnect camera!</s:String>
+    <s:String x:Key="LblUnableToConnectCamera">Unable to connect camera</s:String>
+    <s:String x:Key="LblReconnectFilterwheel">Please reconnect filterwheel!</s:String>
+    <s:String x:Key="LblReconnectFocuser">Please reconnect focuser!</s:String>
+    <s:String x:Key="LblReconnectTelescope">Please reconnect telescope!</s:String>
+    <s:String x:Key="LblMeridianFlipFailed">Meridian Flip failed</s:String>
+    <s:String x:Key="LblTelescopeNotTrackingForSync">Telescope is not tracking. Sync is only available when tracking!</s:String>
+    <s:String x:Key="LblTelescopeNotConnectedForCommand">Telescope not connected to send command</s:String>
+    <s:String x:Key="LblASIOnly16BitMono">Only 16 bit Monochrome sensors currently supported</s:String>
+    <s:String x:Key="LblUnableToSetISO">Unable to set ISO</s:String>
+    <s:String x:Key="LblEDCameraNotInManualMode">Camera is not set to manual mode! Please set it to manual mode before connecting</s:String>
+    <s:String x:Key="LblUnableToStartExposure">Unable to start camera exposure</s:String>
+    <s:String x:Key="LblUnableToSetExposureTime">Unable to set exposure time</s:String>
+    <s:String x:Key="LblColorSensorNotSupported">Color sensor is not supported yet</s:String>
+    <s:String x:Key="LblImageFileError">Image file error</s:String>
+    <s:String x:Key="LblCygwinBashNotFound">Cygwin bash not found</s:String>
+    <s:String x:Key="LblNikonNotFound">No Nikon camera could be found</s:String>
+    <s:String x:Key="LblFileExample">Example File Name</s:String>
+    <s:String x:Key="LblPlatesolve2NotFound">Platesolve2 exe not found</s:String>
+    <s:String x:Key="LblPlatesolve2NoCoordinates">No coordinates available. Platesolve2 requires coordinates to solve!</s:String>
 </ResourceDictionary>
