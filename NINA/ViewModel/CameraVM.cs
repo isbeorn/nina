@@ -487,7 +487,7 @@ namespace NINA.ViewModel {
             Logger.Trace("Adding ASI Cameras");
             for (int i = 0; i < ASICameras.Count; i++) {
                 var cam = ASICameras.GetCamera(i);
-                if (cam.Name != "") {
+                if (!string.IsNullOrEmpty(cam.Name)) {
                     Logger.Trace("Adding " + cam.Name);
                     Devices.Add(cam);
                 }

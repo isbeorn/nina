@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Utility.Exceptions {
+    [Serializable]
     class CameraConnectionLostException : Exception {
         public CameraConnectionLostException() {
 

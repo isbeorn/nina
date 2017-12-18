@@ -218,6 +218,7 @@ namespace NINA.ViewModel {
 
                 await Steps.Process();
             } catch (Exception ex) {
+                Logger.Error(ex.Message, ex.StackTrace);
                 await ResumeAutoguider(new CancellationToken(), _progress);
                 Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = true });
                 return false;

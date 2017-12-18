@@ -59,7 +59,7 @@ namespace NINA.ViewModel {
                                 ApplicationStatus.Remove(item);
                             }
                         } else {
-                            if(status.Status != null && status.Status != string.Empty) {
+                            if(!string.IsNullOrEmpty(status.Status)) {
                                 ApplicationStatus.Add(new ApplicationStatus() {
                                     Source = status.Source,
                                     Status = status.Status,

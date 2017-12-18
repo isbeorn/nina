@@ -136,7 +136,7 @@ namespace NINA.EquipmentChooser {
 
             for (int i = 0; i < ASICameras.Count; i++) {
                 var cam = ASICameras.GetCamera(i);
-                if (cam.Name != "") {
+                if (!string.IsNullOrEmpty(cam.Name)) {
                     Devices.Add(cam);
                 }
             }
