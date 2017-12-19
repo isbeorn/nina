@@ -34,6 +34,16 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Visibility="{Binding Cam.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblGain}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding Cam.Gain}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0,0,0,1">
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCoolerOn}" />
