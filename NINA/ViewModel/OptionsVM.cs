@@ -28,21 +28,29 @@ namespace NINA.ViewModel {
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
 
-
-            HashSet<ImagePattern> p = new HashSet<ImagePattern>();
-            p.Add(new ImagePattern("$$FILTER$$", "Filtername", "L"));
-            p.Add(new ImagePattern("$$DATE$$", "Date with format YYYY-MM-DD", "2016-01-01"));
-            p.Add(new ImagePattern("$$DATETIME$$", "Date with format YYYY-MM-DD_HH-mm-ss", "2016-01-01_12-00-00"));
-            p.Add(new ImagePattern("$$FRAMENR$$", "# of the Frame with format ####", "0001"));
-            p.Add(new ImagePattern("$$IMAGETYPE$$", "Light, Flat, Dark, Bias", "Light"));
-            p.Add(new ImagePattern("$$BINNING$$", "Binning of the camera", "1x1"));
-            p.Add(new ImagePattern("$$SENSORTEMP$$", "Temperature of the Camera", "-15"));
-            p.Add(new ImagePattern("$$EXPOSURETIME$$", "Exposure Time in seconds", string.Format("{0:0.00}", 10.21234)));
-            p.Add(new ImagePattern("$$TARGETNAME$$", "Target Name if available", "M33"));
-            p.Add(new ImagePattern("$$GAIN$$", "Camera Gain", "1600"));
-            ImagePatterns = p;
+                        
+            ImagePatterns = CreateImagePatternList();
 
             ScanForIndexFiles();
+
+            Mediator.Instance.Register((object o) => {
+                ImagePatterns = CreateImagePatternList();
+            }, MediatorMessages.LocaleChanged);
+        }
+
+        private HashSet<ImagePattern> CreateImagePatternList() {
+            HashSet<ImagePattern> p = new HashSet<ImagePattern>();
+            p.Add(new ImagePattern("$$FILTER$$", Locale.Loc.Instance["LblFilternameDescription"], "L"));
+            p.Add(new ImagePattern("$$DATE$$", Locale.Loc.Instance["LblDateFormatDescription"], "2016-01-01"));
+            p.Add(new ImagePattern("$$DATETIME$$", Locale.Loc.Instance["LblDateTimeFormatDescription"], "2016-01-01_12-00-00"));
+            p.Add(new ImagePattern("$$FRAMENR$$", Locale.Loc.Instance["LblFrameNrDescription"], "0001"));
+            p.Add(new ImagePattern("$$IMAGETYPE$$", Locale.Loc.Instance["LblImageTypeDescription"], "Light"));
+            p.Add(new ImagePattern("$$BINNING$$", Locale.Loc.Instance["LblBinningDescription"], "1x1"));
+            p.Add(new ImagePattern("$$SENSORTEMP$$", Locale.Loc.Instance["LblTemperatureDescription"], "-15"));
+            p.Add(new ImagePattern("$$EXPOSURETIME$$", Locale.Loc.Instance["LblExposureTimeDescription"], string.Format("{0:0.00}", 10.21234)));
+            p.Add(new ImagePattern("$$TARGETNAME$$", Locale.Loc.Instance["LblTargetNameDescription"], "M33"));
+            p.Add(new ImagePattern("$$GAIN$$", Locale.Loc.Instance["LblGainDescription"], "1600"));
+            return p;
         }
 
         private void OpenSkyAtlasImageRepositoryDiag(object obj) {

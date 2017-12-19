@@ -375,4 +375,14 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblFileExample">Beispiel Dateiname</s:String>
     <s:String x:Key="LblPlatesolve2NotFound">Platesolve2 exe wurde nicht gefunden werden</s:String>
     <s:String x:Key="LblPlatesolve2NoCoordinates">Keine Koordinaten verfügbar. Platesolve2 benötigt Koordinaten zum platesolven!</s:String>
+    <s:String x:Key="LblFilternameDescription">Filtername</s:String>
+    <s:String x:Key="LblDateFormatDescription">Datum mit Format YYYY-MM-DD</s:String>
+    <s:String x:Key="LblDateTimeFormatDescription">Datum mit Format YYYY-MM-DD_HH-mm-ss</s:String>
+    <s:String x:Key="LblFrameNrDescription">Bildnummer mit Format ####</s:String>
+    <s:String x:Key="LblImageTypeDescription">Light, Flat, Dark, Bias</s:String>
+    <s:String x:Key="LblBinningDescription">Kamerabinning</s:String>
+    <s:String x:Key="LblTemperatureDescription">Kameratemperatur</s:String>
+    <s:String x:Key="LblExposureTimeDescription">Belichtungszeit in Sekunden</s:String>
+    <s:String x:Key="LblTargetNameDescription">Zielname wenn verfügbar</s:String>
+    <s:String x:Key="LblGainDescription">Kameragain</s:String>
 </ResourceDictionary>
