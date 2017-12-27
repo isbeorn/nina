@@ -41,7 +41,7 @@ namespace NINA.ViewModel {
 
         private void LoadSequence(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.Title = Locale.Loc.Instance["LblLoad"];
+            dialog.Title = Locale.Loc.Instance["LblLoadSequence"];
             dialog.FileName = "Sequence";
             dialog.DefaultExt = ".xml";
             dialog.Filter = "XML documents|*.xml";
@@ -55,7 +55,7 @@ namespace NINA.ViewModel {
 
         private void SaveSequence(object obj) {
             Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
-            dialog.Title = Locale.Loc.Instance["LblSave"];
+            dialog.Title = Locale.Loc.Instance["LblSaveSequence"];
             dialog.FileName = "Sequence";
             dialog.DefaultExt = ".xml";
             dialog.Filter = "XML documents (.xml)|*.xml";
