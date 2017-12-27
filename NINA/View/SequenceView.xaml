@@ -350,14 +350,20 @@
                 <DataGridTemplateColumn
                     Width="*"
                     CanUserSort="False"
-                    Header="{ns:Loc LblRemainingNo}">
+                    Header="{ns:Loc LblProgress}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock
                                 Margin="5,0,5,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding ExposureCount}"
-                                TextAlignment="Center" />
+                                TextAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} / {1}">
+                                        <Binding Path="ProgressExposureCount" />
+                                        <Binding Path="TotalExposureCount" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -139,21 +139,19 @@ namespace NINA.Model {
 
             if (Mode == SequenceMode.STANDARD) {
                 seq = ActiveSequence ?? Items.First();
-                if (seq.ExposureCount > 0) {
-                    //There are exposures remaining. Reduce by 1 and return
-                    seq.ExposureCount--;
+                if (seq.ProgressExposureCount < seq.TotalExposureCount) {
                 } else {
-                    //No exposures remaining. Get next Sequence, reduce by 1 and return
+                    //No exposures remaining. Get next Sequence
                     var idx = Items.IndexOf(seq) + 1;
                     if (idx < Items.Count) {
                         seq = Items[idx];
-                        seq.ExposureCount--;
                     } else {
                         seq = null;
                     }
                 }
             } else if (Mode == SequenceMode.ROTATE) {
-                if (Items.Count == Items.Where(x => x.ExposureCount == 0).Count()) {
+                //Check if all sequences are done
+                if (Items.Count == Items.Where(x => x.ProgressExposureCount == x.TotalExposureCount).Count()) {
                     //All sequences done
                     ActiveSequence = null;
                     return null;
@@ -161,20 +159,23 @@ namespace NINA.Model {
 
                 seq = ActiveSequence;
                 if (seq == null) {
+                    //no previous sequence was set, take first sequence
                     seq = Items.First();
                 } else {
                     var idx = (Items.IndexOf(seq) + 1) % Items.Count;
                     seq = Items[idx];
-                    seq.ExposureCount--;
                 }
 
-                if (seq.ExposureCount == 0) {
+                if (seq.ProgressExposureCount == seq.TotalExposureCount) {
                     ActiveSequence = seq;
                     return this.Next(); //Search for next sequence where exposurecount > 0
                 }
             }
 
             ActiveSequence = seq;
+            if(seq != null) {
+                seq.ProgressExposureCount++;
+            }
             return seq;
         }
 
@@ -429,7 +430,7 @@ namespace NINA.Model {
         }
 
         public override string ToString() {
-            return ExposureCount.ToString() + "x" + ExposureTime.ToString() + " " + ImageType;
+            return ProgressExposureCount.ToString() + "x" + ExposureTime.ToString() + " " + ImageType;
         }
 
         public CaptureSequence(double exposureTime, string imageType, MyFilterWheel.FilterInfo filterType, MyCamera.BinningMode binning, int exposureCount) {
@@ -446,7 +447,7 @@ namespace NINA.Model {
         private string _imageType;
         private MyFilterWheel.FilterInfo _filterType;
         private MyCamera.BinningMode _binning;
-        private int _exposureCount;
+        private int _progressExposureCount;        
 
         [XmlElement(nameof(ExposureTime))]
         public double ExposureTime {
@@ -498,26 +499,7 @@ namespace NINA.Model {
                 RaisePropertyChanged();
             }
         }
-
-
-        /// <summary>
-        /// Remaining Exposure Count
-        /// </summary>
-        [XmlElement(nameof(ExposureCount))]
-        public int ExposureCount {
-            get {
-                return _exposureCount;
-            }
-
-            set {
-                _exposureCount = value;
-                if (_exposureCount < 0) { _exposureCount = 0; }
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(ProgressExposureCount));
-
-            }
-        }
-
+        
         private short _gain;
         [XmlElement(nameof(Gain))]
         public short Gain {
@@ -541,19 +523,24 @@ namespace NINA.Model {
             }
             set {
                 _totalExposureCount = value;
-                ExposureCount = value;
+                if(_totalExposureCount < ProgressExposureCount && _totalExposureCount >= 0) {
+                    ProgressExposureCount = _totalExposureCount;
+                }
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(ProgressExposureCount));
             }
         }
 
         /// <summary>
         /// Number of exposures already taken
         /// </summary>
-        
+        [XmlElement(nameof(ProgressExposureCount))]
         public int ProgressExposureCount {
             get {
-                return TotalExposureCount - ExposureCount;
+                return _progressExposureCount;
+            }
+            set {
+                _progressExposureCount = value;
+                RaisePropertyChanged();
             }
         }
 

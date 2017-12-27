@@ -125,8 +125,8 @@ namespace NINA.ViewModel {
         private void CalculateETA() {
             TimeSpan time = new TimeSpan();
             foreach (CaptureSequence s in Sequence) {
-                var exposureCount = s.ExposureCount;
-                time = time.Add(TimeSpan.FromSeconds(s.ExposureCount * (s.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
+                var exposureCount = s.TotalExposureCount - s.ProgressExposureCount;
+                time = time.Add(TimeSpan.FromSeconds(exposureCount * (s.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
             }
             ETA = DateTime.Now.AddSeconds(time.TotalSeconds);
         }
