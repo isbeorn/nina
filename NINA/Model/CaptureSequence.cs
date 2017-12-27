@@ -27,7 +27,7 @@ namespace NINA.Model {
         }
 
         private AsyncObservableCollection<CaptureSequence> _items = new AsyncObservableCollection<CaptureSequence>();
-        [XmlElement("CaptureSequences")]
+        [XmlElement(nameof(CaptureSequence))]
         public AsyncObservableCollection<CaptureSequence> Items {
             get {
                 return _items;
