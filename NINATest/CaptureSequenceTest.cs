@@ -65,7 +65,7 @@ namespace NINATest {
         [TestMethod]
         public void GetNextSequence_ModeStandard_NextSequenceSelected() {
             //Arrange
-            var seq = new CaptureSequence() { ExposureCount = 2 };
+            var seq = new CaptureSequence() { ProgressExposureCount = 2 };
             var seq2 = new CaptureSequence();
             var l = new CaptureSequenceList();
             l.Mode = SequenceMode.STANDARD;
@@ -89,9 +89,9 @@ namespace NINATest {
         [TestMethod]
         public void GetNextSequence_ModeStandard_AllFinished() {
             //Arrange
-            var seq = new CaptureSequence() { ExposureCount = 5 };
-            var seq2 = new CaptureSequence() { ExposureCount = 5 };
-            var seq3 = new CaptureSequence() { ExposureCount = 5 };
+            var seq = new CaptureSequence() { ProgressExposureCount = 5 };
+            var seq2 = new CaptureSequence() { ProgressExposureCount = 5 };
+            var seq3 = new CaptureSequence() { ProgressExposureCount = 5 };
             var l = new CaptureSequenceList();
             l.Mode = SequenceMode.STANDARD;
 
@@ -108,7 +108,7 @@ namespace NINATest {
             //Assert
             Assert.AreEqual(null, l.ActiveSequence);
             Assert.AreEqual(-1, l.ActiveSequenceIndex);
-            Assert.AreEqual(0, l.Where(x => x.ExposureCount > 0).Count());
+            Assert.AreEqual(0, l.Items.Where(x => x.ProgressExposureCount < x.TotalExposureCount).Count());
         }
 
         [TestMethod]
@@ -144,9 +144,9 @@ namespace NINATest {
         [TestMethod]
         public void GetNextSequence_ModeRotate_NextSequenceSelected() {
             //Arrange
-            var seq = new CaptureSequence() { ExposureCount = 5 };
-            var seq2 = new CaptureSequence() { ExposureCount = 5 };
-            var seq3 = new CaptureSequence() { ExposureCount = 5 };
+            var seq = new CaptureSequence() { ProgressExposureCount = 5 };
+            var seq2 = new CaptureSequence() { ProgressExposureCount = 5 };
+            var seq3 = new CaptureSequence() { ProgressExposureCount = 5 };
             var l = new CaptureSequenceList();
             l.Mode = SequenceMode.ROTATE;
 
@@ -170,9 +170,9 @@ namespace NINATest {
         [TestMethod]
         public void GetNextSequence_ModeRotate_FirstEmptySecondSelected() {
             //Arrange
-            var seq = new CaptureSequence() { ExposureCount = 0 };
-            var seq2 = new CaptureSequence() { ExposureCount = 5 };
-            var seq3 = new CaptureSequence() { ExposureCount = 5 };
+            var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount=0 };
+            var seq2 = new CaptureSequence() { ProgressExposureCount = 5 };
+            var seq3 = new CaptureSequence() { ProgressExposureCount = 5 };
             var l = new CaptureSequenceList();
             l.Mode = SequenceMode.ROTATE;
 
@@ -190,9 +190,9 @@ namespace NINATest {
         [TestMethod]
         public void GetNextSequence_ModeRotate_AllFinished() {
             //Arrange
-            var seq = new CaptureSequence() { ExposureCount = 5 };
-            var seq2 = new CaptureSequence() { ExposureCount = 5 };
-            var seq3 = new CaptureSequence() { ExposureCount = 5 };
+            var seq = new CaptureSequence() { TotalExposureCount = 5 };
+            var seq2 = new CaptureSequence() { TotalExposureCount = 5 };
+            var seq3 = new CaptureSequence() { TotalExposureCount = 5 };
             var l = new CaptureSequenceList();
             l.Mode = SequenceMode.ROTATE;
 
@@ -209,7 +209,7 @@ namespace NINATest {
             //Assert
             Assert.AreEqual(null, l.ActiveSequence);
             Assert.AreEqual(-1, l.ActiveSequenceIndex);
-            Assert.AreEqual(0, l.Where(x => x.ExposureCount > 0).Count());
+            Assert.AreEqual(0, l.Items.Where(x => x.ProgressExposureCount < x.TotalExposureCount || x.ProgressExposureCount > x.TotalExposureCount).Count());
         }
 
         [TestMethod]
@@ -251,7 +251,6 @@ namespace NINATest {
             Assert.AreEqual(1, seq.Binning.Y, "Binning X value not as expected");
             Assert.AreEqual(false, seq.Dither, "Dither value not as expected");
             Assert.AreEqual(1, seq.DitherAmount, "DitherAmount value not as expected");
-            Assert.AreEqual(1, seq.ExposureCount, "ExposureCount value not as expected");
             Assert.AreEqual(1, seq.ExposureTime, "ExposureTime value not as expected");
             Assert.AreEqual(null, seq.FilterType, "FilterType value not as expected");
             Assert.AreEqual(-1, seq.Gain, "Gain value not as expected");
@@ -277,7 +276,6 @@ namespace NINATest {
             Assert.AreEqual(binning.Y, seq.Binning.Y, "Binning X value not as expected");
             Assert.AreEqual(false, seq.Dither, "Dither value not as expected");
             Assert.AreEqual(1, seq.DitherAmount, "DitherAmount value not as expected");
-            Assert.AreEqual(exposureCount, seq.ExposureCount, "ExposureCount value not as expected");
             Assert.AreEqual(exposureTime, seq.ExposureTime, "ExposureTime value not as expected");
             Assert.AreEqual(filter, seq.FilterType, "FilterType value not as expected");
             Assert.AreEqual(-1, seq.Gain, "Gain value not as expected");
@@ -300,11 +298,10 @@ namespace NINATest {
 
             //Act
             for(int i = 0; i < exposuresTaken; i++) {
-                seq.ExposureCount--;
+                seq.ProgressExposureCount++;
             }
 
             //Assert
-            Assert.AreEqual(exposureCount - exposuresTaken, seq.ExposureCount, "ExposureCount value not as expected");
             Assert.AreEqual(exposuresTaken, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
             Assert.AreEqual(exposureCount, seq.TotalExposureCount, "TotalExposureCount value not as expected");
         }

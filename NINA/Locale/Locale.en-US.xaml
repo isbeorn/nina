@@ -380,4 +380,9 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblExposureTimeDescription">Exposure Time in seconds</s:String>
     <s:String x:Key="LblTargetNameDescription">Target Name if available</s:String>
     <s:String x:Key="LblGainDescription">Camera Gain</s:String>
+    <s:String x:Key="LblLoadSequence">Load Sequence</s:String>
+    <s:String x:Key="LblLoadSequenceToolTip">Load Sequence from xml file</s:String>
+    <s:String x:Key="LblSaveSequence">Save Sequence</s:String>
+    <s:String x:Key="LblSaveSequenceToolTip">Save Sequence as xml file</s:String>
+    <s:String x:Key="LblProgress">Progress</s:String>
 </ResourceDictionary>

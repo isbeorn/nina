@@ -29,12 +29,40 @@ namespace NINA.ViewModel {
             AddSequenceCommand = new RelayCommand(AddSequence);
             RemoveSequenceCommand = new RelayCommand(RemoveSequence);
             StartSequenceCommand = new AsyncCommand<bool>(() => StartSequence(new Progress<ApplicationStatus>(p => Status = p)));
+            SaveSequenceCommand = new RelayCommand(SaveSequence);
+            LoadSequenceCommand = new RelayCommand(LoadSequence);
             CancelSequenceCommand = new RelayCommand(CancelSequence);
             PauseSequenceCommand = new RelayCommand(PauseSequence);
             ResumeSequenceCommand = new RelayCommand(ResumeSequence);
             UpdateETACommand = new RelayCommand((object o) => CalculateETA());
 
             RegisterMediatorMessages();
+        }
+
+        private void LoadSequence(object obj) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Title = Locale.Loc.Instance["LblLoadSequence"];
+            dialog.FileName = "Sequence";
+            dialog.DefaultExt = ".xml";
+            dialog.Filter = "XML documents|*.xml";
+
+            if (dialog.ShowDialog() == true) {
+                var l = CaptureSequenceList.Load(dialog.FileName);
+                Sequence = l;
+            }
+            
+        }
+
+        private void SaveSequence(object obj) {
+            Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.Title = Locale.Loc.Instance["LblSaveSequence"];
+            dialog.FileName = "Sequence";
+            dialog.DefaultExt = ".xml";
+            dialog.Filter = "XML documents (.xml)|*.xml";
+
+            if (dialog.ShowDialog() == true) {
+                Sequence.Save(dialog.FileName);
+            }            
         }
 
         private void ResumeSequence(object obj) {
@@ -97,8 +125,8 @@ namespace NINA.ViewModel {
         private void CalculateETA() {
             TimeSpan time = new TimeSpan();
             foreach (CaptureSequence s in Sequence) {
-                var exposureCount = s.ExposureCount;
-                time = time.Add(TimeSpan.FromSeconds(s.ExposureCount * (s.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
+                var exposureCount = s.TotalExposureCount - s.ProgressExposureCount;
+                time = time.Add(TimeSpan.FromSeconds(exposureCount * (s.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
             }
             ETA = DateTime.Now.AddSeconds(time.TotalSeconds);
         }
@@ -311,6 +339,8 @@ namespace NINA.ViewModel {
                     var seq = new CaptureSequence();
                     _sequence = new CaptureSequenceList(seq);
                     SelectedSequenceIdx = _sequence.Count - 1;
+                    //_sequence.Save(@"D:\test.xml");
+                    //_sequence = CaptureSequenceList.Load(@"D:\test.xml");
                 }
                 return _sequence;
             }
@@ -378,5 +408,7 @@ namespace NINA.ViewModel {
         public ICommand PauseSequenceCommand { get; private set; }
         public ICommand ResumeSequenceCommand { get; private set; }
         public ICommand UpdateETACommand { get; private set; }
+        public ICommand LoadSequenceCommand { get; private set; }
+        public ICommand SaveSequenceCommand { get; private set; }
     }
 }

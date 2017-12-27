@@ -247,7 +247,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (seq.Dither && ((seq.ExposureCount % seq.DitherAmount) == 0)) {                
+            if (seq.Dither && ((seq.ProgressExposureCount % seq.DitherAmount) == 0)) {                
 
                 return await Mediator.Instance.RequestAsync(new DitherGuiderMessage() { Token = token });                
             }

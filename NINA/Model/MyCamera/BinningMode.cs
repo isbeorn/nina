@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace NINA.Model.MyCamera {
+    [Serializable()]
+    [XmlRoot(ElementName = nameof(BinningMode))]
     public class BinningMode : BaseINPC {
+        private BinningMode() { }
         public BinningMode(short x, short y) {
             X = x;
             Y = y;
@@ -18,6 +22,7 @@ namespace NINA.Model.MyCamera {
                 return string.Join("x", X, Y);
             }
         }
+        [XmlElement(nameof(X))]
         public short X {
             get {
                 return _x;
@@ -28,7 +33,7 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged();
             }
         }
-
+        [XmlElement(nameof(Y))]
         public short Y {
             get {
                 return _y;

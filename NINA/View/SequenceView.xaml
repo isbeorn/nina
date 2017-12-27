@@ -344,20 +344,26 @@
             CanUserAddRows="False"
             HorizontalScrollBarVisibility="Disabled"
             IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
-            ItemsSource="{Binding Sequence}"
+            ItemsSource="{Binding Sequence.Items}"
             SelectedIndex="{Binding SelectedSequenceIdx}">
             <DataGrid.Columns>
                 <DataGridTemplateColumn
                     Width="*"
                     CanUserSort="False"
-                    Header="{ns:Loc LblRemainingNo}">
+                    Header="{ns:Loc LblProgress}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock
                                 Margin="5,0,5,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding ExposureCount}"
-                                TextAlignment="Center" />
+                                TextAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} / {1}">
+                                        <Binding Path="ProgressExposureCount" />
+                                        <Binding Path="TotalExposureCount" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -640,6 +646,35 @@
                     <Path
                         Margin="5"
                         Data="{StaticResource SubstractSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+
+                <Button
+                    Width="40"
+                    Command="{Binding SaveSequenceCommand}"
+                    IsEnabled="{Binding Sequence, Converter={StaticResource InverseNullToBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblSaveSequenceToolTip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SaveSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+
+                <Button Width="40" Command="{Binding LoadSequenceCommand}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblLoadSequenceToolTip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource LoadSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
                         Stretch="Uniform" />
                 </Button>
