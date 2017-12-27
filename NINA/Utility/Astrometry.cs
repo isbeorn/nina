@@ -341,8 +341,8 @@ namespace NINA.Utility.Astrometry {
         /// <summary>
         /// Epoch the coordinates are stored in. Either J2000 or JNOW
         /// </summary>
-        [XmlIgnore]
-        public Epoch Epoch { get; private set; }
+        [XmlElement(nameof(Epoch))]
+        public Epoch Epoch { get; set; }
 
         /// <summary>
         /// Creates new coordinates
