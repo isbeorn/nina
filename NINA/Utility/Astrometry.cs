@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace NINA.Utility.Astrometry {
     public class Astrometry {
@@ -292,8 +293,11 @@ namespace NINA.Utility.Astrometry {
         }
     }
 
+    [Serializable()]
+    [XmlRoot(nameof(Coordinates))]
     public class Coordinates {
-
+        private Coordinates() { }
+                
         public enum RAType {
             Degrees,
             Hours
@@ -302,8 +306,10 @@ namespace NINA.Utility.Astrometry {
         /// <summary>
         /// Right Ascension in hours
         /// </summary>
+        [XmlElement(nameof(RA))]
         public double RA { get; set; }
 
+        [XmlIgnore]
         public string RAString {
             get {
                 return Utility.AscomUtil.DegreesToHMS(RADegrees);
@@ -322,8 +328,10 @@ namespace NINA.Utility.Astrometry {
         /// <summary>
         /// Declination in Degrees
         /// </summary>
+        [XmlElement(nameof(Dec))]
         public double Dec { get; set; }
 
+        [XmlIgnore]
         public string DecString {
             get {
                 return Utility.AscomUtil.DegreesToDMS(Dec);
@@ -333,6 +341,7 @@ namespace NINA.Utility.Astrometry {
         /// <summary>
         /// Epoch the coordinates are stored in. Either J2000 or JNOW
         /// </summary>
+        [XmlIgnore]
         public Epoch Epoch { get; private set; }
 
         /// <summary>

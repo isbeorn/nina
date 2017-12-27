@@ -311,6 +311,8 @@ namespace NINA.ViewModel {
                     var seq = new CaptureSequence();
                     _sequence = new CaptureSequenceList(seq);
                     SelectedSequenceIdx = _sequence.Count - 1;
+                    //_sequence.Save(@"D:\test.xml");
+                    //_sequence = CaptureSequenceList.Load(@"D:\test.xml");
                 }
                 return _sequence;
             }
