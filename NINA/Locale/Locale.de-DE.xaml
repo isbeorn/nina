@@ -390,4 +390,10 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblSaveSequence">Sequenz speichern</s:String>
     <s:String x:Key="LblSaveSequenceToolTip">Speichere Sequenz als XML Datei</s:String>
     <s:String x:Key="LblProgress">Fortschritt</s:String>
+    <s:String x:Key="LblUpdate">Aktualisieren</s:String>
+    <s:String x:Key="LblDownloading">Lädt herunter</s:String>
+    <s:String x:Key="LblNewUpdateAvailable">Neues Update ist verfügbar ({0})! Jetzt aktualisieren?</s:String>
+    <s:String x:Key="LblUpdating">Updating</s:String>
+    <s:String x:Key="LblYes">Yes</s:String>
+    <s:String x:Key="LblNo">No</s:String>
 </ResourceDictionary>

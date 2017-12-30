@@ -387,4 +387,12 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblSaveSequence">Save Sequence</s:String>
     <s:String x:Key="LblSaveSequenceToolTip">Save Sequence as xml file</s:String>
     <s:String x:Key="LblProgress">Progress</s:String>
+    <s:String x:Key="LblUpdate">Update</s:String>
+    <s:String x:Key="LblDownloading">Downloading</s:String>
+    <s:String x:Key="LblNewUpdateAvailable">New update is available ({0})! Do you want to update now?</s:String>
+    <s:String x:Key="LblUpdating">Updating</s:String>
+    <s:String x:Key="LblYes">Yes</s:String>
+    <s:String x:Key="LblNo">No</s:String>
+
+
 </ResourceDictionary>

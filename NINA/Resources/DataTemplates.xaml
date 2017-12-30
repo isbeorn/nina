@@ -6,4 +6,7 @@
     <DataTemplate DataType="{x:Type vm:MeridianFlipVM}">
         <view:MeridianFlipView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:VersionCheckVM}">
+        <view:VersionCheckView />
+    </DataTemplate>
 </ResourceDictionary>

@@ -174,14 +174,15 @@ namespace NINA.Utility {
 
         }
 
-        public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken) {
-            await Task.Run(() => {
-                using (var client = new WebClient()) {
-                    using (canceltoken.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
-                        client.DownloadFile(url, targetLocation);
-                    }
+        public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken, IProgress<int> progress = null) {            
+            using (var client = new WebClient()) {
+                using (canceltoken.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
+                    client.DownloadProgressChanged += (s, e) => {
+                        progress?.Report(e.ProgressPercentage);
+                    };
+                    await client.DownloadFileTaskAsync(url, targetLocation);
                 }
-            });            
+            }            
         }
 
 

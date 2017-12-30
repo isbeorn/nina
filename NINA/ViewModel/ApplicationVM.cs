@@ -20,6 +20,7 @@ namespace NINA.ViewModel {
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
+            CheckUpdateCommand = new AsyncCommand<bool>(() => CheckUpdate());
             ConnectAllDevicesCommand = new AsyncCommand<bool>(async () => {
                 var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblReconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag == MessageBoxResult.OK) {
@@ -47,6 +48,10 @@ namespace NINA.ViewModel {
             InitAvalonDockLayout();
 
             MeridianFlipVM = new MeridianFlipVM();
+        }
+
+        private async Task<bool> CheckUpdate() {
+            return await new VersionCheckVM().CheckUpdate();
         }
 
         public void InitAvalonDockLayout() {
@@ -360,7 +365,7 @@ namespace NINA.ViewModel {
         public ICommand MinimizeWindowCommand { get; private set; }
 
         public ICommand MaximizeWindowCommand { get; private set; }
-
+        public ICommand CheckUpdateCommand { get; private set; }
         public ICommand ExitCommand { get; private set; }
         public ICommand ConnectAllDevicesCommand { get; private set; }
         public ICommand DisconnectAllDevicesCommand { get; private set; }

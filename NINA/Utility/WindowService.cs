@@ -21,13 +21,13 @@ namespace NINA.Utility {
 
         private Window _win;
 
-        public void ShowDialog(object viewModel, string title = "") {
+        public void ShowDialog(object viewModel, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None) {
             dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                 _win = new Window() {
                     SizeToContent = SizeToContent.WidthAndHeight,
                     Title = title,
-                    ResizeMode = ResizeMode.NoResize,
-                    WindowStyle = WindowStyle.None
+                    ResizeMode = resizeMode,
+                    WindowStyle = windowStyle
                 };
                 _win.SizeChanged += Win_SizeChanged;
                 _win.Content = viewModel;

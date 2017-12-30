@@ -9,51 +9,63 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace NINA.ViewModel {
-    class VersionCheck {
+    class VersionCheckVM : BaseINPC {
         const string VERSIONSURL = "https://api.bitbucket.org/2.0/repositories/Isbeorn/nina/versions";
         const string DOWNLOADSURL = "https://api.bitbucket.org/2.0/repositories/Isbeorn/nina/downloads";
 
+        public VersionCheckVM() {
+            UpdateCommand = new RelayCommand(Update);
+        }
+
+        public ICommand UpdateCommand { get; set; }
         private CancellationTokenSource _cancelTokenSource;
 
         private Version _latestVersion;
+        private string _setupLocation;
 
-        public async Task CheckUpdate() {
+        public async Task<bool> CheckUpdate() {
             _cancelTokenSource = new CancellationTokenSource();
             try {
                 var updateAvailable = await CheckIfUpdateIsAvailable();
                 if (updateAvailable) {
-                    var result = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblNewUpdateAvailable"], "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes);
+                    var result = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], _latestVersion.ToString()), "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes);
                     if (result == System.Windows.MessageBoxResult.Yes) {
-                        var setupLocation = await DownloadLatestVersion();
-                        setupLocation = Unzip(setupLocation);
-                        Update(setupLocation);
+                        WindowService ws = new WindowService();
+                        ws.ShowDialog(this, Locale.Loc.Instance["LblUpdating"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow );
+
+                        _setupLocation = await DownloadLatestVersion();
+                        _setupLocation = Unzip(_setupLocation);
+                        if(!string.IsNullOrEmpty(_setupLocation)) {
+                            UpdateReady = true;
+                        }
                     }
                 } else {
-                    return;
+                    return false;
                 }
             } catch (OperationCanceledException) {
 
             } catch (Exception ex) {
 
             }
+            return true;
         }
 
-        private void Update(string setupLocation) {
+        private void Update(object o) {
             ProcessStartInfo Info = new ProcessStartInfo();
             Info.WindowStyle = ProcessWindowStyle.Hidden;
             Info.CreateNoWindow = true;
-            Info.FileName = setupLocation + "setup.exe";
+            Info.FileName = _setupLocation + "setup.exe";
             Process.Start(Info);
             System.Windows.Application.Current.Shutdown();
         }
 
         private async Task<bool> CheckIfUpdateIsAvailable() {
             _latestVersion = await CheckLatestVersion();
-            var compareVersion = _latestVersion.CompareTo(CurrentVersion);
 
-            if (compareVersion > 0) {
+            if (_latestVersion > CurrentVersion) {
                 return true;
             } else {
                 return false;
@@ -72,8 +84,31 @@ namespace NINA.ViewModel {
         private async Task<string> DownloadLatestVersion() {
             var url = await GetDownloadUrl(_latestVersion.ToString());
             var destination = Path.GetTempPath() + "NINASetup.zip";
-            await Utility.Utility.HttpDownloadFile(new Uri(url), destination, _cancelTokenSource.Token);
+            Progress<int> downloadProgress = new Progress<int>((p) => { Progress = p; });
+            await Utility.Utility.HttpDownloadFile(new Uri(url), destination, _cancelTokenSource.Token, downloadProgress);
             return destination;
+        }
+
+        private int _progress;
+        public int Progress {
+            get {
+                return _progress;
+            }
+            set {
+                _progress = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _updateReady = false;
+        public bool UpdateReady {
+            get {
+                return _updateReady;
+            }
+            set {
+                _updateReady = value;
+                RaisePropertyChanged();
+            }
         }
 
         private async Task<string> GetDownloadUrl(string version) {
