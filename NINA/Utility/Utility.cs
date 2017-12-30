@@ -45,7 +45,9 @@ namespace NINA.Utility {
         public static async Task<string> HttpGetRequest(CancellationToken canceltoken, string url, params object[] parameters) {
             string result = string.Empty;
 
-            url = string.Format(url, parameters);
+            if(parameters != null) {
+                url = string.Format(url, parameters);
+            }            
             HttpWebRequest request = null;
             HttpWebResponse response = null;
             using (canceltoken.Register(() => request.Abort(), useSynchronizationContext: false)) {
@@ -170,6 +172,16 @@ namespace NINA.Utility {
 
             return result;
 
+        }
+
+        public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken) {
+            await Task.Run(() => {
+                using (var client = new WebClient()) {
+                    using (canceltoken.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
+                        client.DownloadFile(url, targetLocation);
+                    }
+                }
+            });            
         }
 
 

@@ -53,6 +53,39 @@ namespace NINA.MyMessageBox {
             }
         }
 
+        private Visibility _oKVisibility;
+        public Visibility OKVisibility {
+            get {
+                return _oKVisibility;
+            }
+            set {
+                _oKVisibility = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Visibility _yesVisibility;
+        public Visibility YesVisibility {
+            get {
+                return _yesVisibility;
+            }
+            set {
+                _yesVisibility = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Visibility _noVisibility;
+        public Visibility NoVisibility {
+            get {
+                return _noVisibility;
+            }
+            set {
+                _noVisibility = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public static MessageBoxResult Show(string messageBoxText) {
             return Show(messageBoxText, "", MessageBoxButton.OK, MessageBoxResult.OK);
         }
@@ -70,8 +103,24 @@ namespace NINA.MyMessageBox {
 
             if (button == MessageBoxButton.OKCancel) {
                 MyMessageBox.CancelVisibility = System.Windows.Visibility.Visible;
+                MyMessageBox.OKVisibility = System.Windows.Visibility.Visible;
+                MyMessageBox.YesVisibility = System.Windows.Visibility.Hidden;
+                MyMessageBox.NoVisibility = System.Windows.Visibility.Hidden;
+            } else if (button == MessageBoxButton.YesNo) {
+                MyMessageBox.CancelVisibility = System.Windows.Visibility.Hidden;
+                MyMessageBox.OKVisibility = System.Windows.Visibility.Hidden;
+                MyMessageBox.YesVisibility = System.Windows.Visibility.Visible;
+                MyMessageBox.NoVisibility = System.Windows.Visibility.Visible;
+            } else if (button == MessageBoxButton.OK) {
+                MyMessageBox.CancelVisibility = System.Windows.Visibility.Hidden;
+                MyMessageBox.OKVisibility = System.Windows.Visibility.Visible;
+                MyMessageBox.YesVisibility = System.Windows.Visibility.Hidden;
+                MyMessageBox.NoVisibility = System.Windows.Visibility.Hidden;
             } else {
                 MyMessageBox.CancelVisibility = System.Windows.Visibility.Hidden;
+                MyMessageBox.OKVisibility = System.Windows.Visibility.Visible;
+                MyMessageBox.YesVisibility = System.Windows.Visibility.Hidden;
+                MyMessageBox.NoVisibility = System.Windows.Visibility.Hidden;
             }
 
 
@@ -89,9 +138,17 @@ namespace NINA.MyMessageBox {
             if (win.DialogResult == null) {
                 return defaultresult;
             } else if (win.DialogResult == true) {
-                return MessageBoxResult.OK;
+                if(MyMessageBox.YesVisibility == Visibility.Visible) {
+                    return MessageBoxResult.Yes;
+                } else {
+                    return MessageBoxResult.OK;
+                }                
             } else if (win.DialogResult == false) {
-                return MessageBoxResult.Cancel;
+                if (MyMessageBox.NoVisibility == Visibility.Visible) {
+                    return MessageBoxResult.No;
+                } else {
+                    return MessageBoxResult.Cancel;
+                }                
             } else {
                 return defaultresult;
             }
