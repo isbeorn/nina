@@ -34,7 +34,7 @@ namespace NINA.Utility {
                 var mainwindow = System.Windows.Application.Current.MainWindow;
                 mainwindow.Opacity = 0.8;
                 var result = _win.ShowDialog();
-                this.OnDialogResultchanged?.Invoke(this, new DialogResultEventArgs(result));
+                this.OnDialogResultChanged?.Invoke(this, new DialogResultEventArgs(result));
                 mainwindow.Opacity = 1;
 
             }));
@@ -47,7 +47,7 @@ namespace NINA.Utility {
             public bool? DialogResult { get; set; }
         }
 
-        public event EventHandler OnDialogResultchanged;
+        public event EventHandler OnDialogResultChanged;
 
         public async Task Close() {
             await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
