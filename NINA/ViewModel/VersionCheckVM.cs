@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using NINA.Utility;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,6 +35,12 @@ namespace NINA.ViewModel {
                     var result = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], _latestVersion.ToString()), "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes);
                     if (result == System.Windows.MessageBoxResult.Yes) {
                         WindowService ws = new WindowService();
+                        ws.OnDialogResultChanged += (s, e) => {
+                            var dialogResult = (WindowService.DialogResultEventArgs)e;
+                            if(dialogResult.DialogResult != true) {
+                                _cancelTokenSource.Cancel();
+                            }                            
+                        };
                         ws.ShowDialog(this, Locale.Loc.Instance["LblUpdating"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow );
 
                         _setupLocation = await DownloadLatestVersion();
@@ -46,9 +53,9 @@ namespace NINA.ViewModel {
                     return false;
                 }
             } catch (OperationCanceledException) {
-
             } catch (Exception ex) {
-
+                Notification.ShowError(ex.Message);
+                Logger.Error(ex.Message, ex.StackTrace);
             }
             return true;
         }
@@ -63,7 +70,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> CheckIfUpdateIsAvailable() {
-            _latestVersion = await CheckLatestVersion();
+            _latestVersion = await GetLatestVersion();
 
             if (_latestVersion > CurrentVersion) {
                 return true;
@@ -77,6 +84,7 @@ namespace NINA.ViewModel {
             if (Directory.Exists(destination)) {
                 Directory.Delete(destination, true);
             }
+            _cancelTokenSource.Token.ThrowIfCancellationRequested();
             ZipFile.ExtractToDirectory(zipLocation, destination);
             return destination;
         }
@@ -130,19 +138,21 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<Version> CheckLatestVersion() {
+        private async Task<Version> GetLatestVersion() {
             var versions = await GetBitBucketRecursive<BitBucketVersion>(VERSIONSURL);
 
             var max = versions.values.Max((x) => x.name);
             return max;
         }
 
-        private async Task<BitBucketBase<T>> GetBitBucketRecursive<T>(string url) {
+        private async Task<BitBucketBase<T>> GetBitBucketRecursive<T>(string url) {            
             var stringversions = await Utility.Utility.HttpGetRequest(_cancelTokenSource.Token, url, null);
             JObject o = JObject.Parse(stringversions);
             BitBucketBase<T> versions = o.ToObject<BitBucketBase<T>>();
 
-            if(string.IsNullOrEmpty(versions.next)) {
+            _cancelTokenSource.Token.ThrowIfCancellationRequested();
+
+            if (string.IsNullOrEmpty(versions.next)) {
                 return versions;
             } else {
                 var next = await GetBitBucketRecursive<T>(versions.next);

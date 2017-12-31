@@ -33,11 +33,21 @@ namespace NINA.Utility {
                 _win.Content = viewModel;
                 var mainwindow = System.Windows.Application.Current.MainWindow;
                 mainwindow.Opacity = 0.8;
-                _win.ShowDialog();
+                var result = _win.ShowDialog();
+                this.OnDialogResultchanged?.Invoke(this, new DialogResultEventArgs(result));
                 mainwindow.Opacity = 1;
 
             }));
         }
+
+        public class DialogResultEventArgs : EventArgs {
+            public DialogResultEventArgs(bool? dialogResult) {
+                DialogResult = dialogResult;
+            }
+            public bool? DialogResult { get; set; }
+        }
+
+        public event EventHandler OnDialogResultchanged;
 
         public async Task Close() {
             await dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
