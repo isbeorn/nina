@@ -212,6 +212,8 @@
     </Reference>
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
     <Reference Include="System.Net" />
     <Reference Include="System.Web" />
@@ -390,6 +392,7 @@
     <Compile Include="ViewModel\SkyAtlasVM.cs" />
     <Compile Include="ViewModel\TelescopeVM.cs" />
     <Compile Include="ViewModel\ThumbnailVM.cs" />
+    <Compile Include="ViewModel\VersionCheckVM.cs" />
     <Compile Include="ViewModel\WeatherDataVM.cs" />
     <Compile Include="View\AltitudeChart.xaml.cs">
       <DependentUpon>AltitudeChart.xaml</DependentUpon>
@@ -510,6 +513,9 @@
     </Compile>
     <Compile Include="View\ThumbnailListView.xaml.cs">
       <DependentUpon>ThumbnailListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\VersionCheckView.xaml.cs">
+      <DependentUpon>VersionCheckView.xaml</DependentUpon>
     </Compile>
     <Page Include="AstrometryIndexDownloader\AstrometryIndexDownloader.xaml">
       <SubType>Designer</SubType>
@@ -825,6 +831,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ThumbnailListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\VersionCheckView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
