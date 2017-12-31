@@ -112,9 +112,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<string> GetDownloadUrl(string version) {
-            var downloads = await Utility.Utility.HttpGetRequest(_cancelTokenSource.Token, DOWNLOADSURL, null);
-            JObject o = JObject.Parse(downloads);
-            BitBucketDownloads d = o.ToObject<BitBucketDownloads>();
+            var downloads = await GetBitBucketRecursive<BitBucketDownload>(DOWNLOADSURL);            
 
             var filename = "NINASetup_{0}{1}.zip";
             if (DllLoader.IsX86()) {
@@ -124,7 +122,7 @@ namespace NINA.ViewModel {
             }
             
 
-            var download = d.values.Where((x) => x.name == filename).FirstOrDefault();
+            var download = downloads.values.Where((x) => x.name == filename).FirstOrDefault();
             if(download != null) {
                 return download.links.self.href;
             } else {
@@ -133,12 +131,26 @@ namespace NINA.ViewModel {
         }
 
         private async Task<Version> CheckLatestVersion() {
-            var versions = await Utility.Utility.HttpGetRequest(_cancelTokenSource.Token, VERSIONSURL, null);
-            JObject o = JObject.Parse(versions);
-            BitBucketVersions v = o.ToObject<BitBucketVersions>();
+            var versions = await GetBitBucketRecursive<BitBucketVersion>(VERSIONSURL);
 
-            var max = v.values.Max((x) => x.name);
+            var max = versions.values.Max((x) => x.name);
             return max;
+        }
+
+        private async Task<BitBucketBase<T>> GetBitBucketRecursive<T>(string url) {
+            var stringversions = await Utility.Utility.HttpGetRequest(_cancelTokenSource.Token, url, null);
+            JObject o = JObject.Parse(stringversions);
+            BitBucketBase<T> versions = o.ToObject<BitBucketBase<T>>();
+
+            if(string.IsNullOrEmpty(versions.next)) {
+                return versions;
+            } else {
+                var next = await GetBitBucketRecursive<T>(versions.next);
+                foreach(T v in next.values) {
+                    versions.values.Add(v);
+                }
+                return versions;
+            }
         }
 
         private Version CurrentVersion {
@@ -151,11 +163,12 @@ namespace NINA.ViewModel {
         }
     }
 
-    public class BitBucketDownloads {
+    public class BitBucketBase<T> {
         public int pagelen;
-        public ICollection<BitBucketDownload> values;
+        public ICollection<T> values;
         public int page;
         public int size;
+        public string next;
     }
 
     public class BitBucketDownload {
@@ -172,13 +185,7 @@ namespace NINA.ViewModel {
     public class BitBucketHRef {
         public string href;
     }
-
-    public class BitBucketVersions {
-        public int pagelen;
-        public ICollection<BitBucketVersion> values;
-        public int page;
-        public int size;
-    }
+    
 
     public class BitBucketVersion {
         public Version name;        

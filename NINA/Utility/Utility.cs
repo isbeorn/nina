@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Cache;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
@@ -53,6 +54,8 @@ namespace NINA.Utility {
             using (canceltoken.Register(() => request.Abort(), useSynchronizationContext: false)) {
                 try {
                     request = (HttpWebRequest)WebRequest.Create(url);
+                    HttpRequestCachePolicy noCachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
+                    request.CachePolicy = noCachePolicy;
 
                     response = (HttpWebResponse)await request.GetResponseAsync();
 
