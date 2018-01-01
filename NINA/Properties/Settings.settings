@@ -215,5 +215,11 @@
     <Setting Name="EstimatedDownloadTime" Type="System.TimeSpan" Scope="User">
       <Value Profile="(Default)">00:00:00</Value>
     </Setting>
+    <Setting Name="TelescopeFocalLength" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">800</Value>
+    </Setting>
+    <Setting Name="CameraPixelSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">3.8</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

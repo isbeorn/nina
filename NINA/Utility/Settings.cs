@@ -829,6 +829,26 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Save();
             }
         }
+
+        public static double CameraPixelSize {
+            get {
+                return Properties.Settings.Default.CameraPixelSize;
+            }
+            set {
+                Properties.Settings.Default.CameraPixelSize = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static int TelescopeFocalLength {
+            get {
+                return Properties.Settings.Default.TelescopeFocalLength;
+            }
+            set {
+                Properties.Settings.Default.TelescopeFocalLength = value;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 
 }

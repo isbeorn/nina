@@ -539,6 +539,161 @@
                         </StackPanel>
                     </UniformGrid>
                 </GroupBox>
+                <GroupBox Header="{ns:Loc LblWeatherData}">
+                    <StackPanel Margin="0,5,0,0">
+                        <ComboBox
+                            Name="weatherdatacombo"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:WeatherDataEnum}}}"
+                            SelectedItem="{Binding WeatherDataType}" />
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
+                            <TextBlock Text="{ns:Loc LblURL}" />
+                            <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapUrl}" />
+                        </UniformGrid>
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
+                            <TextBlock Text="{ns:Loc LblAPIKey}" />
+                            <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapAPIKey}" />
+                        </UniformGrid>
+                    </StackPanel>
+                </GroupBox>
+            </UniformGrid>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblEquipment}" />
+            </TabItem.Header>
+            <UniformGrid Columns="2">
+                <GroupBox Header="{ns:Loc LblCamera}">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="130"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPixelSize}" />
+                            <TextBox
+                                MinWidth="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="CameraPixelSize" UpdateSourceTrigger="LostFocus">
+                                        <!--  todo  -->
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
+                    </UniformGrid>
+                </GroupBox>
+                <GroupBox Header="{ns:Loc LblFilterWheel}" />
+                <GroupBox Header="{ns:Loc LblTelescope}">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="130"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocalLength}" />
+                            <TextBox
+                                MinWidth="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="TelescopeFocalLength" UpdateSourceTrigger="LostFocus">
+                                        <!--  todo  -->
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
+                    </UniformGrid>
+                </GroupBox>
+                <GroupBox Header="{ns:Loc LblFocuser}">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocuserUseFilterWheelOffsets}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserUseFilterWheelOffsetsTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding FocuserUseFilterWheelOffsets}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocuserAutoFocusStepSize}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserAutoFocusStepSizeTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                Text="{Binding FocuserAutoFocusStepSize}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocuserAutoFocusInitialOffsetSteps}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserAutoFocusInitialOffsetStepsTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                Text="{Binding FocuserAutoFocusInitialOffsetSteps}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoFocusExposureTime}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutoFocusExposureTimeTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left">
+                                <TextBox.Text>
+                                    <Binding Path="FocuserAutoFocusExposureTime" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
                 <GroupBox Header="{ns:Loc LblPHD2Settings}">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -607,22 +762,6 @@
                             IsChecked="{Binding DitherRAOnly}" />
 
                     </Grid>
-                </GroupBox>
-                <GroupBox Header="{ns:Loc LblWeatherData}">
-                    <StackPanel Margin="0,5,0,0">
-                        <ComboBox
-                            Name="weatherdatacombo"
-                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:WeatherDataEnum}}}"
-                            SelectedItem="{Binding WeatherDataType}" />
-                        <UniformGrid Margin="0,5,0,0" Columns="2">
-                            <TextBlock Text="{ns:Loc LblURL}" />
-                            <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapUrl}" />
-                        </UniformGrid>
-                        <UniformGrid Margin="0,5,0,0" Columns="2">
-                            <TextBlock Text="{ns:Loc LblAPIKey}" />
-                            <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapAPIKey}" />
-                        </UniformGrid>
-                    </StackPanel>
                 </GroupBox>
             </UniformGrid>
         </TabItem>
@@ -725,83 +864,6 @@
                     </Grid>
                 </GroupBox>
                 <StackPanel Orientation="Vertical">
-                    <GroupBox Header="{ns:Loc LblFocuser}">
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                                <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblFocuserUseFilterWheelOffsets}">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="{ns:Loc LblFocuserUseFilterWheelOffsetsTooltip}" />
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                                <CheckBox
-                                    Width="75"
-                                    Height="25"
-                                    HorizontalAlignment="Left"
-                                    IsChecked="{Binding FocuserUseFilterWheelOffsets}" />
-                            </StackPanel>
-
-                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                                <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblFocuserAutoFocusStepSize}">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="{ns:Loc LblFocuserAutoFocusStepSizeTooltip}" />
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                                <TextBox
-                                    Width="75"
-                                    Height="25"
-                                    HorizontalAlignment="Left"
-                                    Text="{Binding FocuserAutoFocusStepSize}" />
-                            </StackPanel>
-
-                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                                <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblFocuserAutoFocusInitialOffsetSteps}">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="{ns:Loc LblFocuserAutoFocusInitialOffsetStepsTooltip}" />
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                                <TextBox
-                                    Width="75"
-                                    Height="25"
-                                    HorizontalAlignment="Left"
-                                    Text="{Binding FocuserAutoFocusInitialOffsetSteps}" />
-                            </StackPanel>
-                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                                <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblAutoFocusExposureTime}">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="{ns:Loc LblAutoFocusExposureTimeTooltip}" />
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                                <TextBox
-                                    Width="75"
-                                    Height="25"
-                                    HorizontalAlignment="Left">
-                                    <TextBox.Text>
-                                        <Binding Path="FocuserAutoFocusExposureTime" UpdateSourceTrigger="LostFocus">
-                                            <Binding.ValidationRules>
-                                                <rules:GreaterZeroRule />
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox.Text>
-                                </TextBox>
-                            </StackPanel>
-                        </StackPanel>
-                    </GroupBox>
                     <GroupBox Header="{ns:Loc LblAutoMeridianFlip}">
                         <StackPanel Orientation="Vertical">
                             <StackPanel Margin="0,5,0,0" Orientation="Horizontal">

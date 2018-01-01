@@ -875,5 +875,29 @@ namespace NINA.Properties {
                 this["EstimatedDownloadTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("800")]
+        public int TelescopeFocalLength {
+            get {
+                return ((int)(this["TelescopeFocalLength"]));
+            }
+            set {
+                this["TelescopeFocalLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3.8")]
+        public double CameraPixelSize {
+            get {
+                return ((double)(this["CameraPixelSize"]));
+            }
+            set {
+                this["CameraPixelSize"] = value;
+            }
+        }
     }
 }

@@ -905,5 +905,25 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double CameraPixelSize {
+            get {
+                return Settings.CameraPixelSize;
+            }
+            set {
+                Settings.CameraPixelSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int TelescopeFocalLength {
+            get {
+                return Settings.TelescopeFocalLength;
+            }
+            set {
+                Settings.TelescopeFocalLength = value;
+                RaisePropertyChanged();
+            }
+        }
+
     }
 }
