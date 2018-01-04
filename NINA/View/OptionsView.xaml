@@ -1201,54 +1201,6 @@
                                         Width="130"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{ns:Loc LblFocalLength}" />
-                                    <TextBox
-                                        MinWidth="80"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Center">
-                                        <TextBox.Text>
-                                            <Binding Path="AnsvrFocalLength" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:GreaterZeroRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                </UniformGrid>
-                            </UniformGrid>
-                            <UniformGrid Columns="2">
-                                <UniformGrid
-                                    Margin="0,6,0,6"
-                                    VerticalAlignment="Center"
-                                    Columns="2">
-                                    <TextBlock
-                                        Width="130"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblPixelSize}" />
-                                    <TextBox
-                                        MinWidth="80"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Center">
-                                        <TextBox.Text>
-                                            <Binding Path="AnsvrPixelSize" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:GreaterZeroRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                </UniformGrid>
-                            </UniformGrid>
-                            <UniformGrid Columns="2">
-                                <UniformGrid
-                                    Margin="0,6,0,6"
-                                    VerticalAlignment="Center"
-                                    Columns="2">
-                                    <TextBlock
-                                        Width="130"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
                                         Text="{ns:Loc LblSearchRadius}" />
                                     <TextBox
                                         MinWidth="80"
@@ -1366,54 +1318,6 @@
                                         Stretch="Uniform" />
                                 </Button>
                             </Grid>
-                            <UniformGrid Columns="2">
-                                <UniformGrid
-                                    Margin="0,6,0,6"
-                                    VerticalAlignment="Center"
-                                    Columns="2">
-                                    <TextBlock
-                                        Width="130"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblFocalLength}" />
-                                    <TextBox
-                                        MinWidth="80"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Center">
-                                        <TextBox.Text>
-                                            <Binding Path="PS2FocalLength" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:GreaterZeroRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                </UniformGrid>
-                            </UniformGrid>
-                            <UniformGrid Columns="2">
-                                <UniformGrid
-                                    Margin="0,6,0,6"
-                                    VerticalAlignment="Center"
-                                    Columns="2">
-                                    <TextBlock
-                                        Width="130"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblPixelSize}" />
-                                    <TextBox
-                                        MinWidth="80"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Center">
-                                        <TextBox.Text>
-                                            <Binding Path="PS2PixelSize" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:GreaterZeroRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                </UniformGrid>
-                            </UniformGrid>
                             <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"

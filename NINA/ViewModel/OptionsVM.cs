@@ -252,26 +252,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public int AnsvrFocalLength {
-            get {
-                return Settings.AnsvrFocalLength;
-            }
-            set {
-                Settings.AnsvrFocalLength = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int PS2FocalLength {
-            get {
-                return Settings.PS2FocalLength;
-            }
-            set {
-                Settings.PS2FocalLength = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public string CygwinLocation {
             get {
                 return Settings.CygwinLocation;
@@ -289,26 +269,6 @@ namespace NINA.ViewModel {
             }
             set {
                 Settings.PS2Location = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double AnsvrPixelSize {
-            get {
-                return Settings.AnsvrPixelSize;
-            }
-            set {
-                Settings.AnsvrPixelSize = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double PS2PixelSize {
-            get {
-                return Settings.PS2PixelSize;
-            }
-            set {
-                Settings.PS2PixelSize = value;
                 RaisePropertyChanged();
             }
         }

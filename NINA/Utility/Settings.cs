@@ -141,46 +141,6 @@ namespace NINA.Utility {
             }
         }
 
-        public static int AnsvrFocalLength {
-            get {
-                return Properties.Settings.Default.AnsvrFocalLength;
-            }
-            set {
-                Properties.Settings.Default.AnsvrFocalLength = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static int PS2FocalLength {
-            get {
-                return Properties.Settings.Default.PS2FocalLength;
-            }
-            set {
-                Properties.Settings.Default.PS2FocalLength = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static double AnsvrPixelSize {
-            get {
-                return Properties.Settings.Default.AnsvrPixelSize;
-            }
-            set {
-                Properties.Settings.Default.AnsvrPixelSize = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static double PS2PixelSize {
-            get {
-                return Properties.Settings.Default.PS2PixelSize;
-            }
-            set {
-                Properties.Settings.Default.PS2PixelSize = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
         public static double AnsvrSearchRadius {
             get {
                 return Properties.Settings.Default.AnsvrSearchRadius;
