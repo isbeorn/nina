@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
@@ -36,6 +37,12 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 ImagePatterns = CreateImagePatternList();
             }, MediatorMessages.LocaleChanged);
+
+            FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
+        }
+
+        private void FilterWheelFilters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+            FilterWheelFilters = FilterWheelFilters;
         }
 
         private HashSet<ImagePattern> CreateImagePatternList() {
@@ -881,6 +888,16 @@ namespace NINA.ViewModel {
             }
             set {
                 Settings.TelescopeFocalLength = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObserveAllCollection<FilterInfo> FilterWheelFilters{
+            get {
+                return Settings.FilterWheelFilters;
+            }
+            set {
+                Settings.FilterWheelFilters = value;
                 RaisePropertyChanged();
             }
         }

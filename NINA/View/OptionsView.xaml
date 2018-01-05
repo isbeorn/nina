@@ -563,59 +563,130 @@
             </TabItem.Header>
             <UniformGrid Columns="2">
                 <GroupBox Header="{ns:Loc LblCamera}">
-                    <UniformGrid Columns="2">
-                        <UniformGrid
-                            Margin="0,6,0,6"
-                            VerticalAlignment="Center"
-                            Columns="2">
-                            <TextBlock
-                                Width="130"
-                                HorizontalAlignment="Left"
+                    <StackPanel Orientation="Vertical">
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblPixelSize}" />
-                            <TextBox
-                                MinWidth="80"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center">
-                                <TextBox.Text>
-                                    <Binding Path="CameraPixelSize" UpdateSourceTrigger="LostFocus">
-                                        <!--  todo  -->
-                                        <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
+                                Columns="2">
+                                <TextBlock
+                                    Width="130"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblPixelSize}" />
+                                <TextBox
+                                    MinWidth="80"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="CameraPixelSize" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </UniformGrid>
                         </UniformGrid>
-                    </UniformGrid>
+                    </StackPanel>
                 </GroupBox>
-                <GroupBox Header="{ns:Loc LblFilterWheel}" />
+                <GroupBox Header="{ns:Loc LblFilterWheel}">
+                    <DataGrid
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        HorizontalScrollBarVisibility="Disabled"
+                        ItemsSource="{Binding FilterWheelFilters}">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblPosition}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Position}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="2*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblName}">
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Name}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Name}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblFocusOffset}">
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding FocusOffset}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding FocusOffset}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </GroupBox>
                 <GroupBox Header="{ns:Loc LblTelescope}">
-                    <UniformGrid Columns="2">
-                        <UniformGrid
-                            Margin="0,6,0,6"
-                            VerticalAlignment="Center"
-                            Columns="2">
-                            <TextBlock
-                                Width="130"
-                                HorizontalAlignment="Left"
+                    <StackPanel Orientation="Vertical">
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblFocalLength}" />
-                            <TextBox
-                                MinWidth="80"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center">
-                                <TextBox.Text>
-                                    <Binding Path="TelescopeFocalLength" UpdateSourceTrigger="LostFocus">
-                                        <!--  todo  -->
-                                        <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
+                                Columns="2">
+                                <TextBlock
+                                    Width="130"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblFocalLength}" />
+                                <TextBox
+                                    MinWidth="80"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="TelescopeFocalLength" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </UniformGrid>
                         </UniformGrid>
-                    </UniformGrid>
+                    </StackPanel>
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblFocuser}">
                     <StackPanel Orientation="Vertical">

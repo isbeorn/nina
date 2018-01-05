@@ -899,5 +899,16 @@ namespace NINA.Properties {
                 this["CameraPixelSize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::NINA.Utility.ObserveAllCollection<Model.MyFilterWheel.FilterInfo> FilterWheelFilters {
+            get {
+                return ((global::NINA.Utility.ObserveAllCollection<Model.MyFilterWheel.FilterInfo>)(this["FilterWheelFilters"]));
+            }
+            set {
+                this["FilterWheelFilters"] = value;
+            }
+        }
     }
 }
