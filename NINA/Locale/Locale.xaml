@@ -394,6 +394,6 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblYes">Yes</s:String>
     <s:String x:Key="LblNo">No</s:String>
     <s:String x:Key="LblEquipment">Equipment</s:String>
-
+    <s:String x:Key="LblImportFromFilterWheel">Import Filters from Filterwheel</s:String>
 
 </ResourceDictionary>

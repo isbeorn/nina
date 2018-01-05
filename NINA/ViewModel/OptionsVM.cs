@@ -28,6 +28,7 @@ namespace NINA.ViewModel {
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
+            ImportFiltersCommand = new RelayCommand(ImportFilters);
 
                         
             ImagePatterns = CreateImagePatternList();
@@ -39,6 +40,20 @@ namespace NINA.ViewModel {
             }, MediatorMessages.LocaleChanged);
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
+        }
+
+        private void ImportFilters(object obj) {
+            var filters = Mediator.Instance.Request(new GetAllFiltersMessage());
+            if(filters != null) {                
+                foreach(FilterInfo filter in filters) {
+                    var filterByPosition = FilterWheelFilters.Where((x) => x.Position == filter.Position).FirstOrDefault();
+                    if(filterByPosition != null) {
+                        filterByPosition.FocusOffset = filter.FocusOffset;
+                        filterByPosition.Name = filter.Name;
+                    }                    
+                }
+            }
+
         }
 
         private void FilterWheelFilters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
@@ -145,6 +160,8 @@ namespace NINA.ViewModel {
         public ICommand ToggleColorsCommand { get; private set; }
 
         public ICommand OpenSkyAtlasImageRepositoryDiagCommand { get; private set; }
+
+        public ICommand ImportFiltersCommand { get; private set; }
 
         private void PreviewFile(object o) {
             MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);

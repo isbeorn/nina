@@ -561,7 +561,16 @@
             <TabItem.Header>
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblEquipment}" />
             </TabItem.Header>
-            <UniformGrid Columns="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
                 <GroupBox Header="{ns:Loc LblCamera}">
                     <StackPanel Orientation="Vertical">
                         <UniformGrid Columns="2">
@@ -590,77 +599,92 @@
                         </UniformGrid>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="{ns:Loc LblFilterWheel}">
-                    <DataGrid
-                        AutoGenerateColumns="False"
-                        CanUserAddRows="False"
-                        HorizontalScrollBarVisibility="Disabled"
-                        ItemsSource="{Binding FilterWheelFilters}">
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn
-                                Width="*"
-                                CanUserSort="False"
-                                Header="{ns:Loc LblPosition}">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock
-                                            Margin="5,0,5,0"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding Position}"
-                                            TextAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn
-                                Width="2*"
-                                CanUserSort="False"
-                                Header="{ns:Loc LblName}">
-                                <DataGridTemplateColumn.CellEditingTemplate>
-                                    <DataTemplate>
-                                        <TextBox
-                                            Margin="5,0,5,0"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding Name}"
-                                            TextAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellEditingTemplate>
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock
-                                            Margin="5,0,5,0"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding Name}"
-                                            TextAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn
-                                Width="*"
-                                CanUserSort="False"
-                                Header="{ns:Loc LblFocusOffset}">
-                                <DataGridTemplateColumn.CellEditingTemplate>
-                                    <DataTemplate>
-                                        <TextBox
-                                            Margin="5,0,5,0"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding FocusOffset}"
-                                            TextAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellEditingTemplate>
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock
-                                            Margin="5,0,5,0"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding FocusOffset}"
-                                            TextAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                <GroupBox Header="{ns:Loc LblFilterWheel}" Grid.Column="1" Grid.RowSpan="2">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="50" />
+                        </Grid.RowDefinitions>
+                        <DataGrid
+                            AutoGenerateColumns="False"
+                            CanUserAddRows="False"
+                            HorizontalScrollBarVisibility="Disabled"
+                            ItemsSource="{Binding FilterWheelFilters}"
+                            VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn
+                                    Width="*"
+                                    CanUserSort="False"
+                                    Header="{ns:Loc LblPosition}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                Margin="5,0,5,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding Position}"
+                                                TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn
+                                    Width="2*"
+                                    CanUserSort="False"
+                                    Header="{ns:Loc LblName}">
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <TextBox
+                                                Margin="5,0,5,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding Name}"
+                                                TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                Margin="5,0,5,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding Name}"
+                                                TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn
+                                    Width="*"
+                                    CanUserSort="False"
+                                    Header="{ns:Loc LblFocusOffset}">
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <TextBox
+                                                Margin="5,0,5,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding FocusOffset}"
+                                                TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                Margin="5,0,5,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding FocusOffset}"
+                                                TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Button
+                            Grid.Row="1"
+                            Width="300"
+                            Margin="5"
+                            HorizontalAlignment="Right"
+                            Command="{Binding ImportFiltersCommand}">
+                            <TextBlock Text="{ns:Loc LblImportFromFilterWheel}" />
+                        </Button>
+                    </Grid>
                 </GroupBox>
-                <GroupBox Header="{ns:Loc LblTelescope}">
+                <GroupBox Header="{ns:Loc LblTelescope}" Grid.Row="1">
                     <StackPanel Orientation="Vertical">
                         <UniformGrid Columns="2">
                             <UniformGrid
@@ -688,7 +712,7 @@
                         </UniformGrid>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="{ns:Loc LblFocuser}">
+                <GroupBox Header="{ns:Loc LblFocuser}" Grid.Row="2">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -765,7 +789,7 @@
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="{ns:Loc LblPHD2Settings}">
+                <GroupBox Header="{ns:Loc LblPHD2Settings}" Grid.Row="2" Grid.Column="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />
@@ -834,7 +858,7 @@
 
                     </Grid>
                 </GroupBox>
-            </UniformGrid>
+            </Grid>
         </TabItem>
         <TabItem>
             <TabItem.Header>
