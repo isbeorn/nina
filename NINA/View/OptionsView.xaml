@@ -631,7 +631,7 @@
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
                                 <DataGridTemplateColumn
-                                    Width="2*"
+                                    Width="*"
                                     CanUserSort="False"
                                     Header="{ns:Loc LblName}">
                                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -672,6 +672,29 @@
                                                 Margin="5,0,5,0"
                                                 VerticalAlignment="Center"
                                                 Text="{Binding FocusOffset}"
+                                                TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn
+                                    Width="*"
+                                    CanUserSort="False"
+                                    Header="{ns:Loc LblAutoFocusExposureTime}">
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <TextBox
+                                                Margin="5,0,5,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding AutoFocusExposureTime}"
+                                                TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                Margin="5,0,5,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding AutoFocusExposureTime}"
                                                 TextAlignment="Center" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -802,7 +825,7 @@
                                 MinWidth="200"
                                 MinHeight="20"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblAutoFocusExposureTime}">
+                                Text="{ns:Loc LblDefaultAutoFocusExposureTime}">
                                 <TextBlock.ToolTip>
                                     <TextBlock Text="{ns:Loc LblAutoFocusExposureTimeTooltip}" />
                                 </TextBlock.ToolTip>

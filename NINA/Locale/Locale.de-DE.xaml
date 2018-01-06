@@ -324,7 +324,8 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblFocuserAutoFocusInitialOffsetSteps">Initialer Autofokus Schrittoffset</s:String>
     <s:String x:Key="LblFocuserAutoFocusInitialOffsetStepsTooltip">Initiale Anzahl von Schritten, die der Fokussierer herausfährt, um die Autofokus Prozedur zu starten.</s:String>
     <s:String x:Key="LblAutoFocusExposureTime">Autofokus Belichtungszeit</s:String>
-    <s:String x:Key="LblAutoFocusExposureTimeTooltip">Belichtungszeit, die für Autofokus genutzt werden soll.</s:String>
+    <s:String x:Key="LblDefaultAutoFocusExposureTime">Standard Autofokus Belichtungszeit</s:String>
+    <s:String x:Key="LblAutoFocusExposureTimeTooltip">Belichtungszeit, die für Autofokus genutzt werden soll, falls kein Filter genutzt wird oder der Filterspezifische Wert null ist.</s:String>
     <s:String x:Key="LblCameraOptions">Kameraoptionen</s:String>
     <s:String x:Key="LblUseSnapPort">Teleskop Snap Port nutzen</s:String>
     <s:String x:Key="LblSnapPortStart">Snap Port Start Kommando</s:String>

@@ -56,7 +56,7 @@ namespace NINA.ViewModel {
 
         private void AddFilter(object obj) {
             var pos = FilterWheelFilters.Count;
-            var filter = new FilterInfo(Locale.Loc.Instance["LblFilter"] + (pos + 1), 0, (short)pos);
+            var filter = new FilterInfo(Locale.Loc.Instance["LblFilter"] + (pos + 1), 0, (short)pos, 0);
             FilterWheelFilters.Add(filter);
             SelectedFilter = filter;
         }

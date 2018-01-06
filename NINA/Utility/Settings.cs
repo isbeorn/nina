@@ -816,7 +816,7 @@ namespace NINA.Utility {
                 if(Properties.Settings.Default.FilterWheelFilters == null) {
                     for (short i = 0; i < 8; i++) {
                         FilterWheelFilters = new ObserveAllCollection<FilterInfo>();
-                        FilterWheelFilters.Add(new FilterInfo(Locale.Loc.Instance["LblFilter"] + (i+1), 0, i));
+                        FilterWheelFilters.Add(new FilterInfo(Locale.Loc.Instance["LblFilter"] + (i+1), 0, i, 0));
                     }                    
                 }
                 return Properties.Settings.Default.FilterWheelFilters;
