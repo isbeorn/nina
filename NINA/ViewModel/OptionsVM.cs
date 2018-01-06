@@ -29,6 +29,8 @@ namespace NINA.ViewModel {
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
             ImportFiltersCommand = new RelayCommand(ImportFilters);
+            AddFilterCommand = new RelayCommand(AddFilter);
+            RemoveFilterCommand = new RelayCommand(RemoveFilter);
 
                         
             ImagePatterns = CreateImagePatternList();
@@ -42,18 +44,35 @@ namespace NINA.ViewModel {
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
         }
 
+        private void RemoveFilter(object obj) {
+            if(SelectedFilter == null && FilterWheelFilters.Count > 0) {
+                SelectedFilter = FilterWheelFilters.Last();
+            }
+            FilterWheelFilters.Remove(SelectedFilter);
+            if(FilterWheelFilters.Count > 0) { 
+                SelectedFilter = FilterWheelFilters.Last();
+            }
+        }
+
+        private void AddFilter(object obj) {
+            var pos = FilterWheelFilters.Count;
+            var filter = new FilterInfo(Locale.Loc.Instance["LblFilter"] + (pos + 1), 0, (short)pos);
+            FilterWheelFilters.Add(filter);
+            SelectedFilter = filter;
+        }
+
         private void ImportFilters(object obj) {
             var filters = Mediator.Instance.Request(new GetAllFiltersMessage());
-            if(filters != null) {                
+            if(filters != null) {
+                FilterWheelFilters.Clear();
+                FilterWheelFilters.CollectionChanged -= FilterWheelFilters_CollectionChanged;
+                var l = new List<FilterInfo>();
                 foreach(FilterInfo filter in filters) {
-                    var filterByPosition = FilterWheelFilters.Where((x) => x.Position == filter.Position).FirstOrDefault();
-                    if(filterByPosition != null) {
-                        filterByPosition.FocusOffset = filter.FocusOffset;
-                        filterByPosition.Name = filter.Name;
-                    }                    
+                    l.Add(filter);                    
                 }
+                FilterWheelFilters = new ObserveAllCollection<FilterInfo>(l.OrderBy((x) => x.Position));
+                FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
             }
-
         }
 
         private void FilterWheelFilters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
@@ -162,6 +181,10 @@ namespace NINA.ViewModel {
         public ICommand OpenSkyAtlasImageRepositoryDiagCommand { get; private set; }
 
         public ICommand ImportFiltersCommand { get; private set; }
+
+        public ICommand AddFilterCommand { get; private set; }
+
+        public ICommand RemoveFilterCommand { get; private set; }
 
         private void PreviewFile(object o) {
             MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
@@ -919,5 +942,15 @@ namespace NINA.ViewModel {
             }
         }
 
+        private FilterInfo _selectedFilter;
+        public FilterInfo SelectedFilter {
+            get {
+                return _selectedFilter;
+            }
+            set {
+                _selectedFilter = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

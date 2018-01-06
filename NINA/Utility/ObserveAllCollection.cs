@@ -10,6 +10,11 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility {
     public class ObserveAllCollection<T> : ObservableCollection<T> {
+        public ObserveAllCollection() : base() {
+        }
+
+        public ObserveAllCollection(IEnumerable<T> list) : base(list) {
+        }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
             if (e.Action == NotifyCollectionChangedAction.Add) {

@@ -814,16 +814,10 @@ namespace NINA.Utility {
         public static NINA.Utility.ObserveAllCollection<Model.MyFilterWheel.FilterInfo> FilterWheelFilters {
             get {
                 if(Properties.Settings.Default.FilterWheelFilters == null) {
-                    FilterWheelFilters = new ObserveAllCollection<FilterInfo>() {
-                        new FilterInfo(Locale.Loc.Instance["LblFilter"] + "1", 0, 0),
-                        new FilterInfo(Locale.Loc.Instance["LblFilter"] + "2", 0, 1),
-                        new FilterInfo(Locale.Loc.Instance["LblFilter"] + "3", 0, 2),
-                        new FilterInfo(Locale.Loc.Instance["LblFilter"] + "4", 0, 3),
-                        new FilterInfo(Locale.Loc.Instance["LblFilter"] + "5", 0, 4),
-                        new FilterInfo(Locale.Loc.Instance["LblFilter"] + "6", 0, 5),
-                        new FilterInfo(Locale.Loc.Instance["LblFilter"] + "7", 0, 6),
-                        new FilterInfo(Locale.Loc.Instance["LblFilter"] + "8", 0, 7)
-                    };
+                    for (short i = 0; i < 8; i++) {
+                        FilterWheelFilters = new ObserveAllCollection<FilterInfo>();
+                        FilterWheelFilters.Add(new FilterInfo(Locale.Loc.Instance["LblFilter"] + (i+1), 0, i));
+                    }                    
                 }
                 return Properties.Settings.Default.FilterWheelFilters;
             }

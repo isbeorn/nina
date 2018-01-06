@@ -599,7 +599,10 @@
                         </UniformGrid>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="{ns:Loc LblFilterWheel}" Grid.Column="1" Grid.RowSpan="2">
+                <GroupBox
+                    Grid.RowSpan="2"
+                    Grid.Column="1"
+                    Header="{ns:Loc LblFilterWheel}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -610,6 +613,7 @@
                             CanUserAddRows="False"
                             HorizontalScrollBarVisibility="Disabled"
                             ItemsSource="{Binding FilterWheelFilters}"
+                            SelectedItem="{Binding SelectedFilter}"
                             VerticalScrollBarVisibility="Auto">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn
@@ -674,17 +678,46 @@
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <Button
-                            Grid.Row="1"
-                            Width="300"
-                            Margin="5"
-                            HorizontalAlignment="Right"
-                            Command="{Binding ImportFiltersCommand}">
-                            <TextBlock Text="{ns:Loc LblImportFromFilterWheel}" />
-                        </Button>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                                    Width="40"
+                                    Margin="0,5,0,5"
+                                    Command="{Binding AddFilterCommand}">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource AddSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                                <Button
+                                    Grid.Column="1"
+                                    Width="40"
+                                    Margin="0,5,0,5"
+                                    Command="{Binding RemoveFilterCommand}">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource SubstractSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                            </StackPanel>
+                            <Button
+                                Grid.Column="1"
+                                Width="300"
+                                Margin="5"
+                                Command="{Binding ImportFiltersCommand}">
+                                <TextBlock Text="{ns:Loc LblImportFromFilterWheel}" />
+                            </Button>
+                        </Grid>
+
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="{ns:Loc LblTelescope}" Grid.Row="1">
+                <GroupBox Grid.Row="1" Header="{ns:Loc LblTelescope}">
                     <StackPanel Orientation="Vertical">
                         <UniformGrid Columns="2">
                             <UniformGrid
@@ -712,7 +745,7 @@
                         </UniformGrid>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="{ns:Loc LblFocuser}" Grid.Row="2">
+                <GroupBox Grid.Row="2" Header="{ns:Loc LblFocuser}">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -789,74 +822,90 @@
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="{ns:Loc LblPHD2Settings}" Grid.Row="2" Grid.Column="1">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <TextBlock
-                            Width="100"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblPHD2ServerUrl}" />
-                        <TextBox
-                            Grid.Column="1"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            Text="{Binding PHD2ServerUrl}" />
+                <GroupBox
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Header="{ns:Loc LblPHD2Settings}">
+                    <StackPanel Orientation="Vertical">
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblPHD2ServerUrl}" />
+                                <TextBox
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding PHD2ServerUrl}" />
+                            </UniformGrid>
+                        </UniformGrid>
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblPHD2ServerPort}" />
+                                <TextBox
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding PHD2ServerPort}" />
+                            </UniformGrid>
+                        </UniformGrid>
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblDitherPixels}" />
+                                <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="DitherPixels" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </UniformGrid>
+                        </UniformGrid>
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblDitherRAOnly}" />
+                                <CheckBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding DitherRAOnly}" />
+                            </UniformGrid>
+                        </UniformGrid>
 
 
-                        <TextBlock
-                            Grid.Row="1"
-                            Width="100"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblPHD2ServerPort}" />
-                        <TextBox
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            Text="{Binding PHD2ServerPort}" />
 
-                        <TextBlock
-                            Grid.Row="2"
-                            Width="100"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblDitherPixels}" />
-                        <TextBox
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="DitherPixels" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:GreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
 
-                        <TextBlock
-                            Grid.Row="3"
-                            Width="100"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblDitherRAOnly}" />
-                        <CheckBox
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left"
-                            IsChecked="{Binding DitherRAOnly}" />
 
-                    </Grid>
+
+
+
+
+
+
+
+                    </StackPanel>
                 </GroupBox>
             </Grid>
         </TabItem>
