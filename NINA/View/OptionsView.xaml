@@ -893,18 +893,6 @@
                                     IsChecked="{Binding DitherRAOnly}" />
                             </UniformGrid>
                         </UniformGrid>
-
-
-
-
-
-
-
-
-
-
-
-
                     </StackPanel>
                 </GroupBox>
             </Grid>
