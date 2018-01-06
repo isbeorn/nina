@@ -176,7 +176,7 @@ namespace NINA.ViewModel {
             }
 
             if (Sequence.AutoFocusOnStart) {
-                await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Token = _canceltoken.Token, Progress = progress });             
+                await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = null, Token = _canceltoken.Token, Progress = progress });             
             }
 
             if (Sequence.StartGuiding) {

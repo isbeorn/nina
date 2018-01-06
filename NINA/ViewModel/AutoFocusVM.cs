@@ -1,5 +1,6 @@
 ﻿using NINA.Model;
 using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
@@ -27,7 +28,7 @@ namespace NINA.ViewModel {
                         
                         async () => {
                             _autoFocusCancelToken = new CancellationTokenSource();
-                            return await StartAutoFocus(_autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
+                            return await StartAutoFocus(null, _autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
                         }
                     ),
                 (p) => { return _focuserConnected && _cameraConnected; }
@@ -40,7 +41,7 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsyncRequest(
                 new StartAutoFocusMessageHandle(async (StartAutoFocusMessage msg) => {
-                    return await StartAutoFocus(msg.Token, msg.Progress);
+                    return await StartAutoFocus(msg.Filter, msg.Token, msg.Progress);
                 })
             );
             
@@ -105,7 +106,7 @@ namespace NINA.ViewModel {
         private bool _cameraConnected;
         private double _temperature;
 
-        private async Task GetFocusPoints(int nrOfSteps, IProgress<ApplicationStatus> progress, CancellationToken token, int offset = 0) {
+        private async Task GetFocusPoints(FilterInfo filter, int nrOfSteps, IProgress<ApplicationStatus> progress, CancellationToken token, int offset = 0) {
             var stepSize = Settings.FocuserAutoFocusStepSize;
             if (offset != 0) {
                 //Move to initial position
@@ -120,7 +121,11 @@ namespace NINA.ViewModel {
                 token.ThrowIfCancellationRequested();
 
                 Logger.Trace("Starting Exposure for autofocus");
-                var seq = new CaptureSequence(Settings.FocuserAutoFocusExposureTime, CaptureSequence.ImageTypes.SNAP, null, null, 1);
+                double expTime = Settings.FocuserAutoFocusExposureTime;
+                if(filter != null) {
+                    expTime = filter.AutoFocusExposureTime;
+                }
+                var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, null, null, 1);
 
 
                 var iarr = await Mediator.Instance.RequestAsync(new CaptureImageMessage() { Sequence = seq, Token = token, Progress = progress });
@@ -151,7 +156,7 @@ namespace NINA.ViewModel {
             RightTrend = new TrendLine(rightTrendPoints);
         }
         
-        private async Task<bool> StartAutoFocus(CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<bool> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (!(_focuserConnected && _cameraConnected)) {
                 Notification.ShowError(Locale.Loc.Instance["LblAutoFocusGearNotConnected"]);
                 return false;
@@ -169,7 +174,7 @@ namespace NINA.ViewModel {
 
                 var nrOfSteps = offsetSteps + 1;
 
-                await GetFocusPoints(nrOfSteps, progress, token, offset);
+                await GetFocusPoints(filter, nrOfSteps, progress, token, offset);
 
                 var laststeps = offset;
 
@@ -192,13 +197,13 @@ namespace NINA.ViewModel {
                         Logger.Trace("More datapoints needed to the left of the minimum");
                         //More points needed to the left
                         laststeps += remainingSteps;
-                        await GetFocusPoints(remainingSteps, progress, token, -1);
+                        await GetFocusPoints(filter, remainingSteps, progress, token, -1);
                     } else if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
                         Logger.Trace("More datapoints needed to the right of the minimum");
                         //More points needed to the right                         
                         offset = laststeps + remainingSteps;  //todo
                         laststeps = remainingSteps - 1;
-                        await GetFocusPoints(remainingSteps, progress, token, offset);
+                        await GetFocusPoints(filter, remainingSteps, progress, token, offset);
                     }
 
                     leftcount = LeftTrend.DataPoints.Count();

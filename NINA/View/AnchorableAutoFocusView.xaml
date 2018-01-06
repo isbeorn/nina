@@ -76,7 +76,7 @@
                 Grid.Row="1"
                 Margin="10,0,0,0"
                 VerticalAlignment="Center"
-                Text="{Binding Status}" />
+                Text="{Binding Status.Status}" />
 
             <ninactrl:CancellableButton
                 Grid.Row="2"
