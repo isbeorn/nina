@@ -397,5 +397,5 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblEquipment">Equipment</s:String>
     <s:String x:Key="LblImportFromFilterWheel">Import Filters from Filterwheel</s:String>
     <s:String x:Key="LblWaitingForCamera">Waiting for Camera</s:String>
-
+    <s:String x:Key="LblAutoFocusOnFilterChange">Auto Focus on filter change</s:String>
 </ResourceDictionary>

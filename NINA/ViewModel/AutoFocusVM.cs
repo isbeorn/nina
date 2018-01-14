@@ -122,10 +122,10 @@ namespace NINA.ViewModel {
 
                 Logger.Trace("Starting Exposure for autofocus");
                 double expTime = Settings.FocuserAutoFocusExposureTime;
-                if(filter != null) {
+                if(filter != null && filter.AutoFocusExposureTime > 0) {
                     expTime = filter.AutoFocusExposureTime;
                 }
-                var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, null, null, 1);
+                var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
 
 
                 var iarr = await Mediator.Instance.RequestAsync(new CaptureImageMessage() { Sequence = seq, Token = token, Progress = progress });

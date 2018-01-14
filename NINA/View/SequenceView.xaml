@@ -126,7 +126,18 @@
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding AutoFocusOnStart}" />
                                 </UniformGrid>
-                            </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusOnFilterChange}" />
+                                    <CheckBox
+                                        Width="75"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        IsChecked="{Binding AutoFocusOnFilterChange}" />
+                                </UniformGrid>
+                            </UniformGrid>                            
                         </Border>
                         <Border
                             BorderBrush="{StaticResource BorderBrush}"

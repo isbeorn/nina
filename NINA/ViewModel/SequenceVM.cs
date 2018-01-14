@@ -155,6 +155,9 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> StartSequence(IProgress<ApplicationStatus> progress) {
+            if(Sequence.Count <= 0) {
+                return false;
+            }
             _actualDownloadTimes.Clear();
             _canceltoken = new CancellationTokenSource();
             _pauseTokenSource = new PauseTokenSource();
@@ -175,8 +178,16 @@ namespace NINA.ViewModel {
                 }
             }
 
+            /* delay sequence start by given amount */
+            var delay = Sequence.Delay;
+            while (delay > 0) {
+                await Task.Delay(TimeSpan.FromSeconds(1), _canceltoken.Token);
+                delay--;
+                progress.Report(new ApplicationStatus() { Status = string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay) });
+            }
+
             if (Sequence.AutoFocusOnStart) {
-                await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = null, Token = _canceltoken.Token, Progress = progress });             
+                await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = Sequence.Items[0].FilterType, Token = _canceltoken.Token, Progress = progress });             
             }
 
             if (Sequence.StartGuiding) {
@@ -206,19 +217,21 @@ namespace NINA.ViewModel {
                     }
 
                     Sequence.IsRunning = true;
-
-                    /* delay sequence start by given amount */
-                    var delay = Sequence.Delay;
-                    while (delay > 0) {
-                        await Task.Delay(TimeSpan.FromSeconds(1), ct);
-                        delay--;
-                        progress.Report(new ApplicationStatus() { Status = string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay) });
-                    }
+                    
 
                     CaptureSequence seq;
+                    var actualFilter = Mediator.Instance.Request(new GetCurrentFilterInfoMessage());
+                    short prevFilterPosition = actualFilter?.Position ?? -1; 
                     while ((seq = Sequence.Next()) != null) {
                         Stopwatch seqDuration = Stopwatch.StartNew();
                         await CheckMeridianFlip(seq, ct, progress);
+
+                        //Autofocus on filter change
+                        if(seq.FilterType.Position != prevFilterPosition 
+                                && seq.FilterType.Position >= 0
+                                && Sequence.AutoFocusOnFilterChange) {
+                            await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
+                        }
 
                         await Mediator.Instance.RequestAsync(
                             new CapturePrepareAndSaveImageMessage() {
@@ -244,6 +257,8 @@ namespace NINA.ViewModel {
                             Sequence.IsRunning = true;
                         }
 
+                        actualFilter = Mediator.Instance.Request(new GetCurrentFilterInfoMessage());
+                        prevFilterPosition = actualFilter?.Position ?? -1;
                     }
                 } catch (OperationCanceledException) {
                 } catch (CameraConnectionLostException) {
