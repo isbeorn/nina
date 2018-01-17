@@ -21,7 +21,7 @@
                     VerticalAlignment="Center"
                     FontSize="20"
                     Text="{ns:Loc LblFocuser}" />
-                <Grid Margin="5" Grid.Column="1">
+                <Grid Grid.Column="1" Margin="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition />

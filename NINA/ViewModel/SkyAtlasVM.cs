@@ -805,25 +805,28 @@ namespace NINA.ViewModel {
         public PagedList(int pageSize, IEnumerable<T> items) {
             _items = new List<T>(items);
             PageSize = pageSize;
-            LoadPage(1);
 
+            var counter = 1;
+            for (int i = 0; i < _items.Count; i += PageSize) {
+                Pages.Add(counter++);
+            }
 
-            PrevPageCommand = new RelayCommand((object o) => LoadPrevPage());
-            NextPageCommand = new RelayCommand((object o) => LoadNextPage());
+            CurrentPage = Pages.FirstOrDefault();
+
+            FirstPageCommand = new RelayCommand((object o) => CurrentPage = 1, (object o) => { return CurrentPage > 1; });
+            PrevPageCommand = new RelayCommand((object o) => LoadPrevPage(), (object o) => { return CurrentPage > 1; });
+            NextPageCommand = new RelayCommand((object o) => LoadNextPage(), (object o) => { return CurrentPage < Pages.Count; });
+            LastPageCommand = new RelayCommand((object o) => CurrentPage = Pages.Count, (object o) => { return CurrentPage < Pages.Count; });
         }
 
         private List<T> _items;
 
         public void LoadNextPage() {
-            LoadPage(CurrentPage + 1);
+            CurrentPage++;
         }
 
         public void LoadPrevPage() {
-            LoadPage(CurrentPage - 1);
-        }
-
-        public void LoadPageByNumber(int page) {
-            LoadPage(page);
+            CurrentPage--;
         }
 
         private void LoadPage(int page) {
@@ -837,7 +840,6 @@ namespace NINA.ViewModel {
             var offset = Math.Min(_items.Count - (idx * PageSize), PageSize);
 
             ItemPage = new AsyncObservableCollection<T>(_items.GetRange(idx * PageSize, offset));
-            CurrentPage = idx + 1;
 
 
             RaisePropertyChanged(nameof(Count));
@@ -892,8 +894,23 @@ namespace NINA.ViewModel {
             get {
                 return _currentPage;
             }
+            set {
+                if (value >= Pages.FirstOrDefault() && value <= Pages.LastOrDefault()) {
+                    _currentPage = value;
+                    LoadPage(_currentPage);
+                    RaisePropertyChanged();
+                }
+
+            }
+        }
+
+        private AsyncObservableCollection<int> _pages = new AsyncObservableCollection<int>();
+        public AsyncObservableCollection<int> Pages {
+            get {
+                return _pages;
+            }
             private set {
-                _currentPage = value;
+                _pages = value;
                 RaisePropertyChanged();
             }
         }
@@ -904,8 +921,9 @@ namespace NINA.ViewModel {
             }
         }
 
+        public ICommand FirstPageCommand { get; private set; }
         public ICommand PrevPageCommand { get; private set; }
-
         public ICommand NextPageCommand { get; private set; }
+        public ICommand LastPageCommand { get; private set; }
     }
 }
