@@ -23,6 +23,7 @@ namespace NINA.ViewModel {
             CancelSearchCommand = new RelayCommand(CancelSearch);
 
             InitializeFilters();
+            PageSize = 50;
 
             Mediator.Instance.Register((object o) => {
                 _nightDuration = null; //Clear cache
@@ -252,9 +253,9 @@ namespace NINA.ViewModel {
 
                         var count = filteredList.Count();
                         /* Apply Altitude Filter */
-                        SearchResult = new AsyncObservableCollection<DeepSkyObject>(filteredList);
+                        SearchResult = new PagedList<DeepSkyObject>(PageSize, filteredList);
                     } else {
-                        SearchResult = result;
+                        SearchResult = new PagedList<DeepSkyObject>(PageSize, result);
                     }
                 } catch (OperationCanceledException) {
 
@@ -414,7 +415,7 @@ namespace NINA.ViewModel {
         private AsyncObservableCollection<string> _magnitudesThrough;
         private string _selectedMagnitudeFrom;
         private string _selectedMagnitudeThrough;
-        private AsyncObservableCollection<DeepSkyObject> _searchResult;
+        private PagedList<DeepSkyObject> _searchResult;
         private AsyncObservableCollection<DateTime> _altitudeTimesFrom;
         private AsyncObservableCollection<DateTime> _altitudeTimesThrough;
         private AsyncObservableCollection<KeyValuePair<double, string>> _minimumAltitudeDegrees;
@@ -747,7 +748,18 @@ namespace NINA.ViewModel {
 
         public ICommand CancelSearchCommand { get; private set; }
 
-        public AsyncObservableCollection<DeepSkyObject> SearchResult {
+        private int _pageSize;
+        public int PageSize {
+            get {
+                return _pageSize;
+            }
+            set {
+                _pageSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public PagedList<DeepSkyObject> SearchResult {
             get {
                 return _searchResult;
             }
@@ -787,5 +799,113 @@ namespace NINA.ViewModel {
             }
 
         }
+    }
+
+    public class PagedList<T> : BaseINPC {
+        public PagedList(int pageSize, IEnumerable<T> items) {
+            _items = new List<T>(items);
+            PageSize = pageSize;
+            LoadPage(1);
+
+
+            PrevPageCommand = new RelayCommand((object o) => LoadPrevPage());
+            NextPageCommand = new RelayCommand((object o) => LoadNextPage());
+        }
+
+        private List<T> _items;
+
+        public void LoadNextPage() {
+            LoadPage(CurrentPage + 1);
+        }
+
+        public void LoadPrevPage() {
+            LoadPage(CurrentPage - 1);
+        }
+
+        public void LoadPageByNumber(int page) {
+            LoadPage(page);
+        }
+
+        private void LoadPage(int page) {
+            var idx = page - 1;
+            if (idx < 0) {
+                return;
+            } else if (idx > (Count / (double)PageSize)) {
+                return;
+            }
+
+            var offset = Math.Min(_items.Count - (idx * PageSize), PageSize);
+
+            ItemPage = new AsyncObservableCollection<T>(_items.GetRange(idx * PageSize, offset));
+            CurrentPage = idx + 1;
+
+
+            RaisePropertyChanged(nameof(Count));
+            RaisePropertyChanged(nameof(PageStartIndex));
+            RaisePropertyChanged(nameof(PageEndIndex));
+        }
+
+        private AsyncObservableCollection<T> _itemPage = new AsyncObservableCollection<T>();
+        public AsyncObservableCollection<T> ItemPage {
+            get {
+                return _itemPage;
+            }
+            private set {
+                _itemPage = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int PageStartIndex {
+            get {
+                if (_items.Count == 0) {
+                    return 0;
+                } else {
+                    return PageSize * (CurrentPage - 1) + 1;
+                }
+            }
+        }
+
+        public int PageEndIndex {
+            get {
+                if (PageSize * CurrentPage > _items.Count) {
+                    return _items.Count;
+                } else {
+                    return PageSize * CurrentPage;
+                }
+            }
+        }
+
+        private int _pageSize;
+        public int PageSize {
+            get {
+                return _pageSize;
+            }
+            set {
+                _pageSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _currentPage;
+        public int CurrentPage {
+            get {
+                return _currentPage;
+            }
+            private set {
+                _currentPage = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int Count {
+            get {
+                return _items.Count;
+            }
+        }
+
+        public ICommand PrevPageCommand { get; private set; }
+
+        public ICommand NextPageCommand { get; private set; }
     }
 }

@@ -75,7 +75,7 @@ namespace NINA.Utility {
             return dsotypes;
         }
 
-        public async Task<AsyncObservableCollection<DeepSkyObject>> GetDeepSkyObjects(
+        public async Task<List<DeepSkyObject>> GetDeepSkyObjects(
             CancellationToken token,
             string constellation = "",
             double? rafrom = null,
@@ -158,7 +158,7 @@ namespace NINA.Utility {
 
             query += " ORDER BY id asc;";
 
-            var dsos = new AsyncObservableCollection<DeepSkyObject>();
+            var dsos = new List<DeepSkyObject>();
             try {
 
 

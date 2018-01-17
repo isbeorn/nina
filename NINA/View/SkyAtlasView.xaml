@@ -345,337 +345,386 @@
 
 
         <!--  Search result area  -->
-        <DataGrid
-            Grid.Column="1"
-            AutoGenerateColumns="False"
-            HorizontalScrollBarVisibility="Disabled"
-            ItemsSource="{Binding SearchResult}">
-            <DataGrid.CellStyle>
-                <Style TargetType="{x:Type DataGridCell}">
-                    <Setter Property="TextBlock.TextAlignment" Value="Center" />
-                    <Style.Triggers>
-                        <Trigger Property="DataGridCell.IsSelected" Value="True">
-                            <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.CellStyle>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn
-                    Width="*"
-                    CanUserSort="False"
-                    Header="{ns:Loc LblName}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <DataGrid
-                                VerticalAlignment="Center"
-                                AutoGenerateColumns="False"
-                                BorderBrush="Transparent"
-                                BorderThickness="0"
-                                HeadersVisibility="None"
-                                HorizontalGridLinesBrush="Transparent"
-                                HorizontalScrollBarVisibility="Hidden"
-                                IsHitTestVisible="False"
-                                ItemsSource="{Binding AlsoKnownAs}"
-                                VerticalGridLinesBrush="Transparent">
-                                <DataGrid.Columns>
-                                    <DataGridTemplateColumn
-                                        Width="*"
-                                        CanUserSort="False"
-                                        Header="">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock
-                                                    Margin="5,0,5,0"
+        <Grid Grid.Column="1" DataContext="{Binding SearchResult}">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <DataGrid
+                AutoGenerateColumns="False"
+                HorizontalScrollBarVisibility="Disabled"
+                ItemsSource="{Binding ItemPage}">
+                <DataGrid.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        <Style.Triggers>
+                            <Trigger Property="DataGridCell.IsSelected" Value="True">
+                                <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn
+                        Width="*"
+                        CanUserSort="False"
+                        Header="{ns:Loc LblName}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <DataGrid
+                                    VerticalAlignment="Center"
+                                    AutoGenerateColumns="False"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0"
+                                    HeadersVisibility="None"
+                                    HorizontalGridLinesBrush="Transparent"
+                                    HorizontalScrollBarVisibility="Hidden"
+                                    IsHitTestVisible="False"
+                                    ItemsSource="{Binding AlsoKnownAs}"
+                                    VerticalGridLinesBrush="Transparent">
+                                    <DataGrid.Columns>
+                                        <DataGridTemplateColumn
+                                            Width="*"
+                                            CanUserSort="False"
+                                            Header="">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock
+                                                        Margin="5,0,5,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding}"
+                                                        TextAlignment="Center" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn
+                        Width="320"
+                        CanUserSort="False"
+                        Header="{ns:Loc LblDetails}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border>
+                                    <Border.Background>
+                                        <ImageBrush
+                                            x:Name="PART_Image"
+                                            ImageSource="{Binding Image}"
+                                            Stretch="Uniform" />
+
+                                    </Border.Background>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+
+                                        <!--  will be displayed when no image is available  -->
+                                        <TextBlock
+                                            x:Name="PART_Textblock"
+                                            Grid.RowSpan="2"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                            Text="{ns:Loc LblNoImage}"
+                                            Visibility="Collapsed" />
+
+                                        <StackPanel VerticalAlignment="Top">
+
+                                            <Grid>
+                                                <StackPanel
+                                                    Margin="0,6,0,6"
+                                                    HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding}"
-                                                    TextAlignment="Center" />
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn
-                    Width="320"
-                    CanUserSort="False"
-                    Header="{ns:Loc LblDetails}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Border>
-                                <Border.Background>
-                                    <ImageBrush
-                                        x:Name="PART_Image"
-                                        ImageSource="{Binding Image}"
-                                        Stretch="Uniform" />
-
-                                </Border.Background>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                    </Grid.RowDefinitions>
-
-                                    <!--  will be displayed when no image is available  -->
-                                    <TextBlock
-                                        x:Name="PART_Textblock"
-                                        Grid.RowSpan="2"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Foreground="{StaticResource ButtonForegroundDisabledBrush}"
-                                        Text="{ns:Loc LblNoImage}"
-                                        Visibility="Collapsed" />
-
-                                    <StackPanel VerticalAlignment="Top">
-
-                                        <Grid>
-                                            <StackPanel
-                                                Margin="0,6,0,6"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal">
-                                                <TextBlock Foreground="White" Text="{ns:Loc LblRA}">
-                                                    <TextBlock.Effect>
-                                                        <DropShadowEffect
-                                                            BlurRadius="5"
-                                                            Opacity="1"
-                                                            ShadowDepth="0"
-                                                            Color="Black" />
-                                                    </TextBlock.Effect>
-                                                </TextBlock>
-                                                <TextBlock
-                                                    MinWidth="40"
-                                                    Margin="5,0,0,0"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock Foreground="White" Text="{ns:Loc LblRA}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                    <TextBlock
+                                                        MinWidth="40"
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="White"
+                                                        Text="{Binding Coordinates.RAString}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <StackPanel
+                                                    Margin="0,6,0,6"
+                                                    HorizontalAlignment="Right"
                                                     VerticalAlignment="Center"
-                                                    Foreground="White"
-                                                    Text="{Binding Coordinates.RAString}">
-                                                    <TextBlock.Effect>
-                                                        <DropShadowEffect
-                                                            BlurRadius="5"
-                                                            Opacity="1"
-                                                            ShadowDepth="0"
-                                                            Color="Black" />
-                                                    </TextBlock.Effect>
-                                                </TextBlock>
-                                            </StackPanel>
-                                            <StackPanel
-                                                Margin="0,6,0,6"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal">
-                                                <TextBlock Foreground="White" Text="{ns:Loc LblType}">
-                                                    <TextBlock.Effect>
-                                                        <DropShadowEffect
-                                                            BlurRadius="5"
-                                                            Opacity="1"
-                                                            ShadowDepth="0"
-                                                            Color="Black" />
-                                                    </TextBlock.Effect>
-                                                </TextBlock>
-                                                <TextBlock
-                                                    MinWidth="40"
-                                                    Margin="5,0,0,0"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock Foreground="White" Text="{ns:Loc LblType}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                    <TextBlock
+                                                        MinWidth="40"
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="White"
+                                                        Text="{Binding DSOType}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Grid>
+
+
+                                            <Grid>
+                                                <StackPanel
+                                                    Margin="0,6,0,6"
+                                                    HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
-                                                    Foreground="White"
-                                                    Text="{Binding DSOType}">
-                                                    <TextBlock.Effect>
-                                                        <DropShadowEffect
-                                                            BlurRadius="5"
-                                                            Opacity="1"
-                                                            ShadowDepth="0"
-                                                            Color="Black" />
-                                                    </TextBlock.Effect>
-                                                </TextBlock>
-                                            </StackPanel>
-                                        </Grid>
-
-
-                                        <Grid>
-                                            <StackPanel
-                                                Margin="0,6,0,6"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal">
-                                                <TextBlock Foreground="White" Text="{ns:Loc LblDec}">
-                                                    <TextBlock.Effect>
-                                                        <DropShadowEffect
-                                                            BlurRadius="5"
-                                                            Opacity="1"
-                                                            ShadowDepth="0"
-                                                            Color="Black" />
-                                                    </TextBlock.Effect>
-                                                </TextBlock>
-                                                <TextBlock
-                                                    MinWidth="40"
-                                                    Margin="5,0,0,0"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock Foreground="White" Text="{ns:Loc LblDec}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                    <TextBlock
+                                                        MinWidth="40"
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="White"
+                                                        Text="{Binding Coordinates.DecString}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <StackPanel
+                                                    Margin="0,6,0,6"
+                                                    HorizontalAlignment="Right"
                                                     VerticalAlignment="Center"
-                                                    Foreground="White"
-                                                    Text="{Binding Coordinates.DecString}">
-                                                    <TextBlock.Effect>
-                                                        <DropShadowEffect
-                                                            BlurRadius="5"
-                                                            Opacity="1"
-                                                            ShadowDepth="0"
-                                                            Color="Black" />
-                                                    </TextBlock.Effect>
-                                                </TextBlock>
-                                            </StackPanel>
-                                            <StackPanel
-                                                Margin="0,6,0,6"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal">
-                                                <TextBlock Foreground="White" Text="{ns:Loc LblConstellation}">
-                                                    <TextBlock.Effect>
-                                                        <DropShadowEffect
-                                                            BlurRadius="5"
-                                                            Opacity="1"
-                                                            ShadowDepth="0"
-                                                            Color="Black" />
-                                                    </TextBlock.Effect>
-                                                </TextBlock>
-                                                <TextBlock
-                                                    MinWidth="40"
-                                                    Margin="5,0,0,0"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock Foreground="White" Text="{ns:Loc LblConstellation}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                    <TextBlock
+                                                        MinWidth="40"
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="White"
+                                                        Text="{Binding Constellation}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Grid>
+
+
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+
+                                            <Grid>
+                                                <StackPanel
+                                                    Margin="0,6,0,6"
+                                                    HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
-                                                    Foreground="White"
-                                                    Text="{Binding Constellation}">
-                                                    <TextBlock.Effect>
-                                                        <DropShadowEffect
-                                                            BlurRadius="5"
-                                                            Opacity="1"
-                                                            ShadowDepth="0"
-                                                            Color="Black" />
-                                                    </TextBlock.Effect>
-                                                </TextBlock>
-                                            </StackPanel>
-                                        </Grid>
-
-
-                                    </StackPanel>
-                                    <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
-
-                                        <Grid>
-                                            <StackPanel
-                                                Margin="0,6,0,6"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal">
-                                                <Path
-                                                    Width="20"
-                                                    Height="20"
-                                                    Data="{StaticResource LightBulbSVG}"
-                                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                                    Stretch="Uniform"
-                                                    ToolTip="{ns:Loc LblMagnitude}" />
-                                                <TextBlock
-                                                    MinWidth="40"
-                                                    Margin="5,0,0,0"
+                                                    Orientation="Horizontal">
+                                                    <Path
+                                                        Width="20"
+                                                        Height="20"
+                                                        Data="{StaticResource LightBulbSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform"
+                                                        ToolTip="{ns:Loc LblMagnitude}" />
+                                                    <TextBlock
+                                                        MinWidth="40"
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="White"
+                                                        Text="{Binding Magnitude}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <StackPanel
+                                                    Margin="0,6,0,6"
+                                                    HorizontalAlignment="Right"
                                                     VerticalAlignment="Center"
-                                                    Foreground="White"
-                                                    Text="{Binding Magnitude}">
-                                                    <TextBlock.Effect>
-                                                        <DropShadowEffect
-                                                            BlurRadius="5"
-                                                            Opacity="1"
-                                                            ShadowDepth="0"
-                                                            Color="Black" />
-                                                    </TextBlock.Effect>
-                                                </TextBlock>
-                                            </StackPanel>
-                                            <StackPanel
-                                                Margin="0,6,0,6"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal">
-                                                <Path
-                                                    Width="20"
-                                                    Height="20"
-                                                    Margin="5"
-                                                    Data="{StaticResource Stretch}"
-                                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                                    Stretch="Uniform"
-                                                    ToolTip="{ns:Loc LblSize}" />
-                                                <TextBlock
-                                                    MinWidth="40"
-                                                    Margin="5,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    Foreground="White"
-                                                    Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}">
-                                                    <TextBlock.Effect>
-                                                        <DropShadowEffect
-                                                            BlurRadius="5"
-                                                            Opacity="1"
-                                                            ShadowDepth="0"
-                                                            Color="Black" />
-                                                    </TextBlock.Effect>
-                                                </TextBlock>
-                                            </StackPanel>
-                                        </Grid>
+                                                    Orientation="Horizontal">
+                                                    <Path
+                                                        Width="20"
+                                                        Height="20"
+                                                        Margin="5"
+                                                        Data="{StaticResource Stretch}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform"
+                                                        ToolTip="{ns:Loc LblSize}" />
+                                                    <TextBlock
+                                                        MinWidth="40"
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="White"
+                                                        Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Grid>
 
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding ImageSource, ElementName=PART_Image}" Value="{x:Null}">
-                                    <Setter TargetName="PART_Textblock" Property="Visibility" Value="Visible" />
-                                    <!--  Here is the 'override' content  -->
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding ImageSource, ElementName=PART_Image}" Value="{x:Null}">
+                                        <Setter TargetName="PART_Textblock" Property="Visibility" Value="Visible" />
+                                        <!--  Here is the 'override' content  -->
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn
-                    Width="3*"
-                    CanUserSort="False"
-                    Header="{ns:Loc LblAltitude}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <local:AltitudeChart DataContext="{Binding}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Width="3*"
+                        CanUserSort="False"
+                        Header="{ns:Loc LblAltitude}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <local:AltitudeChart DataContext="{Binding}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn
-                    Width="1.5*"
-                    CanUserSort="False"
-                    Header="">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <UniformGrid
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center"
-                                Columns="1"
-                                Rows="2">
-                                <Button
-                                    MinHeight="50"
-                                    Margin="5"
+                    <DataGridTemplateColumn
+                        Width="1.5*"
+                        CanUserSort="False"
+                        Header="">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <UniformGrid
                                     HorizontalAlignment="Stretch"
-                                    Command="{Binding SetSequenceCoordinatesCommand}">
-                                    <TextBlock
-                                        Foreground="{StaticResource ButtonForegroundBrush}"
-                                        Text="{ns:Loc LblSetAsSequenceTarget}"
-                                        TextWrapping="Wrap" />
-                                </Button>
+                                    VerticalAlignment="Center"
+                                    Columns="1"
+                                    Rows="2">
+                                    <Button
+                                        MinHeight="50"
+                                        Margin="5"
+                                        HorizontalAlignment="Stretch"
+                                        Command="{Binding SetSequenceCoordinatesCommand}">
+                                        <TextBlock
+                                            Foreground="{StaticResource ButtonForegroundBrush}"
+                                            Text="{ns:Loc LblSetAsSequenceTarget}"
+                                            TextWrapping="Wrap" />
+                                    </Button>
 
-                                <Button
-                                    MinHeight="50"
-                                    Margin="5"
-                                    HorizontalAlignment="Stretch"
-                                    Command="{Binding SlewToCoordinatesCommand}">
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSlew}" />
-                                </Button>
-                            </UniformGrid>
+                                    <Button
+                                        MinHeight="50"
+                                        Margin="5"
+                                        HorizontalAlignment="Stretch"
+                                        Command="{Binding SlewToCoordinatesCommand}">
+                                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSlew}" />
+                                    </Button>
+                                </UniformGrid>
 
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel
+                Grid.Row="1"
+                Height="35"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal"
+                Visibility="{Binding Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                <Button
+                    Width="30"
+                    Margin="5"
+                    Command="{Binding PrevPageCommand}">
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource NextSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        RenderTransformOrigin="0.5,0.5"
+                        Stretch="Uniform">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="180" />
+                        </Path.RenderTransform>
+                    </Path>
+                </Button>
+                <TextBlock VerticalAlignment="Center" Text="{Binding PageStartIndex}" />
+                <TextBlock
+                    Margin="5,0,5,0"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblTo}" />
+                <TextBlock VerticalAlignment="Center" Text="{Binding PageEndIndex}" />
+                <TextBlock
+                    Margin="5,0,5,0"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblOf}" />
+                <TextBlock VerticalAlignment="Center" Text="{Binding Count}" />
+                <Button
+                    Width="30"
+                    Margin="5"
+                    Command="{Binding NextPageCommand}">
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource NextSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+            </StackPanel>
+        </Grid>
+
     </Grid>
 </UserControl>
