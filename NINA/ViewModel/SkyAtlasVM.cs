@@ -7,6 +7,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -227,7 +228,8 @@ namespace NINA.ViewModel {
                         SelectedBrightnessThrough,
                         SelectedMagnitudeFrom,
                         SelectedMagnitudeThrough,
-                        SearchObjectName);
+                        SearchObjectName,
+                        OrderByField.ToString().ToLower());
 
 
                     var longitude = Settings.Longitude;
@@ -759,6 +761,17 @@ namespace NINA.ViewModel {
             }
         }
 
+        private SkyAtlasOrderByFieldsEnum _orderByField;
+        public SkyAtlasOrderByFieldsEnum OrderByField {
+            get {
+                return _orderByField;
+            }
+            set {
+                _orderByField = value;
+                RaisePropertyChanged();
+            }
+        }       
+
         public PagedList<DeepSkyObject> SearchResult {
             get {
                 return _searchResult;
@@ -925,5 +938,23 @@ namespace NINA.ViewModel {
         public ICommand PrevPageCommand { get; private set; }
         public ICommand NextPageCommand { get; private set; }
         public ICommand LastPageCommand { get; private set; }
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum SkyAtlasOrderByFieldsEnum {
+        [Description("LblSize")]
+        SIZEMIN,
+        [Description("LblApparentMagnitude")]
+        MAGNITUDE,
+        [Description("LblConstellation")]
+        CONSTELLATION,
+        [Description("LblRA")]
+        RA,
+        [Description("LblDec")]
+        DEC,        
+        [Description("LblSurfaceBrightness")]
+        SURFACEBRIGHTNESS,
+        [Description("LblObjectType")]
+        DSOTYPE
     }
 }

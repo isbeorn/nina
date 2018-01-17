@@ -8,6 +8,8 @@
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+    xmlns:util="clr-namespace:NINA.Utility"
+    xmlns:vm="clr-namespace:NINA.ViewModel"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -204,6 +206,15 @@
                             </UniformGrid>
                         </Expander>
 
+                        <UniformGrid Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOrderBy}" />
+                            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type vm:SkyAtlasOrderByFieldsEnum}}}" SelectedItem="{Binding OrderByField}" />
+                        </UniformGrid>
+
+                        <UniformGrid Margin="0,5,0,5" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblItemsPerPage}" />
+                            <TextBox Text="{Binding PageSize}" />
+                        </UniformGrid>
 
 
                         <ninactrl:CancellableButton
@@ -693,15 +704,18 @@
                     Orientation="Horizontal">
                     <Button
                         Width="35"
-                        Margin="5"
+                        Margin="5,2.5,0,2.5"
                         Command="{Binding FirstPageCommand}"
                         Content="&lt;|" />
                     <Button
                         Width="35"
-                        Margin="5"
+                        Margin="5,2.5,0,2.5"
                         Command="{Binding PrevPageCommand}"
                         Content="&lt;&lt;" />
-                    <ComboBox ItemsSource="{Binding Pages}" SelectedValue="{Binding CurrentPage, Mode=TwoWay}" />
+                    <ComboBox
+                        Margin="5,2.5,0,2.5"
+                        ItemsSource="{Binding Pages}"
+                        SelectedValue="{Binding CurrentPage, Mode=TwoWay}" />
                     <TextBlock
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
@@ -712,12 +726,12 @@
                         Text="{Binding Pages.Count}" />
                     <Button
                         Width="35"
-                        Margin="5"
+                        Margin="5,2.5,0,2.5"
                         Command="{Binding NextPageCommand}"
                         Content="&gt;&gt;" />
                     <Button
                         Width="35"
-                        Margin="5"
+                        Margin="5,2.5,0,2.5"
                         Command="{Binding LastPageCommand}"
                         Content="|&gt;" />
                 </StackPanel>
