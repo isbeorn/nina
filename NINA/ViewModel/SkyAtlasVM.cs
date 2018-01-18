@@ -836,22 +836,31 @@ namespace NINA.ViewModel {
                 Pages.Add(counter++);
             }
 
-            CurrentPage = Pages.FirstOrDefault();
+            LoadFirstPage();
 
-            FirstPageCommand = new RelayCommand((object o) => CurrentPage = 1, (object o) => { return CurrentPage > 1; });
+            FirstPageCommand = new RelayCommand((object o) => LoadFirstPage(), (object o) => { return CurrentPage > 1; });
             PrevPageCommand = new RelayCommand((object o) => LoadPrevPage(), (object o) => { return CurrentPage > 1; });
             NextPageCommand = new RelayCommand((object o) => LoadNextPage(), (object o) => { return CurrentPage < Pages.Count; });
-            LastPageCommand = new RelayCommand((object o) => CurrentPage = Pages.Count, (object o) => { return CurrentPage < Pages.Count; });
+            LastPageCommand = new RelayCommand((object o) => LoadLastPage(), (object o) => { return CurrentPage < Pages.Count; });
+            PageByNumberCommand = new RelayCommand((object o) => LoadPage(CurrentPage));
         }
 
         private List<T> _items;
 
-        public void LoadNextPage() {
-            CurrentPage++;
+        private void LoadFirstPage() {
+            LoadPage(Pages.FirstOrDefault());
         }
 
-        public void LoadPrevPage() {
-            CurrentPage--;
+        private void LoadNextPage() {
+            LoadPage(CurrentPage + 1);
+        }
+
+        private void LoadPrevPage() {
+            LoadPage(CurrentPage - 1);
+        }
+
+        private void LoadLastPage() {
+            LoadPage(Pages.Count);
         }
 
         private void LoadPage(int page) {
@@ -866,7 +875,7 @@ namespace NINA.ViewModel {
 
             ItemPage = new AsyncObservableCollection<T>(_items.GetRange(idx * PageSize, offset));
 
-
+            CurrentPage = page;
             RaisePropertyChanged(nameof(Count));
             RaisePropertyChanged(nameof(PageStartIndex));
             RaisePropertyChanged(nameof(PageEndIndex));
@@ -922,7 +931,6 @@ namespace NINA.ViewModel {
             set {
                 if (value >= Pages.FirstOrDefault() && value <= Pages.LastOrDefault()) {
                     _currentPage = value;
-                    LoadPage(_currentPage);
                     RaisePropertyChanged();
                 }
 
@@ -950,6 +958,7 @@ namespace NINA.ViewModel {
         public ICommand PrevPageCommand { get; private set; }
         public ICommand NextPageCommand { get; private set; }
         public ICommand LastPageCommand { get; private set; }
+        public ICommand PageByNumberCommand { get; private set; }
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
