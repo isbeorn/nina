@@ -955,7 +955,7 @@ namespace NINA.ViewModel {
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SkyAtlasOrderByFieldsEnum {
         [Description("LblSize")]
-        SIZEMIN,
+        SIZEMAX,
         [Description("LblApparentMagnitude")]
         MAGNITUDE,
         [Description("LblConstellation")]
