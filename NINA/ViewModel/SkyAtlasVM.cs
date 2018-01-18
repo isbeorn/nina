@@ -229,7 +229,8 @@ namespace NINA.ViewModel {
                         SelectedMagnitudeFrom,
                         SelectedMagnitudeThrough,
                         SearchObjectName,
-                        OrderByField.ToString().ToLower());
+                        OrderByField.ToString().ToLower(),
+                        OrderByDirection.ToString());
 
 
                     var longitude = Settings.Longitude;
@@ -761,6 +762,17 @@ namespace NINA.ViewModel {
             }
         }
 
+        private SkyAtlasOrderByDirectionEnum _orderByDirection;
+        public SkyAtlasOrderByDirectionEnum OrderByDirection {
+            get {
+                return _orderByDirection;
+            }
+            set {
+                _orderByDirection = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private SkyAtlasOrderByFieldsEnum _orderByField;
         public SkyAtlasOrderByFieldsEnum OrderByField {
             get {
@@ -770,7 +782,7 @@ namespace NINA.ViewModel {
                 _orderByField = value;
                 RaisePropertyChanged();
             }
-        }       
+        }
 
         public PagedList<DeepSkyObject> SearchResult {
             get {
@@ -951,10 +963,18 @@ namespace NINA.ViewModel {
         [Description("LblRA")]
         RA,
         [Description("LblDec")]
-        DEC,        
+        DEC,
         [Description("LblSurfaceBrightness")]
         SURFACEBRIGHTNESS,
         [Description("LblObjectType")]
         DSOTYPE
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum SkyAtlasOrderByDirectionEnum {
+        [Description("LblAscending")]
+        ASC,
+        [Description("LblDescending")]
+        DESC
     }
 }

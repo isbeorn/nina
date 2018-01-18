@@ -210,6 +210,10 @@
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOrderBy}" />
                             <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type vm:SkyAtlasOrderByFieldsEnum}}}" SelectedItem="{Binding OrderByField}" />
                         </UniformGrid>
+                        <UniformGrid Columns="2">
+                            <Grid />
+                            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type vm:SkyAtlasOrderByDirectionEnum}}}" SelectedItem="{Binding OrderByDirection}" />
+                        </UniformGrid>
 
                         <UniformGrid Margin="0,5,0,5" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblItemsPerPage}" />
