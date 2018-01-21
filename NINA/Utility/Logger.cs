@@ -30,7 +30,7 @@ namespace NINA.Utility {
         }
 
         public static void Info(string msg) {
-            if (Settings.LogLevel >= 0) {
+            if (Settings.LogLevel >= 1) {
                 Append(DateTime.Now.ToString("s") + " INFO:\t" + msg);
             }
 
@@ -42,8 +42,14 @@ namespace NINA.Utility {
             }
         }
 
-        public static void Trace(string msg) {
+        public static void Debug(string msg) {
             if (Settings.LogLevel >= 3) {
+                Append(DateTime.Now.ToString("s") + " DEBUG:\t" + msg);
+            }
+        }
+
+        public static void Trace(string msg) {
+            if (Settings.LogLevel >= 4) {
                 Append(DateTime.Now.ToString("s") + " TRACE:\t" + msg);
             }
         }

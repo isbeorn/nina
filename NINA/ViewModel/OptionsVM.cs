@@ -5,6 +5,7 @@ using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -905,5 +906,15 @@ namespace NINA.ViewModel {
             }
         }
 
-    }
+        public LogLevelEnum LogLevel {
+            get {
+                return (LogLevelEnum)Settings.LogLevel;
+            }
+            set {
+                Settings.LogLevel = (int)value;
+                RaisePropertyChanged();
+            }
+        }
+
+    }    
 }

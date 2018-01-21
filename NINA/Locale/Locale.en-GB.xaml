@@ -391,4 +391,10 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblUpdating">Updating</s:String>
     <s:String x:Key="LblYes">Yes</s:String>
     <s:String x:Key="LblNo">No</s:String>
+    <s:String x:Key="LblError">Error</s:String>
+    <s:String x:Key="LblInfo">Info</s:String>
+    <s:String x:Key="LblWarning">Warning</s:String>
+    <s:String x:Key="LblDebug">Debug</s:String>
+    <s:String x:Key="LblTrace">Trace</s:String>
+    <s:String x:Key="LblLogLevel">Log Level</s:String>
 </ResourceDictionary>

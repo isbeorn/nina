@@ -73,6 +73,18 @@
                             </Button>
 
                         </Grid>
+
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                Width="140"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblLogLevel}" />
+                            <ComboBox
+                                Margin="10,0,0,0"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:LogLevelEnum}}}"
+                                SelectedItem="{Binding LogLevel}" />
+                        </StackPanel>
+
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <TextBlock
                                 Width="140"
