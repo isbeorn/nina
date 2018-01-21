@@ -61,12 +61,14 @@ namespace NINA.Model.MyCamera {
 
 
         public void Init(NikonDevice cam) {
+            Logger.Trace("Initializing Nikon camera");
             _camera = cam;
             _camera.ImageReady += Camera_ImageReady;
             _camera.CaptureComplete += _camera_CaptureComplete;
 
 
             //Set to shoot in RAW
+            Logger.Trace("Setting compression to RAW");
             var compression = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel);
             for (int i = 0; i < compression.Length; i++) {
                 var val = compression.GetEnumValueByIndex(i);
@@ -78,17 +80,34 @@ namespace NINA.Model.MyCamera {
             }
 
             GetShutterSpeeds();
+            GetCapabilities();
+        }
+
+        private void GetCapabilities() {
+            Logger.Trace("Getting Nikon capabilities");
+            foreach (NkMAIDCapInfo info in _camera.GetCapabilityInfo()) {
+                var description = info.GetDescription();
+                var canGet = info.CanGet();
+                var canGetArray = info.CanGetArray();
+                var canSet = info.CanSet();
+
+                Logger.Trace(description);
+                Logger.Trace("\t CanGet: " + canGet.ToString());
+                Logger.Trace("\t CanGetArray: " + canGetArray.ToString());
+                Logger.Trace("\t CanSet: " + canSet.ToString());
+                
+            }
         }
 
 
-
         private void GetShutterSpeeds() {
+            Logger.Trace("Getting Nikon shutter speeds");
             _shutterSpeeds.Clear();
             var shutterSpeeds = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
             for (int i = 0; i < shutterSpeeds.Length; i++) {
                 try {
                     var val = shutterSpeeds.GetEnumValueByIndex(i).ToString();
-
+                    Logger.Trace("Found Shutter speed: " + val);
                     if (val.Contains("/")) {
                         var split = val.Split('/');
                         var convertedSpeed = double.Parse(split[0], CultureInfo.InvariantCulture) / double.Parse(split[1], CultureInfo.InvariantCulture);
@@ -485,7 +504,7 @@ namespace NINA.Model.MyCamera {
 
         public async Task<ImageArray> DownloadExposure(CancellationToken token) {
             await _downloadExposure.Task;
-
+            Logger.Trace("Downloading of exposure complete. Converting image to internal array");
             var iarr = await new DCRaw().ConvertToImageArray(_fileExtension, token);
             return iarr;
         }
@@ -503,6 +522,7 @@ namespace NINA.Model.MyCamera {
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
             if (Connected) {
+                Logger.Trace("Prepare start of exposure");
                 _downloadExposure = new TaskCompletionSource<object>();
 
                 var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
@@ -530,18 +550,23 @@ namespace NINA.Model.MyCamera {
 
 
                     if (exposureTime < 1.0) {
-
+                        Logger.Trace("Exposuretime < 1. Setting automatic shutter speed.");
                         var speed = _shutterSpeeds.Aggregate((x, y) => Math.Abs(x.Value - exposureTime) < Math.Abs(y.Value - exposureTime) ? x : y);
 
                         shutterspeed.Index = speed.Key;
+                        Logger.Trace("Setting key to: " + speed.Key.ToString());
                         _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed, shutterspeed);
+                        Logger.Trace("Start Capture");
                         _camera.Capture();
                     } else {
                         //Set Camera to bulb
+                        Logger.Trace("Exposuretime > 1. Setting to bulb mode.");
                         shutterspeed.Index = _bulbShutterSpeedIndex;
+                        Logger.Trace("Setting key to: " + _bulbShutterSpeedIndex.ToString());
                         _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed, shutterspeed);
 
                         DateTime d = DateTime.Now;
+                        Logger.Trace("Start Bulb Capture");
                         _camera.StartBulbCapture();
 
                         /*Stop Exposure after exposure time */
@@ -552,7 +577,7 @@ namespace NINA.Model.MyCamera {
                                 var delta = await Utility.Utility.Delay(100, new CancellationToken());
                                 elapsed += delta.TotalMilliseconds;
                             } while (elapsed < exposureTime);
-
+                            Logger.Trace("Stop Bulb Capture");
                             _camera.StopBulbCapture();
                         });
                     }
