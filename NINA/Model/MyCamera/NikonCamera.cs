@@ -474,34 +474,6 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        [System.Obsolete("Use async Connect")]
-        public bool Connect() {
-            _nikonManagers.Clear();
-            foreach (string file in Directory.GetFiles("External/Nikon", "*.md3")) {
-                NikonManager mgr = new NikonManager(file);
-                mgr.DeviceAdded += Mgr_DeviceAdded;
-                _nikonManagers.Add(mgr);
-            }
-
-            _cameraConnected = new TaskCompletionSource<object>();
-            var d = DateTime.Now;
-            //Wait maximum 30 seconds for a camera to connect;
-            do {
-                if (_cameraConnected.Task.IsCompleted) {
-                    break;
-                }
-                Thread.Sleep(500);
-            } while ((DateTime.Now - d).TotalMilliseconds < TimeSpan.FromSeconds(20).TotalMilliseconds);
-
-            if (!_cameraConnected.Task.IsCompleted) {
-                CleanupUnusedManagers(null);
-                Notification.ShowError(Locale.Loc.Instance["LblNikonNotFound"]);
-                return false;
-            }
-
-            return true;
-        }
-
         public void Disconnect() {
             Connected = false;
             _camera = null;
@@ -614,7 +586,7 @@ namespace NINA.Model.MyCamera {
                         folder = "x86";
                     }
 
-                    foreach (string file in Directory.GetFiles(string.Format("External/{0}/Nikon", folder), "*.md3")) {
+                    foreach (string file in Directory.GetFiles(string.Format("External/{0}/Nikon", folder), "*.md3", SearchOption.AllDirectories)) {
                         NikonManager mgr = new NikonManager(file);
                         mgr.DeviceAdded += Mgr_DeviceAdded;
                         _nikonManagers.Add(mgr);
