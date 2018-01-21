@@ -7,16 +7,19 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility {
     static class Logger {
-
+        static readonly object lockObj = new object();
         static string LOGFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA\\tracelog.txt";
 
 
         private static void Append(string msg) {
             try {
-                using (StreamWriter writer = new StreamWriter(LOGFILEPATH, true)) {
-                    writer.WriteLine(msg);
-                    //writer.Close();
+                lock (lockObj) {
+                    using (StreamWriter writer = new StreamWriter(LOGFILEPATH, true)) {
+                        writer.WriteLine(msg);
+                        writer.Close();
+                    }
                 }
+                    
             } catch (Exception ex) {
                 Notification.Notification.ShowError(ex.Message);
             }

@@ -234,6 +234,7 @@ namespace NINA.ViewModel {
             } catch (System.OperationCanceledException ex) {
                 Logger.Trace(ex.Message);
             } catch (Exception ex) {
+                Logger.Error(ex.Message, ex.StackTrace);
                 Notification.ShowError(ex.Message);
             } finally {                
             }
@@ -362,6 +363,7 @@ namespace NINA.ViewModel {
                     }
                     throw ex;
                 } catch (CameraConnectionLostException ex) {
+                    Logger.Error(Locale.Loc.Instance["LblCameraConnectionLost"] + " " + ex.Message, ex.StackTrace);
                     Notification.ShowError(Locale.Loc.Instance["LblCameraConnectionLost"]);
                     throw ex;
                 } catch (Exception ex) {

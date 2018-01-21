@@ -104,6 +104,8 @@ namespace NINA.Model.MyCamera {
             Logger.Debug("Getting Nikon shutter speeds");
             _shutterSpeeds.Clear();
             var shutterSpeeds = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
+            Logger.Debug("Available Shutterspeeds: " + shutterSpeeds.Length);
+            bool bulbFound = false;
             for (int i = 0; i < shutterSpeeds.Length; i++) {
                 try {
                     var val = shutterSpeeds.GetEnumValueByIndex(i).ToString();
@@ -114,11 +116,16 @@ namespace NINA.Model.MyCamera {
 
                         _shutterSpeeds.Add(i, convertedSpeed);
                     } else if (val == "Bulb") {
+                        Logger.Debug("Bulb index: " + i);
                         _bulbShutterSpeedIndex = i;
+                        bulbFound = true;
                     }
                 } catch (Exception ex) {
                     Logger.Error("Unexpected Shutter Speed: " + ex.Message, ex.StackTrace);
                 }
+            }
+            if(!bulbFound) {
+                Logger.Debug("No Bulb speed found!");
             }
         }
 
@@ -551,8 +558,8 @@ namespace NINA.Model.MyCamera {
                 } else {
 
 
-                    if (exposureTime < 1.0) {
-                        Logger.Debug("Exposuretime < 1. Setting automatic shutter speed.");
+                    if (exposureTime < 5.0) {
+                        Logger.Debug("Exposuretime < 5. Setting automatic shutter speed.");
                         var speed = _shutterSpeeds.Aggregate((x, y) => Math.Abs(x.Value - exposureTime) < Math.Abs(y.Value - exposureTime) ? x : y);
 
                         shutterspeed.Index = speed.Key;
@@ -562,7 +569,7 @@ namespace NINA.Model.MyCamera {
                         _camera.Capture();
                     } else {
                         //Set Camera to bulb
-                        Logger.Debug("Exposuretime > 1. Setting to bulb mode.");
+                        Logger.Debug("Exposuretime >= 5. Setting to bulb mode.");
                         shutterspeed.Index = _bulbShutterSpeedIndex;
                         Logger.Debug("Setting key to: " + _bulbShutterSpeedIndex.ToString());
                         _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed, shutterspeed);
