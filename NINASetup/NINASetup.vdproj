@@ -3277,7 +3277,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:NINACustomControlLibrary, Version=1.2.9.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:NINACustomControlLibrary, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_6861F5114B6BE2AF752480ECCF7A5ACF"
@@ -5469,15 +5469,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:N.I.N.A. - Nighttime Imaging 'N' Astronomy"
-        "ProductCode" = "8:{F95B2331-82AA-4CE4-82D0-0CD97561C3B6}"
-        "PackageCode" = "8:{8DECDFB9-6557-4286-A9E7-05261C6DD04B}"
+        "ProductCode" = "8:{9E9CB1E5-4FD1-4D7C-945B-1E908EF79C8E}"
+        "PackageCode" = "8:{E3D718C3-9907-4434-AC91-835453326E20}"
         "UpgradeCode" = "8:{5DC025EA-3D24-4E6B-9F82-79718D70896A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.3.0"
+        "ProductVersion" = "8:1.3.1"
         "Manufacturer" = "8: "
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -6397,7 +6397,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1CB6472DBDBF4BD4A442DB7BA216741F"
             {
-            "SourcePath" = "8:..\\SetupCygwinInstallAction\\obj\\Debug\\SetupCygwinInstallAction.dll"
+            "SourcePath" = "8:..\\SetupCygwinInstallAction\\obj\\Release\\SetupCygwinInstallAction.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
@@ -6481,7 +6481,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FF25606544D448558FB12DA74BACB4E5"
             {
-            "SourcePath" = "8:..\\NINA\\obj\\x64\\Debug\\NINA.exe"
+            "SourcePath" = "8:..\\NINA\\obj\\x64\\Release\\NINA.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
