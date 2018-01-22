@@ -533,11 +533,17 @@ namespace NINA.Model.MyCamera {
 
         private void RequestSnapPortCaptureStart() {
             Logger.Debug("Request start of exposure");
-            Mediator.Instance.Request(new SendSnapPortMessage() { Start = true });
+            var success = Mediator.Instance.Request(new SendSnapPortMessage() { Start = true });
+            if (!success) {
+                throw new Exception("Request to telescope snap port failed");
+            }
         }
         private void RequestSnapPortCaptureStop() {
             Logger.Debug("Request stop of exposure");
-            Mediator.Instance.Request(new SendSnapPortMessage() { Start = false });
+            var success = Mediator.Instance.Request(new SendSnapPortMessage() { Start = false });
+            if (!success) {
+                throw new Exception("Request to telescope snap port failed");
+            }
         }
 
         private void BulbCapture(double exposureTime, Action capture, Action stopCapture) {
