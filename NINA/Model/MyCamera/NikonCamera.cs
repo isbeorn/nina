@@ -516,8 +516,8 @@ namespace NINA.Model.MyCamera {
 
                     BulbCapture(exposureTime, RequestSnapPortCaptureStart, RequestSnapPortCaptureStop);
                 } else {
-                    if (exposureTime < 5.0) {
-                        Logger.Debug("Exposuretime < 5. Setting automatic shutter speed.");
+                    if (exposureTime <= 30.0) {
+                        Logger.Debug("Exposuretime <= 30. Setting automatic shutter speed.");
                         var speed = _shutterSpeeds.Aggregate((x, y) => Math.Abs(x.Value - exposureTime) < Math.Abs(y.Value - exposureTime) ? x : y);
                         SetCameraShutterSpeed(speed.Key);
 
