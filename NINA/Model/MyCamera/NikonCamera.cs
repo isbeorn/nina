@@ -90,16 +90,18 @@ namespace NINA.Model.MyCamera {
                 var canGet = info.CanGet();
                 var canGetArray = info.CanGetArray();
                 var canSet = info.CanSet();
+                var canStart = info.CanStart();
 
                 Logger.Debug(description);
                 Logger.Debug("\t Id: " + info.ulID.ToString());
                 Logger.Debug("\t CanGet: " + canGet.ToString());
                 Logger.Debug("\t CanGetArray: " + canGetArray.ToString());
                 Logger.Debug("\t CanSet: " + canSet.ToString());
+                Logger.Debug("\t CanStart: " + canStart.ToString());
 
-                if(info.ulID == eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed && !canSet) {
+                if (info.ulID == eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed && !canSet) {
                     throw new NikonException("Cannot set shutterspeeds. Please make sure the camera dial is set to a position where bublb mode is possible and the mirror lock is turned off");
-                }                
+                }
             }
         }
 
