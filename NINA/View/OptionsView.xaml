@@ -954,23 +954,61 @@
                                     MinWidth="200"
                                     MinHeight="20"
                                     VerticalAlignment="Center"
-                                    Text="{ns:Loc LblUseSnapPort}">
+                                    Text="{ns:Loc LblBulbMode}">
                                     <TextBlock.ToolTip>
                                         <TextBlock Text="" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <CheckBox
-                                    x:Name="snapPortCheckbox"
-                                    Width="75"
-                                    Height="25"
-                                    HorizontalAlignment="Left"
-                                    IsChecked="{Binding UseTelescopeSnapPort}" />
+                                <ComboBox
+                                    Name="cbBulbMode"
+                                    ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:CameraBulbModeEnum}}}"
+                                    SelectedItem="{Binding CameraBulbMode}" />
                             </StackPanel>
+
+                            <!--  Serial Port  -->
                             <StackPanel Orientation="Vertical">
                                 <StackPanel.Style>
                                     <Style TargetType="{x:Type StackPanel}">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=snapPortCheckbox, Path=IsChecked}" Value="False">
+                                            <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="2">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="0">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+
+                                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                    <TextBlock
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblSerialPort}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblSerialPort}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox
+                                        MinWidth="75"
+                                        MinHeight="20"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding CameraSerialPort}" />
+                                </StackPanel>
+                            </StackPanel>
+                            <!--  Snap Port  -->
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel.Style>
+                                    <Style TargetType="{x:Type StackPanel}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="1">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="0">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>

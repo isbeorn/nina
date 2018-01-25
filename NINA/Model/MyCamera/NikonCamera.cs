@@ -490,6 +490,8 @@ namespace NINA.Model.MyCamera {
             _camera = null;
             _activeNikonManager?.Shutdown();
             _nikonManagers?.Clear();
+            serialPortInteraction?.Close();
+            serialPortInteraction = null;
         }
 
         public async Task<ImageArray> DownloadExposure(CancellationToken token) {
@@ -517,10 +519,14 @@ namespace NINA.Model.MyCamera {
 
                 var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
 
-                if (Settings.UseTelescopeSnapPort) {
+                if (Settings.CameraBulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
                     Logger.Debug("Use Telescope Snap Port");
 
                     BulbCapture(exposureTime, RequestSnapPortCaptureStart, RequestSnapPortCaptureStop);
+                } else if (Settings.CameraBulbMode == CameraBulbModeEnum.SERIALPORT) {
+                    Logger.Debug("Use Serial Port for camera");
+
+                    BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
                 } else {
                     if (exposureTime <= 30.0) {
                         Logger.Debug("Exposuretime <= 30. Setting automatic shutter speed.");
@@ -534,6 +540,29 @@ namespace NINA.Model.MyCamera {
                         BulbCapture(exposureTime, _camera.Capture, StopBulbCapture);
                     }
                 }
+            }
+        }
+
+        private SerialPortInteraction serialPortInteraction;
+
+        private void StartSerialPortCapture() {
+            Logger.Debug("Serial port start of exposure");
+            OpenSerialPort();
+            serialPortInteraction.EnableRts(true);
+        }
+
+        private void StopSerialPortCapture() {
+            Logger.Debug("Serial port stop of exposure");
+            OpenSerialPort();
+            serialPortInteraction.EnableRts(false);
+        }
+
+        private void OpenSerialPort() {
+            if (serialPortInteraction?.PortName != Settings.CameraSerialPort) {
+                serialPortInteraction = new SerialPortInteraction(Settings.CameraSerialPort);
+            }
+            if (!serialPortInteraction.Open()) {
+                throw new Exception("Unable to open SerialPort " + Settings.CameraSerialPort);
             }
         }
 
@@ -651,6 +680,7 @@ namespace NINA.Model.MyCamera {
             return await Task.Run(() => {
                 var connected = false;
                 try {
+                    serialPortInteraction = null;
                     _nikonManagers.Clear();
 
                     string folder = "x64";

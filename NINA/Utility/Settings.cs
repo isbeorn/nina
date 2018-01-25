@@ -780,16 +780,6 @@ namespace NINA.Utility {
             }
         }
 
-        public static bool UseTelescopeSnapPort {
-            get {
-                return Properties.Settings.Default.UseTelescopeSnapPort;
-            }
-            set {
-                Properties.Settings.Default.UseTelescopeSnapPort = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
         public static string TelescopeSnapPortStart {
             get {
                 return Properties.Settings.Default.TelescopeSnapPortStart;
@@ -826,6 +816,26 @@ namespace NINA.Utility {
             }
             set {
                 Properties.Settings.Default.EstimatedDownloadTime = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static CameraBulbModeEnum CameraBulbMode {
+            get {
+                return (CameraBulbModeEnum)Properties.Settings.Default.CameraBulbMode;
+            }
+            set {
+                Properties.Settings.Default.CameraBulbMode = (int)value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static string CameraSerialPort {
+            get {
+                return Properties.Settings.Default.CameraSerialPort;
+            }
+            set {
+                Properties.Settings.Default.CameraSerialPort = value;
                 Properties.Settings.Default.Save();
             }
         }

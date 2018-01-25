@@ -402,4 +402,8 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblDebug">Debug</s:String>
     <s:String x:Key="LblTrace">Trace</s:String>
     <s:String x:Key="LblLogLevel">Log Level</s:String>
+    <s:String x:Key="LblBulbMode">Bulb Modus</s:String>
+    <s:String x:Key="LblNative">Nativ</s:String>
+    <s:String x:Key="LblSerialPort">Serieller Port</s:String>
+    <s:String x:Key="LblTelescopeSnapPort">Teleskop Snap Port</s:String>
 </ResourceDictionary>

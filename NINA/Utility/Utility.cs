@@ -46,9 +46,9 @@ namespace NINA.Utility {
         public static async Task<string> HttpGetRequest(CancellationToken canceltoken, string url, params object[] parameters) {
             string result = string.Empty;
 
-            if(parameters != null) {
+            if (parameters != null) {
                 url = string.Format(url, parameters);
-            }            
+            }
             HttpWebRequest request = null;
             HttpWebResponse response = null;
             using (canceltoken.Register(() => request.Abort(), useSynchronizationContext: false)) {
@@ -177,7 +177,7 @@ namespace NINA.Utility {
 
         }
 
-        public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken, IProgress<int> progress = null) {            
+        public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken, IProgress<int> progress = null) {
             using (var client = new WebClient()) {
                 using (canceltoken.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
                     client.DownloadProgressChanged += (s, e) => {
@@ -185,7 +185,7 @@ namespace NINA.Utility {
                     };
                     await client.DownloadFileTaskAsync(url, targetLocation);
                 }
-            }            
+            }
         }
 
 
@@ -319,6 +319,16 @@ namespace NINA.Utility {
         DEBUG,
         [Description("LblTrace")]
         TRACE
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum CameraBulbModeEnum {
+        [Description("LblNative")]
+        NATIVE,
+        [Description("LblSerialPort")]
+        SERIALPORT,
+        [Description("LblTelescopeSnapPort")]
+        TELESCOPESNAPPORT
     }
 
 }

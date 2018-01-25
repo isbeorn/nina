@@ -29,7 +29,7 @@ namespace NINA.ViewModel {
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
 
-                        
+
             ImagePatterns = CreateImagePatternList();
 
             ScanForIndexFiles();
@@ -864,16 +864,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public bool UseTelescopeSnapPort {
-            get {
-                return Settings.UseTelescopeSnapPort;
-            }
-            set {
-                Settings.UseTelescopeSnapPort = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public string TelescopeSnapPortStart {
             get {
                 return Settings.TelescopeSnapPortStart;
@@ -899,7 +889,7 @@ namespace NINA.ViewModel {
                 return Settings.DevicePollingInterval;
             }
             set {
-                if(value > 0) {
+                if (value > 0) {
                     Settings.DevicePollingInterval = value;
                     RaisePropertyChanged();
                 }
@@ -916,5 +906,25 @@ namespace NINA.ViewModel {
             }
         }
 
-    }    
+        public CameraBulbModeEnum CameraBulbMode {
+            get {
+                return Settings.CameraBulbMode;
+            }
+            set {
+                Settings.CameraBulbMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string CameraSerialPort {
+            get {
+                return Settings.CameraSerialPort;
+            }
+            set {
+                Settings.CameraSerialPort = value;
+                RaisePropertyChanged();
+            }
+        }
+
+    }
 }
