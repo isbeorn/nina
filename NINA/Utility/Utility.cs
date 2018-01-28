@@ -283,6 +283,15 @@ namespace NINA.Utility {
             await Task.Delay(span, token);
             return DateTime.Now.Subtract(now);
         }
+
+        public static async Task<TimeSpan> Wait(TimeSpan t, CancellationToken token = new CancellationToken()) {
+            TimeSpan elapsed = new TimeSpan(0);
+            do {
+                var delta = await Delay(100, new CancellationToken());
+                elapsed += delta;
+            } while (elapsed < t);
+            return elapsed;
+        }
     }
     public enum FileTypeEnum {
         TIFF,

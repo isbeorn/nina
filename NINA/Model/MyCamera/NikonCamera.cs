@@ -154,7 +154,7 @@ namespace NINA.Model.MyCamera {
             using (System.IO.FileStream s = new System.IO.FileStream(filename, System.IO.FileMode.Create, System.IO.FileAccess.Write)) {
                 s.Write(image.Buffer, 0, image.Buffer.Length);
             }
-
+            Logger.Debug("Setting Download Exposure Taks to complete");
             _downloadExposure.TrySetResult(null);
         }
 
@@ -495,6 +495,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+            Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
             var iarr = await new DCRaw().ConvertToImageArray(_fileExtension, token);
@@ -514,7 +515,7 @@ namespace NINA.Model.MyCamera {
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
             if (Connected) {
-                Logger.Debug("Prepare start of exposure");
+                Logger.Debug("Prepare start of exposure: " + exposureTime);
                 _downloadExposure = new TaskCompletionSource<object>();
 
                 var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
@@ -599,13 +600,15 @@ namespace NINA.Model.MyCamera {
 
             /*Stop Exposure after exposure time */
             Task.Run(async () => {
-                exposureTime = exposureTime * 1000;
-                var elapsed = 0.0d;
-                do {
-                    var delta = await Utility.Utility.Delay(100, new CancellationToken());
-                    elapsed += delta.TotalMilliseconds;
-                } while (elapsed < exposureTime);
+                await Utility.Utility.Wait(TimeSpan.FromSeconds(exposureTime));
+
                 stopCapture();
+
+                Logger.Debug("Restore previous shutter speed");
+                // Restore original shutter speed
+                SetCameraShutterSpeed(_prevShutterSpeed);
+
+                LockCamera(false);
             });
         }
 
@@ -624,12 +627,6 @@ namespace NINA.Model.MyCamera {
                     eNkMAIDDataType.kNkMAIDDataType_GenericPtr,
                     terminatePointer);
             }
-
-            Logger.Debug("Restore previous shutter speed");
-            // Restore original shutter speed
-            SetCameraShutterSpeed(_prevShutterSpeed);
-
-            LockCamera(false);
         }
 
         private void LockCamera(bool lockIt) {

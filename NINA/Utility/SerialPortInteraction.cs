@@ -9,6 +9,7 @@ namespace NINA.Utility {
     class SerialPortInteraction {
         public SerialPortInteraction(string portName) {
             port = new SerialPort(portName);
+            port.Handshake = Handshake.None;
         }
 
         private SerialPort port;
@@ -39,6 +40,7 @@ namespace NINA.Utility {
             try {
                 Logger.Debug("Toggle Rts on " + port.PortName);
                 port.RtsEnable = enable;
+                Logger.Debug("Rts is now: " + port.RtsEnable);
                 success = true;
             } catch (Exception ex) {
                 Logger.Debug(ex.Message + "\t" + ex.StackTrace);
