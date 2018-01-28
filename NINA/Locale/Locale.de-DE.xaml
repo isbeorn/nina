@@ -411,4 +411,5 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblImportFromFilterWheel">Von Filterrad importieren</s:String>
     <s:String x:Key="LblWaitingForCamera">Warten auf Kamera</s:String>
     <s:String x:Key="LblAutoFocusOnFilterChange">Autofokus bei Filterwechsel</s:String>
+    <s:String x:Key="LblBulbSerialPort">Serieller Port für Bulb</s:String>
 </ResourceDictionary>
