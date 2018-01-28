@@ -227,7 +227,7 @@ namespace NINA.ViewModel {
                         await CheckMeridianFlip(seq, ct, progress);
 
                         //Autofocus on filter change
-                        if(seq.FilterType.Position != prevFilterPosition 
+                        if(seq.FilterType != null && seq.FilterType.Position != prevFilterPosition 
                                 && seq.FilterType.Position >= 0
                                 && Sequence.AutoFocusOnFilterChange) {
                             await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
