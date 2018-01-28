@@ -85,7 +85,10 @@ namespace NINA.Model.MyCamera {
 
         private void GetCapabilities() {
             Logger.Debug("Getting Nikon capabilities");
+            Capabilities.Clear();
             foreach (NkMAIDCapInfo info in _camera.GetCapabilityInfo()) {
+                Capabilities.Add(info.ulID, info);
+
                 var description = info.GetDescription();
                 var canGet = info.CanGet();
                 var canGetArray = info.CanGetArray();
@@ -105,6 +108,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private Dictionary<eNkMAIDCapability, NkMAIDCapInfo> Capabilities = new Dictionary<eNkMAIDCapability, NkMAIDCapInfo>(); 
 
         private void GetShutterSpeeds() {
             Logger.Debug("Getting Nikon shutter speeds");
@@ -538,7 +542,7 @@ namespace NINA.Model.MyCamera {
                         _camera.Capture();
                     } else {
                         Logger.Debug("Use Bulb capture");
-                        BulbCapture(exposureTime, _camera.Capture, StopBulbCapture);
+                        BulbCapture(exposureTime, StartBulbCapture, StopBulbCapture);
                     }
                 }
             }
@@ -583,7 +587,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private void BulbCapture(double exposureTime, Action capture, Action stopCapture) {
-            LockCamera(true);
+            
 
             SetCameraToManual();
 
@@ -606,13 +610,17 @@ namespace NINA.Model.MyCamera {
 
                 Logger.Debug("Restore previous shutter speed");
                 // Restore original shutter speed
-                SetCameraShutterSpeed(_prevShutterSpeed);
-
-                LockCamera(false);
+                SetCameraShutterSpeed(_prevShutterSpeed);                
             });
         }
 
-        public void StopBulbCapture() {
+        private void StartBulbCapture() {
+            LockCamera(true);
+            _camera.Capture();
+        }
+
+        private void StopBulbCapture() {
+            LockCamera(false);
             Logger.Debug("Stopping Bulb Capture");
             // Terminate capture
             NkMAIDTerminateCapture terminate = new NkMAIDTerminateCapture();
@@ -637,31 +645,39 @@ namespace NINA.Model.MyCamera {
 
         private void SetCameraToManual() {
             Logger.Debug("Set camera to manual exposure");
-
-            var exposureMode = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ExposureMode);
-            var foundManual = false;
-            for (int i = 0; i < exposureMode.Length; i++) {
-                if ((uint)exposureMode[i] == (uint)eNkMAIDExposureMode.kNkMAIDExposureMode_Manual) {
-                    exposureMode.Index = i;
-                    foundManual = true;
-                    _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_ExposureMode, exposureMode);
-                    break;
+            if (Capabilities.ContainsKey(eNkMAIDCapability.kNkMAIDCapability_ExposureMode) && Capabilities[eNkMAIDCapability.kNkMAIDCapability_ExposureMode].CanSet()) {
+                var exposureMode = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ExposureMode);
+                var foundManual = false;
+                for (int i = 0; i < exposureMode.Length; i++) {
+                    if ((uint)exposureMode[i] == (uint)eNkMAIDExposureMode.kNkMAIDExposureMode_Manual) {
+                        exposureMode.Index = i;
+                        foundManual = true;
+                        _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_ExposureMode, exposureMode);
+                        break;
+                    }
                 }
-            }
 
-            if (!foundManual) {
-                throw new NikonException("Failed to find the 'Manual' exposure mode");
-            }
+                if (!foundManual) {
+                    throw new NikonException("Failed to find the 'Manual' exposure mode");
+                }
+            } else {
+                Logger.Debug("Cannot set to manual mode. Skipping...");
+            }            
         }
 
         private int _prevShutterSpeed;
 
         private void SetCameraShutterSpeed(int index) {
-            Logger.Debug("Setting shutter speed to index: " + index);
-            var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
-            _prevShutterSpeed = shutterspeed.Index;
-            shutterspeed.Index = index;
-            _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed, shutterspeed);
+            if (Capabilities.ContainsKey(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed) && Capabilities[eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed].CanSet()) {
+                Logger.Debug("Setting shutter speed to index: " + index);
+                var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
+                _prevShutterSpeed = shutterspeed.Index;
+                shutterspeed.Index = index;
+                _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed, shutterspeed);
+            } else {
+                Logger.Debug("Cannot set camera shutter speed. Skipping...");
+            }
+            
         }
 
         public void StopExposure() {
