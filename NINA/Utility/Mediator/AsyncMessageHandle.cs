@@ -225,7 +225,9 @@ namespace NINA.Utility.Mediator {
         public FilterInfo Filter { get; set; }
     }
 
-    class StartAutoFocusMessage : AsyncMediatorMessage<bool> { }
+    class StartAutoFocusMessage : AsyncMediatorMessage<bool> {
+        public FilterInfo Filter{ get; set; }
+    }
 
     class ConnectCameraMessage : AsyncMediatorMessage<bool> { }
     class ConnectFilterWheelMessage : AsyncMediatorMessage<bool> { }

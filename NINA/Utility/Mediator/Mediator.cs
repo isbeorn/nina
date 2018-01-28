@@ -82,6 +82,10 @@ namespace NINA.Utility.Mediator {
             return Request<FilterInfo>(msg);
         }
 
+        public ICollection<FilterInfo> Request(MediatorMessage<ICollection<FilterInfo>> msg) {
+            return Request<ICollection<FilterInfo>>(msg);
+        }
+
 
         /// <summary>
         /// Holds reference to handlers and identified by message type name

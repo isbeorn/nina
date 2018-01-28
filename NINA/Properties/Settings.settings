@@ -218,5 +218,15 @@
     <Setting Name="CameraSerialPort" Type="System.String" Scope="User">
       <Value Profile="(Default)">COM1</Value>
     </Setting>
+    <Setting Name="TelescopeFocalLength" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">800</Value>
+    </Setting>
+    <Setting Name="CameraPixelSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">3.8</Value>
+    </Setting>
+    <Setting Name="FilterWheelFilters" Type="NINA.Utility.ObserveAllCollection&lt;Model.MyFilterWheel.FilterInfo&gt;" Scope="User">
+      <Value Profile="(Default)">        
+      </Value>
+    </Setting>
   </Settings>
 </SettingsFile>

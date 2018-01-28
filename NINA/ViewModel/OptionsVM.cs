@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
@@ -28,6 +29,9 @@ namespace NINA.ViewModel {
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
+            ImportFiltersCommand = new RelayCommand(ImportFilters);
+            AddFilterCommand = new RelayCommand(AddFilter);
+            RemoveFilterCommand = new RelayCommand(RemoveFilter);
 
 
             ImagePatterns = CreateImagePatternList();
@@ -37,6 +41,43 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 ImagePatterns = CreateImagePatternList();
             }, MediatorMessages.LocaleChanged);
+
+            FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
+        }
+
+        private void RemoveFilter(object obj) {
+            if(SelectedFilter == null && FilterWheelFilters.Count > 0) {
+                SelectedFilter = FilterWheelFilters.Last();
+            }
+            FilterWheelFilters.Remove(SelectedFilter);
+            if(FilterWheelFilters.Count > 0) { 
+                SelectedFilter = FilterWheelFilters.Last();
+            }
+        }
+
+        private void AddFilter(object obj) {
+            var pos = FilterWheelFilters.Count;
+            var filter = new FilterInfo(Locale.Loc.Instance["LblFilter"] + (pos + 1), 0, (short)pos, 0);
+            FilterWheelFilters.Add(filter);
+            SelectedFilter = filter;
+        }
+
+        private void ImportFilters(object obj) {
+            var filters = Mediator.Instance.Request(new GetAllFiltersMessage());
+            if(filters != null) {
+                FilterWheelFilters.Clear();
+                FilterWheelFilters.CollectionChanged -= FilterWheelFilters_CollectionChanged;
+                var l = new List<FilterInfo>();
+                foreach(FilterInfo filter in filters) {
+                    l.Add(filter);                    
+                }
+                FilterWheelFilters = new ObserveAllCollection<FilterInfo>(l.OrderBy((x) => x.Position));
+                FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
+            }
+        }
+
+        private void FilterWheelFilters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+            FilterWheelFilters = FilterWheelFilters;
         }
 
         private HashSet<ImagePattern> CreateImagePatternList() {
@@ -139,6 +180,12 @@ namespace NINA.ViewModel {
         public ICommand ToggleColorsCommand { get; private set; }
 
         public ICommand OpenSkyAtlasImageRepositoryDiagCommand { get; private set; }
+
+        public ICommand ImportFiltersCommand { get; private set; }
+
+        public ICommand AddFilterCommand { get; private set; }
+
+        public ICommand RemoveFilterCommand { get; private set; }
 
         private void PreviewFile(object o) {
             MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
@@ -253,26 +300,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public int AnsvrFocalLength {
-            get {
-                return Settings.AnsvrFocalLength;
-            }
-            set {
-                Settings.AnsvrFocalLength = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int PS2FocalLength {
-            get {
-                return Settings.PS2FocalLength;
-            }
-            set {
-                Settings.PS2FocalLength = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public string CygwinLocation {
             get {
                 return Settings.CygwinLocation;
@@ -290,26 +317,6 @@ namespace NINA.ViewModel {
             }
             set {
                 Settings.PS2Location = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double AnsvrPixelSize {
-            get {
-                return Settings.AnsvrPixelSize;
-            }
-            set {
-                Settings.AnsvrPixelSize = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double PS2PixelSize {
-            get {
-                return Settings.PS2PixelSize;
-            }
-            set {
-                Settings.PS2PixelSize = value;
                 RaisePropertyChanged();
             }
         }
@@ -926,5 +933,45 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double CameraPixelSize {
+            get {
+                return Settings.CameraPixelSize;
+            }
+            set {
+                Settings.CameraPixelSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int TelescopeFocalLength {
+            get {
+                return Settings.TelescopeFocalLength;
+            }
+            set {
+                Settings.TelescopeFocalLength = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObserveAllCollection<FilterInfo> FilterWheelFilters{
+            get {
+                return Settings.FilterWheelFilters;
+            }
+            set {
+                Settings.FilterWheelFilters = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private FilterInfo _selectedFilter;
+        public FilterInfo SelectedFilter {
+            get {
+                return _selectedFilter;
+            }
+            set {
+                _selectedFilter = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

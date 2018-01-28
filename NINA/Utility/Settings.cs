@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyFilterWheel;
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
@@ -137,46 +138,6 @@ namespace NINA.Utility {
             }
             set {
                 Properties.Settings.Default.HemisphereType = (int)value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static int AnsvrFocalLength {
-            get {
-                return Properties.Settings.Default.AnsvrFocalLength;
-            }
-            set {
-                Properties.Settings.Default.AnsvrFocalLength = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static int PS2FocalLength {
-            get {
-                return Properties.Settings.Default.PS2FocalLength;
-            }
-            set {
-                Properties.Settings.Default.PS2FocalLength = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static double AnsvrPixelSize {
-            get {
-                return Properties.Settings.Default.AnsvrPixelSize;
-            }
-            set {
-                Properties.Settings.Default.AnsvrPixelSize = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        public static double PS2PixelSize {
-            get {
-                return Properties.Settings.Default.PS2PixelSize;
-            }
-            set {
-                Properties.Settings.Default.PS2PixelSize = value;
                 Properties.Settings.Default.Save();
             }
         }
@@ -816,6 +777,42 @@ namespace NINA.Utility {
             }
             set {
                 Properties.Settings.Default.EstimatedDownloadTime = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static double CameraPixelSize {
+            get {
+                return Properties.Settings.Default.CameraPixelSize;
+            }
+            set {
+                Properties.Settings.Default.CameraPixelSize = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static int TelescopeFocalLength {
+            get {
+                return Properties.Settings.Default.TelescopeFocalLength;
+            }
+            set {
+                Properties.Settings.Default.TelescopeFocalLength = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static NINA.Utility.ObserveAllCollection<Model.MyFilterWheel.FilterInfo> FilterWheelFilters {
+            get {
+                if(Properties.Settings.Default.FilterWheelFilters == null) {
+                    for (short i = 0; i < 8; i++) {
+                        FilterWheelFilters = new ObserveAllCollection<FilterInfo>();
+                        FilterWheelFilters.Add(new FilterInfo(Locale.Loc.Instance["LblFilter"] + (i+1), 0, i, 0));
+                    }                    
+                }
+                return Properties.Settings.Default.FilterWheelFilters;
+            }
+            set {
+                Properties.Settings.Default.FilterWheelFilters = value;
                 Properties.Settings.Default.Save();
             }
         }
