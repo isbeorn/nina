@@ -836,40 +836,53 @@ namespace NINA.ViewModel {
                 Pages.Add(counter++);
             }
 
-            CurrentPage = Pages.FirstOrDefault();
+            LoadFirstPage().Wait();
 
-            FirstPageCommand = new RelayCommand((object o) => CurrentPage = 1, (object o) => { return CurrentPage > 1; });
-            PrevPageCommand = new RelayCommand((object o) => LoadPrevPage(), (object o) => { return CurrentPage > 1; });
-            NextPageCommand = new RelayCommand((object o) => LoadNextPage(), (object o) => { return CurrentPage < Pages.Count; });
-            LastPageCommand = new RelayCommand((object o) => CurrentPage = Pages.Count, (object o) => { return CurrentPage < Pages.Count; });
+            FirstPageCommand = new AsyncCommand<bool>(LoadFirstPage, (object o) => { return CurrentPage > 1; });
+            PrevPageCommand = new AsyncCommand<bool>(LoadPrevPage, (object o) => { return CurrentPage > 1; });
+            NextPageCommand = new AsyncCommand<bool>(LoadNextPage, (object o) => { return CurrentPage < Pages.Count; });
+            LastPageCommand = new AsyncCommand<bool>(LoadLastPage, (object o) => { return CurrentPage < Pages.Count; });
+            PageByNumberCommand = new AsyncCommand<bool>(async () => await LoadPage(CurrentPage));
         }
 
         private List<T> _items;
 
-        public void LoadNextPage() {
-            CurrentPage++;
+        private async Task<bool> LoadFirstPage() {
+            return await LoadPage(Pages.FirstOrDefault());
         }
 
-        public void LoadPrevPage() {
-            CurrentPage--;
+        private async Task<bool> LoadNextPage() {
+            return await LoadPage(CurrentPage + 1);
         }
 
-        private void LoadPage(int page) {
+        private async Task<bool> LoadPrevPage() {
+            return await LoadPage(CurrentPage - 1);
+        }
+
+        private async Task<bool> LoadLastPage() {
+            return await LoadPage(Pages.Count);
+        }
+
+        private async Task<bool> LoadPage(int page) {
             var idx = page - 1;
             if (idx < 0) {
-                return;
+                return false;
             } else if (idx > (Count / (double)PageSize)) {
-                return;
+                return false;
             }
 
-            var offset = Math.Min(_items.Count - (idx * PageSize), PageSize);
+            var itemChunk = await Task.Run(() => {
+                var offset = Math.Min(_items.Count - (idx * PageSize), PageSize);
+                return _items.GetRange(idx * PageSize, offset);
+            });
 
-            ItemPage = new AsyncObservableCollection<T>(_items.GetRange(idx * PageSize, offset));
+            ItemPage = new AsyncObservableCollection<T>(itemChunk);
 
-
+            CurrentPage = page;
             RaisePropertyChanged(nameof(Count));
             RaisePropertyChanged(nameof(PageStartIndex));
             RaisePropertyChanged(nameof(PageEndIndex));
+            return true;
         }
 
         private AsyncObservableCollection<T> _itemPage = new AsyncObservableCollection<T>();
@@ -922,7 +935,6 @@ namespace NINA.ViewModel {
             set {
                 if (value >= Pages.FirstOrDefault() && value <= Pages.LastOrDefault()) {
                     _currentPage = value;
-                    LoadPage(_currentPage);
                     RaisePropertyChanged();
                 }
 
@@ -950,6 +962,7 @@ namespace NINA.ViewModel {
         public ICommand PrevPageCommand { get; private set; }
         public ICommand NextPageCommand { get; private set; }
         public ICommand LastPageCommand { get; private set; }
+        public ICommand PageByNumberCommand { get; private set; }
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
