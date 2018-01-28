@@ -520,7 +520,7 @@ namespace NINA.Model.MyCamera {
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
             DownloadReady = false;
-            if (exposureTime < 1) {
+            if (exposureTime < 10.0) {
                 SetExposureTime(exposureTime);
             } else {
                 SetExposureTime(double.MaxValue);
@@ -533,12 +533,7 @@ namespace NINA.Model.MyCamera {
             DateTime d = DateTime.Now;
             /*Stop Exposure after exposure time */
             Task.Run(async () => {
-                exposureTime = exposureTime * 1000;
-                var elapsed = 0.0d;
-                do {
-                    var delta = await Utility.Utility.Delay(100, new CancellationToken());
-                    elapsed += delta.TotalMilliseconds;
-                } while (elapsed < exposureTime);
+                await Utility.Utility.Wait(TimeSpan.FromSeconds(exposureTime));
 
                 if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF))) {
                     Notification.ShowError("Could not stop camera exposure");

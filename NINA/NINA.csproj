@@ -332,6 +332,8 @@
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
+    <Compile Include="Utility\ObserveAllCollection.cs" />
+    <Compile Include="Utility\SerialPortInteraction.cs" />
     <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
     <Compile Include="Utility\ValidationRules\DirectoryExistsRule.cs" />
@@ -852,7 +854,70 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\astrometry.net.png" />
-    <Content Include="External\x64\Nikon\NkdPTP.dll">
+    <Content Include="External\x64\Nikon\Type0001\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0002\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0003\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0004\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0005\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0006\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0007\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0008\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0009\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0010\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0011\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0012\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0013\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0014\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0015\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0016\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0017\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0018\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0019\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0020\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0021\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0022\NkdPTP.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\ASI\ASICamera2.dll">
@@ -861,7 +926,70 @@
     <Content Include="External\x86\Canon\EDSDK.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\Nikon\NkdPTP.dll">
+    <Content Include="External\x86\Nikon\Type0001\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0002\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0003\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0004\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0005\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0006\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0007\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0008\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0009\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0010\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0011\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0012\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0013\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0014\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0015\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0016\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0017\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0018\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0019\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0020\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0021\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0022\NkdPTP.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Utility\ColorSchema\ColorSchemas.xml">
@@ -877,135 +1005,141 @@
     <Content Include="External\x64\ASI\ASICamera2.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0004.md3">
+    <Content Include="External\x64\Nikon\Type0001\Type0001.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0005.md3">
+    <Content Include="External\x64\Nikon\Type0002\Type0002.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0001.md3">
+    <Content Include="External\x64\Nikon\Type0003\Type0003.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0002.md3">
+    <Content Include="External\x64\Nikon\Type0004\Type0004.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0003.md3">
+    <Content Include="External\x64\Nikon\Type0005\Type0005.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0006.md3">
+    <Content Include="External\x64\Nikon\Type0006\Type0006.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0007.md3">
+    <Content Include="External\x64\Nikon\Type0007\Type0007.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0008.md3">
+    <Content Include="External\x64\Nikon\Type0008\Type0008.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0009.md3">
+    <Content Include="External\x64\Nikon\Type0009\Type0009.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0010.md3">
+    <Content Include="External\x64\Nikon\Type0010\Type0010.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0011.md3">
+    <Content Include="External\x64\Nikon\Type0011\Type0011.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0012.md3">
+    <Content Include="External\x64\Nikon\Type0012\Type0012.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0013.md3">
+    <Content Include="External\x64\Nikon\Type0013\Type0013.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0014.md3">
+    <Content Include="External\x64\Nikon\Type0014\Type0014.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0015.md3">
+    <Content Include="External\x64\Nikon\Type0015\Type0015.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0016.md3">
+    <Content Include="External\x64\Nikon\Type0016\Type0016.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0017.md3">
+    <Content Include="External\x64\Nikon\Type0017\Type0017.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0018.md3">
+    <Content Include="External\x64\Nikon\Type0018\Type0018.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0019.md3">
+    <Content Include="External\x64\Nikon\Type0019\Type0019.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0020.md3">
+    <Content Include="External\x64\Nikon\Type0020\Type0020.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0021.md3">
+    <Content Include="External\x64\Nikon\Type0021\Type0021.md3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Nikon\Type0022\Type0022.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="External\x86\ASI\ASICamera2.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="External\x86\Nikon\Type0001.md3">
+    <Content Include="External\x86\Nikon\Type0001\Type0001.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0002.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0002\Type0002.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0003.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0003\Type0003.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0004.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0004\Type0004.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0005.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0005\Type0005.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0006.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0006\Type0006.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0007.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0007\Type0007.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0008.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0008\Type0008.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0009.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0009\Type0009.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0010.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0010\Type0010.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0011.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0011\Type0011.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0012.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0012\Type0012.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0013.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0013\Type0013.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0014.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0014\Type0014.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0015.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0015\Type0015.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0016.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0016\Type0016.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0017.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0017\Type0017.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0018.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0018\Type0018.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0019.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0019\Type0019.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0020.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0020\Type0020.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\Nikon\Type0021.md3">
+    </Content>
+    <Content Include="External\x86\Nikon\Type0021\Type0021.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <Content Include="External\x86\Nikon\Type0022\Type0022.md3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />

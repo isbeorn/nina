@@ -26,15 +26,15 @@ namespace NINA.PlateSolving {
                 Platesolver = new AstrometryPlateSolver(ASTROMETRYNETURL, Settings.AstrometryAPIKey);
             } else if (Settings.PlateSolverType == PlateSolverEnum.LOCAL) {
                 if (Settings.AnsvrSearchRadius > 0 && coords != null) {
-                    Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * binning, Settings.AnsvrSearchRadius, coords);
+                    Platesolver = new LocalPlateSolver(Settings.TelescopeFocalLength, Settings.CameraPixelSize * binning, Settings.AnsvrSearchRadius, coords);
                 } else {
-                    Platesolver = new LocalPlateSolver(Settings.AnsvrFocalLength, Settings.AnsvrPixelSize * binning);
+                    Platesolver = new LocalPlateSolver(Settings.TelescopeFocalLength, Settings.CameraPixelSize * binning);
                 }
             } else if (Settings.PlateSolverType == PlateSolverEnum.PLATESOLVE2) {
                 if (coords == null) {
                     Notification.ShowError(Locale.Loc.Instance["LblPlatesolve2NoCoordinates"]);
                 }
-                Platesolver = new Platesolve2Solver(Settings.PS2FocalLength, Settings.PS2PixelSize * binning, width, height, Settings.PS2Regions, coords);
+                Platesolver = new Platesolve2Solver(Settings.TelescopeFocalLength, Settings.CameraPixelSize * binning, width, height, Settings.PS2Regions, coords);
             }
 
             return Platesolver;

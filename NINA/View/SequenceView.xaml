@@ -126,7 +126,18 @@
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding AutoFocusOnStart}" />
                                 </UniformGrid>
-                            </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusOnFilterChange}" />
+                                    <CheckBox
+                                        Width="75"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        IsChecked="{Binding AutoFocusOnFilterChange}" />
+                                </UniformGrid>
+                            </UniformGrid>                            
                         </Border>
                         <Border
                             BorderBrush="{StaticResource BorderBrush}"
@@ -448,7 +459,7 @@
                         <DataTemplate>
                             <ComboBox
                                 DisplayMemberPath="Name"
-                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=FilterWheelVM.FW.Filters}"
+                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=OptionsVM.FilterWheelFilters}"
                                 SelectedItem="{Binding FilterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedValuePath="Name" />
                         </DataTemplate>

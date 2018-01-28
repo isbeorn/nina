@@ -30,6 +30,7 @@ namespace NINA.Model.MyFilterWheel {
         private string _name;
         private int _focusOffset;
         private short _position;
+        private double _autoFocusExposureTime;
 
         [XmlElement(nameof(Name))]
         public string Name {
@@ -65,10 +66,26 @@ namespace NINA.Model.MyFilterWheel {
             }
         }
 
+        [XmlElement(nameof(AutoFocusExposureTime))]
+        public double AutoFocusExposureTime {
+            get {
+                return _autoFocusExposureTime;
+            }
+
+            set {
+                _autoFocusExposureTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public FilterInfo(string n, int offset, short position) {
             Name = n;
             FocusOffset = offset;
             Position = position;
+        }
+
+        public FilterInfo(string n, int offset, short position, double autoFocusExposureTime) : this(n, offset, position) {
+            AutoFocusExposureTime = autoFocusExposureTime;
         }
 
         public override string ToString() {

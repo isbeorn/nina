@@ -12,7 +12,7 @@ namespace NINA.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.1.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -806,18 +806,6 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool UseTelescopeSnapPort {
-            get {
-                return ((bool)(this["UseTelescopeSnapPort"]));
-            }
-            set {
-                this["UseTelescopeSnapPort"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(":SNAP1,1#")]
         public string TelescopeSnapPortStart {
             get {
@@ -873,6 +861,65 @@ namespace NINA.Properties {
             }
             set {
                 this["EstimatedDownloadTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("800")]
+        public int TelescopeFocalLength {
+            get {
+                return ((int)(this["TelescopeFocalLength"]));
+            }
+            set {
+                this["TelescopeFocalLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3.8")]
+        public double CameraPixelSize {
+            get {
+                return ((double)(this["CameraPixelSize"]));
+            }
+            set {
+                this["CameraPixelSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::NINA.Utility.ObserveAllCollection<Model.MyFilterWheel.FilterInfo> FilterWheelFilters {
+            get {
+                return ((global::NINA.Utility.ObserveAllCollection<Model.MyFilterWheel.FilterInfo>)(this["FilterWheelFilters"]));
+            }
+            set {
+                this["FilterWheelFilters"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CameraBulbMode {
+            get {
+                return ((int)(this["CameraBulbMode"]));
+            }
+            set {
+                this["CameraBulbMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("COM1")]
+        public string CameraSerialPort {
+            get {
+                return ((string)(this["CameraSerialPort"]));
+            }
+            set {
+                this["CameraSerialPort"] = value;
             }
         }
     }

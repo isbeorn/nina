@@ -34,7 +34,7 @@
                 MyCancelCommand="{Binding CancelSnapCommand}"
                 MyCommand="{Binding SnapCommand}"
                 MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}"
-                MyFilters="{Binding Source={StaticResource AppVM}, Path=FilterWheelVM.FW.Filters, Mode=TwoWay}"
+                MyFilters="{Binding Source={StaticResource AppVM}, Path=OptionsVM.FilterWheelFilters}"
                 MyLoop="{Binding Loop, Mode=TwoWay}"
                 MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
                 MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}" />

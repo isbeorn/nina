@@ -46,6 +46,17 @@ namespace NINA.ViewModel {
                     return SelectedFilter;
                 })
             );
+
+            Mediator.Instance.RegisterRequest(
+                new GetAllFiltersMessageHandle((GetAllFiltersMessage msg) => {
+                    if(FW?.Connected == true) {
+                        return FW?.Filters;
+                    } else {
+                        return null;
+                    }
+                    
+                })
+            );
         }
 
         private CancellationTokenSource _changeFilterCancellationSource;
