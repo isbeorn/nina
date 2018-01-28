@@ -46,9 +46,9 @@ namespace NINA.Utility {
         public static async Task<string> HttpGetRequest(CancellationToken canceltoken, string url, params object[] parameters) {
             string result = string.Empty;
 
-            if(parameters != null) {
+            if (parameters != null) {
                 url = string.Format(url, parameters);
-            }            
+            }
             HttpWebRequest request = null;
             HttpWebResponse response = null;
             using (canceltoken.Register(() => request.Abort(), useSynchronizationContext: false)) {
@@ -177,7 +177,7 @@ namespace NINA.Utility {
 
         }
 
-        public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken, IProgress<int> progress = null) {            
+        public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken, IProgress<int> progress = null) {
             using (var client = new WebClient()) {
                 using (canceltoken.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
                     client.DownloadProgressChanged += (s, e) => {
@@ -185,7 +185,7 @@ namespace NINA.Utility {
                     };
                     await client.DownloadFileTaskAsync(url, targetLocation);
                 }
-            }            
+            }
         }
 
 
@@ -283,6 +283,15 @@ namespace NINA.Utility {
             await Task.Delay(span, token);
             return DateTime.Now.Subtract(now);
         }
+
+        public static async Task<TimeSpan> Wait(TimeSpan t, CancellationToken token = new CancellationToken()) {
+            TimeSpan elapsed = new TimeSpan(0);
+            do {
+                var delta = await Delay(100, new CancellationToken());
+                elapsed += delta;
+            } while (elapsed < t);
+            return elapsed;
+        }
     }
     public enum FileTypeEnum {
         TIFF,
@@ -307,6 +316,28 @@ namespace NINA.Utility {
     }
 
 
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum LogLevelEnum {
+        [Description("LblError")]
+        ERROR,
+        [Description("LblInfo")]
+        INFO,
+        [Description("LblWarning")]
+        WARNING,
+        [Description("LblDebug")]
+        DEBUG,
+        [Description("LblTrace")]
+        TRACE
+    }
 
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum CameraBulbModeEnum {
+        [Description("LblNative")]
+        NATIVE,
+        [Description("LblSerialPort")]
+        SERIALPORT,
+        [Description("LblTelescopeSnapPort")]
+        TELESCOPESNAPPORT
+    }
 
 }

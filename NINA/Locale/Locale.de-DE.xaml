@@ -397,8 +397,19 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblUpdating">Updating</s:String>
     <s:String x:Key="LblYes">Yes</s:String>
     <s:String x:Key="LblNo">No</s:String>
+    <s:String x:Key="LblError">Fehler</s:String>
+    <s:String x:Key="LblInfo">Info</s:String>
+    <s:String x:Key="LblWarning">Warnung</s:String>
+    <s:String x:Key="LblDebug">Debug</s:String>
+    <s:String x:Key="LblTrace">Trace</s:String>
+    <s:String x:Key="LblLogLevel">Log Level</s:String>
+    <s:String x:Key="LblBulbMode">Bulb Modus</s:String>
+    <s:String x:Key="LblNative">Nativ</s:String>
+    <s:String x:Key="LblSerialPort">Serieller Port</s:String>
+    <s:String x:Key="LblTelescopeSnapPort">Teleskop Snap Port</s:String>
     <s:String x:Key="LblEquipment">Ausrüstung</s:String>
     <s:String x:Key="LblImportFromFilterWheel">Von Filterrad importieren</s:String>
     <s:String x:Key="LblWaitingForCamera">Warten auf Kamera</s:String>
     <s:String x:Key="LblAutoFocusOnFilterChange">Autofokus bei Filterwechsel</s:String>
+    <s:String x:Key="LblBulbSerialPort">Serieller Port für Bulb</s:String>
 </ResourceDictionary>

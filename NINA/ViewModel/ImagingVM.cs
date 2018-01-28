@@ -195,50 +195,41 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {            
-            try {
-                double duration = seq.ExposureTime;
-                bool isLight = false;
-                if (Cam.HasShutter) {
-                    isLight = true;
-                }
-                Cam.StartExposure(duration, isLight);
-                var start = DateTime.Now;
-                var elapsed = 0.0d;
-                ExposureSeconds = 0;
-                progress.Report(new ApplicationStatus() {
-                    Status = ExposureStatus.EXPOSING,
-                    Progress = ExposureSeconds,
-                    MaxProgress = (int)duration,
-                    ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
-                });
-                /* Wait for Capture */
-                if (duration >= 1) {
-                    await Task.Run(async () => {
-                        do {
-                            var delta = await Utility.Utility.Delay(500, token);
-                            elapsed += delta.TotalSeconds;
-                            ExposureSeconds = (int)elapsed;
-                            token.ThrowIfCancellationRequested();
-
-                            progress.Report(new ApplicationStatus() {
-                                Status = ExposureStatus.EXPOSING,
-                                Progress = ExposureSeconds,
-                                MaxProgress = (int)duration,
-                                ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue                                
-                            });
-                        } while ((elapsed < duration) && Cam?.Connected == true);
-                    });
-                }
-                token.ThrowIfCancellationRequested();
-            } catch (System.OperationCanceledException ex) {
-                Logger.Trace(ex.Message);
-            } catch (Exception ex) {
-                Notification.ShowError(ex.Message);
-            } finally {                
+        private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {       
+            double duration = seq.ExposureTime;
+            bool isLight = false;
+            if (Cam.HasShutter) {
+                isLight = true;
             }
+            Cam.StartExposure(duration, isLight);
+            var start = DateTime.Now;
+            var elapsed = 0.0d;
+            ExposureSeconds = 0;
+            progress.Report(new ApplicationStatus() {
+                Status = ExposureStatus.EXPOSING,
+                Progress = ExposureSeconds,
+                MaxProgress = (int)duration,
+                ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
+            });
+            /* Wait for Capture */
+            if (duration >= 1) {
+                await Task.Run(async () => {
+                    do {
+                        var delta = await Utility.Utility.Delay(500, token);
+                        elapsed += delta.TotalSeconds;
+                        ExposureSeconds = (int)elapsed;
+                        token.ThrowIfCancellationRequested();
 
-
+                        progress.Report(new ApplicationStatus() {
+                            Status = ExposureStatus.EXPOSING,
+                            Progress = ExposureSeconds,
+                            MaxProgress = (int)duration,
+                            ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue                                
+                        });
+                    } while ((elapsed < duration) && Cam?.Connected == true);
+                });
+            }
+            token.ThrowIfCancellationRequested();
         }
 
         private async Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
@@ -362,6 +353,7 @@ namespace NINA.ViewModel {
                     }
                     throw ex;
                 } catch (CameraConnectionLostException ex) {
+                    Logger.Error(Locale.Loc.Instance["LblCameraConnectionLost"] + " " + ex.Message, ex.StackTrace);
                     Notification.ShowError(Locale.Loc.Instance["LblCameraConnectionLost"]);
                     throw ex;
                 } catch (Exception ex) {
