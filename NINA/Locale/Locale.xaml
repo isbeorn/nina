@@ -320,7 +320,8 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblFocuserAutoFocusInitialOffsetSteps">Auto Focus Initial Offset Steps</s:String>
     <s:String x:Key="LblFocuserAutoFocusInitialOffsetStepsTooltip">Initial amount of steps the focuser will move out to begin auto focus procedure.</s:String>
     <s:String x:Key="LblAutoFocusExposureTime">Auto Focus Exposure Time</s:String>
-    <s:String x:Key="LblAutoFocusExposureTimeTooltip">Exposure Time used for autofocus</s:String>
+    <s:String x:Key="LblDefaultAutoFocusExposureTime">Default Auto Focus Exposure Time</s:String>
+    <s:String x:Key="LblAutoFocusExposureTimeTooltip">Exposure Time used for autofocus when no filter specific time is set or the filter specific time is zero</s:String>
     <s:String x:Key="LblCameraOptions">Camera Options</s:String>
     <s:String x:Key="LblUseSnapPort">Use Telescope Snap Port</s:String>
     <s:String x:Key="LblSnapPortStart">Snap Port Start Command</s:String>
@@ -393,6 +394,8 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblUpdating">Updating</s:String>
     <s:String x:Key="LblYes">Yes</s:String>
     <s:String x:Key="LblNo">No</s:String>
-
-
+    <s:String x:Key="LblEquipment">Equipment</s:String>
+    <s:String x:Key="LblImportFromFilterWheel">Import Filters from Filterwheel</s:String>
+    <s:String x:Key="LblWaitingForCamera">Waiting for Camera</s:String>
+    <s:String x:Key="LblAutoFocusOnFilterChange">Auto Focus on filter change</s:String>
 </ResourceDictionary>

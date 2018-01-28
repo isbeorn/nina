@@ -271,7 +271,7 @@ namespace NINA.ViewModel {
         public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
 
             //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
-            progress.Report(new ApplicationStatus() { Status = "Another process already uses Camera. Waiting for it to finish..." });
+            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
             await semaphoreSlim.WaitAsync(token);
 
             if (CameraConnected != true) {

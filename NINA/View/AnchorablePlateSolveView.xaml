@@ -173,7 +173,7 @@
                         MyCanGetGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanGetGain}"
                         MyCanSetGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanSetGain}"
                         MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}"
-                        MyFilters="{Binding Source={StaticResource AppVM}, Path=FilterWheelVM.FW.Filters}"
+                        MyFilters="{Binding Source={StaticResource AppVM}, Path=OptionsVM.FilterWheelFilters}"
                         MyGains="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains}"
                         MyMaxGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}"
                         MyMinGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}"

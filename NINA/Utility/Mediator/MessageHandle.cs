@@ -47,6 +47,13 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(GetCurrentFilterInfoMessage).Name; } }
     }
 
+    class GetAllFiltersMessageHandle : MessageHandle<ICollection<FilterInfo>> {
+        public GetAllFiltersMessageHandle(Func<GetAllFiltersMessage, ICollection<FilterInfo>> callback) {
+            Callback = (f) => callback((GetAllFiltersMessage)f);
+        }
+        public override string MessageType { get { return typeof(GetAllFiltersMessage).Name; } }
+    }
+
     /* Message definition */
     abstract class MediatorMessage<TMessageResult> {
     }
@@ -58,6 +65,8 @@ namespace NINA.Utility.Mediator {
     class SetTelescopeTrackingMessage : MediatorMessage<bool> {
         public bool Tracking { get; set; }
     }
+
+    class GetAllFiltersMessage : MediatorMessage<ICollection<FilterInfo>> { }
 
     class GetCurrentFilterInfoMessage : MediatorMessage<FilterInfo> { }
 

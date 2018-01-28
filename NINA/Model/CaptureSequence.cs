@@ -387,6 +387,18 @@ namespace NINA.Model {
             }
         }
 
+        private bool _autoFocusOnFilterChange;
+        [XmlAttribute(nameof(AutoFocusOnFilterChange))]
+        public bool AutoFocusOnFilterChange {
+            get {
+                return _autoFocusOnFilterChange;
+            }
+            set {
+                _autoFocusOnFilterChange = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool _altitudeVisisble;
         [XmlIgnore]
         public bool AltitudeVisible {
