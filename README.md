@@ -12,23 +12,30 @@
 
 **Features**
 
-* All Equipment connected via ASCOM
-
-* ASCOM camera control or ASI Native Driver (tested with ZWO ASI 1600 MMC)
+* Camera Control
+     * ASCOM Driver
+          * Tested with ASI 1600 MMC, Atik-383L
+     * Native ZWO Driver
+          * Tested with ASI 1600 MMC
+     * Nikon
+          * Tested with Nikon D7100
+          * Serial cable support for bulb exposures using either telescope snap port or serial cable using RTS signal
+     * Canon 
+          * Tested with Canon EOS 550d
 
 * Temperature control (including a cool down routine for a set amount of time)
 
+* Telescope, Filterwheel and Autofocuser connected via ASCOM
+
 * Set up sequences for imaging
+
+* Import/Export sequences for planning ahead
 
 * Dithering (via PHD2)
 
 * Dithering after a set amount of images
 
 * Auto-Stretch image
-
-* Filter wheel control (either manually or automatically during imaging)
-
-* Basic control of telescope movements
 
 * Macros to set up custom file names
 
@@ -55,13 +62,8 @@
      * Calculated altitude chart for each object based on your position
      * Night time duration based on your position
      * Set object as sequence target
-
-* Experimental
-     * Canon Cameras 
-     * Nikon Cameras 
      
-* In Development
-     * Autofocus
+* Autofocus
 
 ** Feedback**
 
