@@ -64,6 +64,10 @@
      * Set object as sequence target
      
 * Autofocus
+     * Triggered manually
+     * During sequences
+          * On start
+          * After filter change
 
 ** Feedback**
 
