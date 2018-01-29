@@ -75,7 +75,7 @@ namespace NINA.Utility {
             return dsotypes;
         }
 
-        public async Task<AsyncObservableCollection<DeepSkyObject>> GetDeepSkyObjects(
+        public async Task<List<DeepSkyObject>> GetDeepSkyObjects(
             CancellationToken token,
             string constellation = "",
             double? rafrom = null,
@@ -89,7 +89,9 @@ namespace NINA.Utility {
             string brightnessthru = null,
             string magnitudefrom = null,
             string magnitudethru = null,
-            string searchobjectname = null) {
+            string searchobjectname = null,
+            string orderby = "id",
+            string orderbydirection = "ASC") {
 
             string query = @"SELECT id, ra, dec, dsotype, magnitude, sizemax, group_concat(cataloguenr.catalogue || ' ' || cataloguenr.designation) aka, constellation  
                              FROM dsodetail 
@@ -156,9 +158,9 @@ namespace NINA.Utility {
                 query += " HAVING aka LIKE $searchobjectname OR group_concat(cataloguenr.catalogue || cataloguenr.designation) LIKE $searchobjectname";
             }
 
-            query += " ORDER BY id asc;";
+            query += " ORDER BY " + orderby + " " + orderbydirection + ";";
 
-            var dsos = new AsyncObservableCollection<DeepSkyObject>();
+            var dsos = new List<DeepSkyObject>();
             try {
 
 

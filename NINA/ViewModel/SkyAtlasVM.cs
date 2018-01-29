@@ -7,6 +7,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace NINA.ViewModel {
             CancelSearchCommand = new RelayCommand(CancelSearch);
 
             InitializeFilters();
+            PageSize = 50;
 
             Mediator.Instance.Register((object o) => {
                 _nightDuration = null; //Clear cache
@@ -226,7 +228,9 @@ namespace NINA.ViewModel {
                         SelectedBrightnessThrough,
                         SelectedMagnitudeFrom,
                         SelectedMagnitudeThrough,
-                        SearchObjectName);
+                        SearchObjectName,
+                        OrderByField.ToString().ToLower(),
+                        OrderByDirection.ToString());
 
 
                     var longitude = Settings.Longitude;
@@ -252,9 +256,9 @@ namespace NINA.ViewModel {
 
                         var count = filteredList.Count();
                         /* Apply Altitude Filter */
-                        SearchResult = new AsyncObservableCollection<DeepSkyObject>(filteredList);
+                        SearchResult = new PagedList<DeepSkyObject>(PageSize, filteredList);
                     } else {
-                        SearchResult = result;
+                        SearchResult = new PagedList<DeepSkyObject>(PageSize, result);
                     }
                 } catch (OperationCanceledException) {
 
@@ -414,7 +418,7 @@ namespace NINA.ViewModel {
         private AsyncObservableCollection<string> _magnitudesThrough;
         private string _selectedMagnitudeFrom;
         private string _selectedMagnitudeThrough;
-        private AsyncObservableCollection<DeepSkyObject> _searchResult;
+        private PagedList<DeepSkyObject> _searchResult;
         private AsyncObservableCollection<DateTime> _altitudeTimesFrom;
         private AsyncObservableCollection<DateTime> _altitudeTimesThrough;
         private AsyncObservableCollection<KeyValuePair<double, string>> _minimumAltitudeDegrees;
@@ -747,7 +751,40 @@ namespace NINA.ViewModel {
 
         public ICommand CancelSearchCommand { get; private set; }
 
-        public AsyncObservableCollection<DeepSkyObject> SearchResult {
+        private int _pageSize;
+        public int PageSize {
+            get {
+                return _pageSize;
+            }
+            set {
+                _pageSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private SkyAtlasOrderByDirectionEnum _orderByDirection;
+        public SkyAtlasOrderByDirectionEnum OrderByDirection {
+            get {
+                return _orderByDirection;
+            }
+            set {
+                _orderByDirection = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private SkyAtlasOrderByFieldsEnum _orderByField;
+        public SkyAtlasOrderByFieldsEnum OrderByField {
+            get {
+                return _orderByField;
+            }
+            set {
+                _orderByField = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public PagedList<DeepSkyObject> SearchResult {
             get {
                 return _searchResult;
             }
@@ -787,5 +824,170 @@ namespace NINA.ViewModel {
             }
 
         }
+    }
+
+    public class PagedList<T> : BaseINPC {
+        public PagedList(int pageSize, IEnumerable<T> items) {
+            _items = new List<T>(items);
+            PageSize = pageSize;
+
+            var counter = 1;
+            for (int i = 0; i < _items.Count; i += PageSize) {
+                Pages.Add(counter++);
+            }
+
+            LoadFirstPage().Wait();
+
+            FirstPageCommand = new AsyncCommand<bool>(LoadFirstPage, (object o) => { return CurrentPage > 1; });
+            PrevPageCommand = new AsyncCommand<bool>(LoadPrevPage, (object o) => { return CurrentPage > 1; });
+            NextPageCommand = new AsyncCommand<bool>(LoadNextPage, (object o) => { return CurrentPage < Pages.Count; });
+            LastPageCommand = new AsyncCommand<bool>(LoadLastPage, (object o) => { return CurrentPage < Pages.Count; });
+            PageByNumberCommand = new AsyncCommand<bool>(async () => await LoadPage(CurrentPage));
+        }
+
+        private List<T> _items;
+
+        private async Task<bool> LoadFirstPage() {
+            return await LoadPage(Pages.FirstOrDefault());
+        }
+
+        private async Task<bool> LoadNextPage() {
+            return await LoadPage(CurrentPage + 1);
+        }
+
+        private async Task<bool> LoadPrevPage() {
+            return await LoadPage(CurrentPage - 1);
+        }
+
+        private async Task<bool> LoadLastPage() {
+            return await LoadPage(Pages.Count);
+        }
+
+        private async Task<bool> LoadPage(int page) {
+            var idx = page - 1;
+            if (idx < 0) {
+                return false;
+            } else if (idx > (Count / (double)PageSize)) {
+                return false;
+            }
+
+            var itemChunk = await Task.Run(() => {
+                var offset = Math.Min(_items.Count - (idx * PageSize), PageSize);
+                return _items.GetRange(idx * PageSize, offset);
+            });
+
+            ItemPage = new AsyncObservableCollection<T>(itemChunk);
+
+            CurrentPage = page;
+            RaisePropertyChanged(nameof(Count));
+            RaisePropertyChanged(nameof(PageStartIndex));
+            RaisePropertyChanged(nameof(PageEndIndex));
+            return true;
+        }
+
+        private AsyncObservableCollection<T> _itemPage = new AsyncObservableCollection<T>();
+        public AsyncObservableCollection<T> ItemPage {
+            get {
+                return _itemPage;
+            }
+            private set {
+                _itemPage = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int PageStartIndex {
+            get {
+                if (_items.Count == 0) {
+                    return 0;
+                } else {
+                    return PageSize * (CurrentPage - 1) + 1;
+                }
+            }
+        }
+
+        public int PageEndIndex {
+            get {
+                if (PageSize * CurrentPage > _items.Count) {
+                    return _items.Count;
+                } else {
+                    return PageSize * CurrentPage;
+                }
+            }
+        }
+
+        private int _pageSize;
+        public int PageSize {
+            get {
+                return _pageSize;
+            }
+            set {
+                _pageSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _currentPage;
+        public int CurrentPage {
+            get {
+                return _currentPage;
+            }
+            set {
+                if (value >= Pages.FirstOrDefault() && value <= Pages.LastOrDefault()) {
+                    _currentPage = value;
+                    RaisePropertyChanged();
+                }
+
+            }
+        }
+
+        private AsyncObservableCollection<int> _pages = new AsyncObservableCollection<int>();
+        public AsyncObservableCollection<int> Pages {
+            get {
+                return _pages;
+            }
+            private set {
+                _pages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int Count {
+            get {
+                return _items.Count;
+            }
+        }
+
+        public ICommand FirstPageCommand { get; private set; }
+        public ICommand PrevPageCommand { get; private set; }
+        public ICommand NextPageCommand { get; private set; }
+        public ICommand LastPageCommand { get; private set; }
+        public ICommand PageByNumberCommand { get; private set; }
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum SkyAtlasOrderByFieldsEnum {
+        [Description("LblSize")]
+        SIZEMAX,
+        [Description("LblApparentMagnitude")]
+        MAGNITUDE,
+        [Description("LblConstellation")]
+        CONSTELLATION,
+        [Description("LblRA")]
+        RA,
+        [Description("LblDec")]
+        DEC,
+        [Description("LblSurfaceBrightness")]
+        SURFACEBRIGHTNESS,
+        [Description("LblObjectType")]
+        DSOTYPE
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum SkyAtlasOrderByDirectionEnum {
+        [Description("LblAscending")]
+        ASC,
+        [Description("LblDescending")]
+        DESC
     }
 }

@@ -412,4 +412,10 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblWaitingForCamera">Warten auf Kamera</s:String>
     <s:String x:Key="LblAutoFocusOnFilterChange">Autofokus bei Filterwechsel</s:String>
     <s:String x:Key="LblBulbSerialPort">Serieller Port für Bulb</s:String>
+    <s:String x:Key="LblOf">von</s:String>
+    <s:String x:Key="LblTo">bis</s:String>
+    <s:String x:Key="LblItemsPerPage">Objekte pro Seite</s:String>
+    <s:String x:Key="LblOrderBy">Sortiere nach</s:String>
+    <s:String x:Key="LblAscending">Aufsteigend</s:String>
+    <s:String x:Key="LblDescending">Absteigend</s:String>
 </ResourceDictionary>
