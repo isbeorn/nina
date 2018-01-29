@@ -348,6 +348,20 @@ namespace NINA.ViewModel {
             }
         }
 
+        private FramingAssistantVM _framingAssistantVM;
+        public FramingAssistantVM FramingAssistantVM {
+            get {
+                if (_framingAssistantVM == null) {
+                    _framingAssistantVM = new FramingAssistantVM();
+                }
+                return _framingAssistantVM;
+            }
+            set {
+                _framingAssistantVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private SkyAtlasVM _skyAtlasVM;
         public SkyAtlasVM SkyAtlasVM {
             get {

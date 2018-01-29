@@ -192,6 +192,21 @@
                         <Grid Width="50" Height="50">
                             <Path
                                 Margin="5"
+                                Data="{StaticResource MapSVG}"
+                                Stretch="Uniform"
+                                Style="{StaticResource TabItemPath}" />
+                        </Grid>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <view:FramingAssistantView DataContext="{Binding FramingAssistantVM}" />
+                    </TabItem.Content>
+                </TabItem>
+
+                <TabItem>
+                    <TabItem.Header>
+                        <Grid Width="50" Height="50">
+                            <Path
+                                Margin="5"
                                 Data="{StaticResource SequenceSVG}"
                                 Stretch="Uniform"
                                 Style="{StaticResource TabItemPath}" />

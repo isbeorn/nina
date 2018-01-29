@@ -351,6 +351,7 @@
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
+    <Compile Include="ViewModel\FramingAssistantVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
@@ -458,6 +459,9 @@
     </Compile>
     <Compile Include="View\FrameFocusView.xaml.cs">
       <DependentUpon>FrameFocusView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FramingAssistantView.xaml.cs">
+      <DependentUpon>FramingAssistantView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\HistogramView.xaml.cs">
       <DependentUpon>HistogramView.xaml</DependentUpon>
@@ -757,6 +761,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FrameFocusView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FramingAssistantView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

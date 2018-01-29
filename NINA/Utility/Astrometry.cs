@@ -260,6 +260,18 @@ namespace NINA.Utility.Astrometry {
             return AstroUtils.MoonIllumination(Astrometry.GetJulianDate(date));
         }
 
+        public static double ArcsecPerPixel(double pixelSize, double focalLength) {
+            return (pixelSize / focalLength) * 206.3; ;
+        }
+
+        public static double MaxFieldOfView(double arcsecPerPixel, double width, double height) {
+            return Astrometry.ArcsecToArcmin(arcsecPerPixel * Math.Max(width, height));
+        }
+
+        public static double FieldOfView(double arcsecPerPixel, double width) {
+            return Astrometry.ArcsecToArcmin(arcsecPerPixel * width);
+        }
+
         public enum MoonPhase {
             Unknown,
             FullMoon,
