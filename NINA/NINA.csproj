@@ -298,6 +298,7 @@
     <Compile Include="Utility\ASISDK\ASICameras.cs" />
     <Compile Include="Utility\AvalonDock\PaneStyleSelector.cs" />
     <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
+    <Compile Include="Utility\Behaviors\DragCommandBehavior.cs" />
     <Compile Include="Utility\BindingProxy.cs" />
     <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
     <Compile Include="Utility\Converters\ArcsecToLabelConverter.cs" />
@@ -333,6 +334,7 @@
     </Compile>
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
     <Compile Include="Utility\ObserveAllCollection.cs" />
+    <Compile Include="Utility\DigitalSkySurveyInteraction.cs" />
     <Compile Include="Utility\SerialPortInteraction.cs" />
     <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />

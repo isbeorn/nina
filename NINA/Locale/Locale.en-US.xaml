@@ -413,4 +413,6 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblWaitingForCamera">Waiting for Camera</s:String>
     <s:String x:Key="LblAutoFocusOnFilterChange">Auto Focus on filter change</s:String>
     <s:String x:Key="LblBulbSerialPort">Bulb Serial Port</s:String>
+    <s:String x:Key="LblRotation">Rotation</s:String>
+    <s:String x:Key="LblFieldOfView">Field Of View</s:String>
 </ResourceDictionary>

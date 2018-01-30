@@ -17,18 +17,30 @@ namespace NINA.ViewModel {
 
         public FramingAssistantVM() {
             Coordinates = new Coordinates(83.822, -5.39, Epoch.J2000, Coordinates.RAType.Degrees);
+            //Coordinates = new Coordinates(073.2920, -07.6335, Epoch.J2000, Coordinates.RAType.Degrees);
+            //Coordinates = new Coordinates(10.6833, 41.2686, Epoch.J2000, Coordinates.RAType.Degrees);
+
             FieldOfView = 1;
+            CameraWidth = 1500;
+            CameraHeight = 1000;
             CameraPixelSize = Settings.CameraPixelSize;
             FocalLength = Settings.TelescopeFocalLength;
             LoadImageCommand = new AsyncCommand<bool>(async () => { return await LoadImage(); });
             CancelLoadImageCommand = new RelayCommand((object o) => { CancelLoadImage(); });
+            DragStartCommand = new RelayCommand(DragStart);
+            DragStopCommand = new RelayCommand(DragStop);
+            DragMoveCommand = new RelayCommand(DragMove);
+            ApplyCommand = new RelayCommand(Apply);
+        }
+
+        private void Apply(object obj) {
+            Coordinates = SelectedCoordinates;
         }
 
         private void CancelLoadImage() {
             _loadImageSource?.Cancel();
         }
 
-        const string DSS_URL = "https://archive.stsci.edu/cgi-bin/dss_search?r={0}&d={1}&e=J2000&h={2}&w={3}&v=1&format=GIF";
         Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
         Coordinates _coordinates;
@@ -38,6 +50,17 @@ namespace NINA.ViewModel {
             }
             set {
                 _coordinates = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        Coordinates _selectedCoordinates;
+        public Coordinates SelectedCoordinates {
+            get {
+                return _selectedCoordinates;
+            }
+            set {
+                _selectedCoordinates = value;
                 RaisePropertyChanged();
             }
         }
@@ -126,32 +149,32 @@ namespace NINA.ViewModel {
         private CancellationTokenSource _loadImageSource;
 
         private async Task<bool> LoadImage() {
-
             CancelLoadImage();
             _loadImageSource = new CancellationTokenSource();
 
-            var url = string.Format(
-                DSS_URL,
-                this.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture),
-                this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
-                Astrometry.DegreeToArcmin(FieldOfView),
-                Astrometry.DegreeToArcmin(FieldOfView)
-                );
+            var arcsecPerPix = Astrometry.ArcsecPerPixel(CameraPixelSize, FocalLength);
+            var p = new DigitalSkySurveyParameters() {
+                Coordinates = this.Coordinates,
+                FoV = Astrometry.DegreeToArcmin(FieldOfView)
+            };
 
-            var img = await Utility.Utility.HttpGetImage(_loadImageSource.Token, url);
+            var interaction = new DigitalSkySurveyInteraction(DigitalSkySurveyDomain.STSCI);
+            var img = await interaction.Download(p, _loadImageSource.Token);
 
             CalculateRectangle(img);
 
-            await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {                
+            await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                Image = null;
+                GC.Collect();
                 Image = img;
             }));
 
             return true;
-            
+
         }
 
         private void CalculateRectangle(BitmapSource img) {
-            if(img != null) {
+            if (img != null) {
                 var imageArcsecWidth = Astrometry.DegreeToArcsec(FieldOfView) / img.Width;
                 var imageArcsecHeight = Astrometry.DegreeToArcsec(FieldOfView) / img.Height;
 
@@ -160,14 +183,47 @@ namespace NINA.ViewModel {
                 var width = CameraWidth * conversion;
                 var height = CameraHeight * conversion;
                 Rectangle = new ObservableRectangle() { Width = width, Height = height, X = img.Width / 2d - width / 2d, Y = img.Height / 2d - height / 2d };
-            }            
+                SelectedCoordinates = new Coordinates(Coordinates.RA, Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
+            }
         }
 
+
+
+        private void DragStart(object obj) {
+        }
+
+        private void DragStop(object obj) {
+
+        }
+
+        private void DragMove(object obj) {
+            var delta = (Vector)obj;
+            this.Rectangle.X += delta.X;
+            this.Rectangle.Y += delta.Y;
+
+            var imageArcsecWidth = Astrometry.DegreeToArcsec(FieldOfView) / Image.Width;
+            var imageArcsecHeight = Astrometry.DegreeToArcsec(FieldOfView) / Image.Height;
+
+            SelectedCoordinates = new Coordinates(
+                SelectedCoordinates.RADegrees - Astrometry.ArcsecToDegree(delta.X * imageArcsecWidth),
+                SelectedCoordinates.Dec - Astrometry.ArcsecToDegree(delta.Y * imageArcsecHeight),
+                Epoch.J2000,
+                Coordinates.RAType.Degrees
+            );
+        }
+
+        public ICommand DragStartCommand { get; private set; }
+        public ICommand DragStopCommand { get; private set; }
+        public ICommand DragMoveCommand { get; private set; }
         public ICommand LoadImageCommand { get; private set; }
         public ICommand CancelLoadImageCommand { get; private set; }
+        public ICommand ApplyCommand { get; private set; }
     }
 
     public class ObservableRectangle : BaseINPC {
+        public ObservableRectangle() {
+        }
+
         private double _x;
         public double X {
             get {
