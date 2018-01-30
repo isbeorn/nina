@@ -150,7 +150,7 @@ namespace NINA.Utility {
                     request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/x-www-form-urlencoded";
                     request.Method = "POST";
-
+                    
                     using (var streamWriter = new StreamWriter(request.GetRequestStream())) {
                         streamWriter.Write(body);
                         streamWriter.Flush();
@@ -175,6 +175,26 @@ namespace NINA.Utility {
 
             return result;
 
+        }
+
+        public static async Task<BitmapSource> HttpClientGetImage(Uri url, CancellationToken ct, IProgress<int> progress = null) {
+            var bitmap = new BitmapImage();
+            using (var client = new WebClient()) {
+                using (ct.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
+                    client.DownloadProgressChanged += (s, e) => {
+                        progress?.Report(e.ProgressPercentage);
+                    };
+                    var data = await client.DownloadDataTaskAsync(url);
+                    using (MemoryStream stream = new MemoryStream(data)) {
+                        bitmap.BeginInit();
+                        bitmap.StreamSource = stream;
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.EndInit();
+                        bitmap.Freeze();
+                    }
+                }                
+            }
+            return bitmap;
         }
 
         public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken, IProgress<int> progress = null) {

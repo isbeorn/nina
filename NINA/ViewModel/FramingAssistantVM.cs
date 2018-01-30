@@ -1,5 +1,7 @@
-﻿using NINA.Utility;
+﻿using NINA.Model;
+using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -26,15 +28,14 @@ namespace NINA.ViewModel {
             CameraPixelSize = Settings.CameraPixelSize;
             FocalLength = Settings.TelescopeFocalLength;
             LoadImageCommand = new AsyncCommand<bool>(async () => { return await LoadImage(); });
+            _progress = new Progress<int>((p) => DownloadProgressValue = p);
             CancelLoadImageCommand = new RelayCommand((object o) => { CancelLoadImage(); });
             DragStartCommand = new RelayCommand(DragStart);
             DragStopCommand = new RelayCommand(DragStop);
             DragMoveCommand = new RelayCommand(DragMove);
-            ApplyCommand = new RelayCommand(Apply);
-        }
-
-        private void Apply(object obj) {
-            Coordinates = SelectedCoordinates;
+            SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async () => {
+                return await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = new DeepSkyObject(string.Empty, SelectedCoordinates) });
+            }, (object o) => SelectedCoordinates != null);
         }
 
         private void CancelLoadImage() {
@@ -50,6 +51,113 @@ namespace NINA.ViewModel {
             }
             set {
                 _coordinates = value;
+                RaiseCoordinatesChanged();
+            }
+        }
+
+
+        public int RAHours {
+            get {
+                return (int)Math.Abs(Math.Truncate(_coordinates.RA));
+            }
+            set {
+                if (value >= 0) {
+                    _coordinates.RA = _coordinates.RA - RAHours + value;
+                    RaiseCoordinatesChanged();
+                }
+
+            }
+        }
+
+        public int RAMinutes {
+            get {
+                return (int)Math.Abs(Math.Truncate((_coordinates.RA - RAHours) * 60));
+            }
+            set {
+                if (value >= 0) {
+                    _coordinates.RA = _coordinates.RA - RAMinutes / 60.0d + value / 60.0d;
+                    RaiseCoordinatesChanged();
+                }
+
+            }
+        }
+
+        public int RASeconds {
+            get {
+                return (int)Math.Abs(Math.Truncate((_coordinates.RA - RAHours - RAMinutes / 60.0d) * 60d * 60d));
+            }
+            set {
+                if (value >= 0) {
+                    _coordinates.RA = _coordinates.RA - RASeconds / (60.0d * 60.0d) + value / (60.0d * 60.0d);
+                    RaiseCoordinatesChanged();
+                }
+
+            }
+        }
+
+
+
+        public int DecDegrees {
+            get {
+                return (int)(Math.Truncate(_coordinates.Dec));
+            }
+            set {
+                _coordinates.Dec = _coordinates.Dec - DecDegrees + value;
+                RaiseCoordinatesChanged();
+            }
+        }
+
+        public int DecMinutes {
+            get {
+                return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees) * 60));
+            }
+            set {
+                if (_coordinates.Dec < 0) {
+                    _coordinates.Dec = _coordinates.Dec + DecMinutes / 60.0d - value / 60.0d;
+                } else {
+                    _coordinates.Dec = _coordinates.Dec - DecMinutes / 60.0d + value / 60.0d;
+                }
+
+                RaiseCoordinatesChanged();
+            }
+        }
+
+        public int DecSeconds {
+            get {
+                if (_coordinates.Dec >= 0) {
+                    return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees - DecMinutes / 60.0d) * 60d * 60d));
+                } else {
+                    return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees + DecMinutes / 60.0d) * 60d * 60d));
+                }
+            }
+            set {
+                if (_coordinates.Dec < 0) {
+                    _coordinates.Dec = _coordinates.Dec + DecSeconds / (60.0d * 60.0d) - value / (60.0d * 60.0d);
+                } else {
+                    _coordinates.Dec = _coordinates.Dec - DecSeconds / (60.0d * 60.0d) + value / (60.0d * 60.0d);
+                }
+
+                RaiseCoordinatesChanged();
+            }
+        }
+
+        private void RaiseCoordinatesChanged() {
+            RaisePropertyChanged(nameof(Coordinates));
+            RaisePropertyChanged(nameof(RAHours));
+            RaisePropertyChanged(nameof(RAMinutes));
+            RaisePropertyChanged(nameof(RASeconds));
+            RaisePropertyChanged(nameof(DecDegrees));
+            RaisePropertyChanged(nameof(DecMinutes));
+            RaisePropertyChanged(nameof(DecSeconds));
+        }
+
+        private int _downloadProgressValue;
+        public int DownloadProgressValue {
+            get {
+                return _downloadProgressValue;
+            }
+            set {
+                _downloadProgressValue = value;
                 RaisePropertyChanged();
             }
         }
@@ -146,6 +254,8 @@ namespace NINA.ViewModel {
             }
         }
 
+        private IProgress<int> _progress;
+
         private CancellationTokenSource _loadImageSource;
 
         private async Task<bool> LoadImage() {
@@ -158,8 +268,8 @@ namespace NINA.ViewModel {
                 FoV = Astrometry.DegreeToArcmin(FieldOfView)
             };
 
-            var interaction = new DigitalSkySurveyInteraction(DigitalSkySurveyDomain.STSCI);
-            var img = await interaction.Download(p, _loadImageSource.Token);
+            var interaction = new DigitalSkySurveyInteraction(DigitalSkySurveyDomain.NASA);
+            var img = await interaction.Download(p, _loadImageSource.Token, _progress);
 
             CalculateRectangle(img);
 
@@ -217,7 +327,7 @@ namespace NINA.ViewModel {
         public ICommand DragMoveCommand { get; private set; }
         public ICommand LoadImageCommand { get; private set; }
         public ICommand CancelLoadImageCommand { get; private set; }
-        public ICommand ApplyCommand { get; private set; }
+        public ICommand SetSequenceCoordinatesCommand { get; private set; }
     }
 
     public class ObservableRectangle : BaseINPC {

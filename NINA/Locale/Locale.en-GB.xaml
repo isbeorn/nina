@@ -415,4 +415,6 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblBulbSerialPort">Bulb Serial Port</s:String>
     <s:String x:Key="LblRotation">Rotation</s:String>
     <s:String x:Key="LblFieldOfView">Field Of View</s:String>
+    <s:String x:Key="LblCameraParameter">Camera Parameter</s:String>
+    <s:String x:Key="LblLoadImage">Load Image</s:String>
 </ResourceDictionary>

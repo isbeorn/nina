@@ -17,18 +17,22 @@ namespace NINA.Utility {
                         _sdss = new StsciDigitalSkySurvey();
                         break;
                     }
+                case DigitalSkySurveyDomain.NASA: {
+                        _sdss = new NasaDigitalSkySurvey();
+                        break;
+                    }
             }
         }
 
         private IDigitalSkySurvey _sdss;
 
-        public async Task<BitmapSource> Download(DigitalSkySurveyParameters p, CancellationToken ct) {
-            return await _sdss.GetImage(p, ct);
+        public async Task<BitmapSource> Download(DigitalSkySurveyParameters p, CancellationToken ct, IProgress<int> progress = null) {
+            return await _sdss.GetImage(p, ct, progress);
         }
     }
 
     public interface IDigitalSkySurvey {
-        Task<BitmapSource> GetImage(DigitalSkySurveyParameters p, CancellationToken ct);
+        Task<BitmapSource> GetImage(DigitalSkySurveyParameters p, CancellationToken ct, IProgress<int> progress = null);
     }
 
     /*public class SkyServerDigitalSkySurvey : IDigitalSkySurvey {
@@ -50,10 +54,23 @@ namespace NINA.Utility {
         }
     }*/
 
+    public class NasaDigitalSkySurvey : IDigitalSkySurvey {
+        private const string Url = "https://skyview.gsfc.nasa.gov/current/cgi/runquery.pl?Survey=dss2r&Position={0},{1}&Size={2}&Pixels={3}&Return=JPG";
+
+        public async Task<BitmapSource> GetImage(DigitalSkySurveyParameters p, CancellationToken ct, IProgress<int> progress = null) {            
+            var arcSecPerPixel = 0.5;
+            var pixels = Math.Min(Astrometry.Astrometry.ArcminToArcsec(p.FoV) * arcSecPerPixel, 5000);
+            var url = string.Format(Url, p.Coordinates.RADegrees, p.Coordinates.Dec, Astrometry.Astrometry.ArcminToDegree(p.FoV), pixels);
+            return await Utility.HttpClientGetImage(new Uri(url), ct, progress);
+        }
+
+        
+    }
+
     public class StsciDigitalSkySurvey : IDigitalSkySurvey {
         private const string Url = "https://archive.stsci.edu/cgi-bin/dss_search?format=GIF&r={0}&d={1}&e=J2000&h={2}&w={3}&v=1";
 
-        public async Task<BitmapSource> GetImage(DigitalSkySurveyParameters p, CancellationToken ct) {
+        public async Task<BitmapSource> GetImage(DigitalSkySurveyParameters p, CancellationToken ct, IProgress<int> progress = null) {
             var degrees = Astrometry.Astrometry.ArcminToDegree(p.FoV);
             var maxSingleDegrees = 1.5;
 
@@ -157,6 +174,7 @@ namespace NINA.Utility {
     }
 
     public enum DigitalSkySurveyDomain {
-        STSCI
+        STSCI,
+        NASA
     }
 }
