@@ -30,7 +30,7 @@
                 <RowDefinition />
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
-            <TabControl TabStripPlacement="Left">
+            <TabControl SelectedIndex="{Binding TabIndex}" TabStripPlacement="Left">
                 <TabItem>
                     <TabItem.Header>
                         <Grid>

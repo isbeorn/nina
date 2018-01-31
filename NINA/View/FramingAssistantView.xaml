@@ -190,9 +190,7 @@
                             <TextBox Margin="5,0,0,0" Text="{Binding FocalLength}" />
                         </UniformGrid>
                     </Border>
-                    <Border
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRotation}" />
                             <Grid>
@@ -201,7 +199,8 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
-                                    Margin="5,0,0,0" MinWidth="20"
+                                    MinWidth="20"
+                                    Margin="5,0,0,0"
                                     VerticalAlignment="Center"
                                     Text="{Binding Rectangle.Rotation}" />
                                 <Slider
@@ -218,16 +217,29 @@
                 </StackPanel>
             </GroupBox>
 
-            <Button
-                Height="35"
-                Margin="5"
-                HorizontalAlignment="Stretch"
-                Command="{Binding SetSequenceCoordinatesCommand}">
-                <TextBlock
-                    Foreground="{StaticResource ButtonForegroundBrush}"
-                    Text="{ns:Loc LblSetAsSequenceTarget}"
-                    TextWrapping="Wrap" />
-            </Button>
+            <UniformGrid Columns="2">
+                <Button
+                    Height="35"
+                    Margin="5"
+                    HorizontalAlignment="Stretch"
+                    Command="{Binding RecenterCommand}">
+                    <TextBlock
+                        Foreground="{StaticResource ButtonForegroundBrush}"
+                        Text="{ns:Loc LblRecenter}"
+                        TextWrapping="Wrap" />
+                </Button>
+                <Button
+                    Height="35"
+                    Margin="5"
+                    HorizontalAlignment="Stretch"
+                    Command="{Binding SetSequenceCoordinatesCommand}">
+                    <TextBlock
+                        Foreground="{StaticResource ButtonForegroundBrush}"
+                        Text="{ns:Loc LblSetAsSequenceTarget}"
+                        TextWrapping="Wrap" />
+                </Button>
+            </UniformGrid>
+
         </StackPanel>
 
         <GridSplitter
@@ -280,7 +292,7 @@
                         Margin="10,10,0,0"
                         IsHitTestVisible="False"
                         RenderTransformOrigin="0.5,0.5">
-                        <Viewbox Height="100" Stretch="Uniform">
+                        <Viewbox Height="150" Stretch="Uniform">
                             <StackPanel Orientation="Vertical">
                                 <!--<StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                     <TextBlock Text="{ns:Loc LblDimensions}"  />
@@ -290,12 +302,44 @@
                                 </StackPanel>-->
 
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.RAString}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="5"
+                                                Opacity="1"
+                                                ShadowDepth="0"
+                                                Color="Black" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.RAString}">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="5"
+                                                Opacity="1"
+                                                ShadowDepth="0"
+                                                Color="Black" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
                                 </StackPanel>
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.DecString}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="5"
+                                                Opacity="1"
+                                                ShadowDepth="0"
+                                                Color="Black" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.DecString}">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="5"
+                                                Opacity="1"
+                                                ShadowDepth="0"
+                                                Color="Black" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </Viewbox>

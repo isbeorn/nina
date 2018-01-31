@@ -2,6 +2,7 @@
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -18,11 +19,11 @@ namespace NINA.ViewModel {
     class FramingAssistantVM : BaseVM {
 
         public FramingAssistantVM() {
-            Coordinates = new Coordinates(83.822, -5.39, Epoch.J2000, Coordinates.RAType.Degrees);
+            Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             //Coordinates = new Coordinates(073.2920, -07.6335, Epoch.J2000, Coordinates.RAType.Degrees);
             //Coordinates = new Coordinates(10.6833, 41.2686, Epoch.J2000, Coordinates.RAType.Degrees);
 
-            FieldOfView = 1;
+            FieldOfView = 3;
             CameraWidth = 1500;
             CameraHeight = 1000;
             CameraPixelSize = Settings.CameraPixelSize;
@@ -36,6 +37,18 @@ namespace NINA.ViewModel {
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async () => {
                 return await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = new DeepSkyObject(string.Empty, SelectedCoordinates) });
             }, (object o) => SelectedCoordinates != null);
+
+            RecenterCommand = new AsyncCommand<bool>(async () => {
+                await LoadImageCommand.ExecuteAsync(null);
+                return true;
+            }, (object o) => SelectedCoordinates != null);
+
+            Mediator.Instance.RegisterAsyncRequest(new SetFramingAssistantCoordinatesMessageHandle(async (SetFramingAssistantCoordinatesMessage m) => {
+                Mediator.Instance.Request(new ChangeApplicationTabMessage() { Tab = ApplicationTab.FRAMINGASSISTANT });
+                this.Coordinates = m.DSO.Coordinates;
+                await LoadImageCommand.ExecuteAsync(null);
+                return true;
+            }));
         }
 
         private void CancelLoadImage() {
@@ -258,27 +271,45 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _loadImageSource;
 
+        private IProgress<string> _statusUpdate = new Progress<string>((p) => {
+            Mediator.Instance.Request(new StatusUpdateMessage() {
+                Status = new ApplicationStatus() {
+                    Source = Locale.Loc.Instance["LblFramingAssistant"],
+                    Status = string.IsNullOrEmpty(p) ? "" : Locale.Loc.Instance[p]
+                }
+            });
+        });
+
         private async Task<bool> LoadImage() {
-            CancelLoadImage();
-            _loadImageSource = new CancellationTokenSource();
+            try {
+                _statusUpdate.Report("LblDownloading");
 
-            var arcsecPerPix = Astrometry.ArcsecPerPixel(CameraPixelSize, FocalLength);
-            var p = new DigitalSkySurveyParameters() {
-                Coordinates = this.Coordinates,
-                FoV = Astrometry.DegreeToArcmin(FieldOfView)
-            };
+                CancelLoadImage();
+                _loadImageSource = new CancellationTokenSource();
 
-            var interaction = new DigitalSkySurveyInteraction(DigitalSkySurveyDomain.NASA);
-            var img = await interaction.Download(p, _loadImageSource.Token, _progress);
+                var arcsecPerPix = Astrometry.ArcsecPerPixel(CameraPixelSize, FocalLength);
+                var p = new DigitalSkySurveyParameters() {
+                    Coordinates = this.Coordinates,
+                    FoV = Astrometry.DegreeToArcmin(FieldOfView)
+                };
 
-            CalculateRectangle(img);
+                var interaction = new DigitalSkySurveyInteraction(DigitalSkySurveyDomain.NASA);
+                var img = await interaction.Download(p, _loadImageSource.Token, _progress);
 
-            await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                Image = null;
-                GC.Collect();
-                Image = img;
-            }));
+                CalculateRectangle(img);
 
+                await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                    Image = null;
+                    GC.Collect();
+                    Image = img;
+                }));
+            } catch (OperationCanceledException) {
+            } catch (Exception ex) {
+                Logger.Error(ex.Message, ex.StackTrace);
+                Notification.ShowError(ex.Message);
+            } finally {
+                _statusUpdate.Report("");
+            }
             return true;
 
         }
@@ -292,7 +323,7 @@ namespace NINA.ViewModel {
                 var conversion = arcsecPerPix / imageArcsecWidth;
                 var width = CameraWidth * conversion;
                 var height = CameraHeight * conversion;
-                Rectangle = new ObservableRectangle() { Width = width, Height = height, X = img.Width / 2d - width / 2d, Y = img.Height / 2d - height / 2d };
+                Rectangle = new ObservableRectangle() { Width = width, Height = height, X = img.Width / 2d - width / 2d, Y = img.Height / 2d - height / 2d, Rotation = Rectangle?.Rotation ?? 0 };
                 SelectedCoordinates = new Coordinates(Coordinates.RA, Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
             }
         }
@@ -325,9 +356,10 @@ namespace NINA.ViewModel {
         public ICommand DragStartCommand { get; private set; }
         public ICommand DragStopCommand { get; private set; }
         public ICommand DragMoveCommand { get; private set; }
-        public ICommand LoadImageCommand { get; private set; }
+        public IAsyncCommand LoadImageCommand { get; private set; }
         public ICommand CancelLoadImageCommand { get; private set; }
         public ICommand SetSequenceCoordinatesCommand { get; private set; }
+        public IAsyncCommand RecenterCommand { get; private set; }
     }
 
     public class ObservableRectangle : BaseINPC {

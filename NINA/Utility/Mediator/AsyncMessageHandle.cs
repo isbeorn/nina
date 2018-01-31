@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Utility.Mediator {
-    
 
-    
+
+
     /* Handler definition */
     abstract class AsyncMessageHandle {
         public abstract string MessageType { get; }
@@ -76,6 +76,13 @@ namespace NINA.Utility.Mediator {
             Callback = (f) => callback((SetSequenceCoordinatesMessage)f);
         }
         public override string MessageType { get { return typeof(SetSequenceCoordinatesMessage).Name; } }
+    }
+
+    class SetFramingAssistantCoordinatesMessageHandle : AsyncMessageHandle<bool> {
+        public SetFramingAssistantCoordinatesMessageHandle(Func<SetFramingAssistantCoordinatesMessage, Task<bool>> callback) {
+            Callback = (f) => callback((SetFramingAssistantCoordinatesMessage)f);
+        }
+        public override string MessageType { get { return typeof(SetFramingAssistantCoordinatesMessage).Name; } }
     }
 
     class MoveFocuserMessageHandle : AsyncMessageHandle<int> {
@@ -210,6 +217,10 @@ namespace NINA.Utility.Mediator {
         public DeepSkyObject DSO { get; set; }
     }
 
+    class SetFramingAssistantCoordinatesMessage : AsyncMediatorMessage<bool> {
+        public DeepSkyObject DSO { get; set; }
+    }
+
     class MoveFocuserMessage : AsyncMediatorMessage<int> {
         public int Position { get; set; }
         public bool Absolute { get; set; } = true;
@@ -226,7 +237,7 @@ namespace NINA.Utility.Mediator {
     }
 
     class StartAutoFocusMessage : AsyncMediatorMessage<bool> {
-        public FilterInfo Filter{ get; set; }
+        public FilterInfo Filter { get; set; }
     }
 
     class ConnectCameraMessage : AsyncMediatorMessage<bool> { }
@@ -237,7 +248,7 @@ namespace NINA.Utility.Mediator {
 
 
 
-    class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {        
+    class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {
         public CaptureSequence Sequence { get; set; }
     }
 
@@ -249,7 +260,7 @@ namespace NINA.Utility.Mediator {
     class CaptureAndPrepareImageMessage : AsyncMediatorMessage<BitmapSource> {
         public CaptureSequence Sequence { get; set; }
     }
-    
+
     class CapturePrepareAndSaveImageMessage : AsyncMediatorMessage<bool> {
         public CaptureSequence Sequence { get; set; }
         public bool Save { get; set; }

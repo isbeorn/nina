@@ -670,9 +670,9 @@
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center"
                                     Columns="1"
-                                    Rows="2">
+                                    Rows="3">
                                     <Button
-                                        MinHeight="50"
+                                        MinHeight="40"
                                         Margin="5"
                                         HorizontalAlignment="Stretch"
                                         Command="{Binding SetSequenceCoordinatesCommand}">
@@ -681,9 +681,18 @@
                                             Text="{ns:Loc LblSetAsSequenceTarget}"
                                             TextWrapping="Wrap" />
                                     </Button>
-
                                     <Button
-                                        MinHeight="50"
+                                        MinHeight="40"
+                                        Margin="5"
+                                        HorizontalAlignment="Stretch"
+                                        Command="{Binding SetFramingAssistantCoordinatesCommand}">
+                                        <TextBlock
+                                            Foreground="{StaticResource ButtonForegroundBrush}"
+                                            Text="{ns:Loc LblSetForFramingAssistant}"
+                                            TextWrapping="Wrap" />
+                                    </Button>
+                                    <Button
+                                        MinHeight="40"
                                         Margin="5"
                                         HorizontalAlignment="Stretch"
                                         Command="{Binding SlewToCoordinatesCommand}">

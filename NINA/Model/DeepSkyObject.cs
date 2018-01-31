@@ -24,6 +24,7 @@ namespace NINA.Model {
 
         private DeepSkyObject() {
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(() => SetSequenceCoordinates());
+            SetFramingAssistantCoordinatesCommand = new AsyncCommand<bool>(() => SetFramingAssistantCoordinates());
             SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
         }
 
@@ -155,6 +156,10 @@ namespace NINA.Model {
             return await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = this });
         }
 
+        private async Task<bool> SetFramingAssistantCoordinates() {
+            return await Mediator.Instance.RequestAsync(new SetFramingAssistantCoordinatesMessage() { DSO = this });
+        }
+
         private void SlewToCoordinates(object obj) {
             Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates, Coordinates);
         }
@@ -258,7 +263,8 @@ namespace NINA.Model {
             RaisePropertyChanged(nameof(Image));
         }*/
 
-
+        /* Should be moved out of the model */
+        public ICommand SetFramingAssistantCoordinatesCommand { get; private set; }
         /* Should be moved out of the model */
         public ICommand SetSequenceCoordinatesCommand { get; private set; }
         /* Should be moved out of the model */
