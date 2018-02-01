@@ -134,7 +134,7 @@
 
                     <util:PaneTemplateSelector.ImageControlTemplate>
                         <DataTemplate>
-                            <view:ImageAreaView />
+                            <view:ImageControlView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ImageControlTemplate>
 

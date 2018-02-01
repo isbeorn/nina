@@ -15,13 +15,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace NINA.View
-{
+namespace NINA.View {
     /// <summary>
     /// Interaction logic for ImageView.xaml
     /// </summary>
-    public partial class ImageView : UserControl
-    {
+    public partial class ImageView : UserControl {
         Point? lastCenterPositionOnTarget;
         Point? lastMousePositionOnTarget;
         Point? lastDragPoint;
@@ -34,21 +32,22 @@ namespace NINA.View
         public ImageView() {
             InitializeComponent();
 
-            sv.SizeChanged += Sv_SizeChanged;
-            sv.ScrollChanged += OnsvScrollChanged;
-            //sv.MouseLeftButtonUp += OnMouseLeftButtonUp;
-            //sv.PreviewMouseLeftButtonUp += OnMouseLeftButtonUp;
-            sv.PreviewMouseWheel += OnPreviewMouseWheel;
-            
-            //sv.PreviewMouseLeftButtonDown += OnMouseLeftButtonDown;
-            sv.MouseMove += OnMouseMove;
-            scaleTransform.ScaleX = fittingScale;
-            scaleTransform.ScaleY = fittingScale;
-            tbScale.Text = 1d.ToString("P0", CultureInfo.InvariantCulture);
+            PART_ScrollViewer.SizeChanged += Sv_SizeChanged;
+            PART_ScrollViewer.ScrollChanged += OnsvScrollChanged;
+            PART_ScrollViewer.PreviewMouseWheel += OnPreviewMouseWheel;
+
+            PART_ScrollViewer.MouseLeftButtonUp += OnMouseLeftButtonUp;
+            PART_ScrollViewer.PreviewMouseLeftButtonDown += OnMouseLeftButtonDown;
+            PART_ScrollViewer.PreviewMouseLeftButtonUp += OnMouseLeftButtonUp;
+            PART_ScrollViewer.MouseMove += OnMouseMove;
+
+            PART_ScaleTransform.ScaleX = fittingScale;
+            PART_ScaleTransform.ScaleY = fittingScale;
+            PART_TextblockScale.Text = 1d.ToString("P0", CultureInfo.InvariantCulture);
         }
 
-        
-        
+
+
         public static readonly DependencyProperty ImageAreaContentProperty =
             DependencyProperty.Register(nameof(ImageAreaContent), typeof(object), typeof(ImageView));
 
@@ -64,7 +63,7 @@ namespace NINA.View
             get { return (object)GetValue(ButtonHeaderContentProperty); }
             set { SetValue(ButtonHeaderContentProperty, value); }
         }
-        
+
         public static readonly DependencyProperty ImageProperty =
             DependencyProperty.Register(nameof(Image), typeof(BitmapSource), typeof(ImageView));
 
@@ -80,34 +79,35 @@ namespace NINA.View
 
         void OnMouseMove(object sender, MouseEventArgs e) {
             if (lastDragPoint.HasValue) {
-                Point posNow = e.GetPosition(sv);
+                Point posNow = e.GetPosition(PART_ScrollViewer);
 
                 double dX = posNow.X - lastDragPoint.Value.X;
                 double dY = posNow.Y - lastDragPoint.Value.Y;
 
                 lastDragPoint = posNow;
 
-                sv.ScrollToHorizontalOffset(sv.HorizontalOffset - dX);
-                sv.ScrollToVerticalOffset(sv.VerticalOffset - dY);
+                PART_ScrollViewer.ScrollToHorizontalOffset(PART_ScrollViewer.HorizontalOffset - dX);
+                PART_ScrollViewer.ScrollToVerticalOffset(PART_ScrollViewer.VerticalOffset - dY);
             }
         }
 
-        //void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-        //    var mousePos = e.GetPosition(sv);
-        //    if (mousePos.X <= sv.ViewportWidth && mousePos.Y <
-        //        sv.ViewportHeight) //make sure we still can use the scrollbars
-        //    {
-        //        sv.Cursor = Cursors.SizeAll;
-        //        lastDragPoint = mousePos;
-        //        Mouse.Capture(sv);
-        //    }
-        //}
+        void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            var mousePos = e.GetPosition(PART_ScrollViewer);
+            if (!PART_ImageViewContent.IsHitTestVisible || !PART_ImageViewContent.IsMouseOver) {
+                if (mousePos.X <= PART_ScrollViewer.ViewportWidth && mousePos.Y <
+                PART_ScrollViewer.ViewportHeight) {
+                    PART_ScrollViewer.Cursor = Cursors.SizeAll;
+                    lastDragPoint = mousePos;
+                    Mouse.Capture(PART_ScrollViewer);
+                }
+            }
+        }
 
         void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
             mode = 2;
             lastMousePositionOnTarget = Mouse.GetPosition(PART_Canvas);
 
-            var val = scaleTransform.ScaleX;
+            var val = PART_ScaleTransform.ScaleX;
             if (e.Delta > 0) {
                 val += val * .25;
             }
@@ -117,36 +117,34 @@ namespace NINA.View
 
             Zoom(val);
 
-            var centerOfViewport = new Point(sv.ViewportWidth / 2,
-                                             sv.ViewportHeight / 2);
-            lastCenterPositionOnTarget = sv.TranslatePoint(centerOfViewport, PART_Canvas);
+            var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
+                                             PART_ScrollViewer.ViewportHeight / 2);
+            lastCenterPositionOnTarget = PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
             e.Handled = true;
         }
 
-        //void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-        //    sv.Cursor = Cursors.Arrow;
-        //    sv.ReleaseMouseCapture();
-        //    lastDragPoint = null;
-        //}
+        void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+            PART_ScrollViewer.Cursor = Cursors.Arrow;
+            PART_ScrollViewer.ReleaseMouseCapture();
+            lastDragPoint = null;
+        }
 
         private void Zoom(double val) {
             if (val < 0) { val = 0; }
-            scaleTransform.ScaleX = val;
-            scaleTransform.ScaleY = val;
+            PART_ScaleTransform.ScaleX = val;
+            PART_ScaleTransform.ScaleY = val;
 
-            tbScale.Text = val.ToString("P0", CultureInfo.InvariantCulture);
-
-
+            PART_TextblockScale.Text = val.ToString("P0", CultureInfo.InvariantCulture);
         }
 
         void OnSliderValueChanged(object sender,
              RoutedPropertyChangedEventArgs<double> e) {
-            scaleTransform.ScaleX = e.NewValue;
-            scaleTransform.ScaleY = e.NewValue;
+            PART_ScaleTransform.ScaleX = e.NewValue;
+            PART_ScaleTransform.ScaleY = e.NewValue;
 
-            var centerOfViewport = new Point(sv.ViewportWidth / 2,
-                                             sv.ViewportHeight / 2);
-            lastCenterPositionOnTarget = sv.TranslatePoint(centerOfViewport, PART_Canvas);
+            var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
+                                             PART_ScrollViewer.ViewportHeight / 2);
+            lastCenterPositionOnTarget = PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
         }
 
         void RecalculateScalingFactors() {
@@ -154,7 +152,7 @@ namespace NINA.View
                 if (mode == 0) {
                     Zoom(1);
                 } else if (mode == 1) {
-                    var scale = Math.Min(sv.ActualWidth / PART_Image.ActualWidth, sv.ActualHeight / PART_Image.ActualHeight);
+                    var scale = Math.Min(PART_ScrollViewer.ActualWidth / PART_Image.ActualWidth, PART_ScrollViewer.ActualHeight / PART_Image.ActualHeight);
                     if (fittingScale != scale) {
                         var newScaleFactor = fittingScale / scale;
                         fittingScale = scale;
@@ -171,10 +169,10 @@ namespace NINA.View
 
                 if (!lastMousePositionOnTarget.HasValue) {
                     if (lastCenterPositionOnTarget.HasValue) {
-                        var centerOfViewport = new Point(sv.ViewportWidth / 2,
-                                                         sv.ViewportHeight / 2);
+                        var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
+                                                         PART_ScrollViewer.ViewportHeight / 2);
                         Point centerOfTargetNow =
-                              sv.TranslatePoint(centerOfViewport, PART_Canvas);
+                              PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
 
                         targetBefore = lastCenterPositionOnTarget;
                         targetNow = centerOfTargetNow;
@@ -193,37 +191,37 @@ namespace NINA.View
                     double multiplicatorX = e.ExtentWidth / PART_Canvas.ActualWidth;
                     double multiplicatorY = e.ExtentHeight / PART_Canvas.ActualHeight;
 
-                    double newOffsetX = sv.HorizontalOffset -
+                    double newOffsetX = PART_ScrollViewer.HorizontalOffset -
                                         dXInTargetPixels * multiplicatorX;
-                    double newOffsetY = sv.VerticalOffset -
+                    double newOffsetY = PART_ScrollViewer.VerticalOffset -
                                         dYInTargetPixels * multiplicatorY;
 
                     if (double.IsNaN(newOffsetX) || double.IsNaN(newOffsetY)) {
                         return;
                     }
 
-                    sv.ScrollToHorizontalOffset(newOffsetX);
-                    sv.ScrollToVerticalOffset(newOffsetY);
+                    PART_ScrollViewer.ScrollToHorizontalOffset(newOffsetX);
+                    PART_ScrollViewer.ScrollToVerticalOffset(newOffsetY);
                 }
             }
         }
 
         private void ButtonZoomIn_Click(object sender, RoutedEventArgs e) {
             mode = 2;
-            Zoom(scaleTransform.ScaleX + scaleTransform.ScaleX * 0.25);
-            var centerOfViewport = new Point(sv.ViewportWidth / 2,
-                                                         sv.ViewportHeight / 2);
+            Zoom(PART_ScaleTransform.ScaleX + PART_ScaleTransform.ScaleX * 0.25);
+            var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
+                                                         PART_ScrollViewer.ViewportHeight / 2);
             lastCenterPositionOnTarget =
-                  sv.TranslatePoint(centerOfViewport, PART_Canvas);
+                  PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
 
         }
         private void ButtonZoomOut_Click(object sender, RoutedEventArgs e) {
             mode = 2;
-            Zoom(scaleTransform.ScaleX - scaleTransform.ScaleX * 0.25);
-            var centerOfViewport = new Point(sv.ViewportWidth / 2,
-                                                         sv.ViewportHeight / 2);
+            Zoom(PART_ScaleTransform.ScaleX - PART_ScaleTransform.ScaleX * 0.25);
+            var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
+                                                         PART_ScrollViewer.ViewportHeight / 2);
             lastCenterPositionOnTarget =
-                  sv.TranslatePoint(centerOfViewport, PART_Canvas);
+                  PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
         }
         private void ButtonZoomReset_Click(object sender, RoutedEventArgs e) {
             mode = 1;

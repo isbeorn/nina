@@ -469,9 +469,6 @@
     <Compile Include="View\HistogramView.xaml.cs">
       <DependentUpon>HistogramView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ImageAreaView.xaml.cs">
-      <DependentUpon>ImageAreaView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\ImageControlView.xaml.cs">
       <DependentUpon>ImageControlView.xaml</DependentUpon>
     </Compile>
@@ -775,10 +772,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\HistogramView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\ImageAreaView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

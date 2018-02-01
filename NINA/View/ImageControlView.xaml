@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
     d:DesignHeight="300"
     d:DesignWidth="300"
@@ -13,13 +14,154 @@
         Grid.Column="1"
         BorderBrush="{StaticResource BorderBrush}"
         BorderThickness="1">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <local:ImageAreaView DataContext="{Binding}" />
-            <local:ImageStatisticsView Grid.Row="2" DataContext="{Binding}" />
-        </Grid>
+        <local:ImageView Image="{Binding Image}">
+            <local:ImageView.ButtonHeaderContent>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="40" />
+                    </Grid.ColumnDefinitions>
+                    <ninactrl:CancellableButton
+                        Grid.Column="0"
+                        Margin="2.5"
+                        ButtonImage="{StaticResource PlatesolveSVG}"
+                        CancelButtonImage="{StaticResource CancelSVG}"
+                        CancelCommand="{Binding CancelPlateSolveImageCommand}"
+                        Command="{Binding PlateSolveImageCommand}"
+                        ToolTip="{ns:Loc LblPlateSolveImage}" />
+
+                    <ToggleButton
+                        Grid.Column="1"
+                        Margin="2.5"
+                        IsChecked="{Binding ShowCrossHair}">
+                        <ToggleButton.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="True">
+                                <TextBlock Text="{ns:Loc LblTooltipCrossHair}" />
+                            </ToolTip>
+                        </ToggleButton.ToolTip>
+                        <ToggleButton.Style>
+                            <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{StaticResource CrosshairSVG}"
+                                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{StaticResource CrosshairSVG}"
+                                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+
+                    <ToggleButton
+                        Grid.Column="2"
+                        Margin="2.5"
+                        Command="{Binding PrepareImageCommand}"
+                        IsChecked="{Binding AutoStretch}">
+                        <ToggleButton.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="True">
+                                <TextBlock Text="{ns:Loc LblTooltipAutoStretch}" />
+                            </ToolTip>
+                        </ToggleButton.ToolTip>
+                        <ToggleButton.Style>
+                            <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{StaticResource WandSVG}"
+                                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{StaticResource WandSVG}"
+                                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+
+                    <ToggleButton
+                        Grid.Column="3"
+                        Margin="2.5"
+                        Command="{Binding PrepareImageCommand}"
+                        IsChecked="{Binding DetectStars}">
+                        <ToggleButton.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="True">
+                                <TextBlock Text="{ns:Loc LblTooltipDetectStars}" />
+                            </ToolTip>
+                        </ToggleButton.ToolTip>
+                        <ToggleButton.Style>
+                            <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{StaticResource StarSVG}"
+                                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{StaticResource StarSVG}"
+                                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                </Grid>
+            </local:ImageView.ButtonHeaderContent>
+            <local:ImageView.ImageAreaContent>
+                <Path
+                    Width="{Binding Image.Width}"
+                    Height="{Binding Image.Height}"
+                    Data="                               M0.5,0 L0.5,0.4 M0.5,0.6 L0.5,1                                M0,0.5 L0.4,0.5 M0.6,0.5 L1,0.5                                                              M0.35,0.5 A 0.15,0.15 1 1 1 0.35,0.50001                               M0.4,0.5 A 0.1,0.1 1 1 1 0.4,0.50001                               M0.45,0.5 A 0.05,0.05 1 1 1 0.45,0.50001                               M0.48,0.5 A 0.02,0.02 1 1 1 0.48,0.50001                               M0.49,0.5 A 0.01,0.01 1 1 1 0.49,0.50001                               M0.495,0.5 A 0.005,0.005 1 1 1 0.495,0.50001                               "
+                    Stretch="Uniform"
+                    Stroke="{StaticResource ButtonBackgroundSelectedBrush}"
+                    StrokeThickness="1"
+                    Visibility="{Binding ShowCrossHair, Converter={StaticResource VisibilityConverter}}" />
+            </local:ImageView.ImageAreaContent>
+        </local:ImageView>
     </Border>
 </UserControl>

@@ -89,19 +89,18 @@
             </Button>
 
             <TextBlock
-                x:Name="tbScale"
+                x:Name="PART_TextblockScale"
                 Grid.Column="4"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center" />
 
-            <ContentPresenter Content="{Binding ButtonHeaderContent, ElementName=PART_ImageView}" />
+            <ContentPresenter Grid.Column="6" Content="{Binding ButtonHeaderContent, ElementName=PART_ImageView}" />
         </Grid>
 
         <ScrollViewer
-            x:Name="sv"
+            x:Name="PART_ScrollViewer"
             Grid.Row="1"
             PanningMode="Both">
-
             <ScrollViewer.Style>
                 <Style TargetType="{x:Type ScrollViewer}">
                     <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
@@ -109,7 +108,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ScrollViewer}">
-                                <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                                <Grid x:Name="PART_Grid" Background="{TemplateBinding Background}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
@@ -162,30 +161,7 @@
                     </Setter>
                 </Style>
             </ScrollViewer.Style>
-            <Viewbox Stretch="Uniform">
-                <Canvas
-                    x:Name="PART_Canvas"
-                    Width="{Binding ActualWidth, ElementName=PART_Image}"
-                    Height="{Binding ActualHeight, ElementName=PART_Image}"
-                    ClipToBounds="True">
-                    <Canvas.Background>
-                        <VisualBrush>
-                            <VisualBrush.Visual>
-                                <Image
-                                    x:Name="PART_Image"
-                                    RenderOptions.BitmapScalingMode="HighQuality"
-                                    Source="{Binding Image, ElementName=PART_ImageView, IsAsync=True}"
-                                    Stretch="Uniform" />
-                            </VisualBrush.Visual>
-                        </VisualBrush>
-                    </Canvas.Background>
-                    <ContentPresenter Content="{Binding ImageAreaContent, ElementName=PART_ImageView}" />
-                    <Canvas.LayoutTransform>
-                        <ScaleTransform x:Name="scaleTransform" />
-                    </Canvas.LayoutTransform>
-                </Canvas>
-            </Viewbox>
-            <!--<Grid>
+            <Grid>
                 <Path
                     Width="100"
                     Height="100"
@@ -196,22 +172,30 @@
                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
                     Opacity="0.2"
                     Stretch="Uniform" />
-                <Grid x:Name="grid">
-                    <Image
-                        x:Name="image"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        RenderOptions.BitmapScalingMode="HighQuality"
-                        Source="{Binding Image, ElementName=PART_ImageView}" />
-
-                    <ContentPresenter Content="{Binding ImageAreaContent, ElementName=PART_ImageView}" />
-
-                    <Grid.LayoutTransform>
-                        <ScaleTransform x:Name="scaleTransform" />
-                    </Grid.LayoutTransform>
-                </Grid>
-
-            </Grid>-->
+                <Viewbox Stretch="Uniform">
+                    <Canvas
+                        x:Name="PART_Canvas"
+                        Width="{Binding ActualWidth, ElementName=PART_Image}"
+                        Height="{Binding ActualHeight, ElementName=PART_Image}"
+                        ClipToBounds="True">
+                        <Canvas.Background>
+                            <VisualBrush>
+                                <VisualBrush.Visual>
+                                    <Image
+                                        x:Name="PART_Image"
+                                        RenderOptions.BitmapScalingMode="HighQuality"
+                                        Source="{Binding Image, ElementName=PART_ImageView, IsAsync=True}"
+                                        Stretch="Uniform" />
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Canvas.Background>
+                        <ContentPresenter x:Name="PART_ImageViewContent" Content="{Binding ImageAreaContent, ElementName=PART_ImageView}" />
+                        <Canvas.LayoutTransform>
+                            <ScaleTransform x:Name="PART_ScaleTransform" />
+                        </Canvas.LayoutTransform>
+                    </Canvas>
+                </Viewbox>
+            </Grid>
         </ScrollViewer>
     </Grid>
 </UserControl>
