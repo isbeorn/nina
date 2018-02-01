@@ -315,6 +315,7 @@
     <Compile Include="Utility\Converters\InverseNullToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\MinusOneToEmptyStringConverter.cs" />
     <Compile Include="Utility\Converters\MoonPhaseToGeometryConverter.cs" />
+    <Compile Include="Utility\Converters\MultiMarginConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
@@ -479,6 +480,9 @@
     </Compile>
     <Compile Include="View\ImageStatisticsView.xaml.cs">
       <DependentUpon>ImageStatisticsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ImageView.xaml.cs">
+      <DependentUpon>ImageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ImagingView.xaml.cs">
       <DependentUpon>ImagingView.xaml</DependentUpon>
@@ -787,6 +791,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ImageStatisticsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ImageView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

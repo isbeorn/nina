@@ -39,6 +39,7 @@ namespace NINA.ViewModel {
             }, (object o) => SelectedCoordinates != null);
 
             RecenterCommand = new AsyncCommand<bool>(async () => {
+                Coordinates = SelectedCoordinates;
                 await LoadImageCommand.ExecuteAsync(null);
                 return true;
             }, (object o) => SelectedCoordinates != null);

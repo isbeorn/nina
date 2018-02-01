@@ -10,6 +10,7 @@
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -247,8 +248,104 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" />
 
-        <Grid Grid.Column="2">
-            <!--<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">-->
+        <local:ImageView Grid.Column="2" Image="{Binding Image}">
+            <!--<local:ImageView.ButtonHeaderContent />-->
+            <local:ImageView.ImageAreaContent>
+                <Grid>
+                    <Grid.Resources>
+                        <s:Int32 x:Key="zero">0</s:Int32>
+                    </Grid.Resources>
+                    <Rectangle
+                        Width="{Binding Rectangle.Width}"
+                        Height="{Binding Rectangle.Height}"
+                        behaviors:DragCommandBehavior.Drag="True"
+                        behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
+                        behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
+                        behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
+                        RenderTransformOrigin="0.5,0.5"
+                        Stroke="{StaticResource ButtonForegroundBrush}"
+                        StrokeThickness="5">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Opacity=".25" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                        </Rectangle.Fill>
+                        <Rectangle.RenderTransform>
+                            <RotateTransform Angle="{Binding Rectangle.Rotation}" />
+                        </Rectangle.RenderTransform>
+                        <Rectangle.Margin>
+                            <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                <Binding Path="Rectangle.X" />
+                                <Binding Path="Rectangle.Y" />
+                                <Binding Source="{StaticResource zero}" />
+                                <Binding Source="{StaticResource zero}" />
+                            </MultiBinding>
+                        </Rectangle.Margin>
+                    </Rectangle>
+                    <Grid
+                        Width="{Binding Rectangle.Width}"
+                        Height="{Binding Rectangle.Height}"
+                        IsHitTestVisible="False"
+                        RenderTransformOrigin="0.5,0.5">
+                        <Viewbox Height="150" Stretch="Uniform">
+                            <StackPanel Orientation="Vertical">
+
+                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="5"
+                                                Opacity="1"
+                                                ShadowDepth="0"
+                                                Color="Black" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.RAString}">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="5"
+                                                Opacity="1"
+                                                ShadowDepth="0"
+                                                Color="Black" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="5"
+                                                Opacity="1"
+                                                ShadowDepth="0"
+                                                Color="Black" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.DecString}">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="5"
+                                                Opacity="1"
+                                                ShadowDepth="0"
+                                                Color="Black" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </Viewbox>
+                        <Grid.Margin>
+                            <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                <Binding Path="Rectangle.X" />
+                                <Binding Path="Rectangle.Y" />
+                                <Binding Source="{StaticResource zero}" />
+                                <Binding Source="{StaticResource zero}" />
+                            </MultiBinding>
+                        </Grid.Margin>
+                    </Grid>
+
+                </Grid>
+            </local:ImageView.ImageAreaContent>
+        </local:ImageView>
+        <!--<Grid Grid.Column="2">
             <Viewbox Stretch="Uniform">
                 <Canvas
                     Width="{Binding ActualWidth, ElementName=PART_Image}"
@@ -294,12 +391,6 @@
                         RenderTransformOrigin="0.5,0.5">
                         <Viewbox Height="150" Stretch="Uniform">
                             <StackPanel Orientation="Vertical">
-                                <!--<StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <TextBlock Text="{ns:Loc LblDimensions}"  />
-                                    <TextBlock Text="{Binding CameraWidth}" />
-                                    <TextBlock Text="x" />
-                                    <TextBlock Text="{Binding CameraHeight}" />
-                                </StackPanel>-->
 
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}">
@@ -348,27 +439,6 @@
 
                 </Canvas>
             </Viewbox>
-            <!--</ScrollViewer>-->
-
-
-            <!--<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Canvas
-                    Width="1000"
-                    Height="1000"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch">
-
-                    <Image Source="{Binding Image}" Stretch="Uniform" />
-                    <Rectangle
-                        Canvas.Left="{Binding X}"
-                        Canvas.Top="{Binding Y}"
-                        Width="{Binding Width}"
-                        Height="{Binding Height}"
-                        DataContext="{Binding Rectangle}"
-                        Stroke="Red"
-                        StrokeThickness="5" />
-                </Canvas>
-            </ScrollViewer>-->
-        </Grid>
+        </Grid>-->
     </Grid>
 </UserControl>
