@@ -225,8 +225,13 @@
       <Value Profile="(Default)">3.8</Value>
     </Setting>
     <Setting Name="FilterWheelFilters" Type="NINA.Utility.ObserveAllCollection&lt;Model.MyFilterWheel.FilterInfo&gt;" Scope="User">
-      <Value Profile="(Default)">        
-      </Value>
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="FilterWheelFilterPositions" Type="System.String" Scope="User">
+      <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="BlindSolverType" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

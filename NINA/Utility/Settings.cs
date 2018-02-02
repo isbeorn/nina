@@ -92,6 +92,16 @@ namespace NINA.Utility {
             }
         }
 
+        public static BlindSolverEnum BlindSolverType {
+            get {
+                return (BlindSolverEnum)Properties.Settings.Default.BlindSolverType;
+            }
+            set {
+                Properties.Settings.Default.BlindSolverType = (int)value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         public static WeatherDataEnum WeatherDataType {
             get {
                 return (WeatherDataEnum)Properties.Settings.Default.WeatherDataType;

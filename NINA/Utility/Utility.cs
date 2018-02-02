@@ -330,6 +330,14 @@ namespace NINA.Utility {
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum BlindSolverEnum {
+        [Description("LblAstrometryNet")]
+        ASTROMETRY_NET,
+        [Description("LblLocalPlatesolver")]
+        LOCAL
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum WeatherDataEnum {
         [Description("LblOpenWeatherMapOrg")]
         OPENWEATHERMAP

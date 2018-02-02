@@ -424,4 +424,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblLoadImage">Bild laden</s:String>
     <s:String x:Key="LblSetForFramingAssistant">Für Bildausrichtungsassistent setzen</s:String>
     <s:String x:Key="LblFramingAssistant">Bildausrichtungsassistent</s:String>
+    <s:String x:Key="LblPlateSolver">Plate Solver</s:String>
+    <s:String x:Key="LblBlindSolver">Blind Solver</s:String>
+    <s:String x:Key="LblPlateSolveSettings">Plate Solver Settings</s:String>
 </ResourceDictionary>
