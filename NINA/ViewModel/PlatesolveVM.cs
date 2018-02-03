@@ -345,11 +345,29 @@ namespace NINA.ViewModel {
             if (solver == null) {
                 return null;
             }
-            
+
+            var result = await Solve(solver, source, progress, canceltoken);
+
+            if (!result?.Success == true) {
+                var dialog = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblUseBlindSolveFailover"], Locale.Loc.Instance["LblPlatesolveFailed"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
+                if (dialog == MessageBoxResult.Yes) {
+                    solver = GetBlindSolver(source);
+                    result = await Solve(solver, source, progress, canceltoken);
+                    if (!result?.Success == true) {
+                        Notification.ShowWarning(Locale.Loc.Instance["LblPlatesolveFailed"]);
+                    }
+                }
+            }
+
+            PlateSolveResult = result;
+            progress.Report(new ApplicationStatus() { Status = string.Empty });
+            return result;
+        }
+
+        private async Task<PlateSolveResult> Solve(IPlateSolver solver, BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
             BitmapFrame image = null;
 
             image = BitmapFrame.Create(source);
-
             /* Read image into memorystream */
             using (var ms = new MemoryStream()) {
                 JpegBitmapEncoder encoder = new JpegBitmapEncoder() { QualityLevel = 100 };
@@ -358,14 +376,8 @@ namespace NINA.ViewModel {
                 encoder.Save(ms);
                 ms.Seek(0, SeekOrigin.Begin);
 
-                PlateSolveResult = await solver.SolveAsync(ms, progress, canceltoken);
+                return await solver.SolveAsync(ms, progress, canceltoken);
             }
-
-            if (!PlateSolveResult?.Success == true) {
-                Notification.ShowWarning(Locale.Loc.Instance["LblPlatesolveFailed"]);
-            }
-            progress.Report(new ApplicationStatus() { Status = string.Empty });
-            return PlateSolveResult;
         }
 
         private CancellationTokenSource _solveCancelToken;
@@ -382,7 +394,25 @@ namespace NINA.ViewModel {
                 }
                 var binning = Cam?.BinX ?? 1;
 
-                solver = PlateSolverFactory.CreateInstance(binning, img.Width, img.Height, coords);
+                solver = PlateSolverFactory.CreateInstance(Settings.PlateSolverType, binning, img.Width, img.Height, coords);
+            }
+
+            return solver;
+        }
+
+        private IPlateSolver GetBlindSolver(BitmapSource img) {
+            IPlateSolver solver = null;
+            if (img != null) {                
+                var binning = Cam?.BinX ?? 1;
+
+                PlateSolverEnum type;
+                if (Settings.BlindSolverType == BlindSolverEnum.LOCAL) {
+                    type = PlateSolverEnum.LOCAL;
+                } else {
+                    type = PlateSolverEnum.ASTROMETRY_NET;
+                }
+
+                solver = PlateSolverFactory.CreateInstance(type, binning, img.Width, img.Height);
             }
 
             return solver;

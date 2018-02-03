@@ -422,4 +422,5 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblPlateSolver">Plate Solver</s:String>
     <s:String x:Key="LblBlindSolver">Blind Solver</s:String>
     <s:String x:Key="LblPlateSolveSettings">Plate Solver Settings</s:String>
+    <s:String x:Key="LblUseBlindSolveFailover">Plate solve failed. Try to solve using Blind Solver?</s:String>
 </ResourceDictionary>
