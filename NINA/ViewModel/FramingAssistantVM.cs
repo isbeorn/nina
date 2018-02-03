@@ -343,12 +343,16 @@ namespace NINA.ViewModel {
             this.Rectangle.X += delta.X;
             this.Rectangle.Y += delta.Y;
 
+            var orientation = Astrometry.ToRadians(180);    // todo set orientation to value of image when not from sky survey
+            var x = delta.X * Math.Cos(orientation) + delta.Y * Math.Sin(orientation);
+            var y = delta.Y * Math.Cos(orientation) - delta.X * Math.Sin(orientation);
+
             var imageArcsecWidth = Astrometry.DegreeToArcsec(FieldOfView) / Image.Width;
             var imageArcsecHeight = Astrometry.DegreeToArcsec(FieldOfView) / Image.Height;
 
             SelectedCoordinates = new Coordinates(
-                SelectedCoordinates.RADegrees - Astrometry.ArcsecToDegree(delta.X * imageArcsecWidth),
-                SelectedCoordinates.Dec - Astrometry.ArcsecToDegree(delta.Y * imageArcsecHeight),
+                SelectedCoordinates.RADegrees + Astrometry.ArcsecToDegree(x * imageArcsecWidth),
+                SelectedCoordinates.Dec + Astrometry.ArcsecToDegree(y * imageArcsecHeight),
                 Epoch.J2000,
                 Coordinates.RAType.Degrees
             );
