@@ -119,25 +119,14 @@ namespace NINA.ViewModel {
             for (int i = 0; i < nrOfSteps; i++) {
 
                 token.ThrowIfCancellationRequested();
+                                
+                var iarr = await TakeExposure(filter, token, progress);
 
-                Logger.Trace("Starting Exposure for autofocus");
-                double expTime = Settings.FocuserAutoFocusExposureTime;
-                if(filter != null && filter.AutoFocusExposureTime > 0) {
-                    expTime = filter.AutoFocusExposureTime;
-                }
-                var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
-
-
-                var iarr = await Mediator.Instance.RequestAsync(new CaptureImageMessage() { Sequence = seq, Token = token, Progress = progress });
-
-                var source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
-                source = await ImageControlVM.StretchAsync(iarr, source);
-                var analysis = new ImageAnalysis(source, iarr);
-                await analysis.DetectStarsAsync(progress, token);
+                var hfr = await EvaluateExposure(iarr, token, progress);
                 
                 token.ThrowIfCancellationRequested();
 
-                FocusPoints.AddSorted(new DataPoint(_focusPosition, analysis.AverageHFR), comparer);
+                FocusPoints.AddSorted(new DataPoint(_focusPosition, hfr), comparer);
                 if (i < nrOfSteps - 1) {
                     Logger.Trace("Moving focuser to next autofocus position");
                     _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = -stepSize, Absolute = false, Token = token });
@@ -146,6 +135,43 @@ namespace NINA.ViewModel {
                 token.ThrowIfCancellationRequested();
                 CalculateTrends();
             }
+        }
+
+        private async Task<ImageArray> TakeExposure(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            Logger.Trace("Starting Exposure for autofocus");
+            double expTime = Settings.FocuserAutoFocusExposureTime;
+            if (filter != null && filter.AutoFocusExposureTime > 0) {
+                expTime = filter.AutoFocusExposureTime;
+            }
+            var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
+
+
+            return await Mediator.Instance.RequestAsync(new CaptureImageMessage() { Sequence = seq, Token = token, Progress = progress });
+        }
+
+        private async Task<double> EvaluateExposure(ImageArray iarr, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            Logger.Trace("Evaluating Expsoure");
+            var source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
+            source = await ImageControlVM.StretchAsync(iarr, source);
+            var analysis = new ImageAnalysis(source, iarr);
+            await analysis.DetectStarsAsync(progress, token);
+
+            Logger.Debug(string.Format("Current Focus: Position: {0}, HRF: {1}", _focusPosition, analysis.AverageHFR));
+
+            return analysis.AverageHFR;
+        }
+
+        private async Task ValidateCalculatedFocusPosition(DataPoint focusPoint, FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = (int)focusPoint.X, Absolute = true, Token = token });
+
+            var iarr = await TakeExposure(filter, token, progress);
+
+            var hfr = await EvaluateExposure(iarr, token, progress);
+
+            if(hfr > (focusPoint.Y * 1.25)) {
+                Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, focusPoint.Y, hfr));
+            }
+
         }
 
         private void CalculateTrends() {
@@ -225,7 +251,8 @@ namespace NINA.ViewModel {
 
                 //Todo when data is too noisy for trend lines find something else
 
-                _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = (int)p.X, Absolute = true, Token = token });
+                await ValidateCalculatedFocusPosition(p, filter, token, progress);
+                //_focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = (int)p.X, Absolute = true, Token = token });
             } catch (OperationCanceledException) {
                 FocusPoints.Clear();
             } catch (Exception ex) {
