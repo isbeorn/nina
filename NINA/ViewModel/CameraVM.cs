@@ -238,7 +238,6 @@ namespace NINA.ViewModel {
             private set {
                 _cam = value;
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.CameraChanged, _cam);
             }
         }
 
@@ -281,6 +280,8 @@ namespace NINA.ViewModel {
                             _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
 
                             Settings.CameraId = this.Cam.Id;
+
+                            Mediator.Instance.Notify(MediatorMessages.CameraChanged, Cam);
                             return true;
 
                         } else {
@@ -456,6 +457,8 @@ namespace NINA.ViewModel {
             CoolingRunning = false;
             Cam?.Disconnect();
             Cam = null;
+
+            Mediator.Instance.Notify(MediatorMessages.CameraChanged, null);
         }
 
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }

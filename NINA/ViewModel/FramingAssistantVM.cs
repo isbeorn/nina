@@ -1,4 +1,6 @@
 ﻿using NINA.Model;
+using NINA.Model.MyCamera;
+using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
@@ -44,12 +46,24 @@ namespace NINA.ViewModel {
                 return true;
             }, (object o) => SelectedCoordinates != null);
 
+
+            RegisterMediatorMessages();
+            
+        }
+
+        private void RegisterMediatorMessages() {
             Mediator.Instance.RegisterAsyncRequest(new SetFramingAssistantCoordinatesMessageHandle(async (SetFramingAssistantCoordinatesMessage m) => {
                 Mediator.Instance.Request(new ChangeApplicationTabMessage() { Tab = ApplicationTab.FRAMINGASSISTANT });
                 this.Coordinates = m.DSO.Coordinates;
                 await LoadImageCommand.ExecuteAsync(null);
                 return true;
             }));
+
+            Mediator.Instance.Register((object o) => {
+                var cam = (ICamera)o;                
+                this.CameraWidth = cam?.CameraXSize ?? this.CameraWidth;
+                this.CameraHeight = cam?.CameraYSize ?? this.CameraHeight;
+            }, MediatorMessages.CameraChanged);
         }
 
         private void CancelLoadImage() {
