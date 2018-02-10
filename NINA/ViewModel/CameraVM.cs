@@ -54,6 +54,7 @@ namespace NINA.ViewModel {
         }
 
         private void RefreshCameraList(object obj) {
+            throw new NotImplementedException();
             CameraChooserVM.GetEquipment();
         }
 

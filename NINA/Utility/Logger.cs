@@ -32,6 +32,10 @@ namespace NINA.Utility {
             Append(DateTime.Now.ToString("s") + " ERROR:\t" + msg + '\t' + stacktrace);
         }
 
+        public static void Error(Exception ex) {
+            Error(ex.Message, ex.StackTrace);
+        }
+
         public static void Info(string msg) {
             if (Settings.LogLevel >= 1) {
                 Append(DateTime.Now.ToString("s") + " INFO:\t" + msg);
