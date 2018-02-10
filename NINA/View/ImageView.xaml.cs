@@ -103,7 +103,7 @@ namespace NINA.View {
             }
         }
 
-        void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
+        void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {            
             mode = 2;
             lastMousePositionOnTarget = Mouse.GetPosition(PART_Canvas);
 
@@ -114,7 +114,7 @@ namespace NINA.View {
             if (e.Delta < 0) {
                 val -= val * .25;
             }
-
+           
             Zoom(val);
 
             var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
@@ -130,7 +130,13 @@ namespace NINA.View {
         }
 
         private void Zoom(double val) {
-            if (val < 0) { val = 0; }
+            RecalculateScalingFactors();
+            if (val < fittingScale) {
+                val = fittingScale;
+            } else if (val < 0) {
+                val = 0;
+            }
+
             PART_ScaleTransform.ScaleX = val;
             PART_ScaleTransform.ScaleY = val;
 
@@ -149,16 +155,16 @@ namespace NINA.View {
 
         void RecalculateScalingFactors() {
             if (PART_Image?.ActualWidth > 0) {
-                if (mode == 0) {
-                    Zoom(1);
-                } else if (mode == 1) {
-                    var scale = Math.Min(PART_ScrollViewer.ActualWidth / PART_Image.ActualWidth, PART_ScrollViewer.ActualHeight / PART_Image.ActualHeight);
-                    if (fittingScale != scale) {
-                        var newScaleFactor = fittingScale / scale;
-                        fittingScale = scale;
-                        Zoom(fittingScale);
-                    }
+                var scale = Math.Min(PART_ScrollViewer.ActualWidth / PART_Image.ActualWidth, PART_ScrollViewer.ActualHeight / PART_Image.ActualHeight);
+                if (fittingScale != scale) {
+                    var newScaleFactor = fittingScale / scale;
+                    fittingScale = scale;
                 }
+                /*if (mode == 0) {
+                    Zoom(1);
+                } else if (mode == 1) {                    
+                    Zoom(fittingScale);                    
+                }*/
             }
         }
 
@@ -225,7 +231,6 @@ namespace NINA.View {
         }
         private void ButtonZoomReset_Click(object sender, RoutedEventArgs e) {
             mode = 1;
-            RecalculateScalingFactors();
             Zoom(fittingScale);
         }
 
