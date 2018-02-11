@@ -418,4 +418,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblOrderBy">Sortiere nach</s:String>
     <s:String x:Key="LblAscending">Aufsteigend</s:String>
     <s:String x:Key="LblDescending">Absteigend</s:String>
+    <s:String x:Key="LblUnhandledException">Unbehandelter Ausnahmefehler</s:String>
+    <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">Leider muss die Anwendung sich aufgrund eines unbehandelten Fehlers schließen.
+Der Fehler wurde in &quot;%localappdata%\NINA\tracelog.txt&quot; aufgezeichnet.</s:String>
 </ResourceDictionary>

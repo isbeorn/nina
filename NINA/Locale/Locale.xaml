@@ -415,4 +415,7 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblWaitingForCamera">Waiting for Camera</s:String>
     <s:String x:Key="LblAutoFocusOnFilterChange">Auto Focus on filter change</s:String>
     <s:String x:Key="LblBulbSerialPort">Bulb Serial Port</s:String>
+    <s:String x:Key="LblUnhandledException">Unhandled Exception occurred</s:String>
+    <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">The Application ran into an unhandled exception and unfortunately has to shut down. 
+The error has been logged to &quot;%localappdata%\NINA\tracelog.txt&quot;.</s:String>
 </ResourceDictionary>
