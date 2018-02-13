@@ -181,17 +181,26 @@ namespace NINA.Utility {
             var bitmap = new BitmapImage();
             using (var client = new WebClient()) {
                 using (ct.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
-                    client.DownloadProgressChanged += (s, e) => {
-                        progress?.Report(e.ProgressPercentage);
-                    };
-                    var data = await client.DownloadDataTaskAsync(url);
-                    using (MemoryStream stream = new MemoryStream(data)) {
-                        bitmap.BeginInit();
-                        bitmap.StreamSource = stream;
-                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                        bitmap.EndInit();
-                        bitmap.Freeze();
+                    try {
+                        client.DownloadProgressChanged += (s, e) => {
+                            progress?.Report(e.ProgressPercentage);
+                        };
+                        var data = await client.DownloadDataTaskAsync(url);
+                        using (MemoryStream stream = new MemoryStream(data)) {
+                            bitmap.BeginInit();
+                            bitmap.StreamSource = stream;
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmap.EndInit();
+                            bitmap.Freeze();
+                        }
+                    } catch(WebException ex) {
+                        if(ex.Status == WebExceptionStatus.RequestCanceled) {
+                            throw new OperationCanceledException();
+                        } else {
+                            throw ex;
+                        }
                     }
+                    
                 }                
             }
             return bitmap;
@@ -200,10 +209,18 @@ namespace NINA.Utility {
         public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken, IProgress<int> progress = null) {
             using (var client = new WebClient()) {
                 using (canceltoken.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
-                    client.DownloadProgressChanged += (s, e) => {
-                        progress?.Report(e.ProgressPercentage);
-                    };
-                    await client.DownloadFileTaskAsync(url, targetLocation);
+                    try {
+                        client.DownloadProgressChanged += (s, e) => {
+                            progress?.Report(e.ProgressPercentage);
+                        };
+                        await client.DownloadFileTaskAsync(url, targetLocation);
+                    } catch (WebException ex) {
+                        if (ex.Status == WebExceptionStatus.RequestCanceled) {
+                            throw new OperationCanceledException();
+                        } else {
+                            throw ex;
+                        }
+                    }
                 }
             }
         }
