@@ -798,7 +798,7 @@ namespace NINA.ViewModel {
         public class DSOObjectType : BaseINPC {
             public DSOObjectType(string s) {
                 Name = s;
-                Selected = true;
+                Selected = false;
             }
 
             private bool _selected;
