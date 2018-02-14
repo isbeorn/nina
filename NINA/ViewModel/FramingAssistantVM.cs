@@ -22,6 +22,7 @@ namespace NINA.ViewModel {
 
         public FramingAssistantVM() {
             Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
+            DSO = new DeepSkyObject(string.Empty, Coordinates);
             //Coordinates = new Coordinates(073.2920, -07.6335, Epoch.J2000, Coordinates.RAType.Degrees);
             //Coordinates = new Coordinates(10.6833, 41.2686, Epoch.J2000, Coordinates.RAType.Degrees);
 
@@ -37,7 +38,11 @@ namespace NINA.ViewModel {
             DragStopCommand = new RelayCommand(DragStop);
             DragMoveCommand = new RelayCommand(DragMove);
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async () => {
-                return await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = new DeepSkyObject(string.Empty, SelectedCoordinates) });
+                var msgResult = await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = new DeepSkyObject(DSO?.Name, SelectedCoordinates) });
+                Image = null;
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                return msgResult;
             }, (object o) => SelectedCoordinates != null);
 
             RecenterCommand = new AsyncCommand<bool>(async () => {
@@ -54,6 +59,7 @@ namespace NINA.ViewModel {
         private void RegisterMediatorMessages() {
             Mediator.Instance.RegisterAsyncRequest(new SetFramingAssistantCoordinatesMessageHandle(async (SetFramingAssistantCoordinatesMessage m) => {
                 Mediator.Instance.Request(new ChangeApplicationTabMessage() { Tab = ApplicationTab.FRAMINGASSISTANT });
+                this.DSO = new DeepSkyObject(m.DSO.Name, m.DSO.Coordinates);
                 this.Coordinates = m.DSO.Coordinates;
                 await LoadImageCommand.ExecuteAsync(null);
                 return true;
@@ -64,6 +70,10 @@ namespace NINA.ViewModel {
                 this.CameraWidth = cam?.CameraXSize ?? this.CameraWidth;
                 this.CameraHeight = cam?.CameraYSize ?? this.CameraHeight;
             }, MediatorMessages.CameraChanged);
+
+            Mediator.Instance.Register((object o) => {
+                DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates);
+            }, MediatorMessages.LocationChanged);
         }
 
         private void CancelLoadImage() {
@@ -71,6 +81,18 @@ namespace NINA.ViewModel {
         }
 
         Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
+
+        DeepSkyObject _dSO;
+        public DeepSkyObject DSO {
+            get {
+                return _dSO;
+            }
+            set {
+                _dSO = value;
+                _dSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), Settings.Latitude, Settings.Longitude);
+                RaisePropertyChanged();
+            }
+        }
 
         Coordinates _coordinates;
         public Coordinates Coordinates {
@@ -177,6 +199,7 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(DecDegrees));
             RaisePropertyChanged(nameof(DecMinutes));
             RaisePropertyChanged(nameof(DecSeconds));
+            DSO = new DeepSkyObject(DSO?.Name ?? string.Empty, Coordinates);
         }
 
         private int _downloadProgressValue;
@@ -313,9 +336,7 @@ namespace NINA.ViewModel {
 
                 CalculateRectangle(img);
 
-                await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                    Image = null;
-                    GC.Collect();
+                await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {                    
                     Image = img;
                 }));
             } catch (OperationCanceledException) {

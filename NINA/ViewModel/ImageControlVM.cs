@@ -264,6 +264,7 @@ namespace NINA.ViewModel {
                         Image = null;
                         ImgArr = null;
                         GC.Collect();
+                        GC.WaitForPendingFinalizers();
                         ImgArr = iarr;
                         Image = source;
                         ImgStatisticsVM.Add(ImgArr.Statistics);

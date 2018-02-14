@@ -337,7 +337,7 @@ namespace NINA.ViewModel {
             Mediator.Instance.RegisterAsyncRequest(
                 new SetSequenceCoordinatesMessageHandle(async (SetSequenceCoordinatesMessage msg) => {
                     Mediator.Instance.Request(new ChangeApplicationTabMessage() { Tab = ApplicationTab.SEQUENCE });
-                    var sequenceDso = new DeepSkyObject(msg.DSO.AlsoKnownAs.FirstOrDefault(), msg.DSO.Coordinates);
+                    var sequenceDso = new DeepSkyObject(msg.DSO.AlsoKnownAs.FirstOrDefault() ?? msg.DSO.Name ?? string.Empty, msg.DSO.Coordinates);
                     await Task.Run(() => {
                         sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), Settings.Latitude, Settings.Longitude);
                     });
@@ -346,6 +346,12 @@ namespace NINA.ViewModel {
                     return true;
                 })
             );
+
+
+            Mediator.Instance.Register((object o) => {
+                var dso = new DeepSkyObject(Sequence.DSO.Name, Sequence.DSO.Coordinates);
+                Sequence.SetSequenceTarget(dso);
+            }, MediatorMessages.LocationChanged);
         }
 
         private CaptureSequenceList _sequence;
