@@ -59,16 +59,6 @@
                             <TextBlock Text="{Binding ElementName=pbActiveSequence, Path=Maximum}" />
                         </StackPanel>
                     </Grid>
-
-                    <Border
-                        MinHeight="30"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
-                        <UniformGrid VerticalAlignment="Center" Columns="2">
-                            <TextBlock Text="{ns:Loc LblRemaining}" />
-                            <TextBlock Margin="5,0,0,0" Text="{Binding ExposureCount}" />
-                        </UniformGrid>
-                    </Border>
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
