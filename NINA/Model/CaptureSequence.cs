@@ -48,12 +48,25 @@ namespace NINA.Model {
             }            
         }
 
-        public void Add(CaptureSequence s) {
+        public void Add(CaptureSequence s) {            
             Items.Add(s);
+            if (Items.Count == 1) {
+                ActiveSequence = Items.First();
+            }
         }
 
         public void RemoveAt(int idx) {
-            Items.RemoveAt(idx);
+            if(Items.Count > idx) {
+                if(Items[idx] == ActiveSequence) {
+                    if(idx == Items.Count -1) {
+                        ActiveSequence = null;
+                    } else {
+                        ActiveSequence = Items[idx + 1];
+                    }
+                }
+                Items.RemoveAt(idx);
+            }
+            
         }
 
         public void Save(string path) {
@@ -88,7 +101,7 @@ namespace NINA.Model {
         }
 
         public CaptureSequenceList(CaptureSequence seq) : this() {
-            Items.Add(seq);
+            Add(seq);
         }
 
         public void SetSequenceTarget(DeepSkyObject dso) {
@@ -158,8 +171,8 @@ namespace NINA.Model {
                 }
 
                 seq = ActiveSequence;
-                if (seq == null) {
-                    //no previous sequence was set, take first sequence
+                if (seq == Items.FirstOrDefault() && seq?.ProgressExposureCount == 0 && seq?.TotalExposureCount > 0) {
+                    //first sequence active
                     seq = Items.First();
                 } else {
                     var idx = (Items.IndexOf(seq) + 1) % Items.Count;
@@ -442,7 +455,7 @@ namespace NINA.Model {
         }
 
         public override string ToString() {
-            return ProgressExposureCount.ToString() + "x" + ExposureTime.ToString() + " " + ImageType;
+            return TotalExposureCount.ToString() + "x" + ExposureTime.ToString() + " " + ImageType;
         }
 
         public CaptureSequence(double exposureTime, string imageType, MyFilterWheel.FilterInfo filterType, MyCamera.BinningMode binning, int exposureCount) {
@@ -552,6 +565,9 @@ namespace NINA.Model {
             }
             set {
                 _progressExposureCount = value;
+                if(ProgressExposureCount > TotalExposureCount) {
+                    TotalExposureCount = ProgressExposureCount;
+                }
                 RaisePropertyChanged();
             }
         }

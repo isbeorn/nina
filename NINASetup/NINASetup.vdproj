@@ -3277,7 +3277,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:NINACustomControlLibrary, Version=1.3.4.1, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:NINACustomControlLibrary, Version=1.3.4.2, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_6861F5114B6BE2AF752480ECCF7A5ACF"
@@ -5469,15 +5469,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:N.I.N.A. - Nighttime Imaging 'N' Astronomy"
-        "ProductCode" = "8:{28F7A04E-88BC-4B56-812D-6977765A9125}"
-        "PackageCode" = "8:{2D15986D-DD20-4C16-9A9E-90C114B983AE}"
+        "ProductCode" = "8:{6A8A76A5-0B92-4ABD-9958-30D0BF220625}"
+        "PackageCode" = "8:{D6BB82AF-4621-4342-829A-0394C9D2DB3F}"
         "UpgradeCode" = "8:{5DC025EA-3D24-4E6B-9F82-79718D70896A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.3.42"
+        "ProductVersion" = "8:1.3.43"
         "Manufacturer" = "8: "
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
