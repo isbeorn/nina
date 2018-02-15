@@ -7,9 +7,44 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility {
     static class Logger {
-        static readonly object lockObj = new object();
-        static string LOGFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA\\tracelog.txt";
+        static Logger() {
+            LOGDATE = DateTime.Now.ToString("yyyy-MM-dd");
+            var logDir = Path.Combine(Utility.APPLICATIONTEMPPATH, "Logs");
+            LOGFILEPATH = Path.Combine(logDir, LOGDATE + " - tracelog.txt");
 
+            if(!Directory.Exists(logDir)) {
+                Directory.CreateDirectory(logDir);
+            }
+
+            var os = Environment.OSVersion;
+            
+            Append(PadBoth("", 70, '-'));
+            Append(PadBoth("NINA - Nighttime Imaging 'N' Astronomy", 70, '-'));
+            Append(PadBoth(string.Format("Running NINA Version {0}" , Utility.Version), 70, '-'));
+            Append(PadBoth(DateTime.Now.ToString("s"), 70, '-'));
+            Append(PadBoth(string.Format("ASCOM Platform Version {0}", Utility.AscomUtil.PlatformVersion), 70, '-'));
+            Append(PadBoth(string.Format(".NET Version {0}", Environment.Version.ToString()), 70, '-'));
+            Append(PadBoth(string.Format("Oparating System Information"), 70, '-'));
+            Append(PadBoth(string.Format("Is 64bit OS {0}", Environment.Is64BitOperatingSystem), 70, '-'));
+            Append(PadBoth(string.Format("Is 64bit Process {0}", Environment.Is64BitProcess), 70, '-'));
+            Append(PadBoth(string.Format("Platform {0:G}", os.Platform), 70, '-'));
+            Append(PadBoth(string.Format("Version {0}", os.VersionString), 70, '-'));
+            Append(PadBoth(string.Format("Major {0} Minor {1}", os.Version.Major, os.Version.Minor), 70, '-'));
+            Append(PadBoth(string.Format("Service Pack {0}", os.ServicePack), 70, '-'));
+            Append(PadBoth("", 70, '-'));
+        }
+
+        private static string PadBoth(string source, int length, char paddingChar) {
+            int spaces = length - source.Length;
+            int padLeft = spaces / 2 + source.Length;
+            return source.PadLeft(padLeft, paddingChar).PadRight(length, paddingChar);
+
+        }
+
+        static readonly object lockObj = new object();
+        static string LOGDATE;
+        static string LOGFILEPATH;
+        
 
         private static void Append(string msg) {
             try {

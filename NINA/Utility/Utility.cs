@@ -23,6 +23,16 @@ namespace NINA.Utility {
     public static class Utility {
 
 
+        public static string APPLICATIONTEMPPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NINA");
+        public static string Version {
+            get {
+                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                string version = fvi.FileVersion;
+                return version;
+            }
+        }
+
         private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
             new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
 

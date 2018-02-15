@@ -3277,7 +3277,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:NINACustomControlLibrary, Version=1.3.4.2, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:NINACustomControlLibrary, Version=1.3.4.3, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_6861F5114B6BE2AF752480ECCF7A5ACF"
@@ -5449,6 +5449,17 @@
                     "Property" = "8:_B9FDA79BCA0C46FCB06DA5DEB830D01C"
                         "Folders"
                         {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_46A63808C4B8494AA53A2F3381340597"
+                            {
+                            "Name" = "8:Logs"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_EB44FE7A2AF04D79864B332CC5C3EAD4"
+                                "Folders"
+                                {
+                                }
+                            }
                         }
                     }
                 }
@@ -6481,7 +6492,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FF25606544D448558FB12DA74BACB4E5"
             {
-            "SourcePath" = "8:..\\NINA\\obj\\x64\\Debug\\NINA.exe"
+            "SourcePath" = "8:..\\NINA\\obj\\Debug\\NINA.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
