@@ -18,6 +18,8 @@ namespace NINA.Utility {
 
             var os = Environment.OSVersion;
             
+
+            /* Initial log of App Version, OS Info, Ascom Version, .NET Version */
             Append(PadBoth("", 70, '-'));
             Append(PadBoth("NINA - Nighttime Imaging 'N' Astronomy", 70, '-'));
             Append(PadBoth(string.Format("Running NINA Version {0}" , Utility.Version), 70, '-'));
@@ -54,13 +56,10 @@ namespace NINA.Utility {
                         writer.WriteLine(string.Format(msg, msgParams));
                         writer.Close();
                     }
-                }
-                    
+                }                    
             } catch (Exception ex) {
                 Notification.Notification.ShowError(ex.Message);
             }
-
-
         }
 
         public static void Error(string msg, string stacktrace = "", params string[] msgParams) {
