@@ -21,6 +21,7 @@ namespace NINA.Utility.DCRaw {
         public async Task<ImageArray> ConvertToImageArray(string fileextension, CancellationToken token) {
             ImageArray iarr = null;
             try {
+                var rawfile = TMPIMGFILEPATH + fileextension;
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
@@ -28,11 +29,13 @@ namespace NINA.Utility.DCRaw {
                 startInfo.UseShellExecute = false;
                 startInfo.RedirectStandardOutput = true;
                 startInfo.CreateNoWindow = true;
-                startInfo.Arguments = "-4 -d -T -t 0 " + TMPIMGFILEPATH + fileextension;
+                startInfo.Arguments = "-4 -d -T -t 0 " + rawfile;
                 process.StartInfo = startInfo;
                 process.Start();
 
+                var sb = new StringBuilder();
                 while (!process.StandardOutput.EndOfStream) {
+                    sb.AppendLine(process.StandardOutput.ReadLine());
                     token.ThrowIfCancellationRequested();
                 }
 
@@ -45,13 +48,17 @@ namespace NINA.Utility.DCRaw {
                     bmp.CopyPixels(pixels, 2 * bmp.PixelWidth, 0);
                     iarr = await ImageArray.CreateInstance(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, true);
 
+                    File.Delete(rawfile);
+                    File.Delete(file);
 
                 } else {
-                    Notification.Notification.ShowError("Error occured during DCRaw conversion");
+                    Notification.Notification.ShowError("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());
+                    Logger.Error(sb.ToString());
+                    Logger.Error("File not found: " + file);                    
                 }
             } catch (Exception ex) {
                 Notification.Notification.ShowError(ex.Message);
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
             }
             return iarr;
         }
