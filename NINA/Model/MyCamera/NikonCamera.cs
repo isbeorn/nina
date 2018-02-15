@@ -152,7 +152,7 @@ namespace NINA.Model.MyCamera {
         private void Camera_ImageReady(NikonDevice sender, NikonImage image) {
             Logger.Debug("Image ready");
             _fileExtension = (image.Type == NikonImageType.Jpeg) ? ".jpg" : ".nef";
-            string filename = DCRaw.TMPIMGFILEPATH + _fileExtension;
+            var filename = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, DCRaw.FILEPREFIX + _fileExtension);
 
             Logger.Debug("Writing Image to temp folder");
             using (System.IO.FileStream s = new System.IO.FileStream(filename, System.IO.FileMode.Create, System.IO.FileAccess.Write)) {
