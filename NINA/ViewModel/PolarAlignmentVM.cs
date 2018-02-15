@@ -601,18 +601,21 @@ namespace NINA.ViewModel {
         }
 
         private void UpdateValues_Tick(object sender, EventArgs e) {
+            try {
+                var ascomutil = Utility.Utility.AscomUtil;
 
-            var ascomutil = Utility.Utility.AscomUtil;
+                var polaris = new Coordinates(ascomutil.HMSToHours("02:31:49.09456"), ascomutil.DMSToDegrees("89:15:50.7923"), Epoch.J2000, Coordinates.RAType.Hours);
+                polaris = polaris.Transform(Epoch.JNOW);
 
-            var polaris = new Coordinates(ascomutil.HMSToHours("02:31:49.09456"), ascomutil.DMSToDegrees("89:15:50.7923"), Epoch.J2000, Coordinates.RAType.Hours);
-            polaris = polaris.Transform(Epoch.JNOW);
+                var lst = Astrometry.GetLocalSiderealTimeNow(Settings.Longitude);
+                var hour_angle = Astrometry.GetHourAngle(lst, polaris.RA);
 
-            var lst = Astrometry.GetLocalSiderealTimeNow(Settings.Longitude);
-            var hour_angle = Astrometry.GetHourAngle(lst, polaris.RA);
+                Rotation = -Astrometry.HoursToDegrees(hour_angle);
+                HourAngleTime = ascomutil.HoursToHMS(hour_angle);
 
-            Rotation = -Astrometry.HoursToDegrees(hour_angle);
-            HourAngleTime = ascomutil.HoursToHMS(hour_angle);
-
+            } catch(Exception ex) {
+                Logger.Error(ex);
+            }
 
         }
     }
