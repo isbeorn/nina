@@ -22,19 +22,20 @@ namespace NINA.Utility {
             Append(PadBoth("NINA - Nighttime Imaging 'N' Astronomy", 70, '-'));
             Append(PadBoth(string.Format("Running NINA Version {0}" , Utility.Version), 70, '-'));
             Append(PadBoth(DateTime.Now.ToString("s"), 70, '-'));
-            Append(PadBoth(string.Format("ASCOM Platform Version {0}", Utility.AscomUtil.PlatformVersion), 70, '-'));
-            Append(PadBoth(string.Format(".NET Version {0}", Environment.Version.ToString()), 70, '-'));
-            Append(PadBoth(string.Format("Oparating System Information"), 70, '-'));
-            Append(PadBoth(string.Format("Is 64bit OS {0}", Environment.Is64BitOperatingSystem), 70, '-'));
-            Append(PadBoth(string.Format("Is 64bit Process {0}", Environment.Is64BitProcess), 70, '-'));
-            Append(PadBoth(string.Format("Platform {0:G}", os.Platform), 70, '-'));
-            Append(PadBoth(string.Format("Version {0}", os.VersionString), 70, '-'));
-            Append(PadBoth(string.Format("Major {0} Minor {1}", os.Version.Major, os.Version.Minor), 70, '-'));
-            Append(PadBoth(string.Format("Service Pack {0}", os.ServicePack), 70, '-'));
+            Append(PadBoth("ASCOM Platform Version {0}", 70, '-', Utility.AscomUtil.PlatformVersion));
+            Append(PadBoth(".NET Version {0}", 70, '-', Environment.Version.ToString()));
+            Append(PadBoth("Oparating System Information", 70, '-'));
+            Append(PadBoth("Is 64bit OS {0}", 70, '-', Environment.Is64BitOperatingSystem.ToString()));
+            Append(PadBoth("Is 64bit Process {0}", 70, '-', Environment.Is64BitProcess.ToString()));
+            Append(PadBoth("Platform {0:G}", 70, '-', os.Platform.ToString()));
+            Append(PadBoth("Version {0}", 70, '-', os.VersionString));
+            Append(PadBoth("Major {0} Minor {1}", 70, '-', os.Version.Major.ToString(), os.Version.Minor.ToString()));
+            Append(PadBoth("Service Pack {0}", 70, '-', os.ServicePack));
             Append(PadBoth("", 70, '-'));
         }
 
-        private static string PadBoth(string source, int length, char paddingChar) {
+        private static string PadBoth(string msg, int length, char paddingChar, params string[] msgParams) {
+            var source = string.Format(msg, msgParams);
             int spaces = length - source.Length;
             int padLeft = spaces / 2 + source.Length;
             return source.PadLeft(padLeft, paddingChar).PadRight(length, paddingChar);
@@ -46,11 +47,11 @@ namespace NINA.Utility {
         static string LOGFILEPATH;
         
 
-        private static void Append(string msg) {
+        private static void Append(string msg, params string[] msgParams) {
             try {
                 lock (lockObj) {
                     using (StreamWriter writer = new StreamWriter(LOGFILEPATH, true)) {
-                        writer.WriteLine(msg);
+                        writer.WriteLine(string.Format(msg, msgParams));
                         writer.Close();
                     }
                 }
@@ -62,37 +63,41 @@ namespace NINA.Utility {
 
         }
 
-        public static void Error(string msg, string stacktrace = "") {
-
-            Append(DateTime.Now.ToString("s") + " ERROR:\t" + msg + '\t' + stacktrace);
+        public static void Error(string msg, string stacktrace = "", params string[] msgParams) {
+            msg = string.Format(msg, msgParams);
+            Append("{0} ERROR: \t {1} \t {2}", DateTime.Now.ToString("s"), msg, stacktrace);
         }
 
         public static void Error(Exception ex) {
             Error(ex.Message, ex.StackTrace);
         }
 
-        public static void Info(string msg) {
+        public static void Info(string msg, params string[] msgParams) {
             if (Settings.LogLevel >= 1) {
-                Append(DateTime.Now.ToString("s") + " INFO:\t" + msg);
+                msg = string.Format(msg, msgParams);
+                Append("{0} INFO: \t {1}", DateTime.Now.ToString("s"), msg);
             }
 
         }
 
-        public static void Warning(string msg) {
+        public static void Warning(string msg, params string[] msgParams) {
             if (Settings.LogLevel >= 2) {
-                Append(DateTime.Now.ToString("s") + " WARNING:\t" + msg);
+                msg = string.Format(msg, msgParams);
+                Append("{0} WARNING: \t {1}", DateTime.Now.ToString("s"), msg);
             }
         }
 
-        public static void Debug(string msg) {
+        public static void Debug(string msg, params string[] msgParams) {
             if (Settings.LogLevel >= 3) {
-                Append(DateTime.Now.ToString("s") + " DEBUG:\t" + msg);
+                msg = string.Format(msg, msgParams);
+                Append("{0} DEBUG: \t {1}", DateTime.Now.ToString("s"), msg);
             }
         }
 
-        public static void Trace(string msg) {
+        public static void Trace(string msg, params string[] msgParams) {
             if (Settings.LogLevel >= 4) {
-                Append(DateTime.Now.ToString("s") + " TRACE:\t" + msg);
+                msg = string.Format(msg, msgParams);
+                Append("{0} TRACE: \t {1}", DateTime.Now.ToString("s"), msg);
             }
         }
     }
