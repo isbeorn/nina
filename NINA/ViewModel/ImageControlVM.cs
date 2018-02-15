@@ -360,7 +360,7 @@ namespace NINA.ViewModel {
                 p.Add(new OptionsVM.ImagePattern("$$GAIN$$", "Camera Gain", Cam?.Gain.ToString() ?? string.Empty));
 
                 string filename = Utility.Utility.GetImageFileString(p);
-                string completefilename = Settings.ImageFilePath + filename;
+                string completefilename = Path.Combine(Settings.ImageFilePath, filename);
 
                 Stopwatch sw = Stopwatch.StartNew();
                 if (Settings.FileType == FileTypeEnum.FITS) {
