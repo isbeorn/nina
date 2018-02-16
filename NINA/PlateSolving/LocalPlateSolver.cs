@@ -75,7 +75,7 @@ namespace NINA.PlateSolving {
                 var cygwinbashpath = Path.GetFullPath(Path.Combine(Settings.CygwinLocation, "bin", "bash.exe"));
 
                 if (!File.Exists(cygwinbashpath)) {
-                    Logger.Error(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + cygwinbashpath);
+                    Logger.Error(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + cygwinbashpath, null);
                     Notification.ShowError(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + cygwinbashpath);
                     result.Success = false;
                     return result;
@@ -141,11 +141,10 @@ namespace NINA.PlateSolving {
                 } else {
                     result.Success = false;
                 }
-            } catch (OperationCanceledException ex) {
-                Logger.Trace(ex.Message);
+            } catch (OperationCanceledException) {
                 result.Success = false;
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 result.Success = false;
             } finally {
                 if(File.Exists(wcsfilepath)) {

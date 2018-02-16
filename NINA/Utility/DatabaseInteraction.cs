@@ -39,7 +39,7 @@ namespace NINA.Utility {
                     }
                 }
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.Notification.ShowError(ex.Message);
             }
 
@@ -68,7 +68,7 @@ namespace NINA.Utility {
 
 
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.Notification.ShowError(ex.Message);
             }
 
@@ -225,7 +225,7 @@ namespace NINA.Utility {
                     }
                 }
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.Notification.ShowError(ex.Message);
             }
 

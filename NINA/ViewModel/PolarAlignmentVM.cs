@@ -353,8 +353,8 @@ namespace NINA.ViewModel {
                     Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
 
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken);
-                } catch (OperationCanceledException ex) {
-                    Logger.Trace(ex.Message);
+                } catch (OperationCanceledException) {
+
                 } finally {
                     progress.Report("Restoring start position...");
                     await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = startPosition, Token = canceltoken });
@@ -386,8 +386,8 @@ namespace NINA.ViewModel {
 
                     Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
                     Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
-                } catch (OperationCanceledException ex) {
-                    Logger.Trace(ex.Message);
+                } catch (OperationCanceledException) {
+
                 }
             } else {
                 Notification.ShowError(Locale.Loc.Instance["LblNoCameraConnected"]);
@@ -487,8 +487,8 @@ namespace NINA.ViewModel {
 
                     progress.Report(new ApplicationStatus() { Status = msg });
 
-                } catch (OperationCanceledException ex) {
-                    Logger.Trace(ex.Message);                    
+                } catch (OperationCanceledException) {
+                    
                 }
 
                 /*  Altitude
@@ -574,8 +574,8 @@ namespace NINA.ViewModel {
                 poleError = 3.81 * 3600.0 * decError / (4 * movementdeg * Math.Cos(Astrometry.ToRadians(startPosition.Dec)));
                 // Convert pole error from arcminutes to degrees
                 poleError = Astrometry.ArcminToDegree(poleError);
-            } catch (OperationCanceledException ex) {
-                Logger.Trace(ex.Message);
+            } catch (OperationCanceledException) {
+
             } finally {
                 //progress.Report("Slewing back to origin...");
                 await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = startPosition, Token = canceltoken });

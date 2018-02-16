@@ -324,7 +324,7 @@ namespace NINA.ViewModel {
                 throw new OperationCanceledException(ex.Message);
             } catch(Exception ex) {                                
                 Notification.ShowError(ex.Message);
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
             }
             finally {
                 _progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -456,7 +456,7 @@ namespace NINA.ViewModel {
                 }
                 return uniquePath;
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
                 return string.Empty;
             }
@@ -493,7 +493,7 @@ namespace NINA.ViewModel {
                 }
                 return uniquePath;
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);                
                 return string.Empty;
             }
@@ -576,7 +576,7 @@ namespace NINA.ViewModel {
                 return uniquePath;
 
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
                 return string.Empty;
             }

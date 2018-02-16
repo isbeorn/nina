@@ -48,6 +48,12 @@ namespace NINA.ViewModel {
             InitAvalonDockLayout();
 
             MeridianFlipVM = new MeridianFlipVM();
+
+            Logger.Error("Test Error", null);
+            Logger.Info("Test INFO");
+            Logger.Trace("Test Trace");
+            Logger.Debug("Test Debug");
+            Logger.Warning("Test Warning");
         }
 
         private async Task<bool> CheckUpdate() {

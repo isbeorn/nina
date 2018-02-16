@@ -163,8 +163,8 @@ namespace NINA.PlateSolving {
                     progress.Report(new ApplicationStatus() { Status = "Authorization failed ..." });
                 }
 
-            } catch (System.OperationCanceledException ex) {
-                Logger.Trace(ex.Message);
+            } catch (System.OperationCanceledException) {
+
                 result.Success = false;
             } finally {
                 progress.Report(new ApplicationStatus() { Status = string.Empty });

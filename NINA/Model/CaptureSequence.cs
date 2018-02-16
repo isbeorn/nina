@@ -78,7 +78,7 @@ namespace NINA.Model {
                 }
                 
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.ShowError(ex.Message);                
             }
             
@@ -94,7 +94,7 @@ namespace NINA.Model {
 
                 l = (CaptureSequenceList)xmlSerializer.Deserialize(reader);
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.ShowError(ex.Message);
             }
             return l;

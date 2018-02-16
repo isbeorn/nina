@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,42 +63,74 @@ namespace NINA.Utility {
             }
         }
 
-        public static void Error(string msg, string stacktrace = "", params string[] msgParams) {
-            msg = string.Format(msg, msgParams);
-            Append("{0} ERROR: \t {1} \t {2}", DateTime.Now.ToString("s"), msg, stacktrace);
+        private static void Error(
+                string message,
+                string stacktrace,
+                string memberName,
+                string sourceFilePath) {
+            message = message + "\t" + stacktrace;
+            Append(EnrichLogMessage(LogLevelEnum.ERROR, message, memberName, sourceFilePath));
         }
 
-        public static void Error(Exception ex) {
-            Error(ex.Message, ex.StackTrace);
+        public static void Error(
+                string customMsg,
+                Exception ex,                
+                [CallerMemberName] string memberName = "",
+                [CallerFilePath] string sourceFilePath = "") {
+            Error(customMsg + ex?.Message ?? string.Empty, ex?.StackTrace ?? string.Empty, memberName, sourceFilePath);
         }
 
-        public static void Info(string msg, params string[] msgParams) {
+        public static void Error(
+                Exception ex,
+                [CallerMemberName] string memberName = "",
+                [CallerFilePath] string sourceFilePath = "") {
+            Error(ex.Message, ex.StackTrace, memberName, sourceFilePath);
+        }
+
+        public static void Info(string message,
+                [CallerMemberName] string memberName = "",
+                [CallerFilePath] string sourceFilePath = "") {
             if (Settings.LogLevel >= 1) {
-                msg = string.Format(msg, msgParams);
-                Append("{0} INFO: \t {1}", DateTime.Now.ToString("s"), msg);
+                Append(EnrichLogMessage(LogLevelEnum.INFO, message, memberName, sourceFilePath));
             }
 
         }
 
-        public static void Warning(string msg, params string[] msgParams) {
+        public static void Warning(string message,
+                [CallerMemberName] string memberName = "",
+                [CallerFilePath] string sourceFilePath = "") {
             if (Settings.LogLevel >= 2) {
-                msg = string.Format(msg, msgParams);
-                Append("{0} WARNING: \t {1}", DateTime.Now.ToString("s"), msg);
+                Append(EnrichLogMessage(LogLevelEnum.WARNING, message, memberName, sourceFilePath));
             }
         }
 
-        public static void Debug(string msg, params string[] msgParams) {
+        public static void Debug(string message,
+                [CallerMemberName] string memberName = "",
+                [CallerFilePath] string sourceFilePath = "") {
             if (Settings.LogLevel >= 3) {
-                msg = string.Format(msg, msgParams);
-                Append("{0} DEBUG: \t {1}", DateTime.Now.ToString("s"), msg);
+                Append(EnrichLogMessage(LogLevelEnum.DEBUG, message, memberName, sourceFilePath));
             }
         }
 
-        public static void Trace(string msg, params string[] msgParams) {
+        public static void Trace(string message,
+                             [CallerMemberName] string memberName = "",
+                             [CallerFilePath] string sourceFilePath = "") {
             if (Settings.LogLevel >= 4) {
-                msg = string.Format(msg, msgParams);
-                Append("{0} TRACE: \t {1}", DateTime.Now.ToString("s"), msg);
+                Append(EnrichLogMessage(LogLevelEnum.TRACE, message, memberName, sourceFilePath));
             }
         }
+
+        private static string EnrichLogMessage(LogLevelEnum level, string message, string memberName, string sourceFilePath) {
+            var sb = new StringBuilder();
+            var d = DateTime.Now.ToString("s");
+            var prefix = string.Format("[{0}] \t [{1}]", d, level.ToString());
+
+            sb.AppendLine(string.Format("{0} \t [MemberName] {1}", prefix, memberName));
+            sb.AppendLine(string.Format("{0} \t [FileName] {1}", prefix, sourceFilePath));
+            sb.AppendLine(string.Format("{0} \t [Message] {1}", prefix, message));
+            return sb.ToString();
+        }
+
+        
     }
 }

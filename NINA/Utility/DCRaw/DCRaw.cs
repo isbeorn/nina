@@ -53,8 +53,8 @@ namespace NINA.Utility.DCRaw {
 
                 } else {
                     Notification.Notification.ShowError("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());
-                    Logger.Error(sb.ToString());
-                    Logger.Error("File not found: " + file);                    
+                    Logger.Error(sb.ToString(), null);
+                    Logger.Error("File not found: " + file, null);                    
                 }
             } catch (Exception ex) {
                 Notification.Notification.ShowError(ex.Message);

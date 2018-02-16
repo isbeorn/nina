@@ -18,7 +18,7 @@ namespace NINA.Utility {
             try {
                 await task;
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
             }
             var propertyChanged = PropertyChanged;
             if (propertyChanged == null)

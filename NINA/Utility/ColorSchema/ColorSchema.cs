@@ -36,11 +36,11 @@ namespace NINA.Utility {
 
                 } catch (Exception e) {
                     schemas = new ColorSchemas();
-                    Logger.Error("Could not load color schema xml" + e.Message, e.StackTrace);
+                    Logger.Error("Could not load color schema xml", e);
                 }
             } else {
                 schemas = new ColorSchemas();
-                Logger.Error("Color schema xml not found!");
+                Logger.Error("Color schema xml not found!", null);
             }
 
             schemas.Items.Add(new ColorSchema {

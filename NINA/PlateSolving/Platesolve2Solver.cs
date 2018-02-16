@@ -175,10 +175,10 @@ namespace NINA.PlateSolving {
 
                 //Extract solution coordinates
                 result = ExtractResult();
-            } catch (OperationCanceledException ex) {                
-                Logger.Trace(ex.Message);
+            } catch (OperationCanceledException) {    
+
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
             } finally {
                 if(File.Exists(TMPSOLUTIONFILEPATH)) {
                     File.Delete(TMPSOLUTIONFILEPATH);
