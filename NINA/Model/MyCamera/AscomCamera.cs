@@ -869,7 +869,7 @@ namespace NINA.Model.MyCamera {
             } catch (ASCOM.DriverAccessCOMException ex) {
                 Notification.ShowError(ex.Message);
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblUnableToConnectCamera"] + ex.Message);
             }
             return Connected;
@@ -901,8 +901,8 @@ namespace NINA.Model.MyCamera {
                         arr = (Int32[,,])ImageArray;
                         return await MyCamera.ImageArray.CreateInstance(arr, false);
                     }
-                } catch (OperationCanceledException ex) {
-                    Logger.Trace(ex.Message);
+                } catch (OperationCanceledException) {
+
                 } catch {
 
                 }

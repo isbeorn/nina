@@ -82,10 +82,7 @@ namespace NINA.ViewModel {
 
         public string Version {
             get {
-                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                string version = fvi.FileVersion;
-                return version;
+                return Utility.Utility.Version;
             }
         }
 

@@ -488,7 +488,7 @@ namespace NINA.ViewModel {
             for (int i = 0; i < ASICameras.Count; i++) {
                 var cam = ASICameras.GetCamera(i);
                 if (!string.IsNullOrEmpty(cam.Name)) {
-                    Logger.Trace("Adding " + cam.Name);
+                    Logger.Trace(string.Format("Adding {0}", cam.Name));
                     Devices.Add(cam);
                 }
             }
@@ -499,7 +499,7 @@ namespace NINA.ViewModel {
 
                 try {
                     AscomCamera cam = new AscomCamera(device.Key, device.Value + " (ASCOM)");
-                    Logger.Trace("Adding " + cam.Name);
+                    Logger.Trace(string.Format("Adding {0}", cam.Name));
                     Devices.Add(cam);
                 } catch (Exception) {
                     //only add cameras which are supported. e.g. x86 drivers will not work in x64
@@ -520,7 +520,7 @@ namespace NINA.ViewModel {
                     EDSDK.EdsDeviceInfo info;
                     err = EDSDK.EdsGetDeviceInfo(cam, out info);
 
-                    Logger.Trace("Adding " + info.szDeviceDescription);
+                    Logger.Trace(string.Format("Adding {0}", info.szDeviceDescription));
                     Devices.Add(new EDCamera(cam, info));
                 }
             }

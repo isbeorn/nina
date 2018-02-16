@@ -16,12 +16,14 @@ namespace NINA.Utility.DCRaw {
         }
 
         static string DCRAWLOCATION = @"Utility\DCRaw\dcraw.exe";
-        public static string TMPIMGFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA\\dcraw_tmp";
+        public static string FILEPREFIX = "dcraw_tmp";
 
         public async Task<ImageArray> ConvertToImageArray(string fileextension, CancellationToken token) {
             ImageArray iarr = null;
+            var rawfile = Path.Combine(Utility.APPLICATIONTEMPPATH, FILEPREFIX + fileextension);
+            var file = Path.Combine(Utility.APPLICATIONTEMPPATH, FILEPREFIX + ".tiff");
             try {
-                var rawfile = TMPIMGFILEPATH + fileextension;
+                
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
@@ -39,7 +41,7 @@ namespace NINA.Utility.DCRaw {
                     token.ThrowIfCancellationRequested();
                 }
 
-                var file = TMPIMGFILEPATH + ".tiff";
+                
 
                 if (File.Exists(file)) {
                     TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(file), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
@@ -48,17 +50,22 @@ namespace NINA.Utility.DCRaw {
                     bmp.CopyPixels(pixels, 2 * bmp.PixelWidth, 0);
                     iarr = await ImageArray.CreateInstance(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, true);
 
-                    File.Delete(rawfile);
-                    File.Delete(file);
 
                 } else {
                     Notification.Notification.ShowError("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());
-                    Logger.Error(sb.ToString());
-                    Logger.Error("File not found: " + file);                    
+                    Logger.Error(sb.ToString(), null);
+                    Logger.Error("File not found: " + file, null);                    
                 }
             } catch (Exception ex) {
                 Notification.Notification.ShowError(ex.Message);
                 Logger.Error(ex);
+            } finally {
+                if(File.Exists(rawfile)) {
+                    File.Delete(rawfile);
+                }
+                if(File.Exists(file)) {
+                    File.Delete(file);
+                }
             }
             return iarr;
         }

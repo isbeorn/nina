@@ -475,7 +475,8 @@ namespace NINA.Model.MyCamera {
 
                 System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
                 var fileextension = ".cr2";
-                System.IO.FileStream filestream = new System.IO.FileStream(DCRaw.TMPIMGFILEPATH + fileextension, System.IO.FileMode.Create);
+                var filename = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, DCRaw.FILEPREFIX + fileextension);
+                System.IO.FileStream filestream = new System.IO.FileStream(filename, System.IO.FileMode.Create);
                 memoryStream.WriteTo(filestream);
 
                 memoryStream.Dispose();

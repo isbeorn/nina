@@ -85,7 +85,7 @@ namespace NINA.Model.MyFilterWheel {
                     _filterwheel.Connected = value;
 
                 } catch (Exception ex) {
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.ShowError(Locale.Loc.Instance["LblReconnectFilterwheel"] + Environment.NewLine + ex.Message);
                     _connected = false;
                 }

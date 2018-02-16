@@ -23,6 +23,16 @@ namespace NINA.Utility {
     public static class Utility {
 
 
+        public static string APPLICATIONTEMPPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NINA");
+        public static string Version {
+            get {
+                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                string version = fvi.FileVersion;
+                return version;
+            }
+        }
+
         private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
             new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
 
@@ -118,7 +128,7 @@ namespace NINA.Utility {
                     }
                 } catch (Exception ex) {
                     canceltoken.ThrowIfCancellationRequested();
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
 
                     response?.Close();
@@ -162,7 +172,7 @@ namespace NINA.Utility {
                     }
                 } catch (Exception ex) {
                     canceltoken.ThrowIfCancellationRequested();
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
 
                     response?.Close();
@@ -248,7 +258,7 @@ namespace NINA.Utility {
                     }
                 } catch (Exception ex) {
                     canceltoken.ThrowIfCancellationRequested();
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
 
                     wresp?.Close();

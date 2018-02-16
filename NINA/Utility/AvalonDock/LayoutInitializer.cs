@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using Xceed.Wpf.AvalonDock.Layout;
 namespace NINA.Utility.AvalonDock {
     class LayoutInitializer : ILayoutUpdateStrategy {
 
-        public static string LAYOUTFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA\\avalondock.config";
+        public static string LAYOUTFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "avalondock.config");
 
         public bool BeforeInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableToShow, ILayoutContainer destinationContainer) {
             //AD wants to add the anchorable into destinationContainer

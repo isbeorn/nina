@@ -876,7 +876,7 @@ namespace NINA.Model.MyTelescope {
                     _telescope.Connected = value;
 
                 } catch (Exception ex) {
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.ShowError(Locale.Loc.Instance["LblReconnectTelescope"] + Environment.NewLine + ex.Message);
                     _connected = false;
                 }

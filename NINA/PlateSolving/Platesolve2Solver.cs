@@ -19,8 +19,8 @@ namespace NINA.PlateSolving {
         int _regions;
         Coordinates _target;
 
-        static string TMPIMGFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA\\tmp.jpg";
-        static string TMPSOLUTIONFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA\\tmp.apm";
+        static string TMPIMGFILEPATH = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.jpg");
+        static string TMPSOLUTIONFILEPATH = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.apm");
 
         public Platesolve2Solver(int focallength, double pixelsize, double width, double height, int regions, Coordinates target) {
             double arcsecperpixel = (pixelsize / focallength) * 206.3;
@@ -175,11 +175,17 @@ namespace NINA.PlateSolving {
 
                 //Extract solution coordinates
                 result = ExtractResult();
-            } catch (OperationCanceledException ex) {                
-                Logger.Trace(ex.Message);
+            } catch (OperationCanceledException) {    
+
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
             } finally {
+                if(File.Exists(TMPSOLUTIONFILEPATH)) {
+                    File.Delete(TMPSOLUTIONFILEPATH);
+                }
+                if(File.Exists(TMPIMGFILEPATH)) {
+                    File.Delete(TMPIMGFILEPATH);
+                }                
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 
