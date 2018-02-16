@@ -248,6 +248,7 @@ namespace NINA.Model.MyCamera {
 
             }
             set {
+                ValidateMode();
                 var iso = ISOSpeeds.Where((x) => x.Key == value).FirstOrDefault().Value;
                 if (HasError(SetProperty(EDSDK.PropID_ISOSpeed, iso))) {
                     Notification.ShowError(Locale.Loc.Instance["LblUnableToSetISO"]);
@@ -318,15 +319,11 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool Initialize() {
-            if (IsManualMode()) {
-                GetShutterSpeeds();
-                GetISOSpeeds();
-                SetSaveLocation();
-                SubscribeEvents();
-                return true;
-            } else {
-                return false;
-            }
+            ValidateMode();
+            GetISOSpeeds();
+            SetSaveLocation();
+            SubscribeEvents();
+            return true;
         }
 
         protected event EDSDK.EdsObjectEventHandler SDKObjectEvent;
@@ -378,11 +375,15 @@ namespace NINA.Model.MyCamera {
         private bool IsManualMode() {
             UInt32 mode;
             EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_AEModeSelect, 0, out mode);
-            bool isManual = (mode == 3);
-            if (!isManual) {
-                Notification.ShowError(Locale.Loc.Instance["LblEDCameraNotInManualMode"]);
-            }
+            bool isManual = (mode == 3);            
             return isManual;
+        }
+
+        private bool IsBulbMode() {
+            UInt32 mode;
+            EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_AEModeSelect, 0, out mode);
+            bool isBulb = (mode == 4);
+            return isBulb;
         }
 
         private Dictionary<short, int> ISOSpeeds = new Dictionary<short, int>();
@@ -519,13 +520,74 @@ namespace NINA.Model.MyCamera {
 
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
-            DownloadReady = false;
-            if (exposureTime < 10.0) {
-                SetExposureTime(exposureTime);
-            } else {
-                SetExposureTime(double.MaxValue);
+        private void ValidateMode() {
+            if (!IsManualMode() && !IsBulbMode()) {
+                var result = MyMessageBox.MyMessageBox.Show(
+                    Locale.Loc.Instance["LblEDCameraNotInManualMode"],
+                    Locale.Loc.Instance["LblInvalidMode"],
+                    System.Windows.MessageBoxButton.OKCancel,
+                    System.Windows.MessageBoxResult.OK);
+                if (result == System.Windows.MessageBoxResult.OK) {
+                    ValidateMode();
+                }  else {
+                    throw new Exception("Invalid camera mode");
+                }
             }
+        }
+
+        private void ValidateModeForExposure(double exposureTime) {
+            if(!IsManualMode() && !IsBulbMode()) {
+                var result = MyMessageBox.MyMessageBox.Show(
+                    Locale.Loc.Instance["LblEDCameraNotInManualMode"], 
+                    Locale.Loc.Instance["LblInvalidMode"], 
+                    System.Windows.MessageBoxButton.OKCancel, 
+                    System.Windows.MessageBoxResult.OK);
+                if (result == System.Windows.MessageBoxResult.OK) {
+                    ValidateModeForExposure(exposureTime);
+                } else {
+                    throw new Exception("Invalid camera mode for taking exposures");
+                }
+            }
+
+            if (IsManualMode()) {
+                GetShutterSpeeds();
+                if (exposureTime <= 30.0) {
+                    SetExposureTime(exposureTime);
+                } else {
+                    var success = SetExposureTime(double.MaxValue);
+                    if(!success) {
+                        var result = MyMessageBox.MyMessageBox.Show(
+                            Locale.Loc.Instance["LblChangeToBulbMode"],
+                            Locale.Loc.Instance["LblInvalidModeManual"], 
+                            System.Windows.MessageBoxButton.OKCancel, 
+                            System.Windows.MessageBoxResult.OK);
+                        if (result == System.Windows.MessageBoxResult.OK) {
+                            ValidateModeForExposure(exposureTime);
+                        } else {
+                            throw new Exception("Invalid camera mode [Manual] for taking bulb exposures");
+                        }
+                    }
+                }
+            }
+
+            if (IsBulbMode() && exposureTime < 1.0) {
+                var result = MyMessageBox.MyMessageBox.Show(
+                    Locale.Loc.Instance["LblChangeToManualMode"],
+                    Locale.Loc.Instance["LblInvalidModeBulb"], 
+                    System.Windows.MessageBoxButton.OKCancel, 
+                    System.Windows.MessageBoxResult.OK);
+                if (result == System.Windows.MessageBoxResult.OK) {
+                    ValidateModeForExposure(exposureTime);
+                } else {
+                    throw new Exception("Invalid camera mode [Bulb] for taking exposures < 1s");
+                }
+            };
+        }
+
+        public void StartExposure(double exposureTime, bool isLightFrame) {            
+            DownloadReady = false;
+
+            ValidateModeForExposure(exposureTime);
 
             /* Start exposure */
             if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF))) {
@@ -545,19 +607,25 @@ namespace NINA.Model.MyCamera {
         }
 
 
-        private void SetExposureTime(double exposureTime) {
+        private bool SetExposureTime(double exposureTime) {
             double key;
             if (exposureTime != double.MaxValue) {
                 var l = new List<double>(ShutterSpeeds.Keys);
                 key = l.Aggregate((x, y) => Math.Abs(x - exposureTime) < Math.Abs(y - exposureTime) ? x : y);
             } else {
                 key = double.MaxValue;
-            }
+                if (!ShutterSpeeds.ContainsKey(key)) {
+                    // No Bulb available - bulb mode has to be set manually
+                    return false;
+                }
+            }           
 
             /* Shutter speed to Bulb */
-            if (HasError(SetProperty(EDSDK.PropID_Tv, ShutterSpeeds[key]))) {
+            if (HasError(SetProperty(EDSDK.PropID_Tv, ShutterSpeeds[key]))) {                
                 Notification.ShowError(Locale.Loc.Instance["LblUnableToSetExposureTime"]);
+                return false;
             }
+            return true;
         }
 
         public int Offset {
@@ -601,7 +669,7 @@ namespace NINA.Model.MyCamera {
             if (err == (uint)EDSDK.EDS_ERR.OK) {
                 return false;
             } else {
-                //Todo React to error
+                Logger.Error(new Exception(string.Format("Canon SDK Error with Code {0} occured", err)));
                 return true;
             }
         }

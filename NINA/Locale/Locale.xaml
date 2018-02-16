@@ -363,7 +363,7 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblTelescopeNotConnectedForCommand">Telescope not connected to send command</s:String>
     <s:String x:Key="LblASIOnly16BitMono">Only 16 bit Monochrome sensors currently supported</s:String>
     <s:String x:Key="LblUnableToSetISO">Unable to set ISO</s:String>
-    <s:String x:Key="LblEDCameraNotInManualMode">Camera is not set to manual mode! Please set it to manual mode before connecting</s:String>
+    <s:String x:Key="LblEDCameraNotInManualMode">Camera is not set to manual or bulb mode! Please set it to manual or bulb mode before connecting</s:String>
     <s:String x:Key="LblUnableToStartExposure">Unable to start camera exposure</s:String>
     <s:String x:Key="LblUnableToSetExposureTime">Unable to set exposure time</s:String>
     <s:String x:Key="LblColorSensorNotSupported">Color sensor is not supported yet</s:String>
@@ -418,4 +418,10 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblUnhandledException">Unhandled Exception occurred</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">The Application ran into an unhandled exception and unfortunately has to shut down. 
 The error has been logged to &quot;%localappdata%\NINA\Logs&quot;.</s:String>
+    <s:String x:Key="LblChangeToBulbMode">Please change the mode dial to bulb mode</s:String>
+    <s:String x:Key="LblChangeToManualMode">Please change the mode dial to manual mode</s:String>
+    <s:String x:Key="LblInvalidModeBulb">Invalid mode (bulb) for Exposure Time &lt;1s</s:String>
+    <s:String x:Key="LblInvalidModeManual">Invalid mode (manual) for Exposure Time &gt;30s</s:String>
+    <s:String x:Key="LblInvalidMode">Invalid mode</s:String>
+
 </ResourceDictionary>

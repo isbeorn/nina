@@ -366,7 +366,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblTelescopeNotConnectedForCommand">Teleskop ist nicht verbunden um das Kommando zu senden</s:String>
     <s:String x:Key="LblASIOnly16BitMono">Derzeit werden nur 16 bit Monochrome Sensoren unterstützt</s:String>
     <s:String x:Key="LblUnableToSetISO">ISO konnte nicht gesetzt werden</s:String>
-    <s:String x:Key="LblEDCameraNotInManualMode">Kamera ist nicht im manuellen Modus! Bitte die Kamera auf den manuellen Modus umstellen</s:String>
+    <s:String x:Key="LblEDCameraNotInManualMode">Kamera ist nicht im manuellen oder im bulb Modus! Bitte die Kamera auf den manuellen oder den bulb Modus umstellen</s:String>
     <s:String x:Key="LblUnableToStartExposure">Kamerabelichtung konnte nicht gestartet werden</s:String>
     <s:String x:Key="LblUnableToSetExposureTime">Belichtungszeit konnte nicht gesetzt werden</s:String>
     <s:String x:Key="LblColorSensorNotSupported">Farbsensor ist derzeit nicht unterstützt</s:String>
@@ -421,4 +421,9 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblUnhandledException">Unbehandelter Ausnahmefehler</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">Leider muss die Anwendung sich aufgrund eines unbehandelten Fehlers schließen.
 Der Fehler wurde in &quot;%localappdata%\NINA\Logs&quot; aufgezeichnet.</s:String>
+    <s:String x:Key="LblChangeToBulbMode">Bitte das Modus-Einstellrad auf Bulb stellen</s:String>
+    <s:String x:Key="LblChangeToManualMode">Bitte das Modus-Einstellrad auf Manuell stellen</s:String>
+    <s:String x:Key="LblInvalidModeBulb">Ungültiger Modus (Bulb) für Belichtungszeiten &lt;1s</s:String>
+    <s:String x:Key="LblInvalidModeManual">Ungültiger Modus (Manuell) für Belichtungszeiten &gt;30s</s:String>
+    <s:String x:Key="LblInvalidMode">Ungültiger Modus</s:String>
 </ResourceDictionary>
