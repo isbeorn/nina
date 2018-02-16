@@ -21,9 +21,7 @@ namespace NINA.PlateSolving {
         double _searchradius;
 
         Coordinates _target;
-
-        static string TMPIMGFILEPATH = Environment.GetEnvironmentVariable("LocalAppData") + "\\NINA";
-
+        
         public LocalPlateSolver(int focallength, double pixelsize) {
             double arcsecperpixel = (pixelsize / focallength) * 206.3;
             _lowarcsecperpixel = arcsecperpixel - 0.2;
@@ -65,18 +63,19 @@ namespace NINA.PlateSolving {
         private PlateSolveResult Solve(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
 
             PlateSolveResult result = new PlateSolveResult();
+            string imgfilepath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.jpg");
+            var wcsfilepath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.wcs");
             try {
-                progress.Report(new ApplicationStatus() { Status = "Solving..." });
-                string filepath = TMPIMGFILEPATH + "\\tmp.jpg";
+                progress.Report(new ApplicationStatus() { Status = "Solving..." });                
 
-                using (FileStream fs = new FileStream(filepath, FileMode.Create)) {
+                using (FileStream fs = new FileStream(imgfilepath, FileMode.Create)) {
                     image.CopyTo(fs);
                 }
 
-                var cygwinbashpath = Path.GetFullPath(Settings.CygwinLocation + "\\bin\\bash.exe");
+                var cygwinbashpath = Path.GetFullPath(Path.Combine(Settings.CygwinLocation, "bin", "bash.exe"));
 
                 if (!File.Exists(cygwinbashpath)) {
-                    Logger.Error(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + cygwinbashpath);
+                    Logger.Error(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + cygwinbashpath, null);
                     Notification.ShowError(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + cygwinbashpath);
                     result.Success = false;
                     return result;
@@ -89,7 +88,7 @@ namespace NINA.PlateSolving {
                 startInfo.UseShellExecute = false;
                 startInfo.RedirectStandardOutput = true;
                 startInfo.CreateNoWindow = true;
-                startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field {1} {2}'", cygwinbashpath, GetOptions(), filepath.Replace("\\", "/"));
+                startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field {1} {2}'", cygwinbashpath, GetOptions(), imgfilepath.Replace("\\", "/"));
                 //startInfo.Arguments = string.Format("/C {0} --login -c '/usr/bin/solve-field -p -O -U none -B none -R none -M none -N none --sigma 70--no -C cancel--crpix -center --objs 100 -u arcsecperpix -L {1} -H {2} {3}'", cygwinbashpath, low.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), high.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), filepath.Replace("\\", "/"));
                 process.StartInfo = startInfo;
                 process.Start();
@@ -99,9 +98,9 @@ namespace NINA.PlateSolving {
                     canceltoken.ThrowIfCancellationRequested();
                 }
 
-                filepath = TMPIMGFILEPATH + "\\tmp.wcs";
-                if (File.Exists(filepath)) {
-                    startInfo.Arguments = string.Format("/C {0} --login -c 'wcsinfo {1}'", cygwinbashpath, filepath.Replace("\\", "/"));
+                
+                if (File.Exists(wcsfilepath)) {
+                    startInfo.Arguments = string.Format("/C {0} --login -c 'wcsinfo {1}'", cygwinbashpath, wcsfilepath.Replace("\\", "/"));
                     process.Start();
                     Dictionary<string, string> wcsinfo = new Dictionary<string, string>();
                     while (!process.StandardOutput.EndOfStream) {
@@ -132,6 +131,7 @@ namespace NINA.PlateSolving {
 
                     progress.Report(new ApplicationStatus() { Status = "Solved" });
 
+
                     /* This info does not get the center info. - removed
                         Fits solvedFits = new Fits(TMPIMGFILEPATH + "\\tmp.wcs");
                         BasicHDU solvedHDU = solvedFits.GetHDU(0);
@@ -141,13 +141,18 @@ namespace NINA.PlateSolving {
                 } else {
                     result.Success = false;
                 }
-            } catch (OperationCanceledException ex) {
-                Logger.Trace(ex.Message);
+            } catch (OperationCanceledException) {
                 result.Success = false;
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 result.Success = false;
             } finally {
+                if(File.Exists(wcsfilepath)) {
+                    File.Delete(wcsfilepath);
+                }
+                if(File.Exists(imgfilepath)) {
+                    File.Delete(imgfilepath);
+                }                
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 

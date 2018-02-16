@@ -321,12 +321,12 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblFocuserAutoFocusInitialOffsetStepsTooltip">Initial amount of steps the focuser will move out to begin auto focus procedure.</s:String>
     <s:String x:Key="LblAutoFocusExposureTime">Auto Focus Exposure Time</s:String>
     <s:String x:Key="LblDefaultAutoFocusExposureTime">Default Auto Focus Exposure Time</s:String>
-    <s:String x:Key="LblAutoFocusExposureTimeTooltip">Exposure Time used for autofocus when no filter specific time is set or the filter specific time is zero</s:String>
+    <s:String x:Key="LblAutoFocusExposureTimeTooltip">Exposure Time used for auto focus when no filter specific time is set or the filter specific time is zero</s:String>
     <s:String x:Key="LblCameraOptions">Camera Options</s:String>
     <s:String x:Key="LblUseSnapPort">Use Telescope Snap Port</s:String>
     <s:String x:Key="LblSnapPortStart">Snap Port Start Command</s:String>
     <s:String x:Key="LblSnapPortStop">Snap Port Stop Command</s:String>
-    <s:String x:Key="LblAutoFocusGearNotConnected">Cannot start Autofocus. Camera or Focuser is not connected!</s:String>
+    <s:String x:Key="LblAutoFocusGearNotConnected">Cannot start Auto Focus. Camera or Focuser is not connected!</s:String>
     <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints">Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars ar too much out of focus.</s:String>
 
     <s:String x:Key="LblOneToOne">Scale Image to 1:1</s:String>
@@ -338,7 +338,7 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblCenterTarget">Center target</s:String>
     <s:String x:Key="LblStartGuiding">Start guiding</s:String>
     <s:String x:Key="LblTarget">Target (J2000)</s:String>
-    <s:String x:Key="LblAutoFocusOnStart">Autofocus on start</s:String>
+    <s:String x:Key="LblAutoFocusOnStart">Auto Focus on start</s:String>
     <s:String x:Key="LblSwitchingFilter">Switching filter</s:String>
     <s:String x:Key="LblEstimatedDownloadTime">Estimated Download Time</s:String>
     <s:String x:Key="LblETA">Estimated Finish Time</s:String>
@@ -363,7 +363,7 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblTelescopeNotConnectedForCommand">Telescope not connected to send command</s:String>
     <s:String x:Key="LblASIOnly16BitMono">Only 16 bit Monochrome sensors currently supported</s:String>
     <s:String x:Key="LblUnableToSetISO">Unable to set ISO</s:String>
-    <s:String x:Key="LblEDCameraNotInManualMode">Camera is not set to manual mode! Please set it to manual mode before connecting</s:String>
+    <s:String x:Key="LblEDCameraNotInManualMode">Camera is not set to manual or bulb mode! Please set it to manual or bulb mode before connecting</s:String>
     <s:String x:Key="LblUnableToStartExposure">Unable to start camera exposure</s:String>
     <s:String x:Key="LblUnableToSetExposureTime">Unable to set exposure time</s:String>
     <s:String x:Key="LblColorSensorNotSupported">Color sensor is not supported yet</s:String>
@@ -425,4 +425,13 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblBlindSolver">Blind Solver</s:String>
     <s:String x:Key="LblPlateSolveSettings">Plate Solver Settings</s:String>
     <s:String x:Key="LblUseBlindSolveFailover">Plate solve failed. Try to solve using Blind Solver?</s:String>
+    <s:String x:Key="LblUnhandledException">Unhandled Exception occurred</s:String>
+    <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">The Application ran into an unhandled exception and unfortunately has to shut down. 
+The error has been logged to &quot;%localappdata%\NINA\Logs&quot;.</s:String>
+    <s:String x:Key="LblChangeToBulbMode">Please change the mode dial to bulb mode</s:String>
+    <s:String x:Key="LblChangeToManualMode">Please change the mode dial to manual mode</s:String>
+    <s:String x:Key="LblInvalidModeBulb">Invalid mode (bulb) for Exposure Time &lt;1s</s:String>
+    <s:String x:Key="LblInvalidModeManual">Invalid mode (manual) for Exposure Time &gt;30s</s:String>
+    <s:String x:Key="LblInvalidMode">Invalid mode</s:String>
+
 </ResourceDictionary>

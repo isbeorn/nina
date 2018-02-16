@@ -230,7 +230,7 @@ namespace NINA.ViewModel {
                 FocusPoints.Clear();
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
             }
 
             return true;

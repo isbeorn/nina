@@ -325,7 +325,7 @@ namespace NINA.ViewModel {
                 throw new OperationCanceledException(ex.Message);
             } catch(Exception ex) {                                
                 Notification.ShowError(ex.Message);
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
             }
             finally {
                 _progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -361,7 +361,7 @@ namespace NINA.ViewModel {
                 p.Add(new OptionsVM.ImagePattern("$$GAIN$$", "Camera Gain", Cam?.Gain.ToString() ?? string.Empty));
 
                 string filename = Utility.Utility.GetImageFileString(p);
-                string completefilename = Settings.ImageFilePath + filename;
+                string completefilename = Path.Combine(Settings.ImageFilePath, filename);
 
                 Stopwatch sw = Stopwatch.StartNew();
                 if (Settings.FileType == FileTypeEnum.FITS) {
@@ -457,7 +457,7 @@ namespace NINA.ViewModel {
                 }
                 return uniquePath;
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
                 return string.Empty;
             }
@@ -494,7 +494,7 @@ namespace NINA.ViewModel {
                 }
                 return uniquePath;
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);                
                 return string.Empty;
             }
@@ -577,7 +577,7 @@ namespace NINA.ViewModel {
                 return uniquePath;
 
             } catch (Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
                 return string.Empty;
             }

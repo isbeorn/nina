@@ -391,21 +391,20 @@ namespace NINA.Model.MyGuider {
                     await SendMessage(PHD2Methods.GET_APP_STATE);
                     //await sendMessage(PHD2Methods.GET_STAR_IMAGE); 
                 } catch (System.IO.IOException ex) {
-                    Logger.Trace(ex.Message);
+                    Logger.Error(ex);
                     _stream.Close();
                     _client.Close();
                     IsDithering = false;
                     Notification.ShowError("PHD2 Error: " + ex.Message);
                     RaisePropertyChanged(nameof(Connected));
                 } catch (OperationCanceledException ex) {
-                    Logger.Trace(ex.Message);
                     _stream.Close();
                     _client.Close();
                     IsDithering = false;
                     Notification.ShowError("PHD2 Error: " + ex.Message);
                     RaisePropertyChanged(nameof(Connected));
                 } catch (Exception ex) {
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.ShowError("PHD2 Error: " + ex.Message);
                 }
 

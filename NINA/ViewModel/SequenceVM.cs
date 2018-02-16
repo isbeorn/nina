@@ -263,7 +263,7 @@ namespace NINA.ViewModel {
                 } catch (OperationCanceledException) {
                 } catch (CameraConnectionLostException) {
                 } catch (Exception ex) {
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 } finally {
                     progress.Report(new ApplicationStatus() { Status = string.Empty });

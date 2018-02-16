@@ -87,12 +87,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_11493249AADD0DF8B7A031567082C52D"
-        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_123095E52099048816E65DCE26B8942E"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -394,13 +388,7 @@
         "Entry"
         {
         "MsmKey" = "8:_65EFD60CE47EBDC79CBA4F4DC51E0879"
-        "OwnerKey" = "8:_81121AB0A2142047E4616AA55B1C329D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_65EFD60CE47EBDC79CBA4F4DC51E0879"
-        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
+        "OwnerKey" = "8:_F3CEBD7E118EF9739FD45FF785942D88"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -412,7 +400,13 @@
         "Entry"
         {
         "MsmKey" = "8:_65EFD60CE47EBDC79CBA4F4DC51E0879"
-        "OwnerKey" = "8:_F3CEBD7E118EF9739FD45FF785942D88"
+        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_65EFD60CE47EBDC79CBA4F4DC51E0879"
+        "OwnerKey" = "8:_81121AB0A2142047E4616AA55B1C329D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -437,6 +431,12 @@
         {
         "MsmKey" = "8:_684D6068F488EA6FEE02D71117046355"
         "OwnerKey" = "8:_A83A91C8B60FCF79007077AB390E87AD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6861F5114B6BE2AF752480ECCF7A5ACF"
+        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -496,13 +496,13 @@
         "Entry"
         {
         "MsmKey" = "8:_6DB030ECA633122B42EA1B3200101112"
-        "OwnerKey" = "8:_35A50EAB976614EADA65C0BF35310BE5"
+        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_6DB030ECA633122B42EA1B3200101112"
-        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
+        "OwnerKey" = "8:_35A50EAB976614EADA65C0BF35310BE5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -586,13 +586,13 @@
         "Entry"
         {
         "MsmKey" = "8:_90CA16DA03B294672E8F2C83D7A48BD5"
-        "OwnerKey" = "8:_81121AB0A2142047E4616AA55B1C329D"
+        "OwnerKey" = "8:_B701580170EAE40060516559BE70DEFB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_90CA16DA03B294672E8F2C83D7A48BD5"
-        "OwnerKey" = "8:_B701580170EAE40060516559BE70DEFB"
+        "OwnerKey" = "8:_81121AB0A2142047E4616AA55B1C329D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -813,6 +813,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C9249461BCAF265F608497F577CFDA80"
+        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_CC03D3826131FD0047519FC2CE52F054"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
@@ -844,12 +850,6 @@
         "Entry"
         {
         "MsmKey" = "8:_DC5AC3F57B97CE3C2D7B548CCD241144"
-        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DF5A2D4D6810125DD0F34084F881CB8A"
         "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -940,13 +940,7 @@
         "Entry"
         {
         "MsmKey" = "8:_F3CEBD7E118EF9739FD45FF785942D88"
-        "OwnerKey" = "8:_81121AB0A2142047E4616AA55B1C329D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F3CEBD7E118EF9739FD45FF785942D88"
-        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
+        "OwnerKey" = "8:_B701580170EAE40060516559BE70DEFB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -958,7 +952,13 @@
         "Entry"
         {
         "MsmKey" = "8:_F3CEBD7E118EF9739FD45FF785942D88"
-        "OwnerKey" = "8:_B701580170EAE40060516559BE70DEFB"
+        "OwnerKey" = "8:_FF25606544D448558FB12DA74BACB4E5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F3CEBD7E118EF9739FD45FF785942D88"
+        "OwnerKey" = "8:_81121AB0A2142047E4616AA55B1C329D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1324,13 +1324,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DF5A2D4D6810125DD0F34084F881CB8A"
+        "OwnerKey" = "8:_6861F5114B6BE2AF752480ECCF7A5ACF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_11493249AADD0DF8B7A031567082C52D"
+        "OwnerKey" = "8:_C9249461BCAF265F608497F577CFDA80"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2049,37 +2049,6 @@
                     }
                 }
             "SourcePath" = "8:System.IO.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_11493249AADD0DF8B7A031567082C52D"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:nikoncswrapper, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_11493249AADD0DF8B7A031567082C52D"
-                    {
-                    "Name" = "8:nikoncswrapper.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:nikoncswrapper.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
@@ -3287,6 +3256,37 @@
                     }
                 }
             "SourcePath" = "8:System.Threading.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6861F5114B6BE2AF752480ECCF7A5ACF"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:NINACustomControlLibrary, Version=1.3.4.4, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_6861F5114B6BE2AF752480ECCF7A5ACF"
+                    {
+                    "Name" = "8:NINACustomControlLibrary.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:NINACustomControlLibrary.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
@@ -4708,6 +4708,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C9249461BCAF265F608497F577CFDA80"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:nikoncswrapper, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_C9249461BCAF265F608497F577CFDA80"
+                    {
+                    "Name" = "8:nikoncswrapper.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:nikoncswrapper.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CC03D3826131FD0047519FC2CE52F054"
             {
             "AssemblyRegister" = "3:1"
@@ -4846,37 +4877,6 @@
                     }
                 }
             "SourcePath" = "8:Nito.AsyncEx.Enlightenment.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DF5A2D4D6810125DD0F34084F881CB8A"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:NINACustomControlLibrary, Version=1.3.3.6, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_DF5A2D4D6810125DD0F34084F881CB8A"
-                    {
-                    "Name" = "8:NINACustomControlLibrary.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:NINACustomControlLibrary.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
@@ -5449,6 +5449,17 @@
                     "Property" = "8:_B9FDA79BCA0C46FCB06DA5DEB830D01C"
                         "Folders"
                         {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_46A63808C4B8494AA53A2F3381340597"
+                            {
+                            "Name" = "8:Logs"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_EB44FE7A2AF04D79864B332CC5C3EAD4"
+                                "Folders"
+                                {
+                                }
+                            }
                         }
                     }
                 }
@@ -5469,15 +5480,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:N.I.N.A. - Nighttime Imaging 'N' Astronomy"
-        "ProductCode" = "8:{EEB74201-B62F-4490-9F45-E4B17994FBC0}"
-        "PackageCode" = "8:{6B8805B5-73E6-4AB5-8D8B-940D9BD9EB15}"
+        "ProductCode" = "8:{1AF0B16E-DABA-4E0F-84DC-3769ED77EA95}"
+        "PackageCode" = "8:{3EB5837C-C97A-4BEF-9F77-D14908AC50D2}"
         "UpgradeCode" = "8:{5DC025EA-3D24-4E6B-9F82-79718D70896A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.3.40"
+        "ProductVersion" = "8:1.3.45"
         "Manufacturer" = "8: "
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

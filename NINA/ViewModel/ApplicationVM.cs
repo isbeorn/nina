@@ -87,10 +87,7 @@ namespace NINA.ViewModel {
 
         public string Version {
             get {
-                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                string version = fvi.FileVersion;
-                return version;
+                return Utility.Utility.Version;
             }
         }
 
@@ -147,12 +144,36 @@ namespace NINA.ViewModel {
 
         }
 
-        private void DisconnectEquipment() {
-            CameraVM?.Disconnect();
-            TelescopeVM?.Disconnect();
-            FilterWheelVM?.Disconnect();
-            FocuserVM?.Disconnect();
-            GuiderVM?.Guider?.Disconnect();
+        public void DisconnectEquipment() {
+            try {
+                CameraVM?.Disconnect();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            try {
+                TelescopeVM?.Disconnect();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            try {
+                FilterWheelVM?.Disconnect();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            try {
+                FocuserVM?.Disconnect();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            try {
+                GuiderVM?.Guider?.Disconnect();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
         }
 
         private DockManagerVM _dockManagerVM;

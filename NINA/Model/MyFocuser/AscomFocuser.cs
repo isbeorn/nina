@@ -167,7 +167,7 @@ namespace NINA.Model.MyFocuser {
                     _connected = value;
 
                 } catch (Exception ex) {
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.ShowError(Locale.Loc.Instance["LblReconnectFocuser"] + Environment.NewLine + ex.Message);
                     _connected = false;
                 }
@@ -189,7 +189,7 @@ namespace NINA.Model.MyFocuser {
                 } catch (MethodNotImplementedException) {
                     _canHalt = false;
                 } catch (Exception ex) {
-                    Logger.Error(ex.Message);
+                    Logger.Error(ex);
                 }
             }
         }

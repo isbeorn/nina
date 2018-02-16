@@ -43,7 +43,7 @@ namespace NINA.Model.MyCamera {
                 Name = _camera.Name;
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
             } finally {
                 RaiseAllPropertiesChanged();
                 _cameraConnected.TrySetResult(null);
@@ -131,11 +131,11 @@ namespace NINA.Model.MyCamera {
                         bulbFound = true;
                     }
                 } catch (Exception ex) {
-                    Logger.Error("Unexpected Shutter Speed: " + ex.Message, ex.StackTrace);
+                    Logger.Error("Unexpected Shutter Speed: ", ex);
                 }
             }
             if (!bulbFound) {
-                Logger.Error("No Bulb speed found!");
+                Logger.Error("No Bulb speed found!", null);
                 throw new NikonException("Failed to find the 'Bulb' exposure mode");
             }
         }
@@ -152,7 +152,7 @@ namespace NINA.Model.MyCamera {
         private void Camera_ImageReady(NikonDevice sender, NikonImage image) {
             Logger.Debug("Image ready");
             _fileExtension = (image.Type == NikonImageType.Jpeg) ? ".jpg" : ".nef";
-            string filename = DCRaw.TMPIMGFILEPATH + _fileExtension;
+            var filename = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, DCRaw.FILEPREFIX + _fileExtension);
 
             Logger.Debug("Writing Image to temp folder");
             using (System.IO.FileStream s = new System.IO.FileStream(filename, System.IO.FileMode.Create, System.IO.FileAccess.Write)) {

@@ -347,18 +347,17 @@ namespace NINA.ViewModel {
                     await ditherTask;
 
                 } catch (System.OperationCanceledException ex) {
-                    Logger.Trace(ex.Message);
                     if (Cam == null || _cameraConnected == true) {
                         Cam?.AbortExposure();
                     }
                     throw ex;
                 } catch (CameraConnectionLostException ex) {
-                    Logger.Error(Locale.Loc.Instance["LblCameraConnectionLost"] + " " + ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.ShowError(Locale.Loc.Instance["LblCameraConnectionLost"]);
                     throw ex;
                 } catch (Exception ex) {
                     Notification.ShowError(Locale.Loc.Instance["LblUnexpectedError"]);
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     if (_cameraConnected == true) {
                         Cam.AbortExposure();
                     }

@@ -119,7 +119,7 @@ namespace NINA.ViewModel {
                     Notification.ShowError("File does not exist");
                 }                
             } catch(Exception ex) {
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
                 Notification.ShowError(ex.Message);
             }
             
