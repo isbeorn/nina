@@ -102,6 +102,14 @@ namespace NINA.AstrometryIndexDownloader {
                 try {
                     await client.DownloadFileTaskAsync(url, _destinationfolder + file.Name);
                     success = true;
+                } catch (WebException ex) {
+                    if(ex.InnerException.GetType() == typeof(System.UnauthorizedAccessException) ) {
+                        Logger.Error(ex.InnerException);
+                        System.Windows.MessageBox.Show(ex.InnerException.Message);
+                    } else {
+                        Logger.Error(ex);
+                        System.Windows.MessageBox.Show(ex.Message);
+                    }                    
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     System.Windows.MessageBox.Show(ex.Message);
