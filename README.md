@@ -4,6 +4,7 @@
 **System Requirements**
 
 * 64-bit Windows 7 or later
+* (32-bit version is available, but may be unstable due to memory consumption)
 
 * .NET Framework 4.6.2 or later
 
