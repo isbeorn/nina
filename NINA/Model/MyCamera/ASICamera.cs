@@ -308,7 +308,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private ASICameraDll.ExposureStatus ExposureStatus {
+        private ASICameraDll.ASI_EXPOSURE_STATUS ExposureStatus {
             get {
                 return ASICameraDll.GetExposureStatus(_cameraId);
             }
@@ -317,11 +317,11 @@ namespace NINA.Model.MyCamera {
         public async Task<ImageArray> DownloadExposure(CancellationToken token) {
             return await Task.Run<ImageArray>(async () => {
                 try {
-                    ASICameraDll.ExposureStatus status;
+                    ASICameraDll.ASI_EXPOSURE_STATUS status;
                     do {
                         await Task.Delay(100, token);
                         status = ExposureStatus;
-                    } while (status == ASICameraDll.ExposureStatus.ExpWorking);
+                    } while (status == ASICameraDll.ASI_EXPOSURE_STATUS.ASI_EXP_WORKING);
 
                     int size = Resolution.Width * Resolution.Height * 2;
                     IntPtr pointer = Marshal.AllocHGlobal(size);
