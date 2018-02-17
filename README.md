@@ -21,35 +21,48 @@
           * Tested with Nikon D7100
           * Serial cable support for bulb exposures using either telescope snap port or serial cable using RTS signal
      * Canon 
-          * Tested with Canon EOS 550d
+          * Tested with Canon EOS 550d, 60d
+     * Temperature control 
+          * Cool down routine for a set amount of time
 
-* Temperature control (including a cool down routine for a set amount of time)
+* Telescope Control
+     * ASCOM Driver
+          * Tested with HEQ-5, EQ6-R
 
-* Telescope, Filterwheel and Autofocuser connected via ASCOM
+* Filterwheel Control
+     * ASCOM Driver
+          * Tested with Starlight XPress motorized Filterwheel
 
-* Set up sequences for imaging
+* Autofocuser Control
+     * ASCOM Driver
+          * Tested with Lacerta Motorfocus
 
-* Import/Export sequences for planning ahead
+* Autoguider Control
+     * via communication with PHD2 Server
 
-* Dithering (via PHD2)
+* Advanced Sequencing
+     * Import/Export sequences for planning ahead
+     * Dithering (via PHD2)
+     * Dithering after a set amount of images
+     * Macros to set up custom file names
+     * Supported Image formats: FITS, TIFF, XISF
+     * Automatic Meridian Flip
 
-* Dithering after a set amount of images
+* Autofocus
+     * Triggered manually
+     * During sequences
+          * On start
+          * After filter change
 
-* Auto-Stretch image
+* Image Recognition
+     * Statistics
+     * Auto-Stretch
+     * Star detection and HFR calculation, including stats history during imaging session
 
-* Macros to set up custom file names
-
-* Supported Image formats: FITS, TIFF, XISF
-
-* Fully customizable UI colors together with a bunch of preset Themes
-
-* Star detection and HFR calculation, including stats history during imaging session
-
-* Platesolving using Platesolve2 by Planewave, Astrometry.net or a local instance via cygwin
-
-* Weather data by OpenWeatherMap 
-
-* Automatic Meridian Flip
+* Platesolving
+     * Astrometry.net
+     * Local instance of Astrometry.net and cygwin
+     * Platesolve2 by Planewave
 
 * Polar alignment assistant 
      * Polaris position in polar scope 
@@ -62,12 +75,15 @@
      * Calculated altitude chart for each object based on your position
      * Night time duration based on your position
      * Set object as sequence target
-     
-* Autofocus
-     * Triggered manually
-     * During sequences
-          * On start
-          * After filter change
+
+* Image History
+     * Thumbnail and statistics of images during an image session
+     * Reload images of one session to the UI
+
+* Fully customizable UI colors together with a bunch of preset Themes
+
+* Weather data by OpenWeatherMap 
+
 
 ** Feedback**
 
