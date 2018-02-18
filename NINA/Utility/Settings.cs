@@ -836,6 +836,16 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Save();
             }
         }
+
+        public static int HistogramResolution {
+            get {
+                return Properties.Settings.Default.HistogramResolution;
+            }
+            set {
+                Properties.Settings.Default.HistogramResolution = value;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 
 }

@@ -423,5 +423,6 @@ The error has been logged to &quot;%localappdata%\NINA\Logs&quot;.</s:String>
     <s:String x:Key="LblInvalidModeBulb">Invalid mode (bulb) for Exposure Time &lt;1s</s:String>
     <s:String x:Key="LblInvalidModeManual">Invalid mode (manual) for Exposure Time &gt;30s</s:String>
     <s:String x:Key="LblInvalidMode">Invalid mode</s:String>
-
+    <s:String x:Key="LblHistogramResolution">Histogram Resolution</s:String>
+    <s:String x:Key="LblHistogramResolutionTooltip">Specifies the number of data points that should be used for the histogram</s:String>
 </ResourceDictionary>

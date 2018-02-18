@@ -12,7 +12,7 @@ namespace NINA.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.1.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -866,6 +866,30 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CameraBulbMode {
+            get {
+                return ((int)(this["CameraBulbMode"]));
+            }
+            set {
+                this["CameraBulbMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("COM1")]
+        public string CameraSerialPort {
+            get {
+                return ((string)(this["CameraSerialPort"]));
+            }
+            set {
+                this["CameraSerialPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("800")]
         public int TelescopeFocalLength {
             get {
@@ -901,25 +925,25 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int CameraBulbMode {
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public string FilterWheelFilterPositions {
             get {
-                return ((int)(this["CameraBulbMode"]));
+                return ((string)(this["FilterWheelFilterPositions"]));
             }
             set {
-                this["CameraBulbMode"] = value;
+                this["FilterWheelFilterPositions"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("COM1")]
-        public string CameraSerialPort {
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public int HistogramResolution {
             get {
-                return ((string)(this["CameraSerialPort"]));
+                return ((int)(this["HistogramResolution"]));
             }
             set {
-                this["CameraSerialPort"] = value;
+                this["HistogramResolution"] = value;
             }
         }
     }

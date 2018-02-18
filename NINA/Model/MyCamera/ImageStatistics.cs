@@ -15,10 +15,7 @@ namespace NINA.Model.MyCamera {
         public double Mean { get; set; }
         private double _hFR;
 
-        public IEnumerable Histogram { get; set; }
-        public static double HistogramMajorStep = 642.5;
-        public static double HistogramMinorStep = 321.25;
-        public static double HistogramResolution = 1285;
+        public List<OxyPlot.DataPoint> Histogram { get; set; }
 
         public int DetectedStars {
             get {

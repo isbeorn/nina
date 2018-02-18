@@ -426,4 +426,6 @@ Der Fehler wurde in &quot;%localappdata%\NINA\Logs&quot; aufgezeichnet.</s:Strin
     <s:String x:Key="LblInvalidModeBulb">Ungültiger Modus (Bulb) für Belichtungszeiten &lt;1s</s:String>
     <s:String x:Key="LblInvalidModeManual">Ungültiger Modus (Manuell) für Belichtungszeiten &gt;30s</s:String>
     <s:String x:Key="LblInvalidMode">Ungültiger Modus</s:String>
+    <s:String x:Key="LblHistogramResolution">Histogramm Auflösung</s:String>
+    <s:String x:Key="LblHistogramResolutionTooltip">Spezifiziert die Anzahl an Datenpunkten, die für das Histogramm genutzt werden sollen</s:String>
 </ResourceDictionary>

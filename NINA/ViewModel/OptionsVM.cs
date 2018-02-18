@@ -973,5 +973,29 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        public int HistogramResolution {
+            get {
+                return Settings.HistogramResolution;
+            }
+            set {
+                Settings.HistogramResolution = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HistogramMajorStep));
+                RaisePropertyChanged(nameof(HistogramMinorStep));
+            }
+        }
+
+
+        public double HistogramMajorStep {
+            get {
+                return HistogramResolution / 2;
+            }
+        }
+        public double HistogramMinorStep {
+            get {
+                return HistogramResolution / 4;
+            }
+        }
     }
 }
