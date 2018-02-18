@@ -167,7 +167,9 @@ namespace NINA.ViewModel {
             LeftTrend = null;
             RightTrend = null;
             _minimum = new DataPoint(0, 0);
-            try {                
+            try {
+                await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Pause = true });
+
 
                 var offsetSteps = Settings.FocuserAutoFocusInitialOffsetSteps;
                 var offset = offsetSteps;
@@ -231,6 +233,8 @@ namespace NINA.ViewModel {
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
+            } finally {
+                await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Pause = false });
             }
 
             return true;
