@@ -359,8 +359,9 @@ namespace NINA.ViewModel {
 
                 p.Add(new OptionsVM.ImagePattern("$$GAIN$$", "Camera Gain", Cam?.Gain.ToString() ?? string.Empty));
 
+                string path = Path.GetFullPath(Settings.ImageFilePath);
                 string filename = Utility.Utility.GetImageFileString(p);
-                string completefilename = Path.Combine(Settings.ImageFilePath, filename);
+                string completefilename = Path.Combine(path, filename);
 
                 Stopwatch sw = Stopwatch.StartNew();
                 if (Settings.FileType == FileTypeEnum.FITS) {
