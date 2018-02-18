@@ -137,7 +137,7 @@
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding AutoFocusOnFilterChange}" />
                                 </UniformGrid>
-                            </UniformGrid>                            
+                            </UniformGrid>
                         </Border>
                         <Border
                             BorderBrush="{StaticResource BorderBrush}"
@@ -696,6 +696,7 @@
                 HorizontalAlignment="Right"
                 DockPanel.Dock="Right">
                 <ninactrl:AsyncProcessButton
+                    ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
                     ButtonImage="{StaticResource PlaySVG}"
                     CancelButtonImage="{StaticResource CancelSVG}"
                     CancelCommand="{Binding CancelSequenceCommand}"

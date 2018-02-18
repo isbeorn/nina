@@ -99,7 +99,7 @@
                                     <TextBlock
                                         Margin="10,0,0,0"
                                         VerticalAlignment="Center"
-                                        Text="{Binding AltitudePolarErrorStatus}" />
+                                        Text="{Binding AltitudePolarErrorStatus.Status}" />
                                 </StackPanel>
                             </StackPanel>
 
@@ -121,7 +121,7 @@
                                     <TextBlock
                                         Margin="10,0,0,0"
                                         VerticalAlignment="Center"
-                                        Text="{Binding AzimuthPolarErrorStatus}" />
+                                        Text="{Binding AzimuthPolarErrorStatus.Status}" />
                                 </StackPanel>
 
                             </StackPanel>
