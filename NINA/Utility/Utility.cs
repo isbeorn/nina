@@ -22,7 +22,7 @@ using System.Windows.Media.Imaging;
 namespace NINA.Utility {
     public static class Utility {
 
-
+        public static char[] PATHSEPARATORS = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
         public static string APPLICATIONTEMPPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NINA");
         public static string Version {
             get {
@@ -49,6 +49,7 @@ namespace NINA.Utility {
             foreach (ViewModel.OptionsVM.ImagePattern p in patterns) {
                 s = s.Replace(p.Key, p.Value);
             }
+	        s = Path.Combine(s.Split(PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries));
             return s;
         }
 
