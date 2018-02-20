@@ -21,6 +21,10 @@ namespace NINA.Utility {
                         _sdss = new NasaDigitalSkySurvey();
                         break;
                     }
+                case DigitalSkySurveyDomain.SDSS: {
+                        _sdss = new SkyServerDigitalSkySurvey();
+                        break;
+                    }
             }
         }
 
@@ -35,24 +39,28 @@ namespace NINA.Utility {
         Task<BitmapSource> GetImage(DigitalSkySurveyParameters p, CancellationToken ct, IProgress<int> progress = null);
     }
 
-    /*public class SkyServerDigitalSkySurvey : IDigitalSkySurvey {
-        public string Url {
-            get {
-                return "http://skyserver.sdss.org/dr12/SkyserverWS/ImgCutout/getjpeg?ra={0}&dec={1}&width={2}&height={3}&scale={4}";
-            }
-        }
+    public class SkyServerDigitalSkySurvey : IDigitalSkySurvey {
+        private const string Url = "http://skyserver.sdss.org/dr12/SkyserverWS/ImgCutout/getjpeg?ra={0}&dec={1}&width={2}&height={3}&scale={4}";
 
-        public string GetUrl(DigitalSkySurveyParameters p) {
-            return string.Format(
-                Url,
-                p.RA,
-                p.Dec,
-                (int)Astrometry.Astrometry.ArcminToArcsec(p.Width * p.Scale),
-                (int)Astrometry.Astrometry.ArcminToArcsec(p.Height * p.Scale),
-                p.Scale
+        public async Task<BitmapSource> GetImage(DigitalSkySurveyParameters p, CancellationToken ct, IProgress<int> progress = null) {
+            var arcSecPerPixel = 0.4;
+            var targetFoVInArcSec = Astrometry.Astrometry.ArcminToArcsec(p.FoV);
+            var pixels = Math.Min(targetFoVInArcSec / arcSecPerPixel, 2048);
+            if(pixels == 2048) {
+                arcSecPerPixel = targetFoVInArcSec / 2048;
+            }
+
+            var url = string.Format(
+                Url, 
+                p.Coordinates.RADegrees, 
+                p.Coordinates.Dec,
+                pixels,
+                pixels,
+                arcSecPerPixel
             );
+            return await Utility.HttpClientGetImage(new Uri(url), ct, progress);
         }
-    }*/
+    }
 
     public class NasaDigitalSkySurvey : IDigitalSkySurvey {
         private const string Url = "https://skyview.gsfc.nasa.gov/current/cgi/runquery.pl?Survey=dss2r&Position={0},{1}&Size={2}&Pixels={3}&Return=JPG";
@@ -175,6 +183,7 @@ namespace NINA.Utility {
 
     public enum DigitalSkySurveyDomain {
         STSCI,
-        NASA
+        NASA,
+        SDSS
     }
 }
