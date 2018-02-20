@@ -1,4 +1,5 @@
-﻿using NINA.Utility.Notification;
+﻿using NINA.Utility;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,9 +48,11 @@ namespace NINA.Model.MyCamera {
             this.Statistics.StDev = sd;
             this.Statistics.Mean = average;
 
-            this.Statistics.Histogram = this.FlatArray.GroupBy(x => Math.Floor(x * ((double)ImageStatistics.HistogramResolution / ushort.MaxValue)))
-                .Select(g => new { Key = g.Key, Value = g.Count() })
-                .OrderBy(item => item.Key);
+            double resolution = Settings.HistogramResolution;
+
+            this.Statistics.Histogram = this.FlatArray.GroupBy(x => Math.Floor(x * (resolution / ushort.MaxValue)))
+                .Select(g => new OxyPlot.DataPoint (g.Key, g.Count()))
+                .OrderBy(item => item.X).ToList();
         }
 
         private void FlipAndConvert(Array input) {

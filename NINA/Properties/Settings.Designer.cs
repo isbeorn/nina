@@ -937,6 +937,18 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public int HistogramResolution {
+            get {
+                return ((int)(this["HistogramResolution"]));
+            }
+            set {
+                this["HistogramResolution"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int BlindSolverType {
             get {

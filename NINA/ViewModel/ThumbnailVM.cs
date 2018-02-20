@@ -38,7 +38,7 @@ namespace NINA.ViewModel {
             return Task<bool>.Run(async () => {
                 var factor = 100 / msg.Image.Width;
 
-                BitmapSource scaledBitmap = new TransformedBitmap(msg.Image, new ScaleTransform(factor, factor));
+                BitmapSource scaledBitmap = new WriteableBitmap(new TransformedBitmap(msg.Image, new ScaleTransform(factor, factor)));
                 scaledBitmap.Freeze();
                 
                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
@@ -70,11 +70,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ObservableCollection<Thumbnail> _thumbnails;
-        public ObservableCollection<Thumbnail> Thumbnails {
+        private ObservableLimitedSizedStack<Thumbnail> _thumbnails;
+        public ObservableLimitedSizedStack<Thumbnail> Thumbnails {
             get {
                 if(_thumbnails == null) {
-                    _thumbnails = new ObservableCollection<Thumbnail>();
+                    _thumbnails = new ObservableLimitedSizedStack<Thumbnail>(50);
                 }
                 return _thumbnails;
             }

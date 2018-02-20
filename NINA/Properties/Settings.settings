@@ -232,6 +232,10 @@
     </Setting>
     <Setting Name="BlindSolverType" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="HistogramResolution" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">300</Value>
     </Setting>
   </Settings>
 </SettingsFile>

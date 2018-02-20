@@ -431,4 +431,6 @@ The error has been logged to &quot;%localappdata%\NINA\\Logs&quot;.</s:String>
     <s:String x:Key="LblBlindSolver">Blind Solver</s:String>
     <s:String x:Key="LblPlateSolveSettings">Plate Solver Settings</s:String>
     <s:String x:Key="LblUseBlindSolveFailover">Plate solve failed. Try to solve using Blind Solver?</s:String>
+    <s:String x:Key="LblHistogramResolution">Histogram Resolution</s:String>
+    <s:String x:Key="LblHistogramResolutionTooltip">Specifies the number of data points that should be used for the histogram</s:String>
 </ResourceDictionary>
