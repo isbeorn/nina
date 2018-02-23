@@ -608,6 +608,33 @@
                                                 </StackPanel>
                                                 <StackPanel
                                                     Margin="0,6,0,6"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                                    <Path
+                                                        Width="20"
+                                                        Height="20"
+                                                        Data="{StaticResource BrightnessSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform"
+                                                        ToolTip="{ns:Loc LblSurfaceBrightness}" />
+                                                    <TextBlock
+                                                        MinWidth="40"
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="White"
+                                                        Text="{Binding SurfaceBrightness}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <StackPanel
+                                                    Margin="0,6,0,6"
                                                     HorizontalAlignment="Right"
                                                     VerticalAlignment="Center"
                                                     Orientation="Horizontal">

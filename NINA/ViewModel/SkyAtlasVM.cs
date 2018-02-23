@@ -985,9 +985,9 @@ namespace NINA.ViewModel {
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SkyAtlasOrderByDirectionEnum {
-        [Description("LblAscending")]
-        ASC,
         [Description("LblDescending")]
-        DESC
+        DESC,
+        [Description("LblAscending")]
+        ASC
     }
 }
