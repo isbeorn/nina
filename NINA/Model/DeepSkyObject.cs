@@ -101,6 +101,16 @@ namespace NINA.Model {
                 RaisePropertyChanged();
             }
         }
+        private double? _surfaceBrightness;
+        public double? SurfaceBrightness {
+            get {
+                return _surfaceBrightness;
+            }
+            set {
+                _surfaceBrightness = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private DataPoint _maxAltitude;
         public DataPoint MaxAltitude {

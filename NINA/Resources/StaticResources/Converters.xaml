@@ -21,4 +21,5 @@
     <converters:BoolToLabelConverter x:Key="BoolToLabelConverter" />
     <converters:MoonPhaseToGeometryConverter x:Key="MoonPhaseToGeometryConverter" />
     <converters:MultiMarginConverter x:Key="MultiMarginConverter" />
+    <converters:ValueToLocaleConverter x:Key="ValueToLocaleConverter" />
 </ResourceDictionary>

@@ -50,6 +50,18 @@ namespace NINACustomControlLibrary {
             }
         }
 
+        public static readonly DependencyProperty ButtonStyleProperty =
+            DependencyProperty.Register(nameof(ButtonStyle), typeof(Style), typeof(CancellableButton), new UIPropertyMetadata(null));
+
+        public Style ButtonStyle {
+            get {
+                return (Style)GetValue(ButtonStyleProperty);
+            }
+            set {
+                SetValue(ButtonStyleProperty, value);
+            }
+        }
+
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(CancellableButton), new UIPropertyMetadata(null));
 
