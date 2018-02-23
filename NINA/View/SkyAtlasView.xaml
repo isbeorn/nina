@@ -53,7 +53,7 @@
                                                     Height="20"
                                                     IsChecked="{Binding Selected}"
                                                     Style="{StaticResource CheckmarkAndEmptyCheckbox}" />
-                                                <TextBlock Margin="10,0,0,0" Text="{Binding Name}" />
+                                                <TextBlock Margin="10,0,0,0" Text="{Binding Name, Converter={StaticResource ValueToLocaleConverter}, ConverterParameter=LblObjectType_}" />
                                             </StackPanel>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -64,7 +64,13 @@
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="1"
                             Header="{ns:Loc LblConstellation}">
-                            <ComboBox ItemsSource="{Binding Constellations}" SelectedItem="{Binding SelectedConstellation}" />
+                            <ComboBox ItemsSource="{Binding Constellations}" SelectedItem="{Binding SelectedConstellation}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource ValueToLocaleConverter}, ConverterParameter=LblConstellation_}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </Expander>
                         <Expander
                             BorderBrush="{StaticResource BorderBrush}"
@@ -597,6 +603,33 @@
                                                         VerticalAlignment="Center"
                                                         Foreground="White"
                                                         Text="{Binding Magnitude}">
+                                                        <TextBlock.Effect>
+                                                            <DropShadowEffect
+                                                                BlurRadius="5"
+                                                                Opacity="1"
+                                                                ShadowDepth="0"
+                                                                Color="Black" />
+                                                        </TextBlock.Effect>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <StackPanel
+                                                    Margin="0,6,0,6"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                                    <Path
+                                                        Width="20"
+                                                        Height="20"
+                                                        Data="{StaticResource BrightnessSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform"
+                                                        ToolTip="{ns:Loc LblSurfaceBrightness}" />
+                                                    <TextBlock
+                                                        MinWidth="40"
+                                                        Margin="5,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="White"
+                                                        Text="{Binding SurfaceBrightness}">
                                                         <TextBlock.Effect>
                                                             <DropShadowEffect
                                                                 BlurRadius="5"

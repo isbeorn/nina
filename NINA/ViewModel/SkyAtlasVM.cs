@@ -33,6 +33,10 @@ namespace NINA.ViewModel {
                 ResetRiseAndSetTimes();
             }, MediatorMessages.LocationChanged);
 
+            Mediator.Instance.Register((object o) => {
+                InitializeFilters();
+            }, MediatorMessages.LocaleChanged);
+
         }
 
         private void ResetRiseAndSetTimes() {
@@ -798,7 +802,7 @@ namespace NINA.ViewModel {
         public class DSOObjectType : BaseINPC {
             public DSOObjectType(string s) {
                 Name = s;
-                Selected = true;
+                Selected = false;
             }
 
             private bool _selected;
@@ -985,9 +989,9 @@ namespace NINA.ViewModel {
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SkyAtlasOrderByDirectionEnum {
-        [Description("LblAscending")]
-        ASC,
         [Description("LblDescending")]
-        DESC
+        DESC,
+        [Description("LblAscending")]
+        ASC
     }
 }

@@ -20,4 +20,5 @@
     <converters:ArcsecToLabelConverter x:Key="ArcsecToLabelConverter" />
     <converters:BoolToLabelConverter x:Key="BoolToLabelConverter" />
     <converters:MoonPhaseToGeometryConverter x:Key="MoonPhaseToGeometryConverter" />
+    <converters:ValueToLocaleConverter x:Key="ValueToLocaleConverter" />
 </ResourceDictionary>
