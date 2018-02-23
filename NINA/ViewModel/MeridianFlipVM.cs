@@ -162,7 +162,7 @@ namespace NINA.ViewModel {
         private async Task<bool> Recenter(CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (Settings.RecenterAfterFlip) {
                 progress.Report(new ApplicationStatus() { Status = "Initiating platesolve" });
-                await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = token });
+                await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = token, Silent = true });
             }
             return true;
         }

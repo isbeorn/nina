@@ -60,12 +60,12 @@ namespace NINA.ViewModel {
             Mediator.Instance.RegisterAsyncRequest(
                 new PlateSolveMessageHandle(async (PlateSolveMessage msg) => {
                     if(msg.Sequence != null) {                        
-                        return await SolveWithCapture(msg.Sequence, msg.Progress, msg.Token);                        
+                        return await SolveWithCapture(msg.Sequence, msg.Progress, msg.Token, msg.Silent);                        
                     } else {
                         if (msg.SyncReslewRepeat) {
-                            return await CaptureSolveSyncAndReslew(msg.Token, msg.Progress);
+                            return await CaptureSolveSyncAndReslew(msg.Token, msg.Progress, msg.Silent);
                         } else {
-                            return await Solve(msg.Image ?? Image, msg.Progress, msg.Token);
+                            return await Solve(msg.Image ?? Image, msg.Progress, msg.Token, msg.Silent);
                         }
                         
                     }
@@ -255,7 +255,7 @@ namespace NINA.ViewModel {
         /// <param name="filter"></param>
         /// <param name="binning"></param>
         /// <returns></returns>
-        private async Task<PlateSolveResult> SolveWithCapture(CaptureSequence seq, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+        private async Task<PlateSolveResult> SolveWithCapture(CaptureSequence seq, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false) {
             var oldAutoStretch = _autoStretch;
             var oldDetectStars = _detectStars;
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
@@ -268,7 +268,7 @@ namespace NINA.ViewModel {
 
             canceltoken.ThrowIfCancellationRequested();
 
-            return await Solve(Image, progress, canceltoken); ;
+            return await Solve(Image, progress, canceltoken, silent); ;
         }
 
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<ApplicationStatus> progress) {
@@ -281,14 +281,14 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="progress"></param>
         /// <returns></returns>
-        private async Task<PlateSolveResult> CaptureSolveSyncAndReslew(CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<PlateSolveResult> CaptureSolveSyncAndReslew(CancellationToken token, IProgress<ApplicationStatus> progress, bool silent = false) {
             PlateSolveResult solveresult = null;
             bool repeatPlateSolve = false;
             do {
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
-                solveresult = await SolveWithCapture(seq, progress, token);
+                solveresult = await SolveWithCapture(seq, progress, token, silent);
 
                 if (solveresult != null && solveresult.Success) {
                     if (SyncScope) {
@@ -340,7 +340,7 @@ namespace NINA.ViewModel {
         /// <param name="progress"></param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
-        public async Task<PlateSolveResult> Solve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+        public async Task<PlateSolveResult> Solve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false) {
             var solver = GetPlateSolver(source);
             if (solver == null) {
                 return null;
@@ -349,7 +349,10 @@ namespace NINA.ViewModel {
             var result = await Solve(solver, source, progress, canceltoken);
 
             if (!result?.Success == true) {
-                var dialog = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblUseBlindSolveFailover"], Locale.Loc.Instance["LblPlatesolveFailed"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
+                MessageBoxResult dialog = MessageBoxResult.Yes;
+                if(!silent) {                    
+                    dialog = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblUseBlindSolveFailover"], Locale.Loc.Instance["LblPlatesolveFailed"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
+                }                
                 if (dialog == MessageBoxResult.Yes) {
                     solver = GetBlindSolver(source);
                     result = await Solve(solver, source, progress, canceltoken);
