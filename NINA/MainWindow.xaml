@@ -32,17 +32,18 @@
                 <RowDefinition />
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
-            <TabControl SelectedIndex="{Binding TabIndex}" TabStripPlacement="Left">
-                <TabItem>
-                    <TabItem.Header>
-                        <Grid>
-                            <Grid Width="50" Height="50">
-                                <Path
-                                    Margin="5"
-                                    Data="{StaticResource CameraSVG}"
-                                    Stretch="Uniform"
-                                    Style="{StaticResource TabItemPath}" />
-                            </Grid>
+            <Grid>
+                <TabControl SelectedIndex="{Binding TabIndex}" TabStripPlacement="Left">
+                    <TabItem>
+                        <TabItem.Header>
+                            <Grid>
+                                <Grid Width="50" Height="50">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource CameraSVG}"
+                                        Stretch="Uniform"
+                                        Style="{StaticResource TabItemPath}" />
+                                </Grid>
 
                                 <Grid Visibility="{Binding CameraVM.Cam, Converter={StaticResource NullToVisibilityConverter}}">
                                     <Path
@@ -189,35 +190,35 @@
                         </TabItem.Content>
                     </TabItem>
 
-                <TabItem>
-                    <TabItem.Header>
-                        <Grid Width="50" Height="50">
-                            <Path
-                                Margin="5"
-                                Data="{StaticResource FocusAssistantSVG}"
-                                Stretch="Uniform"
-                                Style="{StaticResource TabItemPath}" />
-                        </Grid>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:FramingAssistantView DataContext="{Binding FramingAssistantVM}" />
-                    </TabItem.Content>
-                </TabItem>
+                    <TabItem>
+                        <TabItem.Header>
+                            <Grid Width="50" Height="50">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource FocusAssistantSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}" />
+                            </Grid>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:FramingAssistantView DataContext="{Binding FramingAssistantVM}" />
+                        </TabItem.Content>
+                    </TabItem>
 
-                <TabItem>
-                    <TabItem.Header>
-                        <Grid Width="50" Height="50">
-                            <Path
-                                Margin="5"
-                                Data="{StaticResource SequenceSVG}"
-                                Stretch="Uniform"
-                                Style="{StaticResource TabItemPath}" />
-                        </Grid>
-                    </TabItem.Header>
-                    <TabItem.Content>
-                        <view:SequenceView DataContext="{Binding SeqVM}" />
-                    </TabItem.Content>
-                </TabItem>
+                    <TabItem>
+                        <TabItem.Header>
+                            <Grid Width="50" Height="50">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource SequenceSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}" />
+                            </Grid>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:SequenceView DataContext="{Binding SeqVM}" />
+                        </TabItem.Content>
+                    </TabItem>
 
                     <TabItem>
                         <TabItem.Header>
