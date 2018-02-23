@@ -317,6 +317,7 @@
     <Compile Include="Utility\Converters\NullToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
+    <Compile Include="Utility\Converters\ValueToLocaleConverter.cs" />
     <Compile Include="Utility\DatabaseInteraction.cs" />
     <Compile Include="Utility\DCRaw\DCRaw.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
