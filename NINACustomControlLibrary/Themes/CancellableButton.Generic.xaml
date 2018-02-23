@@ -14,7 +14,10 @@
                 <ControlTemplate TargetType="{x:Type local:CancellableButton}">
                     <Grid x:Name="LayoutRoot">
                         <Grid Visibility="{Binding Command.Execution, Converter={StaticResource NullToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type local:CancellableButton}}}">
-                            <Button Command="{TemplateBinding CancelCommand}" Visibility="{Binding Command.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type local:CancellableButton}}}">
+                            <Button
+                                Command="{TemplateBinding CancelCommand}"
+                                Style="{TemplateBinding ButtonStyle}"
+                                Visibility="{Binding Command.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type local:CancellableButton}}}">
                                 <Path
                                     Width="40"
                                     Margin="5"
@@ -24,7 +27,10 @@
                                     Stretch="Uniform" />
                             </Button>
                         </Grid>
-                        <Button Command="{TemplateBinding Command}" Visibility="{Binding Command.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type local:CancellableButton}}}">
+                        <Button
+                            Command="{TemplateBinding Command}"
+                            Style="{TemplateBinding ButtonStyle}"
+                            Visibility="{Binding Command.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type local:CancellableButton}}}">
                             <Button.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="True">
                                     <TextBlock Text="{TemplateBinding ToolTip}" />
