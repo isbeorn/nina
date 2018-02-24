@@ -57,6 +57,7 @@ namespace NINA.ViewModel {
 
         private async Task<int> MoveFocuser(int position) {
             _cancelMove = new CancellationTokenSource();
+            int pos = -1;
             await Task.Run(() => {
                 try {
                     while (Focuser.Position != position) {
@@ -65,20 +66,22 @@ namespace NINA.ViewModel {
                         Focuser.Move(position);
                     }
                     Position = position;
+                    pos = position;
                 } catch (OperationCanceledException) {
 
                 }
 
             });
-            return Position;
+            return pos;
         }
 
         private async Task<int> MoveFocuserRelative(int offset) {
+            int pos = -1;
             if (Focuser?.Connected == true) {
-                var pos = Focuser.Position + offset;
+                pos = Focuser.Position + offset;
                 await MoveFocuser(pos);
             }
-            return Position;
+            return pos;
         }
 
         private void UpdateFocuser_Tick(object sender, EventArgs e) {
