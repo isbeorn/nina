@@ -16,15 +16,19 @@ namespace NINA {
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e) {
             Logger.Error(e.Exception);
 
-            MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblApplicationInBreakMode"], Locale.Loc.Instance["LblUnhandledException"], MessageBoxButton.OK, MessageBoxResult.OK);
-            var appvm = (ApplicationVM)this.Resources["AppVM"];
-            try {
-                appvm.DisconnectEquipment();
-            } catch(Exception ex) {
-                Logger.Error(ex);
-            }            
-            e.Handled = true;
-            Application.Current.Shutdown();            
+            var result = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblApplicationInBreakMode"], Locale.Loc.Instance["LblUnhandledException"], MessageBoxButton.YesNo, MessageBoxResult.No);
+            if(result == MessageBoxResult.Yes) {
+                e.Handled = true;
+            } else { 
+                var appvm = (ApplicationVM)this.Resources["AppVM"];
+                try {
+                    appvm.DisconnectEquipment();
+                } catch(Exception ex) {
+                    Logger.Error(ex);
+                }            
+                e.Handled = true;
+                Application.Current.Shutdown();
+            }
         }
     }
 }
