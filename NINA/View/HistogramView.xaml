@@ -41,8 +41,9 @@
                     TextColor="Transparent" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LinearBarSeries
-                    BarWidth="0.001"
+                <oxy:AreaSeries
+                    Color="Black"
+                    Color2="Black"
                     DataFieldX="X"
                     DataFieldY="Y"
                     ItemsSource="{Binding Histogram}" />
