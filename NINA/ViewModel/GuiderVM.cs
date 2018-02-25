@@ -103,6 +103,7 @@ namespace NINA.ViewModel {
                         break;
                     }
                 }
+                await Utility.Utility.Wait(TimeSpan.FromSeconds(Settings.GuiderSettleTime), token);
                 return true;
             } else {
                 return false;

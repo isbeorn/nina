@@ -946,5 +946,17 @@ namespace NINA.Properties {
                 this["HistogramResolution"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int GuiderSettleTime {
+            get {
+                return ((int)(this["GuiderSettleTime"]));
+            }
+            set {
+                this["GuiderSettleTime"] = value;
+            }
+        }
     }
 }
