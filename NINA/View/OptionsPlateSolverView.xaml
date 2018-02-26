@@ -63,6 +63,7 @@
                 </Grid.ColumnDefinitions>
                 <ListView
                     x:Name="PART_PlateSolverList"
+                    MinWidth="180"
                     ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:PlateSolverEnum}}}"
                     SelectedIndex="0">
                     <ListView.Resources>
@@ -80,7 +81,7 @@
                     </ListView.View>
                 </ListView>
 
-                <Grid Grid.Column="1" Margin="10,0,0,0">
+                <Grid Grid.Column="1" Margin="20,0,0,0">
                     <!--  Astrometry.Net  -->
                     <Grid>
                         <Grid.ColumnDefinitions>
