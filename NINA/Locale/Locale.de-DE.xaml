@@ -429,8 +429,9 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblPlateSolveSettings">Plate Solver Settings</s:String>
     <s:String x:Key="LblUseBlindSolveFailover">Platesolve fehlgeschlagen. Soll ein Platesolveversuch mit dem Blind Solver gestartet werden?</s:String>
     <s:String x:Key="LblUnhandledException">Unbehandelter Ausnahmefehler</s:String>
-    <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">Leider muss die Anwendung sich aufgrund eines unbehandelten Fehlers schließen.
-Der Fehler wurde in &quot;%localappdata%\NINA\Logs&quot; aufgezeichnet.</s:String>
+    <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">Die Anwendung lief in einen unbehandelten Fehler und muss möglicherweise beendet werden.
+Der Fehler wurde in &quot;%localappdata%\NINA\Logs&quot; aufgezeichnet.
+Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartetem Verhalten führen)</s:String>
     <s:String x:Key="LblChangeToBulbMode">Bitte das Modus-Einstellrad auf Bulb stellen</s:String>
     <s:String x:Key="LblChangeToManualMode">Bitte das Modus-Einstellrad auf Manuell stellen</s:String>
     <s:String x:Key="LblInvalidModeBulb">Ungültiger Modus (Bulb) für Belichtungszeiten &lt;1s</s:String>
@@ -555,4 +556,6 @@ Der Fehler wurde in &quot;%localappdata%\NINA\Logs&quot; aufgezeichnet.</s:Strin
     <s:String x:Key="LblObjectType_3STAR">3 Sterne</s:String>
     <s:String x:Key="LblObjectType_4STAR">4 Sterne</s:String>
     <s:String x:Key="LblObjectType_8STAR">8 Sterne</s:String>
+    <s:String x:Key="LblResumeSettleTime">Ruhezeit nach Wiederaufnahme</s:String>
+    <s:String x:Key="LblFilterNotFoundForPosition">Filter an Position {0} wurde nicht gefunden. Bitte die Filtereinstellungen in den Optionen überprüfen, dass diese dem Filterrad entsprechen!</s:String>
 </ResourceDictionary>

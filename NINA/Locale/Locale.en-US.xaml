@@ -414,8 +414,9 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblAutoFocusOnFilterChange">Auto Focus on filter change</s:String>
     <s:String x:Key="LblBulbSerialPort">Bulb Serial Port</s:String>
     <s:String x:Key="LblUnhandledException">Unhandled Exception occurred</s:String>
-    <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">The Application ran into an unhandled exception and unfortunately has to shut down. 
-The error has been logged to &quot;%localappdata%\NINA\\Logs&quot;.</s:String>
+    <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">The Application ran into an unhandled exception and most likely has to shut down. 
+The error has been logged to &quot;%localappdata%\NINA\Logs&quot;.
+Should the Application try to recover from the error? (Can lead to unexpected behavior)</s:String>
     <s:String x:Key="LblChangeToBulbMode">Please change the mode dial to bulb mode</s:String>
     <s:String x:Key="LblChangeToManualMode">Please change the mode dial to manual mode</s:String>
     <s:String x:Key="LblInvalidModeBulb">Invalid mode (bulb) for Exposure Time &lt;1s</s:String>
@@ -550,4 +551,6 @@ The error has been logged to &quot;%localappdata%\NINA\\Logs&quot;.</s:String>
     <s:String x:Key="LblObjectType_3STAR">3 Stars</s:String>
     <s:String x:Key="LblObjectType_4STAR">4 Stars</s:String>
     <s:String x:Key="LblObjectType_8STAR">8 Stars</s:String>
+    <s:String x:Key="LblResumeSettleTime">Settle Time after resume</s:String>
+    <s:String x:Key="LblFilterNotFoundForPosition">No filter found at position {0}. Please re-evaluate the filters inside the setting, that they correspond your filter wheel!</s:String>
 </ResourceDictionary>

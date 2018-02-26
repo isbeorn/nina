@@ -79,43 +79,51 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        private async Task<FilterInfo> ChangeFilter(FilterInfo filter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null) {
+        private async Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null) {
             progress?.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSwitchingFilter"] });
 
             //Lock access so only one instance can change the filter
             await semaphoreSlim.WaitAsync(token);
             try {
-                var prevFilter = SelectedFilter;
-
-                if (FW?.Connected == true && FW?.Position != filter.Position) {                    
-                    IsMoving = true;
-                    Task changeFocus = null;
-                    if (Settings.FocuserUseFilterWheelOffsets) {
-                        if (prevFilter != null) {
-                            int offset = filter.FocusOffset - prevFilter.FocusOffset;
-                            changeFocus = Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset, Absolute = false, Token = token });                            
-                        }
+                if(FW?.Connected == true) {
+                    var prevFilter = SelectedFilter;
+                    var filter = FW.Filters.Where((x) => x.Position == inputFilter.Position).FirstOrDefault();
+                    if(filter == null) {
+                        Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (inputFilter.Position + 1)));
+                        return null;
                     }
 
-                    FW.Position = filter.Position;
-                    var changeFilter = Task.Run(async () => {
-                        while (FW.Position == -1) {
-                            await Task.Delay(1000);
-                            token.ThrowIfCancellationRequested();
+                    if (FW?.Position != filter.Position) {                    
+                        IsMoving = true;
+                        Task changeFocus = null;
+                        if (Settings.FocuserUseFilterWheelOffsets) {
+                            if (prevFilter != null) {
+                                int offset = filter.FocusOffset - prevFilter.FocusOffset;
+                                changeFocus = Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset, Absolute = false, Token = token });                            
+                            }
                         }
-                    });
 
-                    if (changeFocus != null) {
-                        await changeFocus;
+                        FW.Position = filter.Position;
+                        var changeFilter = Task.Run(async () => {
+                            while (FW.Position == -1) {
+                                await Task.Delay(1000);
+                                token.ThrowIfCancellationRequested();
+                            }
+                        });
+
+                        if (changeFocus != null) {
+                            await changeFocus;
+                        }
+
+                        await changeFilter;
+
+                        IsMoving = false;
                     }
+                    _selectedFilter = filter;
+                    RaisePropertyChanged(nameof(SelectedFilter));
 
-                    await changeFilter;
-
-                    IsMoving = false;
                 }
-                _selectedFilter = filter;
-                RaisePropertyChanged(nameof(SelectedFilter));
-                
+
             } finally {
                 //unlock access
                 semaphoreSlim.Release();

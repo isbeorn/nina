@@ -93,6 +93,17 @@ namespace NINA.Model {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CaptureSequenceList));
 
                 l = (CaptureSequenceList)xmlSerializer.Deserialize(reader);
+                foreach(CaptureSequence s in l) {
+                    //first try to match by name; otherwise match by position.
+                    var filter = Settings.FilterWheelFilters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
+                    if(filter == null) {
+                        filter = Settings.FilterWheelFilters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
+                        if(filter == null) {
+                            Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (s.FilterType.Position + 1)));
+                        }
+                    }
+                    s.FilterType = filter;
+                }
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);

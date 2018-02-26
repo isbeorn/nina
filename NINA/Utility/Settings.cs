@@ -856,6 +856,16 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Save();
             }
         }
+
+        public static int GuiderSettleTime {
+            get {
+                return Properties.Settings.Default.GuiderSettleTime;
+            }
+            set {
+                Properties.Settings.Default.GuiderSettleTime = value;
+                Properties.Settings.Default.Save();
+            }
+        }
     }
 
 }

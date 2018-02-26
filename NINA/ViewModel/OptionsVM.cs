@@ -1007,5 +1007,15 @@ namespace NINA.ViewModel {
                 return HistogramResolution / 4;
             }
         }
+
+        public int GuiderSettleTime {
+            get {
+                return Settings.GuiderSettleTime;
+            }
+            set {
+                Settings.GuiderSettleTime = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }
