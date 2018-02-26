@@ -709,7 +709,7 @@
                                         MinHeight="40"
                                         Margin="5"
                                         HorizontalAlignment="Stretch"
-                                        Command="{Binding SetFramingAssistantCoordinatesCommand}">
+                                        Command="{Binding DataContext.SetFramingAssistantCoordinatesCommand, RelativeSource={RelativeSource AncestorType=local:SkyAtlasView}}">
                                         <TextBlock
                                             Foreground="{StaticResource ButtonForegroundBrush}"
                                             Text="{ns:Loc LblSetForFramingAssistant}"
