@@ -22,6 +22,8 @@ namespace NINA.ViewModel {
 
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
+            SetSequenceCoordinatesCommand = new AsyncCommand<bool>(() => SetSequenceCoordinates());
+            SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
 
             InitializeFilters();
             PageSize = 50;
@@ -55,6 +57,14 @@ namespace NINA.ViewModel {
 
         private void CancelSearch(object obj) {
             _searchTokenSource?.Cancel();
+        }
+
+        private async Task<bool> SetSequenceCoordinates() {
+            return await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = SearchResult.SelectedItem });
+        }
+
+        private void SlewToCoordinates(object obj) {
+            Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates, SearchResult.SelectedItem.Coordinates);
         }
 
         private Ticker _ticker;
@@ -755,6 +765,10 @@ namespace NINA.ViewModel {
 
         public ICommand CancelSearchCommand { get; private set; }
 
+        public ICommand SetSequenceCoordinatesCommand { get; private set; }
+
+        public ICommand SlewToCoordinatesCommand { get; private set; }
+
         private int _pageSize;
         public int PageSize {
             get {
@@ -850,6 +864,17 @@ namespace NINA.ViewModel {
         }
 
         private List<T> _items;
+
+        private T _selectedItem;
+        public T SelectedItem {
+            get {
+                return _selectedItem;
+            }
+            set {
+                _selectedItem = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private async Task<bool> LoadFirstPage() {
             return await LoadPage(Pages.FirstOrDefault());

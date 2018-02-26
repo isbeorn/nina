@@ -374,18 +374,9 @@
             <DataGrid
                 AutoGenerateColumns="False"
                 HorizontalScrollBarVisibility="Disabled"
-                ItemsSource="{Binding ItemPage}">
-                <DataGrid.CellStyle>
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
-                        <Style.Triggers>
-                            <Trigger Property="DataGridCell.IsSelected" Value="True">
-                                <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-                                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.CellStyle>
+                ItemsSource="{Binding ItemPage}"
+                SelectedItem="{Binding SelectedItem}">
+
                 <DataGrid.Columns>
                     <DataGridTemplateColumn
                         Width="*"
@@ -708,7 +699,7 @@
                                         MinHeight="40"
                                         Margin="5"
                                         HorizontalAlignment="Stretch"
-                                        Command="{Binding SetSequenceCoordinatesCommand}">
+                                        Command="{Binding DataContext.SetSequenceCoordinatesCommand, RelativeSource={RelativeSource AncestorType=local:SkyAtlasView}}">
                                         <TextBlock
                                             Foreground="{StaticResource ButtonForegroundBrush}"
                                             Text="{ns:Loc LblSetAsSequenceTarget}"
@@ -728,7 +719,7 @@
                                         MinHeight="40"
                                         Margin="5"
                                         HorizontalAlignment="Stretch"
-                                        Command="{Binding SlewToCoordinatesCommand}">
+                                        Command="{Binding DataContext.SlewToCoordinatesCommand, RelativeSource={RelativeSource AncestorType=local:SkyAtlasView}}">
                                         <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSlew}" />
                                     </Button>
                                 </UniformGrid>
