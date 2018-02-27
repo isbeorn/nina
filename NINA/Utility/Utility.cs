@@ -74,11 +74,10 @@ namespace NINA.Utility {
                         result = streamReader.ReadToEnd();
                     }
                 } catch (Exception ex) {
-                    canceltoken.ThrowIfCancellationRequested();
 
-                    //Logger.Error(ex.Message);
+                    Logger.Error(ex);
                     //Notification.ShowError(string.Format("Unable to connect to {0}", url));
-                    Notification.Notification.ShowError(ex.Message);
+                    //Notification.Notification.ShowError(ex.Message);
                     if (response != null) {
                         response.Close();
                         response = null;

@@ -54,7 +54,6 @@ namespace NINA.ViewModel {
                 }
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
-                Notification.ShowError(ex.Message);
                 Logger.Error(ex);
             }
             return true;
@@ -70,13 +69,18 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> CheckIfUpdateIsAvailable() {
-            _latestVersion = await GetLatestVersion();
+            try {
+                _latestVersion = await GetLatestVersion();
 
-            if (_latestVersion > CurrentVersion) {
-                return true;
-            } else {
-                return false;
+                if (_latestVersion > CurrentVersion) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch(Exception ex) {
+                Logger.Error(ex);
             }
+            return false;            
         }
 
         private string Unzip(string zipLocation) {
