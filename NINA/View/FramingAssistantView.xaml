@@ -244,6 +244,7 @@
                             Text="{ns:Loc LblSlew}"
                             TextWrapping="Wrap" />
                     </Button>
+                    <Grid />
                     <Button
                         Height="35"
                         Margin="5"
