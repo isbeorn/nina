@@ -51,6 +51,13 @@ namespace NINA.ViewModel {
                 return true;
             }, (object o) => SelectedCoordinates != null);
 
+            SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => {
+                if(SelectedCoordinates != null) {
+                    return await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = SelectedCoordinates });
+                }
+                return false;
+            }, (object o) => SelectedCoordinates != null);
+
 
             RegisterMediatorMessages();
             
@@ -399,6 +406,7 @@ namespace NINA.ViewModel {
         public IAsyncCommand LoadImageCommand { get; private set; }
         public ICommand CancelLoadImageCommand { get; private set; }
         public ICommand SetSequenceCoordinatesCommand { get; private set; }
+        public IAsyncCommand SlewToCoordinatesCommand { get; private set; }        
         public IAsyncCommand RecenterCommand { get; private set; }
     }
 

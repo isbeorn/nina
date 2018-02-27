@@ -231,7 +231,17 @@
                         Command="{Binding RecenterCommand}">
                         <TextBlock
                             Foreground="{StaticResource ButtonForegroundBrush}"
-                            Text="{ns:Loc LblRecenter}"
+                            Text="{ns:Loc LblRecenterImage}"
+                            TextWrapping="Wrap" />
+                    </Button>
+                    <Button
+                        Height="35"
+                        Margin="5"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding SlewToCoordinatesCommand}">
+                        <TextBlock
+                            Foreground="{StaticResource ButtonForegroundBrush}"
+                            Text="{ns:Loc LblSlew}"
                             TextWrapping="Wrap" />
                     </Button>
                     <Button

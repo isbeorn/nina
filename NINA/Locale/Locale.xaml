@@ -556,4 +556,5 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblResumeSettleTime">Settle Time after resume</s:String>
     <s:String x:Key="LblFilterNotFoundForPosition">No filter found at position {0}. Please re-evaluate the filters inside the setting, that they correspond your filter wheel!</s:String>
     <s:String x:Key="LblRefreshWeatherTooltip">Toggles refreshing of weather data every 60 seconds on/off</s:String>
+    <s:String x:Key="LblRecenterImage">Recenter Image</s:String>
 </ResourceDictionary>
