@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace NINA.ViewModel {
     class WeatherDataVM : DockableVM {
@@ -14,7 +15,36 @@ namespace NINA.ViewModel {
 
             this.ContentId = nameof(WeatherDataVM);
 
+            _updateWeatherDataTimer = new DispatcherTimer();
+            _updateWeatherDataTimer.Interval = TimeSpan.FromSeconds(60);
+            _updateWeatherDataTimer.Tick += _updateWeatherDataTimer_Tick; 
+            
+            _doUpdate = false;
+
             this.UpdateWeatherDataCommand = new AsyncCommand<bool>(() => UpdateWeatherData());
+        }
+
+        private async void _updateWeatherDataTimer_Tick(object sender, EventArgs e) {
+            await UpdateWeatherDataCommand.ExecuteAsync(null);
+        }
+
+        private DispatcherTimer _updateWeatherDataTimer;
+
+        private bool _doUpdate;
+        public bool DoUpdate {
+            get {
+                return _doUpdate;
+            }
+            set {
+                _doUpdate = value;
+                if(_doUpdate) {                    
+                    _updateWeatherDataTimer_Tick(null, null);
+                    _updateWeatherDataTimer.Start();
+                } else {
+                    _updateWeatherDataTimer.Stop();
+                }                
+                RaisePropertyChanged();
+            }
         }
 
         private async Task<bool> UpdateWeatherData() {
