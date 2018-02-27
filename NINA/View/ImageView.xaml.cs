@@ -233,6 +233,7 @@ namespace NINA.View {
             RecalculateScalingFactors();
             mode = 1;
             Zoom(fittingScale);
+            Zoom(fittingScale);
         }
 
         private void ButtonZoomOneToOne_Click(object sender, RoutedEventArgs e) {
