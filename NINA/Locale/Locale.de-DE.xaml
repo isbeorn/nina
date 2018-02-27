@@ -548,4 +548,5 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <s:String x:Key="LblObjectType_8STAR">8 Sterne</s:String>
     <s:String x:Key="LblResumeSettleTime">Ruhezeit nach Wiederaufnahme</s:String>
     <s:String x:Key="LblFilterNotFoundForPosition">Filter an Position {0} wurde nicht gefunden. Bitte die Filtereinstellungen in den Optionen überprüfen, dass diese dem Filterrad entsprechen!</s:String>
+    <s:String x:Key="LblRefreshWeatherTooltip">Schaltet Aktualisierung von Wetterdaten alle 60 Sekunden an/aus</s:String>
 </ResourceDictionary>

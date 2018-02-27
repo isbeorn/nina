@@ -15,6 +15,10 @@
                 <Border
                     MinHeight="30"
                     BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,0,1" />
+                <Border
+                    MinHeight="30"
+                    BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="0,0,0,1">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblLatitude}" />
@@ -111,23 +115,23 @@
                         <TextBlock Margin="5,0,0,0" Text="{Binding Sunset}" />
                     </UniformGrid>
                 </Border>
-
-
-
             </StackPanel>
-            <Button
-                Height="35"
-                Margin="10,10,10,0"
-                Command="{Binding UpdateWeatherDataCommand}">
-                <Button.ToolTip>
-                    <TextBlock Text="{ns:Loc LblRefresh}" />
-                </Button.ToolTip>
-                <Path
-                    Margin="5"
-                    Data="{StaticResource LoopSVG}"
-                    Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform" />
-            </Button>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRefresh}" />
+                    <CheckBox
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Left"
+                        IsChecked="{Binding DoUpdate}">
+                        <CheckBox.ToolTip>
+                            <TextBlock Text="{ns:Loc LblRefreshWeatherTooltip}" />
+                        </CheckBox.ToolTip>
+                    </CheckBox>
+                </UniformGrid>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

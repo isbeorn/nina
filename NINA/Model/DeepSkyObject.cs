@@ -23,8 +23,6 @@ namespace NINA.Model {
     public class DeepSkyObject : BaseINPC {
 
         private DeepSkyObject() {
-            SetSequenceCoordinatesCommand = new AsyncCommand<bool>(() => SetSequenceCoordinates());
-            SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
         }
 
         public DeepSkyObject(string name) : this() {
@@ -161,14 +159,6 @@ namespace NINA.Model {
             this._longitude = longitude;
         }
 
-        private async Task<bool> SetSequenceCoordinates() {
-            return await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = this });
-        }
-
-        private void SlewToCoordinates(object obj) {
-            Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates, Coordinates);
-        }
-
         private void CalculateAltitude(DateTime start, double latitude, double longitude) {
             var siderealTime = Astrometry.GetLocalSiderealTime(start, longitude);
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
@@ -266,12 +256,6 @@ namespace NINA.Model {
             }
 
             RaisePropertyChanged(nameof(Image));
-        }*/
-
-
-        /* Should be moved out of the model */
-        public ICommand SetSequenceCoordinatesCommand { get; private set; }
-        /* Should be moved out of the model */
-        public ICommand SlewToCoordinatesCommand { get; private set; }
+        }*/        
     }
 }
