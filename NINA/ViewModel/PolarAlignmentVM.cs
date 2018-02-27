@@ -34,7 +34,7 @@ namespace NINA.ViewModel {
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<ApplicationStatus>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE),
                 (p) => (Telescope?.Connected == true && Cam?.Connected == true));
-            SlewToMeridianOffsetCommand = new RelayCommand(
+            SlewToMeridianOffsetCommand = new AsyncCommand<bool>(
                 SlewToMeridianOffset,
                 (p) => (Telescope?.Connected == true));
             DARVSlewCommand = new AsyncCommand<bool>(
@@ -174,7 +174,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public ICommand SlewToMeridianOffsetCommand { get; private set; }
+        public IAsyncCommand SlewToMeridianOffsetCommand { get; private set; }
 
         private double _meridianOffset;
         private double _declination;
@@ -585,7 +585,7 @@ namespace NINA.ViewModel {
             return poleError;
         }
 
-        public void SlewToMeridianOffset(object o) {
+        public async Task<bool> SlewToMeridianOffset() {
             double curSiderealTime = Telescope.SiderealTime;
 
             double slew_ra = curSiderealTime + (MeridianOffset * 24.0 / 360.0);
@@ -596,8 +596,7 @@ namespace NINA.ViewModel {
             }
 
             var coords = new Coordinates(slew_ra, Declination, Epoch.JNOW, Coordinates.RAType.Hours);
-
-            Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates, coords);
+            return await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = coords });
         }
 
         private void UpdateValues_Tick(object sender, EventArgs e) {

@@ -162,7 +162,6 @@ namespace NINA.Utility.Mediator {
         ChangeDetectStars = 15,
         LocaleChanged = 18,
         LocationChanged = 19,
-        SlewToCoordinates = 21,
         FocuserTemperatureChanged = 26,
         FocuserConnectedChanged = 28,
         CameraConnectedChanged = 29
