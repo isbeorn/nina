@@ -8,6 +8,7 @@ using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -30,8 +31,13 @@ namespace NINA.ViewModel {
             CameraWidth = 1500;
             CameraHeight = 1000;
             CameraPixelSize = Settings.CameraPixelSize;
+
+            _statusUpdate = new Progress<ApplicationStatus>(p => Status = p);
+
             FocalLength = Settings.TelescopeFocalLength;
             LoadImageCommand = new AsyncCommand<bool>(async () => { return await LoadImage(); });
+            LoadImageFromFileCommand = new AsyncCommand<bool>(async () => { return await LoadImageFromFile(); });
+            CancelLoadImageFromFileCommand = new RelayCommand((object o) => { CancelLoadImage(); });
             _progress = new Progress<int>((p) => DownloadProgressValue = p);
             CancelLoadImageCommand = new RelayCommand((object o) => { CancelLoadImage(); });
             DragStartCommand = new RelayCommand(DragStart);
@@ -39,7 +45,7 @@ namespace NINA.ViewModel {
             DragMoveCommand = new RelayCommand(DragMove);
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async () => {
                 var msgResult = await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = new DeepSkyObject(DSO?.Name, SelectedCoordinates) });
-                Image = null;
+                ImageParameter = null;
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 return msgResult;
@@ -61,6 +67,95 @@ namespace NINA.ViewModel {
 
             RegisterMediatorMessages();
             
+        }
+
+        private ApplicationStatus _status;
+        public ApplicationStatus Status {
+            get {
+                return _status;
+            }
+            set {
+                _status = value;
+                _status.Source = Locale.Loc.Instance["LblFramingAssistant"];
+                RaisePropertyChanged();
+
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+            }
+        }
+
+        private async Task<bool> LoadImageFromFile() {
+            
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Title = Locale.Loc.Instance["LblLoadImage"];
+            dialog.FileName = "";
+            dialog.DefaultExt = ".tif";
+            dialog.Multiselect = false;
+            dialog.Filter = "TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png";
+
+            if (dialog.ShowDialog() == true) {
+                CancelLoadImage();
+                _loadImageSource = new CancellationTokenSource();
+
+                BitmapSource img = null;
+                switch (Path.GetExtension(dialog.FileName)) {
+                    case ".tif": case ".tiff":
+                        img = LoadTiff(dialog.FileName);
+                        break;
+                    case ".png":
+                        img = LoadPng(dialog.FileName);
+                        break;
+                    case ".jpg":
+                        img = LoadJpg(dialog.FileName);
+                        break;
+                }
+                
+                if(img == null) {
+                    return false;
+                }
+
+                var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Image = img, Progress = _statusUpdate, Token = _loadImageSource.Token, Blind = true });
+                if(result.Success) {
+                    var rotation = 180 - result.Orientation;
+                    if(rotation < 0) {
+                        rotation += 360;
+                    } else if (rotation >= 360) {
+                        rotation -= 360;
+                    }
+
+                    var parameter = new FramingImageParameter() {
+                        Image = img,
+                        FieldOfViewWidth = Astrometry.ArcsecToDegree(result.Pixscale * img.Width),
+                        FieldOfViewHeight = Astrometry.ArcsecToDegree(result.Pixscale * img.Height),
+                        Rotation = rotation
+                    };
+                    Coordinates = result.Coordinates;
+                    CalculateRectangle(parameter);
+                    await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                        ImageParameter = parameter;
+                    }));
+                                      
+                    return true;
+                } else {
+                    return false;
+                }                
+            } else {
+                return false;
+            }            
+        }
+        
+        private BitmapSource LoadPng(string filename) {
+            PngBitmapDecoder PngDec = new PngBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+            return PngDec.Frames[0];
+        }
+
+        private BitmapSource LoadJpg(string filename) {
+            JpegBitmapDecoder JpgDec = new JpegBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+            return JpgDec.Frames[0];
+        }
+
+        private BitmapSource LoadTiff(string filename) {
+            TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+            return TifDec.Frames[0];
         }
 
         private void RegisterMediatorMessages() {
@@ -250,7 +345,7 @@ namespace NINA.ViewModel {
             set {
                 _cameraWidth = value;
                 RaisePropertyChanged();
-                CalculateRectangle(Image);
+                CalculateRectangle(ImageParameter);
             }
         }
 
@@ -262,7 +357,7 @@ namespace NINA.ViewModel {
             set {
                 _cameraHeight = value;
                 RaisePropertyChanged();
-                CalculateRectangle(Image);
+                CalculateRectangle(ImageParameter);
             }
         }
 
@@ -274,7 +369,7 @@ namespace NINA.ViewModel {
             set {
                 _cameraPixelSize = value;
                 RaisePropertyChanged();
-                CalculateRectangle(Image);
+                CalculateRectangle(ImageParameter);
             }
         }
 
@@ -286,17 +381,17 @@ namespace NINA.ViewModel {
             set {
                 _focalLength = value;
                 RaisePropertyChanged();
-                CalculateRectangle(Image);
+                CalculateRectangle(ImageParameter);
             }
         }
 
-        private BitmapSource _image;
-        public BitmapSource Image {
+        private FramingImageParameter _imageParameter;
+        public FramingImageParameter ImageParameter {
             get {
-                return _image;
+                return _imageParameter;
             }
             set {
-                _image = value;
+                _imageParameter = value;
                 RaisePropertyChanged();
             }
         }
@@ -316,18 +411,11 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _loadImageSource;
 
-        private IProgress<string> _statusUpdate = new Progress<string>((p) => {
-            Mediator.Instance.Request(new StatusUpdateMessage() {
-                Status = new ApplicationStatus() {
-                    Source = Locale.Loc.Instance["LblFramingAssistant"],
-                    Status = string.IsNullOrEmpty(p) ? "" : Locale.Loc.Instance[p]
-                }
-            });
-        });
+        private IProgress<ApplicationStatus> _statusUpdate;
 
         private async Task<bool> LoadImage() {
             try {
-                _statusUpdate.Report("LblDownloading");
+                _statusUpdate.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
 
                 CancelLoadImage();
                 _loadImageSource = new CancellationTokenSource();
@@ -340,33 +428,39 @@ namespace NINA.ViewModel {
 
                 var interaction = new DigitalSkySurveyInteraction(DigitalSkySurveyDomain.NASA);
                 var img = await interaction.Download(p, _loadImageSource.Token, _progress);
+                var parameter = new FramingImageParameter() {
+                    Image = img,
+                    FieldOfViewWidth = FieldOfView,
+                    FieldOfViewHeight = FieldOfView,
+                    Rotation = 180
+                };
 
-                CalculateRectangle(img);
+                CalculateRectangle(parameter);
 
-                await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {                    
-                    Image = img;
+                await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                    ImageParameter = parameter;
                 }));
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);
             } finally {
-                _statusUpdate.Report("");
+                _statusUpdate.Report(new ApplicationStatus() { Status = "" });
             }
             return true;
 
         }
 
-        private void CalculateRectangle(BitmapSource img) {
-            if (img != null) {
-                var imageArcsecWidth = Astrometry.DegreeToArcsec(FieldOfView) / img.Width;
-                var imageArcsecHeight = Astrometry.DegreeToArcsec(FieldOfView) / img.Height;
+        private void CalculateRectangle(FramingImageParameter parameter) {
+            if (parameter != null) {
+                var imageArcsecWidth = Astrometry.DegreeToArcsec(parameter.FieldOfViewWidth) / parameter.Image.Width;
+                var imageArcsecHeight = Astrometry.DegreeToArcsec(parameter.FieldOfViewHeight) / parameter.Image.Height;
 
                 var arcsecPerPix = Astrometry.ArcsecPerPixel(CameraPixelSize, FocalLength);
                 var conversion = arcsecPerPix / imageArcsecWidth;
                 var width = CameraWidth * conversion;
                 var height = CameraHeight * conversion;
-                Rectangle = new ObservableRectangle() { Width = width, Height = height, X = img.Width / 2d - width / 2d, Y = img.Height / 2d - height / 2d, Rotation = Rectangle?.Rotation ?? 0 };
+                Rectangle = new ObservableRectangle() { Width = width, Height = height, X = parameter.Image.Width / 2d - width / 2d, Y = parameter.Image.Height / 2d - height / 2d, Rotation = Rectangle?.Rotation ?? 0 };
                 SelectedCoordinates = new Coordinates(Coordinates.RA, Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
             }
         }
@@ -385,12 +479,12 @@ namespace NINA.ViewModel {
             this.Rectangle.X += delta.X;
             this.Rectangle.Y += delta.Y;
 
-            var orientation = Astrometry.ToRadians(180);    // todo set orientation to value of image when not from sky survey
+            var orientation = Astrometry.ToRadians(ImageParameter.Rotation);
             var x = delta.X * Math.Cos(orientation) + delta.Y * Math.Sin(orientation);
             var y = delta.Y * Math.Cos(orientation) - delta.X * Math.Sin(orientation);
 
-            var imageArcsecWidth = Astrometry.DegreeToArcsec(FieldOfView) / Image.Width;
-            var imageArcsecHeight = Astrometry.DegreeToArcsec(FieldOfView) / Image.Height;
+            var imageArcsecWidth = Astrometry.DegreeToArcsec(ImageParameter.FieldOfViewWidth) / ImageParameter.Image.Width;
+            var imageArcsecHeight = Astrometry.DegreeToArcsec(ImageParameter.FieldOfViewHeight) / ImageParameter.Image.Height;
 
             SelectedCoordinates = new Coordinates(
                 SelectedCoordinates.RADegrees + Astrometry.ArcsecToDegree(x * imageArcsecWidth),
@@ -408,6 +502,15 @@ namespace NINA.ViewModel {
         public ICommand SetSequenceCoordinatesCommand { get; private set; }
         public IAsyncCommand SlewToCoordinatesCommand { get; private set; }        
         public IAsyncCommand RecenterCommand { get; private set; }
+        public IAsyncCommand LoadImageFromFileCommand { get; private set; }
+        public ICommand CancelLoadImageFromFileCommand { get; private set; }        
+    }
+
+    class FramingImageParameter {
+        public BitmapSource Image { get; set; }
+        public double FieldOfViewWidth { get; set; }
+        public double FieldOfViewHeight { get; set; }
+        public double Rotation { get; set; }
     }
 
     public class ObservableRectangle : BaseINPC {

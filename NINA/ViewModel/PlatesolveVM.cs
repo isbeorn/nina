@@ -65,7 +65,11 @@ namespace NINA.ViewModel {
                         if (msg.SyncReslewRepeat) {
                             return await CaptureSolveSyncAndReslew(msg.Token, msg.Progress, msg.Silent);
                         } else {
-                            return await Solve(msg.Image ?? Image, msg.Progress, msg.Token, msg.Silent);
+                            if(msg.Blind) {
+                                return await BlindSolve(msg.Image ?? Image, msg.Progress, msg.Token);
+                            } else {
+                                return await Solve(msg.Image ?? Image, msg.Progress, msg.Token, msg.Silent);
+                            }                            
                         }
                         
                     }
@@ -363,6 +367,24 @@ namespace NINA.ViewModel {
             }
 
             PlateSolveResult = result;
+            progress.Report(new ApplicationStatus() { Status = string.Empty });
+            return result;
+        }
+
+        /// <summary>
+        /// Creates an instance of IPlatesolver, reads the image into memory and calls solve logic of platesolver
+        /// </summary>
+        /// <param name="progress"></param>
+        /// <param name="canceltoken"></param>
+        /// <returns>true: success; false: fail</returns>
+        public async Task<PlateSolveResult> BlindSolve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false, bool blind = false) {
+            var solver = GetBlindSolver(source);
+            if (solver == null) {
+                return null;
+            }
+
+            var result = await Solve(solver, source, progress, canceltoken);                       
+            
             progress.Report(new ApplicationStatus() { Status = string.Empty });
             return result;
         }

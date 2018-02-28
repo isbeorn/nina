@@ -231,6 +231,7 @@ namespace NINA.Utility.Mediator {
         public bool SyncReslewRepeat { get; set; }
         public BitmapSource Image { get; internal set; }
         public bool Silent { get; set; }
+        public bool Blind { get; set; }
     }
 
     class ChangeFilterWheelPositionMessage : AsyncMediatorMessage<FilterInfo> {

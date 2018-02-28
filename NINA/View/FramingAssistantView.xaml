@@ -272,8 +272,17 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" />
 
-        <local:ImageView Grid.Column="2" Image="{Binding Image}">
-            <!--<local:ImageView.ButtonHeaderContent />-->
+        <local:ImageView Grid.Column="2" Image="{Binding ImageParameter.Image}">
+            <local:ImageView.ButtonHeaderContent>
+                <ninactrl:CancellableButton
+                    Width="40"
+                    Margin="2.5"
+                    ButtonImage="{StaticResource LoadSVG}"
+                    CancelButtonImage="{StaticResource CancelSVG}"
+                    CancelCommand="{Binding CancelLoadImageFromFileCommand}"
+                    Command="{Binding LoadImageFromFileCommand}"
+                    ToolTip="{ns:Loc LblLoadImageFromFile}" />
+            </local:ImageView.ButtonHeaderContent>
             <local:ImageView.ImageAreaContent>
                 <Grid>
                     <Grid.Resources>
