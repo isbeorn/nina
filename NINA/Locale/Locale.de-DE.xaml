@@ -560,4 +560,8 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <s:String x:Key="LblFilterNotFoundForPosition">Filter an Position {0} wurde nicht gefunden. Bitte die Filtereinstellungen in den Optionen überprüfen, dass diese dem Filterrad entsprechen!</s:String>
     <s:String x:Key="LblRefreshWeatherTooltip">Schaltet Aktualisierung von Wetterdaten alle 60 Sekunden an/aus</s:String>
     <s:String x:Key="LblRecenterImage">Bild neu Zentrieren</s:String>
+    <s:String x:Key="LblDownloadImage">Download Image</s:String>
+    <s:String x:Key="LblDownloadImageTooltip">Download Image from the NASA skysurvey for the given coordinates</s:String>
+    <s:String x:Key="LblLoadImageFromFile">Load Image from File</s:String>
+    <s:String x:Key="LblLoadImageFromFileTooltip">Download Image from file and use the blindsolver to determine coordinates</s:String>
 </ResourceDictionary>

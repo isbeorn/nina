@@ -557,4 +557,9 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblFilterNotFoundForPosition">No filter found at position {0}. Please re-evaluate the filters inside the setting, that they correspond your filter wheel!</s:String>
     <s:String x:Key="LblRefreshWeatherTooltip">Toggles refreshing of weather data every 60 seconds on/off</s:String>
     <s:String x:Key="LblRecenterImage">Recenter Image</s:String>
+    <s:String x:Key="LblDownloadImage">Download Image</s:String>
+    <s:String x:Key="LblDownloadImageTooltip">Download Image from the NASA skysurvey for the given coordinates</s:String>
+    <s:String x:Key="LblLoadImageFromFile">Load Image from File</s:String>
+    <s:String x:Key="LblLoadImageFromFileTooltip">Download Image from file and use the blindsolver to determine coordinates</s:String>
+
 </ResourceDictionary>

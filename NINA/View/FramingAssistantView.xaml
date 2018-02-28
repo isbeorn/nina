@@ -155,16 +155,31 @@
                         Height="35"
                         Margin="5"
                         HorizontalAlignment="Stretch"
-                        ButtonText="{ns:Loc LblLoadImage}"
+                        ButtonText="{ns:Loc LblDownloadImage}"
                         CancelButtonImage="{StaticResource CancelSVG}"
                         CancelCommand="{Binding CancelLoadImageCommand}"
-                        Command="{Binding LoadImageCommand}" />
+                        Command="{Binding LoadImageCommand}"
+                        ToolTip="{ns:Loc LblDownloadImageTooltip}" />
                     <ninactrl:LoadingControl
                         Height="30"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         LoadingImageBrush="{StaticResource PrimaryBrush}"
-                        Visibility="{Binding LoadImageCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
+                        Visibility="{Binding LoadImageCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}, FallbackValue=Hidden}" />
+                    <ninactrl:CancellableButton
+                        Height="35"
+                        Margin="5"
+                        ButtonText="{ns:Loc LblLoadImageFromFile}"
+                        CancelButtonImage="{StaticResource CancelSVG}"
+                        CancelCommand="{Binding CancelLoadImageFromFileCommand}"
+                        Command="{Binding LoadImageFromFileCommand}"
+                        ToolTip="{ns:Loc LblLoadImageFromFileTooltip}" />
+                    <ninactrl:LoadingControl
+                        Height="30"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        LoadingImageBrush="{StaticResource PrimaryBrush}"
+                        Visibility="{Binding LoadImageFromFileCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}, FallbackValue=Hidden}" />
                 </UniformGrid>
 
                 <GroupBox Header="{ns:Loc LblCameraParameter}">
@@ -273,16 +288,9 @@
             VerticalAlignment="Stretch" />
 
         <local:ImageView Grid.Column="2" Image="{Binding ImageParameter.Image}">
-            <local:ImageView.ButtonHeaderContent>
-                <ninactrl:CancellableButton
-                    Width="40"
-                    Margin="2.5"
-                    ButtonImage="{StaticResource LoadSVG}"
-                    CancelButtonImage="{StaticResource CancelSVG}"
-                    CancelCommand="{Binding CancelLoadImageFromFileCommand}"
-                    Command="{Binding LoadImageFromFileCommand}"
-                    ToolTip="{ns:Loc LblLoadImageFromFile}" />
-            </local:ImageView.ButtonHeaderContent>
+            <!--<local:ImageView.ButtonHeaderContent>
+
+            </local:ImageView.ButtonHeaderContent>-->
             <local:ImageView.ImageAreaContent>
                 <Grid>
                     <Grid.Resources>
