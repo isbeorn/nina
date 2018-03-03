@@ -113,31 +113,40 @@ namespace NINA.ViewModel {
                     return false;
                 }
 
-                var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Image = img, Progress = _statusUpdate, Token = _loadImageSource.Token, Blind = true });
-                if(result.Success) {
-                    var rotation = 180 - result.Orientation;
-                    if(rotation < 0) {
-                        rotation += 360;
-                    } else if (rotation >= 360) {
-                        rotation -= 360;
+                var dialogResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
+                if(dialogResult == MessageBoxResult.OK) {
+                    var plateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Image = img, Progress = _statusUpdate, Token = _loadImageSource.Token, Blind = true });
+                    if (plateSolveResult.Success) {
+                        var rotation = 180 - plateSolveResult.Orientation;
+                        if (rotation < 0) {
+                            rotation += 360;
+                        } else if (rotation >= 360) {
+                            rotation -= 360;
+                        }
+
+                        var parameter = new FramingImageParameter() {
+                            Image = img,
+                            FieldOfViewWidth = Astrometry.ArcsecToDegree(plateSolveResult.Pixscale * img.Width),
+                            FieldOfViewHeight = Astrometry.ArcsecToDegree(plateSolveResult.Pixscale * img.Height),
+                            Rotation = rotation
+                        };
+                        Coordinates = plateSolveResult.Coordinates;
+                        FieldOfView = Math.Round(Math.Max(parameter.FieldOfViewWidth, parameter.FieldOfViewHeight), 2);
+                        CalculateRectangle(parameter);
+                        await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                            ImageParameter = parameter;
+                        }));
+
+                        return true;
+                    } else {
+                        return false;
                     }
 
-                    var parameter = new FramingImageParameter() {
-                        Image = img,
-                        FieldOfViewWidth = Astrometry.ArcsecToDegree(result.Pixscale * img.Width),
-                        FieldOfViewHeight = Astrometry.ArcsecToDegree(result.Pixscale * img.Height),
-                        Rotation = rotation
-                    };
-                    Coordinates = result.Coordinates;
-                    CalculateRectangle(parameter);
-                    await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                        ImageParameter = parameter;
-                    }));
-                                      
-                    return true;
                 } else {
                     return false;
-                }                
+                }
+
+                            
             } else {
                 return false;
             }            
@@ -460,7 +469,7 @@ namespace NINA.ViewModel {
                 var conversion = arcsecPerPix / imageArcsecWidth;
                 var width = CameraWidth * conversion;
                 var height = CameraHeight * conversion;
-                Rectangle = new ObservableRectangle() { Width = width, Height = height, X = parameter.Image.Width / 2d - width / 2d, Y = parameter.Image.Height / 2d - height / 2d, Rotation = Rectangle?.Rotation ?? 0 };
+                Rectangle = new ObservableRectangle(parameter.Rotation) { Width = width, Height = height, X = parameter.Image.Width / 2d - width / 2d, Y = parameter.Image.Height / 2d - height / 2d, Rotation = Rectangle?.Rotation ?? 0 };
                 SelectedCoordinates = new Coordinates(Coordinates.RA, Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
             }
         }
@@ -514,7 +523,8 @@ namespace NINA.ViewModel {
     }
 
     public class ObservableRectangle : BaseINPC {
-        public ObservableRectangle() {
+        public ObservableRectangle(double rotationOffset) {
+            _rotationOffset = rotationOffset;
         }
 
         private double _x;
@@ -566,6 +576,19 @@ namespace NINA.ViewModel {
             set {
                 _rotation = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(DisplayedRotation));
+            }
+        }
+        private double _rotationOffset;
+        public double DisplayedRotation {
+            get {
+                var rotation = Rotation - _rotationOffset;
+                if (rotation < 0) {
+                    rotation += 360;
+                } else if (rotation >= 360) {
+                    rotation -= 360;
+                }
+                return Math.Round(rotation, 2);
             }
         }
     }

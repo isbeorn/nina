@@ -223,7 +223,7 @@
                                         MinWidth="20"
                                         Margin="5,0,0,0"
                                         VerticalAlignment="Center"
-                                        Text="{Binding Rectangle.Rotation}" />
+                                        Text="{Binding Rectangle.DisplayedRotation, Mode=OneWay}" />
                                     <Slider
                                         Grid.Column="1"
                                         Margin="5,0,0,0"
