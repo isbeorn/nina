@@ -90,7 +90,7 @@ namespace NINA.ViewModel {
             dialog.FileName = "";
             dialog.DefaultExt = ".tif";
             dialog.Multiselect = false;
-            dialog.Filter = "TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png";
+            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png";
 
             if (dialog.ShowDialog() == true) {
                 CancelLoadImage();
