@@ -219,7 +219,7 @@ namespace NINA.ViewModel {
 
         public int RAHours {
             get {
-                return (int)Math.Abs(Math.Truncate(_coordinates.RA));
+                return (int)Math.Truncate(_coordinates.RA);
             }
             set {
                 if (value >= 0) {
@@ -232,7 +232,7 @@ namespace NINA.ViewModel {
 
         public int RAMinutes {
             get {
-                return (int)Math.Abs(Math.Truncate((_coordinates.RA - RAHours) * 60));
+                return (int)(Math.Floor(_coordinates.RA * 60.0d) % 60);
             }
             set {
                 if (value >= 0) {
@@ -245,7 +245,7 @@ namespace NINA.ViewModel {
 
         public int RASeconds {
             get {
-                return (int)Math.Abs(Math.Truncate((_coordinates.RA - RAHours - RAMinutes / 60.0d) * 60d * 60d));
+                return (int)(Math.Floor(_coordinates.RA * 60.0d * 60.0d) % 60);
             }
             set {
                 if (value >= 0) {
@@ -260,17 +260,21 @@ namespace NINA.ViewModel {
 
         public int DecDegrees {
             get {
-                return (int)(Math.Truncate(_coordinates.Dec));
+                return (int)Math.Truncate(_coordinates.Dec);
             }
             set {
-                _coordinates.Dec = _coordinates.Dec - DecDegrees + value;
+                if(value < 0) {
+                    _coordinates.Dec = value - DecMinutes / 60.0d - DecSeconds / (60.0d * 60.0d);
+                } else {
+                    _coordinates.Dec = value + DecMinutes / 60.0d + DecSeconds / (60.0d * 60.0d);
+                }                
                 RaiseCoordinatesChanged();
             }
         }
 
         public int DecMinutes {
             get {
-                return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees) * 60));
+                return (int)Math.Floor((Math.Abs(_coordinates.Dec * 60.0d) % 60));
             }
             set {
                 if (_coordinates.Dec < 0) {
@@ -285,11 +289,7 @@ namespace NINA.ViewModel {
 
         public int DecSeconds {
             get {
-                if (_coordinates.Dec >= 0) {
-                    return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees - DecMinutes / 60.0d) * 60d * 60d));
-                } else {
-                    return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees + DecMinutes / 60.0d) * 60d * 60d));
-                }
+                return (int)Math.Floor((Math.Abs(_coordinates.Dec * 60.0d * 60.0d) % 60));
             }
             set {
                 if (_coordinates.Dec < 0) {
