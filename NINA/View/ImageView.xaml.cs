@@ -232,7 +232,7 @@ namespace NINA.View {
         private void ButtonZoomReset_Click(object sender, RoutedEventArgs e) {
             RecalculateScalingFactors();
             mode = 1;
-            Zoom(fittingScale);
+            Zoom(fittingScale * 0.9);
             Zoom(fittingScale);
         }
 

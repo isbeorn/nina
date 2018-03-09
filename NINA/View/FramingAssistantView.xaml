@@ -20,268 +20,270 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="8*" />
         </Grid.ColumnDefinitions>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Vertical">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Vertical">
 
-                <GroupBox Header="{ns:Loc LblCoordinates}">
-                    <StackPanel Orientation="Vertical">
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                            <UniformGrid
+                    <GroupBox Header="{ns:Loc LblCoordinates}">
+                        <StackPanel Orientation="Vertical">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox
+                                            MinWidth="40"
+                                            Margin="5,0,0,0"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding Path="RAHours" UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <rules:HoursRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">h</TextBlock>
+                                        <TextBox
+                                            MinWidth="40"
+                                            Margin="5,0,0,0"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding Path="RAMinutes" UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <rules:MinutesRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">m</TextBlock>
+                                        <TextBox
+                                            MinWidth="40"
+                                            Margin="5,0,0,0"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding Path="RASeconds" UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <rules:SecondsRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">s</TextBlock>
+                                    </StackPanel>
+
+                                </UniformGrid>
+
+                            </Border>
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox
+                                            MinWidth="40"
+                                            Margin="5,0,0,0"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding Path="DecDegrees" UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <rules:DegreesRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">d</TextBlock>
+                                        <TextBox
+                                            MinWidth="40"
+                                            Margin="5,0,0,0"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding Path="DecMinutes" UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <rules:MinutesRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">m</TextBlock>
+                                        <TextBox
+                                            MinWidth="40"
+                                            Margin="5,0,0,0"
+                                            TextAlignment="Right">
+                                            <TextBox.Text>
+                                                <Binding Path="DecSeconds" UpdateSourceTrigger="LostFocus">
+                                                    <Binding.ValidationRules>
+                                                        <rules:SecondsRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBlock VerticalAlignment="Center">s</TextBlock>
+                                    </StackPanel>
+
+                                </UniformGrid>
+                            </Border>
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                <UniformGrid Margin="0,6,0,6" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFieldOfView}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox
+                                            MinWidth="40"
+                                            Margin="5,0,0,0"
+                                            Text="{Binding FieldOfView}" />
+                                        <TextBlock
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblDegree}" />
+                                    </StackPanel>
+
+                                </UniformGrid>
+                            </Border>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <UniformGrid Columns="2">
+                        <ninactrl:CancellableButton
+                            Grid.Column="0"
+                            Height="35"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            ButtonText="{ns:Loc LblDownloadImage}"
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            CancelCommand="{Binding CancelLoadImageCommand}"
+                            Command="{Binding LoadImageCommand}"
+                            ToolTip="{ns:Loc LblDownloadImageTooltip}" />
+                        <ninactrl:LoadingControl
+                            Height="30"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            LoadingImageBrush="{StaticResource PrimaryBrush}"
+                            Visibility="{Binding LoadImageCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityHiddenConverter}, FallbackValue=Hidden}" />
+                        <ninactrl:CancellableButton
+                            Height="35"
+                            Margin="5"
+                            ButtonText="{ns:Loc LblLoadImageFromFile}"
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            CancelCommand="{Binding CancelLoadImageFromFileCommand}"
+                            Command="{Binding LoadImageFromFileCommand}"
+                            ToolTip="{ns:Loc LblLoadImageFromFileTooltip}" />
+                        <ninactrl:LoadingControl
+                            Height="30"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            LoadingImageBrush="{StaticResource PrimaryBrush}"
+                            Visibility="{Binding LoadImageFromFileCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityHiddenConverter}, FallbackValue=Hidden}" />
+                    </UniformGrid>
+
+                    <GroupBox Header="{ns:Loc LblCameraParameter}">
+                        <StackPanel Orientation="Vertical">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                <UniformGrid Margin="0,6,0,6" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
+                                    <TextBox Margin="5,0,0,0" Text="{Binding CameraWidth}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                <UniformGrid Margin="0,6,0,6" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
+                                    <TextBox Margin="5,0,0,0" Text="{Binding CameraHeight}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                <UniformGrid Margin="0,6,0,6" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPixelSize}" />
+                                    <TextBox Margin="5,0,0,0" Text="{Binding CameraPixelSize}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border
                                 Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="RAHours" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:HoursRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">h</TextBlock>
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="RAMinutes" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:MinutesRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">m</TextBlock>
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="RASeconds" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:SecondsRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">s</TextBlock>
-                                </StackPanel>
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1">
+                                <UniformGrid Margin="0,6,0,6" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFocalLength}" />
+                                    <TextBox Margin="5,0,0,0" Text="{Binding FocalLength}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                <UniformGrid Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRotation}" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            MinWidth="20"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Rectangle.DisplayedRotation, Mode=OneWay}" />
+                                        <Slider
+                                            Grid.Column="1"
+                                            Margin="5,0,0,0"
+                                            IsSnapToTickEnabled="True"
+                                            Maximum="360"
+                                            Minimum="0"
+                                            TickFrequency="5"
+                                            Value="{Binding Rectangle.Rotation, FallbackValue=0}" />
+                                    </Grid>
+                                </UniformGrid>
+                            </Border>
+                        </StackPanel>
+                    </GroupBox>
 
-                            </UniformGrid>
-
-                        </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                            <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="DecDegrees" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:DegreesRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">d</TextBlock>
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="DecMinutes" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:MinutesRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">m</TextBlock>
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="DecSeconds" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:SecondsRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">s</TextBlock>
-                                </StackPanel>
-
-                            </UniformGrid>
-                        </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                            <UniformGrid Margin="0,6,0,6" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFieldOfView}" />
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        Text="{Binding FieldOfView}" />
-                                    <TextBlock
-                                        Margin="5,0,0,0"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblDegree}" />
-                                </StackPanel>
-
-                            </UniformGrid>
-                        </Border>
-                    </StackPanel>
-                </GroupBox>
-
-                <UniformGrid Columns="2">
-                    <ninactrl:CancellableButton
-                        Grid.Column="0"
-                        Height="35"
-                        Margin="5"
-                        HorizontalAlignment="Stretch"
-                        ButtonText="{ns:Loc LblDownloadImage}"
-                        CancelButtonImage="{StaticResource CancelSVG}"
-                        CancelCommand="{Binding CancelLoadImageCommand}"
-                        Command="{Binding LoadImageCommand}"
-                        ToolTip="{ns:Loc LblDownloadImageTooltip}" />
-                    <ninactrl:LoadingControl
-                        Height="30"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        LoadingImageBrush="{StaticResource PrimaryBrush}"
-                        Visibility="{Binding LoadImageCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}, FallbackValue=Hidden}" />
-                    <ninactrl:CancellableButton
-                        Height="35"
-                        Margin="5"
-                        ButtonText="{ns:Loc LblLoadImageFromFile}"
-                        CancelButtonImage="{StaticResource CancelSVG}"
-                        CancelCommand="{Binding CancelLoadImageFromFileCommand}"
-                        Command="{Binding LoadImageFromFileCommand}"
-                        ToolTip="{ns:Loc LblLoadImageFromFileTooltip}" />
-                    <ninactrl:LoadingControl
-                        Height="30"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        LoadingImageBrush="{StaticResource PrimaryBrush}"
-                        Visibility="{Binding LoadImageFromFileCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}, FallbackValue=Hidden}" />
-                </UniformGrid>
-
-                <GroupBox Header="{ns:Loc LblCameraParameter}">
-                    <StackPanel Orientation="Vertical">
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                            <UniformGrid Margin="0,6,0,6" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
-                                <TextBox Margin="5,0,0,0" Text="{Binding CameraWidth}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                            <UniformGrid Margin="0,6,0,6" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
-                                <TextBox Margin="5,0,0,0" Text="{Binding CameraHeight}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                            <UniformGrid Margin="0,6,0,6" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPixelSize}" />
-                                <TextBox Margin="5,0,0,0" Text="{Binding CameraPixelSize}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border
-                            Margin="0,6,0,6"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0,0,0,1">
-                            <UniformGrid Margin="0,6,0,6" Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFocalLength}" />
-                                <TextBox Margin="5,0,0,0" Text="{Binding FocalLength}" />
-                            </UniformGrid>
-                        </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                            <UniformGrid Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRotation}" />
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        MinWidth="20"
-                                        Margin="5,0,0,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Rectangle.DisplayedRotation, Mode=OneWay}" />
-                                    <Slider
-                                        Grid.Column="1"
-                                        Margin="5,0,0,0"
-                                        IsSnapToTickEnabled="True"
-                                        Maximum="360"
-                                        Minimum="0"
-                                        TickFrequency="5"
-                                        Value="{Binding Rectangle.Rotation, FallbackValue=0}" />
-                                </Grid>
-                            </UniformGrid>
-                        </Border>
-                    </StackPanel>
-                </GroupBox>
-
-                <UniformGrid Columns="2">
-                    <Button
-                        Height="35"
-                        Margin="5"
-                        HorizontalAlignment="Stretch"
-                        Command="{Binding RecenterCommand}">
-                        <TextBlock
-                            Foreground="{StaticResource ButtonForegroundBrush}"
-                            Text="{ns:Loc LblRecenterImage}"
-                            TextWrapping="Wrap" />
-                    </Button>
-                    <Button
-                        Height="35"
-                        Margin="5"
-                        HorizontalAlignment="Stretch"
-                        Command="{Binding SlewToCoordinatesCommand}">
-                        <TextBlock
-                            Foreground="{StaticResource ButtonForegroundBrush}"
-                            Text="{ns:Loc LblSlew}"
-                            TextWrapping="Wrap" />
-                    </Button>
-                    <Grid />
-                    <Button
-                        Height="35"
-                        Margin="5"
-                        HorizontalAlignment="Stretch"
-                        Command="{Binding SetSequenceCoordinatesCommand}">
-                        <TextBlock
-                            Foreground="{StaticResource ButtonForegroundBrush}"
-                            Text="{ns:Loc LblSetAsSequenceTarget}"
-                            TextWrapping="Wrap" />
-                    </Button>
-                </UniformGrid>
+                    <UniformGrid Columns="2">
+                        <Button
+                            Height="35"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding RecenterCommand}">
+                            <TextBlock
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{ns:Loc LblRecenterImage}"
+                                TextWrapping="Wrap" />
+                        </Button>
+                        <Button
+                            Height="35"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding SlewToCoordinatesCommand}">
+                            <TextBlock
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{ns:Loc LblSlew}"
+                                TextWrapping="Wrap" />
+                        </Button>
+                        <Grid />
+                        <Button
+                            Height="35"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding SetSequenceCoordinatesCommand}">
+                            <TextBlock
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{ns:Loc LblSetAsSequenceTarget}"
+                                TextWrapping="Wrap" />
+                        </Button>
+                    </UniformGrid>
 
 
 
-            </StackPanel>
-            <Grid
-                Grid.Row="1"
-                Margin="5"
-                VerticalAlignment="Bottom">
-                <local:AltitudeChart DataContext="{Binding DSO}" />
+                </StackPanel>
+                <Grid
+                    Grid.Row="1"
+                    Margin="5"
+                    VerticalAlignment="Bottom">
+                    <local:AltitudeChart DataContext="{Binding DSO}" />
+                </Grid>
             </Grid>
-        </Grid>
+        </ScrollViewer>
         <GridSplitter
             Grid.Column="1"
             HorizontalAlignment="Stretch"
