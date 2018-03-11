@@ -866,6 +866,38 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Save();
             }
         }
+
+        public static double FramingAssistantFieldOfView {
+            get {
+                return Properties.Settings.Default.FramingAssistantFieldOfView;
+            }
+            set {
+                Properties.Settings.Default.FramingAssistantFieldOfView = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static int FramingAssistantCameraWidth {
+            get {
+                return Properties.Settings.Default.FramingAssistantCameraWidth;
+            }
+            set {
+                Properties.Settings.Default.FramingAssistantCameraWidth = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static int FramingAssistantCameraHeight {
+            get {
+                return Properties.Settings.Default.FramingAssistantCameraHeight;
+            }
+            set {
+                Properties.Settings.Default.FramingAssistantCameraHeight = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+
     }
 
 }

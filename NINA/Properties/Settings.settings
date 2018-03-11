@@ -232,13 +232,21 @@
     </Setting>
     <Setting Name="BlindSolverType" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
-      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="HistogramResolution" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">300</Value>
     </Setting>
     <Setting Name="GuiderSettleTime" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="FramingAssistantFieldOfView" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="FramingAssistantCameraWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4500</Value>
+    </Setting>
+    <Setting Name="FramingAssistantCameraHeight" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3500</Value>
     </Setting>
   </Settings>
 </SettingsFile>

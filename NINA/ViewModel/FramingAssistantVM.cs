@@ -26,15 +26,12 @@ namespace NINA.ViewModel {
             DSO = new DeepSkyObject(string.Empty, Coordinates);
             //Coordinates = new Coordinates(073.2920, -07.6335, Epoch.J2000, Coordinates.RAType.Degrees);
             //Coordinates = new Coordinates(10.6833, 41.2686, Epoch.J2000, Coordinates.RAType.Degrees);
-
-            FieldOfView = 3;
-            CameraWidth = 1500;
-            CameraHeight = 1000;
+            
             CameraPixelSize = Settings.CameraPixelSize;
+            FocalLength = Settings.TelescopeFocalLength;
 
             _statusUpdate = new Progress<ApplicationStatus>(p => Status = p);
 
-            FocalLength = Settings.TelescopeFocalLength;
             LoadImageCommand = new AsyncCommand<bool>(async () => { return await LoadImage(); });
             LoadImageFromFileCommand = new AsyncCommand<bool>(async () => { return await LoadImageFromFile(); });
             CancelLoadImageFromFileCommand = new RelayCommand((object o) => { CancelLoadImage(); });
@@ -334,37 +331,34 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-        private double _fieldOfView;
+        
         public double FieldOfView {
             get {
-                return _fieldOfView;
+                return Settings.FramingAssistantFieldOfView;
             }
             set {
-                _fieldOfView = value;
+                Settings.FramingAssistantFieldOfView = value;
                 RaisePropertyChanged();
             }
         }
-
-        private int _cameraWidth;
+        
         public int CameraWidth {
             get {
-                return _cameraWidth;
+                return Settings.FramingAssistantCameraWidth;
             }
             set {
-                _cameraWidth = value;
+                Settings.FramingAssistantCameraWidth = value;
                 RaisePropertyChanged();
                 CalculateRectangle(ImageParameter);
             }
         }
-
-        private int _cameraHeight;
+        
         public int CameraHeight {
             get {
-                return _cameraHeight;
+                return Settings.FramingAssistantCameraHeight;
             }
             set {
-                _cameraHeight = value;
+                Settings.FramingAssistantCameraHeight = value;
                 RaisePropertyChanged();
                 CalculateRectangle(ImageParameter);
             }
