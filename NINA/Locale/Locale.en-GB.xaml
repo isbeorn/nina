@@ -565,4 +565,5 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblDigitalSkySurvey">Digital Sky Survey</s:String>
     <s:String x:Key="LblFile">File</s:String>
     <s:String x:Key="LblCache">Cache</s:String>
+    <s:String x:Key="LblClearCache">Clear Cache</s:String>
 </ResourceDictionary>

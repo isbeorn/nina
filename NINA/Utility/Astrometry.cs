@@ -232,6 +232,14 @@ namespace NINA.Utility.Astrometry {
             return GetRiseAndSetEvent(date, EventType.SunRiseSunset);
         }
 
+        public static string DegreesToDMS(double deg) {
+            return Utility.AscomUtil.DegreesToDMS(deg);
+        }
+
+        public static string HoursToHMS(double hours) {
+            return Utility.AscomUtil.HoursToHMS(hours);
+        }
+
         public static MoonPhase GetMoonPhase(DateTime date) {
             var phase = AstroUtils.MoonPhase(GetJulianDate(date));
 

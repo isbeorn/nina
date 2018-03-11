@@ -235,6 +235,21 @@ namespace NINA.Utility {
             }
         }
 
+        public static string GetUniqueFilePath(string fullPath) {
+            int count = 1;
+
+            string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
+            string extension = Path.GetExtension(fullPath);
+            string path = Path.GetDirectoryName(fullPath);
+            string newFullPath = fullPath;
+
+            while (File.Exists(newFullPath)) {
+                string tempFileName = string.Format("{0}({1})", fileNameOnly, count++);
+                newFullPath = Path.Combine(path, tempFileName + extension);
+            }
+            return newFullPath;
+        }
+
 
         /// <summary>
         /// Upload a multipart file that is expected from astrometry.net

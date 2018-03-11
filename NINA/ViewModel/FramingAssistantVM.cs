@@ -41,6 +41,7 @@ namespace NINA.ViewModel {
             DragStartCommand = new RelayCommand(DragStart);
             DragStopCommand = new RelayCommand(DragStop);
             DragMoveCommand = new RelayCommand(DragMove);
+            ClearCacheCommand = new RelayCommand(ClearCache);
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async () => {
                 var msgResult = await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = new DeepSkyObject(DSO?.Name, SelectedCoordinates) });
                 ImageParameter = null;
@@ -66,6 +67,22 @@ namespace NINA.ViewModel {
             RegisterMediatorMessages();
             LoadImageCacheList();
             
+        }
+
+        private void ClearCache(object obj) {
+            var diagResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblClearCache"] + "?", "", MessageBoxButton.YesNo, MessageBoxResult.No);
+            if(diagResult == MessageBoxResult.Yes) {
+                System.IO.DirectoryInfo di = new DirectoryInfo(FRAMINGASSISTANTCACHEPATH);
+
+                foreach (FileInfo file in di.GetFiles()) {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo dir in di.GetDirectories()) {
+                    dir.Delete(true);
+                }
+
+                LoadImageCacheList();
+            }
         }
 
         public static string FRAMINGASSISTANTCACHEPATH = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "FramingAssistantCache");
@@ -131,6 +148,7 @@ namespace NINA.ViewModel {
                             Rotation = rotation
                         };
                         Coordinates = plateSolveResult.Coordinates;
+                        DSO.Name = Path.GetFileNameWithoutExtension(dialog.FileName);
                         FieldOfView = Math.Round(Math.Max(parameter.FieldOfViewWidth, parameter.FieldOfViewHeight), 2);
                         CalculateRectangle(parameter);
                         await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
@@ -490,7 +508,7 @@ namespace NINA.ViewModel {
 
         private async Task LoadImageFromCache() {
             if(SelectedImageCacheInfo != null) {
-                var img = LoadTiff(SelectedImageCacheInfo.Attribute("FileName").Value);
+                var img = LoadJpg(SelectedImageCacheInfo.Attribute("FileName").Value);
                 var fovW = double.Parse(SelectedImageCacheInfo.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
                 var fovH = double.Parse(SelectedImageCacheInfo.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
                 var rotation = double.Parse(SelectedImageCacheInfo.Attribute("Rotation").Value, CultureInfo.InvariantCulture);
@@ -503,6 +521,7 @@ namespace NINA.ViewModel {
                 var ra = double.Parse(SelectedImageCacheInfo.Attribute("RA").Value, CultureInfo.InvariantCulture);
                 var dec = double.Parse(SelectedImageCacheInfo.Attribute("Dec").Value, CultureInfo.InvariantCulture);
                 Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours);
+                DSO.Name = SelectedImageCacheInfo.Attribute("Name").Value;
                 FieldOfView = Math.Round(Math.Max(parameter.FieldOfViewWidth, parameter.FieldOfViewHeight), 2);
                 CalculateRectangle(parameter);
                 await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
@@ -517,7 +536,10 @@ namespace NINA.ViewModel {
                 Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
             }
 
-            var tiffFilePath = Path.Combine(FRAMINGASSISTANTCACHEPATH, DSO.Name + ".tif");
+            var imgFilePath = Path.Combine(FRAMINGASSISTANTCACHEPATH, DSO.Name + ".jpg");
+
+            imgFilePath = Utility.Utility.GetUniqueFilePath(imgFilePath);
+            var name = Path.GetFileNameWithoutExtension(imgFilePath);
 
             XElement xml = new XElement("Image",                
                 new XAttribute("RA", Coordinates.RA),
@@ -525,15 +547,16 @@ namespace NINA.ViewModel {
                 new XAttribute("Rotation", ImageParameter.Rotation),
                 new XAttribute("FoVW", ImageParameter.FieldOfViewWidth),
                 new XAttribute("FoVH", ImageParameter.FieldOfViewHeight),
-                new XAttribute("FileName", tiffFilePath),
-                new XAttribute("Name", DSO.Name)
+                new XAttribute("FileName", imgFilePath),
+                new XAttribute("Name", name)
             );
 
             ImageCacheInfo.Add(xml);
             ImageCacheInfo.Save(FRAMINGASSISTANTCACHEINFOPATH);
 
-            using (var fileStream = new FileStream(tiffFilePath, FileMode.Create)) {
-                BitmapEncoder encoder = new TiffBitmapEncoder();
+            using (var fileStream = new FileStream(imgFilePath, FileMode.Create)) {
+                var encoder = new JpegBitmapEncoder();
+                encoder.QualityLevel = 80;
                 encoder.Frames.Add(BitmapFrame.Create(ImageParameter.Image));
                 encoder.Save(fileStream);
             }
@@ -628,6 +651,7 @@ namespace NINA.ViewModel {
         public IAsyncCommand SlewToCoordinatesCommand { get; private set; }        
         public IAsyncCommand RecenterCommand { get; private set; }
         public ICommand CancelLoadImageFromFileCommand { get; private set; }        
+        public ICommand ClearCacheCommand { get; private set; }
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]

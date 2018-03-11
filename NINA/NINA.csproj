@@ -308,6 +308,8 @@
     <Compile Include="Utility\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DatabindingDebugConverter.cs" />
     <Compile Include="Utility\Converters\CollectionContainsItemsToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\DegreesToDMSConverter.cs" />
+    <Compile Include="Utility\Converters\HoursToHMSConverter.cs" />
     <Compile Include="Utility\Converters\InverseBooleanConverter.cs" />
     <Compile Include="Utility\Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\InverseCollectionContainsItemsToVisibilityConverter.cs" />
