@@ -563,5 +563,9 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblLoadImageFromFileTooltip">Download Image from file and use the blindsolver to determine coordinates</s:String>
     <s:String x:Key="LblNoCoordinates">No coordinates available</s:String>
     <s:String x:Key="LblBlindSolveAttemptForFraming">No coordinates available. Image has to be blindsolved for framing</s:String>
+    <s:String x:Key="LblImageSource">Image source</s:String>
+    <s:String x:Key="LblDigitalSkySurvey">Digital Sky Survey</s:String>
+    <s:String x:Key="LblFile">File</s:String>
+    <s:String x:Key="LblCache">Cache</s:String>
 
 </ResourceDictionary>

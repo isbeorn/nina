@@ -7,6 +7,7 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Xml.Linq;
 
 namespace NINA.ViewModel {
     class FramingAssistantVM : BaseVM {
@@ -33,7 +35,6 @@ namespace NINA.ViewModel {
             _statusUpdate = new Progress<ApplicationStatus>(p => Status = p);
 
             LoadImageCommand = new AsyncCommand<bool>(async () => { return await LoadImage(); });
-            LoadImageFromFileCommand = new AsyncCommand<bool>(async () => { return await LoadImageFromFile(); });
             CancelLoadImageFromFileCommand = new RelayCommand((object o) => { CancelLoadImage(); });
             _progress = new Progress<int>((p) => DownloadProgressValue = p);
             CancelLoadImageCommand = new RelayCommand((object o) => { CancelLoadImage(); });
@@ -63,8 +64,11 @@ namespace NINA.ViewModel {
 
 
             RegisterMediatorMessages();
+            LoadImageCacheList();
             
         }
+
+        public static string FRAMINGASSISTANTCACHEPATH = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "FramingAssistantCache");
 
         private ApplicationStatus _status;
         public ApplicationStatus Status {
@@ -90,8 +94,6 @@ namespace NINA.ViewModel {
             dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png";
 
             if (dialog.ShowDialog() == true) {
-                CancelLoadImage();
-                _loadImageSource = new CancellationTokenSource();
 
                 BitmapSource img = null;
                 switch (Path.GetExtension(dialog.FileName)) {
@@ -169,6 +171,7 @@ namespace NINA.ViewModel {
                 Mediator.Instance.Request(new ChangeApplicationTabMessage() { Tab = ApplicationTab.FRAMINGASSISTANT });
                 this.DSO = new DeepSkyObject(m.DSO.Name, m.DSO.Coordinates);
                 this.Coordinates = m.DSO.Coordinates;
+                FramingAssistantSource = FramingAssistantSource.DSS;
                 await LoadImageCommand.ExecuteAsync(null);
                 return true;
             }));
@@ -364,6 +367,17 @@ namespace NINA.ViewModel {
             }
         }
 
+        private FramingAssistantSource _framingAssistantSource;
+        public FramingAssistantSource FramingAssistantSource {
+            get {
+                return _framingAssistantSource;
+            } 
+            set {
+                _framingAssistantSource = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private double _cameraPixelSize;
         public double CameraPixelSize {
             get {
@@ -416,13 +430,10 @@ namespace NINA.ViewModel {
 
         private IProgress<ApplicationStatus> _statusUpdate;
 
-        private async Task<bool> LoadImage() {
+        private async Task<bool> LoadImageFromDSS() {
             try {
                 _statusUpdate.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
-
-                CancelLoadImage();
-                _loadImageSource = new CancellationTokenSource();
-
+                
                 var arcsecPerPix = Astrometry.ArcsecPerPixel(CameraPixelSize, FocalLength);
                 var p = new DigitalSkySurveyParameters() {
                     Coordinates = this.Coordinates,
@@ -452,6 +463,76 @@ namespace NINA.ViewModel {
             }
             return true;
 
+        }
+
+        private async Task<bool> LoadImage() {
+            CancelLoadImage();
+            _loadImageSource = new CancellationTokenSource();
+
+            if (FramingAssistantSource == FramingAssistantSource.DSS) {
+                await LoadImageFromDSS();
+                await FillImageCache();
+            } else if (FramingAssistantSource == FramingAssistantSource.FILE) {
+                await LoadImageFromFile();
+                await FillImageCache();
+            } else if (FramingAssistantSource == FramingAssistantSource.CACHE) {
+                await LoadImageFromCache();
+            } else {
+                return false;
+            }
+            return true;
+        }
+
+        private async Task LoadImageFromCache() {
+            var img = LoadTiff(@"C:\Users\Isbeorn\AppData\Local\NINA\FramingAssistantCache\B78.tif");
+            var parameter = new FramingImageParameter() {
+                Image = img,
+                FieldOfViewWidth = Astrometry.ArcsecToDegree(3 * img.Width),
+                FieldOfViewHeight = Astrometry.ArcsecToDegree(3 * img.Height),
+                Rotation = 0
+            };
+            //Coordinates = plateSolveResult.Coordinates;
+            FieldOfView = Math.Round(Math.Max(parameter.FieldOfViewWidth, parameter.FieldOfViewHeight), 2);
+            CalculateRectangle(parameter);
+            await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                ImageParameter = parameter;
+            }));
+        }
+
+        private async Task FillImageCache() {
+            if(!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
+                Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
+            }
+
+            var xmlFile = Path.Combine(FRAMINGASSISTANTCACHEPATH, DSO.Name + ".xml");
+            var tiffFile = Path.Combine(FRAMINGASSISTANTCACHEPATH, DSO.Name + ".tif");
+
+            XElement xml = new XElement("Image",
+                new XElement("Coordinates",
+                    new XAttribute("RA", Coordinates.RA),
+                    new XAttribute("Dec", Coordinates.Dec),
+                    new XAttribute("FoVW", ImageParameter.FieldOfViewWidth),
+                    new XAttribute("FoVH", ImageParameter.FieldOfViewHeight),
+                    new XAttribute("Rotation", ImageParameter.Rotation)
+                ),
+                new XAttribute("FileName", tiffFile)
+            );
+
+            xml.Save(xmlFile);
+
+            using (var fileStream = new FileStream(tiffFile, FileMode.Create)) {
+                BitmapEncoder encoder = new TiffBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(ImageParameter.Image));
+                encoder.Save(fileStream);
+            }
+        }
+
+        private void LoadImageCacheList() {
+            if(Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
+                foreach(string fileName in Directory.GetFiles(FRAMINGASSISTANTCACHEPATH)) {
+                    //todo
+                }
+            }
         }
 
         private void CalculateRectangle(FramingImageParameter parameter) {
@@ -505,8 +586,17 @@ namespace NINA.ViewModel {
         public ICommand SetSequenceCoordinatesCommand { get; private set; }
         public IAsyncCommand SlewToCoordinatesCommand { get; private set; }        
         public IAsyncCommand RecenterCommand { get; private set; }
-        public IAsyncCommand LoadImageFromFileCommand { get; private set; }
         public ICommand CancelLoadImageFromFileCommand { get; private set; }        
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum FramingAssistantSource {
+        [Description("LblDigitalSkySurvey")]
+        DSS,
+        [Description("LblFile")]
+        FILE,
+        [Description("LblCache")]
+        CACHE
     }
 
     class FramingImageParameter {

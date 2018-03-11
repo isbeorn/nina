@@ -11,6 +11,8 @@
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:util="clr-namespace:NINA.Utility"
+    xmlns:vm="clr-namespace:NINA.ViewModel"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -27,6 +29,21 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Vertical">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="140"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblImageSource}" />
+                            <ComboBox
+                                Margin="10,0,0,0"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type vm:FramingAssistantSource}}}"
+                                SelectedItem="{Binding FramingAssistantSource}" />
+                        </UniformGrid>
+                    </Border>
 
                     <GroupBox Header="{ns:Loc LblCoordinates}">
                         <StackPanel Orientation="Vertical">
@@ -150,38 +167,30 @@
                         </StackPanel>
                     </GroupBox>
 
-                    <UniformGrid Columns="2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
                         <ninactrl:CancellableButton
                             Grid.Column="0"
                             Height="35"
                             Margin="5"
                             HorizontalAlignment="Stretch"
-                            ButtonText="{ns:Loc LblDownloadImage}"
+                            ButtonText="{ns:Loc LblLoadImage}"
                             CancelButtonImage="{StaticResource CancelSVG}"
                             CancelCommand="{Binding CancelLoadImageCommand}"
                             Command="{Binding LoadImageCommand}"
-                            ToolTip="{ns:Loc LblDownloadImageTooltip}" />
+                            ToolTip="{ns:Loc LblLoadImageTooltip}" />
                         <ninactrl:LoadingControl
+                            Grid.Column="1"
                             Height="30"
+                            Margin="5,0,5,0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             LoadingImageBrush="{StaticResource PrimaryBrush}"
-                            Visibility="{Binding LoadImageCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityHiddenConverter}, FallbackValue=Hidden}" />
-                        <ninactrl:CancellableButton
-                            Height="35"
-                            Margin="5"
-                            ButtonText="{ns:Loc LblLoadImageFromFile}"
-                            CancelButtonImage="{StaticResource CancelSVG}"
-                            CancelCommand="{Binding CancelLoadImageFromFileCommand}"
-                            Command="{Binding LoadImageFromFileCommand}"
-                            ToolTip="{ns:Loc LblLoadImageFromFileTooltip}" />
-                        <ninactrl:LoadingControl
-                            Height="30"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            LoadingImageBrush="{StaticResource PrimaryBrush}"
-                            Visibility="{Binding LoadImageFromFileCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityHiddenConverter}, FallbackValue=Hidden}" />
-                    </UniformGrid>
+                            Visibility="{Binding LoadImageCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
+                    </Grid>
 
                     <GroupBox Header="{ns:Loc LblCameraParameter}">
                         <StackPanel Orientation="Vertical">
