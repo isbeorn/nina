@@ -69,6 +69,7 @@ namespace NINA.ViewModel {
         }
 
         public static string FRAMINGASSISTANTCACHEPATH = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "FramingAssistantCache");
+        public static string FRAMINGASSISTANTCACHEINFOPATH = Path.Combine(FRAMINGASSISTANTCACHEPATH, "CacheInfo.xml");
 
         private ApplicationStatus _status;
         public ApplicationStatus Status {
@@ -470,11 +471,15 @@ namespace NINA.ViewModel {
             _loadImageSource = new CancellationTokenSource();
 
             if (FramingAssistantSource == FramingAssistantSource.DSS) {
-                await LoadImageFromDSS();
-                await FillImageCache();
+                var success = await LoadImageFromDSS();
+                if (success) {
+                    await FillImageCache();
+                }
             } else if (FramingAssistantSource == FramingAssistantSource.FILE) {
-                await LoadImageFromFile();
-                await FillImageCache();
+                var success = await LoadImageFromFile();
+                if (success) {
+                    await FillImageCache();
+                }
             } else if (FramingAssistantSource == FramingAssistantSource.CACHE) {
                 await LoadImageFromCache();
             } else {
@@ -484,19 +489,27 @@ namespace NINA.ViewModel {
         }
 
         private async Task LoadImageFromCache() {
-            var img = LoadTiff(@"C:\Users\Isbeorn\AppData\Local\NINA\FramingAssistantCache\B78.tif");
-            var parameter = new FramingImageParameter() {
-                Image = img,
-                FieldOfViewWidth = Astrometry.ArcsecToDegree(3 * img.Width),
-                FieldOfViewHeight = Astrometry.ArcsecToDegree(3 * img.Height),
-                Rotation = 0
-            };
-            //Coordinates = plateSolveResult.Coordinates;
-            FieldOfView = Math.Round(Math.Max(parameter.FieldOfViewWidth, parameter.FieldOfViewHeight), 2);
-            CalculateRectangle(parameter);
-            await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                ImageParameter = parameter;
-            }));
+            if(SelectedImageCacheInfo != null) {
+                var img = LoadTiff(SelectedImageCacheInfo.Attribute("FileName").Value);
+                var fovW = double.Parse(SelectedImageCacheInfo.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
+                var fovH = double.Parse(SelectedImageCacheInfo.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
+                var rotation = double.Parse(SelectedImageCacheInfo.Attribute("Rotation").Value, CultureInfo.InvariantCulture);
+                var parameter = new FramingImageParameter() {
+                    Image = img,
+                    FieldOfViewWidth = fovW,
+                    FieldOfViewHeight = fovH,
+                    Rotation = rotation
+                };
+                var ra = double.Parse(SelectedImageCacheInfo.Attribute("RA").Value, CultureInfo.InvariantCulture);
+                var dec = double.Parse(SelectedImageCacheInfo.Attribute("Dec").Value, CultureInfo.InvariantCulture);
+                Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours);
+                FieldOfView = Math.Round(Math.Max(parameter.FieldOfViewWidth, parameter.FieldOfViewHeight), 2);
+                CalculateRectangle(parameter);
+                await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                    ImageParameter = parameter;
+                }));
+            }
+            
         }
 
         private async Task FillImageCache() {
@@ -504,35 +517,63 @@ namespace NINA.ViewModel {
                 Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
             }
 
-            var xmlFile = Path.Combine(FRAMINGASSISTANTCACHEPATH, DSO.Name + ".xml");
-            var tiffFile = Path.Combine(FRAMINGASSISTANTCACHEPATH, DSO.Name + ".tif");
+            var tiffFilePath = Path.Combine(FRAMINGASSISTANTCACHEPATH, DSO.Name + ".tif");
 
-            XElement xml = new XElement("Image",
-                new XElement("Coordinates",
-                    new XAttribute("RA", Coordinates.RA),
-                    new XAttribute("Dec", Coordinates.Dec),
-                    new XAttribute("FoVW", ImageParameter.FieldOfViewWidth),
-                    new XAttribute("FoVH", ImageParameter.FieldOfViewHeight),
-                    new XAttribute("Rotation", ImageParameter.Rotation)
-                ),
-                new XAttribute("FileName", tiffFile)
+            XElement xml = new XElement("Image",                
+                new XAttribute("RA", Coordinates.RA),
+                new XAttribute("Dec", Coordinates.Dec),
+                new XAttribute("Rotation", ImageParameter.Rotation),
+                new XAttribute("FoVW", ImageParameter.FieldOfViewWidth),
+                new XAttribute("FoVH", ImageParameter.FieldOfViewHeight),
+                new XAttribute("FileName", tiffFilePath),
+                new XAttribute("Name", DSO.Name)
             );
 
-            xml.Save(xmlFile);
+            ImageCacheInfo.Add(xml);
+            ImageCacheInfo.Save(FRAMINGASSISTANTCACHEINFOPATH);
 
-            using (var fileStream = new FileStream(tiffFile, FileMode.Create)) {
+            using (var fileStream = new FileStream(tiffFilePath, FileMode.Create)) {
                 BitmapEncoder encoder = new TiffBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(ImageParameter.Image));
                 encoder.Save(fileStream);
             }
         }
 
-        private void LoadImageCacheList() {
-            if(Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
-                foreach(string fileName in Directory.GetFiles(FRAMINGASSISTANTCACHEPATH)) {
-                    //todo
-                }
+        private XElement _imageCacheInfo;
+        public XElement ImageCacheInfo {
+            get {
+                return _imageCacheInfo;
             }
+            set {
+                _imageCacheInfo = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private XElement _selectedImageCacheInfo;
+        public XElement SelectedImageCacheInfo {
+            get {
+                return _selectedImageCacheInfo;
+            }
+            set {
+                _selectedImageCacheInfo = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private void LoadImageCacheList() {
+            if (!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
+                Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
+            }
+
+            if (!File.Exists(FRAMINGASSISTANTCACHEINFOPATH)) {
+                XElement info = new XElement("ImageCacheInfo");
+                info.Save(FRAMINGASSISTANTCACHEINFOPATH);
+                ImageCacheInfo = info;
+                return;
+            } else {
+                ImageCacheInfo = XElement.Load(FRAMINGASSISTANTCACHEINFOPATH);
+            }            
         }
 
         private void CalculateRectangle(FramingImageParameter parameter) {

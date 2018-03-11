@@ -44,7 +44,29 @@
                                 SelectedItem="{Binding FramingAssistantSource}" />
                         </UniformGrid>
                     </Border>
-
+                    <GroupBox Header="{ns:Loc LblImageCache}">
+                        <ListView
+                            Margin="0,5,0,0"
+                            ItemsSource="{Binding Path=ImageCacheInfo.Elements[Image]}"
+                            SelectedItem="{Binding SelectedImageCacheInfo}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding Path=Attribute[Name].Value}"
+                                        Header="{ns:Loc LblName}" />
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding Path=Attribute[RA].Value}"
+                                        Header="{ns:Loc LblRA}" />
+                                    <GridViewColumn
+                                        Width="Auto"
+                                        DisplayMemberBinding="{Binding Path=Attribute[Dec].Value}"
+                                        Header="{ns:Loc LblDec}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </GroupBox>
                     <GroupBox Header="{ns:Loc LblCoordinates}">
                         <StackPanel Orientation="Vertical">
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
