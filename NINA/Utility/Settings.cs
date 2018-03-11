@@ -92,6 +92,16 @@ namespace NINA.Utility {
             }
         }
 
+        public static BlindSolverEnum BlindSolverType {
+            get {
+                return (BlindSolverEnum)Properties.Settings.Default.BlindSolverType;
+            }
+            set {
+                Properties.Settings.Default.BlindSolverType = (int)value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         public static WeatherDataEnum WeatherDataType {
             get {
                 return (WeatherDataEnum)Properties.Settings.Default.WeatherDataType;
@@ -856,6 +866,38 @@ namespace NINA.Utility {
                 Properties.Settings.Default.Save();
             }
         }
+
+        public static double FramingAssistantFieldOfView {
+            get {
+                return Properties.Settings.Default.FramingAssistantFieldOfView;
+            }
+            set {
+                Properties.Settings.Default.FramingAssistantFieldOfView = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static int FramingAssistantCameraWidth {
+            get {
+                return Properties.Settings.Default.FramingAssistantCameraWidth;
+            }
+            set {
+                Properties.Settings.Default.FramingAssistantCameraWidth = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static int FramingAssistantCameraHeight {
+            get {
+                return Properties.Settings.Default.FramingAssistantCameraHeight;
+            }
+            set {
+                Properties.Settings.Default.FramingAssistantCameraHeight = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+
     }
 
 }

@@ -33,7 +33,7 @@
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <Grid>
-                <TabControl TabStripPlacement="Left">
+                <TabControl SelectedIndex="{Binding TabIndex}" TabStripPlacement="Left">
                     <TabItem>
                         <TabItem.Header>
                             <Grid>
@@ -187,6 +187,21 @@
                         </TabItem.Header>
                         <TabItem.Content>
                             <view:SkyAtlasView DataContext="{Binding SkyAtlasVM}" />
+                        </TabItem.Content>
+                    </TabItem>
+
+                    <TabItem>
+                        <TabItem.Header>
+                            <Grid Width="50" Height="50">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource FocusAssistantSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}" />
+                            </Grid>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:FramingAssistantView DataContext="{Binding FramingAssistantVM}" />
                         </TabItem.Content>
                     </TabItem>
 

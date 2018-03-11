@@ -277,6 +277,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        public BlindSolverEnum BlindSolverType {
+            get {
+                return Settings.BlindSolverType;
+            }
+            set {
+                Settings.BlindSolverType = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public Epoch EpochType {
             get {
                 return Settings.EpochType;

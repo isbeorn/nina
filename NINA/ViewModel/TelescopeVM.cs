@@ -38,13 +38,6 @@ namespace NINA.ViewModel {
             _updateTelescope.Interval = TimeSpan.FromMilliseconds((int)(Settings.DevicePollingInterval * 1000));
             _updateTelescope.Tick += UpdateTelescope_Tick;
 
-            Mediator.Instance.Register((object o) => {
-                if (o != null) {
-                    SlewToCoordinates((Coordinates)o);
-                }
-
-            }, MediatorMessages.SlewToCoordinates);
-
             Mediator.Instance.RegisterRequest(
                 new SetTelescopeTrackingMessageHandle((SetTelescopeTrackingMessage msg) => {
                     if (Telescope?.Connected == true) {

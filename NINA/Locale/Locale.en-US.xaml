@@ -422,6 +422,16 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblInvalidModeBulb">Invalid mode (bulb) for Exposure Time &lt;1s</s:String>
     <s:String x:Key="LblInvalidModeManual">Invalid mode (manual) for Exposure Time &gt;30s</s:String>
     <s:String x:Key="LblInvalidMode">Invalid mode</s:String>
+    <s:String x:Key="LblRotation">Rotation</s:String>
+    <s:String x:Key="LblFieldOfView">Field Of View</s:String>
+    <s:String x:Key="LblCameraParameter">Camera Parameter</s:String>
+    <s:String x:Key="LblLoadImage">Load Image</s:String>
+    <s:String x:Key="LblSetForFramingAssistant">Set for framing assistant</s:String>
+    <s:String x:Key="LblFramingAssistant">Framing Assistant</s:String>
+    <s:String x:Key="LblPlateSolver">Plate Solver</s:String>
+    <s:String x:Key="LblBlindSolver">Blind Solver</s:String>
+    <s:String x:Key="LblPlateSolveSettings">Plate Solver Settings</s:String>
+    <s:String x:Key="LblUseBlindSolveFailover">Plate solve failed. Try to solve using Blind Solver?</s:String>
     <s:String x:Key="LblHistogramResolution">Histogram Resolution</s:String>
     <s:String x:Key="LblHistogramResolutionTooltip">Specifies the number of data points that should be used for the histogram</s:String>
 
@@ -544,4 +554,16 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblResumeSettleTime">Settle Time after resume</s:String>
     <s:String x:Key="LblFilterNotFoundForPosition">No filter found at position {0}. Please re-evaluate the filters inside the setting, that they correspond your filter wheel!</s:String>
     <s:String x:Key="LblRefreshWeatherTooltip">Toggles refreshing of weather data every 60 seconds on/off</s:String>
+    <s:String x:Key="LblRecenterImage">Recenter Image</s:String>
+    <s:String x:Key="LblDownloadImage">Download Image</s:String>
+    <s:String x:Key="LblDownloadImageTooltip">Download Image from the NASA skysurvey for the given coordinates</s:String>
+    <s:String x:Key="LblLoadImageFromFile">Load Image from File</s:String>
+    <s:String x:Key="LblLoadImageFromFileTooltip">Download Image from file and use the blindsolver to determine coordinates</s:String>
+    <s:String x:Key="LblNoCoordinates">No coordinates available</s:String>
+    <s:String x:Key="LblBlindSolveAttemptForFraming">No coordinates available. Image has to be blindsolved for framing</s:String>
+    <s:String x:Key="LblImageSource">Image source</s:String>
+    <s:String x:Key="LblDigitalSkySurvey">Digital Sky Survey</s:String>
+    <s:String x:Key="LblFile">File</s:String>
+    <s:String x:Key="LblCache">Cache</s:String>
+    <s:String x:Key="LblClearCache">Clear Cache</s:String>
 </ResourceDictionary>

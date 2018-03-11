@@ -937,6 +937,18 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int BlindSolverType {
+            get {
+                return ((int)(this["BlindSolverType"]));
+            }
+            set {
+                this["BlindSolverType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("300")]
         public int HistogramResolution {
             get {
@@ -956,6 +968,42 @@ namespace NINA.Properties {
             }
             set {
                 this["GuiderSettleTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public double FramingAssistantFieldOfView {
+            get {
+                return ((double)(this["FramingAssistantFieldOfView"]));
+            }
+            set {
+                this["FramingAssistantFieldOfView"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4500")]
+        public int FramingAssistantCameraWidth {
+            get {
+                return ((int)(this["FramingAssistantCameraWidth"]));
+            }
+            set {
+                this["FramingAssistantCameraWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3500")]
+        public int FramingAssistantCameraHeight {
+            get {
+                return ((int)(this["FramingAssistantCameraHeight"]));
+            }
+            set {
+                this["FramingAssistantCameraHeight"] = value;
             }
         }
     }

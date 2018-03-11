@@ -54,6 +54,14 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(GetAllFiltersMessage).Name; } }
     }
 
+    class ChangeApplicationTabMessageHandle : MessageHandle<bool> {
+        public ChangeApplicationTabMessageHandle(Func<ChangeApplicationTabMessage, bool> callback) {
+            Callback = (f) => callback((ChangeApplicationTabMessage)f);
+        }
+        public override string MessageType { get { return typeof(ChangeApplicationTabMessage).Name; } }
+    }
+
+
     /* Message definition */
     abstract class MediatorMessage<TMessageResult> {
     }
@@ -72,5 +80,9 @@ namespace NINA.Utility.Mediator {
 
     class SendSnapPortMessage : MediatorMessage<bool> {
         public bool Start { get; set; }
+    }
+
+    class ChangeApplicationTabMessage : MediatorMessage<bool> {
+        public ViewModel.ApplicationTab Tab { get; set; }
     }
 }

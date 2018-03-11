@@ -418,6 +418,16 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblOrderBy">Sortiere nach</s:String>
     <s:String x:Key="LblAscending">Aufsteigend</s:String>
     <s:String x:Key="LblDescending">Absteigend</s:String>
+    <s:String x:Key="LblRotation">Rotation</s:String>
+    <s:String x:Key="LblFieldOfView">Bildfeld</s:String>
+    <s:String x:Key="LblCameraParameter">Kameraparameter</s:String>
+    <s:String x:Key="LblLoadImage">Bild laden</s:String>
+    <s:String x:Key="LblSetForFramingAssistant">Für Bildausrichtungsassistent setzen</s:String>
+    <s:String x:Key="LblFramingAssistant">Bildausrichtungsassistent</s:String>
+    <s:String x:Key="LblPlateSolver">Plate Solver</s:String>
+    <s:String x:Key="LblBlindSolver">Blind Solver</s:String>
+    <s:String x:Key="LblPlateSolveSettings">Plate Solver Settings</s:String>
+    <s:String x:Key="LblUseBlindSolveFailover">Platesolve fehlgeschlagen. Soll ein Platesolveversuch mit dem Blind Solver gestartet werden?</s:String>
     <s:String x:Key="LblUnhandledException">Unbehandelter Ausnahmefehler</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">Die Anwendung lief in einen unbehandelten Fehler und muss möglicherweise beendet werden.
 Der Fehler wurde in &quot;%localappdata%\NINA\Logs&quot; aufgezeichnet.
@@ -549,4 +559,16 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <s:String x:Key="LblResumeSettleTime">Ruhezeit nach Wiederaufnahme</s:String>
     <s:String x:Key="LblFilterNotFoundForPosition">Filter an Position {0} wurde nicht gefunden. Bitte die Filtereinstellungen in den Optionen überprüfen, dass diese dem Filterrad entsprechen!</s:String>
     <s:String x:Key="LblRefreshWeatherTooltip">Schaltet Aktualisierung von Wetterdaten alle 60 Sekunden an/aus</s:String>
+    <s:String x:Key="LblRecenterImage">Bild neu Zentrieren</s:String>
+    <s:String x:Key="LblDownloadImage">Download Image</s:String>
+    <s:String x:Key="LblDownloadImageTooltip">Download Image from the NASA skysurvey for the given coordinates</s:String>
+    <s:String x:Key="LblLoadImageFromFile">Load Image from File</s:String>
+    <s:String x:Key="LblLoadImageFromFileTooltip">Download Image from file and use the blindsolver to determine coordinates</s:String>
+    <s:String x:Key="LblNoCoordinates">Keine Koordinaten verfügbar</s:String>
+    <s:String x:Key="LblBlindSolveAttemptForFraming">Keine Koordinaten verfügbar. Zur Bildausrichtung muss das Bild blindsolved werden</s:String>
+    <s:String x:Key="LblImageSource">Bildquelle</s:String>
+    <s:String x:Key="LblDigitalSkySurvey">Digital Sky Survey</s:String>
+    <s:String x:Key="LblFile">Datei</s:String>
+    <s:String x:Key="LblCache">Zwischenspeicher</s:String>
+    <s:String x:Key="LblClearCache">Zwischenspeicher leeren</s:String>
 </ResourceDictionary>

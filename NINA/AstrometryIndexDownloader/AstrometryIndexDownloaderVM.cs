@@ -251,13 +251,13 @@ namespace NINA.AstrometryIndexDownloader {
 
         public double ArcsecPerPixel {
             get {
-                return (PixelSize / FocalLength) * 206.3; ;
+                return Astrometry.ArcsecPerPixel(PixelSize, FocalLength);
             }
         }
 
         public double FieldOfView {
             get {
-                return Astrometry.ArcsecToArcmin(ArcsecPerPixel * Math.Max(CamWidth, CamHeight));
+                return Astrometry.MaxFieldOfView(ArcsecPerPixel, CamWidth, CamHeight);
             }
         }
 

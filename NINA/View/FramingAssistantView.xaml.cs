@@ -15,10 +15,10 @@ using System.Windows.Shapes;
 
 namespace NINA.View {
     /// <summary>
-    /// Interaction logic for OptionsView.xaml
+    /// Interaction logic for FramingAssistantView.xaml
     /// </summary>
-    public partial class OptionsView : UserControl {
-        public OptionsView() {
+    public partial class FramingAssistantView : UserControl {
+        public FramingAssistantView() {
             InitializeComponent();
         }
     }

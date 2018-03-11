@@ -23,7 +23,10 @@ namespace NINA.ViewModel {
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(() => SetSequenceCoordinates());
-            SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
+            SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => {
+                return await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = SearchResult.SelectedItem.Coordinates });
+            });
+            SetFramingAssistantCoordinatesCommand = new AsyncCommand<bool>(() => SetFramingAssistantCoordinates());
 
             InitializeFilters();
             PageSize = 50;
@@ -63,8 +66,8 @@ namespace NINA.ViewModel {
             return await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = SearchResult.SelectedItem });
         }
 
-        private void SlewToCoordinates(object obj) {
-            Mediator.Instance.Notify(MediatorMessages.SlewToCoordinates, SearchResult.SelectedItem.Coordinates);
+        private async Task<bool> SetFramingAssistantCoordinates() {
+            return await Mediator.Instance.RequestAsync(new SetFramingAssistantCoordinatesMessage() { DSO = SearchResult.SelectedItem });
         }
 
         private Ticker _ticker;
@@ -767,7 +770,9 @@ namespace NINA.ViewModel {
 
         public ICommand SetSequenceCoordinatesCommand { get; private set; }
 
-        public ICommand SlewToCoordinatesCommand { get; private set; }
+        public IAsyncCommand SlewToCoordinatesCommand { get; private set; }
+
+        public ICommand SetFramingAssistantCoordinatesCommand { get; private set; }
 
         private int _pageSize;
         public int PageSize {

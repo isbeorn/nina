@@ -232,6 +232,14 @@ namespace NINA.Utility.Astrometry {
             return GetRiseAndSetEvent(date, EventType.SunRiseSunset);
         }
 
+        public static string DegreesToDMS(double deg) {
+            return Utility.AscomUtil.DegreesToDMS(deg);
+        }
+
+        public static string HoursToHMS(double hours) {
+            return Utility.AscomUtil.HoursToHMS(hours);
+        }
+
         public static MoonPhase GetMoonPhase(DateTime date) {
             var phase = AstroUtils.MoonPhase(GetJulianDate(date));
 
@@ -258,6 +266,18 @@ namespace NINA.Utility.Astrometry {
 
         public static double GetMoonIllumination(DateTime date) {
             return AstroUtils.MoonIllumination(Astrometry.GetJulianDate(date));
+        }
+
+        public static double ArcsecPerPixel(double pixelSize, double focalLength) {
+            return (pixelSize / focalLength) * 206.3; ;
+        }
+
+        public static double MaxFieldOfView(double arcsecPerPixel, double width, double height) {
+            return Astrometry.ArcsecToArcmin(arcsecPerPixel * Math.Max(width, height));
+        }
+
+        public static double FieldOfView(double arcsecPerPixel, double width) {
+            return Astrometry.ArcsecToArcmin(arcsecPerPixel * width);
         }
 
         public enum MoonPhase {

@@ -264,6 +264,7 @@ namespace NINA.ViewModel {
                         Image = null;
                         ImgArr = null;
                         GC.Collect();
+                        GC.WaitForPendingFinalizers();
                         ImgArr = iarr;
                         Image = source;
                         ImgStatisticsVM.Add(ImgArr.Statistics);
@@ -450,7 +451,7 @@ namespace NINA.ViewModel {
                 fits.AddHDU(hdu);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
-                var uniquePath = GetUniqueFilePath(path + ".fits");
+                var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".fits");
 
                 using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     fits.Write(fs);
@@ -462,29 +463,14 @@ namespace NINA.ViewModel {
                 return string.Empty;
             }
         }
-
-        private string GetUniqueFilePath(string fullPath) {
-            int count = 1;
-
-            string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
-            string extension = Path.GetExtension(fullPath);
-            string path = Path.GetDirectoryName(fullPath);
-            string newFullPath = fullPath;
-
-            while (File.Exists(newFullPath)) {
-                string tempFileName = string.Format("{0}({1})", fileNameOnly, count++);
-                newFullPath = Path.Combine(path, tempFileName + extension);
-            }
-            return newFullPath;
-        }
-
+        
         private string SaveTiff(String path) {
 
             try {
                 BitmapSource bmpSource = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
-                var uniquePath = GetUniqueFilePath(path + ".tif");
+                var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".tif");
 
                 using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     TiffBitmapEncoder encoder = new TiffBitmapEncoder();
@@ -569,7 +555,7 @@ namespace NINA.ViewModel {
                 XISF img = new XISF(header);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
-                var uniquePath = GetUniqueFilePath(path + ".xisf");
+                var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".xisf");
 
                 using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     img.Save(fs);

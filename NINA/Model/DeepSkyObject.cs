@@ -199,9 +199,7 @@ namespace NINA.Model {
         }
 
         //const string DSS_URL = "https://archive.stsci.edu/cgi-bin/dss_search";
-
-        private static string _imageDirectory = Settings.SkyAtlasImageRepository;
-
+        
         Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
         private BitmapSource _image;
@@ -218,11 +216,11 @@ namespace NINA.Model {
                         this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
                         (size * 9.0 / 16.0).ToString(CultureInfo.InvariantCulture),
                         size.ToString(CultureInfo.InvariantCulture));*/
-                    var file = Path.Combine(_imageDirectory, this.Name + ".gif");
+                    var file = Path.Combine(Settings.SkyAtlasImageRepository, this.Name + ".gif");
                     if (File.Exists(file)) {
                         _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                             //var img = new BitmapImage(new Uri(file));                            
-                            _image = new BitmapImage(new Uri(file));
+                            _image = new BitmapImage(new Uri(file)) { CacheOption = BitmapCacheOption.None, CreateOptions = BitmapCreateOptions.DelayCreation };                            
                             _image.Freeze();
                             RaisePropertyChanged(nameof(Image));
                         }));

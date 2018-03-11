@@ -160,7 +160,7 @@ namespace NINA.Utility {
                     request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/x-www-form-urlencoded";
                     request.Method = "POST";
-
+                    
                     using (var streamWriter = new StreamWriter(request.GetRequestStream())) {
                         streamWriter.Write(body);
                         streamWriter.Flush();
@@ -187,15 +187,67 @@ namespace NINA.Utility {
 
         }
 
+        public static async Task<BitmapSource> HttpClientGetImage(Uri url, CancellationToken ct, IProgress<int> progress = null) {
+            var bitmap = new BitmapImage();
+            using (var client = new WebClient()) {
+                using (ct.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
+                    try {
+                        client.DownloadProgressChanged += (s, e) => {
+                            progress?.Report(e.ProgressPercentage);
+                        };
+                        var data = await client.DownloadDataTaskAsync(url);
+                        using (MemoryStream stream = new MemoryStream(data)) {
+                            bitmap.BeginInit();
+                            bitmap.StreamSource = stream;
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmap.EndInit();
+                            bitmap.Freeze();
+                        }
+                    } catch(WebException ex) {
+                        if(ex.Status == WebExceptionStatus.RequestCanceled) {
+                            throw new OperationCanceledException();
+                        } else {
+                            throw ex;
+                        }
+                    }
+                    
+                }                
+            }
+            return bitmap;
+        }
+
         public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken, IProgress<int> progress = null) {
             using (var client = new WebClient()) {
                 using (canceltoken.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
-                    client.DownloadProgressChanged += (s, e) => {
-                        progress?.Report(e.ProgressPercentage);
-                    };
-                    await client.DownloadFileTaskAsync(url, targetLocation);
+                    try {
+                        client.DownloadProgressChanged += (s, e) => {
+                            progress?.Report(e.ProgressPercentage);
+                        };
+                        await client.DownloadFileTaskAsync(url, targetLocation);
+                    } catch (WebException ex) {
+                        if (ex.Status == WebExceptionStatus.RequestCanceled) {
+                            throw new OperationCanceledException();
+                        } else {
+                            throw ex;
+                        }
+                    }
                 }
             }
+        }
+
+        public static string GetUniqueFilePath(string fullPath) {
+            int count = 1;
+
+            string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
+            string extension = Path.GetExtension(fullPath);
+            string path = Path.GetDirectoryName(fullPath);
+            string newFullPath = fullPath;
+
+            while (File.Exists(newFullPath)) {
+                string tempFileName = string.Format("{0}({1})", fileNameOnly, count++);
+                newFullPath = Path.Combine(path, tempFileName + extension);
+            }
+            return newFullPath;
         }
 
 
@@ -317,6 +369,14 @@ namespace NINA.Utility {
         LOCAL,
         [Description("LblPlatesolve2")]
         PLATESOLVE2
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum BlindSolverEnum {
+        [Description("LblAstrometryNet")]
+        ASTROMETRY_NET,
+        [Description("LblLocalPlatesolver")]
+        LOCAL
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]

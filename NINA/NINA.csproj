@@ -298,6 +298,7 @@
     <Compile Include="Utility\ASISDK\ASICameras.cs" />
     <Compile Include="Utility\AvalonDock\PaneStyleSelector.cs" />
     <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
+    <Compile Include="Utility\Behaviors\DragCommandBehavior.cs" />
     <Compile Include="Utility\BindingProxy.cs" />
     <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
     <Compile Include="Utility\Converters\ArcsecToLabelConverter.cs" />
@@ -307,6 +308,8 @@
     <Compile Include="Utility\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DatabindingDebugConverter.cs" />
     <Compile Include="Utility\Converters\CollectionContainsItemsToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\DegreesToDMSConverter.cs" />
+    <Compile Include="Utility\Converters\HoursToHMSConverter.cs" />
     <Compile Include="Utility\Converters\InverseBooleanConverter.cs" />
     <Compile Include="Utility\Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\InverseCollectionContainsItemsToVisibilityConverter.cs" />
@@ -314,6 +317,7 @@
     <Compile Include="Utility\Converters\InverseNullToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\MinusOneToEmptyStringConverter.cs" />
     <Compile Include="Utility\Converters\MoonPhaseToGeometryConverter.cs" />
+    <Compile Include="Utility\Converters\MultiMarginConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
@@ -334,6 +338,7 @@
     </Compile>
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
     <Compile Include="Utility\ObserveAllCollection.cs" />
+    <Compile Include="Utility\DigitalSkySurveyInteraction.cs" />
     <Compile Include="Utility\SerialPortInteraction.cs" />
     <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
@@ -352,6 +357,7 @@
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
+    <Compile Include="ViewModel\FramingAssistantVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
@@ -460,11 +466,11 @@
     <Compile Include="View\FrameFocusView.xaml.cs">
       <DependentUpon>FrameFocusView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\FramingAssistantView.xaml.cs">
+      <DependentUpon>FramingAssistantView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\HistogramView.xaml.cs">
       <DependentUpon>HistogramView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ImageAreaView.xaml.cs">
-      <DependentUpon>ImageAreaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ImageControlView.xaml.cs">
       <DependentUpon>ImageControlView.xaml</DependentUpon>
@@ -475,6 +481,9 @@
     <Compile Include="View\ImageStatisticsView.xaml.cs">
       <DependentUpon>ImageStatisticsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ImageView.xaml.cs">
+      <DependentUpon>ImageView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ImagingView.xaml.cs">
       <DependentUpon>ImagingView.xaml</DependentUpon>
     </Compile>
@@ -483,6 +492,9 @@
     </Compile>
     <Compile Include="View\MinimalisticGuiderGraph.xaml.cs">
       <DependentUpon>MinimalisticGuiderGraph.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\OptionsPlateSolverView.xaml.cs">
+      <DependentUpon>OptionsPlateSolverView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
@@ -761,11 +773,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\HistogramView.xaml">
+    <Page Include="View\FramingAssistantView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ImageAreaView.xaml">
+    <Page Include="View\HistogramView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -781,6 +793,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ImageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ImagingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -790,6 +806,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MinimalisticGuiderGraph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\OptionsPlateSolverView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
