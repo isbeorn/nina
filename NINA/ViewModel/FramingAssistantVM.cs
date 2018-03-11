@@ -491,12 +491,12 @@ namespace NINA.ViewModel {
             if (FramingAssistantSource == FramingAssistantSource.DSS) {
                 var success = await LoadImageFromDSS();
                 if (success) {
-                    await FillImageCache();
+                    FillImageCache();
                 }
             } else if (FramingAssistantSource == FramingAssistantSource.FILE) {
                 var success = await LoadImageFromFile();
                 if (success) {
-                    await FillImageCache();
+                    FillImageCache();
                 }
             } else if (FramingAssistantSource == FramingAssistantSource.CACHE) {
                 await LoadImageFromCache();
@@ -531,35 +531,42 @@ namespace NINA.ViewModel {
             
         }
 
-        private async Task FillImageCache() {
-            if(!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
-                Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
+        private void FillImageCache() {            
+            try {
+                if (!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
+                    Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
+                }
+
+                var imgFilePath = Path.Combine(FRAMINGASSISTANTCACHEPATH, DSO.Name + ".jpg");
+
+                imgFilePath = Utility.Utility.GetUniqueFilePath(imgFilePath);
+                var name = Path.GetFileNameWithoutExtension(imgFilePath);
+
+                using (var fileStream = new FileStream(imgFilePath, FileMode.Create)) {
+                    var encoder = new JpegBitmapEncoder();
+                    encoder.QualityLevel = 80;
+                    encoder.Frames.Add(BitmapFrame.Create(ImageParameter.Image));
+                    encoder.Save(fileStream);
+                }
+
+                XElement xml = new XElement("Image",
+                    new XAttribute("RA", Coordinates.RA),
+                    new XAttribute("Dec", Coordinates.Dec),
+                    new XAttribute("Rotation", ImageParameter.Rotation),
+                    new XAttribute("FoVW", ImageParameter.FieldOfViewWidth),
+                    new XAttribute("FoVH", ImageParameter.FieldOfViewHeight),
+                    new XAttribute("FileName", imgFilePath),
+                    new XAttribute("Name", name)
+                );
+
+                ImageCacheInfo.Add(xml);
+                ImageCacheInfo.Save(FRAMINGASSISTANTCACHEINFOPATH);
+                SelectedImageCacheInfo = xml;
+            } catch(Exception ex) {
+                Logger.Error(ex);
+                Notification.ShowError(ex.Message);
             }
-
-            var imgFilePath = Path.Combine(FRAMINGASSISTANTCACHEPATH, DSO.Name + ".jpg");
-
-            imgFilePath = Utility.Utility.GetUniqueFilePath(imgFilePath);
-            var name = Path.GetFileNameWithoutExtension(imgFilePath);
-
-            XElement xml = new XElement("Image",                
-                new XAttribute("RA", Coordinates.RA),
-                new XAttribute("Dec", Coordinates.Dec),
-                new XAttribute("Rotation", ImageParameter.Rotation),
-                new XAttribute("FoVW", ImageParameter.FieldOfViewWidth),
-                new XAttribute("FoVH", ImageParameter.FieldOfViewHeight),
-                new XAttribute("FileName", imgFilePath),
-                new XAttribute("Name", name)
-            );
-
-            ImageCacheInfo.Add(xml);
-            ImageCacheInfo.Save(FRAMINGASSISTANTCACHEINFOPATH);
-
-            using (var fileStream = new FileStream(imgFilePath, FileMode.Create)) {
-                var encoder = new JpegBitmapEncoder();
-                encoder.QualityLevel = 80;
-                encoder.Frames.Add(BitmapFrame.Create(ImageParameter.Image));
-                encoder.Save(fileStream);
-            }
+                
         }
 
         private XElement _imageCacheInfo;
@@ -596,7 +603,8 @@ namespace NINA.ViewModel {
                 return;
             } else {
                 ImageCacheInfo = XElement.Load(FRAMINGASSISTANTCACHEINFOPATH);
-            }            
+            }
+            SelectedImageCacheInfo = (XElement)ImageCacheInfo.FirstNode;
         }
 
         private void CalculateRectangle(FramingImageParameter parameter) {
