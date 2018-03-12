@@ -77,6 +77,15 @@
      * Night time duration based on your position
      * Set object as sequence target
 
+* Framing Assistant
+     * Multiple ways of importing an image for framing
+          * Digital Sky Survey (requires internet connection)
+          * Image File (tif, png, jpg)
+          * Image Cache (from a previously loaded image)
+     * By entering camera and telescope specs a rectangle with the respective field of view is generated
+     * The rectangle can be rotated and dragged to the desired location
+     * Once satisfied the coordinates where the rectangle is located can be set for a sequence to start imaging
+
 * Image History
      * Thumbnail and statistics of images during an image session
      * Reload images of one session to the UI
