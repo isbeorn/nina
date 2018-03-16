@@ -102,7 +102,7 @@ namespace NINA.ViewModel {
         /// <summary>
         /// Checks if auto meridian flip should be considered and executes it
         /// 1) Compare next exposure length with time to meridian - If exposure length is greater than time to flip the system will wait
-        /// 2) Pause Guider
+        /// 2) Stop Guider
         /// 3) Execute the flip
         /// 4) If recentering is enabled, platesolve current position, sync and recenter to old target position
         /// 5) Resume Guider
@@ -168,7 +168,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> StopAutoguider(CancellationToken token, IProgress<ApplicationStatus> progress) {
-            var result = await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Token = token, Pause = true });            
+            var result = await Mediator.Instance.RequestAsync(new StopGuiderMessage() { Token = token });            
             return result;
         }
 
@@ -179,7 +179,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> ResumeAutoguider(CancellationToken token, IProgress<ApplicationStatus> progress) {
 
-            var result = await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Token = token, Pause = false });
+            var result = await Mediator.Instance.RequestAsync(new StartGuiderMessage() { Token = token });
 
             return result;
         }

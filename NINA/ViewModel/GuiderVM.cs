@@ -70,6 +70,12 @@ namespace NINA.ViewModel {
                     return await StartGuiding(msg.Token);
                 })
             );
+
+            Mediator.Instance.RegisterAsyncRequest(
+                new StopGuiderMessageHandle(async (StopGuiderMessage msg) => {
+                    return await StopGuiding(msg.Token);
+                })
+            );
         }
 
         private async Task<bool> AutoSelectGuideStar(CancellationToken token) {
@@ -146,6 +152,14 @@ namespace NINA.ViewModel {
                     return true;
                 });
 
+            } else {
+                return false;
+            }
+        }
+
+        private async Task<bool> StopGuiding(CancellationToken token) {
+            if (Guider?.Connected == true) {
+                return await Guider.StopGuiding(token);
             } else {
                 return false;
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyGuider {
@@ -18,6 +19,7 @@ namespace NINA.Model.MyGuider {
         bool Disconnect();
         Task<bool> Pause(bool pause);
         Task<bool> StartGuiding();
+        Task<bool> StopGuiding(CancellationToken token);
         Task<bool> Dither();
     }
 
