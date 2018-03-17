@@ -568,5 +568,12 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblFile">File</s:String>
     <s:String x:Key="LblCache">Cache</s:String>
     <s:String x:Key="LblClearCache">Clear Cache</s:String>
+    <s:String x:Key="LblStopTracking">Stop Tracking</s:String>
+    <s:String x:Key="LblResumeTracking">Resume Tracking</s:String>
+    <s:String x:Key="LblFlippingScope">Flipping Scope</s:String>
+    <s:String x:Key="LblInitiatePlatesolve">Initiate Platesolve</s:String>
+    <s:String x:Key="LblSelectGuidestar">Select new Guidestar</s:String>
+    <s:String x:Key="LblResumeGuiding">Resume Guiding</s:String>
+    <s:String x:Key="LblStopGuiding">Stop Guiding</s:String>
 
 </ResourceDictionary>
