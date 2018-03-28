@@ -573,4 +573,6 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblSelectGuidestar">Select new Guidestar</s:String>
     <s:String x:Key="LblResumeGuiding">Resume Guiding</s:String>
     <s:String x:Key="LblStopGuiding">Stop Guiding</s:String>
+    <s:String x:Key="LblMin">Min</s:String>
+    <s:String x:Key="LblMax">Max</s:String>
 </ResourceDictionary>
