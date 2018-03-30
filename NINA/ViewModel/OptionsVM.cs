@@ -24,6 +24,7 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
+            OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
@@ -118,6 +119,18 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void OpenSequenceTemplateDiag(object o) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Title = Locale.Loc.Instance["LblSequenceTemplate"];
+            dialog.FileName = "Sequence";
+            dialog.DefaultExt = ".xml";
+            dialog.Filter = "XML documents|*.xml";
+
+            if (dialog.ShowDialog() == true) {
+                SequenceTemplatePath = dialog.FileName;
+            }
+        }        
+
         private void OpenCygwinFileDiag(object o) {
             System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
             dialog.SelectedPath = Settings.CygwinLocation;
@@ -175,6 +188,8 @@ namespace NINA.ViewModel {
 
         public ICommand OpenImageFileDiagCommand { get; private set; }
 
+        public ICommand OpenSequenceTemplateDiagCommand { get; private set; }
+
         public ICommand PreviewFileCommand { get; private set; }
 
         public ICommand ToggleColorsCommand { get; private set; }
@@ -226,6 +241,15 @@ namespace NINA.ViewModel {
             }
         }
 
+        public string SequenceTemplatePath {
+            get {
+                return Settings.SequenceTemplatePath;
+            }
+            set {
+                Settings.SequenceTemplatePath = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public string ImageFilePattern {
             get {

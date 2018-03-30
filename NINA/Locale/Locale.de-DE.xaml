@@ -580,4 +580,8 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <s:String x:Key="LblStopGuiding">Stoppe Guiding</s:String>
     <s:String x:Key="LblMin">Min</s:String>
     <s:String x:Key="LblMax">Max</s:String>
+    <s:String x:Key="LblSequenceTemplate">Sequenzvorlage</s:String>
+    <s:String x:Key="LblSequenceTemplateTooltip" xml:space="preserve">Pfad zu einer vorher exportierten Sequenz, die als Vorlage dienen soll.
+Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequenz.</s:String>
+    <s:String x:Key="LblLoadSequenceFailed">Sequenz laden fehlgeschlagen</s:String>
 </ResourceDictionary>

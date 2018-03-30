@@ -106,7 +106,7 @@ namespace NINA.Model {
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.ShowError(ex.Message);
+                Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceFailed"] + Environment.NewLine + ex.Message);
             }
             return l;
         }
