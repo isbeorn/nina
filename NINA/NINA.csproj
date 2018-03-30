@@ -333,6 +333,7 @@
     <Compile Include="Utility\Mediator\Mediator.cs" />
     <Compile Include="Utility\Mediator\AsyncMessageHandle.cs" />
     <Compile Include="Utility\Mediator\MessageHandle.cs" />
+    <Compile Include="Utility\MyStopWatch.cs" />
     <Compile Include="Utility\Notification\CustomDisplayPart.xaml.cs">
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
     </Compile>

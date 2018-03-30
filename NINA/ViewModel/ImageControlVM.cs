@@ -304,14 +304,15 @@ namespace NINA.ViewModel {
             return Stretch(mean, img, pf);
         }
 
-        public static BitmapSource Stretch(double mean, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf) {           
+        public static BitmapSource Stretch(double mean, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf) {
+            using (MyStopWatch.Measure()) {
+                var filter = ImageAnalysis.GetColorRemappingFilter(mean, Settings.AutoStretchFactor);
+                filter.ApplyInPlace(img);
 
-            var filter = ImageAnalysis.GetColorRemappingFilter(mean, Settings.AutoStretchFactor);
-            filter.ApplyInPlace(img);
-
-            var source = ImageAnalysis.ConvertBitmap(img, pf);
-            source.Freeze();
-            return source;
+                var source = ImageAnalysis.ConvertBitmap(img, pf);
+                source.Freeze();
+                return source;
+            }
         }
 
         public async Task<bool> SaveToDisk(ImageParameters parameters, CancellationToken token) {
@@ -320,7 +321,9 @@ namespace NINA.ViewModel {
             var framenr = parameters.ExposureNumber;
             var success = false;
             try {
-                success = await SaveToDiskAsync(parameters, token);
+                using (MyStopWatch.Measure()) {
+                    success = await SaveToDiskAsync(parameters, token);
+                }
             } catch(OperationCanceledException ex) {
                 throw new OperationCanceledException(ex.Message);
             } catch(Exception ex) {                                

@@ -125,55 +125,55 @@ namespace NINA.Utility {
 
         public void DetectStars(IProgress<ApplicationStatus> progress) {
             try {
+                using (MyStopWatch.Measure()) {
+                    Stopwatch overall = Stopwatch.StartNew();
+                    progress?.Report(new ApplicationStatus() { Status = "Preparing image for star detection" });
 
-                Stopwatch overall = Stopwatch.StartNew();
-                progress?.Report(new ApplicationStatus() { Status = "Preparing image for star detection" });
+                    Stopwatch sw = Stopwatch.StartNew();
 
-                Stopwatch sw = Stopwatch.StartNew();
+                    _bitmapToAnalyze = Convert16BppTo8Bpp(_originalBitmapSource);
 
-                _bitmapToAnalyze = Convert16BppTo8Bpp(_originalBitmapSource);
+                    Debug.Print("Time to convert to 8bit Image: " + sw.Elapsed);
 
-                Debug.Print("Time to convert to 8bit Image: " + sw.Elapsed);
+                    sw.Restart();
 
-                sw.Restart();
+                    _token.ThrowIfCancellationRequested();
 
-                _token.ThrowIfCancellationRequested();
-
-                /* Resize to speed up manipulation */
-                ResizeBitmapToAnalyze();
+                    /* Resize to speed up manipulation */
+                    ResizeBitmapToAnalyze();
 
 
-                /* prepare image for structure detection */
-                PrepareForStructureDetection(_bitmapToAnalyze);
+                    /* prepare image for structure detection */
+                    PrepareForStructureDetection(_bitmapToAnalyze);
 
-                progress?.Report(new ApplicationStatus() { Status = "Detecting structures" });
+                    progress?.Report(new ApplicationStatus() { Status = "Detecting structures" });
 
-                /* get structure info */
-                _blobCounter = DetectStructures(_bitmapToAnalyze);
+                    /* get structure info */
+                    _blobCounter = DetectStructures(_bitmapToAnalyze);
 
-                progress?.Report(new ApplicationStatus() { Status = "Analyzing stars" });
+                    progress?.Report(new ApplicationStatus() { Status = "Analyzing stars" });
 
-                _starlist = IdentifyStars();
+                    _starlist = IdentifyStars();
 
-                _token.ThrowIfCancellationRequested();
+                    _token.ThrowIfCancellationRequested();
 
-                if (_starlist.Count > 0) {
-                    var m = (from star in _starlist select star.HFR).Average();
-                    Debug.Print("Mean HFR: " + m);
-                    //todo change
-                    AverageHFR = m;
-                    DetectedStars = _starlist.Count;
+                    if (_starlist.Count > 0) {
+                        var m = (from star in _starlist select star.HFR).Average();
+                        Debug.Print("Mean HFR: " + m);
+                        //todo change
+                        AverageHFR = m;
+                        DetectedStars = _starlist.Count;
+                    }
+
+                    sw.Stop();
+                    sw = null;
+
+                    _blobCounter = null;
+                    _bitmapToAnalyze.Dispose();
+                    overall.Stop();
+                    Debug.Print("Overall star detection: " + overall.Elapsed);
+                    overall = null;
                 }
-
-                sw.Stop();
-                sw = null;
-
-                _blobCounter = null;
-                _bitmapToAnalyze.Dispose();
-                overall.Stop();
-                Debug.Print("Overall star detection: " + overall.Elapsed);
-                overall = null;
-
             } catch (OperationCanceledException) {
 
             } finally {
@@ -242,36 +242,38 @@ namespace NINA.Utility {
         }
 
         public BitmapSource GetAnnotatedImage() {
-            Bitmap bmp = Convert16BppTo8Bpp(_originalBitmapSource);
+            using (MyStopWatch.Measure()) {
+                Bitmap bmp = Convert16BppTo8Bpp(_originalBitmapSource);
 
-            Bitmap newBitmap = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                Bitmap newBitmap = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-            Graphics graphics = Graphics.FromImage(newBitmap);
-            graphics.DrawImage(bmp, 0, 0);
+                Graphics graphics = Graphics.FromImage(newBitmap);
+                graphics.DrawImage(bmp, 0, 0);
 
-            if (_starlist.Count > 0) {
-                int r, offset = 10;
-                float textposx, textposy;
+                if (_starlist.Count > 0) {
+                    int r, offset = 10;
+                    float textposx, textposy;
 
-                var threshhold = 200;
-                if (_starlist.Count > threshhold) {
-                    _starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
-                    _starlist = _starlist.GetRange(0, threshhold);
+                    var threshhold = 200;
+                    if (_starlist.Count > threshhold) {
+                        _starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
+                        _starlist = _starlist.GetRange(0, threshhold);
+                    }
+
+                    foreach (Star star in _starlist) {
+                        _token.ThrowIfCancellationRequested();
+                        r = (int)Math.Ceiling(star.radius);
+                        textposx = star.Position.X - offset;
+                        textposy = star.Position.Y - offset;
+                        graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width, star.Rectangle.Height));
+                        graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
+                    }
                 }
-
-                foreach (Star star in _starlist) {
-                    _token.ThrowIfCancellationRequested();
-                    r = (int)Math.Ceiling(star.radius);
-                    textposx = star.Position.X - offset;
-                    textposy = star.Position.Y - offset;
-                    graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width, star.Rectangle.Height));
-                    graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
-                }
+                var img = ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
+                newBitmap.Dispose();
+                img.Freeze();
+                return img;
             }
-            var img = ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
-            newBitmap.Dispose();
-            img.Freeze();
-            return img;
         }
 
         private BlobCounter DetectStructures(Bitmap bmp) {
@@ -405,25 +407,29 @@ namespace NINA.Utility {
         }
 
         public static BitmapSource Debayer(BitmapSource source, System.Drawing.Imaging.PixelFormat pf) {
-            if (pf == System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
-                source = Convert16BppTo8BppSource(source);
-            } else if (pf == System.Drawing.Imaging.PixelFormat.Format8bppIndexed) {
+            using (MyStopWatch.Measure()) {
+                if (pf == System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
+                    source = Convert16BppTo8BppSource(source);
+                } else if (pf == System.Drawing.Imaging.PixelFormat.Format8bppIndexed) {
 
-            } else {
-                throw new NotSupportedException();
+                } else {
+                    throw new NotSupportedException();
+                }
+                var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                bmp = Debayer(bmp);
+                var newSource = ConvertBitmap(bmp, PixelFormats.Rgb24);
+                newSource.Freeze();
+                return newSource;
             }
-            var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-            bmp = Debayer(bmp);
-            var newSource = ConvertBitmap(bmp, PixelFormats.Rgb24);
-            newSource.Freeze();
-            return newSource;
         }
 
         public static Bitmap Debayer(Bitmap bmp) {
-            var filter = new BayerFilter();
-            filter.BayerPattern = new int[,] { { RGB.B, RGB.G }, { RGB.G, RGB.R } };
-            var debayered = filter.Apply(bmp);
-            return debayered;
+            using (MyStopWatch.Measure()) {
+                var filter = new BayerFilter();
+                filter.BayerPattern = new int[,] { { RGB.B, RGB.G }, { RGB.G, RGB.R } };
+                var debayered = filter.Apply(bmp);
+                return debayered;
+            }
         }
     }
 
