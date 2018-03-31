@@ -43,6 +43,10 @@ namespace NINA.ViewModel {
                 ImagePatterns = CreateImagePatternList();
             }, MediatorMessages.LocaleChanged);
 
+            Mediator.Instance.Register((object o) => {
+                CameraPixelSize = (double)o;
+            }, MediatorMessages.CameraPixelSizeChanged);
+
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
         }
 
