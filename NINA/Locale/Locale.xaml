@@ -582,4 +582,7 @@ Should the Application try to recover from the error? (Can lead to unexpected be
 This template will be used on startup to initialize the sequence instead of the default one.</s:String>
     <s:String x:Key="LblLoadSequenceFailed">Load sequence failed</s:String>
     <s:String x:Key="LblPixels">Pixels</s:String>
+    <s:String x:Key="LblSyncLatLong">Synchronize Latitude/Longitude</s:String>
+    <s:String x:Key="LblSyncLatLongText" xml:space="preserve">Telescope's Latitude and Longitude differs from NINA's values.
+Should NINA's values be synced to the telescope?</s:String>
 </ResourceDictionary>

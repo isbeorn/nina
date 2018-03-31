@@ -26,9 +26,10 @@ namespace NINA.Model.MyTelescope {
         string TimeToMeridianFlipString { get; }
         double MovingRate { get; set; }
         bool Tracking { get; set; }
-        double SiteLatitude { get; }
-        double SiteLongitude { get; }
+        double SiteLatitude { get; set; }
+        double SiteLongitude { get; set; }
         double SiteElevation { get; }
+        bool CanSetSiteLatLong { get; }
 
         bool MeridianFlip(Coordinates targetCoordinates);
         void MoveAxis(TelescopeAxes axis, double rate);

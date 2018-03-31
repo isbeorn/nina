@@ -158,6 +158,15 @@ namespace NINA.ViewModel {
                         _cancelChooseTelescopeSource.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             Telescope = telescope;
+
+                            if(Telescope.CanSetSiteLatLong && (Telescope.SiteLatitude != Settings.Latitude || Telescope.SiteLongitude != Settings.Longitude)) {
+                                if(MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblSyncLatLongText"], Locale.Loc.Instance["LblSyncLatLong"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
+                                    Telescope.SiteLatitude = Settings.Latitude;
+                                    Telescope.SiteLongitude = Settings.Longitude;
+                                }
+                            }
+                            
+
                             Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
                             _updateTelescope.Start();
                             Settings.TelescopeId = Telescope.Id;
@@ -189,7 +198,7 @@ namespace NINA.ViewModel {
         }
 
         CancellationTokenSource _cancelChooseTelescopeSource;
-
+ 
         private void DisconnectTelescope(object obj) {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
