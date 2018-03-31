@@ -15,6 +15,7 @@ namespace NINA.Model.MyGuider {
         public const string STOP_CAPTURE = "6";
         public const string PAUSE = "10";
 
+        public const string GET_PIXEL_SCALE = "96";
         public const string GET_STAR_IMAGE = "97";
         public const string GET_EXPOSURE = "98";
         public const string GET_APP_STATE = "99";
@@ -54,8 +55,9 @@ namespace NINA.Model.MyGuider {
 
         public static string PAUSE = "{{\"method\": \"set_paused\", \"params\": [{0}], \"id\": " + PHD2EventId.PAUSE + "}}\r\n";
 
-
         public static string GET_STAR_IMAGE = "{\"method\": \"get_star_image\",\"id\": " + PHD2EventId.GET_STAR_IMAGE + "}\r\n";
+
+        public static string GET_PIXEL_SCALE = "{\"method\": \"get_pixel_scale\",\"id\": " + PHD2EventId.GET_PIXEL_SCALE + "}\r\n";
 
 
         public static string GET_EXPOSURE = "{\"method\": \"get_exposure\",\"id\": " + PHD2EventId.GET_EXPOSURE + "}\r\n";

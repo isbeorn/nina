@@ -581,4 +581,5 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblSequenceTemplateTooltip" xml:space="preserve">Specifies a path to a previously exported sequence file that should be used as a template.
 This template will be used on startup to initialize the sequence instead of the default one.</s:String>
     <s:String x:Key="LblLoadSequenceFailed">Load sequence failed</s:String>
+    <s:String x:Key="LblPixels">Pixels</s:String>
 </ResourceDictionary>

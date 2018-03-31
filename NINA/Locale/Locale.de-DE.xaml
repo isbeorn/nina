@@ -584,4 +584,5 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <s:String x:Key="LblSequenceTemplateTooltip" xml:space="preserve">Pfad zu einer vorher exportierten Sequenz, die als Vorlage dienen soll.
 Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequenz.</s:String>
     <s:String x:Key="LblLoadSequenceFailed">Sequenz laden fehlgeschlagen</s:String>
+    <s:String x:Key="LblPixels">Pixel</s:String>
 </ResourceDictionary>

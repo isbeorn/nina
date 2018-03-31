@@ -105,6 +105,17 @@
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                <UniformGrid Columns="2">
+                                    <UniformGrid
+                                        Margin="0,6,0,6"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock Text="{ns:Loc LblPixelScale}" />
+                                        <TextBlock Margin="5,0,0,0" Text="{Binding PixelScale}" />
+                                    </UniformGrid>
+                                </UniformGrid>
+                            </Border>
                         </StackPanel>
                     </Grid>
                 </GroupBox>

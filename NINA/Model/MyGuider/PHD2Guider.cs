@@ -4,6 +4,7 @@ using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -142,6 +143,17 @@ namespace NINA.Model.MyGuider {
             }
             set {
                 _isDithering = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _pixelScale;
+        public double PixelScale {
+            get {
+                return _pixelScale;
+            }
+            set {
+                _pixelScale = value;
                 RaisePropertyChanged();
             }
         }
@@ -305,6 +317,15 @@ namespace NINA.Model.MyGuider {
 
                                             break;
                                         }
+                                    case PHD2EventId.GET_PIXEL_SCALE: {
+                                            PhdMethodResponse phdresp = o.ToObject<PhdMethodResponse>();
+                                            if (phdresp.error == null) {
+                                                PixelScale = double.Parse(phdresp.jsonrpc, CultureInfo.InvariantCulture);
+                                            }
+
+
+                                            break;
+                                        }
                                     case PHD2EventId.GET_APP_STATE: {
                                             PhdMethodResponse phdresp = o.ToObject<PhdMethodResponse>();
                                             if (phdresp.error == null) {
@@ -407,6 +428,7 @@ namespace NINA.Model.MyGuider {
 
 
                     await SendMessage(PHD2Methods.GET_APP_STATE);
+                    await SendMessage(PHD2Methods.GET_PIXEL_SCALE);
                     //await sendMessage(PHD2Methods.GET_STAR_IMAGE); 
                 } catch (System.IO.IOException ex) {
                     Logger.Error(ex);
