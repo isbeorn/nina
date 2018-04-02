@@ -115,9 +115,7 @@ namespace NINA.ViewModel {
                             await changeFocus;
                         }
 
-                        await changeFilter;
-
-                        IsMoving = false;
+                        await changeFilter;                        
                     }
                     _selectedFilter = filter;
                     RaisePropertyChanged(nameof(SelectedFilter));
@@ -126,6 +124,7 @@ namespace NINA.ViewModel {
 
             } finally {
                 //unlock access
+                IsMoving = false;
                 semaphoreSlim.Release();
             }
             progress?.Report(new ApplicationStatus() { Status = string.Empty });
@@ -164,8 +163,10 @@ namespace NINA.ViewModel {
                 return _selectedFilter;
             }
             set {
-                ChangeFilterHelper(value);
-                RaisePropertyChanged();
+                if(value != null) {
+                    ChangeFilterHelper(value);
+                    RaisePropertyChanged();
+                }
             }
         }
 
