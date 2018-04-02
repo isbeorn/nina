@@ -79,6 +79,42 @@
                                     <TextBlock
                                         Width="70"
                                         VerticalAlignment="Center"
+                                        Text="{ns:Loc LblMin}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Min}" />
+                                        <TextBlock Text=" (" />
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding MinOccurrences}" />
+                                        <TextBlock Text="x)" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="70"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblMax}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Max}" />
+                                        <TextBlock Text=" (" />
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding MaxOccurrences}" />
+                                        <TextBlock Text="x)" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="70"
+                                        VerticalAlignment="Center"
                                         Text="{ns:Loc LblNrStars}" />
                                     <TextBlock
                                         Width="70"

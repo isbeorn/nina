@@ -333,6 +333,7 @@
     <Compile Include="Utility\Mediator\Mediator.cs" />
     <Compile Include="Utility\Mediator\AsyncMessageHandle.cs" />
     <Compile Include="Utility\Mediator\MessageHandle.cs" />
+    <Compile Include="Utility\MyStopWatch.cs" />
     <Compile Include="Utility\Notification\CustomDisplayPart.xaml.cs">
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
     </Compile>
@@ -492,6 +493,9 @@
     </Compile>
     <Compile Include="View\MinimalisticGuiderGraph.xaml.cs">
       <DependentUpon>MinimalisticGuiderGraph.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\OptionsImagingView.xaml.cs">
+      <DependentUpon>OptionsImagingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\OptionsPlateSolverView.xaml.cs">
       <DependentUpon>OptionsPlateSolverView.xaml</DependentUpon>
@@ -806,6 +810,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MinimalisticGuiderGraph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\OptionsImagingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

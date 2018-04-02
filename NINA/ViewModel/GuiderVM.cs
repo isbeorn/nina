@@ -70,6 +70,12 @@ namespace NINA.ViewModel {
                     return await StartGuiding(msg.Token);
                 })
             );
+
+            Mediator.Instance.RegisterAsyncRequest(
+                new StopGuiderMessageHandle(async (StopGuiderMessage msg) => {
+                    return await StopGuiding(msg.Token);
+                })
+            );
         }
 
         private async Task<bool> AutoSelectGuideStar(CancellationToken token) {
@@ -130,9 +136,69 @@ namespace NINA.ViewModel {
         }
 
         private void Guider_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == "PixelScale") {
+                PixelScale = Guider.PixelScale;
+            }
             if (e.PropertyName == "GuideStep") {
-                GuideStepsHistoryMinimal.Add(Guider.GuideStep);
-                GuideStepsHistory.Add(Guider.GuideStep);
+                var step = Guider.GuideStep;
+                if(GuiderScale == GuiderScaleEnum.ARCSECONDS) {
+                    ConvertStepToArcSec(step);
+                }
+                GuideStepsHistoryMinimal.Add(step);
+                GuideStepsHistory.Add(step);
+            }
+        }
+
+        private void ConvertStepToArcSec(IGuideStep pixelStep) {
+            pixelStep.RADistanceRaw = pixelStep.RADistanceRaw * PixelScale;
+            pixelStep.DecDistanceRaw = pixelStep.DecDistanceRaw * PixelScale;
+            pixelStep.RADistanceGuide = pixelStep.RADistanceGuide * PixelScale;
+            pixelStep.DecDistanceGuide = pixelStep.DecDistanceGuide * PixelScale;
+        }
+
+        private void ConvertStepToPixels(IGuideStep arcsecStep) {
+            arcsecStep.RADistanceRaw = arcsecStep.RADistanceRaw / PixelScale;
+            arcsecStep.DecDistanceRaw = arcsecStep.DecDistanceRaw / PixelScale;
+            arcsecStep.RADistanceGuide = arcsecStep.RADistanceGuide / PixelScale;
+            arcsecStep.DecDistanceGuide = arcsecStep.DecDistanceGuide / PixelScale;
+        }
+
+        private GuiderScaleEnum _guiderScale;
+        public GuiderScaleEnum GuiderScale {
+            get {
+                return _guiderScale;
+            }
+            set {
+                _guiderScale = value;
+                RaisePropertyChanged();
+                foreach(IGuideStep s in GuideStepsHistory) {
+                    if(GuiderScale == GuiderScaleEnum.ARCSECONDS) {
+                        ConvertStepToArcSec(s);
+                    } else {
+                        ConvertStepToPixels(s);
+                    }
+                    
+                }
+                foreach (IGuideStep s in GuideStepsHistoryMinimal) {
+                    if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {
+                        ConvertStepToArcSec(s);
+                    } else {
+                        ConvertStepToPixels(s);
+                    }
+                }
+                RaisePropertyChanged(nameof(GuideStepsHistory));
+                RaisePropertyChanged(nameof(GuideStepsHistoryMinimal));
+            }
+        }
+
+        private double _pixelScale;
+        public double PixelScale {
+            get {
+                return _pixelScale;
+            }
+            set {
+                _pixelScale = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -146,6 +212,14 @@ namespace NINA.ViewModel {
                     return true;
                 });
 
+            } else {
+                return false;
+            }
+        }
+
+        private async Task<bool> StopGuiding(CancellationToken token) {
+            if (Guider?.Connected == true) {
+                return await Guider.StopGuiding(token);
             } else {
                 return false;
             }

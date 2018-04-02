@@ -897,6 +897,16 @@ namespace NINA.Utility {
             }
         }
 
+        public static string SequenceTemplatePath {
+            get {
+                return Properties.Settings.Default.SequenceTemplatePath;
+            }
+            set {
+                Properties.Settings.Default.SequenceTemplatePath = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
 
     }
 

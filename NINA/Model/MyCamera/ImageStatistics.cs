@@ -13,6 +13,10 @@ namespace NINA.Model.MyCamera {
         public int Height { get; set; }
         public double StDev { get; set; }
         public double Mean { get; set; }
+        public int Max { get; set; }
+        public long MaxOccurrences { get; set; }
+        public int Min { get; set; }
+        public long MinOccurrences { get; set; }
         private double _hFR;
 
         public List<OxyPlot.DataPoint> Histogram { get; set; }

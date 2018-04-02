@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+    xmlns:util="clr-namespace:NINA.Utility"
     xmlns:vm="clr-namespace:NINA.ViewModel"
     d:DesignHeight="300"
     d:DesignWidth="300"
@@ -27,6 +28,7 @@
                 <ComboBoxItem>8</ComboBoxItem>
                 <ComboBoxItem>16</ComboBoxItem>
             </ComboBox>
+            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:GuiderScaleEnum}}}" SelectedItem="{Binding GuiderScale}" />
         </StackPanel>
 
         <oxy:Plot

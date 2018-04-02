@@ -410,4 +410,12 @@ namespace NINA.Utility {
         TELESCOPESNAPPORT
     }
 
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum GuiderScaleEnum {
+        [Description("LblPixels")]
+        PIXELS,
+        [Description("LblArcsec")]
+        ARCSECONDS
+    }
+
 }

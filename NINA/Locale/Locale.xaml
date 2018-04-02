@@ -568,5 +568,21 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblFile">File</s:String>
     <s:String x:Key="LblCache">Cache</s:String>
     <s:String x:Key="LblClearCache">Clear Cache</s:String>
-
+    <s:String x:Key="LblStopTracking">Stop Tracking</s:String>
+    <s:String x:Key="LblResumeTracking">Resume Tracking</s:String>
+    <s:String x:Key="LblFlippingScope">Flipping Scope</s:String>
+    <s:String x:Key="LblInitiatePlatesolve">Initiate Platesolve</s:String>
+    <s:String x:Key="LblSelectGuidestar">Select new Guidestar</s:String>
+    <s:String x:Key="LblResumeGuiding">Resume Guiding</s:String>
+    <s:String x:Key="LblStopGuiding">Stop Guiding</s:String>
+    <s:String x:Key="LblMin">Min</s:String>
+    <s:String x:Key="LblMax">Max</s:String>
+    <s:String x:Key="LblSequenceTemplate">Sequence Template</s:String>
+    <s:String x:Key="LblSequenceTemplateTooltip" xml:space="preserve">Specifies a path to a previously exported sequence file that should be used as a template.
+This template will be used on startup to initialize the sequence instead of the default one.</s:String>
+    <s:String x:Key="LblLoadSequenceFailed">Load sequence failed</s:String>
+    <s:String x:Key="LblPixels">Pixels</s:String>
+    <s:String x:Key="LblSyncLatLong">Synchronize Latitude/Longitude</s:String>
+    <s:String x:Key="LblSyncLatLongText" xml:space="preserve">Telescope's Latitude and Longitude differs from NINA's values.
+Should NINA's values be synced to the telescope?</s:String>
 </ResourceDictionary>

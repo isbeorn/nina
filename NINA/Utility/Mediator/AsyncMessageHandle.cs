@@ -43,6 +43,13 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(StartGuiderMessage).Name; } }
     }
 
+    class StopGuiderMessageHandle : AsyncMessageHandle<bool> {
+        public StopGuiderMessageHandle(Func<StopGuiderMessage, Task<bool>> callback) {
+            Callback = (f) => callback((StopGuiderMessage)f);
+        }
+        public override string MessageType { get { return typeof(StopGuiderMessage).Name; } }
+    }
+
     class DitherGuiderMessageHandle : AsyncMessageHandle<bool> {
         public DitherGuiderMessageHandle(Func<DitherGuiderMessage, Task<bool>> callback) {
             Callback = (f) => callback((DitherGuiderMessage)f);
@@ -200,6 +207,8 @@ namespace NINA.Utility.Mediator {
     }
 
     class StartGuiderMessage : AsyncMediatorMessage<bool> { }
+
+    class StopGuiderMessage : AsyncMediatorMessage<bool> { }
 
     class DitherGuiderMessage : AsyncMediatorMessage<bool> { }
 

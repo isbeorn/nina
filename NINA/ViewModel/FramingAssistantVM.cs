@@ -204,6 +204,11 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates);
             }, MediatorMessages.LocationChanged);
+
+
+            Mediator.Instance.Register((object o) => {
+                CameraPixelSize = (double)o;
+            }, MediatorMessages.CameraPixelSizeChanged);
         }
 
         private void CancelLoadImage() {

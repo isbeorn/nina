@@ -1,9 +1,11 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Notification;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
@@ -39,20 +41,65 @@ namespace NINA.Model.MyCamera {
         }
 
         private void CalculateStatistics() {
+            using (MyStopWatch.Measure()) {            
+                long sum = 0;
+                long squareSum = 0;            
+                int count = this.FlatArray.Count();
+                ushort max = 0;
+                ushort oldmax = max;
+                long maxOccurrences = 0;
+                ushort min = ushort.MaxValue;
+                ushort oldmin = min;
+                long minOccurrences = 0;
 
-            /*Calculate StDev and Min/Max Values for Stretch */
-            double average = this.FlatArray.Average(x => x);
-            double sumOfSquaresOfDifferences = this.FlatArray.Select(val => (val - average) * (val - average)).Sum();
-            double sd = Math.Sqrt(sumOfSquaresOfDifferences / this.FlatArray.Length);
+                double resolution = Settings.HistogramResolution;
+                Dictionary<double, int> histogram = new Dictionary<double, int>();
+            
+                for(var i = 0; i < this.FlatArray.Length; i++) {
+                    ushort val = this.FlatArray[i];
+                    double histogramVal = Math.Floor(val * (resolution / ushort.MaxValue));
+                
+                    sum += val;
+                    squareSum += (long)val * val;
+                                
+                    histogram.TryGetValue(histogramVal, out var curCount);
+                    histogram[histogramVal] = curCount + 1;
 
-            this.Statistics.StDev = sd;
-            this.Statistics.Mean = average;
+                    min = Math.Min(min, val);
+                    if (min != oldmin) {
+                        minOccurrences = 0;
+                    }
+                    if (val == min) {
+                        minOccurrences += 1;
+                    }
 
-            double resolution = Settings.HistogramResolution;
+                    max = Math.Max(max, val);
+                    if (max != oldmax) {
+                        maxOccurrences = 0;
+                    }
+                    if (val == max) {
+                        maxOccurrences += 1;
+                    }
 
-            this.Statistics.Histogram = this.FlatArray.GroupBy(x => Math.Floor(x * (resolution / ushort.MaxValue)))
-                .Select(g => new OxyPlot.DataPoint (g.Key, g.Count()))
-                .OrderBy(item => item.X).ToList();
+                    oldmin = min;
+                    oldmax = max;
+                
+                }
+
+                double mean = sum / count;
+                double variance = (squareSum - count * mean * mean) / (count);
+                double stdev = Math.Sqrt(variance);
+
+                this.Statistics.Max = max;
+                this.Statistics.MaxOccurrences = maxOccurrences;
+                this.Statistics.Min = min;
+                this.Statistics.MinOccurrences = minOccurrences;
+                this.Statistics.StDev = stdev;
+                this.Statistics.Mean = mean;
+                this.Statistics.Histogram = histogram.Select(g => new OxyPlot.DataPoint(g.Key, g.Value))
+                    .OrderBy(item => item.X).ToList();
+            }
+
         }
 
         private void FlipAndConvert(Array input) {
@@ -64,31 +111,33 @@ namespace NINA.Model.MyCamera {
         }
 
         private ushort[] FlipAndConvert2d(Array input) {
-            Int32[,] arr = (Int32[,])input;
-            int width = arr.GetLength(0);
-            int height = arr.GetLength(1);
+            using (MyStopWatch.Measure()) {
+                Int32[,] arr = (Int32[,])input;
+                int width = arr.GetLength(0);
+                int height = arr.GetLength(1);
 
-            this.Statistics.Width = width;
-            this.Statistics.Height = height;
-            ushort[] flatArray = new ushort[arr.Length];
-            ushort value;
+                this.Statistics.Width = width;
+                this.Statistics.Height = height;
+                ushort[] flatArray = new ushort[arr.Length];
+                ushort value;
 
-            unsafe
-            {
-                fixed (Int32* ptr = arr) {
-                    int idx = 0, row = 0;
-                    for (int i = 0; i < arr.Length; i++) {
-                        value = (ushort)ptr[i];
+                unsafe
+                {
+                    fixed (Int32* ptr = arr) {
+                        int idx = 0, row = 0;
+                        for (int i = 0; i < arr.Length; i++) {
+                            value = (ushort)ptr[i];
 
-                        idx = ((i % height) * width) + row;
-                        if ((i % (height)) == (height - 1)) row++;
+                            idx = ((i % height) * width) + row;
+                            if ((i % (height)) == (height - 1)) row++;
 
-                        ushort b = value;
-                        flatArray[idx] = b;
+                            ushort b = value;
+                            flatArray[idx] = b;
+                        }
                     }
                 }
+                return flatArray;
             }
-            return flatArray;
         }
 
         private ushort[] FlipAndConvert3d(Array input) {

@@ -66,6 +66,12 @@ namespace NINA.Model.MyTelescope {
                 return val;
             }
         }
+        
+        public bool CanSetSiteLatLong {
+            get {
+                return _canSetSiteLatLong;
+            }
+        }
 
         private bool _canGetAltitude;
         public double Altitude {
@@ -1176,6 +1182,8 @@ namespace NINA.Model.MyTelescope {
                     Connected = true;
                     if (Connected) {
                         init();
+                        SiteLongitude = SiteLongitude;
+                        SiteLatitude = SiteLatitude;
                         RaiseAllPropertiesChanged();
                     }
                 } catch (ASCOM.DriverAccessCOMException ex) {

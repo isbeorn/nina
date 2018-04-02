@@ -248,5 +248,8 @@
     <Setting Name="FramingAssistantCameraHeight" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3500</Value>
     </Setting>
+    <Setting Name="SequenceTemplatePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

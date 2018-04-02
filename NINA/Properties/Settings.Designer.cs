@@ -1006,5 +1006,17 @@ namespace NINA.Properties {
                 this["FramingAssistantCameraHeight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SequenceTemplatePath {
+            get {
+                return ((string)(this["SequenceTemplatePath"]));
+            }
+            set {
+                this["SequenceTemplatePath"] = value;
+            }
+        }
     }
 }

@@ -12,9 +12,10 @@ namespace NINA.Model.MyGuider {
         public const string GUIDE = "3";
         public const string CLEAR_CALIBRATION = "4";
         public const string DITHER = "5";
-
+        public const string STOP_CAPTURE = "6";
         public const string PAUSE = "10";
 
+        public const string GET_PIXEL_SCALE = "96";
         public const string GET_STAR_IMAGE = "97";
         public const string GET_EXPOSURE = "98";
         public const string GET_APP_STATE = "99";
@@ -34,6 +35,9 @@ namespace NINA.Model.MyGuider {
 
         public static string LOOP = "{{\"method\": \"loop\", \"id\": " + PHD2EventId.LOOP + "}}\r\n";
 
+        public static string STOP_CAPTURE = "{{\"method\": \"stop_capture\", \"id\": " + PHD2EventId.STOP_CAPTURE + "}}\r\n";
+        
+
         public static string AUTO_SELECT_STAR = "{{\"method\": \"find_star\", \"id\": " + PHD2EventId.AUTO_SELECT_STAR + "}}\r\n";
 
         /// <summary>
@@ -51,8 +55,9 @@ namespace NINA.Model.MyGuider {
 
         public static string PAUSE = "{{\"method\": \"set_paused\", \"params\": [{0}], \"id\": " + PHD2EventId.PAUSE + "}}\r\n";
 
-
         public static string GET_STAR_IMAGE = "{\"method\": \"get_star_image\",\"id\": " + PHD2EventId.GET_STAR_IMAGE + "}\r\n";
+
+        public static string GET_PIXEL_SCALE = "{\"method\": \"get_pixel_scale\",\"id\": " + PHD2EventId.GET_PIXEL_SCALE + "}\r\n";
 
 
         public static string GET_EXPOSURE = "{\"method\": \"get_exposure\",\"id\": " + PHD2EventId.GET_EXPOSURE + "}\r\n";

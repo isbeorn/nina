@@ -4,6 +4,7 @@ using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -146,6 +147,17 @@ namespace NINA.Model.MyGuider {
             }
         }
 
+        private double _pixelScale;
+        public double PixelScale {
+            get {
+                return _pixelScale;
+            }
+            set {
+                _pixelScale = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool _isCalibrating;
         public bool IsCalibrating {
             get {
@@ -198,6 +210,10 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> AutoSelectGuideStar() {
             if (Connected) {
+                if(AppState.State != "Looping") {
+                    await SendMessage(String.Format(PHD2Methods.LOOP));
+                    await Task.Delay(TimeSpan.FromSeconds(5));
+                }                
                 await SendMessage(String.Format(PHD2Methods.AUTO_SELECT_STAR));
             }
             return true;
@@ -208,6 +224,20 @@ namespace NINA.Model.MyGuider {
                 if(AppState.State == "Guiding") { return true; }
                 IsCalibrating = true;
                 return await SendMessage(String.Format(PHD2Methods.GUIDE, false.ToString().ToLower()));
+            } else {
+                return false;
+            }
+        }
+
+        public async Task<bool> StopGuiding(CancellationToken token) {
+            if (Connected) {                
+                await SendMessage(string.Format(PHD2Methods.STOP_CAPTURE));
+                return await Task.Run<bool>(async () => {
+                    while (AppState.State != "Stopped") {
+                        await Task.Delay(1000, token);
+                    }
+                    return true;
+                });
             } else {
                 return false;
             }
@@ -282,6 +312,15 @@ namespace NINA.Model.MyGuider {
                                             PhdMethodResponse phdresp = o.ToObject<PhdMethodResponse>();
                                             if (phdresp.error != null) {
                                                 IsDithering = false;
+                                            }
+
+
+                                            break;
+                                        }
+                                    case PHD2EventId.GET_PIXEL_SCALE: {
+                                            PhdMethodResponse phdresp = o.ToObject<PhdMethodResponse>();
+                                            if (phdresp.error == null) {
+                                                PixelScale = double.Parse(phdresp.jsonrpc, CultureInfo.InvariantCulture);
                                             }
 
 
@@ -389,6 +428,7 @@ namespace NINA.Model.MyGuider {
 
 
                     await SendMessage(PHD2Methods.GET_APP_STATE);
+                    await SendMessage(PHD2Methods.GET_PIXEL_SCALE);
                     //await sendMessage(PHD2Methods.GET_STAR_IMAGE); 
                 } catch (System.IO.IOException ex) {
                     Logger.Error(ex);

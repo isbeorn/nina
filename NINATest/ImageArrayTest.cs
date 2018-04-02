@@ -125,5 +125,29 @@ namespace NINATest {
             Assert.AreEqual(stdev, result.Statistics.StDev);
             Assert.AreEqual(mean, result.Statistics.Mean);
         }
+
+        [TestMethod]
+        public async Task StDevTest_LargeDataSetTest() {
+            //Arrange
+            int[,] arr = new int[4656, 3520];
+            for (int x = 0; x < arr.GetLength(0); x += 1) {
+                for (int y = 0; y < arr.GetLength(1); y += 1) {
+                    arr[x, y] = 65535;
+                }
+            }
+
+            double stdev = 0;
+            double mean = 65535;
+
+            //Act
+            ImageArray result = await ImageArray.CreateInstance(arr);
+
+            //Assert
+            Assert.AreEqual(stdev, result.Statistics.StDev);
+            Assert.AreEqual(mean, result.Statistics.Mean);            
+        }
+
+
+        
     }
 }

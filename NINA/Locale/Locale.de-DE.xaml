@@ -571,4 +571,21 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <s:String x:Key="LblFile">Datei</s:String>
     <s:String x:Key="LblCache">Zwischenspeicher</s:String>
     <s:String x:Key="LblClearCache">Zwischenspeicher leeren</s:String>
+    <s:String x:Key="LblStopTracking">Nachführung stoppen</s:String>
+    <s:String x:Key="LblResumeTracking">Nachführung wiederaufnehmen</s:String>
+    <s:String x:Key="LblFlippingScope">Teleskop flippen</s:String>
+    <s:String x:Key="LblInitiatePlatesolve">Initiiere Platesolver</s:String>
+    <s:String x:Key="LblSelectGuidestar">Neuer Leitstern wird ausgewählt</s:String>
+    <s:String x:Key="LblResumeGuiding">Guiding wiederaufnehmen</s:String>
+    <s:String x:Key="LblStopGuiding">Stoppe Guiding</s:String>
+    <s:String x:Key="LblMin">Min</s:String>
+    <s:String x:Key="LblMax">Max</s:String>
+    <s:String x:Key="LblSequenceTemplate">Sequenzvorlage</s:String>
+    <s:String x:Key="LblSequenceTemplateTooltip" xml:space="preserve">Pfad zu einer vorher exportierten Sequenz, die als Vorlage dienen soll.
+Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequenz.</s:String>
+    <s:String x:Key="LblLoadSequenceFailed">Sequenz laden fehlgeschlagen</s:String>
+    <s:String x:Key="LblPixels">Pixel</s:String>
+    <s:String x:Key="LblSyncLatLong">Breitengrad/Längengrad synchronisieren</s:String>
+    <s:String x:Key="LblSyncLatLongText" xml:space="preserve">Breitengrad/Längengrad des Teleskops weicht von NINAs Werten ab.
+Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
 </ResourceDictionary>

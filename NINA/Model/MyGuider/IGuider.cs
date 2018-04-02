@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyGuider {
@@ -11,6 +12,7 @@ namespace NINA.Model.MyGuider {
         bool Paused { get; }
         bool IsDithering { get; set; }
         bool IsCalibrating { get; set; }
+        double PixelScale { get; set; }
         IGuideStep GuideStep { get; }
 
         Task<bool> Connect();
@@ -18,6 +20,7 @@ namespace NINA.Model.MyGuider {
         bool Disconnect();
         Task<bool> Pause(bool pause);
         Task<bool> StartGuiding();
+        Task<bool> StopGuiding(CancellationToken token);
         Task<bool> Dither();
     }
 
@@ -40,10 +43,10 @@ namespace NINA.Model.MyGuider {
         string Mount { get; }
         double Dx { get; }
         double Dy { get; }
-        double RADistanceRaw { get; }
-        double DecDistanceRaw { get; }
-        double RADistanceGuide { get; }
-        double DecDistanceGuide { get; }
+        double RADistanceRaw { get; set; }
+        double DecDistanceRaw { get; set; }
+        double RADistanceGuide { get; set; }
+        double DecDistanceGuide { get; set; }
         double RADuration { get; }
         string RADirection { get; }
         double DECDuration { get; }

@@ -280,6 +280,10 @@ namespace NINA.ViewModel {
                             _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
 
                             Settings.CameraId = this.Cam.Id;
+                            if(Cam.PixelSizeX > 0) {
+                                Settings.CameraPixelSize = Cam.PixelSizeX;
+                                Mediator.Instance.Notify(MediatorMessages.CameraPixelSizeChanged, Cam.PixelSizeX);
+                            }                            
 
                             Mediator.Instance.Notify(MediatorMessages.CameraChanged, Cam);
                             return true;
