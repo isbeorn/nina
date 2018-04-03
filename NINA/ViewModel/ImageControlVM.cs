@@ -37,7 +37,7 @@ namespace NINA.ViewModel {
             ShowCrossHair = false;
 
             _progress = new Progress<ApplicationStatus>(p => Status = p);
-            
+
             PrepareImageCommand = new AsyncCommand<bool>(() => PrepareImageHelper());
             PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage());
             CancelPlateSolveImageCommand = new RelayCommand(CancelPlateSolveImage);
@@ -223,16 +223,16 @@ namespace NINA.ViewModel {
         public ICommand CancelPlateSolveImageCommand { get; private set; }
 
         public static SemaphoreSlim ss = new SemaphoreSlim(1, 1);
-        
+
         public async Task<BitmapSource> PrepareImage(
-                ImageArray iarr,  
-                CancellationToken token, 
+                ImageArray iarr,
+                CancellationToken token,
                 bool bSave = false,
                 ImageParameters parameters = null) {
             BitmapSource source = null;
             try {
                 await ss.WaitAsync(token);
-            
+
                 if (iarr != null) {
                     _progress.Report(new ApplicationStatus() { Status = "Preparing image" });
                     source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
@@ -269,10 +269,10 @@ namespace NINA.ViewModel {
                         Image = source;
                         ImgStatisticsVM.Add(ImgArr.Statistics);
                         ImgHistoryVM.Add(iarr.Statistics);
-                                               
+
                     }));
 
-                    if(bSave) {
+                    if (bSave) {
                         await SaveToDisk(parameters, token);
                     }
                 }
@@ -295,7 +295,7 @@ namespace NINA.ViewModel {
             return await Task<BitmapSource>.Run(() => Stretch(mean, source, pf));
         }
 
-        public static BitmapSource Stretch(double mean, BitmapSource source) {            
+        public static BitmapSource Stretch(double mean, BitmapSource source) {
             return Stretch(mean, source, System.Windows.Media.PixelFormats.Gray16);
         }
 
@@ -324,13 +324,12 @@ namespace NINA.ViewModel {
                 using (MyStopWatch.Measure()) {
                     success = await SaveToDiskAsync(parameters, token);
                 }
-            } catch(OperationCanceledException ex) {
+            } catch (OperationCanceledException ex) {
                 throw new OperationCanceledException(ex.Message);
-            } catch(Exception ex) {                                
+            } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
-            }
-            finally {
+            } finally {
                 _progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return success;
@@ -415,7 +414,9 @@ namespace NINA.ViewModel {
                 h.AddValue("NAXIS2", this.ImgArr.Statistics.Height, "");
                 h.AddValue("BZERO", 32768, "");
                 h.AddValue("EXTEND", "T", "Extensions are permitted");
-                                
+
+                h.AddValue("DATE-OBS", DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture), "");
+
                 if (!string.IsNullOrEmpty(parameters.FilterName)) {
                     h.AddValue("FILTER", parameters.FilterName, "");
                 }
@@ -427,11 +428,21 @@ namespace NINA.ViewModel {
                     if (Cam.BinY > 0) {
                         h.AddValue("YBINNING", Cam.BinY, "");
                     }
+                    h.AddValue("EGAIN", Cam.Gain, "");
                 }
+
+                if (Telescope != null) {
+                    h.AddValue("SITELAT", Telescope.SiteLatitude.ToString(CultureInfo.InvariantCulture), "");
+                    h.AddValue("SITELONG", Telescope.SiteLongitude.ToString(CultureInfo.InvariantCulture), "");
+                    h.AddValue("OBJCTRA", Telescope.RightAscensionString, "");
+                    h.AddValue("OBJCTDEC", Telescope.DeclinationString, "");
+                }
+
 
                 var temp = Cam.CCDTemperature;
                 if (!double.IsNaN(temp)) {
                     h.AddValue("TEMPERAT", temp, "");
+                    h.AddValue("CCD-TEMP", temp, "");
                 }
 
                 h.AddValue("IMAGETYP", parameters.ImageType, "");
@@ -466,7 +477,7 @@ namespace NINA.ViewModel {
                 return string.Empty;
             }
         }
-        
+
         private string SaveTiff(String path) {
 
             try {
@@ -484,7 +495,7 @@ namespace NINA.ViewModel {
                 return uniquePath;
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);                
+                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
                 return string.Empty;
             }
         }
@@ -548,7 +559,7 @@ namespace NINA.ViewModel {
                     }
                 }
 
-                
+
                 if (!string.IsNullOrEmpty(parameters.FilterName)) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName);
                 }
