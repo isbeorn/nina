@@ -374,7 +374,7 @@
             <DataGrid
                 AutoGenerateColumns="False"
                 HorizontalScrollBarVisibility="Disabled"
-                ItemsSource="{Binding ItemPage}"
+                ItemsSource="{Binding ItemPage, IsAsync=True}"
                 SelectedItem="{Binding SelectedItem}">
                 <DataGrid.Resources>
                     <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
@@ -402,7 +402,7 @@
                                     <Border.Background>
                                         <ImageBrush
                                             x:Name="PART_Image"
-                                            ImageSource="{Binding Image}"
+                                            ImageSource="{Binding Image, IsAsync=True}"
                                             RenderOptions.BitmapScalingMode="LowQuality"
                                             Stretch="Uniform" />
 

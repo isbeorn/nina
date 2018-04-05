@@ -392,7 +392,7 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" />
 
-        <local:ImageView Grid.Column="2" Image="{Binding ImageParameter.Image}">
+        <local:ImageView Grid.Column="2" Image="{Binding ImageParameter.Image, IsAsync=True}">
             <!--<local:ImageView.ButtonHeaderContent>
 
             </local:ImageView.ButtonHeaderContent>-->
