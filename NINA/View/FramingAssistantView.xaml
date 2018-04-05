@@ -436,44 +436,12 @@
                             <StackPanel Orientation="Vertical">
 
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}">
-                                        <TextBlock.Effect>
-                                            <DropShadowEffect
-                                                BlurRadius="5"
-                                                Opacity="1"
-                                                ShadowDepth="0"
-                                                Color="Black" />
-                                        </TextBlock.Effect>
-                                    </TextBlock>
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.RAString}">
-                                        <TextBlock.Effect>
-                                            <DropShadowEffect
-                                                BlurRadius="5"
-                                                Opacity="1"
-                                                ShadowDepth="0"
-                                                Color="Black" />
-                                        </TextBlock.Effect>
-                                    </TextBlock>
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.RAString}" />
                                 </StackPanel>
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}">
-                                        <TextBlock.Effect>
-                                            <DropShadowEffect
-                                                BlurRadius="5"
-                                                Opacity="1"
-                                                ShadowDepth="0"
-                                                Color="Black" />
-                                        </TextBlock.Effect>
-                                    </TextBlock>
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.DecString}">
-                                        <TextBlock.Effect>
-                                            <DropShadowEffect
-                                                BlurRadius="5"
-                                                Opacity="1"
-                                                ShadowDepth="0"
-                                                Color="Black" />
-                                        </TextBlock.Effect>
-                                    </TextBlock>
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.DecString}" />
                                 </StackPanel>
                             </StackPanel>
                         </Viewbox>
