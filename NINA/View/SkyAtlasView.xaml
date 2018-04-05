@@ -431,58 +431,26 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     Orientation="Horizontal">
-                                                    <TextBlock Foreground="White" Text="{ns:Loc LblRA}">
-                                                        <TextBlock.Effect>
-                                                            <DropShadowEffect
-                                                                BlurRadius="5"
-                                                                Opacity="1"
-                                                                ShadowDepth="0"
-                                                                Color="Black" />
-                                                        </TextBlock.Effect>
-                                                    </TextBlock>
+                                                    <TextBlock Foreground="LightGray" Text="{ns:Loc LblRA}" />
                                                     <TextBlock
                                                         MinWidth="40"
                                                         Margin="5,0,0,0"
                                                         VerticalAlignment="Center"
-                                                        Foreground="White"
-                                                        Text="{Binding Coordinates.RAString}">
-                                                        <TextBlock.Effect>
-                                                            <DropShadowEffect
-                                                                BlurRadius="5"
-                                                                Opacity="1"
-                                                                ShadowDepth="0"
-                                                                Color="Black" />
-                                                        </TextBlock.Effect>
-                                                    </TextBlock>
+                                                        Foreground="LightGray"
+                                                        Text="{Binding Coordinates.RAString}" />
                                                 </StackPanel>
                                                 <StackPanel
                                                     Margin="0,6,0,6"
                                                     HorizontalAlignment="Right"
                                                     VerticalAlignment="Center"
                                                     Orientation="Horizontal">
-                                                    <TextBlock Foreground="White" Text="{ns:Loc LblType}">
-                                                        <TextBlock.Effect>
-                                                            <DropShadowEffect
-                                                                BlurRadius="5"
-                                                                Opacity="1"
-                                                                ShadowDepth="0"
-                                                                Color="Black" />
-                                                        </TextBlock.Effect>
-                                                    </TextBlock>
+                                                    <TextBlock Foreground="LightGray" Text="{ns:Loc LblType}" />
                                                     <TextBlock
                                                         MinWidth="40"
                                                         Margin="5,0,0,0"
                                                         VerticalAlignment="Center"
-                                                        Foreground="White"
-                                                        Text="{Binding DSOType}">
-                                                        <TextBlock.Effect>
-                                                            <DropShadowEffect
-                                                                BlurRadius="5"
-                                                                Opacity="1"
-                                                                ShadowDepth="0"
-                                                                Color="Black" />
-                                                        </TextBlock.Effect>
-                                                    </TextBlock>
+                                                        Foreground="LightGray"
+                                                        Text="{Binding DSOType}" />
                                                 </StackPanel>
                                             </Grid>
 
@@ -493,58 +461,26 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     Orientation="Horizontal">
-                                                    <TextBlock Foreground="White" Text="{ns:Loc LblDec}">
-                                                        <TextBlock.Effect>
-                                                            <DropShadowEffect
-                                                                BlurRadius="5"
-                                                                Opacity="1"
-                                                                ShadowDepth="0"
-                                                                Color="Black" />
-                                                        </TextBlock.Effect>
-                                                    </TextBlock>
+                                                    <TextBlock Foreground="LightGray" Text="{ns:Loc LblDec}" />
                                                     <TextBlock
                                                         MinWidth="40"
                                                         Margin="5,0,0,0"
                                                         VerticalAlignment="Center"
-                                                        Foreground="White"
-                                                        Text="{Binding Coordinates.DecString}">
-                                                        <TextBlock.Effect>
-                                                            <DropShadowEffect
-                                                                BlurRadius="5"
-                                                                Opacity="1"
-                                                                ShadowDepth="0"
-                                                                Color="Black" />
-                                                        </TextBlock.Effect>
-                                                    </TextBlock>
+                                                        Foreground="LightGray"
+                                                        Text="{Binding Coordinates.DecString}" />
                                                 </StackPanel>
                                                 <StackPanel
                                                     Margin="0,6,0,6"
                                                     HorizontalAlignment="Right"
                                                     VerticalAlignment="Center"
                                                     Orientation="Horizontal">
-                                                    <TextBlock Foreground="White" Text="{ns:Loc LblConstellation}">
-                                                        <TextBlock.Effect>
-                                                            <DropShadowEffect
-                                                                BlurRadius="5"
-                                                                Opacity="1"
-                                                                ShadowDepth="0"
-                                                                Color="Black" />
-                                                        </TextBlock.Effect>
-                                                    </TextBlock>
+                                                    <TextBlock Foreground="LightGray" Text="{ns:Loc LblConstellation}" />
                                                     <TextBlock
                                                         MinWidth="40"
                                                         Margin="5,0,0,0"
                                                         VerticalAlignment="Center"
-                                                        Foreground="White"
-                                                        Text="{Binding Constellation}">
-                                                        <TextBlock.Effect>
-                                                            <DropShadowEffect
-                                                                BlurRadius="5"
-                                                                Opacity="1"
-                                                                ShadowDepth="0"
-                                                                Color="Black" />
-                                                        </TextBlock.Effect>
-                                                    </TextBlock>
+                                                        Foreground="LightGray"
+                                                        Text="{Binding Constellation}" />
                                                 </StackPanel>
                                             </Grid>
 
@@ -562,23 +498,15 @@
                                                         Width="20"
                                                         Height="20"
                                                         Data="{StaticResource LightBulbSVG}"
-                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Fill="LightGray"
                                                         Stretch="Uniform"
                                                         ToolTip="{ns:Loc LblMagnitude}" />
                                                     <TextBlock
                                                         MinWidth="40"
                                                         Margin="5,0,0,0"
                                                         VerticalAlignment="Center"
-                                                        Foreground="White"
-                                                        Text="{Binding Magnitude}">
-                                                        <TextBlock.Effect>
-                                                            <DropShadowEffect
-                                                                BlurRadius="5"
-                                                                Opacity="1"
-                                                                ShadowDepth="0"
-                                                                Color="Black" />
-                                                        </TextBlock.Effect>
-                                                    </TextBlock>
+                                                        Foreground="LightGray"
+                                                        Text="{Binding Magnitude}" />
                                                 </StackPanel>
                                                 <StackPanel
                                                     Margin="0,6,0,6"
@@ -589,23 +517,15 @@
                                                         Width="20"
                                                         Height="20"
                                                         Data="{StaticResource BrightnessSVG}"
-                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Fill="LightGray"
                                                         Stretch="Uniform"
                                                         ToolTip="{ns:Loc LblSurfaceBrightness}" />
                                                     <TextBlock
                                                         MinWidth="40"
                                                         Margin="5,0,0,0"
                                                         VerticalAlignment="Center"
-                                                        Foreground="White"
-                                                        Text="{Binding SurfaceBrightness}">
-                                                        <TextBlock.Effect>
-                                                            <DropShadowEffect
-                                                                BlurRadius="5"
-                                                                Opacity="1"
-                                                                ShadowDepth="0"
-                                                                Color="Black" />
-                                                        </TextBlock.Effect>
-                                                    </TextBlock>
+                                                        Foreground="LightGray"
+                                                        Text="{Binding SurfaceBrightness}" />
                                                 </StackPanel>
                                                 <StackPanel
                                                     Margin="0,6,0,6"
@@ -617,23 +537,15 @@
                                                         Height="20"
                                                         Margin="5"
                                                         Data="{StaticResource Stretch}"
-                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Fill="LightGray"
                                                         Stretch="Uniform"
                                                         ToolTip="{ns:Loc LblSize}" />
                                                     <TextBlock
                                                         MinWidth="40"
                                                         Margin="5,0,0,0"
                                                         VerticalAlignment="Center"
-                                                        Foreground="White"
-                                                        Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}">
-                                                        <TextBlock.Effect>
-                                                            <DropShadowEffect
-                                                                BlurRadius="5"
-                                                                Opacity="1"
-                                                                ShadowDepth="0"
-                                                                Color="Black" />
-                                                        </TextBlock.Effect>
-                                                    </TextBlock>
+                                                        Foreground="LightGray"
+                                                        Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" />
                                                 </StackPanel>
                                             </Grid>
 
