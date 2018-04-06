@@ -293,15 +293,15 @@ namespace NINA.Utility {
                 public static readonly string Namespace = Instrument.Namespace + "Sensor:";
                 public static readonly string[] TargetTemperature = { Namespace + nameof(TargetTemperature), "Float32" };
                 public static readonly string[] Temperature = { Namespace + nameof(Temperature), "Float32", "CCD-TEMP" };
-                public static readonly string[] XPixelSize = { Namespace + nameof(XPixelSize), "Float32" };
-                public static readonly string[] YPixelSize = { Namespace + nameof(YPixelSize), "Float32" };
+                public static readonly string[] XPixelSize = { Namespace + nameof(XPixelSize), "Float32", "XPIXSZ" };
+                public static readonly string[] YPixelSize = { Namespace + nameof(YPixelSize), "Float32", "YPIXSZ" };
             }
 
             public static class Telescope {
                 public static readonly string Namespace = Instrument.Namespace + "Telescope:";
                 public static readonly string[] Aperture = { Namespace + nameof(Aperture), "Float32" };
                 public static readonly string[] CollectingArea = { Namespace + nameof(CollectingArea), "Float32" };
-                public static readonly string[] FocalLength = { Namespace + nameof(FocalLength), "Float32" };
+                public static readonly string[] FocalLength = { Namespace + nameof(FocalLength), "Float32", "FOCALLEN" };
                 public static readonly string[] Name = { Namespace + nameof(Name), "String" };
             }
         }
