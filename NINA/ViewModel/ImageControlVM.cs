@@ -607,7 +607,7 @@ namespace NINA.ViewModel {
                     header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToHMS(Telescope.RightAscension));
 
                     header.AddImageProperty(XISFImageProperty.Observation.Center.Dec, Telescope.Declination.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.HoursToHMS(Telescope.Declination);
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.HoursToHMS(Telescope.Declination));
                 }
 
                 if (Cam != null) {
