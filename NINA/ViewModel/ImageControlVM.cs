@@ -37,7 +37,7 @@ namespace NINA.ViewModel {
             ShowCrossHair = false;
 
             _progress = new Progress<ApplicationStatus>(p => Status = p);
-            
+
             PrepareImageCommand = new AsyncCommand<bool>(() => PrepareImageHelper());
             PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage());
             CancelPlateSolveImageCommand = new RelayCommand(CancelPlateSolveImage);
@@ -223,16 +223,16 @@ namespace NINA.ViewModel {
         public ICommand CancelPlateSolveImageCommand { get; private set; }
 
         public static SemaphoreSlim ss = new SemaphoreSlim(1, 1);
-        
+
         public async Task<BitmapSource> PrepareImage(
-                ImageArray iarr,  
-                CancellationToken token, 
+                ImageArray iarr,
+                CancellationToken token,
                 bool bSave = false,
                 ImageParameters parameters = null) {
             BitmapSource source = null;
             try {
                 await ss.WaitAsync(token);
-            
+
                 if (iarr != null) {
                     _progress.Report(new ApplicationStatus() { Status = "Preparing image" });
                     source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
@@ -269,10 +269,10 @@ namespace NINA.ViewModel {
                         Image = source;
                         ImgStatisticsVM.Add(ImgArr.Statistics);
                         ImgHistoryVM.Add(iarr.Statistics);
-                                               
+
                     }));
 
-                    if(bSave) {
+                    if (bSave) {
                         await SaveToDisk(parameters, token);
                     }
                 }
@@ -295,7 +295,7 @@ namespace NINA.ViewModel {
             return await Task<BitmapSource>.Run(() => Stretch(mean, source, pf));
         }
 
-        public static BitmapSource Stretch(double mean, BitmapSource source) {            
+        public static BitmapSource Stretch(double mean, BitmapSource source) {
             return Stretch(mean, source, System.Windows.Media.PixelFormats.Gray16);
         }
 
@@ -324,13 +324,12 @@ namespace NINA.ViewModel {
                 using (MyStopWatch.Measure()) {
                     success = await SaveToDiskAsync(parameters, token);
                 }
-            } catch(OperationCanceledException ex) {
+            } catch (OperationCanceledException ex) {
                 throw new OperationCanceledException(ex.Message);
-            } catch(Exception ex) {                                
+            } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
-            }
-            finally {
+            } finally {
                 _progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return success;
@@ -405,7 +404,68 @@ namespace NINA.ViewModel {
             return true;
         }
 
+        private byte[] GetEncodedFitsHeader(string keyword, string value, string comment) {
+            /* Specification: http://archive.stsci.edu/fits/fits_standard/node29.html#SECTION00912100000000000000 */
+            Encoding ascii = ASCIIEncoding.ASCII;
+            var header = keyword.ToUpper().PadRight(8) + "=" + value.PadLeft(22) + "/" + comment.PadRight(48);
+            return ascii.GetBytes(header);
+        }
+
+        private byte[] GetEncodedFitsHeader(string keyword, int value, string comment) {
+            return GetEncodedFitsHeader(keyword, value.ToString(CultureInfo.InvariantCulture), comment);
+        }
+
+        private byte[] GetEncodedFitsHeader(string keyword, double value, string comment) {
+            return GetEncodedFitsHeader(keyword, value.ToString(CultureInfo.InvariantCulture), comment);
+        }
+
         private string SaveFits(string path, ImageParameters parameters) {
+            try {
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".fits");
+
+
+                var blocksize = 80;
+
+                using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
+
+                    fs.Write(GetEncodedFitsHeader("SIMPLE", "T", "C# FITS"), 0, blocksize);
+                    fs.Write(GetEncodedFitsHeader("BITPIX", 16, ""), 0, blocksize);
+                    fs.Write(GetEncodedFitsHeader("NAXIS", 2, "Dimensionality"), 0, blocksize);
+                    fs.Write(GetEncodedFitsHeader("NAXIS1", this.ImgArr.Statistics.Width, ""), 0, blocksize);
+                    fs.Write(GetEncodedFitsHeader("NAXIS2", this.ImgArr.Statistics.Height, ""), 0, blocksize);
+                    fs.Write(GetEncodedFitsHeader("BZERO", 32768, ""), 0, blocksize);
+                    fs.Write(GetEncodedFitsHeader("EXTEND", "T", "Extensions are permitted"), 0, blocksize);
+                    fs.Write(GetEncodedFitsHeader("DATE-OBS", "'" + DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture) + "'", ""), 0, blocksize);
+                    fs.Write(GetEncodedFitsHeader("IMAGETYP", "'" + parameters.ImageType + "'", ""), 0, blocksize);
+                    fs.Write(GetEncodedFitsHeader("EXPOSURE", parameters.ExposureTime, ""), 0, blocksize);
+                    fs.Write(Encoding.ASCII.GetBytes("END".PadRight(2080)), 0, 2080);
+
+
+                    for (int i = 0; i < this.ImgArr.FlatArray.Length; i++) {
+                        var val = (short)(this.ImgArr.FlatArray[i] - short.MaxValue);
+
+                        /* 
+                         * 16 bit number needs to be split in two parts
+                         * Add fist byte by 65280 => 1111 1111 0000 0000 and shift by 8 places to the right to get actual value
+                         * convert second one to unsigned and add maxvalue to handle a max value
+                         * */
+                        var firstByte = (byte)((val & 65280) >> 8);
+                        var secondByte = (byte)((uint)val & byte.MaxValue);
+                        fs.WriteByte(firstByte);
+                        fs.WriteByte(secondByte);
+                    }
+                    fs.Write(Encoding.ASCII.GetBytes("".PadRight(2864)), 0, 2864);
+                }
+                return uniquePath;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
+                return string.Empty;
+            }
+        }
+
+        private string SaveFits2(string path, ImageParameters parameters) {
             try {
                 Header h = new Header();
                 h.AddValue("SIMPLE", "T", "C# FITS");
@@ -415,25 +475,37 @@ namespace NINA.ViewModel {
                 h.AddValue("NAXIS2", this.ImgArr.Statistics.Height, "");
                 h.AddValue("BZERO", 32768, "");
                 h.AddValue("EXTEND", "T", "Extensions are permitted");
-                                
-                if (!string.IsNullOrEmpty(parameters.FilterName)) {
-                    h.AddValue("FILTER", parameters.FilterName, "");
-                }
 
-                if (Cam != null) {
-                    if (Cam.BinX > 0) {
-                        h.AddValue("XBINNING", Cam.BinX, "");
-                    }
-                    if (Cam.BinY > 0) {
-                        h.AddValue("YBINNING", Cam.BinY, "");
-                    }
-                }
+                h.AddValue("DATE-OBS", DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture), "");
 
-                var temp = Cam.CCDTemperature;
-                if (!double.IsNaN(temp)) {
-                    h.AddValue("TEMPERAT", temp, "");
-                }
+                /* if (!string.IsNullOrEmpty(parameters.FilterName)) {
+                     h.AddValue("FILTER", parameters.FilterName, "");
+                 }
 
+                 if (Cam != null) {
+                     if (Cam.BinX > 0) {
+                         h.AddValue("XBINNING", Cam.BinX, "");
+                     }
+                     if (Cam.BinY > 0) {
+                         h.AddValue("YBINNING", Cam.BinY, "");
+                     }
+                     h.AddValue("EGAIN", Cam.Gain, "");
+                 }
+
+                 if (Telescope != null) {
+                     h.AddValue("SITELAT", Telescope.SiteLatitude.ToString(CultureInfo.InvariantCulture), "");
+                     h.AddValue("SITELONG", Telescope.SiteLongitude.ToString(CultureInfo.InvariantCulture), "");
+                     h.AddValue("OBJCTRA", Telescope.RightAscensionString, "");
+                     h.AddValue("OBJCTDEC", Telescope.DeclinationString, "");
+                 }
+
+
+                 var temp = Cam.CCDTemperature;
+                 if (!double.IsNaN(temp)) {
+                     h.AddValue("TEMPERAT", temp, "");
+                     h.AddValue("CCD-TEMP", temp, "");
+                 }
+                 */
                 h.AddValue("IMAGETYP", parameters.ImageType, "");
                 h.AddValue("EXPOSURE", parameters.ExposureTime, "");
 
@@ -466,7 +538,7 @@ namespace NINA.ViewModel {
                 return string.Empty;
             }
         }
-        
+
         private string SaveTiff(String path) {
 
             try {
@@ -484,7 +556,7 @@ namespace NINA.ViewModel {
                 return uniquePath;
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);                
+                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
                 return string.Empty;
             }
         }
@@ -548,7 +620,7 @@ namespace NINA.ViewModel {
                     }
                 }
 
-                
+
                 if (!string.IsNullOrEmpty(parameters.FilterName)) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName);
                 }
