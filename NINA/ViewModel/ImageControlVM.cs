@@ -370,6 +370,7 @@ namespace NINA.ViewModel {
                 if (Settings.FileType == FileTypeEnum.FITS) {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
                     completefilename = SaveFits(completefilename, parameters);
+                    SaveFits2(completefilename, parameters);
                 } else if (Settings.FileType == FileTypeEnum.TIFF) {
                     completefilename = SaveTiff(completefilename);
                 } else if (Settings.FileType == FileTypeEnum.XISF) {
@@ -443,19 +444,13 @@ namespace NINA.ViewModel {
 
 
                     for (int i = 0; i < this.ImgArr.FlatArray.Length; i++) {
-                        var val = (short)(this.ImgArr.FlatArray[i] - short.MaxValue);
+                        var val = (short)(this.ImgArr.FlatArray[i] - (short.MaxValue + 1));
 
-                        /* 
-                         * 16 bit number needs to be split in two parts
-                         * Add fist byte by 65280 => 1111 1111 0000 0000 and shift by 8 places to the right to get actual value
-                         * convert second one to unsigned and add maxvalue to handle a max value
-                         * */
-                        var firstByte = (byte)((val & 65280) >> 8);
-                        var secondByte = (byte)((uint)val & byte.MaxValue);
-                        fs.WriteByte(firstByte);
-                        fs.WriteByte(secondByte);
-                    }
-                    fs.Write(Encoding.ASCII.GetBytes("".PadRight(2864)), 0, 2864);
+                        var bytes = BitConverter.GetBytes(val);
+                        fs.WriteByte(bytes[1]);
+                        fs.WriteByte(bytes[0]);
+                    }                    
+                    fs.Write(Encoding.ASCII.GetBytes("".PadRight(2864, '\0')), 0, 2864);
                 }
                 return uniquePath;
             } catch (Exception ex) {
