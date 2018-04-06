@@ -378,7 +378,8 @@ namespace NINA.ViewModel {
                 } else {
                     completefilename = SaveTiff(completefilename);
                 }
-
+                SaveXisf(completefilename, parameters);
+                SaveTiff(completefilename);
                 await Mediator.Instance.RequestAsync(
                     new AddThumbnailMessage() {
                         PathToImage = new Uri(completefilename),
@@ -404,53 +405,74 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private byte[] GetEncodedFitsHeader(string keyword, string value, string comment) {
+        private byte[] GetEncodedFitsHeaderInternal(string keyword, string value, string comment) {
             /* Specification: http://archive.stsci.edu/fits/fits_standard/node29.html#SECTION00912100000000000000 */
-            Encoding ascii = ASCIIEncoding.ASCII;
-            var header = keyword.ToUpper().PadRight(8) + "=" + value.PadLeft(22) + "/" + comment.PadRight(48);
+            Encoding ascii = Encoding.GetEncoding("iso-8859-1"); /* Extended ascii */
+            var header = keyword.ToUpper().PadRight(8) + "=" + value.PadLeft(21) + " / " + comment.PadRight(47);
             return ascii.GetBytes(header);
         }
 
+        private byte[] GetEncodedFitsHeader(string keyword, string value, string comment) {
+            return GetEncodedFitsHeaderInternal(keyword, "'" + value + "'", comment);
+        }
+
         private byte[] GetEncodedFitsHeader(string keyword, int value, string comment) {
-            return GetEncodedFitsHeader(keyword, value.ToString(CultureInfo.InvariantCulture), comment);
+            return GetEncodedFitsHeaderInternal(keyword, value.ToString(CultureInfo.InvariantCulture), comment);
         }
 
         private byte[] GetEncodedFitsHeader(string keyword, double value, string comment) {
-            return GetEncodedFitsHeader(keyword, value.ToString(CultureInfo.InvariantCulture), comment);
+            return GetEncodedFitsHeaderInternal(keyword, value.ToString(CultureInfo.InvariantCulture), comment);
+        }
+
+        private byte[] GetEncodedFitsHeader(string keyword, bool value, string comment) {
+            return GetEncodedFitsHeaderInternal(keyword, value ? "T" : "F", comment);
         }
 
         private string SaveFits(string path, ImageParameters parameters) {
-            try {
+            try {               
+                                
+                FITS f = new FITS(
+                    this.ImgArr.FlatArray, 
+                    this.ImgArr.Statistics.Width, 
+                    this.ImgArr.Statistics.Height, 
+                    parameters.ImageType, 
+                    parameters.ExposureTime
+                );
+
+                if (!string.IsNullOrEmpty(parameters.FilterName)) {
+                    f.AddHeaderCard("FILTER", parameters.FilterName, "");
+                }
+
+                if (Cam != null) {
+                    if (Cam.BinX > 0) {
+                        f.AddHeaderCard("XBINNING", Cam.BinX, "");
+                    }
+                    if (Cam.BinY > 0) {
+                        f.AddHeaderCard("YBINNING", Cam.BinY, "");
+                    }
+                    f.AddHeaderCard("EGAIN", Cam.Gain, "");
+                }
+
+                if (Telescope != null) {
+                    f.AddHeaderCard("SITELAT", Telescope.SiteLatitude.ToString(CultureInfo.InvariantCulture), "");
+                    f.AddHeaderCard("SITELONG", Telescope.SiteLongitude.ToString(CultureInfo.InvariantCulture), "");
+                    f.AddHeaderCard("OBJCTRA", Telescope.RightAscensionString, "");
+                    f.AddHeaderCard("OBJCTDEC", Telescope.DeclinationString, "");
+                }
+
+                var temp = Cam.CCDTemperature;
+                if (!double.IsNaN(temp)) {
+                    f.AddHeaderCard("TEMPERAT", temp, "");
+                    f.AddHeaderCard("CCD-TEMP", temp, "");
+                }
+                
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".fits");
 
-
-                var blocksize = 80;
-
                 using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
-
-                    fs.Write(GetEncodedFitsHeader("SIMPLE", "T", "C# FITS"), 0, blocksize);
-                    fs.Write(GetEncodedFitsHeader("BITPIX", 16, ""), 0, blocksize);
-                    fs.Write(GetEncodedFitsHeader("NAXIS", 2, "Dimensionality"), 0, blocksize);
-                    fs.Write(GetEncodedFitsHeader("NAXIS1", this.ImgArr.Statistics.Width, ""), 0, blocksize);
-                    fs.Write(GetEncodedFitsHeader("NAXIS2", this.ImgArr.Statistics.Height, ""), 0, blocksize);
-                    fs.Write(GetEncodedFitsHeader("BZERO", 32768, ""), 0, blocksize);
-                    fs.Write(GetEncodedFitsHeader("EXTEND", "T", "Extensions are permitted"), 0, blocksize);
-                    fs.Write(GetEncodedFitsHeader("DATE-OBS", "'" + DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture) + "'", ""), 0, blocksize);
-                    fs.Write(GetEncodedFitsHeader("IMAGETYP", "'" + parameters.ImageType + "'", ""), 0, blocksize);
-                    fs.Write(GetEncodedFitsHeader("EXPOSURE", parameters.ExposureTime, ""), 0, blocksize);
-                    fs.Write(Encoding.ASCII.GetBytes("END".PadRight(2080)), 0, 2080);
-
-
-                    for (int i = 0; i < this.ImgArr.FlatArray.Length; i++) {
-                        var val = (short)(this.ImgArr.FlatArray[i] - (short.MaxValue + 1));
-
-                        var bytes = BitConverter.GetBytes(val);
-                        fs.WriteByte(bytes[1]);
-                        fs.WriteByte(bytes[0]);
-                    }                    
-                    fs.Write(Encoding.ASCII.GetBytes("".PadRight(2864, '\0')), 0, 2864);
+                    f.Write(fs);                    
                 }
+
                 return uniquePath;
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -459,6 +481,7 @@ namespace NINA.ViewModel {
             }
         }
 
+        [Obsolete]
         private string SaveFits2(string path, ImageParameters parameters) {
             try {
                 Header h = new Header();
@@ -472,7 +495,7 @@ namespace NINA.ViewModel {
 
                 h.AddValue("DATE-OBS", DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture), "");
 
-                /* if (!string.IsNullOrEmpty(parameters.FilterName)) {
+                if (!string.IsNullOrEmpty(parameters.FilterName)) {
                      h.AddValue("FILTER", parameters.FilterName, "");
                  }
 
@@ -499,7 +522,7 @@ namespace NINA.ViewModel {
                      h.AddValue("TEMPERAT", temp, "");
                      h.AddValue("CCD-TEMP", temp, "");
                  }
-                 */
+                 
                 h.AddValue("IMAGETYP", parameters.ImageType, "");
                 h.AddValue("EXPOSURE", parameters.ExposureTime, "");
 
