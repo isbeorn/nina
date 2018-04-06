@@ -5,6 +5,7 @@ using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
+using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.ViewModel;
@@ -378,8 +379,6 @@ namespace NINA.ViewModel {
                 } else {
                     completefilename = SaveTiff(completefilename);
                 }
-                SaveXisf(completefilename, parameters);
-                SaveTiff(completefilename);
                 await Mediator.Instance.RequestAsync(
                     new AddThumbnailMessage() {
                         PathToImage = new Uri(completefilename),
@@ -439,6 +438,12 @@ namespace NINA.ViewModel {
                     parameters.ExposureTime
                 );
 
+                f.AddHeaderCard("FOCALLEN", Settings.TelescopeFocalLength, "");
+                f.AddHeaderCard("XPIXSZ", Settings.CameraPixelSize, "");
+                f.AddHeaderCard("YPIXSZ", Settings.CameraPixelSize, "");
+                f.AddHeaderCard("SITELAT", Astrometry.HoursToHMS(Settings.Latitude), "");
+                f.AddHeaderCard("SITELONG", Astrometry.HoursToHMS(Settings.Longitude), "");
+
                 if (!string.IsNullOrEmpty(parameters.FilterName)) {
                     f.AddHeaderCard("FILTER", parameters.FilterName, "");
                 }
@@ -454,10 +459,8 @@ namespace NINA.ViewModel {
                 }
 
                 if (Telescope != null) {
-                    f.AddHeaderCard("SITELAT", Telescope.SiteLatitude.ToString(CultureInfo.InvariantCulture), "");
-                    f.AddHeaderCard("SITELONG", Telescope.SiteLongitude.ToString(CultureInfo.InvariantCulture), "");
-                    f.AddHeaderCard("OBJCTRA", Telescope.RightAscensionString, "");
-                    f.AddHeaderCard("OBJCTDEC", Telescope.DeclinationString, "");
+                    f.AddHeaderCard("OBJCTRA", Astrometry.HoursToHMS(Telescope.RightAscension), "");
+                    f.AddHeaderCard("OBJCTDEC", Astrometry.HoursToHMS(Telescope.Declination), "");
                 }
 
                 var temp = Cam.CCDTemperature;
@@ -587,21 +590,24 @@ namespace NINA.ViewModel {
                 header.AddEmbeddedImage(ImgArr, parameters.ImageType);
 
                 header.AddImageProperty(XISFImageProperty.Observation.Time.Start, DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, Settings.Latitude.ToString(CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Observation.Location.Longitude, Settings.Longitude.ToString(CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, Settings.TelescopeFocalLength.ToString(CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, Settings.CameraPixelSize.ToString(CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, Settings.CameraPixelSize.ToString(CultureInfo.InvariantCulture));
 
                 if (Telescope != null) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, Telescope.Name);
 
                     /* Location */
-                    header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, Telescope.SiteLatitude.ToString(CultureInfo.InvariantCulture));
-                    header.AddImageProperty(XISFImageProperty.Observation.Location.Longitude, Telescope.SiteLongitude.ToString(CultureInfo.InvariantCulture));
                     header.AddImageProperty(XISFImageProperty.Observation.Location.Elevation, Telescope.SiteElevation.ToString(CultureInfo.InvariantCulture));
                     /* convert to degrees */
                     var RA = Telescope.RightAscension * 360 / 24;
                     header.AddImageProperty(XISFImageProperty.Observation.Center.RA, RA.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Telescope.RightAscensionString);
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToHMS(Telescope.RightAscension));
 
                     header.AddImageProperty(XISFImageProperty.Observation.Center.Dec, Telescope.Declination.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Telescope.DeclinationString);
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.HoursToHMS(Telescope.Declination);
                 }
 
                 if (Cam != null) {
@@ -627,14 +633,7 @@ namespace NINA.ViewModel {
                     if (!double.IsNaN(temp)) {
                         header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString(CultureInfo.InvariantCulture));
                     }
-
-                    if (Cam.PixelSizeX > 0) {
-                        header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, Cam.PixelSizeX.ToString(CultureInfo.InvariantCulture));
-                    }
-
-                    if (Cam.PixelSizeY > 0) {
-                        header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, Cam.PixelSizeY.ToString(CultureInfo.InvariantCulture));
-                    }
+                    
                 }
 
 

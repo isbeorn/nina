@@ -236,6 +236,10 @@ namespace NINA.Utility.Astrometry {
             return Utility.AscomUtil.DegreesToDMS(deg);
         }
 
+        public static string DegreesToHMS(double deg) {
+            return Utility.AscomUtil.DegreesToHMS(deg);
+        }
+
         public static string HoursToHMS(double hours) {
             return Utility.AscomUtil.HoursToHMS(hours);
         }
