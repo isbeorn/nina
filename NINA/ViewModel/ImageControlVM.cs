@@ -370,7 +370,6 @@ namespace NINA.ViewModel {
                 if (Settings.FileType == FileTypeEnum.FITS) {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
                     completefilename = SaveFits(completefilename, parameters);
-                    SaveFits2(completefilename, parameters);
                 } else if (Settings.FileType == FileTypeEnum.TIFF) {
                     completefilename = SaveTiff(completefilename);
                 } else if (Settings.FileType == FileTypeEnum.XISF) {
