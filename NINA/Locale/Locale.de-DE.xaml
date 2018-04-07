@@ -588,4 +588,5 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
     <s:String x:Key="LblSyncLatLong">Breitengrad/Längengrad synchronisieren</s:String>
     <s:String x:Key="LblSyncLatLongText" xml:space="preserve">Breitengrad/Längengrad des Teleskops weicht von NINAs Werten ab.
 Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
+    <s:String x:Key="LblGuiderResumeFailed">Guiding Wiederaufnahme fehlgeschlagen</s:String>
 </ResourceDictionary>

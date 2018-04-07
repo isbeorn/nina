@@ -221,7 +221,14 @@ namespace NINA.ViewModel {
                 await Steps.Process();
             } catch (Exception ex) {
                 Logger.Error(ex);
-                await ResumeAutoguider(new CancellationToken(), _progress);
+
+                try {
+                    await ResumeAutoguider(new CancellationToken(), _progress);
+                } catch (Exception ex2) {
+                    Logger.Error(ex2);
+                    Notification.ShowError(Locale.Loc.Instance["GuiderResumeFailed"]);
+                }
+                
                 Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = true });
                 return false;
             }
