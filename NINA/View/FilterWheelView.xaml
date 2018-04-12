@@ -171,6 +171,7 @@
                     </UniformGrid>
                 </Border>
                 <ListView
+                    MinHeight="200"
                     Margin="0,10,0,0"
                     IsEnabled="{Binding IsMoving, Converter={StaticResource InverseBooleanConverter}}"
                     ItemsSource="{Binding FW.Filters}"
