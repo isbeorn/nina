@@ -584,4 +584,5 @@ This template will be used on startup to initialize the sequence instead of the 
     <s:String x:Key="LblSyncLatLongText" xml:space="preserve">Telescope's Latitude and Longitude differs from NINA's values.
 Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblGuiderResumeFailed">Guider resume failed</s:String>
+    <s:String x:Key="LblTimeFormatDescription">Time with format HH-mm-ss</s:String>
 </ResourceDictionary>

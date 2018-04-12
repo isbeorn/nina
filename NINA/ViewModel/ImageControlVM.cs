@@ -347,6 +347,7 @@ namespace NINA.ViewModel {
 
                 p.Add(new OptionsVM.ImagePattern("$$EXPOSURETIME$$", "Exposure Time in seconds", string.Format("{0:0.00}", parameters.ExposureTime)));
                 p.Add(new OptionsVM.ImagePattern("$$DATE$$", "Date with format YYYY-MM-DD", DateTime.Now.ToString("yyyy-MM-dd")));
+                p.Add(new OptionsVM.ImagePattern("$$TIME$$", "Time with format HH-mm-ss", DateTime.Now.ToString("HH-mm-ss")));
                 p.Add(new OptionsVM.ImagePattern("$$DATETIME$$", "Date with format YYYY-MM-DD_HH-mm-ss", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")));
                 p.Add(new OptionsVM.ImagePattern("$$FRAMENR$$", "# of the Frame with format ####", string.Format("{0:0000}", parameters.ExposureNumber)));
                 p.Add(new OptionsVM.ImagePattern("$$IMAGETYPE$$", "Light, Flat, Dark, Bias", parameters.ImageType));
