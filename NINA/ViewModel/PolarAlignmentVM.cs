@@ -33,10 +33,7 @@ namespace NINA.ViewModel {
                 (p) => (Telescope?.Connected == true && Cam?.Connected == true));
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<ApplicationStatus>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE),
-                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
-            SlewToMeridianOffsetCommand = new AsyncCommand<bool>(
-                () => SlewToMeridianOffset(MeridianOffset, Declination),
-                (p) => (Telescope?.Connected == true));
+                (p) => (Telescope?.Connected == true && Cam?.Connected == true));            
             SlewToAltitudeMeridianOffsetCommand = new AsyncCommand<bool>(
                 () => SlewToMeridianOffset(AltitudeMeridianOffset, AltitudeDeclination),
                 (p) => (Telescope?.Connected == true));
@@ -56,8 +53,6 @@ namespace NINA.ViewModel {
                 CancelMeasurePolarError,
                 (p) => _cancelMeasureErrorToken != null);
 
-            MeridianOffset = 0;
-            Declination = 0;
             DARVSlewDuration = 60;
             DARVSlewRate = 0.01;
             SnapExposureDuration = 2;
@@ -179,35 +174,9 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-        public IAsyncCommand SlewToMeridianOffsetCommand { get; private set; }
+                
         public IAsyncCommand SlewToAzimuthMeridianOffsetCommand { get; private set; }
         public IAsyncCommand SlewToAltitudeMeridianOffsetCommand { get; private set; }
-
-        private double _meridianOffset;
-        private double _declination;
-
-        public double MeridianOffset {
-            get {
-                return _meridianOffset;
-            }
-
-            set {
-                _meridianOffset = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double Declination {
-            get {
-                return _declination;
-            }
-
-            set {
-                _declination = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public double AzimuthMeridianOffset {
             get {

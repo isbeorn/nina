@@ -20,43 +20,6 @@
                 <local:PolarScopeView MinHeight="200" />
                 <GroupBox Grid.Column="1" Header="{ns:Loc LblPlateSolvedPolarAlignment}">
                     <StackPanel Orientation="Vertical">
-                        <StackPanel Orientation="Vertical">
-                            <Border
-                                MinHeight="30"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1">
-                                <UniformGrid VerticalAlignment="Center" Columns="2">
-                                    <TextBlock Text="{ns:Loc LblMeridianOffset}" />
-                                    <TextBox Margin="0,0,10,0" Text="{Binding MeridianOffset}" />
-                                </UniformGrid>
-                            </Border>
-                            <Border
-                                MinHeight="30"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1">
-                                <UniformGrid VerticalAlignment="Center" Columns="2">
-                                    <TextBlock Text="{ns:Loc LblDeclination}" />
-                                    <TextBox Margin="0,0,10,0" Text="{Binding Declination}" />
-                                </UniformGrid>
-                            </Border>
-                            <Border
-                                MinHeight="30"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1">
-                                <Button
-                                    Height="35"
-                                    MinWidth="60"
-                                    Margin="10,10,10,10"
-                                    VerticalAlignment="Center"
-                                    Command="{Binding SlewToMeridianOffsetCommand}">
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Foreground="{StaticResource ButtonForegroundBrush}"
-                                        Text="{ns:Loc LblSlew}" />
-                                </Button>
-
-                            </Border>
-                        </StackPanel>
 
                         <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
                             <local:CameraControlView
