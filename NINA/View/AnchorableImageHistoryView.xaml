@@ -26,25 +26,25 @@
                 <oxy:Plot.Axes>
                     <oxy:LinearAxis
                         AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                        IntervalLength="25"
                         IsPanEnabled="False"
                         IsZoomEnabled="False"
-                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
-                        MajorGridlineStyle="Solid"
-                        Maximum="10"
-                        Minimum="0"
+                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        MajorGridlineStyle="Dash"
+                        MajorStep="1"
+                        MaximumPadding="0.2"
+                        MaximumRange="10"
+                        MinimumPadding="0.2"
+                        MinimumRange="3"
                         Position="Left"
                         TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
                     <oxy:LinearAxis
                         Key="Secondary"
                         AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                        IntervalLength="25"
                         IsPanEnabled="False"
                         IsZoomEnabled="False"
-                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
-                        MajorGridlineStyle="Solid"
-                        Maximum="400"
-                        Minimum="0"
+                        MajorStep="100"
+                        MaximumPadding="0.1"
+                        MinimumRange="50"
                         Position="Right"
                         TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
                     <oxy:LinearAxis
