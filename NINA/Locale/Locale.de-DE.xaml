@@ -590,4 +590,7 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
 Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
     <s:String x:Key="LblGuiderResumeFailed">Guiding Wiederaufnahme fehlgeschlagen</s:String>
     <s:String x:Key="LblTimeFormatDescription">Zeit mit Format HH-mm-ss</s:String>
+    <s:String x:Key="LblAzimuthErrorMeasurement">Messe Azimuth Fehler</s:String>
+    <s:String x:Key="LblAltitudeErrorMeasurement">Messe Höhenfehler</s:String>
+    <s:String x:Key="LblTelescopeControl">Teleskopkontrolle</s:String>
 </ResourceDictionary>

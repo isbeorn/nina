@@ -1018,5 +1018,53 @@ namespace NINA.Properties {
                 this["SequenceTemplatePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("90")]
+        public double AzimuthMeridianOffset {
+            get {
+                return ((double)(this["AzimuthMeridianOffset"]));
+            }
+            set {
+                this["AzimuthMeridianOffset"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double AzimuthDeclination {
+            get {
+                return ((double)(this["AzimuthDeclination"]));
+            }
+            set {
+                this["AzimuthDeclination"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-65")]
+        public double AltitudeMeridianOffset {
+            get {
+                return ((double)(this["AltitudeMeridianOffset"]));
+            }
+            set {
+                this["AltitudeMeridianOffset"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double AltitudeDeclination {
+            get {
+                return ((double)(this["AltitudeDeclination"]));
+            }
+            set {
+                this["AltitudeDeclination"] = value;
+            }
+        }
     }
 }

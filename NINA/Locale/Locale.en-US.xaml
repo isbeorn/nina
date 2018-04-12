@@ -585,4 +585,7 @@ This template will be used on startup to initialize the sequence instead of the 
 Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblGuiderResumeFailed">Guider resume failed</s:String>
     <s:String x:Key="LblTimeFormatDescription">Time with format HH-mm-ss</s:String>
+    <s:String x:Key="LblAzimuthErrorMeasurement">Measure Azimuth Error</s:String>
+    <s:String x:Key="LblAltitudeErrorMeasurement">Measure Altitude Error</s:String>
+    <s:String x:Key="LblTelescopeControl">Telescope Control</s:String>
 </ResourceDictionary>
