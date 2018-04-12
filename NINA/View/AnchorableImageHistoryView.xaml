@@ -28,7 +28,7 @@
                         AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                         IsPanEnabled="False"
                         IsZoomEnabled="False"
-                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=70}"
                         MajorGridlineStyle="Dash"
                         MajorStep="1"
                         MaximumPadding="0.2"
@@ -36,7 +36,8 @@
                         MinimumPadding="0.2"
                         MinimumRange="3"
                         Position="Left"
-                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                     <oxy:LinearAxis
                         Key="Secondary"
                         AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
@@ -46,14 +47,16 @@
                         MaximumPadding="0.1"
                         MinimumRange="50"
                         Position="Right"
-                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                     <oxy:LinearAxis
                         AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                         IntervalLength="100"
                         IsPanEnabled="False"
                         IsZoomEnabled="False"
                         Position="Bottom"
-                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                 </oxy:Plot.Axes>
                 <oxy:Plot.Series>
                     <oxy:LineSeries
