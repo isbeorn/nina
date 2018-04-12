@@ -15,7 +15,7 @@ namespace NINA.ViewModel {
 
             ContentId = nameof(ImageHistoryVM);
             _nextStatHistoryId = 1;
-            ImgStatHistory = new AsyncObservableLimitedSizedStack<ImageStatistics>(25);
+            ImgStatHistory = new AsyncObservableLimitedSizedStack<ImageStatistics>(100);
         }
 
         private int _nextStatHistoryId;

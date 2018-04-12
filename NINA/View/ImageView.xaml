@@ -184,7 +184,7 @@
                                     <Image
                                         x:Name="PART_Image"
                                         RenderOptions.BitmapScalingMode="HighQuality"
-                                        Source="{Binding Image, ElementName=PART_ImageView, IsAsync=True}"
+                                        Source="{Binding Image, ElementName=PART_ImageView}"
                                         Stretch="Uniform" />
                                 </VisualBrush.Visual>
                             </VisualBrush>

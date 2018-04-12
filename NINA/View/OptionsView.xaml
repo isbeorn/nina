@@ -881,7 +881,9 @@
                                 Width="300"
                                 Margin="5"
                                 Command="{Binding ImportFiltersCommand}">
-                                <TextBlock Text="{ns:Loc LblImportFromFilterWheel}" />
+                                <Button.Content>
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblImportFromFilterWheel}" />
+                                </Button.Content>
                             </Button>
                         </Grid>
 

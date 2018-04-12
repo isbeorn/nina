@@ -33,9 +33,12 @@ namespace NINA.ViewModel {
                 (p) => (Telescope?.Connected == true && Cam?.Connected == true));
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<ApplicationStatus>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE),
-                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
-            SlewToMeridianOffsetCommand = new AsyncCommand<bool>(
-                SlewToMeridianOffset,
+                (p) => (Telescope?.Connected == true && Cam?.Connected == true));            
+            SlewToAltitudeMeridianOffsetCommand = new AsyncCommand<bool>(
+                () => SlewToMeridianOffset(AltitudeMeridianOffset, AltitudeDeclination),
+                (p) => (Telescope?.Connected == true));
+            SlewToAzimuthMeridianOffsetCommand = new AsyncCommand<bool>(
+                () => SlewToMeridianOffset(AzimuthMeridianOffset, AzimuthDeclination),
                 (p) => (Telescope?.Connected == true));
             DARVSlewCommand = new AsyncCommand<bool>(
                 () => Darvslew(new Progress<ApplicationStatus>(p => Status = p), new Progress<string>(p => DarvStatus = p)),
@@ -50,8 +53,6 @@ namespace NINA.ViewModel {
                 CancelMeasurePolarError,
                 (p) => _cancelMeasureErrorToken != null);
 
-            MeridianOffset = 0;
-            Declination = 0;
             DARVSlewDuration = 60;
             DARVSlewRate = 0.01;
             SnapExposureDuration = 2;
@@ -173,30 +174,50 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+                
+        public IAsyncCommand SlewToAzimuthMeridianOffsetCommand { get; private set; }
+        public IAsyncCommand SlewToAltitudeMeridianOffsetCommand { get; private set; }
 
-        public IAsyncCommand SlewToMeridianOffsetCommand { get; private set; }
-
-        private double _meridianOffset;
-        private double _declination;
-
-        public double MeridianOffset {
+        public double AzimuthMeridianOffset {
             get {
-                return _meridianOffset;
+                return Settings.AzimuthMeridianOffset;
             }
 
             set {
-                _meridianOffset = value;
+                Settings.AzimuthMeridianOffset = value;
                 RaisePropertyChanged();
             }
         }
 
-        public double Declination {
+        public double AzimuthDeclination {
             get {
-                return _declination;
+                return Settings.AzimuthDeclination;
             }
 
             set {
-                _declination = value;
+                Settings.AzimuthDeclination = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double AltitudeMeridianOffset {
+            get {
+                return Settings.AltitudeMeridianOffset;
+            }
+
+            set {
+                Settings.AltitudeMeridianOffset = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double AltitudeDeclination {
+            get {
+                return Settings.AltitudeDeclination;
+            }
+
+            set {
+                Settings.AltitudeDeclination = value;
                 RaisePropertyChanged();
             }
         }
@@ -585,17 +606,17 @@ namespace NINA.ViewModel {
             return poleError;
         }
 
-        public async Task<bool> SlewToMeridianOffset() {
+        public async Task<bool> SlewToMeridianOffset(double meridianOffset, double declination) {
             double curSiderealTime = Telescope.SiderealTime;
 
-            double slew_ra = curSiderealTime + (MeridianOffset * 24.0 / 360.0);
+            double slew_ra = curSiderealTime + (meridianOffset * 24.0 / 360.0);
             if (slew_ra >= 24.0) {
                 slew_ra -= 24.0;
             } else if (slew_ra < 0.0) {
                 slew_ra += 24.0;
             }
 
-            var coords = new Coordinates(slew_ra, Declination, Epoch.JNOW, Coordinates.RAType.Hours);
+            var coords = new Coordinates(slew_ra, declination, Epoch.JNOW, Coordinates.RAType.Hours);
             return await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = coords });
         }
 

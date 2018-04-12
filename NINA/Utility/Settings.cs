@@ -907,6 +907,46 @@ namespace NINA.Utility {
             }
         }
 
+        public static double AzimuthMeridianOffset {
+            get {
+                return Properties.Settings.Default.AzimuthMeridianOffset;
+            }
+            set {
+                Properties.Settings.Default.AzimuthMeridianOffset = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static double AzimuthDeclination {
+            get {
+                return Properties.Settings.Default.AzimuthDeclination;
+            }
+            set {
+                Properties.Settings.Default.AzimuthDeclination = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static double AltitudeMeridianOffset {
+            get {
+                return Properties.Settings.Default.AltitudeMeridianOffset;
+            }
+            set {
+                Properties.Settings.Default.AltitudeMeridianOffset = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static double AltitudeDeclination {
+            get {
+                return Properties.Settings.Default.AltitudeDeclination;
+            }
+            set {
+                Properties.Settings.Default.AltitudeDeclination = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
 
     }
 

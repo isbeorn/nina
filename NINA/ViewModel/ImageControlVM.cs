@@ -347,6 +347,7 @@ namespace NINA.ViewModel {
 
                 p.Add(new OptionsVM.ImagePattern("$$EXPOSURETIME$$", "Exposure Time in seconds", string.Format("{0:0.00}", parameters.ExposureTime)));
                 p.Add(new OptionsVM.ImagePattern("$$DATE$$", "Date with format YYYY-MM-DD", DateTime.Now.ToString("yyyy-MM-dd")));
+                p.Add(new OptionsVM.ImagePattern("$$TIME$$", "Time with format HH-mm-ss", DateTime.Now.ToString("HH-mm-ss")));
                 p.Add(new OptionsVM.ImagePattern("$$DATETIME$$", "Date with format YYYY-MM-DD_HH-mm-ss", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")));
                 p.Add(new OptionsVM.ImagePattern("$$FRAMENR$$", "# of the Frame with format ####", string.Format("{0:0000}", parameters.ExposureNumber)));
                 p.Add(new OptionsVM.ImagePattern("$$IMAGETYPE$$", "Light, Flat, Dark, Bias", parameters.ImageType));
@@ -459,8 +460,8 @@ namespace NINA.ViewModel {
                 }
 
                 if (Telescope != null) {
-                    f.AddHeaderCard("OBJCTRA", Astrometry.HoursToHMS(Telescope.RightAscension), "");
-                    f.AddHeaderCard("OBJCTDEC", Astrometry.HoursToHMS(Telescope.Declination), "");
+                    f.AddHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(Telescope.RightAscension), "");
+                    f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(Telescope.Declination), "");
                 }
 
                 var temp = Cam.CCDTemperature;
@@ -604,10 +605,10 @@ namespace NINA.ViewModel {
                     /* convert to degrees */
                     var RA = Telescope.RightAscension * 360 / 24;
                     header.AddImageProperty(XISFImageProperty.Observation.Center.RA, RA.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToHMS(Telescope.RightAscension));
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToFitsHMS(Telescope.RightAscension));
 
                     header.AddImageProperty(XISFImageProperty.Observation.Center.Dec, Telescope.Declination.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.HoursToHMS(Telescope.Declination));
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.DegreesToFitsDMS(Telescope.Declination));
                 }
 
                 if (Cam != null) {

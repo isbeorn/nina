@@ -251,5 +251,17 @@
     <Setting Name="SequenceTemplatePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="AzimuthMeridianOffset" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">90</Value>
+    </Setting>
+    <Setting Name="AzimuthDeclination" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="AltitudeMeridianOffset" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">-65</Value>
+    </Setting>
+    <Setting Name="AltitudeDeclination" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

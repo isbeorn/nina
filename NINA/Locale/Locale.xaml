@@ -224,7 +224,7 @@ Adjust combobox value accordingly</s:String>
     <s:String x:Key="LblAzimuthMeasurementDescription">Point Telescope South near meridian</s:String>
     <s:String x:Key="LblAzimuthMeasurementButtonTooltip">Measure Azimuth Error. Point Scope South near Meridian</s:String>
     <s:String x:Key="LblDARVSlew">D.A.R.V. Slew</s:String>
-    <s:String x:Key="LblDARVSlewDescription">Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back. In case of no Polar Alignment error it will display as a straight line. Otherwise a V shaped line</s:String>
+    <s:String x:Key="LblDARVSlewDescription">Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back. In case of no Polar Alignment error it will display as a straight line. Otherwise a V shaped line. For Azimuth Error Measurement slew the scope near meridian, otherwise east or west.</s:String>
     <s:String x:Key="LblSlewRateDegSec">Slew Rate (deg/sec)</s:String>
     <s:String x:Key="LblSlewDuration">Slew Duration</s:String>
     <s:String x:Key="LblDARVSlewButtonTooltip" xml:space="preserve">This will take an exposure while slewing the scope slowly to one side and back
@@ -585,4 +585,9 @@ This template will be used on startup to initialize the sequence instead of the 
     <s:String x:Key="LblSyncLatLong">Synchronize Latitude/Longitude</s:String>
     <s:String x:Key="LblSyncLatLongText" xml:space="preserve">Telescope's Latitude and Longitude differs from NINA's values.
 Should NINA's values be synced to the telescope?</s:String>
+    <s:String x:Key="LblGuiderResumeFailed">Guider resume failed</s:String>
+    <s:String x:Key="LblTimeFormatDescription">Time with format HH-mm-ss</s:String>
+    <s:String x:Key="LblAzimuthErrorMeasurement">Measure Azimuth Error</s:String>
+    <s:String x:Key="LblAltitudeErrorMeasurement">Measure Altitude Error</s:String>
+    <s:String x:Key="LblTelescopeControl">Telescope Control</s:String>
 </ResourceDictionary>

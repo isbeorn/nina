@@ -228,7 +228,7 @@ Combobox Wert entsprechend anpassen</s:String>
     <s:String x:Key="LblAzimuthMeasurementDescription">Teleskop nahe Meridian ausrichten</s:String>
     <s:String x:Key="LblAzimuthMeasurementButtonTooltip">Azimutfehler messen. Teleskop nahe Meridian ausrichten</s:String>
     <s:String x:Key="LblDARVSlew">D.A.R.V. Schwenken</s:String>
-    <s:String x:Key="LblDARVSlewDescription">Dauer der D.A.R.V. Prozedur festlegen. Teleskop wird für die hälfte der Zeit in eine richtung schwenken entlang der Rektaszensionachse. Danach schwenkt das Teleskop zurück. Idealerweise sieht man dann eine gerade Linie. Falls die Montierung nicht richtig ausgerichtet ist, sieht man jedoch eine V Linie</s:String>
+    <s:String x:Key="LblDARVSlewDescription">Dauer der D.A.R.V. Prozedur festlegen. Teleskop wird für die hälfte der Zeit in eine richtung schwenken entlang der Rektaszensionachse. Danach schwenkt das Teleskop zurück. Idealerweise sieht man dann eine gerade Linie. Falls die Montierung nicht richtig ausgerichtet ist, sieht man jedoch eine V Linie. Für Azimuthfehlermessung das Teleskop in die nähe des Meridians schwenken, ansonsten nach Osten oder Westen.</s:String>
     <s:String x:Key="LblSlewRateDegSec">Schwenkrate (Grad/Sekunden)</s:String>
     <s:String x:Key="LblSlewDuration">Schwenkdauer</s:String>
     <s:String x:Key="LblDARVSlewButtonTooltip" xml:space="preserve">This will take an exposure while slewing the scope slowly to one side and back
@@ -588,4 +588,9 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
     <s:String x:Key="LblSyncLatLong">Breitengrad/Längengrad synchronisieren</s:String>
     <s:String x:Key="LblSyncLatLongText" xml:space="preserve">Breitengrad/Längengrad des Teleskops weicht von NINAs Werten ab.
 Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
+    <s:String x:Key="LblGuiderResumeFailed">Guiding Wiederaufnahme fehlgeschlagen</s:String>
+    <s:String x:Key="LblTimeFormatDescription">Zeit mit Format HH-mm-ss</s:String>
+    <s:String x:Key="LblAzimuthErrorMeasurement">Messe Azimuth Fehler</s:String>
+    <s:String x:Key="LblAltitudeErrorMeasurement">Messe Höhenfehler</s:String>
+    <s:String x:Key="LblTelescopeControl">Teleskopkontrolle</s:String>
 </ResourceDictionary>

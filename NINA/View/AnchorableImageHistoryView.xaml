@@ -14,48 +14,60 @@
         <Grid>
             <oxy:Plot
                 Background="{StaticResource BackgroundBrush}"
+                IsLegendVisible="True"
+                LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
+                LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
+                LegendOrientation="Horizontal"
+                LegendPlacement="Outside"
+                LegendPosition="BottomLeft"
+                LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                 PlotAreaBackground="{StaticResource BackgroundBrush}"
                 PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
                 <oxy:Plot.Axes>
                     <oxy:LinearAxis
                         AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                        IntervalLength="25"
                         IsPanEnabled="False"
                         IsZoomEnabled="False"
-                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
-                        MajorGridlineStyle="Solid"
-                        Maximum="10"
-                        Minimum="0"
+                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=70}"
+                        MajorGridlineStyle="Dash"
+                        MajorStep="1"
+                        MaximumPadding="0.2"
+                        MaximumRange="10"
+                        MinimumPadding="0.2"
+                        MinimumRange="3"
                         Position="Left"
-                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                     <oxy:LinearAxis
                         Key="Secondary"
                         AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                        IntervalLength="25"
                         IsPanEnabled="False"
                         IsZoomEnabled="False"
-                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
-                        MajorGridlineStyle="Solid"
-                        Maximum="400"
-                        Minimum="0"
+                        MajorStep="100"
+                        MaximumPadding="0.1"
+                        MinimumRange="50"
                         Position="Right"
-                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                     <oxy:LinearAxis
                         AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                         IntervalLength="100"
                         IsPanEnabled="False"
                         IsZoomEnabled="False"
                         Position="Bottom"
-                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                 </oxy:Plot.Axes>
                 <oxy:Plot.Series>
                     <oxy:LineSeries
+                        Title="{ns:Loc LblHFR}"
                         DataFieldX="Id"
                         DataFieldY="HFR"
                         ItemsSource="{Binding ImgStatHistory}"
                         MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                         MarkerType="Circle" />
                     <oxy:LineSeries
+                        Title="{ns:Loc LblNrStars}"
                         DataFieldX="Id"
                         DataFieldY="DetectedStars"
                         ItemsSource="{Binding ImgStatHistory}"

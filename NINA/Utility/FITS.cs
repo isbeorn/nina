@@ -32,7 +32,7 @@ namespace NINA.Utility {
         }
 
         public void AddHeaderCard(string keyword, double value, string comment) {
-            EncodeHeader(keyword, value.ToString(CultureInfo.InvariantCulture), comment);
+            EncodeHeader(keyword, Math.Round(value, 15).ToString(CultureInfo.InvariantCulture), comment);
         }
 
         public void AddHeaderCard(string keyword, bool value, string comment) {
