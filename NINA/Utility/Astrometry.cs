@@ -232,16 +232,49 @@ namespace NINA.Utility.Astrometry {
             return GetRiseAndSetEvent(date, EventType.SunRiseSunset);
         }
 
+        /// <summary>
+        /// Formats a given hours value into format "DD° MM' SS"
+        /// </summary>
+        /// <param name="hours"></param>
+        /// <returns></returns>
         public static string DegreesToDMS(double deg) {
             return Utility.AscomUtil.DegreesToDMS(deg);
         }
 
+        /// <summary>
+        /// Formats a given degree value into format "DD MM SS"
+        /// </summary>
+        /// <param name="deg"></param>
+        /// <returns></returns>
+        public static string DegreesToFitsDMS(double deg) {
+            return Utility.AscomUtil.DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", ""); ;
+        }
+
+        /// <summary>
+        /// Formats a given degree value into format "DD:MM:SS"
+        /// </summary>
+        /// <param name="deg"></param>
+        /// <returns></returns>
         public static string DegreesToHMS(double deg) {
             return Utility.AscomUtil.DegreesToHMS(deg);
         }
 
+        /// <summary>
+        /// Formats a given hours value into format "HH:MM:SS"
+        /// </summary>
+        /// <param name="hours"></param>
+        /// <returns></returns>
         public static string HoursToHMS(double hours) {
             return Utility.AscomUtil.HoursToHMS(hours);
+        }
+
+        /// <summary>
+        /// Formats a given hours value into format "HH MM SS"
+        /// </summary>
+        /// <param name="hours"></param>
+        /// <returns></returns>
+        public static string HoursToFitsHMS(double hours) {
+            return Utility.AscomUtil.HoursToHMS(hours).Replace(':',' ');
         }
 
         public static MoonPhase GetMoonPhase(DateTime date) {

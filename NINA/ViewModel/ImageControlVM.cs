@@ -460,8 +460,8 @@ namespace NINA.ViewModel {
                 }
 
                 if (Telescope != null) {
-                    f.AddHeaderCard("OBJCTRA", Astrometry.HoursToHMS(Telescope.RightAscension), "");
-                    f.AddHeaderCard("OBJCTDEC", Astrometry.HoursToHMS(Telescope.Declination), "");
+                    f.AddHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(Telescope.RightAscension), "");
+                    f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(Telescope.Declination), "");
                 }
 
                 var temp = Cam.CCDTemperature;
@@ -605,10 +605,10 @@ namespace NINA.ViewModel {
                     /* convert to degrees */
                     var RA = Telescope.RightAscension * 360 / 24;
                     header.AddImageProperty(XISFImageProperty.Observation.Center.RA, RA.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToHMS(Telescope.RightAscension));
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToFitsHMS(Telescope.RightAscension));
 
                     header.AddImageProperty(XISFImageProperty.Observation.Center.Dec, Telescope.Declination.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.HoursToHMS(Telescope.Declination));
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.DegreesToFitsDMS(Telescope.Declination));
                 }
 
                 if (Cam != null) {
