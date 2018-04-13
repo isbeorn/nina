@@ -232,6 +232,9 @@ namespace NINA.ViewModel {
                 Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = true });
                 return false;
             }
+            finally {
+                _progress.Report(new ApplicationStatus() { Status = "" });
+            }
             return true;
         }
 
