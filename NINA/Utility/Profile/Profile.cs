@@ -9,17 +9,17 @@ namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(Profile))]
     class Profile {
-        public Profile(string id) {
-
+        public Profile(string name) {
+            this.name = name;
         }
 
         private void Save() {
 
         }
 
-        private string id;
+        private Guid id = Guid.NewGuid();
         [XmlElement(nameof(Id))]
-        public string Id {
+        public Guid Id {
             get {
                 return id;
             }
@@ -39,7 +39,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private ApplicationSettings applicationSettings;
+        private ApplicationSettings applicationSettings = new ApplicationSettings();
         [XmlElement(nameof(ApplicationSettings))]
         public ApplicationSettings ApplicationSettings {
             get {
@@ -50,7 +50,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private AstrometrySettings astrometrySettings;
+        private AstrometrySettings astrometrySettings = new AstrometrySettings();
         [XmlElement(nameof(AstrometrySettings))]
         public AstrometrySettings AstrometrySettings {
             get {
@@ -61,7 +61,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private CameraSettings cameraSettings;
+        private CameraSettings cameraSettings = new CameraSettings();
         [XmlElement(nameof(CameraSettings))]
         public CameraSettings CameraSettings {
             get {
@@ -72,7 +72,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private ColorSchemaSettings colorSchemaSettings;
+        private ColorSchemaSettings colorSchemaSettings = new ColorSchemaSettings();
         [XmlElement(nameof(ColorSchemaSettings))]
         public ColorSchemaSettings ColorSchemaSettings {
             get {
@@ -83,7 +83,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private FilterWheelSettings filterWheelSettings;
+        private FilterWheelSettings filterWheelSettings = new FilterWheelSettings();
         [XmlElement(nameof(FilterWheelSettings))]
         public FilterWheelSettings FilterWheelSettings {
             get {
@@ -94,7 +94,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private FocuserSettings focuserSettings;
+        private FocuserSettings focuserSettings = new FocuserSettings();
         [XmlElement(nameof(FocuserSettings))]
         public FocuserSettings FocuserSettings {
             get {
@@ -105,7 +105,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private FramingAssistantSettings framingAssistantSettings;
+        private FramingAssistantSettings framingAssistantSettings = new FramingAssistantSettings();
         [XmlElement(nameof(FramingAssistantSettings))]
         public FramingAssistantSettings FramingAssistantSettings {
             get {
@@ -116,7 +116,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private GuiderSettings guiderSettings;
+        private GuiderSettings guiderSettings = new GuiderSettings();
         [XmlElement(nameof(GuiderSettings))]
         public GuiderSettings GuiderSettings {
             get {
@@ -127,7 +127,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private ImageFileSettings imageFileSettings;
+        private ImageFileSettings imageFileSettings = new ImageFileSettings();
         [XmlElement(nameof(ImageFileSettings))]
         public ImageFileSettings ImageFileSettings {
             get {
@@ -138,7 +138,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private ImageSettings imageSettings;
+        private ImageSettings imageSettings = new ImageSettings();
         [XmlElement(nameof(ImageSettings))]
         public ImageSettings ImageSettings {
             get {
@@ -149,7 +149,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private MeridianFlipSettings meridianFlipSettings;
+        private MeridianFlipSettings meridianFlipSettings = new MeridianFlipSettings();
         [XmlElement(nameof(MeridianFlipSettings))]
         public MeridianFlipSettings MeridianFlipSettings {
             get {
@@ -160,7 +160,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private PlateSolveSettings plateSolveSettings;
+        private PlateSolveSettings plateSolveSettings = new PlateSolveSettings();
         [XmlElement(nameof(PlateSolveSettings))]
         public PlateSolveSettings PlateSolveSettings {
             get {
@@ -171,7 +171,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private PolarAlignmentSettings polarAlignmentSettings;
+        private PolarAlignmentSettings polarAlignmentSettings = new PolarAlignmentSettings();
         [XmlElement(nameof(PolarAlignmentSettings))]
         public PolarAlignmentSettings PolarAlignmentSettings {
             get {
@@ -182,7 +182,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private SequenceSettings sequenceSettings;
+        private SequenceSettings sequenceSettings = new SequenceSettings();
         [XmlElement(nameof(SequenceSettings))]
         public SequenceSettings SequenceSettings {
             get {
@@ -193,7 +193,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private TelescopeSettings telescopeSettings;
+        private TelescopeSettings telescopeSettings = new TelescopeSettings();
         [XmlElement(nameof(TelescopeSettings))]
         public TelescopeSettings TelescopeSettings {
             get {
@@ -204,7 +204,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private WeatherDataSettings weatherDataSettings;
+        private WeatherDataSettings weatherDataSettings = new WeatherDataSettings();
         [XmlElement(nameof(WeatherDataSettings))]
         public WeatherDataSettings WeatherDataSettings {
             get {
