@@ -34,6 +34,8 @@ namespace NINA.ViewModel {
             ImportFiltersCommand = new RelayCommand(ImportFilters);
             AddFilterCommand = new RelayCommand(AddFilter);
             RemoveFilterCommand = new RelayCommand(RemoveFilter);
+            AddProfileCommand = new RelayCommand(AddProfile);
+            SelectProfileCommand = new RelayCommand(SelectProfile);
 
 
             ImagePatterns = CreateImagePatternList();
@@ -49,6 +51,44 @@ namespace NINA.ViewModel {
             }, MediatorMessages.CameraPixelSizeChanged);
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
+        }
+
+        private void SelectProfile(object obj) {
+            ProfileManager.Instance.SelectProfile(SelectedProfile.Id);
+            RaisePropertyChanged(nameof(ColorSchemaName));
+            RaisePropertyChanged(nameof(PrimaryColor));
+            RaisePropertyChanged(nameof(SecondaryColor));
+            RaisePropertyChanged(nameof(BorderColor));
+            RaisePropertyChanged(nameof(BackgroundColor));
+            RaisePropertyChanged(nameof(ButtonBackgroundColor));
+            RaisePropertyChanged(nameof(ButtonBackgroundSelectedColor));
+            RaisePropertyChanged(nameof(ButtonForegroundColor));
+            RaisePropertyChanged(nameof(ButtonForegroundDisabledColor));
+            RaisePropertyChanged(nameof(NotificationWarningColor));
+            RaisePropertyChanged(nameof(NotificationErrorColor));
+            RaisePropertyChanged(nameof(AlternativeColorSchemaName));
+            RaisePropertyChanged(nameof(AltPrimaryColor));
+            RaisePropertyChanged(nameof(AltSecondaryColor));
+            RaisePropertyChanged(nameof(AltBorderColor));
+            RaisePropertyChanged(nameof(AltBackgroundColor));
+            RaisePropertyChanged(nameof(AltButtonBackgroundColor));
+            RaisePropertyChanged(nameof(AltButtonBackgroundSelectedColor));
+            RaisePropertyChanged(nameof(AltButtonForegroundColor));
+            RaisePropertyChanged(nameof(AltButtonForegroundDisabledColor));
+            RaisePropertyChanged(nameof(AltNotificationWarningColor));
+            RaisePropertyChanged(nameof(AltNotificationErrorColor));
+            //RaisePropertyChanged(nameof(ColorSchemas));
+            //RaiseAllPropertiesChanged();
+            foreach (System.Reflection.PropertyInfo p in this.GetType().GetProperties()) {
+                if (!p.Name.ToLower().Contains("color")) {
+                    RaisePropertyChanged(p.Name);
+                }
+            }
+
+        }
+
+        private void AddProfile(object obj) {
+            ProfileManager.Instance.Add();
         }
 
         private void RemoveFilter(object obj) {
@@ -207,6 +247,10 @@ namespace NINA.ViewModel {
         public ICommand AddFilterCommand { get; private set; }
 
         public ICommand RemoveFilterCommand { get; private set; }
+
+        public ICommand AddProfileCommand { get; private set; }
+
+        public ICommand SelectProfileCommand { get; private set; }
 
         private void PreviewFile(object o) {
             MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
@@ -469,7 +513,17 @@ namespace NINA.ViewModel {
             }
             set {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ColorSchemaName = value;
-                RaiseAllPropertiesChanged();
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(PrimaryColor));
+                RaisePropertyChanged(nameof(SecondaryColor));
+                RaisePropertyChanged(nameof(BorderColor));
+                RaisePropertyChanged(nameof(BackgroundColor));
+                RaisePropertyChanged(nameof(ButtonBackgroundColor));
+                RaisePropertyChanged(nameof(ButtonBackgroundSelectedColor));
+                RaisePropertyChanged(nameof(ButtonForegroundColor));
+                RaisePropertyChanged(nameof(ButtonForegroundDisabledColor));
+                RaisePropertyChanged(nameof(NotificationWarningColor));
+                RaisePropertyChanged(nameof(NotificationErrorColor));
             }
         }
 
@@ -486,7 +540,17 @@ namespace NINA.ViewModel {
             set {
 
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltColorSchemaName = value;
-                RaiseAllPropertiesChanged();
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(AltPrimaryColor));
+                RaisePropertyChanged(nameof(AltSecondaryColor));
+                RaisePropertyChanged(nameof(AltBorderColor));
+                RaisePropertyChanged(nameof(AltBackgroundColor));
+                RaisePropertyChanged(nameof(AltButtonBackgroundColor));
+                RaisePropertyChanged(nameof(AltButtonBackgroundSelectedColor));
+                RaisePropertyChanged(nameof(AltButtonForegroundColor));
+                RaisePropertyChanged(nameof(AltButtonForegroundDisabledColor));
+                RaisePropertyChanged(nameof(AltNotificationWarningColor));
+                RaisePropertyChanged(nameof(AltNotificationErrorColor));
             }
         }
 
@@ -1045,6 +1109,23 @@ namespace NINA.ViewModel {
             set {
                 ProfileManager.Instance.ActiveProfile.GuiderSettings.SettleTime = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        private Profile _selectedProfile;
+        public Profile SelectedProfile {
+            get {
+                return _selectedProfile;
+            }
+            set {
+                _selectedProfile = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Profile> Profiles {
+            get {
+                return ProfileManager.Instance.Profiles.ProfileList;
             }
         }
     }

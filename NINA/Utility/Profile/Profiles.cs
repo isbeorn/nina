@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +11,11 @@ namespace NINA.Utility.Profile {
     [XmlRoot(nameof(Profiles))]
     public class Profiles {
         public Profiles() {
-            ProfileList = new List<Profile>();
+            ProfileList = new ObservableCollection<Profile>();
         }
 
         [XmlElement(nameof(Profiles))]
-        public List<Profile> ProfileList { get; set; }
+        public ObservableCollection<Profile> ProfileList { get; set; }
 
         private Guid activeProfileId;
         [XmlAttribute(nameof(ActiveProfileId))]

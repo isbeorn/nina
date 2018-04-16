@@ -165,6 +165,7 @@ namespace NINA.Utility.Mediator {
         FocuserTemperatureChanged = 26,
         FocuserConnectedChanged = 28,
         CameraConnectedChanged = 29,
-        CameraPixelSizeChanged = 30
+        CameraPixelSizeChanged = 30,
+        ProfileChanged = 31
     };
 }

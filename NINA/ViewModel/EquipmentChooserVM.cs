@@ -49,6 +49,18 @@ namespace NINA.ViewModel {
             }
         }
 
+        public void DetermineSelectedDevice(string id) {
+            if (Devices.Count > 0) {
+                var items = (from device in Devices where device.Id == id select device);
+                if (items.Count() > 0) {
+                    SelectedDevice = items.First();
+
+                } else {
+                    SelectedDevice = Devices.First();
+                }
+            }
+        }
+
 
     }
 }

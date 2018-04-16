@@ -49,6 +49,7 @@ namespace NINA.Utility {
 
         public ColorSchema CreateDefaultAltSchema() {
             return new ColorSchema {
+                Name = "Dark",
                 PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
                 SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1B2A41"),
                 BorderColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
@@ -64,8 +65,9 @@ namespace NINA.Utility {
 
         public ColorSchema CreateDefaultSchema() {
             return new ColorSchema {
+                Name = "Light",
                 PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF000000"),
-                SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1D2731"),
+                SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF54748C"),
                 BorderColor = (Color)ColorConverter.ConvertFromString("#AABCBCBC"),
                 BackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0B3C5D"),
@@ -82,7 +84,7 @@ namespace NINA.Utility {
     [XmlRoot(ElementName = "ColorSchema")]
     public class ColorSchema {
 
-        [XmlAttribute("Name")]
+        [XmlAttribute(nameof(Name))]
         public String Name { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]

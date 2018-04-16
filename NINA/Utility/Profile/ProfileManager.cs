@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Mediator;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace NINA.Utility.Profile {
         string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
 
 
-        Profiles Profiles { get; set; }
+        public Profiles Profiles { get; set; }
 
         public void Add() {
             Profiles.Add(new Profile("Profile"));
@@ -68,10 +69,27 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        public void SelectProfile(Guid guid) {
+            Profiles.SelectProfile(guid);
+
+
+            Mediator.Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
+
+            System.Threading.Thread.CurrentThread.CurrentUICulture = ActiveProfile.ApplicationSettings.Language;
+            System.Threading.Thread.CurrentThread.CurrentCulture = ActiveProfile.ApplicationSettings.Language;
+            Locale.Loc.Instance.ReloadLocale();
+
+            Mediator.Mediator.Instance.Notify(MediatorMessages.ProfileChanged, null);
+        }
+
         private void LoadDefaultProfile() {
             Profiles = new Profiles();
             Profiles.Add(new Profile("Default"));
             Profiles.SelectProfile(Profiles.ProfileList[0].Id);
+        }
+
+        public IEnumerable<Profile> GetProfiles() {
+            return Profiles.ProfileList;
         }
     }
 }

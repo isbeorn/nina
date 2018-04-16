@@ -58,6 +58,8 @@ namespace NINA.ViewModel {
 
                 })
             );
+
+            Mediator.Instance.Register((o) => { RefreshFWList(o); }, MediatorMessages.ProfileChanged);
         }
 
         private CancellationTokenSource _changeFilterCancellationSource;
@@ -285,10 +287,7 @@ namespace NINA.ViewModel {
                 }
             }
 
-            if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.FilterWheelSettings.Id select device).First();
-                SelectedDevice = selected;
-            }
+            DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.FilterWheelSettings.Id);
         }
     }
 

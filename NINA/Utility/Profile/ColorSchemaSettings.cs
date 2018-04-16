@@ -117,7 +117,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private Color secondaryColor = (Color)ColorConverter.ConvertFromString("#FF1D2731");
+        private Color secondaryColor = (Color)ColorConverter.ConvertFromString("#FF54748C");
         [XmlElement(nameof(SecondaryColor))]
         public Color SecondaryColor {
             get {

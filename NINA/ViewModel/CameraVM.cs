@@ -52,6 +52,8 @@ namespace NINA.ViewModel {
                     return true;
                 })
             );
+
+            Mediator.Instance.Register((o) => { RefreshCameraList(o); }, MediatorMessages.ProfileChanged);
         }
 
         private void RefreshCameraList(object obj) {
@@ -536,15 +538,7 @@ namespace NINA.ViewModel {
             /* NIKON */
             Devices.Add(new NikonCamera());
 
-            if (Devices.Count > 0) {
-                var items = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.CameraSettings.Id select device);
-                if (items.Count() > 0) {
-                    SelectedDevice = items.First();
-
-                } else {
-                    SelectedDevice = Devices.First();
-                }
-            }
+            DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.CameraSettings.Id);
         }
 
 

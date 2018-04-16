@@ -68,6 +68,8 @@ namespace NINA.ViewModel {
                     return true;
                 })
             );
+
+            Mediator.Instance.Register((o) => { RefreshTelescopeList(o); }, MediatorMessages.ProfileChanged);
         }
 
         private bool SendToSnapPort(bool start) {
@@ -392,10 +394,7 @@ namespace NINA.ViewModel {
                 }
             }
 
-            if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.TelescopeSettings.Id select device).First();
-                SelectedDevice = selected;
-            }
+            DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.TelescopeSettings.Id);
         }
     }
 }

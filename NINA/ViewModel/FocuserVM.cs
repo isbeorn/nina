@@ -47,6 +47,8 @@ namespace NINA.ViewModel {
                     return true;
                 })
             );
+
+            Mediator.Instance.Register((o) => { RefreshFocuserList(o); }, MediatorMessages.ProfileChanged);
         }
 
         private void HaltFocuser(object obj) {
@@ -361,10 +363,7 @@ namespace NINA.ViewModel {
                 }
             }
 
-            if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.FocuserSettings.Id select device).FirstOrDefault();
-                SelectedDevice = selected;
-            }
+            DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.FocuserSettings.Id);
         }
     }
 }
