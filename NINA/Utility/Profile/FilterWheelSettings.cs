@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(FilterWheelSettings))]
-    class FilterWheelSettings {
+    public class FilterWheelSettings {
 
         private string id = "No_Device";
         [XmlElement(nameof(Id))]

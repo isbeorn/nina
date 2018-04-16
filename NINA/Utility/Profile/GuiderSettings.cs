@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(ApplicationSettings))]
-    class GuiderSettings {
+    public class GuiderSettings {
 
         private double ditherPixels = 5;
         [XmlElement(nameof(DitherPixels))]
@@ -18,7 +18,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 ditherPixels = value;
-            }            
+            }
         }
 
         private bool ditherRAOnly = false;
@@ -54,9 +54,9 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private string pHD2ServerPort = "4400";
+        private int pHD2ServerPort = 4400;
         [XmlElement(nameof(PHD2ServerPort))]
-        public string PHD2ServerPort {
+        public int PHD2ServerPort {
             get {
                 return pHD2ServerPort;
             }

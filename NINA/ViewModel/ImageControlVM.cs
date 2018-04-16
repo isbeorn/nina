@@ -8,6 +8,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using NINA.ViewModel;
 using nom.tam.fits;
 using System;
@@ -248,7 +249,7 @@ namespace NINA.ViewModel {
                         var analysis = new ImageAnalysis(source, iarr);
                         await analysis.DetectStarsAsync(_progress, token);
 
-                        if (Settings.AnnotateImage) {
+                        if (ProfileManager.Instance.ActiveProfile.ImageSettings.AnnotateImage) {
                             source = analysis.GetAnnotatedImage();
                         }
 
@@ -307,7 +308,7 @@ namespace NINA.ViewModel {
 
         public static BitmapSource Stretch(double mean, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf) {
             using (MyStopWatch.Measure()) {
-                var filter = ImageAnalysis.GetColorRemappingFilter(mean, Settings.AutoStretchFactor);
+                var filter = ImageAnalysis.GetColorRemappingFilter(mean, ProfileManager.Instance.ActiveProfile.ImageSettings.AutoStretchFactor);
                 filter.ApplyInPlace(img);
 
                 var source = ImageAnalysis.ConvertBitmap(img, pf);
@@ -364,17 +365,17 @@ namespace NINA.ViewModel {
 
                 p.Add(new OptionsVM.ImagePattern("$$GAIN$$", "Camera Gain", Cam?.Gain.ToString() ?? string.Empty));
 
-                string path = Path.GetFullPath(Settings.ImageFilePath);
+                string path = Path.GetFullPath(ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePath);
                 string filename = Utility.Utility.GetImageFileString(p);
                 string completefilename = Path.Combine(path, filename);
 
                 Stopwatch sw = Stopwatch.StartNew();
-                if (Settings.FileType == FileTypeEnum.FITS) {
+                if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.FITS) {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
                     completefilename = SaveFits(completefilename, parameters);
-                } else if (Settings.FileType == FileTypeEnum.TIFF) {
+                } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF) {
                     completefilename = SaveTiff(completefilename);
-                } else if (Settings.FileType == FileTypeEnum.XISF) {
+                } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.XISF) {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
                     completefilename = SaveXisf(completefilename, parameters);
                 } else {
@@ -384,7 +385,7 @@ namespace NINA.ViewModel {
                     new AddThumbnailMessage() {
                         PathToImage = new Uri(completefilename),
                         Image = Image,
-                        FileType = Settings.FileType,
+                        FileType = ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType,
                         Mean = ImgArr.Statistics.Mean,
                         HFR = ImgArr.Statistics.HFR,
                         Duration = parameters.ExposureTime,
@@ -429,21 +430,21 @@ namespace NINA.ViewModel {
         }
 
         private string SaveFits(string path, ImageParameters parameters) {
-            try {               
-                                
+            try {
+
                 FITS f = new FITS(
-                    this.ImgArr.FlatArray, 
-                    this.ImgArr.Statistics.Width, 
-                    this.ImgArr.Statistics.Height, 
-                    parameters.ImageType, 
+                    this.ImgArr.FlatArray,
+                    this.ImgArr.Statistics.Width,
+                    this.ImgArr.Statistics.Height,
+                    parameters.ImageType,
                     parameters.ExposureTime
                 );
 
-                f.AddHeaderCard("FOCALLEN", Settings.TelescopeFocalLength, "");
-                f.AddHeaderCard("XPIXSZ", Settings.CameraPixelSize, "");
-                f.AddHeaderCard("YPIXSZ", Settings.CameraPixelSize, "");
-                f.AddHeaderCard("SITELAT", Astrometry.HoursToHMS(Settings.Latitude), "");
-                f.AddHeaderCard("SITELONG", Astrometry.HoursToHMS(Settings.Longitude), "");
+                f.AddHeaderCard("FOCALLEN", ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength, "");
+                f.AddHeaderCard("XPIXSZ", ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize, "");
+                f.AddHeaderCard("YPIXSZ", ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize, "");
+                f.AddHeaderCard("SITELAT", Astrometry.HoursToHMS(ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude), "");
+                f.AddHeaderCard("SITELONG", Astrometry.HoursToHMS(ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude), "");
 
                 if (!string.IsNullOrEmpty(parameters.FilterName)) {
                     f.AddHeaderCard("FILTER", parameters.FilterName, "");
@@ -469,12 +470,12 @@ namespace NINA.ViewModel {
                     f.AddHeaderCard("TEMPERAT", temp, "");
                     f.AddHeaderCard("CCD-TEMP", temp, "");
                 }
-                
+
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".fits");
 
                 using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
-                    f.Write(fs);                    
+                    f.Write(fs);
                 }
 
                 return uniquePath;
@@ -500,33 +501,33 @@ namespace NINA.ViewModel {
                 h.AddValue("DATE-OBS", DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture), "");
 
                 if (!string.IsNullOrEmpty(parameters.FilterName)) {
-                     h.AddValue("FILTER", parameters.FilterName, "");
-                 }
+                    h.AddValue("FILTER", parameters.FilterName, "");
+                }
 
-                 if (Cam != null) {
-                     if (Cam.BinX > 0) {
-                         h.AddValue("XBINNING", Cam.BinX, "");
-                     }
-                     if (Cam.BinY > 0) {
-                         h.AddValue("YBINNING", Cam.BinY, "");
-                     }
-                     h.AddValue("EGAIN", Cam.Gain, "");
-                 }
+                if (Cam != null) {
+                    if (Cam.BinX > 0) {
+                        h.AddValue("XBINNING", Cam.BinX, "");
+                    }
+                    if (Cam.BinY > 0) {
+                        h.AddValue("YBINNING", Cam.BinY, "");
+                    }
+                    h.AddValue("EGAIN", Cam.Gain, "");
+                }
 
-                 if (Telescope != null) {
-                     h.AddValue("SITELAT", Telescope.SiteLatitude.ToString(CultureInfo.InvariantCulture), "");
-                     h.AddValue("SITELONG", Telescope.SiteLongitude.ToString(CultureInfo.InvariantCulture), "");
-                     h.AddValue("OBJCTRA", Telescope.RightAscensionString, "");
-                     h.AddValue("OBJCTDEC", Telescope.DeclinationString, "");
-                 }
+                if (Telescope != null) {
+                    h.AddValue("SITELAT", Telescope.SiteLatitude.ToString(CultureInfo.InvariantCulture), "");
+                    h.AddValue("SITELONG", Telescope.SiteLongitude.ToString(CultureInfo.InvariantCulture), "");
+                    h.AddValue("OBJCTRA", Telescope.RightAscensionString, "");
+                    h.AddValue("OBJCTDEC", Telescope.DeclinationString, "");
+                }
 
 
-                 var temp = Cam.CCDTemperature;
-                 if (!double.IsNaN(temp)) {
-                     h.AddValue("TEMPERAT", temp, "");
-                     h.AddValue("CCD-TEMP", temp, "");
-                 }
-                 
+                var temp = Cam.CCDTemperature;
+                if (!double.IsNaN(temp)) {
+                    h.AddValue("TEMPERAT", temp, "");
+                    h.AddValue("CCD-TEMP", temp, "");
+                }
+
                 h.AddValue("IMAGETYP", parameters.ImageType, "");
                 h.AddValue("EXPOSURE", parameters.ExposureTime, "");
 
@@ -591,11 +592,11 @@ namespace NINA.ViewModel {
                 header.AddEmbeddedImage(ImgArr, parameters.ImageType);
 
                 header.AddImageProperty(XISFImageProperty.Observation.Time.Start, DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, Settings.Latitude.ToString(CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Observation.Location.Longitude, Settings.Longitude.ToString(CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, Settings.TelescopeFocalLength.ToString(CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, Settings.CameraPixelSize.ToString(CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, Settings.CameraPixelSize.ToString(CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude.ToString(CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Observation.Location.Longitude, ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude.ToString(CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength.ToString(CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
 
                 if (Telescope != null) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, Telescope.Name);
@@ -634,7 +635,7 @@ namespace NINA.ViewModel {
                     if (!double.IsNaN(temp)) {
                         header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString(CultureInfo.InvariantCulture));
                     }
-                    
+
                 }
 
 

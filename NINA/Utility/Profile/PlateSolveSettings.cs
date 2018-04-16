@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(Profile))]
-    class PlateSolveSettings {
+    public class PlateSolveSettings {
 
         private PlateSolverEnum plateSolverType = PlateSolverEnum.PLATESOLVE2;
         [XmlElement(nameof(PlateSolverType))]
@@ -47,7 +47,7 @@ namespace NINA.Utility.Profile {
         [XmlElement(nameof(CygwinLocation))]
         public string CygwinLocation {
             get {
-                return cygwinLocation;
+                return Environment.ExpandEnvironmentVariables(cygwinLocation);
             }
             set {
                 cygwinLocation = value;
@@ -69,16 +69,16 @@ namespace NINA.Utility.Profile {
         [XmlElement(nameof(PS2Location))]
         public string PS2Location {
             get {
-                return pS2Location;
+                return Environment.ExpandEnvironmentVariables(pS2Location);
             }
             set {
                 pS2Location = value;
             }
         }
 
-        private double regions = 5000;
+        private int regions = 5000;
         [XmlElement(nameof(Regions))]
-        public double Regions {
+        public int Regions {
             get {
                 return regions;
             }

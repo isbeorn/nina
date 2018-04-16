@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(Profile))]
-    class ImageSettings {
+    public class ImageSettings {
 
         private double autoStretchFactor = 0.2;
         [XmlElement(nameof(AutoStretchFactor))]

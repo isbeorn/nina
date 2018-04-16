@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(Profile))]
-    class ImageFileSettings {
+    public class ImageFileSettings {
 
         private string filePath = string.Empty;
         [XmlElement(nameof(FilePath))]

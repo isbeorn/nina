@@ -14,6 +14,7 @@ using System.IO;
 using NINA.Utility.Notification;
 using System.Globalization;
 using NINA.Utility.Mediator;
+using NINA.Utility.Profile;
 
 namespace NINA.Model.MyCamera {
     public class NikonCamera : BaseINPC, ICamera {
@@ -108,7 +109,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private Dictionary<eNkMAIDCapability, NkMAIDCapInfo> Capabilities = new Dictionary<eNkMAIDCapability, NkMAIDCapInfo>(); 
+        private Dictionary<eNkMAIDCapability, NkMAIDCapInfo> Capabilities = new Dictionary<eNkMAIDCapability, NkMAIDCapInfo>();
 
         private void GetShutterSpeeds() {
             Logger.Debug("Getting Nikon shutter speeds");
@@ -524,11 +525,11 @@ namespace NINA.Model.MyCamera {
 
                 var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
 
-                if (Settings.CameraBulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
+                if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
                     Logger.Debug("Use Telescope Snap Port");
 
                     BulbCapture(exposureTime, RequestSnapPortCaptureStart, RequestSnapPortCaptureStop);
-                } else if (Settings.CameraBulbMode == CameraBulbModeEnum.SERIALPORT) {
+                } else if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.SERIALPORT) {
                     Logger.Debug("Use Serial Port for camera");
 
                     BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
@@ -563,11 +564,11 @@ namespace NINA.Model.MyCamera {
         }
 
         private void OpenSerialPort() {
-            if (serialPortInteraction?.PortName != Settings.CameraSerialPort) {
-                serialPortInteraction = new SerialPortInteraction(Settings.CameraSerialPort);
+            if (serialPortInteraction?.PortName != ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort) {
+                serialPortInteraction = new SerialPortInteraction(ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort);
             }
             if (!serialPortInteraction.Open()) {
-                throw new Exception("Unable to open SerialPort " + Settings.CameraSerialPort);
+                throw new Exception("Unable to open SerialPort " + ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort);
             }
         }
 
@@ -587,7 +588,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private void BulbCapture(double exposureTime, Action capture, Action stopCapture) {
-            
+
 
             SetCameraToManual();
 
@@ -610,7 +611,7 @@ namespace NINA.Model.MyCamera {
 
                 Logger.Debug("Restore previous shutter speed");
                 // Restore original shutter speed
-                SetCameraShutterSpeed(_prevShutterSpeed);                
+                SetCameraShutterSpeed(_prevShutterSpeed);
             });
         }
 
@@ -662,7 +663,7 @@ namespace NINA.Model.MyCamera {
                 }
             } else {
                 Logger.Debug("Cannot set to manual mode. Skipping...");
-            }            
+            }
         }
 
         private int _prevShutterSpeed;
@@ -677,7 +678,7 @@ namespace NINA.Model.MyCamera {
             } else {
                 Logger.Debug("Cannot set camera shutter speed. Skipping...");
             }
-            
+
         }
 
         public void StopExposure() {

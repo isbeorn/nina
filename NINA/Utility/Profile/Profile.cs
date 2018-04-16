@@ -8,7 +8,10 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(Profile))]
-    class Profile {
+    public class Profile {
+        public Profile() {
+            this.name = "Default";
+        }
         public Profile(string name) {
             this.name = name;
         }

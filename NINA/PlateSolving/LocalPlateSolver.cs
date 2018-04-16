@@ -11,6 +11,7 @@ using NINA.Utility;
 using System.Globalization;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 
 namespace NINA.PlateSolving {
     class LocalPlateSolver : IPlateSolver {
@@ -21,7 +22,7 @@ namespace NINA.PlateSolving {
         double _searchradius;
 
         Coordinates _target;
-        
+
         public LocalPlateSolver(int focallength, double pixelsize) {
             double arcsecperpixel = (pixelsize / focallength) * 206.3;
             _lowarcsecperpixel = arcsecperpixel - 0.2;
@@ -66,13 +67,13 @@ namespace NINA.PlateSolving {
             string imgfilepath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.jpg");
             var wcsfilepath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.wcs");
             try {
-                progress.Report(new ApplicationStatus() { Status = "Solving..." });                
+                progress.Report(new ApplicationStatus() { Status = "Solving..." });
 
                 using (FileStream fs = new FileStream(imgfilepath, FileMode.Create)) {
                     image.CopyTo(fs);
                 }
 
-                var cygwinbashpath = Path.GetFullPath(Path.Combine(Settings.CygwinLocation, "bin", "bash.exe"));
+                var cygwinbashpath = Path.GetFullPath(Path.Combine(ProfileManager.Instance.ActiveProfile.PlateSolveSettings.CygwinLocation, "bin", "bash.exe"));
 
                 if (!File.Exists(cygwinbashpath)) {
                     Logger.Error(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + cygwinbashpath, null);
@@ -98,7 +99,7 @@ namespace NINA.PlateSolving {
                     canceltoken.ThrowIfCancellationRequested();
                 }
 
-                
+
                 if (File.Exists(wcsfilepath)) {
                     startInfo.Arguments = string.Format("/C {0} --login -c 'wcsinfo {1}'", cygwinbashpath, wcsfilepath.Replace("\\", "/"));
                     process.Start();
@@ -147,12 +148,12 @@ namespace NINA.PlateSolving {
                 Logger.Error(ex);
                 result.Success = false;
             } finally {
-                if(File.Exists(wcsfilepath)) {
+                if (File.Exists(wcsfilepath)) {
                     File.Delete(wcsfilepath);
                 }
-                if(File.Exists(imgfilepath)) {
+                if (File.Exists(imgfilepath)) {
                     File.Delete(imgfilepath);
-                }                
+                }
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 

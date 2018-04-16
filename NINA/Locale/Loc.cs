@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,7 +25,7 @@ namespace NINA.Locale {
 
         public void ReloadLocale() {
             try {
-                _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + Settings.Language.Name + ".xaml", UriKind.Relative) };
+                _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + ProfileManager.Instance.ActiveProfile.ApplicationSettings.Language.Name + ".xaml", UriKind.Relative) };
             } catch (System.IO.IOException) {
                 // Fallback to default locale if setting is invalid
                 _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };

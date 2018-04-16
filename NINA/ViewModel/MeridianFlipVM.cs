@@ -5,6 +5,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -77,10 +78,10 @@ namespace NINA.ViewModel {
         }
 
         private bool ShouldFlip(double exposureTime) {
-            if (Settings.AutoMeridianFlip) {
+            if (ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.Enabled) {
                 if (Telescope?.Connected == true) {
 
-                    if ((Telescope.TimeToMeridianFlip - (Settings.PauseTimeBeforeMeridian / 60)) < (exposureTime / 60 / 60)) {
+                    if ((Telescope.TimeToMeridianFlip - (ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian / 60)) < (exposureTime / 60 / 60)) {
                         return true;
                     }
                 }
@@ -111,7 +112,7 @@ namespace NINA.ViewModel {
         /// <param name="tokenSource">cancel token</param>
         /// <param name="progress">progress reporter</param>
         /// <returns></returns>
-        public async Task<bool> CheckMeridianFlip(CaptureSequence seq) {            
+        public async Task<bool> CheckMeridianFlip(CaptureSequence seq) {
             if (ShouldFlip(seq.ExposureTime)) {
                 var service = new WindowService();
                 this._tokensource = new CancellationTokenSource();
@@ -134,14 +135,14 @@ namespace NINA.ViewModel {
             var timeToFlip = Telescope.TimeToMeridianFlip * 60 * 60;
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStopTracking"] });
             _targetCoordinates = Telescope.Coordinates;
-            Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = false });     
+            Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = false });
             do {
                 RemainingTime = TimeSpan.FromSeconds(timeToFlip);
                 progress.Report(new ApplicationStatus() { Status = RemainingTime.ToString(@"hh\:mm\:ss") });
 
                 //progress.Report(string.Format("Next exposure paused until passing meridian. Remaining time: {0} seconds", RemainingTime));
                 var delta = await Utility.Utility.Delay(1000, token);
-                
+
                 timeToFlip -= delta.TotalSeconds;
 
             } while (RemainingTime.TotalSeconds >= 1);
@@ -161,7 +162,7 @@ namespace NINA.ViewModel {
 
 
         private async Task<bool> Recenter(CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (Settings.RecenterAfterFlip) {
+            if (ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.Recenter) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblInitiatePlatesolve"] });
                 await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = token, Silent = true });
             }
@@ -170,7 +171,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StopAutoguider(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStopGuiding"] });
-            var result = await Mediator.Instance.RequestAsync(new StopGuiderMessage() { Token = token });            
+            var result = await Mediator.Instance.RequestAsync(new StopGuiderMessage() { Token = token });
             return result;
         }
 
@@ -187,7 +188,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Settle(CancellationToken token, IProgress<ApplicationStatus> progress) {
-            RemainingTime = TimeSpan.FromSeconds(Settings.MeridianFlipSettleTime);
+            RemainingTime = TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.SettleTime);
             do {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSettle"] + " " + RemainingTime.ToString(@"hh\:mm\:ss") });
 
@@ -208,7 +209,7 @@ namespace NINA.ViewModel {
 
                 Steps.Add(new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(token, _progress)));
                 Steps.Add(new WorkflowStep("Flip", Locale.Loc.Instance["LblFlip"], () => DoFilp(token, _progress)));
-                if (Settings.RecenterAfterFlip) {
+                if (ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.Recenter) {
                     Steps.Add(new WorkflowStep("Recenter", Locale.Loc.Instance["LblRecenter"], () => Recenter(token, _progress)));
                 }
 
@@ -228,7 +229,7 @@ namespace NINA.ViewModel {
                     Logger.Error(ex2);
                     Notification.ShowError(Locale.Loc.Instance["GuiderResumeFailed"]);
                 }
-                
+
                 Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = true });
                 return false;
             }

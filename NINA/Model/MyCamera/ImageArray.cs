@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -41,9 +42,9 @@ namespace NINA.Model.MyCamera {
         }
 
         private void CalculateStatistics() {
-            using (MyStopWatch.Measure()) {            
+            using (MyStopWatch.Measure()) {
                 long sum = 0;
-                long squareSum = 0;            
+                long squareSum = 0;
                 int count = this.FlatArray.Count();
                 ushort max = 0;
                 ushort oldmax = max;
@@ -52,16 +53,16 @@ namespace NINA.Model.MyCamera {
                 ushort oldmin = min;
                 long minOccurrences = 0;
 
-                double resolution = Settings.HistogramResolution;
+                double resolution = ProfileManager.Instance.ActiveProfile.ImageSettings.HistogramResolution;
                 Dictionary<double, int> histogram = new Dictionary<double, int>();
-            
-                for(var i = 0; i < this.FlatArray.Length; i++) {
+
+                for (var i = 0; i < this.FlatArray.Length; i++) {
                     ushort val = this.FlatArray[i];
                     double histogramVal = Math.Floor(val * (resolution / ushort.MaxValue));
-                
+
                     sum += val;
                     squareSum += (long)val * val;
-                                
+
                     histogram.TryGetValue(histogramVal, out var curCount);
                     histogram[histogramVal] = curCount + 1;
 
@@ -83,7 +84,7 @@ namespace NINA.Model.MyCamera {
 
                     oldmin = min;
                     oldmax = max;
-                
+
                 }
 
                 double mean = sum / count;
@@ -121,8 +122,7 @@ namespace NINA.Model.MyCamera {
                 ushort[] flatArray = new ushort[arr.Length];
                 ushort value;
 
-                unsafe
-                {
+                unsafe {
                     fixed (Int32* ptr = arr) {
                         int idx = 0, row = 0;
                         for (int i = 0; i < arr.Length; i++) {

@@ -1,5 +1,6 @@
 ﻿using NINA.Model.MyWeatherData;
 using NINA.Utility;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +18,8 @@ namespace NINA.ViewModel {
 
             _updateWeatherDataTimer = new DispatcherTimer();
             _updateWeatherDataTimer.Interval = TimeSpan.FromSeconds(60);
-            _updateWeatherDataTimer.Tick += _updateWeatherDataTimer_Tick; 
-            
+            _updateWeatherDataTimer.Tick += _updateWeatherDataTimer_Tick;
+
             _doUpdate = false;
 
             this.UpdateWeatherDataCommand = new AsyncCommand<bool>(() => UpdateWeatherData());
@@ -37,12 +38,12 @@ namespace NINA.ViewModel {
             }
             set {
                 _doUpdate = value;
-                if(_doUpdate) {                    
+                if (_doUpdate) {
                     _updateWeatherDataTimer_Tick(null, null);
                     _updateWeatherDataTimer.Start();
                 } else {
                     _updateWeatherDataTimer.Stop();
-                }                
+                }
                 RaisePropertyChanged();
             }
         }
@@ -55,7 +56,7 @@ namespace NINA.ViewModel {
         public IWeatherData WeatherData {
             get {
                 if (_weatherData == null) {
-                    if (Settings.WeatherDataType == WeatherDataEnum.OPENWEATHERMAP) {
+                    if (ProfileManager.Instance.ActiveProfile.WeatherDataSettings.WeatherDataType == WeatherDataEnum.OPENWEATHERMAP) {
                         WeatherData = new OpenWeatherMapData();
                     }
                 }

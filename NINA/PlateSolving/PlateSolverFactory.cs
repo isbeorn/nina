@@ -1,6 +1,7 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,18 +25,18 @@ namespace NINA.PlateSolving {
             IPlateSolver Platesolver = null;
 
             if (solver == PlateSolverEnum.ASTROMETRY_NET) {
-                Platesolver = new AstrometryPlateSolver(ASTROMETRYNETURL, Settings.AstrometryAPIKey);
+                Platesolver = new AstrometryPlateSolver(ASTROMETRYNETURL, ProfileManager.Instance.ActiveProfile.PlateSolveSettings.AstrometryAPIKey);
             } else if (solver == PlateSolverEnum.LOCAL) {
-                if (Settings.AnsvrSearchRadius > 0 && coords != null) {
-                    Platesolver = new LocalPlateSolver(Settings.TelescopeFocalLength, Settings.CameraPixelSize * binning, Settings.AnsvrSearchRadius, coords);
+                if (ProfileManager.Instance.ActiveProfile.PlateSolveSettings.SearchRadius > 0 && coords != null) {
+                    Platesolver = new LocalPlateSolver(ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength, ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize * binning, ProfileManager.Instance.ActiveProfile.PlateSolveSettings.SearchRadius, coords);
                 } else {
-                    Platesolver = new LocalPlateSolver(Settings.TelescopeFocalLength, Settings.CameraPixelSize * binning);
+                    Platesolver = new LocalPlateSolver(ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength, ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize * binning);
                 }
             } else if (solver == PlateSolverEnum.PLATESOLVE2) {
                 if (coords == null) {
                     Notification.ShowWarning(Locale.Loc.Instance["LblPlatesolve2NoCoordinates"]);
                 }
-                Platesolver = new Platesolve2Solver(Settings.TelescopeFocalLength, Settings.CameraPixelSize * binning, width, height, Settings.PS2Regions, coords);
+                Platesolver = new Platesolve2Solver(ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength, ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize * binning, width, height, ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Regions, coords);
             }
 
             return Platesolver;

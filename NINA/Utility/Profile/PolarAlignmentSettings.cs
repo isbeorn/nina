@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(AstrometrySettings))]
-    class PolarAlignmentSettings {
+    public class PolarAlignmentSettings {
 
         private double altitudeDeclination = 0;
         [XmlElement(nameof(AltitudeDeclination))]

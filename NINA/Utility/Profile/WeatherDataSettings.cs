@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(WeatherDataSettings))]
-    class WeatherDataSettings {
+    public class WeatherDataSettings {
 
         private WeatherDataEnum weatherDataType = WeatherDataEnum.OPENWEATHERMAP;
         [XmlElement(nameof(WeatherDataType))]

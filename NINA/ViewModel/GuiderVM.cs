@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Threading;
 using NINA.Utility.Notification;
 using NINA.Utility.Mediator;
+using NINA.Utility.Profile;
 
 namespace NINA.ViewModel {
     class GuiderVM : DockableVM {
@@ -51,7 +52,7 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsyncRequest(
                 new PauseGuiderMessageHandle(async (PauseGuiderMessage msg) => {
-                    if(msg.Pause) {
+                    if (msg.Pause) {
                         return await Pause(msg.Token);
                     } else {
                         return await Resume(msg.Token);
@@ -79,21 +80,21 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> AutoSelectGuideStar(CancellationToken token) {
-            if(Guider?.Connected == true) {
+            if (Guider?.Connected == true) {
                 var result = await Guider?.AutoSelectGuideStar();
                 await Task.Delay(TimeSpan.FromSeconds(5), token);
                 return result;
             } else {
                 return false;
-            }          
+            }
         }
 
         private async Task<bool> Pause(CancellationToken token) {
-            if(Guider?.Connected == true) {
+            if (Guider?.Connected == true) {
                 return await Guider?.Pause(true);
             } else {
                 return false;
-            }    
+            }
         }
 
         private async Task<bool> Resume(CancellationToken token) {
@@ -109,12 +110,12 @@ namespace NINA.ViewModel {
                         break;
                     }
                 }
-                await Utility.Utility.Wait(TimeSpan.FromSeconds(Settings.GuiderSettleTime), token);
+                await Utility.Utility.Wait(TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.GuiderSettings.SettleTime), token);
                 return true;
             } else {
                 return false;
             }
-                
+
         }
 
         private static Dispatcher Dispatcher = Dispatcher.CurrentDispatcher;
@@ -141,7 +142,7 @@ namespace NINA.ViewModel {
             }
             if (e.PropertyName == "GuideStep") {
                 var step = Guider.GuideStep;
-                if(GuiderScale == GuiderScaleEnum.ARCSECONDS) {
+                if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {
                     ConvertStepToArcSec(step);
                 }
                 GuideStepsHistoryMinimal.Add(step);
@@ -171,13 +172,13 @@ namespace NINA.ViewModel {
             set {
                 _guiderScale = value;
                 RaisePropertyChanged();
-                foreach(IGuideStep s in GuideStepsHistory) {
-                    if(GuiderScale == GuiderScaleEnum.ARCSECONDS) {
+                foreach (IGuideStep s in GuideStepsHistory) {
+                    if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {
                         ConvertStepToArcSec(s);
                     } else {
                         ConvertStepToPixels(s);
                     }
-                    
+
                 }
                 foreach (IGuideStep s in GuideStepsHistoryMinimal) {
                     if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {
@@ -205,9 +206,9 @@ namespace NINA.ViewModel {
         private async Task<bool> StartGuiding(CancellationToken token) {
             if (Guider?.Connected == true) {
                 await Guider.StartGuiding();
-                return await Task.Run<bool>(async () => {                    
+                return await Task.Run<bool>(async () => {
                     while (Guider?.IsCalibrating == true) {
-                        await Task.Delay(1000, token);                        
+                        await Task.Delay(1000, token);
                     }
                     return true;
                 });
@@ -226,7 +227,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Dither(CancellationToken token) {
-            if(Guider?.Connected == true) {
+            if (Guider?.Connected == true) {
                 Mediator.Instance.Request(new StatusUpdateMessage() { Status = new Model.ApplicationStatus() { Status = Locale.Loc.Instance["LblDither"], Source = Title } });
                 await Guider.Dither();
                 return await Task.Run<bool>(async () => {

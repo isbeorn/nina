@@ -10,11 +10,39 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(ColorSchemaSettings))]
-    class ColorSchemaSettings {
+    public class ColorSchemaSettings {
         public ColorSchemaSettings() {
             ColorSchemas = ColorSchemas.ReadColorSchemas();
+            ColorSchemas.Items.Add(new ColorSchema {
+                Name = "Custom",
+                PrimaryColor = PrimaryColor,
+                SecondaryColor = SecondaryColor,
+                BorderColor = BorderColor,
+                BackgroundColor = BackgroundColor,
+                ButtonBackgroundColor = ButtonBackgroundColor,
+                ButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor,
+                ButtonForegroundColor = ButtonForegroundColor,
+                ButtonForegroundDisabledColor = ButtonForegroundDisabledColor,
+                NotificationWarningColor = NotificationWarningColor,
+                NotificationErrorColor = NotificationErrorColor
+            });
+
+            ColorSchemas.Items.Add(new ColorSchema {
+                Name = "Alternative Custom",
+                PrimaryColor = AltPrimaryColor,
+                SecondaryColor = AltSecondaryColor,
+                BorderColor = AltBorderColor,
+                BackgroundColor = AltBackgroundColor,
+                ButtonBackgroundColor = AltButtonBackgroundColor,
+                ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor,
+                ButtonForegroundColor = AltButtonForegroundColor,
+                ButtonForegroundDisabledColor = AltButtonForegroundDisabledColor,
+                NotificationWarningColor = AltNotificationWarningColor,
+                NotificationErrorColor = AltNotificationErrorColor
+            });
         }
 
+        [XmlIgnore]
         public ColorSchemas ColorSchemas { get; set; }
 
         private ColorSchema colorSchema;
@@ -215,7 +243,7 @@ namespace NINA.Utility.Profile {
             set {
                 if (ColorSchemaName == "Alternative Custom") {
                     AltColorSchema.SecondaryColor = value;
-                    altSecondaryColor = value;                    
+                    altSecondaryColor = value;
                 }
             }
         }

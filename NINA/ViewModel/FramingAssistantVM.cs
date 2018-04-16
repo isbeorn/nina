@@ -5,6 +5,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,9 +29,9 @@ namespace NINA.ViewModel {
             DSO = new DeepSkyObject(string.Empty, Coordinates);
             //Coordinates = new Coordinates(073.2920, -07.6335, Epoch.J2000, Coordinates.RAType.Degrees);
             //Coordinates = new Coordinates(10.6833, 41.2686, Epoch.J2000, Coordinates.RAType.Degrees);
-            
-            CameraPixelSize = Settings.CameraPixelSize;
-            FocalLength = Settings.TelescopeFocalLength;
+
+            CameraPixelSize = ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize;
+            FocalLength = ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength;
 
             _statusUpdate = new Progress<ApplicationStatus>(p => Status = p);
 
@@ -57,7 +58,7 @@ namespace NINA.ViewModel {
             }, (object o) => SelectedCoordinates != null);
 
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => {
-                if(SelectedCoordinates != null) {
+                if (SelectedCoordinates != null) {
                     return await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = SelectedCoordinates });
                 }
                 return false;
@@ -66,12 +67,12 @@ namespace NINA.ViewModel {
 
             RegisterMediatorMessages();
             LoadImageCacheList();
-            
+
         }
 
         private void ClearCache(object obj) {
             var diagResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblClearCache"] + "?", "", MessageBoxButton.YesNo, MessageBoxResult.No);
-            if(diagResult == MessageBoxResult.Yes) {
+            if (diagResult == MessageBoxResult.Yes) {
                 System.IO.DirectoryInfo di = new DirectoryInfo(FRAMINGASSISTANTCACHEPATH);
 
                 foreach (FileInfo file in di.GetFiles()) {
@@ -103,7 +104,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> LoadImageFromFile() {
-            
+
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Title = Locale.Loc.Instance["LblLoadImage"];
             dialog.FileName = "";
@@ -115,7 +116,8 @@ namespace NINA.ViewModel {
 
                 BitmapSource img = null;
                 switch (Path.GetExtension(dialog.FileName)) {
-                    case ".tif": case ".tiff":
+                    case ".tif":
+                    case ".tiff":
                         img = LoadTiff(dialog.FileName);
                         break;
                     case ".png":
@@ -125,13 +127,13 @@ namespace NINA.ViewModel {
                         img = LoadJpg(dialog.FileName);
                         break;
                 }
-                
-                if(img == null) {
+
+                if (img == null) {
                     return false;
                 }
 
                 var dialogResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
-                if(dialogResult == MessageBoxResult.OK) {
+                if (dialogResult == MessageBoxResult.OK) {
                     var plateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Image = img, Progress = _statusUpdate, Token = _loadImageSource.Token, Blind = true });
                     if (plateSolveResult.Success) {
                         var rotation = 180 - plateSolveResult.Orientation;
@@ -164,12 +166,12 @@ namespace NINA.ViewModel {
                     return false;
                 }
 
-                            
+
             } else {
                 return false;
-            }            
+            }
         }
-        
+
         private BitmapSource LoadPng(string filename) {
             PngBitmapDecoder PngDec = new PngBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
             return PngDec.Frames[0];
@@ -196,7 +198,7 @@ namespace NINA.ViewModel {
             }));
 
             Mediator.Instance.Register((object o) => {
-                var cam = (ICamera)o;                
+                var cam = (ICamera)o;
                 this.CameraWidth = cam?.CameraXSize ?? this.CameraWidth;
                 this.CameraHeight = cam?.CameraYSize ?? this.CameraHeight;
             }, MediatorMessages.CameraChanged);
@@ -224,7 +226,7 @@ namespace NINA.ViewModel {
             }
             set {
                 _dSO = value;
-                _dSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), Settings.Latitude, Settings.Longitude);
+                _dSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude, ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude);
                 RaisePropertyChanged();
             }
         }
@@ -287,11 +289,11 @@ namespace NINA.ViewModel {
                 return (int)Math.Truncate(_coordinates.Dec);
             }
             set {
-                if(value < 0) {
+                if (value < 0) {
                     _coordinates.Dec = value - DecMinutes / 60.0d - DecSeconds / (60.0d * 60.0d);
                 } else {
                     _coordinates.Dec = value + DecMinutes / 60.0d + DecSeconds / (60.0d * 60.0d);
-                }                
+                }
                 RaiseCoordinatesChanged();
             }
         }
@@ -358,34 +360,34 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-        
+
         public double FieldOfView {
             get {
-                return Settings.FramingAssistantFieldOfView;
+                return ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.FieldOfView;
             }
             set {
-                Settings.FramingAssistantFieldOfView = value;
+                ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.FieldOfView = value;
                 RaisePropertyChanged();
             }
         }
-        
+
         public int CameraWidth {
             get {
-                return Settings.FramingAssistantCameraWidth;
+                return ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.CameraWidth;
             }
             set {
-                Settings.FramingAssistantCameraWidth = value;
+                ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.CameraWidth = value;
                 RaisePropertyChanged();
                 CalculateRectangle(ImageParameter);
             }
         }
-        
+
         public int CameraHeight {
             get {
-                return Settings.FramingAssistantCameraHeight;
+                return ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.CameraHeight;
             }
             set {
-                Settings.FramingAssistantCameraHeight = value;
+                ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.CameraHeight = value;
                 RaisePropertyChanged();
                 CalculateRectangle(ImageParameter);
             }
@@ -395,7 +397,7 @@ namespace NINA.ViewModel {
         public FramingAssistantSource FramingAssistantSource {
             get {
                 return _framingAssistantSource;
-            } 
+            }
             set {
                 _framingAssistantSource = value;
                 RaisePropertyChanged();
@@ -457,7 +459,7 @@ namespace NINA.ViewModel {
         private async Task<bool> LoadImageFromDSS() {
             try {
                 _statusUpdate.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
-                
+
                 var arcsecPerPix = Astrometry.ArcsecPerPixel(CameraPixelSize, FocalLength);
                 var p = new DigitalSkySurveyParameters() {
                     Coordinates = this.Coordinates,
@@ -512,7 +514,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task LoadImageFromCache() {
-            if(SelectedImageCacheInfo != null) {
+            if (SelectedImageCacheInfo != null) {
                 var img = LoadJpg(SelectedImageCacheInfo.Attribute("FileName").Value);
                 var fovW = double.Parse(SelectedImageCacheInfo.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
                 var fovH = double.Parse(SelectedImageCacheInfo.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
@@ -533,10 +535,10 @@ namespace NINA.ViewModel {
                     ImageParameter = parameter;
                 }));
             }
-            
+
         }
 
-        private void FillImageCache() {            
+        private void FillImageCache() {
             try {
                 if (!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
                     Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
@@ -567,11 +569,11 @@ namespace NINA.ViewModel {
                 ImageCacheInfo.Add(xml);
                 ImageCacheInfo.Save(FRAMINGASSISTANTCACHEINFOPATH);
                 SelectedImageCacheInfo = xml;
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);
             }
-                
+
         }
 
         private XElement _imageCacheInfo;
@@ -661,9 +663,9 @@ namespace NINA.ViewModel {
         public IAsyncCommand LoadImageCommand { get; private set; }
         public ICommand CancelLoadImageCommand { get; private set; }
         public ICommand SetSequenceCoordinatesCommand { get; private set; }
-        public IAsyncCommand SlewToCoordinatesCommand { get; private set; }        
+        public IAsyncCommand SlewToCoordinatesCommand { get; private set; }
         public IAsyncCommand RecenterCommand { get; private set; }
-        public ICommand CancelLoadImageFromFileCommand { get; private set; }        
+        public ICommand CancelLoadImageFromFileCommand { get; private set; }
         public ICommand ClearCacheCommand { get; private set; }
     }
 

@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(Profile))]
-    class MeridianFlipSettings {
+    public class MeridianFlipSettings {
 
         private bool enabled = false;
         [XmlElement(nameof(Enabled))]
@@ -43,9 +43,9 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private double settleTime = 5;
+        private int settleTime = 5;
         [XmlElement(nameof(SettleTime))]
-        public double SettleTime {
+        public int SettleTime {
             get {
                 return settleTime;
             }
@@ -63,6 +63,6 @@ namespace NINA.Utility.Profile {
             set {
                 pauseTimeBeforeMeridian = value;
             }
-        }        
+        }
     }
 }

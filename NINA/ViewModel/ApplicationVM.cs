@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,6 +18,7 @@ namespace NINA.ViewModel {
     class ApplicationVM : BaseVM {
 
         public ApplicationVM() {
+            var i = ProfileManager.Instance; //i.Save();
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);

@@ -358,6 +358,8 @@
     <Compile Include="Utility\Profile\PlateSolveSettings.cs" />
     <Compile Include="Utility\Profile\PolarAlignmentSettings.cs" />
     <Compile Include="Utility\Profile\Profile.cs" />
+    <Compile Include="Utility\Profile\ProfileManager.cs" />
+    <Compile Include="Utility\Profile\Profiles.cs" />
     <Compile Include="Utility\Profile\SequenceSettings.cs" />
     <Compile Include="Utility\Profile\TelescopeSettings.cs" />
     <Compile Include="Utility\Profile\WeatherDataSettings.cs" />

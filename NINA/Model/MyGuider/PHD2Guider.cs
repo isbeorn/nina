@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using NINA.Utility;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -173,7 +174,10 @@ namespace NINA.Model.MyGuider {
 
             try {
                 _client = new TcpClient();
-                await _client.ConnectAsync(Settings.PHD2ServerUrl, Settings.PHD2ServerPort);
+                await _client.ConnectAsync(
+                    ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerUrl,
+                    ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerPort
+                );
                 _stream = _client.GetStream();
                 RaisePropertyChanged(nameof(Connected));
                 _tokenSource = new CancellationTokenSource();
@@ -195,7 +199,7 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> Dither() {
             if (Connected) {
                 IsDithering = true;
-                await SendMessage(String.Format(PHD2Methods.DITHER, Settings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), Settings.DitherRAOnly.ToString().ToLower()));
+                await SendMessage(String.Format(PHD2Methods.DITHER, ProfileManager.Instance.ActiveProfile.GuiderSettings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), ProfileManager.Instance.ActiveProfile.GuiderSettings.DitherRAOnly.ToString().ToLower()));
             }
 
             return IsDithering;
@@ -210,10 +214,10 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> AutoSelectGuideStar() {
             if (Connected) {
-                if(AppState.State != "Looping") {
+                if (AppState.State != "Looping") {
                     await SendMessage(String.Format(PHD2Methods.LOOP));
                     await Task.Delay(TimeSpan.FromSeconds(5));
-                }                
+                }
                 await SendMessage(String.Format(PHD2Methods.AUTO_SELECT_STAR));
             }
             return true;
@@ -221,7 +225,7 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> StartGuiding() {
             if (Connected) {
-                if(AppState.State == "Guiding") { return true; }
+                if (AppState.State == "Guiding") { return true; }
                 IsCalibrating = true;
                 return await SendMessage(String.Format(PHD2Methods.GUIDE, false.ToString().ToLower()));
             } else {
@@ -230,7 +234,7 @@ namespace NINA.Model.MyGuider {
         }
 
         public async Task<bool> StopGuiding(CancellationToken token) {
-            if (Connected) {                
+            if (Connected) {
                 await SendMessage(string.Format(PHD2Methods.STOP_CAPTURE));
                 return await Task.Run<bool>(async () => {
                     while (AppState.State != "Stopped") {

@@ -1,6 +1,7 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
+using NINA.Utility.Profile;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -199,7 +200,7 @@ namespace NINA.Model {
         }
 
         //const string DSS_URL = "https://archive.stsci.edu/cgi-bin/dss_search";
-        
+
         Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
         private BitmapSource _image;
@@ -216,11 +217,11 @@ namespace NINA.Model {
                         this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
                         (size * 9.0 / 16.0).ToString(CultureInfo.InvariantCulture),
                         size.ToString(CultureInfo.InvariantCulture));*/
-                    var file = Path.Combine(Settings.SkyAtlasImageRepository, this.Name + ".gif");
+                    var file = Path.Combine(ProfileManager.Instance.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, this.Name + ".gif");
                     if (File.Exists(file)) {
                         _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                             //var img = new BitmapImage(new Uri(file));                            
-                            _image = new BitmapImage(new Uri(file)) { CacheOption = BitmapCacheOption.None, CreateOptions = BitmapCreateOptions.DelayCreation };                            
+                            _image = new BitmapImage(new Uri(file)) { CacheOption = BitmapCacheOption.None, CreateOptions = BitmapCreateOptions.DelayCreation };
                             _image.Freeze();
                             RaisePropertyChanged(nameof(Image));
                         }));
@@ -254,6 +255,6 @@ namespace NINA.Model {
             }
 
             RaisePropertyChanged(nameof(Image));
-        }*/        
+        }*/
     }
 }

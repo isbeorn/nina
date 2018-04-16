@@ -7,6 +7,7 @@ using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using NINA.ViewModel;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -59,8 +60,8 @@ namespace NINA.ViewModel {
 
         private async Task CoolCamera_Tick(IProgress<double> progress, CancellationToken token) {
 
-            
-                        
+
+
 
             double currentTemp = Cam.CCDTemperature;
             double deltaTemp = currentTemp - TargetTemp;
@@ -143,7 +144,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-                
+
 
         private bool _coolingRunning;
         public bool CoolingRunning {
@@ -177,7 +178,7 @@ namespace NINA.ViewModel {
                         CoolingRunning = true;
                         do {
                             await CoolCamera_Tick(progress, _cancelCoolCameraSource.Token);
-                            
+
                             _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
                         } while (Duration > 0);
 
@@ -200,7 +201,7 @@ namespace NINA.ViewModel {
                 }
                 return true;
             });
-            
+
 
         }
 
@@ -241,7 +242,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private readonly SemaphoreSlim ss = new SemaphoreSlim(1,1);
+        private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
         private async Task<bool> ChooseCamera() {
             await ss.WaitAsync();
             try {
@@ -249,14 +250,14 @@ namespace NINA.ViewModel {
                 _cancelUpdateCameraValues?.Cancel();
 
                 if (CameraChooserVM.SelectedDevice.Id == "No_Device") {
-                    Settings.CameraId = CameraChooserVM.SelectedDevice.Id;
+                    ProfileManager.Instance.ActiveProfile.CameraSettings.Id = CameraChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
                 Mediator.Instance.Request(new StatusUpdateMessage() {
                     Status = new ApplicationStatus() {
-                         Source = Title,
-                         Status = Locale.Loc.Instance["LblConnecting"]
+                        Source = Title,
+                        Status = Locale.Loc.Instance["LblConnecting"]
                     }
                 });
 
@@ -269,21 +270,21 @@ namespace NINA.ViewModel {
                         if (connected) {
                             this.Cam = cam;
                             Connected = true;
-                            if(Cam.CanSetCCDTemperature) {
+                            if (Cam.CanSetCCDTemperature) {
                                 TargetTemp = Cam.SetCCDTemperature;
-                            }                                
-                            
+                            }
+
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
 
                             _updateCameraValuesProgress = new Progress<Dictionary<string, object>>(UpdateCameraValues);
                             _cancelUpdateCameraValues = new CancellationTokenSource();
                             _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
 
-                            Settings.CameraId = this.Cam.Id;
-                            if(Cam.PixelSizeX > 0) {
-                                Settings.CameraPixelSize = Cam.PixelSizeX;
+                            ProfileManager.Instance.ActiveProfile.CameraSettings.Id = this.Cam.Id;
+                            if (Cam.PixelSizeX > 0) {
+                                ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize = Cam.PixelSizeX;
                                 Mediator.Instance.Notify(MediatorMessages.CameraPixelSizeChanged, Cam.PixelSizeX);
-                            }                            
+                            }
 
                             Mediator.Instance.Notify(MediatorMessages.CameraChanged, Cam);
                             return true;
@@ -310,7 +311,7 @@ namespace NINA.ViewModel {
                         Status = string.Empty
                     }
                 });
-            }            
+            }
         }
 
         private void CancelConnectCamera(object o) {
@@ -364,7 +365,7 @@ namespace NINA.ViewModel {
                     token.ThrowIfCancellationRequested();
 
                     //Update after one second + the time it takes to read the values
-                    Thread.Sleep((int)(Settings.DevicePollingInterval * 1000));
+                    Thread.Sleep((int)(ProfileManager.Instance.ActiveProfile.ApplicationSettings.DevicePollingInterval * 1000));
 
                 } while (Connected == true);
             } catch (OperationCanceledException) {
@@ -536,7 +537,7 @@ namespace NINA.ViewModel {
             Devices.Add(new NikonCamera());
 
             if (Devices.Count > 0) {
-                var items = (from device in Devices where device.Id == Settings.CameraId select device);
+                var items = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.CameraSettings.Id select device);
                 if (items.Count() > 0) {
                     SelectedDevice = items.First();
 

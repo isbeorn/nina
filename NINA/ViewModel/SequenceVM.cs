@@ -3,6 +3,7 @@ using NINA.Utility;
 using NINA.Utility.Exceptions;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace NINA.ViewModel {
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SequenceSVG"];
 
-            EstimatedDownloadTime = Settings.EstimatedDownloadTime;
+            EstimatedDownloadTime = ProfileManager.Instance.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
 
             ContentId = nameof(SequenceVM);
             AddSequenceCommand = new RelayCommand(AddSequence);
@@ -134,10 +135,10 @@ namespace NINA.ViewModel {
         private List<TimeSpan> _actualDownloadTimes = new List<TimeSpan>();
         public TimeSpan EstimatedDownloadTime {
             get {
-                return Settings.EstimatedDownloadTime;
+                return ProfileManager.Instance.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
             }
             set {
-                Settings.EstimatedDownloadTime = value;
+                ProfileManager.Instance.ActiveProfile.SequenceSettings.EstimatedDownloadTime = value;
                 RaisePropertyChanged();
                 CalculateETA();
             }
@@ -294,7 +295,7 @@ namespace NINA.ViewModel {
         private bool CheckPreconditions() {
             bool valid = true;
 
-            valid = HasWritePermission(Settings.ImageFilePath);
+            valid = HasWritePermission(ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePath);
 
             return valid;
         }
@@ -339,7 +340,7 @@ namespace NINA.ViewModel {
                     Mediator.Instance.Request(new ChangeApplicationTabMessage() { Tab = ApplicationTab.SEQUENCE });
                     var sequenceDso = new DeepSkyObject(msg.DSO.AlsoKnownAs.FirstOrDefault() ?? msg.DSO.Name ?? string.Empty, msg.DSO.Coordinates);
                     await Task.Run(() => {
-                        sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), Settings.Latitude, Settings.Longitude);
+                        sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude, ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude);
                     });
 
                     Sequence.SetSequenceTarget(sequenceDso);
@@ -358,10 +359,10 @@ namespace NINA.ViewModel {
         public CaptureSequenceList Sequence {
             get {
                 if (_sequence == null) {
-                    if(File.Exists(Settings.SequenceTemplatePath)) {
-                        _sequence = CaptureSequenceList.Load(Settings.SequenceTemplatePath);
+                    if (File.Exists(ProfileManager.Instance.ActiveProfile.SequenceSettings.TemplatePath)) {
+                        _sequence = CaptureSequenceList.Load(ProfileManager.Instance.ActiveProfile.SequenceSettings.TemplatePath);
                     }
-                    if(_sequence == null) {
+                    if (_sequence == null) {
                         /* Fallback when no template is set or load failed */
                         var seq = new CaptureSequence();
                         _sequence = new CaptureSequenceList(seq);

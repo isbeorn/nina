@@ -2,6 +2,7 @@
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -54,7 +55,7 @@ namespace NINA.PlateSolving {
         /// </summary>
         /// <returns>true: ran successfully; false: not found</returns>
         private bool StartPlatesolve2Process() {
-            var ps2locaction = Path.GetFullPath(Settings.PS2Location);
+            var ps2locaction = Path.GetFullPath(ProfileManager.Instance.ActiveProfile.PlateSolveSettings.PS2Location);
 
             if (!File.Exists(ps2locaction)) {
                 Notification.ShowError(Locale.Loc.Instance["LblPlatesolve2NotFound"] + Environment.NewLine + ps2locaction);
@@ -175,17 +176,17 @@ namespace NINA.PlateSolving {
 
                 //Extract solution coordinates
                 result = ExtractResult();
-            } catch (OperationCanceledException) {    
+            } catch (OperationCanceledException) {
 
             } catch (Exception ex) {
                 Logger.Error(ex);
             } finally {
-                if(File.Exists(TMPSOLUTIONFILEPATH)) {
+                if (File.Exists(TMPSOLUTIONFILEPATH)) {
                     File.Delete(TMPSOLUTIONFILEPATH);
                 }
-                if(File.Exists(TMPIMGFILEPATH)) {
+                if (File.Exists(TMPIMGFILEPATH)) {
                     File.Delete(TMPIMGFILEPATH);
-                }                
+                }
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 

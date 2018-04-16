@@ -9,21 +9,32 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(ApplicationSettings))]
-    class ApplicationSettings {
+    public class ApplicationSettings {
 
+
+        private string culture;
+        [XmlElement(nameof(Culture))]
+        public string Culture {
+            get {
+                return culture;
+            }
+            set {
+                culture = value;
+            }
+        }
 
         private CultureInfo language = new CultureInfo("en-GB");
-        [XmlElement(nameof(Language))]
+        [XmlIgnore()]
         public CultureInfo Language {
             get {
                 return language;
             }
             set {
-                var culture = (CultureInfo)value;
-                language = culture;
+                language = value;
+                culture = value.Name;
 
-                System.Threading.Thread.CurrentThread.CurrentUICulture = culture;
-                System.Threading.Thread.CurrentThread.CurrentCulture = culture;
+                System.Threading.Thread.CurrentThread.CurrentUICulture = language;
+                System.Threading.Thread.CurrentThread.CurrentCulture = language;
                 Locale.Loc.Instance.ReloadLocale();
             }
         }
@@ -43,7 +54,7 @@ namespace NINA.Utility.Profile {
         [XmlElement(nameof(DatabaseLocation))]
         public string DatabaseLocation {
             get {
-                return databaseLocation;
+                return Environment.ExpandEnvironmentVariables(databaseLocation);
             }
             set {
                 databaseLocation = value;

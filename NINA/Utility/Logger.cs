@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Profile;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,11 +14,11 @@ namespace NINA.Utility {
             var logDir = Path.Combine(Utility.APPLICATIONTEMPPATH, "Logs");
             LOGFILEPATH = Path.Combine(logDir, LOGDATE + " - v" + Utility.Version + " - log.txt");
 
-            if(!Directory.Exists(logDir)) {
+            if (!Directory.Exists(logDir)) {
                 Directory.CreateDirectory(logDir);
-            }   
+            }
 
-            InitiateLog();                 
+            InitiateLog();
         }
 
         private static void InitiateLog() {
@@ -52,7 +53,7 @@ namespace NINA.Utility {
         static readonly object lockObj = new object();
         static string LOGDATE;
         static string LOGFILEPATH;
-        
+
 
         private static void Append(string msg, params string[] msgParams) {
             try {
@@ -61,7 +62,7 @@ namespace NINA.Utility {
                         writer.WriteLine(string.Format(msg, msgParams));
                         writer.Close();
                     }
-                }                    
+                }
             } catch (Exception ex) {
                 Notification.Notification.ShowError(ex.Message);
             }
@@ -78,7 +79,7 @@ namespace NINA.Utility {
 
         public static void Error(
                 string customMsg,
-                Exception ex,                
+                Exception ex,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
             Error(customMsg + ex?.Message ?? string.Empty, ex?.StackTrace ?? string.Empty, memberName, sourceFilePath);
@@ -94,7 +95,7 @@ namespace NINA.Utility {
         public static void Info(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            if (Settings.LogLevel >= 1) {
+            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 1) {
                 Append(EnrichLogMessage(LogLevelEnum.INFO, message, memberName, sourceFilePath));
             }
 
@@ -103,7 +104,7 @@ namespace NINA.Utility {
         public static void Warning(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            if (Settings.LogLevel >= 2) {
+            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 2) {
                 Append(EnrichLogMessage(LogLevelEnum.WARNING, message, memberName, sourceFilePath));
             }
         }
@@ -111,7 +112,7 @@ namespace NINA.Utility {
         public static void Debug(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            if (Settings.LogLevel >= 3) {
+            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 3) {
                 Append(EnrichLogMessage(LogLevelEnum.DEBUG, message, memberName, sourceFilePath));
             }
         }
@@ -119,7 +120,7 @@ namespace NINA.Utility {
         public static void Trace(string message,
                              [CallerMemberName] string memberName = "",
                              [CallerFilePath] string sourceFilePath = "") {
-            if (Settings.LogLevel >= 4) {
+            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 4) {
                 Append(EnrichLogMessage(LogLevelEnum.TRACE, message, memberName, sourceFilePath));
             }
         }
@@ -135,6 +136,6 @@ namespace NINA.Utility {
             return sb.ToString();
         }
 
-        
+
     }
 }

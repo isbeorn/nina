@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(FocuserSettings))]
-    class FocuserSettings {
+    public class FocuserSettings {
 
         private string id = "No_Device";
         [XmlElement(nameof(Id))]

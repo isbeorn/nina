@@ -1,5 +1,6 @@
 ﻿using NINA.Model;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Profile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace NINA.Utility {
         private string _connectionString;
 
         public DatabaseInteraction() {
-            _connectionString = string.Format(@"Data Source={0};foreign keys=true;", Settings.DatabaseLocation);
+            _connectionString = string.Format(@"Data Source={0};foreign keys=true;", ProfileManager.Instance.ActiveProfile.ApplicationSettings.DatabaseLocation);
         }
 
         public async Task<ICollection<string>> GetConstellations(CancellationToken token) {
@@ -220,7 +221,7 @@ namespace NINA.Utility {
                                 dso.Constellation = reader.GetString(7);
                             }
 
-                            if(!reader.IsDBNull(8)) {
+                            if (!reader.IsDBNull(8)) {
                                 dso.SurfaceBrightness = reader.GetDouble(8);
                             }
 

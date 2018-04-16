@@ -6,6 +6,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -49,34 +50,34 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 Cam = (ICamera)o;
             }, MediatorMessages.CameraChanged);
-            
+
             Mediator.Instance.Register((object o) => {
                 _autoStretch = (bool)o;
             }, MediatorMessages.AutoStrechChanged);
             Mediator.Instance.Register((object o) => {
                 _detectStars = (bool)o;
             }, MediatorMessages.DetectStarsChanged);
-            
+
             Mediator.Instance.RegisterAsyncRequest(
                 new PlateSolveMessageHandle(async (PlateSolveMessage msg) => {
-                    if(msg.Sequence != null) {                        
-                        return await SolveWithCapture(msg.Sequence, msg.Progress, msg.Token, msg.Silent);                        
+                    if (msg.Sequence != null) {
+                        return await SolveWithCapture(msg.Sequence, msg.Progress, msg.Token, msg.Silent);
                     } else {
                         if (msg.SyncReslewRepeat) {
                             return await CaptureSolveSyncAndReslew(msg.Token, msg.Progress, msg.Silent);
                         } else {
-                            if(msg.Blind) {
+                            if (msg.Blind) {
                                 return await BlindSolve(msg.Image ?? Image, msg.Progress, msg.Token);
                             } else {
                                 return await Solve(msg.Image ?? Image, msg.Progress, msg.Token, msg.Silent);
-                            }                            
+                            }
                         }
-                        
+
                     }
-                    
+
                 })
             );
-            
+
         }
 
         private ApplicationStatus _status;
@@ -221,7 +222,7 @@ namespace NINA.ViewModel {
             if (PlateSolveResult != null && PlateSolveResult.Success) {
 
                 Coordinates solved = PlateSolveResult.Coordinates;
-                solved = solved.Transform(Settings.EpochType);  //Transform to JNow if required
+                solved = solved.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);  //Transform to JNow if required
 
                 if (Telescope.Sync(solved.RA, solved.Dec) == true) {
                     Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeSynced"]);
@@ -266,7 +267,7 @@ namespace NINA.ViewModel {
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
             Image = await Mediator.Instance.RequestAsync(new CaptureAndPrepareImageMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
-            
+
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
             Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
 
@@ -300,7 +301,7 @@ namespace NINA.ViewModel {
                             Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
                             return null;
                         }
-                        var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+                        var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                         if (SyncronizeTelescope() && SlewToTarget) {
                             await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = coords, Token = token });
                         }
@@ -329,9 +330,9 @@ namespace NINA.ViewModel {
             if (Telescope?.Connected == true) {
 
                 Coordinates solved = PlateSolveResult.Coordinates;
-                solved = solved.Transform(Settings.EpochType);
+                solved = solved.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
 
-                var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+                var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
 
                 PlateSolveResult.RaError = coords.RADegrees - solved.RADegrees;
                 PlateSolveResult.DecError = coords.Dec - solved.Dec;
@@ -354,9 +355,9 @@ namespace NINA.ViewModel {
 
             if (!result?.Success == true) {
                 MessageBoxResult dialog = MessageBoxResult.Yes;
-                if(!silent) {                    
+                if (!silent) {
                     dialog = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblUseBlindSolveFailover"], Locale.Loc.Instance["LblPlatesolveFailed"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
-                }                
+                }
                 if (dialog == MessageBoxResult.Yes) {
                     solver = GetBlindSolver(source);
                     result = await Solve(solver, source, progress, canceltoken);
@@ -383,8 +384,8 @@ namespace NINA.ViewModel {
                 return null;
             }
 
-            var result = await Solve(solver, source, progress, canceltoken);                       
-            
+            var result = await Solve(solver, source, progress, canceltoken);
+
             progress.Report(new ApplicationStatus() { Status = string.Empty });
             return result;
         }
@@ -415,11 +416,11 @@ namespace NINA.ViewModel {
             if (img != null) {
                 Coordinates coords = null;
                 if (Telescope?.Connected == true) {
-                    coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+                    coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 }
                 var binning = Cam?.BinX ?? 1;
 
-                solver = PlateSolverFactory.CreateInstance(Settings.PlateSolverType, binning, img.Width, img.Height, coords);
+                solver = PlateSolverFactory.CreateInstance(ProfileManager.Instance.ActiveProfile.PlateSolveSettings.PlateSolverType, binning, img.Width, img.Height, coords);
             }
 
             return solver;
@@ -427,11 +428,11 @@ namespace NINA.ViewModel {
 
         private IPlateSolver GetBlindSolver(BitmapSource img) {
             IPlateSolver solver = null;
-            if (img != null) {                
+            if (img != null) {
                 var binning = Cam?.BinX ?? 1;
 
                 PlateSolverEnum type;
-                if (Settings.BlindSolverType == BlindSolverEnum.LOCAL) {
+                if (ProfileManager.Instance.ActiveProfile.PlateSolveSettings.BlindSolverType == BlindSolverEnum.LOCAL) {
                     type = PlateSolverEnum.LOCAL;
                 } else {
                     type = PlateSolverEnum.ASTROMETRY_NET;

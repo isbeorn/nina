@@ -3,6 +3,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using OxyPlot;
 using OxyPlot.Axes;
 using System;
@@ -250,8 +251,8 @@ namespace NINA.ViewModel {
                         OrderByDirection.ToString());
 
 
-                    var longitude = Settings.Longitude;
-                    var latitude = Settings.Latitude;
+                    var longitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude;
+                    var latitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude;
 
                     DateTime d = GetReferenceDate(SelectedDate);
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Profile;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -42,34 +43,6 @@ namespace NINA.Utility {
                 schemas = new ColorSchemas();
                 Logger.Error("Color schema xml not found!", null);
             }
-
-            schemas.Items.Add(new ColorSchema {
-                Name = "Custom",
-                PrimaryColor = Properties.Settings.Default.PrimaryColor,
-                SecondaryColor = Properties.Settings.Default.SecondaryColor,
-                BorderColor = Properties.Settings.Default.BorderColor,
-                BackgroundColor = Properties.Settings.Default.BackgroundColor,
-                ButtonBackgroundColor = Properties.Settings.Default.ButtonBackgroundColor,
-                ButtonBackgroundSelectedColor = Properties.Settings.Default.ButtonBackgroundSelectedColor,
-                ButtonForegroundColor = Properties.Settings.Default.ButtonForegroundColor,
-                ButtonForegroundDisabledColor = Properties.Settings.Default.ButtonForegroundDisabledColor,
-                NotificationWarningColor = Properties.Settings.Default.NotificationWarningColor,
-                NotificationErrorColor = Properties.Settings.Default.NotificationErrorColor
-            });
-
-            schemas.Items.Add(new ColorSchema {
-                Name = "Alternative Custom",
-                PrimaryColor = Properties.Settings.Default.AltPrimaryColor,
-                SecondaryColor = Properties.Settings.Default.AltSecondaryColor,
-                BorderColor = Properties.Settings.Default.AltBorderColor,
-                BackgroundColor = Properties.Settings.Default.AltBackgroundColor,
-                ButtonBackgroundColor = Properties.Settings.Default.AltButtonBackgroundColor,
-                ButtonBackgroundSelectedColor = Properties.Settings.Default.AltButtonBackgroundSelectedColor,
-                ButtonForegroundColor = Properties.Settings.Default.AltButtonForegroundColor,
-                ButtonForegroundDisabledColor = Properties.Settings.Default.AltButtonForegroundDisabledColor,
-                NotificationWarningColor = Properties.Settings.Default.AltNotificationWarningColor,
-                NotificationErrorColor = Properties.Settings.Default.AltNotificationErrorColor
-            });
 
             return schemas;
         }

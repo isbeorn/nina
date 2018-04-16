@@ -3,6 +3,7 @@ using NINA.Model.MyFocuser;
 using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,7 +33,7 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsyncRequest(
                 new MoveFocuserMessageHandle(async (MoveFocuserMessage msg) => {
-                    if(msg.Absolute) {
+                    if (msg.Absolute) {
                         return await MoveFocuser(msg.Position);
                     } else {
                         return await MoveFocuserRelative(msg.Position);
@@ -101,7 +102,7 @@ namespace NINA.ViewModel {
                 _cancelUpdateFocuserValues?.Cancel();
 
                 if (FocuserChooserVM.SelectedDevice.Id == "No_Device") {
-                    Settings.FocuserId = FocuserChooserVM.SelectedDevice.Id;
+                    ProfileManager.Instance.ActiveProfile.FocuserSettings.Id = FocuserChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
@@ -127,7 +128,7 @@ namespace NINA.ViewModel {
                             _updateFocuserValuesTask = Task.Run(() => GetFocuserValues(_updateFocuserValuesProgress, _cancelUpdateFocuserValues.Token));
 
                             TargetPosition = Focuser.Position;
-                            Settings.FocuserId = Focuser.Id;
+                            ProfileManager.Instance.ActiveProfile.FocuserSettings.Id = Focuser.Id;
                             return true;
                         } else {
                             Connected = false;
@@ -173,8 +174,8 @@ namespace NINA.ViewModel {
                     p.Report(focuserValues);
 
                     token.ThrowIfCancellationRequested();
-                    
-                    Thread.Sleep((int)(Settings.DevicePollingInterval * 1000));
+
+                    Thread.Sleep((int)(ProfileManager.Instance.ActiveProfile.ApplicationSettings.DevicePollingInterval * 1000));
 
                 } while (Connected == true);
             } catch (OperationCanceledException) {
@@ -361,7 +362,7 @@ namespace NINA.ViewModel {
             }
 
             if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == Settings.FocuserId select device).FirstOrDefault();
+                var selected = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.FocuserSettings.Id select device).FirstOrDefault();
                 SelectedDevice = selected;
             }
         }

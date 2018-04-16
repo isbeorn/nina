@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(CameraSettings))]
-    class CameraSettings {
+    public class CameraSettings {
 
         private string id = "No_Device";
         [XmlElement(nameof(Id))]

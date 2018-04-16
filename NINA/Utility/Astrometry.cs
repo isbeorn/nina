@@ -1,4 +1,5 @@
 ﻿using ASCOM.Astrometry;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -190,7 +191,7 @@ namespace NINA.Utility.Astrometry {
              * Arraylist(2) - Integer - Number of set events in this 24 hour period
              * Arraylist(3) onwards - Double - Values of rise events in hours Arraylist
              * (3 + NumberOfRiseEvents) onwards - Double - Values of set events in hours*/
-            var times = AstroUtils.EventTimes(type, d, m, y, Settings.Latitude, Settings.Longitude, TimeZone.CurrentTimeZone.GetUtcOffset(date).Hours + TimeZone.CurrentTimeZone.GetUtcOffset(date).Minutes / 60.0);
+            var times = AstroUtils.EventTimes(type, d, m, y, ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude, ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude, TimeZone.CurrentTimeZone.GetUtcOffset(date).Hours + TimeZone.CurrentTimeZone.GetUtcOffset(date).Minutes / 60.0);
 
             if (times.Count > 3) {
                 int nrOfRiseEvents = (int)times[1];
@@ -274,7 +275,7 @@ namespace NINA.Utility.Astrometry {
         /// <param name="hours"></param>
         /// <returns></returns>
         public static string HoursToFitsHMS(double hours) {
-            return Utility.AscomUtil.HoursToHMS(hours).Replace(':',' ');
+            return Utility.AscomUtil.HoursToHMS(hours).Replace(':', ' ');
         }
 
         public static MoonPhase GetMoonPhase(DateTime date) {
@@ -354,7 +355,7 @@ namespace NINA.Utility.Astrometry {
     [XmlRoot(nameof(Coordinates))]
     public class Coordinates {
         private Coordinates() { }
-                
+
         public enum RAType {
             Degrees,
             Hours

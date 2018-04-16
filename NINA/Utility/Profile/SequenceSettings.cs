@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(Profile))]
-    class SequenceSettings {
+    public class SequenceSettings {
 
         private string templatePath = string.Empty;
         [XmlElement(nameof(TemplatePath))]

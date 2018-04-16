@@ -13,6 +13,7 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyTelescope;
 using NINA.Utility.Notification;
 using NINA.Utility.Mediator;
+using NINA.Utility.Profile;
 
 namespace NINA.ViewModel {
     class PolarAlignmentVM : DockableVM {
@@ -33,7 +34,7 @@ namespace NINA.ViewModel {
                 (p) => (Telescope?.Connected == true && Cam?.Connected == true));
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<ApplicationStatus>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE),
-                (p) => (Telescope?.Connected == true && Cam?.Connected == true));            
+                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
             SlewToAltitudeMeridianOffsetCommand = new AsyncCommand<bool>(
                 () => SlewToMeridianOffset(AltitudeMeridianOffset, AltitudeDeclination),
                 (p) => (Telescope?.Connected == true));
@@ -68,7 +69,7 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 Telescope = (ITelescope)o;
             }, MediatorMessages.TelescopeChanged);
-                      
+
 
             Mediator.Instance.Register((object o) => {
                 _autoStretch = (bool)o;
@@ -174,50 +175,50 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-                
+
         public IAsyncCommand SlewToAzimuthMeridianOffsetCommand { get; private set; }
         public IAsyncCommand SlewToAltitudeMeridianOffsetCommand { get; private set; }
 
         public double AzimuthMeridianOffset {
             get {
-                return Settings.AzimuthMeridianOffset;
+                return ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AzimuthMeridianOffset;
             }
 
             set {
-                Settings.AzimuthMeridianOffset = value;
+                ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AzimuthMeridianOffset = value;
                 RaisePropertyChanged();
             }
         }
 
         public double AzimuthDeclination {
             get {
-                return Settings.AzimuthDeclination;
+                return ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AzimuthDeclination;
             }
 
             set {
-                Settings.AzimuthDeclination = value;
+                ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AzimuthDeclination = value;
                 RaisePropertyChanged();
             }
         }
 
         public double AltitudeMeridianOffset {
             get {
-                return Settings.AltitudeMeridianOffset;
+                return ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AltitudeMeridianOffset;
             }
 
             set {
-                Settings.AltitudeMeridianOffset = value;
+                ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AltitudeMeridianOffset = value;
                 RaisePropertyChanged();
             }
         }
 
         public double AltitudeDeclination {
             get {
-                return Settings.AltitudeDeclination;
+                return ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AltitudeDeclination;
             }
 
             set {
-                Settings.AltitudeDeclination = value;
+                ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AltitudeDeclination = value;
                 RaisePropertyChanged();
             }
         }
@@ -265,7 +266,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-        
+
 
         public Model.MyFilterWheel.FilterInfo SnapFilter {
             get {
@@ -291,7 +292,7 @@ namespace NINA.ViewModel {
 
 
 
-        private ApplicationStatus  _altitudepolarErrorStatus;
+        private ApplicationStatus _altitudepolarErrorStatus;
         public ApplicationStatus AltitudePolarErrorStatus {
             get {
                 return _altitudepolarErrorStatus;
@@ -301,7 +302,7 @@ namespace NINA.ViewModel {
                 _altitudepolarErrorStatus = value;
                 _altitudepolarErrorStatus.Source = Title;
                 RaisePropertyChanged();
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _altitudepolarErrorStatus  });
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _altitudepolarErrorStatus });
             }
         }
 
@@ -339,14 +340,14 @@ namespace NINA.ViewModel {
             }
             set {
                 _darvStatus = value;
-                RaisePropertyChanged();                
+                RaisePropertyChanged();
             }
 
         }
 
         private async Task<bool> DarvTelescopeSlew(IProgress<string> progress, CancellationToken canceltoken) {
             return await Task.Run<bool>(async () => {
-                Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+                Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 try {
                     //wait 5 seconds for camera to have a starting indicator
                     await Task.Delay(TimeSpan.FromSeconds(5), canceltoken);
@@ -399,7 +400,7 @@ namespace NINA.ViewModel {
                     Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
                     Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
 
-                    var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);                   
+                    var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                     var capture = Mediator.Instance.RequestAsync(new CapturePrepareAndSaveImageMessage() { Sequence = seq, Save = false, Progress = cameraprogress, Token = _cancelDARVSlewToken.Token });
                     var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken.Token);
 
@@ -456,7 +457,7 @@ namespace NINA.ViewModel {
                     string msg = "";
 
                     if (direction == Direction.ALTITUDE) {
-                        if (Settings.HemisphereType == Hemisphere.NORTHERN) {
+                        if (ProfileManager.Instance.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.NORTHERN) {
 
                             if (AltitudeSiteType == AltitudeSite.EAST) {
                                 if (poleErr < 0) {
@@ -490,7 +491,7 @@ namespace NINA.ViewModel {
 
                     } else if (direction == Direction.AZIMUTH) {
                         //if northern
-                        if (Settings.HemisphereType == Hemisphere.NORTHERN) {
+                        if (ProfileManager.Instance.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.NORTHERN) {
                             if (poleErr < 0) {
                                 msg = poleErrString + " too east";
                             } else {
@@ -509,7 +510,7 @@ namespace NINA.ViewModel {
                     progress.Report(new ApplicationStatus() { Status = msg });
 
                 } catch (OperationCanceledException) {
-                    
+
                 }
 
                 /*  Altitude
@@ -533,7 +534,7 @@ namespace NINA.ViewModel {
         private async Task<double> CalculatePoleError(IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
 
 
-            Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, Settings.EpochType, Coordinates.RAType.Hours);
+            Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
             double poleError = double.NaN;
             try {
 
@@ -555,12 +556,12 @@ namespace NINA.ViewModel {
                 }
 
                 Coordinates startSolve = PlateSolveResult.Coordinates;
-                startSolve = startSolve.Transform(Settings.EpochType);
+                startSolve = startSolve.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
 
 
 
 
-                Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, Settings.EpochType, Coordinates.RAType.Hours);
+                Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 progress.Report(new ApplicationStatus() { Status = "Slewing..." });
                 await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = targetPosition, Token = canceltoken });
 
@@ -588,7 +589,7 @@ namespace NINA.ViewModel {
                 }
 
                 Coordinates targetSolve = PlateSolveResult.Coordinates;
-                targetSolve = targetSolve.Transform(Settings.EpochType);
+                targetSolve = targetSolve.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
 
                 var decError = startSolve.Dec - targetSolve.Dec;
                 // Calculate pole error
@@ -627,13 +628,13 @@ namespace NINA.ViewModel {
                 var polaris = new Coordinates(ascomutil.HMSToHours("02:31:49.09456"), ascomutil.DMSToDegrees("89:15:50.7923"), Epoch.J2000, Coordinates.RAType.Hours);
                 polaris = polaris.Transform(Epoch.JNOW);
 
-                var lst = Astrometry.GetLocalSiderealTimeNow(Settings.Longitude);
+                var lst = Astrometry.GetLocalSiderealTimeNow(ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude);
                 var hour_angle = Astrometry.GetHourAngle(lst, polaris.RA);
 
                 Rotation = -Astrometry.HoursToDegrees(hour_angle);
                 HourAngleTime = ascomutil.HoursToHMS(hour_angle);
 
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 Logger.Error(ex);
             }
 

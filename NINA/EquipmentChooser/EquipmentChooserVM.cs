@@ -2,6 +2,7 @@
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
+using NINA.Utility.Profile;
 using NINA.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -59,7 +60,7 @@ namespace NINA.EquipmentChooser {
             }
 
             if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == Settings.FilterWheelId select device).First();
+                var selected = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.FilterWheelSettings.Id select device).First();
                 SelectedDevice = selected;
             }
         }
@@ -78,7 +79,7 @@ namespace NINA.EquipmentChooser {
             }
 
             if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == Settings.TelescopeId select device).First();
+                var selected = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.TelescopeSettings.Id select device).First();
                 SelectedDevice = selected;
             }
         }
@@ -194,7 +195,7 @@ namespace NINA.EquipmentChooser {
 
 
             if (Devices.Count > 0) {
-                var items = (from device in Devices where device.Id == Settings.CameraId select device);
+                var items = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.CameraSettings.Id select device);
                 if (items.Count() > 0) {
                     SelectedDevice = items.First();
 

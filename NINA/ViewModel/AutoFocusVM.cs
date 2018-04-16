@@ -4,6 +4,7 @@ using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using OxyPlot;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace NINA.ViewModel {
             StartAutoFocusCommand = new AsyncCommand<bool>(
                 () =>
                     Task.Run(
-                        
+
                         async () => {
                             _autoFocusCancelToken = new CancellationTokenSource();
                             return await StartAutoFocus(null, _autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
@@ -34,7 +35,7 @@ namespace NINA.ViewModel {
                 (p) => { return _focuserConnected && _cameraConnected; }
             );
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
-                       
+
             Mediator.Instance.Register((object o) => _focuserConnected = (bool)o, MediatorMessages.FocuserConnectedChanged);
             Mediator.Instance.Register((object o) => _cameraConnected = (bool)o, MediatorMessages.CameraConnectedChanged);
             Mediator.Instance.Register((object o) => _temperature = (double)o, MediatorMessages.FocuserTemperatureChanged);
@@ -44,10 +45,10 @@ namespace NINA.ViewModel {
                     return await StartAutoFocus(msg.Filter, msg.Token, msg.Progress);
                 })
             );
-            
+
         }
 
-        
+
 
         private CancellationTokenSource _autoFocusCancelToken;
         private AsyncObservableCollection<DataPoint> _focusPoints;
@@ -100,14 +101,14 @@ namespace NINA.ViewModel {
         }
 
 
-                
+
         private int _focusPosition;
         private bool _focuserConnected;
         private bool _cameraConnected;
         private double _temperature;
 
         private async Task GetFocusPoints(FilterInfo filter, int nrOfSteps, IProgress<ApplicationStatus> progress, CancellationToken token, int offset = 0) {
-            var stepSize = Settings.FocuserAutoFocusStepSize;
+            var stepSize = ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusStepSize;
             if (offset != 0) {
                 //Move to initial position
                 _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset * stepSize, Absolute = false, Token = token });
@@ -121,8 +122,8 @@ namespace NINA.ViewModel {
                 token.ThrowIfCancellationRequested();
 
                 Logger.Trace("Starting Exposure for autofocus");
-                double expTime = Settings.FocuserAutoFocusExposureTime;
-                if(filter != null && filter.AutoFocusExposureTime > 0) {
+                double expTime = ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusExposureTime;
+                if (filter != null && filter.AutoFocusExposureTime > 0) {
                     expTime = filter.AutoFocusExposureTime;
                 }
                 var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
@@ -134,7 +135,7 @@ namespace NINA.ViewModel {
                 source = await ImageControlVM.StretchAsync(iarr, source);
                 var analysis = new ImageAnalysis(source, iarr);
                 await analysis.DetectStarsAsync(progress, token);
-                
+
                 token.ThrowIfCancellationRequested();
 
                 FocusPoints.AddSorted(new DataPoint(_focusPosition, analysis.AverageHFR), comparer);
@@ -155,12 +156,12 @@ namespace NINA.ViewModel {
             LeftTrend = new TrendLine(leftTrendPoints);
             RightTrend = new TrendLine(rightTrendPoints);
         }
-        
+
         private async Task<bool> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (!(_focuserConnected && _cameraConnected)) {
                 Notification.ShowError(Locale.Loc.Instance["LblAutoFocusGearNotConnected"]);
                 return false;
-            }            
+            }
 
             Logger.Trace("Starting Autofocus");
             FocusPoints.Clear();
@@ -171,7 +172,7 @@ namespace NINA.ViewModel {
                 await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Pause = true });
 
 
-                var offsetSteps = Settings.FocuserAutoFocusInitialOffsetSteps;
+                var offsetSteps = ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
                 var offset = offsetSteps;
 
                 var nrOfSteps = offsetSteps + 1;

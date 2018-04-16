@@ -17,13 +17,13 @@ namespace NINA.Utility {
                 NINA.Properties.Settings.Default.Save();
             }
 
-            ColorSchemas = ColorSchemas.ReadColorSchemas();
+            //ColorSchemas = ColorSchemas.ReadColorSchemas();
 
-            System.Threading.Thread.CurrentThread.CurrentUICulture = Language;
-            System.Threading.Thread.CurrentThread.CurrentCulture = Language;
+            //System.Threading.Thread.CurrentThread.CurrentUICulture = Language;
+            //System.Threading.Thread.CurrentThread.CurrentCulture = Language;
         }
 
-        public static CultureInfo Language {
+        /*public static CultureInfo Language {
             get {
                 return (CultureInfo)Properties.Settings.Default.Language;
             }
@@ -547,8 +547,9 @@ namespace NINA.Utility {
                     Properties.Settings.Default.Save();
                 }
             }
-        }
+        }*/
 
+        /*
         public static bool AutoMeridianFlip {
             get {
                 return Properties.Settings.Default.AutoMeridianFlip;
@@ -639,6 +640,7 @@ namespace NINA.Utility {
             }
         }
 
+        
         public static Color NotificationWarningColor {
             get {
                 return ColorSchema.NotificationWarningColor;
@@ -813,11 +815,11 @@ namespace NINA.Utility {
 
         public static NINA.Utility.ObserveAllCollection<Model.MyFilterWheel.FilterInfo> FilterWheelFilters {
             get {
-                if(Properties.Settings.Default.FilterWheelFilters == null) {
+                if (Properties.Settings.Default.FilterWheelFilters == null) {
                     FilterWheelFilters = new ObserveAllCollection<FilterInfo>();
                     for (short i = 0; i < 8; i++) {
-                        FilterWheelFilters.Add(new FilterInfo(Locale.Loc.Instance["LblFilter"] + (i+1), 0, i, 0));
-                    }                    
+                        FilterWheelFilters.Add(new FilterInfo(Locale.Loc.Instance["LblFilter"] + (i + 1), 0, i, 0));
+                    }
                 }
                 return Properties.Settings.Default.FilterWheelFilters;
             }
@@ -945,7 +947,7 @@ namespace NINA.Utility {
                 Properties.Settings.Default.AltitudeDeclination = value;
                 Properties.Settings.Default.Save();
             }
-        }
+        }*/
 
 
     }

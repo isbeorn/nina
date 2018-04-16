@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using NINA.Utility.Profile;
 
 namespace NINA.Model.MyTelescope {
     class AscomTelescope : BaseINPC, ITelescope, IDisposable {
@@ -66,7 +67,7 @@ namespace NINA.Model.MyTelescope {
                 return val;
             }
         }
-        
+
         public bool CanSetSiteLatLong {
             get {
                 return _canSetSiteLatLong;
@@ -309,7 +310,7 @@ namespace NINA.Model.MyTelescope {
 
         public Coordinates Coordinates {
             get {
-                return new Coordinates(RightAscension, Declination, Settings.EpochType, Coordinates.RAType.Hours);
+                return new Coordinates(RightAscension, Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
             }
         }
 
@@ -1086,7 +1087,7 @@ namespace NINA.Model.MyTelescope {
             get {
                 var hourstomed = double.MaxValue;
                 try {
-                    hourstomed = RightAscension + (Settings.MinutesAfterMeridian / 60) - SiderealTime;
+                    hourstomed = RightAscension + (ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian / 60) - SiderealTime;
                     if (hourstomed < 0) {
                         hourstomed += 24;
                     }

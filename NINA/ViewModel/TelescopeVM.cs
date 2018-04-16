@@ -5,6 +5,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace NINA.ViewModel {
             StopSlewCommand = new RelayCommand(StopSlew);
 
             _updateTelescope = new DispatcherTimer();
-            _updateTelescope.Interval = TimeSpan.FromMilliseconds((int)(Settings.DevicePollingInterval * 1000));
+            _updateTelescope.Interval = TimeSpan.FromMilliseconds((int)(ProfileManager.Instance.ActiveProfile.ApplicationSettings.DevicePollingInterval * 1000));
             _updateTelescope.Tick += UpdateTelescope_Tick;
 
             Mediator.Instance.RegisterRequest(
@@ -73,9 +74,9 @@ namespace NINA.ViewModel {
             if (Telescope?.Connected == true) {
                 string command = string.Empty;
                 if (start) {
-                    command = Settings.TelescopeSnapPortStart;
+                    command = ProfileManager.Instance.ActiveProfile.TelescopeSettings.SnapPortStart;
                 } else {
-                    command = Settings.TelescopeSnapPortStop;
+                    command = ProfileManager.Instance.ActiveProfile.TelescopeSettings.SnapPortStop;
                 }
                 _telescope?.SendCommandString(command);
                 return true;
@@ -139,7 +140,7 @@ namespace NINA.ViewModel {
                 _updateTelescope.Stop();
 
                 if (TelescopeChooserVM.SelectedDevice.Id == "No_Device") {
-                    Settings.TelescopeId = TelescopeChooserVM.SelectedDevice.Id;
+                    ProfileManager.Instance.ActiveProfile.TelescopeSettings.Id = TelescopeChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
@@ -159,17 +160,17 @@ namespace NINA.ViewModel {
                         if (connected) {
                             Telescope = telescope;
 
-                            if(Telescope.CanSetSiteLatLong && (Telescope.SiteLatitude != Settings.Latitude || Telescope.SiteLongitude != Settings.Longitude)) {
-                                if(MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblSyncLatLongText"], Locale.Loc.Instance["LblSyncLatLong"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
-                                    Telescope.SiteLatitude = Settings.Latitude;
-                                    Telescope.SiteLongitude = Settings.Longitude;
+                            if (Telescope.CanSetSiteLatLong && (Telescope.SiteLatitude != ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude || Telescope.SiteLongitude != ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude)) {
+                                if (MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblSyncLatLongText"], Locale.Loc.Instance["LblSyncLatLong"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
+                                    Telescope.SiteLatitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude;
+                                    Telescope.SiteLongitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude;
                                 }
                             }
-                            
+
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
                             _updateTelescope.Start();
-                            Settings.TelescopeId = Telescope.Id;
+                            ProfileManager.Instance.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
                             return true;
                         } else {
                             Telescope = null;
@@ -190,7 +191,7 @@ namespace NINA.ViewModel {
                         Status = string.Empty
                     }
                 });
-            } 
+            }
         }
 
         private void CancelChooseTelescope(object o) {
@@ -198,7 +199,7 @@ namespace NINA.ViewModel {
         }
 
         CancellationTokenSource _cancelChooseTelescopeSource;
- 
+
         private void DisconnectTelescope(object obj) {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
@@ -326,7 +327,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> SlewToCoordinatesAsync(Coordinates coords) {
-            coords = coords.Transform(Settings.EpochType);
+            coords = coords.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
             if (Telescope?.Connected == true) {
                 await Task.Run(() => {
                     Telescope.SlewToCoordinates(coords.RA, coords.Dec);
@@ -338,7 +339,7 @@ namespace NINA.ViewModel {
         }
 
         private void SlewToCoordinates(Coordinates coords) {
-            coords = coords.Transform(Settings.EpochType);
+            coords = coords.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
             if (Telescope?.Connected == true) {
                 Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
             }
@@ -392,7 +393,7 @@ namespace NINA.ViewModel {
             }
 
             if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == Settings.TelescopeId select device).First();
+                var selected = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.TelescopeSettings.Id select device).First();
                 SelectedDevice = selected;
             }
         }

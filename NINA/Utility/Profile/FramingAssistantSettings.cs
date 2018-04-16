@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(WeatherDataSettings))]
-    class FramingAssistantSettings {
+    public class FramingAssistantSettings {
         private int cameraHeight = 3500;
         [XmlElement(nameof(CameraHeight))]
         public int CameraHeight {

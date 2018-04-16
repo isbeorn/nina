@@ -9,8 +9,8 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(AstrometrySettings))]
-    class AstrometrySettings {
-        
+    public class AstrometrySettings {
+
         private Epoch epochType = Epoch.JNOW;
         [XmlElement(nameof(EpochType))]
         public Epoch EpochType {

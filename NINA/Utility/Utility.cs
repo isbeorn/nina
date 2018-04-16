@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using NINA.Utility.Profile;
 using nom.tam.fits;
 using nom.tam.util;
 using System;
@@ -45,11 +46,11 @@ namespace NINA.Utility {
         /// <param name="patterns">KeyValue Collection of Makro -> Makrovalue</param>
         /// <returns></returns>
         public static string GetImageFileString(ICollection<ViewModel.OptionsVM.ImagePattern> patterns) {
-            string s = Settings.ImageFilePattern;
+            string s = ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePattern;
             foreach (ViewModel.OptionsVM.ImagePattern p in patterns) {
                 s = s.Replace(p.Key, p.Value);
             }
-	    s = Path.Combine(s.Split(PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries));
+            s = Path.Combine(s.Split(PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries));
             return s;
         }
 
@@ -160,7 +161,7 @@ namespace NINA.Utility {
                     request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/x-www-form-urlencoded";
                     request.Method = "POST";
-                    
+
                     using (var streamWriter = new StreamWriter(request.GetRequestStream())) {
                         streamWriter.Write(body);
                         streamWriter.Flush();
@@ -203,15 +204,15 @@ namespace NINA.Utility {
                             bitmap.EndInit();
                             bitmap.Freeze();
                         }
-                    } catch(WebException ex) {
-                        if(ex.Status == WebExceptionStatus.RequestCanceled) {
+                    } catch (WebException ex) {
+                        if (ex.Status == WebExceptionStatus.RequestCanceled) {
                             throw new OperationCanceledException();
                         } else {
                             throw ex;
                         }
                     }
-                    
-                }                
+
+                }
             }
             return bitmap;
         }
