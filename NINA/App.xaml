@@ -6,7 +6,7 @@
     xmlns:util="clr-namespace:NINA.Utility"
     xmlns:vm="clr-namespace:NINA.ViewModel"
     DispatcherUnhandledException="Application_DispatcherUnhandledException"
-    StartupUri="MainWindow.xaml">
+    StartupUri="MainWindow.xaml" Exit="Application_Exit">
     <Application.Resources>
         <ResourceDictionary>
 

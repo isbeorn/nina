@@ -1,4 +1,5 @@
 ﻿using NINA.Utility;
+using NINA.Utility.Profile;
 using NINA.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -17,18 +18,27 @@ namespace NINA {
             Logger.Error(e.Exception);
 
             var result = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblApplicationInBreakMode"], Locale.Loc.Instance["LblUnhandledException"], MessageBoxButton.YesNo, MessageBoxResult.No);
-            if(result == MessageBoxResult.Yes) {
+            if (result == MessageBoxResult.Yes) {
                 e.Handled = true;
-            } else { 
+            } else {
                 var appvm = (ApplicationVM)this.Resources["AppVM"];
                 try {
                     appvm.DisconnectEquipment();
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     Logger.Error(ex);
-                }            
+                }
                 e.Handled = true;
                 Application.Current.Shutdown();
             }
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e) {
+            try {
+                ProfileManager.Instance.Save();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
         }
     }
 }

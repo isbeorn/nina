@@ -18,16 +18,13 @@ namespace NINA.Locale {
         private Loc() {
 
 
-            ReloadLocale();
-
-
         }
 
-        public void ReloadLocale() {
+        public void ReloadLocale(string culture) {
             try {
-                _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + ProfileManager.Instance.ActiveProfile.ApplicationSettings.Language.Name + ".xaml", UriKind.Relative) };
+                _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + culture + ".xaml", UriKind.Relative) };
             } catch (System.IO.IOException) {
-                // Fallback to default locale if setting is invalid
+                //    Fallback to default locale if setting is invalid
                 _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };
             }
 #if DEBUG
@@ -52,6 +49,9 @@ namespace NINA.Locale {
 
         public string this[string key] {
             get {
+                if (_locale == null) {
+                    ReloadLocale("en-GB");
+                }
                 return _locale[key]?.ToString() ?? "MISSING LABEL " + key;
             }
         }

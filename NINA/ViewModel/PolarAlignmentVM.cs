@@ -77,6 +77,13 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 _detectStars = (bool)o;
             }, MediatorMessages.DetectStarsChanged);
+
+            Mediator.Instance.Register((o) => {
+                RaisePropertyChanged(nameof(AzimuthMeridianOffset));
+                RaisePropertyChanged(nameof(AzimuthDeclination));
+                RaisePropertyChanged(nameof(AltitudeMeridianOffset));
+                RaisePropertyChanged(nameof(AltitudeDeclination));
+            }, MediatorMessages.ProfileChanged);
         }
 
         private ApplicationStatus _status;

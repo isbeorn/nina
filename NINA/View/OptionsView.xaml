@@ -26,17 +26,82 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
-                            <RowDefinition Height="40" />
+                            <RowDefinition Height="45" />
                         </Grid.RowDefinitions>
 
-                        <ListView ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}">
+                        <DataGrid
+                            AutoGenerateColumns="False"
+                            CanUserAddRows="False"
+                            HorizontalScrollBarVisibility="Disabled"
+                            ItemsSource="{Binding Profiles}"
+                            SelectedItem="{Binding SelectedProfile}"
+                            VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn
+                                    Width="*"
+                                    CanUserSort="False"
+                                    Header="{ns:Loc LblActive}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox
+                                                Width="20"
+                                                Height="20"
+                                                HorizontalAlignment="Center"
+                                                IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"
+                                                IsEnabled="False"
+                                                Style="{StaticResource CheckmarkAndEmptyCheckbox}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn
+                                    Width="3*"
+                                    CanUserSort="False"
+                                    Header="{ns:Loc LblName}">
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <TextBox
+                                                Margin="5,0,5,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding Name}"
+                                                TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                Margin="5,0,5,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding Name}"
+                                                TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn
+                                    Width="3*"
+                                    CanUserSort="False"
+                                    Header="{ns:Loc LblId}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                Margin="5,0,5,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding Id}"
+                                                TextAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!--<ListView ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="{ns:Loc LblName}" />
                                     <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="{ns:Loc LblId}" />
+                                    <GridViewColumn DisplayMemberBinding="{Binding IsActive}" Header="{ns:Loc LblActive}" />
                                 </GridView>
                             </ListView.View>
-                        </ListView>
+                        </ListView>-->
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <Button
                                 Width="40"
@@ -50,11 +115,11 @@
                             </Button>
                             <Button
                                 Grid.Column="1"
-                                Width="40"
+                                Width="100"
                                 Margin="0,5,0,5"
                                 Command="{Binding SelectProfileCommand}">
                                 <Button.Content>
-                                    <TextBlock Text="{ns:Loc LoadProfile}" />
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
                                 </Button.Content>
                             </Button>
                         </StackPanel>

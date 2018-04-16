@@ -8,16 +8,12 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(Profile))]
-    public class Profile {
+    public class Profile : BaseINPC {
         public Profile() {
             this.name = "Default";
         }
         public Profile(string name) {
             this.name = name;
-        }
-
-        private void Save() {
-
         }
 
         private Guid id = Guid.NewGuid();
@@ -39,6 +35,19 @@ namespace NINA.Utility.Profile {
             }
             set {
                 name = value;
+            }
+        }
+
+
+        private bool isActive;
+        [XmlIgnore()]
+        public bool IsActive {
+            get {
+                return isActive;
+            }
+            set {
+                isActive = value;
+                RaisePropertyChanged();
             }
         }
 

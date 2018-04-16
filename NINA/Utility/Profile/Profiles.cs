@@ -9,13 +9,13 @@ using System.Xml.Serialization;
 namespace NINA.Utility.Profile {
     [Serializable()]
     [XmlRoot(nameof(Profiles))]
-    public class Profiles {
+    public class Profiles : BaseINPC {
         public Profiles() {
-            ProfileList = new ObservableCollection<Profile>();
+            ProfileList = new ObserveAllCollection<Profile>();
         }
 
-        [XmlElement(nameof(Profiles))]
-        public ObservableCollection<Profile> ProfileList { get; set; }
+        [XmlElement(nameof(Profile))]
+        public ObserveAllCollection<Profile> ProfileList { get; set; }
 
         private Guid activeProfileId;
         [XmlAttribute(nameof(ActiveProfileId))]
@@ -44,13 +44,15 @@ namespace NINA.Utility.Profile {
         }
 
         public void SelectActiveProfile() {
-            var p = this.ProfileList.FirstOrDefault((x) => x.Id == ActiveProfileId);
-            this.ActiveProfile = p;
+            SelectProfile(ActiveProfileId);
         }
 
         public void SelectProfile(Guid id) {
+            if (this.ActiveProfile != null) this.ActiveProfile.IsActive = false;
+
             var p = this.ProfileList.FirstOrDefault((x) => x.Id == id);
             this.ActiveProfile = p;
+            this.ActiveProfile.IsActive = true;
             this.ActiveProfileId = p.Id;
         }
     }

@@ -26,7 +26,7 @@ namespace NINA.Utility.Profile {
         public Profiles Profiles { get; set; }
 
         public void Add() {
-            Profiles.Add(new Profile("Profile"));
+            Profiles.Add(new Profile("Profile" + (Profiles.ProfileList.Count + 1)));
         }
 
         public void Save() {
@@ -70,15 +70,11 @@ namespace NINA.Utility.Profile {
         }
 
         public void SelectProfile(Guid guid) {
+            Save();
             Profiles.SelectProfile(guid);
 
 
             Mediator.Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
-
-            System.Threading.Thread.CurrentThread.CurrentUICulture = ActiveProfile.ApplicationSettings.Language;
-            System.Threading.Thread.CurrentThread.CurrentCulture = ActiveProfile.ApplicationSettings.Language;
-            Locale.Loc.Instance.ReloadLocale();
-
             Mediator.Mediator.Instance.Notify(MediatorMessages.ProfileChanged, null);
         }
 

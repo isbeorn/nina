@@ -20,6 +20,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 culture = value;
+                Language = new CultureInfo(value);
             }
         }
 
@@ -35,7 +36,7 @@ namespace NINA.Utility.Profile {
 
                 System.Threading.Thread.CurrentThread.CurrentUICulture = language;
                 System.Threading.Thread.CurrentThread.CurrentCulture = language;
-                Locale.Loc.Instance.ReloadLocale();
+                Locale.Loc.Instance.ReloadLocale(culture);
             }
         }
 

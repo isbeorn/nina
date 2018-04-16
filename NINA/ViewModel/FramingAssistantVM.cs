@@ -68,6 +68,16 @@ namespace NINA.ViewModel {
             RegisterMediatorMessages();
             LoadImageCacheList();
 
+
+
+            Mediator.Instance.Register((o) => {
+                RaisePropertyChanged(nameof(CameraPixelSize));
+                RaisePropertyChanged(nameof(FocalLength));
+                RaisePropertyChanged(nameof(FieldOfView));
+                RaisePropertyChanged(nameof(CameraWidth));
+                RaisePropertyChanged(nameof(CameraHeight));
+            }, MediatorMessages.ProfileChanged);
+
         }
 
         private void ClearCache(object obj) {

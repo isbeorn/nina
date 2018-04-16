@@ -28,9 +28,9 @@ namespace NINA.Utility.Profile {
             get {
                 if (filterWheelFilters == null) {
                     filterWheelFilters = new ObserveAllCollection<FilterInfo>();
-                    for (short i = 0; i < 8; i++) {
+                    /*for (short i = 0; i < 8; i++) {
                         filterWheelFilters.Add(new FilterInfo(Locale.Loc.Instance["LblFilter"] + (i + 1), 0, i, 0));
-                    }
+                    }*/
                 }
                 return filterWheelFilters;
             }
