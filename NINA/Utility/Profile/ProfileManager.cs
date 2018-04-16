@@ -76,6 +76,10 @@ namespace NINA.Utility.Profile {
 
             Mediator.Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             Mediator.Mediator.Instance.Notify(MediatorMessages.ProfileChanged, null);
+
+            System.Threading.Thread.CurrentThread.CurrentUICulture = ActiveProfile.ApplicationSettings.Language;
+            System.Threading.Thread.CurrentThread.CurrentCulture = ActiveProfile.ApplicationSettings.Language;
+            Locale.Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
         }
 
         private void LoadDefaultProfile() {
