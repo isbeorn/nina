@@ -85,7 +85,7 @@ namespace NINA.Utility.Profile {
         private void LoadDefaultProfile() {
             Profiles = new Profiles();
             Profiles.Add(new Profile("Default"));
-            Profiles.SelectProfile(Profiles.ProfileList[0].Id);
+            SelectProfile(Profiles.ProfileList[0].Id);
         }
 
         public IEnumerable<Profile> GetProfiles() {
