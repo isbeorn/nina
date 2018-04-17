@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Mediator;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -44,7 +45,16 @@ namespace NINA.Utility.Profile {
         }
 
         public void SelectActiveProfile() {
-            SelectProfile(ActiveProfileId);
+            var id = ActiveProfileId;
+            if(id == Guid.Empty) {
+                var p = this.ProfileList.Where((x) => x.IsActive = true).FirstOrDefault();
+                if(p == null) {
+                    id = this.ProfileList[0].Id;
+                } else {
+                    id = p.Id;
+                }
+            }
+            SelectProfile(id);
         }
 
         public void SelectProfile(Guid id) {
@@ -54,6 +64,13 @@ namespace NINA.Utility.Profile {
             this.ActiveProfile = p;
             this.ActiveProfile.IsActive = true;
             this.ActiveProfileId = p.Id;
+
+            Mediator.Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
+            Mediator.Mediator.Instance.Notify(MediatorMessages.ProfileChanged, null);
+
+            System.Threading.Thread.CurrentThread.CurrentUICulture = ActiveProfile.ApplicationSettings.Language;
+            System.Threading.Thread.CurrentThread.CurrentCulture = ActiveProfile.ApplicationSettings.Language;
+            Locale.Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
         }
     }
 }
