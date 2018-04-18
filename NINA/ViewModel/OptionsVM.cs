@@ -35,7 +35,9 @@ namespace NINA.ViewModel {
             AddFilterCommand = new RelayCommand(AddFilter);
             RemoveFilterCommand = new RelayCommand(RemoveFilter);
             AddProfileCommand = new RelayCommand(AddProfile);
-            SelectProfileCommand = new RelayCommand(SelectProfile);
+            SelectProfileCommand = new RelayCommand(SelectProfile, (o) => {
+                return SelectedProfile != null;
+            });
 
 
             ImagePatterns = CreateImagePatternList();

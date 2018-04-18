@@ -121,6 +121,16 @@
                                 <Button.Content>
                                     <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
                                 </Button.Content>
+                                <Button.IsEnabled>
+                                    <MultiBinding Converter="{StaticResource InverseMultiBooleanANDConverter}" FallbackValue="True">
+                                        <Binding Path="CameraVM.Connected" Source="{StaticResource AppVM}" />
+                                        <Binding Path="FilterWheelVM.FW.Connected" Source="{StaticResource AppVM}" />
+                                        <Binding Path="FocuserVM.Connected" Source="{StaticResource AppVM}" />
+                                        <Binding Path="TelescopeVM.Telescope.Connected" Source="{StaticResource AppVM}" />
+                                        <Binding Path="GuiderVM.Guider.Connected" Source="{StaticResource AppVM}" />
+                                    </MultiBinding>
+
+                                </Button.IsEnabled>
                             </Button>
                         </StackPanel>
                     </Grid>

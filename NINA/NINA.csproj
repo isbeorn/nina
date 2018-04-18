@@ -320,6 +320,7 @@
     <Compile Include="Utility\Converters\InverseNullToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\MinusOneToEmptyStringConverter.cs" />
     <Compile Include="Utility\Converters\MoonPhaseToGeometryConverter.cs" />
+    <Compile Include="Utility\Converters\InverseMultiBooleanANDConverter.cs" />
     <Compile Include="Utility\Converters\MultiMarginConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityConverter.cs" />
