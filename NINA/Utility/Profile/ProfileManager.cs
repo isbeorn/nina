@@ -86,6 +86,16 @@ namespace NINA.Utility.Profile {
             SelectProfile(Profiles.ProfileList[0].Id);
         }
 
+        internal void RemoveProfile(Guid id) {
+            if(id != ActiveProfile.Id) {
+                var p = Profiles.ProfileList.Where((x) => x.Id == id).FirstOrDefault();
+                if (p != null) {
+                    Profiles.ProfileList.Remove(p);
+                    Save();
+                }
+            }
+        }
+
         public IEnumerable<Profile> GetProfiles() {
             return Profiles.ProfileList;
         }
