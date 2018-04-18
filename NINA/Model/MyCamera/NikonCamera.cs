@@ -108,7 +108,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private Dictionary<eNkMAIDCapability, NkMAIDCapInfo> Capabilities = new Dictionary<eNkMAIDCapability, NkMAIDCapInfo>(); 
+        private Dictionary<eNkMAIDCapability, NkMAIDCapInfo> Capabilities = new Dictionary<eNkMAIDCapability, NkMAIDCapInfo>();
 
         private void GetShutterSpeeds() {
             Logger.Debug("Getting Nikon shutter speeds");
@@ -521,25 +521,23 @@ namespace NINA.Model.MyCamera {
             if (Connected) {
                 Logger.Debug("Prepare start of exposure: " + exposureTime);
                 _downloadExposure = new TaskCompletionSource<object>();
+                
+                if (exposureTime <= 30.0) {
+                    Logger.Debug("Exposuretime <= 30. Setting automatic shutter speed.");
+                    var speed = _shutterSpeeds.Aggregate((x, y) => Math.Abs(x.Value - exposureTime) < Math.Abs(y.Value - exposureTime) ? x : y);
+                    SetCameraShutterSpeed(speed.Key);
 
-                var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
-
-                if (Settings.CameraBulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
-                    Logger.Debug("Use Telescope Snap Port");
-
-                    BulbCapture(exposureTime, RequestSnapPortCaptureStart, RequestSnapPortCaptureStop);
-                } else if (Settings.CameraBulbMode == CameraBulbModeEnum.SERIALPORT) {
-                    Logger.Debug("Use Serial Port for camera");
-
-                    BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
+                    Logger.Debug("Start capture");
+                    _camera.Capture();
                 } else {
-                    if (exposureTime <= 30.0) {
-                        Logger.Debug("Exposuretime <= 30. Setting automatic shutter speed.");
-                        var speed = _shutterSpeeds.Aggregate((x, y) => Math.Abs(x.Value - exposureTime) < Math.Abs(y.Value - exposureTime) ? x : y);
-                        SetCameraShutterSpeed(speed.Key);
+                    if (Settings.CameraBulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
+                        Logger.Debug("Use Telescope Snap Port");
 
-                        Logger.Debug("Start capture");
-                        _camera.Capture();
+                        BulbCapture(exposureTime, RequestSnapPortCaptureStart, RequestSnapPortCaptureStop);
+                    } else if (Settings.CameraBulbMode == CameraBulbModeEnum.SERIALPORT) {
+                        Logger.Debug("Use Serial Port for camera");
+
+                        BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
                     } else {
                         Logger.Debug("Use Bulb capture");
                         BulbCapture(exposureTime, StartBulbCapture, StopBulbCapture);
@@ -587,7 +585,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private void BulbCapture(double exposureTime, Action capture, Action stopCapture) {
-            
+
 
             SetCameraToManual();
 
@@ -610,7 +608,7 @@ namespace NINA.Model.MyCamera {
 
                 Logger.Debug("Restore previous shutter speed");
                 // Restore original shutter speed
-                SetCameraShutterSpeed(_prevShutterSpeed);                
+                SetCameraShutterSpeed(_prevShutterSpeed);
             });
         }
 
@@ -627,7 +625,8 @@ namespace NINA.Model.MyCamera {
             terminate.ulParameter1 = 0;
             terminate.ulParameter2 = 0;
 
-            unsafe {
+            unsafe
+            {
                 IntPtr terminatePointer = new IntPtr(&terminate);
 
                 _camera.Start(
@@ -662,7 +661,7 @@ namespace NINA.Model.MyCamera {
                 }
             } else {
                 Logger.Debug("Cannot set to manual mode. Skipping...");
-            }            
+            }
         }
 
         private int _prevShutterSpeed;
@@ -677,7 +676,7 @@ namespace NINA.Model.MyCamera {
             } else {
                 Logger.Debug("Cannot set camera shutter speed. Skipping...");
             }
-            
+
         }
 
         public void StopExposure() {
