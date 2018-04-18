@@ -49,7 +49,7 @@
                                                 HorizontalAlignment="Center"
                                                 IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"
                                                 IsEnabled="False"
-                                                Style="{StaticResource CheckmarkAndEmptyCheckbox}" />
+                                                Style="{StaticResource BorderlessCheckmarkAndEmptyCheckbox}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
