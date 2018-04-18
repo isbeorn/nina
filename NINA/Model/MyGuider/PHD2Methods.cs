@@ -30,15 +30,15 @@ namespace NINA.Model.MyGuider {
         /// 3: SETTLE TIME: int - minimum time to be in-range before considering guiding to be stable
         /// 4: SETTLE TIMEOUT: int - time limit before settling is considered to have failed
         /// </summary>
-        public static string DITHER = "{{\"method\": \"dither\", \"params\": [{0}, {1}, {{\"pixels\": 1.5, \"time\": 8, \"timeout\": 40}}], \"id\": " + PHD2EventId.DITHER + "}}\r\n";
+        public static string DITHER = "{{\"method\": \"dither\", \"params\": [{0}, {1}, {{\"pixels\": 1.5, \"time\": 8, \"timeout\": 40}}], \"id\": " + PHD2EventId.DITHER + "}}" + Environment.NewLine;
 
 
-        public static string LOOP = "{{\"method\": \"loop\", \"id\": " + PHD2EventId.LOOP + "}}\r\n";
+        public static string LOOP = "{\"method\": \"loop\", \"id\": " + PHD2EventId.LOOP + "}" + Environment.NewLine;
 
-        public static string STOP_CAPTURE = "{{\"method\": \"stop_capture\", \"id\": " + PHD2EventId.STOP_CAPTURE + "}}\r\n";
+        public static string STOP_CAPTURE = "{\"method\": \"stop_capture\", \"id\": " + PHD2EventId.STOP_CAPTURE + "}" + Environment.NewLine;
         
 
-        public static string AUTO_SELECT_STAR = "{{\"method\": \"find_star\", \"id\": " + PHD2EventId.AUTO_SELECT_STAR + "}}\r\n";
+        public static string AUTO_SELECT_STAR = "{\"method\": \"find_star\", \"id\": " + PHD2EventId.AUTO_SELECT_STAR + "}" + Environment.NewLine;
 
         /// <summary>
         /// 0: RECALIBRATE: true/false
@@ -48,27 +48,27 @@ namespace NINA.Model.MyGuider {
         /// 3: SETTLE TIMEOUT: int - time limit before settling is considered to have failed
         /// 
         /// </summary>
-        public static string GUIDE = "{{\"method\": \"guide\", \"params\": [{{\"pixels\": 1.5, \"time\": 8, \"timeout\": 60}}, {0}], \"id\": " + PHD2EventId.GUIDE + "}}\r\n";
+        public static string GUIDE = "{{\"method\": \"guide\", \"params\": [{{\"pixels\": 1.5, \"time\": 8, \"timeout\": 60}}, {0}], \"id\": " + PHD2EventId.GUIDE + "}}" + Environment.NewLine;
 
-        public static string CLEAR_CALIBRATION = "{\"method\": \"clear_calibration\", \"params\": [\"both\"], \"id\": " + PHD2EventId.CLEAR_CALIBRATION + "}}\r\n";
-
-
-        public static string PAUSE = "{{\"method\": \"set_paused\", \"params\": [{0}], \"id\": " + PHD2EventId.PAUSE + "}}\r\n";
-
-        public static string GET_STAR_IMAGE = "{\"method\": \"get_star_image\",\"id\": " + PHD2EventId.GET_STAR_IMAGE + "}\r\n";
-
-        public static string GET_PIXEL_SCALE = "{\"method\": \"get_pixel_scale\",\"id\": " + PHD2EventId.GET_PIXEL_SCALE + "}\r\n";
+        public static string CLEAR_CALIBRATION = "{\"method\": \"clear_calibration\", \"params\": [\"both\"], \"id\": " + PHD2EventId.CLEAR_CALIBRATION + "}" + Environment.NewLine;
 
 
-        public static string GET_EXPOSURE = "{\"method\": \"get_exposure\",\"id\": " + PHD2EventId.GET_EXPOSURE + "}\r\n";
-        public static string GET_APP_STATE = "{\"method\": \"get_app_state\",\"id\": " + PHD2EventId.GET_APP_STATE + "}\r\n";
+        public static string PAUSE = "{{\"method\": \"set_paused\", \"params\": [{0}], \"id\": " + PHD2EventId.PAUSE + "}}" + Environment.NewLine;
+
+        public static string GET_STAR_IMAGE = "{\"method\": \"get_star_image\",\"id\": " + PHD2EventId.GET_STAR_IMAGE + "}" + Environment.NewLine;
+
+        public static string GET_PIXEL_SCALE = "{\"method\": \"get_pixel_scale\",\"id\": " + PHD2EventId.GET_PIXEL_SCALE + "}" + Environment.NewLine;
 
 
+        public static string GET_EXPOSURE = "{\"method\": \"get_exposure\",\"id\": " + PHD2EventId.GET_EXPOSURE + "}" + Environment.NewLine;
+        public static string GET_APP_STATE = "{\"method\": \"get_app_state\",\"id\": " + PHD2EventId.GET_APP_STATE + "}" + Environment.NewLine;
 
 
 
 
-        //public static string AUTO_SELECT_STAR = "{\"method\": \"\", \"params\": [\"\"], \"id\": }\r\n"
+
+
+        //public static string AUTO_SELECT_STAR = "{\"method\": \"\", \"params\": [\"\"], \"id\": }" + Environment.NewLine
 
     }
 }

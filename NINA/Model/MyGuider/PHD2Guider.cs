@@ -211,10 +211,10 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> AutoSelectGuideStar() {
             if (Connected) {
                 if(AppState.State != "Looping") {
-                    await SendMessage(String.Format(PHD2Methods.LOOP));
+                    await SendMessage(PHD2Methods.LOOP);
                     await Task.Delay(TimeSpan.FromSeconds(5));
                 }                
-                await SendMessage(String.Format(PHD2Methods.AUTO_SELECT_STAR));
+                await SendMessage(PHD2Methods.AUTO_SELECT_STAR);
             }
             return true;
         }
@@ -231,7 +231,7 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> StopGuiding(CancellationToken token) {
             if (Connected) {                
-                await SendMessage(string.Format(PHD2Methods.STOP_CAPTURE));
+                await SendMessage(PHD2Methods.STOP_CAPTURE);
                 return await Task.Run<bool>(async () => {
                     while (AppState.State != "Stopped") {
                         await Task.Delay(1000, token);
