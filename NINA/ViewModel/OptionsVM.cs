@@ -288,6 +288,10 @@ namespace NINA.ViewModel {
             }
             set {
                 ProfileManager.Instance.ActiveProfile.ApplicationSettings.Language = value;
+
+                System.Threading.Thread.CurrentThread.CurrentUICulture = Language;
+                System.Threading.Thread.CurrentThread.CurrentCulture = Language;
+                Locale.Loc.Instance.ReloadLocale(Language.Name);
                 RaisePropertyChanged();
             }
         }
