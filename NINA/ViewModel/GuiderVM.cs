@@ -100,7 +100,7 @@ namespace NINA.ViewModel {
         private async Task<bool> Resume(CancellationToken token) {
             if (Guider?.Connected == true) {
                 await Guider?.Pause(false, token);
-                await Utility.Utility.Wait(TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.GuiderSettings.GuiderSettleTime), token);
+                await Utility.Utility.Wait(TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.GuiderSettings.SettleTime), token);
                 return true;
             } else {
                 return false;
