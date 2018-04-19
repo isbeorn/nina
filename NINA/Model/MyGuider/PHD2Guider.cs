@@ -19,7 +19,6 @@ namespace NINA.Model.MyGuider {
     public class PHD2Guider : BaseINPC, IGuider {
 
         public PHD2Guider() {
-            Paused = false;
         }
 
 
@@ -114,16 +113,6 @@ namespace NINA.Model.MyGuider {
             }
         }
 
-        private bool _paused;
-        public bool Paused {
-            get {
-                return _paused;
-            }
-            set {
-                _paused = value;
-            }
-        }
-
         private CancellationTokenSource _clientCTS;
 
         private static object lockobj = new object();
@@ -142,15 +131,6 @@ namespace NINA.Model.MyGuider {
         }
 
         private bool _isDithering;
-        public bool IsDithering {
-            get {
-                return _isDithering;
-            }
-            set {
-                _isDithering = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private double _pixelScale;
         public double PixelScale {
@@ -159,17 +139,6 @@ namespace NINA.Model.MyGuider {
             }
             set {
                 _pixelScale = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _isCalibrating;
-        public bool IsCalibrating {
-            get {
-                return _isCalibrating;
-            }
-            set {
-                _isCalibrating = value;
                 RaisePropertyChanged();
             }
         }
@@ -188,7 +157,8 @@ namespace NINA.Model.MyGuider {
                 StartListener();
                 connected = await _tcs.Task;
 
-                //await SendMessage(PHD2Methods.GET_PIXEL_SCALE);                
+                var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
+                PixelScale = double.Parse(resp.jsonrpc, CultureInfo.InvariantCulture);
 
                 Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
 
@@ -201,38 +171,87 @@ namespace NINA.Model.MyGuider {
             return connected;
         }
 
-        public async Task<bool> Dither() {
+        public async Task<bool> Dither(CancellationToken ct) {
             if (Connected) {
-                IsDithering = true;
-                await SendMessage(String.Format(PHD2Methods.DITHER, Settings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), Settings.DitherRAOnly.ToString().ToLower()));
-            }
+                _isDithering = true;
+                await SendMessage(PHD2EventId.DITHER, string.Format(PHD2Methods.DITHER, Settings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), Settings.DitherRAOnly.ToString().ToLower()));
 
-            return IsDithering;
-        }
+                await Task.Run<bool>(async () => {
+                    var elapsed = new TimeSpan();
+                    while (_isDithering == true) {
+                        elapsed += await Utility.Utility.Delay(500, ct);
 
-        public async Task<bool> Pause(bool pause) {
-            if (Connected) {
-                await SendMessage(String.Format(PHD2Methods.PAUSE, pause.ToString().ToLower()));
+                        if (elapsed.TotalSeconds > 120) {
+                            //Failsafe when phd is not sending settlingdone message
+                            Notification.ShowWarning(Locale.Loc.Instance["LblGuiderNoSettleDone"]);
+                            _isDithering = false;
+                        }
+                    }
+                    return true;
+                });
             }
             return true;
+        }
+
+        public async Task<bool> Pause(bool pause, CancellationToken ct) {
+            if (Connected) {
+                await SendMessage(PHD2EventId.PAUSE, string.Format(PHD2Methods.PAUSE, pause.ToString().ToLower()));
+
+                if (pause) {
+                    var elapsed = new TimeSpan();
+                    while (!(AppState.State == PhdAppState.PAUSED)) {                        
+                        elapsed += await Utility.Utility.Delay(500, ct);
+                    }
+                } else {
+                    var elapsed = new TimeSpan();
+                    while ((AppState.State == PhdAppState.PAUSED)) {
+                        elapsed += await Utility.Utility.Delay(500, ct);
+                        if (elapsed.TotalSeconds > 60) {
+                            //Failsafe when phd is not sending resume message
+                            Notification.ShowWarning(Locale.Loc.Instance["LblGuiderNoResume"]/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);
+                            break;
+                        }
+                    }
+                }
+
+                
+            }
+            return true;
+        }
+
+        private void CheckPhdError(PhdMethodResponse m) {
+            if(m.error != null) {
+                Notification.ShowError("PHDError: " + m.error.message + "\n CODE: " + m.error.code);
+                Logger.Warning("PHDError: " + m.error.message + " CODE: " + m.error.code);
+            }
         }
 
         public async Task<bool> AutoSelectGuideStar() {
             if (Connected) {
-                if (AppState.State != "Looping") {
-                    await SendMessage(PHD2Methods.LOOP);
+                if (AppState.State != PhdAppState.LOOPING) {
+                    await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);                    
                     await Task.Delay(TimeSpan.FromSeconds(5));
                 }
-                await SendMessage(PHD2Methods.AUTO_SELECT_STAR);
+
+                await SendMessage(PHD2EventId.AUTO_SELECT_STAR, PHD2Methods.AUTO_SELECT_STAR);
+
+                return true;
             }
-            return true;
+            return false;
         }
 
-        public async Task<bool> StartGuiding() {
+        public async Task<bool> StartGuiding(CancellationToken ct) {
             if (Connected) {
-                if (AppState.State == "Guiding") { return true; }
-                IsCalibrating = true;
-                return await SendMessage(String.Format(PHD2Methods.GUIDE, false.ToString().ToLower()));
+                if (AppState.State == PhdAppState.GUIDING) { return true; }
+                if(!(AppState.State == PhdAppState.CALIBRATING)) { 
+                    await SendMessage(PHD2EventId.GUIDE, string.Format(PHD2Methods.GUIDE, false.ToString().ToLower()));
+                }
+                return await Task.Run<bool>(async () => {
+                    while (AppState.State != PhdAppState.GUIDING) {
+                        await Task.Delay(1000, ct);
+                    }
+                    return true;
+                });
             } else {
                 return false;
             }
@@ -240,9 +259,10 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> StopGuiding(CancellationToken token) {
             if (Connected) {
-                await SendMessage(PHD2Methods.STOP_CAPTURE);
+                await SendMessage(PHD2EventId.STOP_CAPTURE , PHD2Methods.STOP_CAPTURE);
+                
                 return await Task.Run<bool>(async () => {
-                    while (AppState.State != "Stopped") {
+                    while (AppState.State != PhdAppState.STOPPED) {
                         await Task.Delay(1000, token);
                     }
                     return true;
@@ -252,7 +272,7 @@ namespace NINA.Model.MyGuider {
             }
         }
 
-        private async Task<bool> SendMessage(string msg) {
+        private async Task<PhdMethodResponse> SendMessage(string msgId, string msg) {
 
             using (var client = new TcpClient()) {
                 try {
@@ -267,19 +287,16 @@ namespace NINA.Model.MyGuider {
                         string line;
                         while ((line = reader.ReadLine()) != null) {
                             JObject o = JObject.Parse(line);
-                            JToken t = o.GetValue("Event");
-                            string phdevent = "";
+                            string phdevent = "";                            
+                            var t = o.GetValue("id");
                             if (t != null) {
                                 phdevent = t.ToString();
-                            } else {
-                                t = o.GetValue("id");
-                                if (t != null) {
-                                    phdevent = t.ToString();
-                                }
-                            }
+                            }                            
 
-                            if (phdevent == PHD2EventId.GET_PIXEL_SCALE) {
-
+                            if (phdevent == msgId) {
+                                var response = o.ToObject<PhdMethodResponse>();
+                                CheckPhdError(response);
+                                return response;
                             }
                         }
                     }
@@ -288,23 +305,7 @@ namespace NINA.Model.MyGuider {
 
                 }
             }
-
-
-            /*
-                    if (Connected) {
-                // Translate the passed message into ASCII and store it as a byte array.
-                Byte[] data = new Byte[10240];
-                data = System.Text.Encoding.ASCII.GetBytes(msg);
-
-                // Get a client stream for reading and writing.
-                // Stream stream = client.GetStream();
-
-                // Send the message to the connected TcpServer.     
-
-                await _client.GetStream().WriteAsync(data, 0, data.Length);
-                
-            }*/
-            return true;
+            return null;
         }
 
         public bool Disconnect() {
@@ -315,7 +316,6 @@ namespace NINA.Model.MyGuider {
         private void ProcessEvent(string phdevent, JObject message) {
             switch (phdevent) {
                 case "Resumed": {
-                        Paused = false;
                         break;
                     }
                 case "Version": {
@@ -345,8 +345,7 @@ namespace NINA.Model.MyGuider {
                 case "SettleDone": {
                         GuidingDithered = null;
                         Settling = null;
-                        IsDithering = false;
-                        IsCalibrating = false;
+                        _isDithering = false;
                         SettleDone = message.ToObject<PhdEventSettleDone>();
                         if (SettleDone.Error != null) {
                             Notification.ShowError("PHD2 Error: " + SettleDone.Error);
@@ -355,7 +354,6 @@ namespace NINA.Model.MyGuider {
                     }
                 case "Paused": {
                         AppState = new PhdEventAppState() { State = "Paused" };
-                        Paused = true;
                         break;
                     }
                 case "StartCalibration": {
@@ -428,7 +426,7 @@ namespace NINA.Model.MyGuider {
                         Logger.Error(ex);
                         Notification.ShowError("PHD2 Error: " + ex.Message);
                     } finally {
-                        IsDithering = false;
+                        _isDithering = false;
                         Connected = false;
                         _tcs.TrySetResult(false);
                     }
@@ -516,6 +514,16 @@ namespace NINA.Model.MyGuider {
                     RaisePropertyChanged();
                 }
             }
+        }
+
+        public sealed class PhdAppState {
+            public static readonly string STOPPED = "Stopped";
+            public static readonly string SELECTED = "Selected";
+            public static readonly string CALIBRATING = "Calibrating";
+            public static readonly string GUIDING = "Guiding";
+            public static readonly string LOSTLOCK = "LostLock";
+            public static readonly string PAUSED = "Paused";
+            public static readonly string LOOPING = "Looping";
         }
 
         public class PhdEventCalibrationFailed : PhdEvent {
