@@ -90,8 +90,8 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Pause(CancellationToken token) {
-            if (Guider?.Connected == true) {
-                return await Guider?.Pause(true);
+            if(Guider?.Connected == true) {
+                return await Guider?.Pause(true, token);
             } else {
                 return false;
             }
@@ -99,18 +99,8 @@ namespace NINA.ViewModel {
 
         private async Task<bool> Resume(CancellationToken token) {
             if (Guider?.Connected == true) {
-                await Guider?.Pause(false);
-
-                var elapsed = new TimeSpan();
-                while (Guider?.Paused == true) {
-                    elapsed += await Utility.Utility.Delay(500, token);
-                    if (elapsed.TotalSeconds > 60) {
-                        //Failsafe when phd is not sending resume message
-                        Notification.ShowWarning(Locale.Loc.Instance["LblGuiderNoResume"]/*, ToastNotifications.NotificationsSource.NeverEndingNotification*/);
-                        break;
-                    }
-                }
-                await Utility.Utility.Wait(TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.GuiderSettings.SettleTime), token);
+                await Guider?.Pause(false, token);
+                await Utility.Utility.Wait(TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.GuiderSettings.GuiderSettleTime), token);
                 return true;
             } else {
                 return false;
@@ -205,14 +195,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StartGuiding(CancellationToken token) {
             if (Guider?.Connected == true) {
-                await Guider.StartGuiding();
-                return await Task.Run<bool>(async () => {
-                    while (Guider?.IsCalibrating == true) {
-                        await Task.Delay(1000, token);
-                    }
-                    return true;
-                });
-
+                return await Guider.StartGuiding(token);
             } else {
                 return false;
             }
@@ -229,21 +212,9 @@ namespace NINA.ViewModel {
         private async Task<bool> Dither(CancellationToken token) {
             if (Guider?.Connected == true) {
                 Mediator.Instance.Request(new StatusUpdateMessage() { Status = new Model.ApplicationStatus() { Status = Locale.Loc.Instance["LblDither"], Source = Title } });
-                await Guider.Dither();
-                return await Task.Run<bool>(async () => {
-                    var elapsed = new TimeSpan();
-                    while (Guider?.IsDithering == true) {
-                        elapsed += await Utility.Utility.Delay(500, token);
-
-                        if (elapsed.TotalSeconds > 60) {
-                            //Failsafe when phd is not sending settlingdone message
-                            Notification.ShowWarning(Locale.Loc.Instance["LblGuiderNoSettleDone"]);
-                            Guider.IsDithering = false;
-                        }
-                    }
-                    Mediator.Instance.Request(new StatusUpdateMessage() { Status = new Model.ApplicationStatus() { Status = string.Empty, Source = Title } });
-                    return true;
-                });
+                await Guider?.Dither(token);
+                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new Model.ApplicationStatus() { Status = string.Empty, Source = Title } });
+                return true;
             } else {
                 return false;
             }

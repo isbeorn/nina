@@ -522,25 +522,23 @@ namespace NINA.Model.MyCamera {
             if (Connected) {
                 Logger.Debug("Prepare start of exposure: " + exposureTime);
                 _downloadExposure = new TaskCompletionSource<object>();
+                
+                if (exposureTime <= 30.0) {
+                    Logger.Debug("Exposuretime <= 30. Setting automatic shutter speed.");
+                    var speed = _shutterSpeeds.Aggregate((x, y) => Math.Abs(x.Value - exposureTime) < Math.Abs(y.Value - exposureTime) ? x : y);
+                    SetCameraShutterSpeed(speed.Key);
 
-                var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
-
-                if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
-                    Logger.Debug("Use Telescope Snap Port");
-
-                    BulbCapture(exposureTime, RequestSnapPortCaptureStart, RequestSnapPortCaptureStop);
-                } else if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.SERIALPORT) {
-                    Logger.Debug("Use Serial Port for camera");
-
-                    BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
+                    Logger.Debug("Start capture");
+                    _camera.Capture();
                 } else {
-                    if (exposureTime <= 30.0) {
-                        Logger.Debug("Exposuretime <= 30. Setting automatic shutter speed.");
-                        var speed = _shutterSpeeds.Aggregate((x, y) => Math.Abs(x.Value - exposureTime) < Math.Abs(y.Value - exposureTime) ? x : y);
-                        SetCameraShutterSpeed(speed.Key);
+                    if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
+                        Logger.Debug("Use Telescope Snap Port");
 
-                        Logger.Debug("Start capture");
-                        _camera.Capture();
+                        BulbCapture(exposureTime, RequestSnapPortCaptureStart, RequestSnapPortCaptureStop);
+                    } else if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.SERIALPORT) {
+                        Logger.Debug("Use Serial Port for camera");
+
+                        BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
                     } else {
                         Logger.Debug("Use Bulb capture");
                         BulbCapture(exposureTime, StartBulbCapture, StopBulbCapture);
@@ -628,7 +626,8 @@ namespace NINA.Model.MyCamera {
             terminate.ulParameter1 = 0;
             terminate.ulParameter2 = 0;
 
-            unsafe {
+            unsafe
+            {
                 IntPtr terminatePointer = new IntPtr(&terminate);
 
                 _camera.Start(

@@ -9,19 +9,17 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyGuider {
     interface IGuider : INotifyPropertyChanged {
         bool Connected { get; }
-        bool Paused { get; }
-        bool IsDithering { get; set; }
-        bool IsCalibrating { get; set; }
         double PixelScale { get; set; }
+        string State { get; }
         IGuideStep GuideStep { get; }
 
         Task<bool> Connect();
         Task<bool> AutoSelectGuideStar();
         bool Disconnect();
-        Task<bool> Pause(bool pause);
-        Task<bool> StartGuiding();
-        Task<bool> StopGuiding(CancellationToken token);
-        Task<bool> Dither();
+        Task<bool> Pause(bool pause, CancellationToken ct);
+        Task<bool> StartGuiding(CancellationToken ct);
+        Task<bool> StopGuiding(CancellationToken ct);
+        Task<bool> Dither(CancellationToken ct);
     }
 
     public interface IGuideEvent {

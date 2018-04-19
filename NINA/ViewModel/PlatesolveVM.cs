@@ -64,7 +64,7 @@ namespace NINA.ViewModel {
                         return await SolveWithCapture(msg.Sequence, msg.Progress, msg.Token, msg.Silent);
                     } else {
                         if (msg.SyncReslewRepeat) {
-                            return await CaptureSolveSyncAndReslew(msg.Token, msg.Progress, msg.Silent);
+                            return await CaptureSolveSyncAndReslew(true, true, msg.Token, msg.Progress, msg.Silent);
                         } else {
                             if (msg.Blind) {
                                 return await BlindSolve(msg.Image ?? Image, msg.Progress, msg.Token);
@@ -278,7 +278,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<ApplicationStatus> progress) {
             _solveCancelToken = new CancellationTokenSource();
-            return await this.CaptureSolveSyncAndReslew(_solveCancelToken.Token, progress) != null;
+            return await this.CaptureSolveSyncAndReslew(this.SyncScope, this.SlewToTarget, _solveCancelToken.Token, progress) != null;
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="progress"></param>
         /// <returns></returns>
-        private async Task<PlateSolveResult> CaptureSolveSyncAndReslew(CancellationToken token, IProgress<ApplicationStatus> progress, bool silent = false) {
+        private async Task<PlateSolveResult> CaptureSolveSyncAndReslew(bool syncScope, bool slewToTarget, CancellationToken token, IProgress<ApplicationStatus> progress, bool silent = false) {
             PlateSolveResult solveresult = null;
             bool repeatPlateSolve = false;
             do {
@@ -296,13 +296,13 @@ namespace NINA.ViewModel {
                 solveresult = await SolveWithCapture(seq, progress, token, silent);
 
                 if (solveresult != null && solveresult.Success) {
-                    if (SyncScope) {
+                    if (syncScope) {
                         if (Telescope?.Connected != true) {
                             Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
                             return null;
                         }
                         var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
-                        if (SyncronizeTelescope() && SlewToTarget) {
+                        if (SyncronizeTelescope() && slewToTarget) {
                             await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = coords, Token = token });
                         }
                     }

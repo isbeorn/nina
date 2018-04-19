@@ -224,9 +224,9 @@ namespace NINA.ViewModel {
                     var actualFilter = Mediator.Instance.Request(new GetCurrentFilterInfoMessage());
                     short prevFilterPosition = actualFilter?.Position ?? -1;
                     while ((seq = Sequence.Next()) != null) {
-                        Stopwatch seqDuration = Stopwatch.StartNew();
                         await CheckMeridianFlip(seq, ct, progress);
 
+                        Stopwatch seqDuration = Stopwatch.StartNew();
                         //Autofocus on filter change
                         if (seq.FilterType != null && seq.FilterType.Position != prevFilterPosition
                                 && seq.FilterType.Position >= 0

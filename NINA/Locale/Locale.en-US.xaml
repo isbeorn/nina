@@ -594,4 +594,5 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblId">Id</s:String>
     <s:String x:Key="LblRemoveProfileText">Should the Profile with name: {0} and id: {1} be removed?</s:String>
     <s:String x:Key="LblRemoveProfileCaption">Remove Profile?</s:String>
+    <s:String x:Key="LblPhd2ServerConnectionLost">PHD2 Server Connection lost!</s:String>
 </ResourceDictionary>
