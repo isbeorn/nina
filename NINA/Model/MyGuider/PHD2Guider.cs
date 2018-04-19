@@ -168,8 +168,12 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> Dither(CancellationToken ct) {
             if (Connected) {
                 _isDithering = true;
-                await SendMessage(PHD2EventId.DITHER, string.Format(PHD2Methods.DITHER, Settings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), Settings.DitherRAOnly.ToString().ToLower()));
-
+                var ditherMsg = await SendMessage(PHD2EventId.DITHER, string.Format(PHD2Methods.DITHER, Settings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), Settings.DitherRAOnly.ToString().ToLower()));
+                if (ditherMsg.error != null) {
+                    /* Dither failed */
+                    _isDithering = false;
+                    return false;
+                }
                 await Task.Run<bool>(async () => {
                     var elapsed = new TimeSpan();
                     while (_isDithering == true) {
@@ -238,7 +242,11 @@ namespace NINA.Model.MyGuider {
             if (Connected) {
                 if (AppState.State == PhdAppState.GUIDING) { return true; }
                 if (!(AppState.State == PhdAppState.CALIBRATING)) {
-                    await SendMessage(PHD2EventId.GUIDE, string.Format(PHD2Methods.GUIDE, false.ToString().ToLower()));
+                    var guideMsg = await SendMessage(PHD2EventId.GUIDE, string.Format(PHD2Methods.GUIDE, false.ToString().ToLower()));
+                    if (guideMsg.error != null) {
+                        /* Guide start failed */
+                        return false;
+                    }
                 }
                 return await Task.Run<bool>(async () => {
                     while (AppState.State != PhdAppState.GUIDING) {
@@ -253,7 +261,11 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> StopGuiding(CancellationToken token) {
             if (Connected) {
-                await SendMessage(PHD2EventId.STOP_CAPTURE, PHD2Methods.STOP_CAPTURE);
+                var stopCapture = await SendMessage(PHD2EventId.STOP_CAPTURE, PHD2Methods.STOP_CAPTURE);
+                if (stopCapture.error != null) {
+                    /*stop capture failed */
+                    return false;
+                }
 
                 return await Task.Run<bool>(async () => {
                     while (AppState.State != PhdAppState.STOPPED) {
