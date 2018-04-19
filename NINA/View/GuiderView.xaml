@@ -101,7 +101,7 @@
                                         VerticalAlignment="Center"
                                         Columns="2">
                                         <TextBlock Text="{ns:Loc LblState}" />
-                                        <TextBlock Margin="5,0,0,0" Text="{Binding Guider.AppState.State}" />
+                                        <TextBlock Margin="5,0,0,0" Text="{Binding Guider.State}" />
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>

@@ -10,6 +10,7 @@ namespace NINA.Model.MyGuider {
     interface IGuider : INotifyPropertyChanged {
         bool Connected { get; }
         double PixelScale { get; set; }
+        string State { get; }
         IGuideStep GuideStep { get; }
 
         Task<bool> Connect();

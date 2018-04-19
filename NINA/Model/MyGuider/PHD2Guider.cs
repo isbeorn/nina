@@ -56,6 +56,7 @@ namespace NINA.Model.MyGuider {
             set {
                 _appState = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(State));
             }
         }
 
@@ -141,6 +142,12 @@ namespace NINA.Model.MyGuider {
             set {
                 _pixelScale = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public string State {
+            get {
+                return AppState?.State ?? string.Empty;
             }
         }
 
@@ -444,6 +451,8 @@ namespace NINA.Model.MyGuider {
                         Notification.ShowError("PHD2 Error: " + ex.Message);
                     } finally {
                         _isDithering = false;
+                        AppState = new PhdEventAppState() { State = "" };
+                        PixelScale = 0.0d;
                         Connected = false;
                         _tcs.TrySetResult(false);
                     }
