@@ -588,4 +588,5 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblAzimuthErrorMeasurement">Measure Azimuth Error</s:String>
     <s:String x:Key="LblAltitudeErrorMeasurement">Measure Altitude Error</s:String>
     <s:String x:Key="LblTelescopeControl">Telescope Control</s:String>
+    <s:String x:Key="LblPhd2ServerConnectionLost">PHD2 Server Connection lost!</s:String>
 </ResourceDictionary>

@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -152,22 +153,15 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> Connect() {
             bool connected = false;
-            try {
-                _tcs = new TaskCompletionSource<bool>();
-                StartListener();
-                connected = await _tcs.Task;
+            _tcs = new TaskCompletionSource<bool>();
+            StartListener();
+            connected = await _tcs.Task;
 
-                var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
-                PixelScale = double.Parse(resp.jsonrpc, CultureInfo.InvariantCulture);
+            var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
+            PixelScale = double.Parse(resp.jsonrpc, CultureInfo.InvariantCulture);
 
-                Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
+            Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
 
-            } catch (SocketException e) {
-
-                Notification.ShowError("PHD2 Error: " + e.Message);
-
-                //System.Windows.MessageBox.Show(e.Message);
-            }
             return connected;
         }
 
@@ -199,7 +193,7 @@ namespace NINA.Model.MyGuider {
 
                 if (pause) {
                     var elapsed = new TimeSpan();
-                    while (!(AppState.State == PhdAppState.PAUSED)) {                        
+                    while (!(AppState.State == PhdAppState.PAUSED)) {
                         elapsed += await Utility.Utility.Delay(500, ct);
                     }
                 } else {
@@ -214,13 +208,13 @@ namespace NINA.Model.MyGuider {
                     }
                 }
 
-                
+
             }
             return true;
         }
 
         private void CheckPhdError(PhdMethodResponse m) {
-            if(m.error != null) {
+            if (m.error != null) {
                 Notification.ShowError("PHDError: " + m.error.message + "\n CODE: " + m.error.code);
                 Logger.Warning("PHDError: " + m.error.message + " CODE: " + m.error.code);
             }
@@ -229,7 +223,7 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> AutoSelectGuideStar() {
             if (Connected) {
                 if (AppState.State != PhdAppState.LOOPING) {
-                    await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);                    
+                    await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);
                     await Task.Delay(TimeSpan.FromSeconds(5));
                 }
 
@@ -243,7 +237,7 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> StartGuiding(CancellationToken ct) {
             if (Connected) {
                 if (AppState.State == PhdAppState.GUIDING) { return true; }
-                if(!(AppState.State == PhdAppState.CALIBRATING)) { 
+                if (!(AppState.State == PhdAppState.CALIBRATING)) {
                     await SendMessage(PHD2EventId.GUIDE, string.Format(PHD2Methods.GUIDE, false.ToString().ToLower()));
                 }
                 return await Task.Run<bool>(async () => {
@@ -259,8 +253,8 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> StopGuiding(CancellationToken token) {
             if (Connected) {
-                await SendMessage(PHD2EventId.STOP_CAPTURE , PHD2Methods.STOP_CAPTURE);
-                
+                await SendMessage(PHD2EventId.STOP_CAPTURE, PHD2Methods.STOP_CAPTURE);
+
                 return await Task.Run<bool>(async () => {
                     while (AppState.State != PhdAppState.STOPPED) {
                         await Task.Delay(1000, token);
@@ -287,11 +281,11 @@ namespace NINA.Model.MyGuider {
                         string line;
                         while ((line = reader.ReadLine()) != null) {
                             JObject o = JObject.Parse(line);
-                            string phdevent = "";                            
+                            string phdevent = "";
                             var t = o.GetValue("id");
                             if (t != null) {
                                 phdevent = t.ToString();
-                            }                            
+                            }
 
                             if (phdevent == msgId) {
                                 var response = o.ToObject<PhdMethodResponse>();
@@ -382,6 +376,13 @@ namespace NINA.Model.MyGuider {
 
         }
 
+        public static TcpState GetState(TcpClient tcpClient) {
+            var foo = IPGlobalProperties.GetIPGlobalProperties()
+              .GetActiveTcpConnections()
+              .SingleOrDefault(x => x.LocalEndPoint.Equals(tcpClient.Client.LocalEndPoint));
+            return foo != null ? foo.State : TcpState.Unknown;
+        }
+
         private void StartListener() {
             Task.Run(async () => {
                 JsonLoadSettings jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
@@ -395,29 +396,33 @@ namespace NINA.Model.MyGuider {
                         using (NetworkStream s = client.GetStream()) {
 
                             while (true) {
-                                    var message = string.Empty;
-                                    while (s.DataAvailable) {
-                                        byte[] response = new byte[1024];
-                                        await s.ReadAsync(response, 0, response.Length, _clientCTS.Token);
-                                        message += System.Text.Encoding.ASCII.GetString(response);
+                                var state = GetState(client);
+                                if (state == TcpState.CloseWait) {
+                                    throw new Exception(Locale.Loc.Instance["LblPhd2ServerConnectionLost"]);
+                                }
+                                var message = string.Empty;
+                                while (s.DataAvailable) {
+                                    byte[] response = new byte[1024];
+                                    await s.ReadAsync(response, 0, response.Length, _clientCTS.Token);
+                                    message += System.Text.Encoding.ASCII.GetString(response);
+                                }
+
+                                foreach (string line in message.Split(new[] { Environment.NewLine }, StringSplitOptions.None)) {
+
+                                    if (!string.IsNullOrEmpty(line) && !line.StartsWith("\0")) {
+                                        JObject o = JObject.Parse(line, jls);
+                                        JToken t = o.GetValue("Event");
+                                        string phdevent = "";
+                                        if (t != null) {
+                                            phdevent = t.ToString();
+                                            ProcessEvent(phdevent, o);
+                                        }
+
+
                                     }
 
-                                    foreach (string line in message.Split(new[] { Environment.NewLine }, StringSplitOptions.None)) {
-
-                                        if (!string.IsNullOrEmpty(line) && !line.StartsWith("\0")) {
-                                            JObject o = JObject.Parse(line, jls);
-                                            JToken t = o.GetValue("Event");
-                                            string phdevent = "";
-                                            if (t != null) {
-                                                phdevent = t.ToString();
-                                                ProcessEvent(phdevent, o);
-                                            }
-
-
-                                        }
-                                    
                                 }
-                                await Task.Delay(TimeSpan.FromMilliseconds(100), _clientCTS.Token);
+                                await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
 
                             }
                         }
