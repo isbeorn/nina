@@ -61,6 +61,13 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(ChangeApplicationTabMessage).Name; } }
     }
 
+    class SaveProfilesMessageHandle : MessageHandle<bool> {
+        public SaveProfilesMessageHandle(Func<SaveProfilesMessage, bool> callback) {
+            Callback = (f) => callback((SaveProfilesMessage)f);
+        }
+        public override string MessageType { get { return typeof(SaveProfilesMessage).Name; } }
+    }
+
 
     /* Message definition */
     abstract class MediatorMessage<TMessageResult> {
@@ -84,5 +91,8 @@ namespace NINA.Utility.Mediator {
 
     class ChangeApplicationTabMessage : MediatorMessage<bool> {
         public ViewModel.ApplicationTab Tab { get; set; }
+    }
+
+    class SaveProfilesMessage : MediatorMessage<bool> {
     }
 }

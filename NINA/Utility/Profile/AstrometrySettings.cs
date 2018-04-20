@@ -1,4 +1,5 @@
 ﻿using NINA.Utility.Astrometry;
+using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 epochType = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -30,6 +32,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 hemisphereType = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -41,6 +44,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 latitude = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -52,6 +56,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 longitude = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 

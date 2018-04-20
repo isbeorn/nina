@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Mediator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 plateSolverType = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -29,6 +31,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 blindSolverType = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -40,6 +43,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 astrometryAPIKey = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -51,6 +55,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 cygwinLocation = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -62,6 +67,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 searchRadius = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -73,6 +79,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pS2Location = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -84,6 +91,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 regions = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Mediator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 ditherPixels = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -29,6 +31,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 ditherRAOnly = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -40,6 +43,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 settleTime = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -51,6 +55,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2ServerUrl = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -62,6 +67,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2ServerPort = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
     }

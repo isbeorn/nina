@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Mediator;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -88,6 +89,7 @@ namespace NINA.Utility.Profile {
             set {
                 colorSchemaName = value;
                 ColorSchema = ColorSchemas.Items.Where(x => x.Name == value).FirstOrDefault();
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -100,6 +102,7 @@ namespace NINA.Utility.Profile {
             set {
                 altColorSchemaName = value;
                 AltColorSchema = ColorSchemas.Items.Where(x => x.Name == value).FirstOrDefault();
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -113,6 +116,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Custom") {
                     ColorSchema.PrimaryColor = value;
                     primaryColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -127,6 +131,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Custom") {
                     ColorSchema.SecondaryColor = value;
                     secondaryColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -141,6 +146,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Custom") {
                     ColorSchema.BorderColor = value;
                     borderColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -155,6 +161,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Custom") {
                     ColorSchema.BackgroundColor = value;
                     backgroundColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
 
             }
@@ -170,6 +177,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Custom") {
                     ColorSchema.ButtonBackgroundColor = value;
                     buttonBackgroundColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
 
             }
@@ -185,6 +193,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Custom") {
                     ColorSchema.ButtonBackgroundSelectedColor = value;
                     buttonBackgroundSelectedColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
 
             }
@@ -200,6 +209,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Custom") {
                     ColorSchema.ButtonForegroundDisabledColor = value;
                     buttonForegroundDisabledColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
 
             }
@@ -215,6 +225,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Custom") {
                     ColorSchema.ButtonForegroundColor = value;
                     buttonForegroundColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
 
             }
@@ -230,6 +241,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Alternative Custom") {
                     AltColorSchema.PrimaryColor = value;
                     altPrimaryColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -244,6 +256,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Alternative Custom") {
                     AltColorSchema.SecondaryColor = value;
                     altSecondaryColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -258,6 +271,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Alternative Custom") {
                     AltColorSchema.BorderColor = value;
                     altBorderColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -272,6 +286,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Alternative Custom") {
                     AltColorSchema.BackgroundColor = value;
                     altBackgroundColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -286,6 +301,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Alternative Custom") {
                     AltColorSchema.ButtonBackgroundColor = value;
                     altButtonBackgroundColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -300,6 +316,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Alternative Custom") {
                     AltColorSchema.ButtonBackgroundSelectedColor = value;
                     altButtonBackgroundSelectedColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -314,6 +331,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Alternative Custom") {
                     AltColorSchema.ButtonForegroundDisabledColor = value;
                     altButtonForegroundDisabledColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -328,6 +346,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Alternative Custom") {
                     AltColorSchema.ButtonForegroundColor = value;
                     altButtonForegroundColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -342,7 +361,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Custom") {
                     ColorSchema.NotificationWarningColor = value;
                     notificationWarningColor = value;
-                    Properties.Settings.Default.Save();
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -357,6 +376,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Custom") {
                     ColorSchema.NotificationErrorColor = value;
                     notificationErrorColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -371,6 +391,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Alternative Custom") {
                     AltColorSchema.NotificationWarningColor = value;
                     altNotificationWarningColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }
@@ -385,6 +406,7 @@ namespace NINA.Utility.Profile {
                 if (ColorSchemaName == "Alternative Custom") {
                     AltColorSchema.NotificationErrorColor = value;
                     altNotificationErrorColor = value;
+                    Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
             }
         }

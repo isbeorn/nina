@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Mediator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 id = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -29,6 +31,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 useFilterWheelOffsets = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -40,6 +43,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 autoFocusStepSize = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -51,6 +55,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 autoFocusInitialOffsetSteps = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -62,6 +67,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 autoFocusExposureTime = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
     }
