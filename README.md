@@ -101,7 +101,7 @@ Through the issue tracker
 
 a mail to: isbeorn86+NINA@googlemail.com
 
-or directly via Discord: @[]()Isbeorn#1882 
+or directly via Discord: http://discord.gg/fwpmHU4
 
 ** Credit **
 
