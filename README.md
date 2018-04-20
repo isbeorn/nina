@@ -19,8 +19,9 @@
      * Native ZWO Driver
           * Tested with ASI 1600 MMC
      * Nikon
-          * Tested with Nikon D7100
+          * Tested with Nikon D5100, D7100
           * Serial cable support for bulb exposures using either telescope snap port or serial cable using RTS signal
+               * Bulb exposure with snap port tested with EQ6-R + D5100
      * Canon 
           * Tested with Canon EOS 550d, 60d
      * Temperature control 
@@ -32,7 +33,7 @@
 
 * Filterwheel Control
      * ASCOM Driver
-          * Tested with Starlight XPress motorized Filterwheel
+          * Tested with Starlight XPress motorized Filterwheel, Atik EFW2
 
 * Autofocuser Control
      * ASCOM Driver
