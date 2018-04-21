@@ -131,6 +131,10 @@ namespace NINA.Model.MyCamera {
                         _bulbShutterSpeedIndex = i;
                         bulbFound = true;
                     }
+                    else
+                    {
+                        _shutterSpeeds.Add(i, double.Parse(val));
+                    }
                 } catch (Exception ex) {
                     Logger.Error("Unexpected Shutter Speed: ", ex);
                 }
