@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Mediator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 autoStretchFactor = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -29,6 +31,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 histogramResolution = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -40,6 +43,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 annotateImage = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
     }

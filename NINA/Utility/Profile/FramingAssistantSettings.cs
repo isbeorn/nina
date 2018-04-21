@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Mediator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 cameraHeight = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -28,6 +30,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 cameraWidth = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -39,6 +42,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 fieldOfView = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
     }

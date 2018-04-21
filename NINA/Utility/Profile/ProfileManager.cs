@@ -18,7 +18,15 @@ namespace NINA.Utility.Profile {
                 NINA.Properties.Settings.Default.UpdateSettings = false;
                 NINA.Properties.Settings.Default.Save();
             }
-            Load();  
+            Load();
+
+            Mediator.Mediator.Instance.RegisterRequest(
+                new SaveProfilesMessageHandle((SaveProfilesMessage m) => 
+                {
+                    Save();
+                    return true;
+                })
+            );
         }
 
         private static readonly Lazy<ProfileManager> lazy =
@@ -35,7 +43,7 @@ namespace NINA.Utility.Profile {
             Profiles.Add(new Profile("Profile" + (Profiles.ProfileList.Count + 1)));
         }
 
-        public void Save() {
+        private void Save() {
             try {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(Profiles));
 
@@ -76,8 +84,8 @@ namespace NINA.Utility.Profile {
         }
 
         public void SelectProfile(Guid guid) {
-            Save();
             Profiles.SelectProfile(guid);
+            Save();
         }
 
         private void LoadDefaultProfile() {

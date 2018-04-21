@@ -33,12 +33,6 @@ namespace NINA {
         }
 
         private void Application_Exit(object sender, ExitEventArgs e) {
-            try {
-                ProfileManager.Instance.Save();
-            } catch (Exception ex) {
-                Logger.Error(ex);
-            }
-
         }
     }
 }

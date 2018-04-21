@@ -1,4 +1,5 @@
 ﻿using NINA.Model.MyFilterWheel;
+using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 id = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -36,6 +38,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 filterWheelFilters = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
     }

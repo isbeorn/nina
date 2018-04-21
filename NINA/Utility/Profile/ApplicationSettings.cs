@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Utility.Mediator;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -11,16 +12,15 @@ namespace NINA.Utility.Profile {
     [XmlRoot(nameof(ApplicationSettings))]
     public class ApplicationSettings {
 
-
-        private string culture;
+        
         [XmlElement(nameof(Culture))]
         public string Culture {
             get {
-                return culture;
+                return Language.Name;
             }
             set {
-                culture = value;
                 Language = new CultureInfo(value);
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -32,7 +32,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 language = value;
-                culture = value.Name;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -44,6 +44,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 logLevel = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -55,6 +56,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 databaseLocation = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -66,6 +68,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 devicePollingInterval = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
@@ -77,6 +80,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 skyAtlasImageRepository = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
