@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Utility.Enum"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Locale"
@@ -28,7 +29,7 @@
                 <ComboBoxItem>8</ComboBoxItem>
                 <ComboBoxItem>16</ComboBoxItem>
             </ComboBox>
-            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:GuiderScaleEnum}}}" SelectedItem="{Binding GuiderScale}" />
+            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}" SelectedItem="{Binding GuiderScale}" />
         </StackPanel>
 
         <oxy:Plot

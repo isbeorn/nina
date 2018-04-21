@@ -3,6 +3,7 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.PlateSolving;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;

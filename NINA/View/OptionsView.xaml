@@ -11,6 +11,7 @@
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:util="clr-namespace:NINA.Utility"
+    xmlns:enum="clr-namespace:NINA.Utility.Enum"
     d:DesignHeight="300"
     d:DesignWidth="300"
     Background="{StaticResource BackgroundBrush}"
@@ -206,7 +207,7 @@
                                 Text="{ns:Loc LblLogLevel}" />
                             <ComboBox
                                 Margin="10,0,0,0"
-                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:LogLevelEnum}}}"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:LogLevelEnum}}}"
                                 SelectedItem="{Binding LogLevel}" />
                         </StackPanel>
 
@@ -680,7 +681,7 @@
                     <StackPanel Margin="0,5,0,0">
                         <ComboBox
                             Name="weatherdatacombo"
-                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:WeatherDataEnum}}}"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:WeatherDataEnum}}}"
                             SelectedItem="{Binding WeatherDataType}" />
                         <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock Text="{ns:Loc LblURL}" />
@@ -750,7 +751,7 @@
                                 </TextBlock>
                                 <ComboBox
                                     Name="cbBulbMode"
-                                    ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:CameraBulbModeEnum}}}"
+                                    ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:CameraBulbModeEnum}}}"
                                     SelectedItem="{Binding CameraBulbMode}" />
                             </UniformGrid>
                         </UniformGrid>

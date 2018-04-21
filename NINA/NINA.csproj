@@ -333,6 +333,13 @@
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
     <Compile Include="Utility\DllLoader.cs" />
     <Compile Include="Utility\EDSDK\EDSDK.cs" />
+    <Compile Include="Utility\Enum\BlindSolverEnum.cs" />
+    <Compile Include="Utility\Enum\CameraBulbModeEnum.cs" />
+    <Compile Include="Utility\Enum\FileTypeEnum.cs" />
+    <Compile Include="Utility\Enum\GuiderScaleEnum.cs" />
+    <Compile Include="Utility\Enum\LogLevelEnum.cs" />
+    <Compile Include="Utility\Enum\PlateSolverEnum.cs" />
+    <Compile Include="Utility\Enum\WeatherDataEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraConnectionLostException.cs" />
     <Compile Include="Utility\FITS.cs" />
     <Compile Include="Utility\Mediator\Mediator.cs" />

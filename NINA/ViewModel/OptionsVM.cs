@@ -2,6 +2,7 @@
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
 using System;
