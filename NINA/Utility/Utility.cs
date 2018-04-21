@@ -356,10 +356,19 @@ namespace NINA.Utility {
             return elapsed;
         }
     }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum FileTypeEnum {
+        [Description("LblTiff")]
         TIFF,
+        [Description("LblFits")]
         FITS,
-        XISF
+        [Description("LblXisf")]
+        XISF,
+        [Description("LblTiffZip")]
+        TIFF_ZIP,
+        [Description("LblTiffLzw")]
+        TIFF_LZW
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]

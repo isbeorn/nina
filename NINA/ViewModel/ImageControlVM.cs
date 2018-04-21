@@ -374,12 +374,16 @@ namespace NINA.ViewModel {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
                     completefilename = SaveFits(completefilename, parameters);
                 } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF) {
-                    completefilename = SaveTiff(completefilename);
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.None);
+                } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_ZIP) {
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.Zip);
+                } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_LZW) {
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.Lzw);
                 } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.XISF) {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
                     completefilename = SaveXisf(completefilename, parameters);
                 } else {
-                    completefilename = SaveTiff(completefilename);
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.None);
                 }
                 await Mediator.Instance.RequestAsync(
                     new AddThumbnailMessage() {
@@ -561,7 +565,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string SaveTiff(String path) {
+        private string SaveTiff(String path, TiffCompressOption c) {
 
             try {
                 BitmapSource bmpSource = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
@@ -571,7 +575,7 @@ namespace NINA.ViewModel {
 
                 using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     TiffBitmapEncoder encoder = new TiffBitmapEncoder();
-                    encoder.Compression = TiffCompressOption.None;
+                    encoder.Compression = c;
                     encoder.Frames.Add(BitmapFrame.Create(bmpSource));
                     encoder.Save(fs);
                 }

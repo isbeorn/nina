@@ -600,4 +600,9 @@ Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
     <s:String x:Key="LblRemoveProfileText">Soll das Profil mit Namen: {0} und Id: {1} entfernt werden?</s:String>
     <s:String x:Key="LblRemoveProfileCaption">Profil entfernen?</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost">PHD2 Server Verbindung verloren!</s:String>
+    <s:String x:Key="LblTiff">TIFF</s:String>
+    <s:String x:Key="LblFits">FITS</s:String>
+    <s:String x:Key="LblXisf">XISF</s:String>
+    <s:String x:Key="LblTiffZip">TIFF (zip-komprimiert)</s:String>
+    <s:String x:Key="LblTiffLzw">TIFF (lzw-komprimiert)</s:String>
 </ResourceDictionary>
