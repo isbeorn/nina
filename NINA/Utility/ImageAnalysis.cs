@@ -29,6 +29,8 @@ namespace NINA.Utility {
         BitmapSource originalSource;
         Bitmap convertedSource;
 
+        
+
         public BitmapSource GrabBahtinov() {
             convertedSource = ImageAnalysis.Convert16BppTo8Bpp(originalSource);
 
@@ -47,44 +49,80 @@ namespace NINA.Utility {
 
             HoughLine[] lines = lineTransform.GetMostIntensiveLines(6);
 
+            var focusEllipsePen = new System.Drawing.Pen(System.Drawing.Brushes.Green, 1);
+            var intersectEllipsePen = new System.Drawing.Pen(System.Drawing.Brushes.Red, 1);
+            var mediaColor = Profile.ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor;
+            var drawingColor = System.Drawing.Color.FromArgb(mediaColor.A, mediaColor.R, mediaColor.G, mediaColor.B);
+            var linePen = new System.Drawing.Pen(drawingColor, 1);
             
 
-            BitmapData data = bahtinovedBitmap.LockBits(
-                new Rectangle(0, 0, convertedSource.Width, convertedSource.Height),
-                ImageLockMode.ReadWrite, bahtinovedBitmap.PixelFormat);
-
-            List<KeyValuePair<IntPoint, IntPoint>> hughpoints = new List<KeyValuePair<IntPoint, IntPoint>>();
+        List<Line> bahtinovLines = new List<Line>();
             foreach (HoughLine line in lines) {
-                var k = TranslateHughLineToVector(line, bahtinovedBitmap.Width, bahtinovedBitmap.Height);
-                hughpoints.Add(k);
-
-                /*AForge.Imaging.Drawing.Line(data,
-                    k.Key,
-                    k.Value,
-                    System.Drawing.Color.Red);*/
+                var k = TranslateHughLineToLine(line, bahtinovedBitmap.Width, bahtinovedBitmap.Height);
+                bahtinovLines.Add(k);
+                
             }
-            if(hughpoints.Count == 6) {
-                var mediaColor = Profile.ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor;
-                var drawingColor = System.Drawing.Color.FromArgb(mediaColor.A, mediaColor.R, mediaColor.G, mediaColor.B);
 
-                var orderedPoints = hughpoints.OrderBy(x => x.Key.Y).ToList();
+            float x1,x2,y1,y2;
+
+            if (bahtinovLines.Count == 6) {
+                
+
+                var orderedPoints = bahtinovLines.OrderBy(x => 1.0d / x.Slope).ToList();
+                var threeLines = new List<Line>();
 
                 for(var i = 0; i < orderedPoints.Count(); i+=2) {
-                    var x1 = orderedPoints[i].Key;
-                    var x2 = orderedPoints[i].Value;
-                    var y1 = orderedPoints[i+1].Key;
-                    var y2 = orderedPoints[i+1].Value;
+                    var l1 = orderedPoints[i];
+                    var l2 = orderedPoints[i + 1];
 
-                    var p1 = new IntPoint(x1.X, x1.Y + (int)(Math.Abs(x1.Y - y1.Y) / 2.0d));
-                    var p2 = new IntPoint(x2.X, x2.Y + (int)(Math.Abs(x2.Y - y2.Y) / 2.0d));
-                    AForge.Imaging.Drawing.Line(data,
-                        p1,
-                        p2,
-                        drawingColor); 
+                    
+                    var inter = (l1.Intercept + l2.Intercept) / 2.0f;
+                    var slope = (l1.Slope + l2.Slope) / 2.0f;
+                    var centerLine = Line.FromSlopeIntercept(slope, inter);
+                    threeLines.Add(centerLine);
+
+
+                    x1 = 0;
+                    x2 = convertedSource.Width;
+                    y1 = double.IsInfinity(centerLine.Slope) ? centerLine.Intercept : centerLine.Slope + centerLine.Intercept;
+                    y2 = double.IsInfinity(centerLine.Slope) ? centerLine.Intercept : (centerLine.Slope * (convertedSource.Width) + centerLine.Intercept);
+                    
+                    graphics.DrawLine(
+                        linePen,
+                        new PointF(x1, y1),
+                        new PointF(x2, y2));
                 }
+
+                /* Intersect outer bahtinov lines */
+                var intersection = threeLines[0].GetIntersectionWith(threeLines[2]);
+
+                /* get orthogonale to center line through intersection */
+                var centerBahtinovLine = threeLines[1];
+                var orthogonalSlope = -1.0f / centerBahtinovLine.Slope;
+                var orthogonalIntercept = intersection.Value.Y - orthogonalSlope * intersection.Value.X;
+
+                var orthogonalCenter = Line.FromSlopeIntercept(orthogonalSlope, orthogonalIntercept);
+                var intersection2 = centerBahtinovLine.GetIntersectionWith(orthogonalCenter);
+                var r = 10;
+                
+                graphics.DrawEllipse(
+                    intersectEllipsePen, 
+                    new RectangleF(intersection.Value.X - r, intersection.Value.Y - r, 2 * r, 2 * r));
+                graphics.DrawEllipse(
+                    focusEllipsePen,
+                    new RectangleF(intersection2.Value.X - r, intersection2.Value.Y - r, 2 * r, 2 * r));
+
+                x1 = intersection.Value.X;
+                x2 = intersection2.Value.X;
+                y1 = intersection.Value.Y;
+                y2 = intersection2.Value.Y; ;
+
+                graphics.DrawLine(
+                    intersectEllipsePen,
+                    new PointF(x1, y1),
+                    new PointF(x2, y2));
             }
             
-            bahtinovedBitmap.UnlockBits(data);
 
             var img = ImageAnalysis.ConvertBitmap(bahtinovedBitmap, System.Windows.Media.PixelFormats.Bgr24);
             convertedSource.Dispose();
@@ -93,7 +131,7 @@ namespace NINA.Utility {
             return img;
         }
 
-        private KeyValuePair<IntPoint, IntPoint> TranslateHughLineToVector(HoughLine line, int width, int height) {
+        private Line TranslateHughLineToLine(HoughLine line, int width, int height) {            
             // get line's radius and theta values
             int r = line.Radius;
             double t = line.Theta;
@@ -132,7 +170,7 @@ namespace NINA.Utility {
             }
 
             return
-                new KeyValuePair<IntPoint, IntPoint>(
+                Line.FromPoints(
                     new IntPoint((int)x0 + w2, h2 - (int)y0),
                     new IntPoint((int)x1 + w2, h2 - (int)y1)
                 );
