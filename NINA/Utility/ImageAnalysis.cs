@@ -21,6 +21,126 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Utility {
+    class BahtinovAnalysis {
+        public BahtinovAnalysis(BitmapSource source) {
+            originalSource = source;
+        }
+
+        BitmapSource originalSource;
+        Bitmap convertedSource;
+
+        public BitmapSource GrabBahtinov() {
+            convertedSource = ImageAnalysis.Convert16BppTo8Bpp(originalSource);
+
+            Bitmap bahtinovedBitmap = new Bitmap(convertedSource.Width, convertedSource.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+            Graphics graphics = Graphics.FromImage(bahtinovedBitmap);
+            graphics.DrawImage(convertedSource, 0, 0);
+
+            /* Apply filters and detection*/
+            CannyEdgeDetector filter = new CannyEdgeDetector();
+            filter.GaussianSize = 10;
+            filter.ApplyInPlace(convertedSource);
+
+            HoughLineTransformation lineTransform = new HoughLineTransformation();
+            lineTransform.ProcessImage(convertedSource);
+
+            HoughLine[] lines = lineTransform.GetMostIntensiveLines(6);
+
+            
+
+            BitmapData data = bahtinovedBitmap.LockBits(
+                new Rectangle(0, 0, convertedSource.Width, convertedSource.Height),
+                ImageLockMode.ReadWrite, bahtinovedBitmap.PixelFormat);
+
+            List<KeyValuePair<IntPoint, IntPoint>> hughpoints = new List<KeyValuePair<IntPoint, IntPoint>>();
+            foreach (HoughLine line in lines) {
+                var k = TranslateHughLineToVector(line, bahtinovedBitmap.Width, bahtinovedBitmap.Height);
+                hughpoints.Add(k);
+
+                /*AForge.Imaging.Drawing.Line(data,
+                    k.Key,
+                    k.Value,
+                    System.Drawing.Color.Red);*/
+            }
+            if(hughpoints.Count == 6) {
+                var mediaColor = Profile.ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor;
+                var drawingColor = System.Drawing.Color.FromArgb(mediaColor.A, mediaColor.R, mediaColor.G, mediaColor.B);
+
+                var orderedPoints = hughpoints.OrderBy(x => x.Key.Y).ToList();
+
+                for(var i = 0; i < orderedPoints.Count(); i+=2) {
+                    var x1 = orderedPoints[i].Key;
+                    var x2 = orderedPoints[i].Value;
+                    var y1 = orderedPoints[i+1].Key;
+                    var y2 = orderedPoints[i+1].Value;
+
+                    var p1 = new IntPoint(x1.X, x1.Y + (int)(Math.Abs(x1.Y - y1.Y) / 2.0d));
+                    var p2 = new IntPoint(x2.X, x2.Y + (int)(Math.Abs(x2.Y - y2.Y) / 2.0d));
+                    AForge.Imaging.Drawing.Line(data,
+                        p1,
+                        p2,
+                        drawingColor); 
+                }
+            }
+            
+            bahtinovedBitmap.UnlockBits(data);
+
+            var img = ImageAnalysis.ConvertBitmap(bahtinovedBitmap, System.Windows.Media.PixelFormats.Bgr24);
+            convertedSource.Dispose();
+            bahtinovedBitmap.Dispose();
+            img.Freeze();
+            return img;
+        }
+
+        private KeyValuePair<IntPoint, IntPoint> TranslateHughLineToVector(HoughLine line, int width, int height) {
+            // get line's radius and theta values
+            int r = line.Radius;
+            double t = line.Theta;
+
+            // check if line is in lower part of the image
+            if (r < 0) {
+                t += 180;
+                r = -r;
+            }
+
+            // convert degrees to radians
+            t = (t / 180) * Math.PI;
+
+            // get image centers (all coordinate are measured relative
+            // to center)
+            int w2 = width / 2;
+            int h2 = height / 2;
+
+            double x0 = 0, x1 = 0, y0 = 0, y1 = 0;
+
+            if (line.Theta != 0) {
+                // none-vertical line
+                x0 = -w2; // most left point
+                x1 = w2;  // most right point
+
+                // calculate corresponding y values
+                y0 = (-Math.Cos(t) * x0 + r) / Math.Sin(t);
+                y1 = (-Math.Cos(t) * x1 + r) / Math.Sin(t);
+            } else {
+                // vertical line
+                x0 = line.Radius;
+                x1 = line.Radius;
+
+                y0 = h2;
+                y1 = -h2;
+            }
+
+            return
+                new KeyValuePair<IntPoint, IntPoint>(
+                    new IntPoint((int)x0 + w2, h2 - (int)y0),
+                    new IntPoint((int)x1 + w2, h2 - (int)y1)
+                );
+        }
+
+    }
+
+
     class ImageAnalysis {
 
         private static System.Drawing.Pen ELLIPSEPEN = new System.Drawing.Pen(System.Drawing.Brushes.LightYellow, 1);

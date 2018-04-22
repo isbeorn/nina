@@ -2,11 +2,13 @@
     x:Class="NINA.View.ImageControlView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:NINA.Utility.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -18,6 +20,7 @@
             <local:ImageView.ButtonHeaderContent>
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="40" />
@@ -150,17 +153,114 @@
                             </Style>
                         </ToggleButton.Style>
                     </ToggleButton>
+
+                    <ToggleButton
+                        Grid.Column="4"
+                        Margin="2.5"
+                        IsChecked="{Binding ShowBahtinovAnalyzer}">
+                        <ToggleButton.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="True">
+                                <TextBlock Text="{ns:Loc LblTooltipBahtinovAnalyzer}" />
+                            </ToolTip>
+                        </ToggleButton.ToolTip>
+                        <ToggleButton.Style>
+                            <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{StaticResource BahtinovSVG}"
+                                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{StaticResource BahtinovSVG}"
+                                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
                 </Grid>
             </local:ImageView.ButtonHeaderContent>
             <local:ImageView.ImageAreaContent>
-                <Path
-                    Width="{Binding Image.Width}"
-                    Height="{Binding Image.Height}"
-                    Data="                               M0.5,0 L0.5,0.4 M0.5,0.6 L0.5,1                                M0,0.5 L0.4,0.5 M0.6,0.5 L1,0.5                                                              M0.35,0.5 A 0.15,0.15 1 1 1 0.35,0.50001                               M0.4,0.5 A 0.1,0.1 1 1 1 0.4,0.50001                               M0.45,0.5 A 0.05,0.05 1 1 1 0.45,0.50001                               M0.48,0.5 A 0.02,0.02 1 1 1 0.48,0.50001                               M0.49,0.5 A 0.01,0.01 1 1 1 0.49,0.50001                               M0.495,0.5 A 0.005,0.005 1 1 1 0.495,0.50001                               "
-                    Stretch="Uniform"
-                    Stroke="{StaticResource ButtonBackgroundSelectedBrush}"
-                    StrokeThickness="1"
-                    Visibility="{Binding ShowCrossHair, Converter={StaticResource VisibilityConverter}}" />
+                <Grid>
+                    <Grid.Resources>
+                        <s:Int32 x:Key="zero">0</s:Int32>
+                    </Grid.Resources>
+                    <Path
+                        Width="{Binding Image.Width}"
+                        Height="{Binding Image.Height}"
+                        Data="                               M0.5,0 L0.5,0.4 M0.5,0.6 L0.5,1                                M0,0.5 L0.4,0.5 M0.6,0.5 L1,0.5                                                              M0.35,0.5 A 0.15,0.15 1 1 1 0.35,0.50001                               M0.4,0.5 A 0.1,0.1 1 1 1 0.4,0.50001                               M0.45,0.5 A 0.05,0.05 1 1 1 0.45,0.50001                               M0.48,0.5 A 0.02,0.02 1 1 1 0.48,0.50001                               M0.49,0.5 A 0.01,0.01 1 1 1 0.49,0.50001                               M0.495,0.5 A 0.005,0.005 1 1 1 0.495,0.50001                               "
+                        Stretch="Uniform"
+                        Stroke="{StaticResource ButtonBackgroundSelectedBrush}"
+                        StrokeThickness="1"
+                        Visibility="{Binding ShowCrossHair, Converter={StaticResource VisibilityConverter}}" />
+
+                    <Grid Visibility="{Binding ShowBahtinovAnalyzer, Converter={StaticResource VisibilityConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Rectangle
+                            Width="{Binding Rectangle.Width}"
+                            Height="{Binding Rectangle.Height}"
+                            behaviors:DragCommandBehavior.Drag="True"
+                            behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
+                            behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
+                            behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
+                            RenderTransformOrigin="0.5,0.5"
+                            Stroke="{StaticResource ButtonForegroundBrush}"
+                            StrokeThickness="5">
+                            <Rectangle.Fill>
+                                <!--<SolidColorBrush Opacity=".25" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />-->
+                                <ImageBrush ImageSource="{Binding BahtinovedImage}" />
+                            </Rectangle.Fill>
+                            <Rectangle.Margin>
+                                <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+                                    <Binding Path="Rectangle.X" />
+                                    <Binding Path="Rectangle.Y" />
+                                    <Binding Source="{StaticResource zero}" />
+                                    <Binding Source="{StaticResource zero}" />
+                                </MultiBinding>
+                            </Rectangle.Margin>
+                        </Rectangle>
+                        <Border
+                            Grid.Column="1"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1">
+                            <StackPanel Orientation="Vertical">
+                                <UniformGrid VerticalAlignment="Center" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
+                                    <TextBox Margin="5,0,0,0" Text="{Binding Rectangle.Width}" />
+                                </UniformGrid>
+                                <UniformGrid VerticalAlignment="Center" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
+                                    <TextBox Margin="5,0,0,0" Text="{Binding Rectangle.Height}" />
+                                </UniformGrid>
+                            </StackPanel>
+                            <Border.Margin>
+                                <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+                                    <Binding Source="{StaticResource zero}" />
+                                    <Binding Path="Rectangle.Y" />
+                                    <Binding Source="{StaticResource zero}" />
+                                    <Binding Source="{StaticResource zero}" />
+                                </MultiBinding>
+                            </Border.Margin>
+                        </Border>
+                    </Grid>
+                </Grid>
             </local:ImageView.ImageAreaContent>
         </local:ImageView>
     </Border>
