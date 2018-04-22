@@ -23,6 +23,10 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                     <TextBlock
                         Width="140"
@@ -47,6 +51,67 @@
                         Margin="10,0,0,0"
                         ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:BlindSolverEnum}}}"
                         SelectedItem="{Binding BlindSolverType}" />
+                </StackPanel>
+
+
+                <StackPanel Grid.RowSpan="2" Grid.Column="1">
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblExposureTime}" />
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="PlateSolveExposureTime">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFilter}" />
+                        <ComboBox
+                            Height="25"
+                            DisplayMemberPath="Name"
+                            ItemsSource="{Binding FilterWheelFilters}"
+                            SelectedItem="{Binding PlateSolveFilter, Mode=TwoWay}"
+                            SelectedValuePath="Name" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblErrorLT}" />
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="PlateSolveThreshold">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblArcmin}" />
+
+                    </StackPanel>
                 </StackPanel>
             </Grid>
 

@@ -605,4 +605,5 @@ Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
     <s:String x:Key="LblXisf">XISF</s:String>
     <s:String x:Key="LblTiffZip">TIFF (zip-komprimiert)</s:String>
     <s:String x:Key="LblTiffLzw">TIFF (lzw-komprimiert)</s:String>
+    <s:String x:Key="LblSettleTimeAfterSlew">Ruhezeit nach schwenken</s:String>
 </ResourceDictionary>

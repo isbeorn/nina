@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:astrometry="clr-namespace:NINA.Utility.Astrometry"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Utility.Enum"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:NINA.Model"
@@ -11,7 +12,6 @@
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:util="clr-namespace:NINA.Utility"
-    xmlns:enum="clr-namespace:NINA.Utility.Enum"
     d:DesignHeight="300"
     d:DesignWidth="300"
     Background="{StaticResource BackgroundBrush}"
@@ -1032,6 +1032,30 @@
                                     VerticalAlignment="Center">
                                     <TextBox.Text>
                                         <Binding Path="TelescopeFocalLength" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </UniformGrid>
+                        </UniformGrid>
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock
+                                    Width="130"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblSettleTimeAfterSlew}" />
+                                <TextBox
+                                    MinWidth="80"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="TelescopeSettleTime" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:GreaterZeroRule />
                                             </Binding.ValidationRules>

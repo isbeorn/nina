@@ -1,4 +1,5 @@
-﻿using NINA.Utility.Enum;
+﻿using NINA.Model.MyFilterWheel;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
@@ -92,6 +93,42 @@ namespace NINA.Utility.Profile {
             }
             set {
                 regions = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
+
+        private double exposureTime = 2.0d;
+        [XmlElement(nameof(ExposureTime))]
+        public double ExposureTime {
+            get {
+                return exposureTime;
+            }
+            set {
+                exposureTime = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
+
+        private double threshold = 1.0d;
+        [XmlElement(nameof(Threshold))]
+        public double Threshold {
+            get {
+                return threshold;
+            }
+            set {
+                threshold = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
+
+        private FilterInfo filter = null;
+        [XmlElement(nameof(Filter))]
+        public FilterInfo Filter {
+            get {
+                return filter;
+            }
+            set {
+                filter = value;
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }

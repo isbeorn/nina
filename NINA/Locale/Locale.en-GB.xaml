@@ -600,4 +600,5 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblXisf">XISF</s:String>
     <s:String x:Key="LblTiffZip">TIFF (zip-compressed)</s:String>
     <s:String x:Key="LblTiffLzw">TIFF (lzw-compressed)</s:String>
+    <s:String x:Key="LblSettleTimeAfterSlew">Settle time after slew</s:String>
 </ResourceDictionary>

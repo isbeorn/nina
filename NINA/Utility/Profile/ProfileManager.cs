@@ -73,6 +73,9 @@ namespace NINA.Utility.Profile {
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(Profiles));
 
                     Profiles = (Profiles)xmlSerializer.Deserialize(reader);
+                    foreach(Profile p in Profiles.ProfileList) {
+                        p.MatchFilterSettingsWithFilterList();
+                    }
                     Profiles.SelectActiveProfile();
                 } catch (Exception ex) {
                     LoadDefaultProfile();

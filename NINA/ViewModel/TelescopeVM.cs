@@ -332,8 +332,9 @@ namespace NINA.ViewModel {
             coords = coords.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
             if (Telescope?.Connected == true) {
                 await Task.Run(() => {
-                    Telescope.SlewToCoordinates(coords.RA, coords.Dec);
+                    Telescope.SlewToCoordinates(coords.RA, coords.Dec);                    
                 });
+                await Utility.Utility.Delay(TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.TelescopeSettings.SettleTime), new CancellationToken());
                 return true;
             } else {
                 return false;
