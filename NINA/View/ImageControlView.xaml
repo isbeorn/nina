@@ -224,8 +224,7 @@
                             Stroke="{StaticResource ButtonForegroundBrush}"
                             StrokeThickness="5">
                             <Rectangle.Fill>
-                                <!--<SolidColorBrush Opacity=".25" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />-->
-                                <ImageBrush ImageSource="{Binding BahtinovedImage}" />
+                                <ImageBrush ImageSource="{Binding BahtinovImage.Image}" />
                             </Rectangle.Fill>
                             <Rectangle.Margin>
                                 <MultiBinding Converter="{StaticResource MultiMarginConverter}">
@@ -240,16 +239,38 @@
                             Grid.Column="1"
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="1">
-                            <StackPanel Orientation="Vertical">
-                                <UniformGrid VerticalAlignment="Center" Columns="2">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
-                                    <TextBox Margin="5,0,0,0" Text="{Binding Rectangle.Width}" />
-                                </UniformGrid>
-                                <UniformGrid VerticalAlignment="Center" Columns="2">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
-                                    <TextBox Margin="5,0,0,0" Text="{Binding Rectangle.Height}" />
-                                </UniformGrid>
-                            </StackPanel>
+                            <Border.Background>
+                                <SolidColorBrush Opacity=".5" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                            </Border.Background>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <StackPanel VerticalAlignment="Top" Orientation="Vertical">
+                                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
+                                        <TextBox Margin="5,0,0,0" Text="{Binding Rectangle.Width}" />
+                                    </UniformGrid>
+                                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
+                                        <TextBox Margin="5,0,0,0" Text="{Binding Rectangle.Height}" />
+                                    </UniformGrid>
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="1"
+                                    VerticalAlignment="Bottom"
+                                    Orientation="Vertical">
+                                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDistance}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Margin="5,0,0,0" Text="{Binding BahtinovImage.Distance, StringFormat=\{0:#.00\}}" />
+                                            <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblPx}" />
+                                        </StackPanel>
+
+                                    </UniformGrid>
+                                </StackPanel>
+                            </Grid>
                             <Border.Margin>
                                 <MultiBinding Converter="{StaticResource MultiMarginConverter}">
                                     <Binding Source="{StaticResource zero}" />

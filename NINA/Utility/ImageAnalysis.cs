@@ -29,9 +29,10 @@ namespace NINA.Utility {
         BitmapSource originalSource;
         Bitmap convertedSource;
 
-        
 
-        public BitmapSource GrabBahtinov() {
+
+        public BahtinovImage GrabBahtinov() {
+            var bahtinovImage = new BahtinovImage();
             convertedSource = ImageAnalysis.Convert16BppTo8Bpp(originalSource);
 
             Bitmap bahtinovedBitmap = new Bitmap(convertedSource.Width, convertedSource.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
@@ -54,28 +55,28 @@ namespace NINA.Utility {
             var mediaColor = Profile.ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor;
             var drawingColor = System.Drawing.Color.FromArgb(mediaColor.A, mediaColor.R, mediaColor.G, mediaColor.B);
             var linePen = new System.Drawing.Pen(drawingColor, 1);
-            
 
-        List<Line> bahtinovLines = new List<Line>();
+
+            List<Line> bahtinovLines = new List<Line>();
             foreach (HoughLine line in lines) {
                 var k = TranslateHughLineToLine(line, bahtinovedBitmap.Width, bahtinovedBitmap.Height);
                 bahtinovLines.Add(k);
-                
+
             }
 
-            float x1,x2,y1,y2;
+            float x1, x2, y1, y2;
 
             if (bahtinovLines.Count == 6) {
-                
+
 
                 var orderedPoints = bahtinovLines.OrderBy(x => 1.0d / x.Slope).ToList();
                 var threeLines = new List<Line>();
 
-                for(var i = 0; i < orderedPoints.Count(); i+=2) {
+                for (var i = 0; i < orderedPoints.Count(); i += 2) {
                     var l1 = orderedPoints[i];
                     var l2 = orderedPoints[i + 1];
 
-                    
+
                     var inter = (l1.Intercept + l2.Intercept) / 2.0f;
                     var slope = (l1.Slope + l2.Slope) / 2.0f;
                     var centerLine = Line.FromSlopeIntercept(slope, inter);
@@ -86,7 +87,7 @@ namespace NINA.Utility {
                     x2 = convertedSource.Width;
                     y1 = double.IsInfinity(centerLine.Slope) ? centerLine.Intercept : centerLine.Slope + centerLine.Intercept;
                     y2 = double.IsInfinity(centerLine.Slope) ? centerLine.Intercept : (centerLine.Slope * (convertedSource.Width) + centerLine.Intercept);
-                    
+
                     graphics.DrawLine(
                         linePen,
                         new PointF(x1, y1),
@@ -95,43 +96,50 @@ namespace NINA.Utility {
 
                 /* Intersect outer bahtinov lines */
                 var intersection = threeLines[0].GetIntersectionWith(threeLines[2]);
+                if (intersection.HasValue) {
+                    /* get orthogonale to center line through intersection */
+                    var centerBahtinovLine = threeLines[1];
+                    var orthogonalSlope = -1.0f / centerBahtinovLine.Slope;
+                    var orthogonalIntercept = intersection.Value.Y - orthogonalSlope * intersection.Value.X;
 
-                /* get orthogonale to center line through intersection */
-                var centerBahtinovLine = threeLines[1];
-                var orthogonalSlope = -1.0f / centerBahtinovLine.Slope;
-                var orthogonalIntercept = intersection.Value.Y - orthogonalSlope * intersection.Value.X;
+                    var orthogonalCenter = Line.FromSlopeIntercept(orthogonalSlope, orthogonalIntercept);
+                    var intersection2 = centerBahtinovLine.GetIntersectionWith(orthogonalCenter);
+                    if (intersection2.HasValue && !double.IsInfinity(intersection2.Value.X)) {
+                                                
+                        x1 = intersection.Value.X;
+                        y1 = intersection.Value.Y;
+                        x2 = intersection2.Value.X;
+                        y2 = intersection2.Value.Y;
 
-                var orthogonalCenter = Line.FromSlopeIntercept(orthogonalSlope, orthogonalIntercept);
-                var intersection2 = centerBahtinovLine.GetIntersectionWith(orthogonalCenter);
-                var r = 10;
-                
-                graphics.DrawEllipse(
-                    intersectEllipsePen, 
-                    new RectangleF(intersection.Value.X - r, intersection.Value.Y - r, 2 * r, 2 * r));
-                graphics.DrawEllipse(
-                    focusEllipsePen,
-                    new RectangleF(intersection2.Value.X - r, intersection2.Value.Y - r, 2 * r, 2 * r));
+                        var r = 10;
+                        graphics.DrawEllipse(
+                            intersectEllipsePen,
+                            new RectangleF(x1 - r, y1 - r, 2 * r, 2 * r));
+                        graphics.DrawEllipse(
+                            focusEllipsePen,
+                            new RectangleF(x2 - r, y2 - r, 2 * r, 2 * r));
+                        
+                        graphics.DrawLine(
+                            intersectEllipsePen,
+                            new PointF(x1, y1),
+                            new PointF(x2, y2));
 
-                x1 = intersection.Value.X;
-                x2 = intersection2.Value.X;
-                y1 = intersection.Value.Y;
-                y2 = intersection2.Value.Y; ;
+                        bahtinovImage.Distance = intersection.Value.DistanceTo(intersection2.Value);
+                    }
+                }
 
-                graphics.DrawLine(
-                    intersectEllipsePen,
-                    new PointF(x1, y1),
-                    new PointF(x2, y2));
             }
-            
+
 
             var img = ImageAnalysis.ConvertBitmap(bahtinovedBitmap, System.Windows.Media.PixelFormats.Bgr24);
             convertedSource.Dispose();
             bahtinovedBitmap.Dispose();
             img.Freeze();
-            return img;
+            bahtinovImage.Image = img;
+            return bahtinovImage;
         }
 
-        private Line TranslateHughLineToLine(HoughLine line, int width, int height) {            
+        private Line TranslateHughLineToLine(HoughLine line, int width, int height) {
             // get line's radius and theta values
             int r = line.Radius;
             double t = line.Theta;
@@ -176,6 +184,11 @@ namespace NINA.Utility {
                 );
         }
 
+    }
+
+    public class BahtinovImage {
+        public BitmapSource Image { get; set; }
+        public double Distance { get; set; }
     }
 
 
@@ -354,9 +367,9 @@ namespace NINA.Utility {
 
                 if (
                     blob.Area > (avg + 1.5 * stdev)
-                    || blob.Rectangle.Width > _maxStarSize 
-                    || blob.Rectangle.Height > _maxStarSize 
-                    || blob.Rectangle.Width < _minStarSize 
+                    || blob.Rectangle.Width > _maxStarSize
+                    || blob.Rectangle.Height > _maxStarSize
+                    || blob.Rectangle.Width < _minStarSize
                     || blob.Rectangle.Height < _minStarSize) {
                     continue;
                 }
@@ -370,7 +383,7 @@ namespace NINA.Utility {
                 } else { //Star is elongated
                     var eccentricity = CalculateEccentricity(rect.Width, rect.Height);
                     //Discard highly elliptical shapes.
-                    if(eccentricity > 0.8) {
+                    if (eccentricity > 0.8) {
                         continue;
                     }
                     s = new Star { Position = new AForge.Point(centerpoint.X * (float)_inverseResizefactor, centerpoint.Y * (float)_inverseResizefactor), radius = Math.Max(rect.Width, rect.Height) / 2, Rectangle = rect };

@@ -117,18 +117,18 @@ namespace NINA.ViewModel {
 
                 /* Get Pixels */
                 var crop = new CroppedBitmap(Image, new Int32Rect((int)Rectangle.X, (int)Rectangle.Y, (int)Rectangle.Width, (int)Rectangle.Height));
-                BahtinovedImage = new BahtinovAnalysis(crop).GrabBahtinov();
+                BahtinovImage = new BahtinovAnalysis(crop).GrabBahtinov();
                 Rectangle.PropertyChanged += Rectangle_PropertyChanged;
             }
         }
 
-        private BitmapSource _bahtinovedImage;
-        public BitmapSource BahtinovedImage {
+        private BahtinovImage _bahtinovImage;
+        public BahtinovImage BahtinovImage {
             get {
-                return _bahtinovedImage;
+                return _bahtinovImage;
             }
             private set {
-                _bahtinovedImage = value;
+                _bahtinovImage = value;
                 RaisePropertyChanged();
             }
         }
