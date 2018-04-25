@@ -110,21 +110,26 @@ namespace NINA.Utility {
                         y1 = intersection.Value.Y;
                         x2 = intersection2.Value.X;
                         y2 = intersection2.Value.Y;
+                        
+                        bahtinovImage.Distance = intersection.Value.DistanceTo(intersection2.Value);
+
+                        var t = bahtinovImage.Distance * 4 / bahtinovImage.Distance;
+                        var x3 = (float)((1 - t) * x1 + t * x2);
+                        var y3 = (float)((1 - t) * y1 + t * y2);
 
                         var r = 10;
                         graphics.DrawEllipse(
                             intersectEllipsePen,
-                            new RectangleF(x1 - r, y1 - r, 2 * r, 2 * r));
+                            new RectangleF(x3 - r, y3 - r, 2 * r, 2 * r));
                         graphics.DrawEllipse(
                             focusEllipsePen,
                             new RectangleF(x2 - r, y2 - r, 2 * r, 2 * r));
                         
                         graphics.DrawLine(
                             intersectEllipsePen,
-                            new PointF(x1, y1),
+                            new PointF(x3, y3),
                             new PointF(x2, y2));
 
-                        bahtinovImage.Distance = intersection.Value.DistanceTo(intersection2.Value);
                     }
                 }
 
