@@ -19,9 +19,9 @@
                 <StackPanel Margin="5" VerticalAlignment="Top">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
-                            Width="80"
+                            Width="150"
                             VerticalAlignment="Center"
-                            Text="{ns:Loc LblMinExposureADU}" />
+                            Text="{ns:Loc LblMinOptimalADU}" />
                         <TextBlock
                             Width="80"
                             HorizontalAlignment="Center"
@@ -30,9 +30,9 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
-                            Width="80"
+                            Width="150"
                             VerticalAlignment="Center"
-                            Text="{ns:Loc LblMaxExposureADU}" />
+                            Text="{ns:Loc LblMaxOptimalADU}" />
                         <TextBlock
                             Width="80"
                             HorizontalAlignment="Center"
@@ -41,9 +41,9 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
-                            Width="80"
+                            Width="150"
                             VerticalAlignment="Center"
-                            Text="{ns:Loc LblInOptimalExposure}" />
+                            Text="{ns:Loc LblExposureBetweenADU}" />
                         <TextBlock
                             Width="80"
                             HorizontalAlignment="Center"
@@ -52,25 +52,14 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
-                            Width="80"
+                            Width="150"
                             VerticalAlignment="Center"
-                            Text="{ns:Loc LblOptimalExposure}" />
+                            Text="{ns:Loc LblOptimalExposureTime}" />
                         <TextBlock
                             Width="80"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="{Binding RecommendedExposureTime, Mode=OneWay}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            Width="80"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblMean}" />
-                        <TextBlock
-                            Width="80"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="{Binding Mean, StringFormat=\{0:#.00\}}" />
                     </StackPanel>
                 </StackPanel>
             </Border>

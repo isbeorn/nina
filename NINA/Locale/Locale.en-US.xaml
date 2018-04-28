@@ -597,4 +597,9 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost">PHD2 Server Connection lost!</s:String>
     <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain">Save selected profile and don't ask again next time</s:String>
     <s:String x:Key="LblChooseProfile">Choose Profile</s:String>
+    <s:String x:Key="LblExposureCalculator">Optimal Exposure Calculator</s:String>
+    <s:String x:Key="LblMinOptimalADU">Minimal ADU</s:String>
+    <s:String x:Key="LblMaxOptimalADU">Maximum ADU</s:String>
+    <s:String x:Key="LblExposureBetweenADU">Exposure in between min and max</s:String>
+    <s:String x:Key="LblOptimalExposureTime">Optimal exposure time</s:String>
 </ResourceDictionary>

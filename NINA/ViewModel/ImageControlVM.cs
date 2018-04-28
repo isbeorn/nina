@@ -279,7 +279,10 @@ namespace NINA.ViewModel {
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
                     }
 
-                    iarr.Statistics.ExposureTime = parameters.ExposureTime;
+                    if (parameters != null)
+                    {
+                        iarr.Statistics.ExposureTime = parameters.ExposureTime;
+                    }
 
                     await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                         Image = null;
