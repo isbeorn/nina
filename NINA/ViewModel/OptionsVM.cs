@@ -60,6 +60,22 @@ namespace NINA.ViewModel {
                 return true;
             }));
 
+            Mediator.Instance.RegisterRequest(new GetDoublePropertyFromClassMessageHandle(typeof(OptionsVM), (GetDoublePropertyFromClassMessage msg) =>
+            {
+                try
+                {
+                    object value = GetType().GetProperty(msg.Property).GetValue(this);
+                    if(value.GetType() == typeof(double))
+                        return (double)value;
+                }
+                catch
+                {
+                    return -1;
+                }
+
+                return -1;
+            }));
+
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
         }
 
@@ -299,6 +315,58 @@ namespace NINA.ViewModel {
                 System.Threading.Thread.CurrentThread.CurrentUICulture = Language;
                 System.Threading.Thread.CurrentThread.CurrentCulture = Language;
                 Locale.Loc.Instance.ReloadLocale(Language.Name);
+                RaisePropertyChanged();
+            }
+        }
+
+        public double ReadNoise
+        {
+            get
+            {
+                return ProfileManager.Instance.ActiveProfile.CameraSettings.ReadNoise;
+            }
+            set
+            {
+                ProfileManager.Instance.ActiveProfile.CameraSettings.ReadNoise = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double BitDepth
+        {
+            get
+            {
+                return ProfileManager.Instance.ActiveProfile.CameraSettings.BitDepth;
+            }
+            set
+            {
+                ProfileManager.Instance.ActiveProfile.CameraSettings.BitDepth = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double Offset
+        {
+            get
+            {
+                return ProfileManager.Instance.ActiveProfile.CameraSettings.Offset;
+            }
+            set
+            {
+                ProfileManager.Instance.ActiveProfile.CameraSettings.Offset = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double FullWellCapacity
+        {
+            get
+            {
+                return ProfileManager.Instance.ActiveProfile.CameraSettings.FullWellCapacity;
+            }
+            set
+            {
+                ProfileManager.Instance.ActiveProfile.CameraSettings.FullWellCapacity = value;
                 RaisePropertyChanged();
             }
         }

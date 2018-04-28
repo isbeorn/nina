@@ -80,6 +80,7 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(ImagingVM);
             DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
             DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgExposureCalculatorVM);
             DockManagerVM.Anchorables.Add(AutoFocusVM);
         }
 

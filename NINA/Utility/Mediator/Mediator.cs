@@ -101,6 +101,11 @@ namespace NINA.Utility.Mediator
             return returnMessages;
         }
 
+        public double Request(MediatorMessage<double> msg, Type requestedClass = null)
+        {
+            return Request<double>(msg, requestedClass);
+        }
+
         public string Request(MediatorMessage<string> msg, Type requestedClass = null)
         {
             return Request<string>(msg, requestedClass);

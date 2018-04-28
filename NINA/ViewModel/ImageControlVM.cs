@@ -137,6 +137,23 @@ namespace NINA.ViewModel {
             }
         }
 
+        private ImageExposureCalculatorVM _imgExposureCalcVM;
+        public ImageExposureCalculatorVM ImgExposureCalculatorVM {
+            get
+            {
+                if (_imgExposureCalcVM == null)
+                {
+                    _imgExposureCalcVM = new ImageExposureCalculatorVM();
+                }
+                return _imgExposureCalcVM;
+            }
+            set
+            {
+                _imgExposureCalcVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private BitmapSource _image;
         public BitmapSource Image {
             get {
@@ -262,6 +279,8 @@ namespace NINA.ViewModel {
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
                     }
 
+                    iarr.Statistics.ExposureTime = parameters.ExposureTime;
+
                     await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                         Image = null;
                         ImgArr = null;
@@ -271,7 +290,7 @@ namespace NINA.ViewModel {
                         Image = source;
                         ImgStatisticsVM.Add(ImgArr.Statistics);
                         ImgHistoryVM.Add(iarr.Statistics);
-
+                        ImgExposureCalculatorVM.Add(iarr.Statistics);
                     }));
 
                     if (bSave) {

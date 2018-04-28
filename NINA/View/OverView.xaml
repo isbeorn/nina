@@ -210,6 +210,12 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.AutoFocusTemplate>
 
+                    <util:PaneTemplateSelector.ImageExposureCalculatorTemplate>
+                        <DataTemplate>
+                            <view:AnchorableExposureCalculatorView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.ImageExposureCalculatorTemplate>
+
                 </util:PaneTemplateSelector>
             </dock:DockingManager.LayoutItemTemplateSelector>
 

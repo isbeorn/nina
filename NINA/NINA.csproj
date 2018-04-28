@@ -415,6 +415,7 @@
     <Compile Include="ViewModel\FilterWheelVM.cs" />
     <Compile Include="ViewModel\FrameFocusVM.cs" />
     <Compile Include="ViewModel\ImageHistoryVM.cs" />
+    <Compile Include="ViewModel\ImageExposureCalculatorVM.cs" />
     <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
@@ -449,6 +450,9 @@
     </Compile>
     <Compile Include="View\AnchorableImageHistoryView.xaml.cs">
       <DependentUpon>AnchorableImageHistoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AnchorableExposureCalculatorView.xaml.cs">
+      <DependentUpon>AnchorableExposureCalculatorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AnchorableImageStatisticsView.xaml.cs">
       <DependentUpon>AnchorableImageStatisticsView.xaml</DependentUpon>
@@ -748,6 +752,10 @@
     <Page Include="View\AnchorableImageHistoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AnchorableExposureCalculatorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\AnchorableImageStatisticsView.xaml">
       <SubType>Designer</SubType>
