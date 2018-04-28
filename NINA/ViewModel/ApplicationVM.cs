@@ -57,7 +57,7 @@ namespace NINA.ViewModel {
         {
             if (ProfileManager.Instance.Profiles.ProfileList.Count > 1)
             {
-                new ProfileSelectVM(this).SelectProfile();
+                new ProfileSelectVM().SelectProfile();
             }
         }
 

@@ -1,32 +1,86 @@
 ﻿using NINA.Utility;
+using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace NINA.ViewModel
 {
-    class ProfileSelectVM : BaseINPC
+    internal class ProfileSelectVM : BaseINPC
     {
         private CancellationTokenSource _cancelTokenSource;
-        private bool _useSavedProfile = Properties.Settings.Default.UseSavedProfileSelection;
+        private Profile _defaultProfile;
         private ObserveAllCollection<Profile> _profileList;
         private Profile _tempProfile;
-        private Profile _defaultProfile;
-        private ApplicationVM _applicationVM;
+        private bool _useSavedProfile = Properties.Settings.Default.UseSavedProfileSelection;
 
-        public ProfileSelectVM(ApplicationVM applicationVM)
+        public ProfileSelectVM()
         {
-            _applicationVM = applicationVM;
             Profiles = ProfileManager.Instance.Profiles.ProfileList;
             ActiveProfile = ProfileManager.Instance.ActiveProfile;
             _defaultProfile = ActiveProfile;
+        }
+
+        public Profile ActiveProfile
+        {
+            get
+            {
+                return _tempProfile;
+            }
+            set
+            {
+                if (_tempProfile?.Id != value.Id || _tempProfile == null)
+                {
+                    _tempProfile = value;
+                    Mediator.Instance.Request(new SetProfileByIdMessage()
+                    {
+                        Id = value.Id
+                    });
+                    RaiseAllPropertiesChanged();
+                }
+            }
+        }
+
+        public string Camera
+        {
+            get
+            {
+                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage()
+                {
+                    Id = ActiveProfile.CameraSettings.Id
+                }, typeof(CameraChooserVM));
+            }
+        }
+
+        public string FilterWheel
+        {
+            get
+            {
+                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage()
+                {
+                    Id = ActiveProfile.FilterWheelSettings.Id
+                }, typeof(FilterWheelChooserVM));
+            }
+        }
+
+        public string FocalLength
+        {
+            get
+            {
+                return ActiveProfile.TelescopeSettings.FocalLength.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        public string Focuser
+        {
+            get
+            {
+                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage()
+                {
+                    Id = ActiveProfile.FocuserSettings.Id
+                }, typeof(FocuserChooserVM));
+            }
         }
 
         public ObserveAllCollection<Profile> Profiles
@@ -41,16 +95,14 @@ namespace NINA.ViewModel
             }
         }
 
-        public Profile ActiveProfile
+        public string Telescope
         {
             get
             {
-                return _tempProfile;
-            }
-            set
-            {
-                _tempProfile = value;
-                RaiseAllPropertiesChanged();
+                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage()
+                {
+                    Id = ActiveProfile.TelescopeSettings.Id
+                }, typeof(TelescopeChooserVM));
             }
         }
 
@@ -63,46 +115,6 @@ namespace NINA.ViewModel
             set
             {
                 _useSavedProfile = value;
-            }
-        }
-
-        public string Camera
-        {
-            get
-            {
-                return _applicationVM.CameraVM.CameraChooserVM.Devices.Single(cam => cam.Id == ActiveProfile.CameraSettings.Id).Name;
-            }
-        }
-
-        public string FilterWheel
-        {
-            get
-            {
-                return _applicationVM.FilterWheelVM.FilterWheelChooserVM.Devices.Single(cam => cam.Id == ActiveProfile.FilterWheelSettings.Id).Name;
-            }
-        }
-
-        public string Focuser
-        {
-            get
-            {
-                return _applicationVM.FocuserVM.FocuserChooserVM.Devices.Single(cam => cam.Id == ActiveProfile.FocuserSettings.Id).Name;
-            }
-        }
-
-        public string Telescope
-        {
-            get
-            {
-                return _applicationVM.TelescopeVM.TelescopeChooserVM.Devices.Single(cam => cam.Id == ActiveProfile.TelescopeSettings.Id).Name;
-            }
-        }
-
-        public string FocalLength
-        {
-            get
-            {
-                return ActiveProfile.TelescopeSettings.FocalLength.ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -120,11 +132,13 @@ namespace NINA.ViewModel
                         if (dialogResult.DialogResult != true)
                         {
                             _cancelTokenSource.Cancel();
+                            Mediator.Instance.Request(new SetProfileByIdMessage()
+                            {
+                                Id = _defaultProfile.Id
+                            });
                         }
                         else
                         {
-                            _applicationVM.OptionsVM.SelectedProfile = _tempProfile;
-                            _applicationVM.OptionsVM.SelectProfileCommand.Execute(null);
                             if (UseSavedProfile == true)
                             {
                                 Properties.Settings.Default.UseSavedProfileSelection = true;

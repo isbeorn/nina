@@ -53,6 +53,13 @@ namespace NINA.ViewModel {
                 CameraPixelSize = (double)o;
             }, MediatorMessages.CameraPixelSizeChanged);
 
+            Mediator.Instance.RegisterRequest(new SetProfileByIdMessageHandle((SetProfileByIdMessage msg) =>
+            {
+                SelectedProfile = ProfileManager.Instance.Profiles.ProfileList.Single(p => p.Id == msg.Id);
+                SelectProfile(null);
+                return true;
+            }));
+
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
         }
 
