@@ -484,7 +484,7 @@ namespace NINA.ViewModel {
     }
 
     class CameraChooserVM : EquipmentChooserVM {
-        public CameraChooserVM() : base(typeof(CameraChooserVM) {
+        public CameraChooserVM() : base(typeof(CameraChooserVM)) {
 
         }
 

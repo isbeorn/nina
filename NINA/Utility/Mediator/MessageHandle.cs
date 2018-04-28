@@ -12,7 +12,7 @@ namespace NINA.Utility.Mediator
     abstract class MessageHandle
     {
         public abstract string MessageType { get; }
-        public readonly Type RegisteredClass { get; private set; }
+        public Type RegisteredClass { get; private set; }
 
         public MessageHandle(Type registeredClass)
         {
