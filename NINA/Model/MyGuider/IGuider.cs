@@ -45,6 +45,10 @@ namespace NINA.Model.MyGuider {
         double DecDistanceRaw { get; set; }
         double RADistanceGuide { get; set; }
         double DecDistanceGuide { get; set; }
+        double RADistanceRawDisplay { get; set; }
+        double DecDistanceRawDisplay { get; set; }
+        double RADistanceGuideDisplay { get; set; }
+        double DecDistanceGuideDisplay { get; set; }
         double RADuration { get; }
         string RADirection { get; }
         double DECDuration { get; }

@@ -1,21 +1,22 @@
 ﻿using NINA.Utility;
+using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
-    abstract class EquipmentChooserVM : BaseVM {
-
-        public EquipmentChooserVM() {
+    internal abstract class EquipmentChooserVM : BaseVM {
+        public EquipmentChooserVM(Type equipmentType) {
             SetupDialogCommand = new RelayCommand(OpenSetupDialog);
             GetEquipment();
+            Mediator.Instance.RegisterRequest(new GetEquipmentNameByIdMessageHandle(equipmentType, (GetEquipmentNameByIdMessage msg) => {
+                var name = Devices.SingleOrDefault(dev => dev.Id == msg.Id).Name;
+                return name;
+            }));
         }
 
         private AsyncObservableCollection<Model.IDevice> _devices;
+
         public AsyncObservableCollection<Model.IDevice> Devices {
             get {
                 if (_devices == null) {
@@ -31,6 +32,7 @@ namespace NINA.ViewModel {
         public abstract void GetEquipment();
 
         private Model.IDevice _selectedDevice;
+
         public Model.IDevice SelectedDevice {
             get {
                 return _selectedDevice;
@@ -54,13 +56,10 @@ namespace NINA.ViewModel {
                 var items = (from device in Devices where device.Id == id select device);
                 if (items.Count() > 0) {
                     SelectedDevice = items.First();
-
                 } else {
                     SelectedDevice = Devices.First();
                 }
             }
         }
-
-
     }
 }

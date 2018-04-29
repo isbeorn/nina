@@ -55,7 +55,7 @@ namespace NINA.Utility {
 
     public class ObservableLimitedSizedStack<T> : ICollection<T>, INotifyCollectionChanged, INotifyPropertyChanged, IEnumerable {
 
-        private readonly int _maxSize;
+        private int _maxSize;
         public ObservableLimitedSizedStack(int maxSize) {
             _underLyingLinkedList = new LinkedList<T>();
             _maxSize = maxSize;
@@ -84,6 +84,18 @@ namespace NINA.Utility {
             }
         }
 
+        public int MaxSize {
+            get {
+                return _maxSize;
+            }
+            set {
+                _maxSize = value;
+                while (this._underLyingLinkedList.Count > _maxSize) {
+                    _underLyingLinkedList.RemoveFirst();
+                }
+            }
+        }
+
         private LinkedList<T> _underLyingLinkedList;
 
         public int Count {
@@ -109,7 +121,7 @@ namespace NINA.Utility {
                 return _underLyingLinkedList.First;
             } finally {
                 _lock.ExitReadLock();
-            }            
+            }
         }
 
         public void Clear() {
@@ -119,7 +131,7 @@ namespace NINA.Utility {
                 OnCollectionChanged(NotifyCollectionChangedAction.Reset);
             } finally {
                 _lock.ExitWriteLock();
-            }            
+            }
         }
 
         public bool Contains(T value) {
@@ -128,7 +140,7 @@ namespace NINA.Utility {
                 return _underLyingLinkedList.Contains(value);
             } finally {
                 _lock.ExitReadLock();
-            }            
+            }
         }
 
         public void CopyTo(T[] array, int index) {
@@ -137,7 +149,7 @@ namespace NINA.Utility {
                 _underLyingLinkedList.CopyTo(array, index);
             } finally {
                 _lock.ExitWriteLock();
-            }            
+            }
         }
 
         public bool LinkedListEquals(object obj) {
@@ -164,7 +176,7 @@ namespace NINA.Utility {
                 return _underLyingLinkedList.FindLast(value);
             } finally {
                 _lock.ExitReadLock();
-            }            
+            }
         }
 
         public Type GetLinkedListType() {
@@ -173,11 +185,11 @@ namespace NINA.Utility {
                 return _underLyingLinkedList.GetType();
             } finally {
                 _lock.ExitReadLock();
-            }            
+            }
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
-        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {            
+        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
             this.CollectionChanged?.Invoke(this, e);
             OnPropertyChanged(nameof(Count));
         }
@@ -207,7 +219,7 @@ namespace NINA.Utility {
                 return _underLyingLinkedList.Remove(item);
             } finally {
                 _lock.ExitWriteLock();
-            }            
+            }
         }
 
         public IEnumerator<T> GetEnumerator() {

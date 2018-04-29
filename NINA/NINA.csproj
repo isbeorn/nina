@@ -303,6 +303,7 @@
     <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
     <Compile Include="Utility\Behaviors\DragCommandBehavior.cs" />
     <Compile Include="Utility\BindingProxy.cs" />
+    <Compile Include="Utility\ButtonHelper.cs" />
     <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
     <Compile Include="Utility\Converters\ArcsecToLabelConverter.cs" />
     <Compile Include="Utility\Converters\BooleanToVisibilityCollapsedConverter.cs" />
@@ -428,6 +429,7 @@
     <Compile Include="ViewModel\GuiderVM.cs" />
     <Compile Include="ViewModel\PlatesolveVM.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
+    <Compile Include="ViewModel\ProfileSelectVM.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
     <Compile Include="ViewModel\SkyAtlasVM.cs" />
     <Compile Include="ViewModel\TelescopeVM.cs" />
@@ -562,6 +564,9 @@
     </Compile>
     <Compile Include="View\ThumbnailListView.xaml.cs">
       <DependentUpon>ThumbnailListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProfileSelectView.xaml.cs">
+      <DependentUpon>ProfileSelectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\VersionCheckView.xaml.cs">
       <DependentUpon>VersionCheckView.xaml</DependentUpon>
@@ -894,6 +899,10 @@
     <Page Include="View\ThumbnailListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ProfileSelectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\VersionCheckView.xaml">
       <SubType>Designer</SubType>

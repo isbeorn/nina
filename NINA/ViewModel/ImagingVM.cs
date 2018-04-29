@@ -195,7 +195,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {       
+        private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             double duration = seq.ExposureTime;
             bool isLight = false;
             if (Cam.HasShutter) {
@@ -224,7 +224,7 @@ namespace NINA.ViewModel {
                             Status = ExposureStatus.EXPOSING,
                             Progress = ExposureSeconds,
                             MaxProgress = (int)duration,
-                            ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue                                
+                            ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
                         });
                     } while ((elapsed < duration) && Cam?.Connected == true);
                 });
@@ -238,9 +238,9 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (seq.Dither && ((seq.ProgressExposureCount % seq.DitherAmount) == 0)) {                
+            if (seq.Dither && ((seq.ProgressExposureCount % seq.DitherAmount) == 0)) {
 
-                return await Mediator.Instance.RequestAsync(new DitherGuiderMessage() { Token = token });                
+                return await Mediator.Instance.RequestAsync(new DitherGuiderMessage() { Token = token });
             }
             token.ThrowIfCancellationRequested();
             return false;
@@ -252,7 +252,7 @@ namespace NINA.ViewModel {
 
         public async Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             var iarr = await CaptureImage(sequence, token, progress);
-            if(iarr != null) {
+            if (iarr != null) {
                 return await _currentPrepareImageTask;
             } else {
                 return null;
@@ -322,10 +322,10 @@ namespace NINA.ViewModel {
                     if (CameraConnected != true) {
                         throw new CameraConnectionLostException();
                     }
-                    
-                    
+
+
                     //Wait for previous prepare image task to complete
-                    if(_currentPrepareImageTask != null && !_currentPrepareImageTask.IsCompleted) {
+                    if (_currentPrepareImageTask != null && !_currentPrepareImageTask.IsCompleted) {
                         progress.Report(new ApplicationStatus() { Status = "Waiting for previous image to finish processing" });
                         await _currentPrepareImageTask;
                     }
@@ -441,7 +441,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
-            await CaptureImage(seq, ct, progress, bsave, targetname);            
+            await CaptureImage(seq, ct, progress, bsave, targetname);
             return true;
         }
 

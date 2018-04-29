@@ -35,7 +35,7 @@ namespace NINA.Utility.Profile {
 
         public static ProfileManager Instance { get { return lazy.Value; } }
 
-        string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
+        public static string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
 
 
         public Profiles Profiles { get; set; }
