@@ -166,7 +166,7 @@ namespace NINA.Model.MyGuider {
             connected = await _tcs.Task;
 
             var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
-            PixelScale = double.Parse(resp.jsonrpc, CultureInfo.InvariantCulture);
+            PixelScale = double.Parse(resp.result.ToString(), CultureInfo.InvariantCulture);
 
             Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
 
@@ -607,8 +607,12 @@ namespace NINA.Model.MyGuider {
             private double dy;
             private double rADistanceRaw;
             private double decDistanceRaw;
+            private double raDistanceDisplay;
+            private double decDistanceDisplay;
             private double rADistanceGuide;
             private double decDistanceGuide;
+            private double raDistanceGuideDisplay;
+            private double decDistanceGuideDisplay;
             private double rADuration;
             private string rADirection;
             private double dECDuration;
@@ -619,6 +623,42 @@ namespace NINA.Model.MyGuider {
             private bool rALimited;
             private bool decLimited;
             private double errorCode;
+
+            public double RADistanceRawDisplay {
+                get {
+                    return raDistanceDisplay;
+                }
+                set {
+                    raDistanceDisplay = value;
+                }
+            }
+
+            public double DecDistanceRawDisplay {
+                get {
+                    return decDistanceDisplay;
+                }
+                set {
+                    decDistanceDisplay = value;
+                }
+            }
+
+            public double RADistanceGuideDisplay {
+                get {
+                    return raDistanceGuideDisplay;
+                }
+                set {
+                    raDistanceGuideDisplay = value;
+                }
+            }
+
+            public double DecDistanceGuideDisplay {
+                get {
+                    return decDistanceGuideDisplay;
+                }
+                set {
+                    decDistanceGuideDisplay = value;
+                }
+            }
 
             public double Frame {
                 get {
@@ -691,6 +731,7 @@ namespace NINA.Model.MyGuider {
 
                 set {
                     rADistanceRaw = value;
+                    RADistanceRawDisplay = RADistanceRaw;
                 }
             }
 
@@ -701,6 +742,7 @@ namespace NINA.Model.MyGuider {
 
                 set {
                     decDistanceRaw = value;
+                    DecDistanceRawDisplay = DecDistanceRaw;
                 }
             }
 
@@ -711,22 +753,24 @@ namespace NINA.Model.MyGuider {
 
                 set {
                     rADistanceGuide = value;
+                    RADistanceGuideDisplay = RADistanceGuide;
                 }
             }
 
             public double DecDistanceGuide {
                 get {
-                    return -decDistanceGuide;
+                    return decDistanceGuide;
                 }
 
                 set {
                     decDistanceGuide = value;
+                    DecDistanceGuideDisplay = DecDistanceRaw;
                 }
             }
 
             public double RADuration {
                 get {
-                    return rADuration;
+                    return -rADuration;
                 }
 
                 set {

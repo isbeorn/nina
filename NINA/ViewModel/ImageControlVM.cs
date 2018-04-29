@@ -262,6 +262,11 @@ namespace NINA.ViewModel {
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
                     }
 
+                    if (parameters != null)
+                    {
+                        iarr.Statistics.ExposureTime = parameters.ExposureTime;
+                    }
+
                     await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                         Image = null;
                         ImgArr = null;
@@ -271,7 +276,6 @@ namespace NINA.ViewModel {
                         Image = source;
                         ImgStatisticsVM.Add(ImgArr.Statistics);
                         ImgHistoryVM.Add(iarr.Statistics);
-
                     }));
 
                     if (bSave) {

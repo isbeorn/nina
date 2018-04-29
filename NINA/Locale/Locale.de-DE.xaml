@@ -600,4 +600,26 @@ Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
     <s:String x:Key="LblRemoveProfileText">Soll das Profil mit Namen: {0} und Id: {1} entfernt werden?</s:String>
     <s:String x:Key="LblRemoveProfileCaption">Profil entfernen?</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost">PHD2 Server Verbindung verloren!</s:String>
+    <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain">Gewähltes Profil speichern und nicht nochmal fragen</s:String>
+    <s:String x:Key="LblChooseProfile">Profil wählen</s:String>
+    <s:String x:Key="LblExposureCalculator">Optimale Belichtungszeit Rechner</s:String>
+    <s:String x:Key="LblMinOptimalADU">Minimum ADU</s:String>
+    <s:String x:Key="LblMaxOptimalADU">Maximum ADU</s:String>
+    <s:String x:Key="LblOptimalExposureTime">Optimale Belichtungszeit</s:String>
+    <s:String x:Key="LblMinimumExposureTime">Min empfohlene Bel.Zeit</s:String>
+    <s:String x:Key="LblMaximumExposureTime">Max empfohlene Bel.Zeit</s:String>
+    <s:String x:Key="LblReadNoise">Ausleserauschen in e</s:String>
+    <s:String x:Key="LblBiasMean">BIAS Mittelwert (in 16bit)</s:String>
+    <s:String x:Key="LblBitDepth">Bittiefe</s:String>
+    <s:String x:Key="LblFullWellCapacity">Volle Brunnentiefe</s:String>
+    <s:String x:Key="LblDataToDownloadRatio">Download zu Data Verhältnis</s:String>
+    <s:String x:Key="LblCurrentDownloadToDataRatio">Aktuelles Download:Data Verhältnis</s:String>
+    <s:String x:Key="LblPHD2HistorySize">PHD2 Historieneinträge</s:String>
+    <s:String x:Key="LblPHD2MinimalHistorySize">PHD2 Historieneinträge (Imaging)</s:String>
+    <s:String x:Key="LblPHD2RARMS">RA: {0}"</s:String>
+    <s:String x:Key="LblPHD2DecRMS">Dec: {0}"</s:String>
+    <s:String x:Key="LblPHD2TotalRMS">Tot: {0}"</s:String>
+    <s:String x:Key="LblYAxisScale">Y-Achse Skala</s:String>
+    <s:String x:Key="LblXAxisScale">X-Achse Skala</s:String>
+    <s:String x:Key="LblYAxisUnits">Y-Achse Einheit</s:String>
 </ResourceDictionary>

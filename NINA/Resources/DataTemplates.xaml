@@ -9,4 +9,7 @@
     <DataTemplate DataType="{x:Type vm:VersionCheckVM}">
         <view:VersionCheckView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:ProfileSelectVM}">
+        <view:ProfileSelectView />
+    </DataTemplate>
 </ResourceDictionary>

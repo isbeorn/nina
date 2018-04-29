@@ -293,6 +293,7 @@ namespace NINA.Utility.Mediator {
     class SetImageMessage : AsyncMediatorMessage<bool> {
         public ImageArray ImageArray { get; set; }
         public double Mean { get; set; }
+        public Double ExposureTime { get; set; }
     }
 
 }

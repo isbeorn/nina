@@ -18,8 +18,8 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <TextBlock Text="{ns:Loc LblYAxisScale}" />
-            <ComboBox SelectedValue="{Binding MaxY}" SelectedValuePath="Content">
+            <!--<TextBlock Text="{ns:Loc LblYAxisScale}" />-->
+            <ComboBox SelectedValue="{Binding MaxY}" SelectedValuePath="Content" ItemStringFormat="y: +/-{0}&quot;">
                 <ComboBoxItem>0.25</ComboBoxItem>
                 <ComboBoxItem>0.5</ComboBoxItem>
                 <ComboBoxItem>1</ComboBoxItem>
@@ -28,7 +28,18 @@
                 <ComboBoxItem>8</ComboBoxItem>
                 <ComboBoxItem>16</ComboBoxItem>
             </ComboBox>
-            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:GuiderScaleEnum}}}" SelectedItem="{Binding GuiderScale}" />
+            <!--<TextBlock Text="{ns:Loc LblXAxisScale}" />-->
+            <ComboBox SelectedValue="{Binding HistorySize}" MaxWidth="60" SelectedValuePath="Content" ItemStringFormat="x: {0}">
+                <ComboBoxItem>50</ComboBoxItem>
+                <ComboBoxItem>100</ComboBoxItem>
+                <ComboBoxItem>200</ComboBoxItem>
+                <ComboBoxItem>400</ComboBoxItem>
+            </ComboBox>
+            <!--<TextBlock Text="{ns:Loc LblYAxisUnits}" />-->
+            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:GuiderScaleEnum}}}" SelectedItem="{Binding GuiderScale}" ItemStringFormat="unit: {0}" />
+            <TextBlock Text="{Binding RMSRAText}" />
+            <TextBlock Text="{Binding RMSDecText}" />
+            <TextBlock Text="{Binding RMSTotalText}" />
         </StackPanel>
 
         <oxy:Plot
@@ -59,20 +70,20 @@
                 <oxy:LineSeries
                     Title="{ns:Loc LblRA}"
                     DataFieldX="Time"
-                    DataFieldY="RADistanceRaw"
+                    DataFieldY="RADistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistory}"
                     Color="Blue" />
                 <oxy:LineSeries
                     Title="{ns:Loc LblDec}"
                     DataFieldX="Time"
-                    DataFieldY="DecDistanceRaw"
+                    DataFieldY="DecDistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistory}"
                     Color="Red" />
                 <oxy:LinearBarSeries
                     Title="{ns:Loc LblRACorrections}"
                     BarWidth="3"
                     DataFieldX="TimeRA"
-                    DataFieldY="RADistanceGuide"
+                    DataFieldY="RADuration"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideStepsHistory}"
                     StrokeColor="Blue"
@@ -82,8 +93,8 @@
                     Title="{ns:Loc LblDecCorrections}"
                     BarWidth="3"
                     DataFieldX="TimeDec"
-                    DataFieldY="DecDistanceGuide"
-                    DisplayMemberPath="DecDistanceGuide"
+                    DataFieldY="DECDuration"
+                    DisplayMemberPath="DecDistanceGuideDisplay"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideStepsHistory}"
                     StrokeColor="Red"

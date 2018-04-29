@@ -111,6 +111,8 @@
     <s:String x:Key="LblConnected">Connected</s:String>
     <s:String x:Key="LblState">State</s:String>
     <s:String x:Key="LblYAxisScale">Y-Axis Scale</s:String>
+    <s:String x:Key="LblXAxisScale">X-Axis Scale</s:String>
+    <s:String x:Key="LblYAxisUnits">Y-Axis Units</s:String>
     <s:String x:Key="LblRA">RA</s:String>
     <s:String x:Key="LblDec">Dec</s:String>
     <s:String x:Key="LblRACorrections">RA Corrections</s:String>
@@ -595,4 +597,23 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblRemoveProfileText">Should the Profile with name: {0} and id: {1} be removed?</s:String>
     <s:String x:Key="LblRemoveProfileCaption">Remove Profile?</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost">PHD2 Server Connection lost!</s:String>
+    <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain">Save selected profile and don't ask again next time</s:String>
+    <s:String x:Key="LblChooseProfile">Choose Profile</s:String>
+    <s:String x:Key="LblExposureCalculator">Optimal Exposure Calculator</s:String>
+    <s:String x:Key="LblMinOptimalADU">Minimum ADU</s:String>
+    <s:String x:Key="LblMaxOptimalADU">Maximum ADU</s:String>
+    <s:String x:Key="LblOptimalExposureTime">Optimal exposure time</s:String>
+    <s:String x:Key="LblMinimumExposureTime">Min recommended time</s:String>
+    <s:String x:Key="LblMaximumExposureTime">Max recommended time</s:String>
+    <s:String x:Key="LblReadNoise">Read noise in e</s:String>
+    <s:String x:Key="LblBiasMean">BIAS mean value (in 16bit)</s:String>
+    <s:String x:Key="LblBitDepth">Bit Depth</s:String>
+    <s:String x:Key="LblFullWellCapacity">Full Well Capacity in e</s:String>
+    <s:String x:Key="LblDataToDownloadRatio">Download to Data ratio</s:String>
+    <s:String x:Key="LblCurrentDownloadToDataRatio">Current Download:Data ratio</s:String>
+    <s:String x:Key="LblPHD2HistorySize">PHD2 History Size</s:String>
+    <s:String x:Key="LblPHD2MinimalHistorySize">PHD2 History Size (Imaging)</s:String>
+    <s:String x:Key="LblPHD2RARMS">RA: {0}"</s:String>
+    <s:String x:Key="LblPHD2DecRMS">Dec: {0}"</s:String>
+    <s:String x:Key="LblPHD2TotalRMS">Tot: {0}"</s:String>
 </ResourceDictionary>
