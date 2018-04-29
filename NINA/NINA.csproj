@@ -351,6 +351,7 @@
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
+    <Compile Include="Utility\ObservableRectangle.cs" />
     <Compile Include="Utility\ObserveAllCollection.cs" />
     <Compile Include="Utility\DigitalSkySurveyInteraction.cs" />
     <Compile Include="Utility\Profile\ApplicationSettings.cs" />
