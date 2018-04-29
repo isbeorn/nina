@@ -1,5 +1,4 @@
-﻿using NINA.Model;
-using NINA.Model.MyFilterWheel;
+﻿using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
@@ -8,17 +7,16 @@ using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NINA.ViewModel {
+
     public class OptionsVM : DockableVM {
+
         public OptionsVM() {
             Title = "LblOptions";
             ContentId = nameof(OptionsVM);
@@ -40,7 +38,6 @@ namespace NINA.ViewModel {
             SelectProfileCommand = new RelayCommand(SelectProfile, (o) => {
                 return SelectedProfile != null;
             });
-
 
             ImagePatterns = CreateImagePatternList();
 
@@ -112,7 +109,6 @@ namespace NINA.ViewModel {
                     RaisePropertyChanged(p.Name);
                 }
             }
-
         }
 
         private void AddProfile(object obj) {
@@ -235,12 +231,10 @@ namespace NINA.ViewModel {
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
-
         }
 
-
-
         private ObservableCollection<string> _indexfiles;
+
         public ObservableCollection<string> IndexFiles {
             get {
                 if (_indexfiles == null) {
@@ -291,6 +285,7 @@ namespace NINA.ViewModel {
             new CultureInfo("en-US"),
             new CultureInfo("de-DE")
         };
+
         public ObservableCollection<CultureInfo> AvailableLanguages {
             get {
                 return _availableLanguages;
@@ -475,7 +470,6 @@ namespace NINA.ViewModel {
             }
         }
 
-
         public Hemisphere HemisphereType {
             get {
                 return ProfileManager.Instance.ActiveProfile.AstrometrySettings.HemisphereType;
@@ -528,7 +522,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-        
+
         public double PlateSolveExposureTime {
             get {
                 return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime;
@@ -672,7 +666,6 @@ namespace NINA.ViewModel {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltColorSchemaName;
             }
             set {
-
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltColorSchemaName = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(AltPrimaryColor));
@@ -688,7 +681,6 @@ namespace NINA.ViewModel {
             }
         }
 
-
         public Color PrimaryColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.PrimaryColor;
@@ -697,8 +689,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.PrimaryColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color SecondaryColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.SecondaryColor;
@@ -707,8 +699,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.SecondaryColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color BorderColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.BorderColor;
@@ -717,8 +709,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.BorderColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color BackgroundColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.BackgroundColor;
@@ -727,7 +719,6 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.BackgroundColor = value;
                 RaisePropertyChanged();
             }
-
         }
 
         public FileTypeEnum FileType {
@@ -748,8 +739,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color ButtonBackgroundSelectedColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor;
@@ -758,7 +749,6 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor = value;
                 RaisePropertyChanged();
             }
-
         }
 
         public Color ButtonForegroundColor {
@@ -769,7 +759,6 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonForegroundColor = value;
                 RaisePropertyChanged();
             }
-
         }
 
         public Color ButtonForegroundDisabledColor {
@@ -780,7 +769,6 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonForegroundDisabledColor = value;
                 RaisePropertyChanged();
             }
-
         }
 
         public double DitherPixels {
@@ -791,7 +779,6 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.GuiderSettings.DitherPixels = value;
                 RaisePropertyChanged();
             }
-
         }
 
         public bool DitherRAOnly {
@@ -802,10 +789,10 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.GuiderSettings.DitherRAOnly = value;
                 RaisePropertyChanged();
             }
-
         }
 
         private HashSet<ImagePattern> _imagePatterns;
+
         public HashSet<ImagePattern> ImagePatterns {
             get {
                 return _imagePatterns;
@@ -817,14 +804,17 @@ namespace NINA.ViewModel {
         }
 
         public class ImagePattern {
+
             public ImagePattern(string k, string d, string v) {
                 Key = k;
                 Description = d;
                 Value = v;
             }
+
             private string _key;
             private string _description;
             private string _value;
+
             public string Value {
                 get {
                     return _value;
@@ -833,6 +823,7 @@ namespace NINA.ViewModel {
                     _value = value;
                 }
             }
+
             public string Key {
                 get {
                     return _key;
@@ -854,9 +845,6 @@ namespace NINA.ViewModel {
             }
         }
 
-
-
-
         public Color AltPrimaryColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltPrimaryColor;
@@ -865,8 +853,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltPrimaryColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color AltSecondaryColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltSecondaryColor;
@@ -875,8 +863,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltSecondaryColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color AltBorderColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltBorderColor;
@@ -885,8 +873,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltBorderColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color AltBackgroundColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltBackgroundColor;
@@ -895,8 +883,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltBackgroundColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color AltButtonBackgroundColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundColor;
@@ -905,8 +893,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color AltButtonBackgroundSelectedColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundSelectedColor;
@@ -915,7 +903,6 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundSelectedColor = value;
                 RaisePropertyChanged();
             }
-
         }
 
         public Color AltButtonForegroundColor {
@@ -926,7 +913,6 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonForegroundColor = value;
                 RaisePropertyChanged();
             }
-
         }
 
         public Color AltButtonForegroundDisabledColor {
@@ -937,7 +923,6 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonForegroundDisabledColor = value;
                 RaisePropertyChanged();
             }
-
         }
 
         public bool AutoMeridianFlip {
@@ -979,7 +964,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
 
         public bool RecenterAfterFlip {
             get {
@@ -1034,8 +1018,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color NotificationErrorColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorColor;
@@ -1044,8 +1028,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color AltNotificationWarningColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningColor;
@@ -1054,8 +1038,8 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningColor = value;
                 RaisePropertyChanged();
             }
-
         }
+
         public Color AltNotificationErrorColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorColor;
@@ -1064,7 +1048,6 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorColor = value;
                 RaisePropertyChanged();
             }
-
         }
 
         public bool FocuserUseFilterWheelOffsets {
@@ -1075,7 +1058,6 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.FocuserSettings.UseFilterWheelOffsets = value;
                 RaisePropertyChanged();
             }
-
         }
 
         public int FocuserAutoFocusInitialOffsetSteps {
@@ -1086,7 +1068,6 @@ namespace NINA.ViewModel {
                 ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps = value;
                 RaisePropertyChanged();
             }
-
         }
 
         public int FocuserAutoFocusStepSize {
@@ -1212,6 +1193,7 @@ namespace NINA.ViewModel {
         }
 
         private FilterInfo _selectedFilter;
+
         public FilterInfo SelectedFilter {
             get {
                 return _selectedFilter;
@@ -1234,12 +1216,12 @@ namespace NINA.ViewModel {
             }
         }
 
-
         public double HistogramMajorStep {
             get {
                 return HistogramResolution / 2;
             }
         }
+
         public double HistogramMinorStep {
             get {
                 return HistogramResolution / 4;
@@ -1257,6 +1239,7 @@ namespace NINA.ViewModel {
         }
 
         private Profile _selectedProfile;
+
         public Profile SelectedProfile {
             get {
                 return _selectedProfile;

@@ -61,6 +61,5 @@
                     Color="Red" />
             </oxy:Plot.Series>
         </oxy:Plot>
-
     </Grid>
 </UserControl>

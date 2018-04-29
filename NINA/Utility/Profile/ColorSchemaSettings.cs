@@ -1,17 +1,15 @@
 ﻿using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
+
     [Serializable()]
     [XmlRoot(nameof(ColorSchemaSettings))]
     public class ColorSchemaSettings {
+
         public ColorSchemaSettings() {
             ColorSchemas = ColorSchemas.ReadColorSchemas();
             ColorSchemas.Items.Add(new ColorSchema {
@@ -47,6 +45,7 @@ namespace NINA.Utility.Profile {
         public ColorSchemas ColorSchemas { get; set; }
 
         private ColorSchema colorSchema;
+
         [XmlElement(nameof(ColorSchema))]
         public ColorSchema ColorSchema {
             get {
@@ -64,6 +63,7 @@ namespace NINA.Utility.Profile {
         }
 
         private ColorSchema altColorSchema;
+
         [XmlElement(nameof(AltColorSchema))]
         public ColorSchema AltColorSchema {
             get {
@@ -81,6 +81,7 @@ namespace NINA.Utility.Profile {
         }
 
         private string colorSchemaName = "Light";
+
         [XmlElement(nameof(ColorSchemaName))]
         public string ColorSchemaName {
             get {
@@ -94,6 +95,7 @@ namespace NINA.Utility.Profile {
         }
 
         private string altColorSchemaName = "Dark";
+
         [XmlElement(nameof(AltColorSchemaName))]
         public string AltColorSchemaName {
             get {
@@ -107,6 +109,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color primaryColor = (Color)ColorConverter.ConvertFromString("#FF000000");
+
         [XmlElement(nameof(PrimaryColor))]
         public Color PrimaryColor {
             get {
@@ -122,6 +125,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color secondaryColor = (Color)ColorConverter.ConvertFromString("#FF54748C");
+
         [XmlElement(nameof(SecondaryColor))]
         public Color SecondaryColor {
             get {
@@ -137,6 +141,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color borderColor = (Color)ColorConverter.ConvertFromString("#AABCBCBC");
+
         [XmlElement(nameof(BorderColor))]
         public Color BorderColor {
             get {
@@ -152,6 +157,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color backgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
+
         [XmlElement(nameof(BackgroundColor))]
         public Color BackgroundColor {
             get {
@@ -163,11 +169,11 @@ namespace NINA.Utility.Profile {
                     backgroundColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
-
             }
         }
 
         private Color buttonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0B3C5D");
+
         [XmlElement(nameof(ButtonBackgroundColor))]
         public Color ButtonBackgroundColor {
             get {
@@ -179,11 +185,11 @@ namespace NINA.Utility.Profile {
                     buttonBackgroundColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
-
             }
         }
 
         private Color buttonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF2190DB");
+
         [XmlElement(nameof(ButtonBackgroundSelectedColor))]
         public Color ButtonBackgroundSelectedColor {
             get {
@@ -195,11 +201,11 @@ namespace NINA.Utility.Profile {
                     buttonBackgroundSelectedColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
-
             }
         }
 
         private Color buttonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF1D2731");
+
         [XmlElement(nameof(ButtonForegroundDisabledColor))]
         public Color ButtonForegroundDisabledColor {
             get {
@@ -211,11 +217,11 @@ namespace NINA.Utility.Profile {
                     buttonForegroundDisabledColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
-
             }
         }
 
         private Color buttonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
+
         [XmlElement(nameof(ButtonForegroundColor))]
         public Color ButtonForegroundColor {
             get {
@@ -227,11 +233,11 @@ namespace NINA.Utility.Profile {
                     buttonForegroundColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
                 }
-
             }
         }
 
         private Color notificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300");
+
         [XmlElement(nameof(NotificationWarningColor))]
         public Color NotificationWarningColor {
             get {
@@ -247,6 +253,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color notificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606");
+
         [XmlElement(nameof(NotificationErrorColor))]
         public Color NotificationErrorColor {
             get {
@@ -262,6 +269,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color altPrimaryColor = (Color)ColorConverter.ConvertFromString("#FF550C18");
+
         [XmlElement(nameof(AltPrimaryColor))]
         public Color AltPrimaryColor {
             get {
@@ -277,6 +285,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color altSecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1B2A41");
+
         [XmlElement(nameof(AltSecondaryColor))]
         public Color AltSecondaryColor {
             get {
@@ -292,6 +301,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color altBorderColor = (Color)ColorConverter.ConvertFromString("#FF550C18");
+
         [XmlElement(nameof(AltBorderColor))]
         public Color AltBorderColor {
             get {
@@ -307,6 +317,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color altBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A");
+
         [XmlElement(nameof(AltBackgroundColor))]
         public Color AltBackgroundColor {
             get {
@@ -322,6 +333,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color altButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF550C18");
+
         [XmlElement(nameof(AltButtonBackgroundColor))]
         public Color AltButtonBackgroundColor {
             get {
@@ -337,6 +349,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color altButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF96031A");
+
         [XmlElement(nameof(AltButtonBackgroundSelectedColor))]
         public Color AltButtonBackgroundSelectedColor {
             get {
@@ -352,6 +365,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color altButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF443730");
+
         [XmlElement(nameof(AltButtonForegroundDisabledColor))]
         public Color AltButtonForegroundDisabledColor {
             get {
@@ -367,6 +381,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color altButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A");
+
         [XmlElement(nameof(AltButtonForegroundColor))]
         public Color AltButtonForegroundColor {
             get {
@@ -382,6 +397,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color altNotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300");
+
         [XmlElement(nameof(AltNotificationWarningColor))]
         public Color AltNotificationWarningColor {
             get {
@@ -397,6 +413,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Color altNotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFF5A300");
+
         [XmlElement(nameof(AltNotificationErrorColor))]
         public Color AltNotificationErrorColor {
             get {

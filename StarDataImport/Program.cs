@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using NINA.Utility;
-using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -9,22 +8,22 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
 namespace StarDataImport {
-    class Program {
+
+    internal class Program {
 
         public class DatabaseInteraction {
-            string _connectionString = @"Data Source=" + AppDomain.CurrentDomain.BaseDirectory + @"\Database\NINA.sqlite;foreign keys=true;";
+            private string _connectionString = @"Data Source=" + AppDomain.CurrentDomain.BaseDirectory + @"\Database\NINA.sqlite;foreign keys=true;";
 
             public DatabaseInteraction() {
                 _connection = new SQLiteConnection(_connectionString);
             }
 
-            SQLiteConnection _connection;
+            private SQLiteConnection _connection;
 
             public int GenericQuery(string query) {
                 _connection.Open();
@@ -36,7 +35,6 @@ namespace StarDataImport {
                 return rows;
             }
 
-
             public void CreateDatabase() {
                 var dir = AppDomain.CurrentDomain.BaseDirectory + @"\Database";
                 var dbfile = dir + @"\NINA.sqlite";
@@ -44,39 +42,34 @@ namespace StarDataImport {
                     Directory.CreateDirectory(dir);
                 }
 
-                if(!File.Exists(dbfile)) {
+                if (!File.Exists(dbfile)) {
                     SQLiteConnection.CreateFile(dbfile);
                 }
-                
             }
 
             public void BulkInsert(ICollection<string> queries) {
                 _connection.Open();
                 using (SQLiteCommand cmd = _connection.CreateCommand()) {
                     using (var transaction = _connection.BeginTransaction()) {
-                    
-                        foreach (var q in queries) {                            
+                        foreach (var q in queries) {
                             cmd.CommandText = q;
                             cmd.ExecuteNonQuery();
                         }
                         transaction.Commit();
                     }
-
                 }
                 _connection.Close();
             }
         }
-        
 
-
-        static void Main(string[] args) {
+        private static void Main(string[] args) {
             //GenerateDatabase();
             //UpdateStarData();
         }
 
         public static void UpdateStarData() {
             List<SimpleDSO> objects = new List<SimpleDSO>();
-            var connectionString = string.Format(@"Data Source={0};foreign keys=true;",@"D:\Projects\NINA.sqlite");
+            var connectionString = string.Format(@"Data Source={0};foreign keys=true;", @"D:\Projects\NINA.sqlite");
             var query = "select dsodetailid, catalogue, designation  from cataloguenr INNER JOIN dsodetail ON dsodetail.id = cataloguenr.dsodetailid WHERE syncedfrom is null group by dsodetailid order by catalogue;";
             using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
                 connection.Open();
@@ -85,27 +78,27 @@ namespace StarDataImport {
 
                     var reader = command.ExecuteReader();
                     while (reader.Read()) {
-                        objects.Add(new SimpleDSO() { id = reader.GetString(0),name = reader.GetString(1) + " " + reader.GetString(2) });
+                        objects.Add(new SimpleDSO() { id = reader.GetString(0), name = reader.GetString(1) + " " + reader.GetString(2) });
                     }
                 }
             }
 
             var sw = Stopwatch.StartNew();
 
-            Parallel.ForEach(objects,obj => {
+            Parallel.ForEach(objects, obj => {
                 var _url = "http://cdsws.u-strasbg.fr/axis/services/Sesame";
                 var _action = "";
 
                 XmlDocument soapEnvelopeXml = CreateSoapEnvelope(obj.name);
-                HttpWebRequest webRequest = CreateWebRequest(_url,_action);
+                HttpWebRequest webRequest = CreateWebRequest(_url, _action);
                 webRequest.Timeout = -1;
-                InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml,webRequest);
+                InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
 
                 // begin async call to web request.
-                IAsyncResult asyncResult = webRequest.BeginGetResponse(null,null);
+                IAsyncResult asyncResult = webRequest.BeginGetResponse(null, null);
 
-                // suspend this thread until call is complete. You might want to
-                // do something usefull here like update your UI.
+                // suspend this thread until call is complete. You might want to do something usefull
+                // here like update your UI.
                 asyncResult.AsyncWaitHandle.WaitOne();
 
                 // get the response from the completed web request.
@@ -140,8 +133,7 @@ namespace StarDataImport {
                     Console.WriteLine(obj.ToString());
                     if (ra == null) {
                         Console.WriteLine("NO ENTRY");
-                    }
-                    else {
+                    } else {
                         Console.WriteLine("Found " + " RA:" + ra + " DEC:" + dec);
                     }
 
@@ -150,20 +142,19 @@ namespace StarDataImport {
                             connection.Open();
                             using (SQLiteCommand command = connection.CreateCommand()) {
                                 command.CommandText = "UPDATE dsodetail SET ra = $ra, dec = $dec, syncedfrom = '" + resolvername + "' WHERE id = $id;";
-                                command.Parameters.AddWithValue("$id",obj.id);
-                                command.Parameters.AddWithValue("$ra",ra);
-                                command.Parameters.AddWithValue("$dec",dec);
+                                command.Parameters.AddWithValue("$id", obj.id);
+                                command.Parameters.AddWithValue("$ra", ra);
+                                command.Parameters.AddWithValue("$dec", dec);
 
                                 var rows = command.ExecuteNonQuery();
-                                Console.WriteLine(string.Format("Inserted {0} row(s)",rows));
-
+                                Console.WriteLine(string.Format("Inserted {0} row(s)", rows));
                             }
                         }
                     }
                 }
             });
 
-            /*foreach(var obj in objects) {                
+            /*foreach(var obj in objects) {
                 var _url = "http://cdsws.u-strasbg.fr/axis/services/Sesame";
                 var _action = "";
 
@@ -174,8 +165,8 @@ namespace StarDataImport {
                 // begin async call to web request.
                 IAsyncResult asyncResult = webRequest.BeginGetResponse(null,null);
 
-                // suspend this thread until call is complete. You might want to
-                // do something usefull here like update your UI.
+                // suspend this thread until call is complete. You might want to do something usefull
+                // here like update your UI.
                 asyncResult.AsyncWaitHandle.WaitOne();
 
                 // get the response from the completed web request.
@@ -209,22 +200,20 @@ namespace StarDataImport {
 
                                 var rows = command.ExecuteNonQuery();
                                 Console.WriteLine(string.Format("Inserted {0} row(s)",rows));
-
                             }
                         }
                     }
-                }              
+                }
             }*/
 
             Console.WriteLine(sw.Elapsed);
 
-
             Console.ReadLine();
         }
 
-        private static HttpWebRequest CreateWebRequest(string url,string action) {
+        private static HttpWebRequest CreateWebRequest(string url, string action) {
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
-            webRequest.Headers.Add("SOAPAction",action);
+            webRequest.Headers.Add("SOAPAction", action);
             webRequest.ContentType = "text/xml;charset=\"utf-8\"";
             webRequest.Accept = "text/xml";
             webRequest.Method = "POST";
@@ -234,19 +223,19 @@ namespace StarDataImport {
         private static XmlDocument CreateSoapEnvelope(string target) {
             XmlDocument soapEnvelopeDocument = new XmlDocument();
 
-            soapEnvelopeDocument.LoadXml(string.Format(@"<?xml version=""1.0"" encoding=""UTF-8"" standalone=""no"" ?> 
-                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:apachesoap=""http://xml.apache.org/xml-soap"" xmlns:impl=""http://cdsws.u-strasbg.fr/axis/services/Sesame"" xmlns:intf=""http://cdsws.u-strasbg.fr/axis/services/Sesame"" xmlns:soapenc=""http://schemas.xmlsoap.org/soap/encoding/"" xmlns:wsdl=""http://schemas.xmlsoap.org/wsdl/"" xmlns:wsdlsoap=""http://schemas.xmlsoap.org/wsdl/soap/"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""> 
-	                                            <SOAP-ENV:Body> 
-		                                            <mns:SesameXML xmlns:mns=""http://cdsws.u-strasbg.fr/axis/services/Sesame"" SOAP-ENV:encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/""> 
-			                                            <name xsi:type=""xsd:string"">{0}</name> 
-		                                            </mns:SesameXML> 
-	                                            </SOAP-ENV:Body> 
+            soapEnvelopeDocument.LoadXml(string.Format(@"<?xml version=""1.0"" encoding=""UTF-8"" standalone=""no"" ?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:apachesoap=""http://xml.apache.org/xml-soap"" xmlns:impl=""http://cdsws.u-strasbg.fr/axis/services/Sesame"" xmlns:intf=""http://cdsws.u-strasbg.fr/axis/services/Sesame"" xmlns:soapenc=""http://schemas.xmlsoap.org/soap/encoding/"" xmlns:wsdl=""http://schemas.xmlsoap.org/wsdl/"" xmlns:wsdlsoap=""http://schemas.xmlsoap.org/wsdl/soap/"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+	                                            <SOAP-ENV:Body>
+		                                            <mns:SesameXML xmlns:mns=""http://cdsws.u-strasbg.fr/axis/services/Sesame"" SOAP-ENV:encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/"">
+			                                            <name xsi:type=""xsd:string"">{0}</name>
+		                                            </mns:SesameXML>
+	                                            </SOAP-ENV:Body>
                                             </SOAP-ENV:Envelope>
-            ",target));
+            ", target));
             return soapEnvelopeDocument;
         }
 
-        private static void InsertSoapEnvelopeIntoWebRequest(XmlDocument soapEnvelopeXml,HttpWebRequest webRequest) {
+        private static void InsertSoapEnvelopeIntoWebRequest(XmlDocument soapEnvelopeXml, HttpWebRequest webRequest) {
             using (Stream stream = webRequest.GetRequestStream()) {
                 soapEnvelopeXml.Save(stream);
             }
@@ -259,7 +248,6 @@ namespace StarDataImport {
             db.GenericQuery("DROP TABLE IF EXISTS visualdescription");
             db.GenericQuery("DROP TABLE IF EXISTS cataloguenr");
             db.GenericQuery("DROP TABLE IF EXISTS dsodetail;");
-
 
             db.GenericQuery(@"CREATE TABLE IF NOT EXISTS dsodetail (
                 id TEXT NOT NULL,
@@ -274,19 +262,19 @@ namespace StarDataImport {
                 brighteststar REAL,
                 constellation TEXT,
                 dsotype TEXT,
-                dsoclass TEXT,                
+                dsoclass TEXT,
                 notes TEXT,
                 PRIMARY KEY (id)
             );");
 
-            db.GenericQuery(@"CREATE TABLE IF NOT EXISTS visualdescription (                                
+            db.GenericQuery(@"CREATE TABLE IF NOT EXISTS visualdescription (
                 dsodetailid TEXT,
                 description TEXT,
                 PRIMARY KEY (dsodetailid, description),
                 FOREIGN KEY (dsodetailid) REFERENCES dsodetail (id)
             );");
 
-            db.GenericQuery(@"CREATE TABLE IF NOT EXISTS cataloguenr (                                
+            db.GenericQuery(@"CREATE TABLE IF NOT EXISTS cataloguenr (
                 dsodetailid TEXT,
                 catalogue TEXT,
                 designation TEXT,
@@ -294,16 +282,11 @@ namespace StarDataImport {
                 FOREIGN KEY (dsodetailid) REFERENCES dsodetail (id)
             );");
 
-
-
-
-
             List<string> queries = new List<string>();
 
             using (TextFieldParser parser = new TextFieldParser(@"SAC_DeepSky_ver81_Excel.csv")) {
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(",");
-
 
                 HashSet<string> types = new HashSet<string>();
                 var isFirst = true;
@@ -317,7 +300,7 @@ namespace StarDataImport {
                         continue;
                     }
 
-                    DatabaseDSO dso = new DatabaseDSO(i++,fields);
+                    DatabaseDSO dso = new DatabaseDSO(i++, fields);
                     if (dso.cataloguenr.First().catalogue != null) {
                         l.Add(dso);
                     }
@@ -325,15 +308,10 @@ namespace StarDataImport {
                     queries.Add(dso.getDSOQuery());
                     queries.Add(dso.getCatalogueQuery());
                     queries.Add(dso.getVisualDescriptionQuery());
-
                 }
 
                 var duplicates = l.Where(s => s.Id == string.Empty);
-
-
             }
-
-
 
             db.BulkInsert(queries);
 
@@ -341,15 +319,13 @@ namespace StarDataImport {
             Console.ReadLine();
         }
 
-       
-
-        class cataloguenr {
+        private class cataloguenr {
             public string catalogue;
             public string designation;
 
-            public cataloguenr(string field) {                
+            public cataloguenr(string field) {
                 catalogue = catalogues.Where((x) => field.StartsWith(x)).FirstOrDefault();
-                if(catalogue != null) {
+                if (catalogue != null) {
                     catalogue = catalogue.Trim();
                     designation = field.Split(new string[] { catalogue }, StringSplitOptions.None)[1].Trim();
                 }
@@ -370,10 +346,9 @@ namespace StarDataImport {
             public visualdescription(string field) {
                 description = field;
             }
-
         }
 
-        class SimpleDSO {
+        private class SimpleDSO {
             public string id;
             public string name;
 
@@ -382,11 +357,13 @@ namespace StarDataImport {
             }
         }
 
-        class DatabaseDSO {
+        private class DatabaseDSO {
             public List<cataloguenr> cataloguenr;
+
             //public string obj;
             //public string other;
             public string Id;
+
             public string type;
             public string constellation;
             public double RA;
@@ -407,37 +384,32 @@ namespace StarDataImport {
 
             public override string ToString() {
                 var s = "";
-                foreach(var cat in cataloguenr) {
+                foreach (var cat in cataloguenr) {
                     s += cat.ToString() + "; ";
                 }
                 return s;
             }
 
             public DatabaseDSO(int id, string[] fields) {
-                
                 cataloguenr = new List<Program.cataloguenr>();
                 var ident = new cataloguenr(fields[0]);
                 this.Id = ident.ToString();
-                if(this.Id == string.Empty) {
+                if (this.Id == string.Empty) {
                     Debugger.Break();
                 }
                 cataloguenr.Add(ident);
 
                 foreach (var field in fields[1].Split(';')) {
-                    if(field != string.Empty) {
+                    if (field != string.Empty) {
                         var cat = new cataloguenr(field);
-                        if(cataloguenr.Any((x) => x.catalogue == cat.catalogue && x.designation == cat.designation)) {
+                        if (cataloguenr.Any((x) => x.catalogue == cat.catalogue && x.designation == cat.designation)) {
                             continue;
                         }
-                        if(cat.catalogue != null) {
+                        if (cat.catalogue != null) {
                             cataloguenr.Add(cat);
                         } else {
-
                         }
-                        
-                        
-                        
-                    }                    
+                    }
                 }
                 /*cataloguenr.Add(new Program.cataloguenr() { catalogue = fields[0].Split(' ')[0], designation = fields[0].Split(' ')[1] });
 
@@ -445,7 +417,7 @@ namespace StarDataImport {
                     if(field != string.Empty) {
                         if(field.Split(' ').Length == 1) { continue; }
                         cataloguenr.Add(new Program.cataloguenr() { catalogue = field.Split(' ')[0], designation = field.Split(' ')[1] });
-                    }                    
+                    }
                 }*/
 
                 //other = fields[1];
@@ -453,16 +425,13 @@ namespace StarDataImport {
                 type = fields[2];
                 constellation = fields[3];
 
-                
-                RA = Utility.AscomUtil.HMSToDegrees(fields[4]); 
+                RA = Utility.AscomUtil.HMSToDegrees(fields[4]);
                 DEC = Utility.AscomUtil.DMSToDegrees(fields[5]);
 
                 magnitude = double.Parse(fields[6], CultureInfo.CreateSpecificCulture("de-DE"));
                 subr = double.Parse(fields[7], CultureInfo.CreateSpecificCulture("de-DE"));
                 u2k = fields[8];
                 ti = fields[9];
-
-               
 
                 var size = fields[10];
                 if (size.Contains("m")) {
@@ -482,7 +451,6 @@ namespace StarDataImport {
                     size_min = null;
                 }
 
-
                 positionangle = fields[12];
                 classification = fields[13];
                 NSTS = fields[14];
@@ -490,39 +458,38 @@ namespace StarDataImport {
                 CHM = fields[16];
 
                 visualdescription = new List<visualdescription>();
-                if (fields[17] != string.Empty) {                    
+                if (fields[17] != string.Empty) {
                     foreach (var s in fields[17].Split(';')) {
                         visualdescription.Add(new visualdescription(s));
                     }
-                }                
-                
+                }
+
                 Notes = fields[18];
             }
 
-
             public string getDSOQuery() {
-                return $@"INSERT INTO dsodetail 
+                return $@"INSERT INTO dsodetail
                 (id, ra, dec, magnitude, surfacebrightness,sizemin,sizemax,positionangle,nrofstars,brighteststar,constellation,dsotype,dsoclass,notes)  VALUES
-                (""{Id}"", 
-                {RA.ToString(CultureInfo.InvariantCulture)}, 
-                {DEC.ToString(CultureInfo.InvariantCulture)}, 
-                {magnitude.ToString(CultureInfo.InvariantCulture)}, 
-                {subr.ToString(CultureInfo.InvariantCulture)}, 
-                {size_min?.ToString(CultureInfo.InvariantCulture) ?? "null"}, 
-                {size_max?.ToString(CultureInfo.InvariantCulture) ?? "null"}, 
-                ""{positionangle}"", 
-                ""{NSTS}"", 
-                ""{brighteststar}"", 
-                ""{constellation}"", 
-                ""{type}"", 
-                ""{classification}"", 
+                (""{Id}"",
+                {RA.ToString(CultureInfo.InvariantCulture)},
+                {DEC.ToString(CultureInfo.InvariantCulture)},
+                {magnitude.ToString(CultureInfo.InvariantCulture)},
+                {subr.ToString(CultureInfo.InvariantCulture)},
+                {size_min?.ToString(CultureInfo.InvariantCulture) ?? "null"},
+                {size_max?.ToString(CultureInfo.InvariantCulture) ?? "null"},
+                ""{positionangle}"",
+                ""{NSTS}"",
+                ""{brighteststar}"",
+                ""{constellation}"",
+                ""{type}"",
+                ""{classification}"",
                 ""{Notes}"" ); ";
             }
 
             public string getCatalogueQuery() {
                 var q = "";
                 foreach (var cat in cataloguenr) {
-                    if(cat.catalogue != null && cat.catalogue.Trim() != string.Empty) { 
+                    if (cat.catalogue != null && cat.catalogue.Trim() != string.Empty) {
                         q += $@"INSERT INTO cataloguenr (dsodetailid, catalogue, designation) VALUES (""{Id}"", ""{cat.catalogue}"", ""{cat.designation}""); ";
                     }
                 }
@@ -538,23 +505,23 @@ namespace StarDataImport {
                 }
                 return q;
             }
-            
+
             /*internal void insert(DatabaseInteraction db) {
-                var q = $@"INSERT INTO dsodetail 
+                var q = $@"INSERT INTO dsodetail
                 (id, ra, dec, magnitude, surfacebrightness,sizemin,sizemax,positionangle,nrofstars,brighteststar,constellation,dsotype,dsoclass,notes)  VALUES
-                ({Id}, 
-                {RA.ToString(CultureInfo.InvariantCulture)}, 
-                {DEC.ToString(CultureInfo.InvariantCulture)}, 
-                {magnitude.ToString(CultureInfo.InvariantCulture)}, 
-                {subr.ToString(CultureInfo.InvariantCulture)}, 
-                {size_min?.ToString(CultureInfo.InvariantCulture) ?? "null"}, 
-                {size_max?.ToString(CultureInfo.InvariantCulture) ?? "null"}, 
-                ""{positionangle}"", 
-                ""{NSTS}"", 
-                ""{brighteststar}"", 
-                ""{constellation}"", 
-                ""{type}"", 
-                ""{classification}"", 
+                ({Id},
+                {RA.ToString(CultureInfo.InvariantCulture)},
+                {DEC.ToString(CultureInfo.InvariantCulture)},
+                {magnitude.ToString(CultureInfo.InvariantCulture)},
+                {subr.ToString(CultureInfo.InvariantCulture)},
+                {size_min?.ToString(CultureInfo.InvariantCulture) ?? "null"},
+                {size_max?.ToString(CultureInfo.InvariantCulture) ?? "null"},
+                ""{positionangle}"",
+                ""{NSTS}"",
+                ""{brighteststar}"",
+                ""{constellation}"",
+                ""{type}"",
+                ""{classification}"",
                 ""{Notes}"" ); ";
                 db.GenericQuery(q);
 
@@ -572,6 +539,4 @@ namespace StarDataImport {
             }*/
         }
     }
-
-    
 }

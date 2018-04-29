@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
 namespace NINA.Utility {
+
     [TemplatePart(Name = "PART_ItemsHolder", Type = typeof(Panel))]
     public class TabControlEx : TabControl {
         private Panel ItemsHolderPanel = null;
@@ -23,7 +20,7 @@ namespace NINA.Utility {
         /// If containers are done, generate the selected item
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="e">     </param>
         private void ItemContainerGenerator_StatusChanged(object sender, EventArgs e) {
             if (this.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated) {
                 this.ItemContainerGenerator.StatusChanged -= ItemContainerGenerator_StatusChanged;
@@ -65,8 +62,8 @@ namespace NINA.Utility {
                         }
                     }
 
-                    // Don't do anything with new items because we don't want to
-                    // create visuals that aren't being shown
+                    // Don't do anything with new items because we don't want to create visuals that
+                    // aren't being shown
 
                     UpdateSelectedItem();
                     break;
@@ -104,7 +101,7 @@ namespace NINA.Utility {
             if (cp != null)
                 return cp;
 
-            // the actual child to be added.  cp.Tag is a reference to the TabItem
+            // the actual child to be added. cp.Tag is a reference to the TabItem
             cp = new ContentPresenter();
             cp.Content = (item is TabItem) ? (item as TabItem).Content : item;
             cp.ContentTemplate = this.SelectedContentTemplate;

@@ -1,30 +1,22 @@
-﻿using Newtonsoft.Json.Linq;
-using NINA.Utility.Profile;
-using nom.tam.fits;
-using nom.tam.util;
+﻿using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Cache;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Utility {
-    public static class Utility {
 
+    public static class Utility {
         public static char[] PATHSEPARATORS = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
         public static string APPLICATIONTEMPPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NINA");
+
         public static string Version {
             get {
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
@@ -40,10 +32,10 @@ namespace NINA.Utility {
         public static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }
 
         /// <summary>
-        /// Replaces makros from Settings.ImageFilePattern into actual values based on input
-        /// e.g.: $$Filter$$ -> "Red"
+        /// Replaces makros from Settings.ImageFilePattern into actual values based on input e.g.:
+        /// $$Filter$$ -&gt; "Red"
         /// </summary>
-        /// <param name="patterns">KeyValue Collection of Makro -> Makrovalue</param>
+        /// <param name="patterns">KeyValue Collection of Makro -&gt; Makrovalue</param>
         /// <returns></returns>
         public static string GetImageFileString(ICollection<ViewModel.OptionsVM.ImagePattern> patterns) {
             string s = ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePattern;
@@ -53,7 +45,6 @@ namespace NINA.Utility {
             s = Path.Combine(s.Split(PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries));
             return s;
         }
-
 
         public static async Task<string> HttpGetRequest(CancellationToken canceltoken, string url, params object[] parameters) {
             string result = string.Empty;
@@ -75,7 +66,6 @@ namespace NINA.Utility {
                         result = streamReader.ReadToEnd();
                     }
                 } catch (Exception ex) {
-
                     Logger.Error(ex);
                     //Notification.ShowError(string.Format("Unable to connect to {0}", url));
                     //Notification.Notification.ShowError(ex.Message);
@@ -83,8 +73,6 @@ namespace NINA.Utility {
                         response.Close();
                         response = null;
                     }
-
-
                 } finally {
                     request = null;
                 }
@@ -101,8 +89,8 @@ namespace NINA.Utility {
         /// Get Image from url
         /// </summary>
         /// <param name="canceltoken"></param>
-        /// <param name="url"></param>
-        /// <param name="parameters"></param>
+        /// <param name="url">        </param>
+        /// <param name="parameters"> </param>
         /// <returns></returns>
         public static async Task<BitmapImage> HttpGetImage(CancellationToken canceltoken, string url, params object[] parameters) {
             BitmapImage bitmap = null;
@@ -134,8 +122,6 @@ namespace NINA.Utility {
 
                     response?.Close();
                     response = null;
-
-
                 } finally {
                     request = null;
                 }
@@ -143,12 +129,11 @@ namespace NINA.Utility {
             return bitmap;
         }
 
-
         /// <summary>
         /// Send a post request that is encoded in application/x-www-form-urlencoded
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="body"></param>
+        /// <param name="url">        </param>
+        /// <param name="body">       </param>
         /// <param name="canceltoken"></param>
         /// <returns>result body of post request</returns>
         public static async Task<string> HttpPostRequest(string url, string body, CancellationToken canceltoken) {
@@ -178,14 +163,12 @@ namespace NINA.Utility {
 
                     response?.Close();
                     response = null;
-
                 } finally {
                     request = null;
                 }
             }
 
             return result;
-
         }
 
         public static async Task<BitmapSource> HttpClientGetImage(Uri url, CancellationToken ct, IProgress<int> progress = null) {
@@ -211,7 +194,6 @@ namespace NINA.Utility {
                             throw ex;
                         }
                     }
-
                 }
             }
             return bitmap;
@@ -251,15 +233,14 @@ namespace NINA.Utility {
             return newFullPath;
         }
 
-
         /// <summary>
         /// Upload a multipart file that is expected from astrometry.net
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="file"></param>
-        /// <param name="paramName"></param>
+        /// <param name="url">        </param>
+        /// <param name="file">       </param>
+        /// <param name="paramName">  </param>
         /// <param name="contentType"></param>
-        /// <param name="nvc"></param>
+        /// <param name="nvc">        </param>
         /// <param name="canceltoken"></param>
         /// <returns></returns>
         public static async Task<string> HttpUploadFile(string url, MemoryStream file, string paramName, string contentType, NameValueCollection nvc, CancellationToken canceltoken) {
@@ -316,7 +297,6 @@ namespace NINA.Utility {
 
                     wresp?.Close();
                     wresp = null;
-
                 } finally {
                     wr = null;
                 }
@@ -355,5 +335,5 @@ namespace NINA.Utility {
             } while (elapsed < t);
             return elapsed;
         }
-    } 
+    }
 }

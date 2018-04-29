@@ -296,7 +296,6 @@
                             </Button.ToolTip>
                         </Button>
                     </Grid>
-
                 </StackPanel>
             </GroupBox>
         </StackPanel>

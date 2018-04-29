@@ -11,7 +11,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
+
     internal class FilterWheelVM : DockableVM {
+
         public FilterWheelVM() : base() {
             Title = "LblFilterWheel";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FWSVG"];
@@ -267,6 +269,7 @@ namespace NINA.ViewModel {
     }
 
     internal class FilterWheelChooserVM : EquipmentChooserVM {
+
         public FilterWheelChooserVM() : base(typeof(FilterWheelChooserVM)) {
         }
 

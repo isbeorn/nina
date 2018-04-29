@@ -1,18 +1,15 @@
 ﻿using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
+
     [Serializable()]
     [XmlRoot(nameof(Profile))]
     public class ImageFileSettings {
-
         private string filePath = string.Empty;
+
         [XmlElement(nameof(FilePath))]
         public string FilePath {
             get {
@@ -25,6 +22,7 @@ namespace NINA.Utility.Profile {
         }
 
         private string filePattern = "$$IMAGETYPE$$\\$$DATETIME$$_$$FILTER$$_$$SENSORTEMP$$_$$EXPOSURETIME$$s_$$FRAMENR$$";
+
         [XmlElement(nameof(FilePattern))]
         public string FilePattern {
             get {
@@ -37,6 +35,7 @@ namespace NINA.Utility.Profile {
         }
 
         private FileTypeEnum fileType = FileTypeEnum.FITS;
+
         [XmlElement(nameof(FileType))]
         public FileTypeEnum FileType {
             get {

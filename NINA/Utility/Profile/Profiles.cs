@@ -1,16 +1,14 @@
 ﻿using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
+
     [Serializable()]
     [XmlRoot(nameof(Profiles))]
     public class Profiles : BaseINPC {
+
         public Profiles() {
             ProfileList = new ObserveAllCollection<Profile>();
         }
@@ -19,6 +17,7 @@ namespace NINA.Utility.Profile {
         public ObserveAllCollection<Profile> ProfileList { get; set; }
 
         private Guid activeProfileId;
+
         [XmlAttribute(nameof(ActiveProfileId))]
         public Guid ActiveProfileId {
             get {
@@ -30,6 +29,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Profile activeProfile;
+
         [XmlIgnore]
         public Profile ActiveProfile {
             get {
@@ -46,9 +46,9 @@ namespace NINA.Utility.Profile {
 
         public void SelectActiveProfile() {
             var id = ActiveProfileId;
-            if(id == Guid.Empty) {
+            if (id == Guid.Empty) {
                 var p = this.ProfileList.Where((x) => x.IsActive = true).FirstOrDefault();
-                if(p == null) {
+                if (p == null) {
                     id = this.ProfileList[0].Id;
                 } else {
                     id = p.Id;

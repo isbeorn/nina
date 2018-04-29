@@ -8,5 +8,4 @@
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
     </Style>
-
 </ResourceDictionary>

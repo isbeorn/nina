@@ -53,7 +53,6 @@
                         SelectedItem="{Binding BlindSolverType}" />
                 </StackPanel>
 
-
                 <StackPanel Grid.RowSpan="2" Grid.Column="1">
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <TextBlock
@@ -110,12 +109,9 @@
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblArcmin}" />
-
                     </StackPanel>
                 </StackPanel>
             </Grid>
-
-
         </GroupBox>
 
         <GroupBox
@@ -237,7 +233,6 @@
                                     </TextBox.Text>
                                 </TextBox>
 
-
                                 <Button
                                     Grid.Column="3"
                                     Width="30"
@@ -278,7 +273,6 @@
                                 </UniformGrid>
                             </UniformGrid>
 
-
                             <StackPanel MaxHeight="150" Margin="0,5,0,5">
                                 <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
                                 <TextBlock MaxHeight="73" HorizontalAlignment="Left">
@@ -287,9 +281,6 @@
                                     </Hyperlink>
                                 </TextBlock>
                             </StackPanel>
-
-
-
                         </StackPanel>
                         <Grid Grid.Column="1">
                             <Grid.RowDefinitions>
@@ -310,10 +301,8 @@
                                 <Button.Content>
                                     <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblDownloadMoreIndexFiles}" />
                                 </Button.Content>
-
                             </Button>
                         </Grid>
-
                     </Grid>
 
                     <!--  Platesolve2  -->
@@ -363,7 +352,6 @@
                                     </TextBox.Text>
                                 </TextBox>
 
-
                                 <Button
                                     Grid.Column="3"
                                     Width="30"
@@ -404,7 +392,6 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </StackPanel>
-
                     </Grid>
                 </Grid>
             </Grid>

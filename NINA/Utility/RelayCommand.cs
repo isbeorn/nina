@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.Utility {
+
     public class RelayCommand : ICommand {
+
         #region Fields
 
         /// <summary>
@@ -24,8 +22,8 @@ namespace NINA.Utility {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the RelayCommand class
-        /// Creates a new command that can always execute.
+        /// Initializes a new instance of the RelayCommand class Creates a new command that can
+        /// always execute.
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         public RelayCommand(Action<object> execute)
@@ -33,10 +31,9 @@ namespace NINA.Utility {
         }
 
         /// <summary>
-        /// Initializes a new instance of the RelayCommand class
-        /// Creates a new command.
+        /// Initializes a new instance of the RelayCommand class Creates a new command.
         /// </summary>
-        /// <param name="execute">The execution logic.</param>
+        /// <param name="execute">   The execution logic.</param>
         /// <param name="canExecute">The execution status logic.</param>
         public RelayCommand(Action<object> execute, Predicate<object> canExecute) {
             if (execute == null) {
@@ -59,9 +56,8 @@ namespace NINA.Utility {
         /// An event to raise when the CanExecute value is changed
         /// </summary>
         /// <remarks>
-        /// Any subscription to this event will automatically subscribe to both 
-        /// the local OnCanExecuteChanged method AND
-        /// the CommandManager RequerySuggested event
+        /// Any subscription to this event will automatically subscribe to both the local
+        /// OnCanExecuteChanged method AND the CommandManager RequerySuggested event
         /// </remarks>
         public event EventHandler CanExecuteChanged {
             add {

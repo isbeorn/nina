@@ -91,7 +91,6 @@
             <Grid.RowDefinitions>
 
                 <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
-
             </Grid.RowDefinitions>
             <Track x:Name="PART_Track" Grid.Row="1">
                 <Track.DecreaseRepeatButton>
@@ -141,7 +140,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 
     <Style TargetType="{x:Type Slider}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyte}" />

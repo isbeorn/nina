@@ -86,7 +86,6 @@
                 CancelButtonImage="{StaticResource CancelSVG}"
                 CancelCommand="{Binding CancelAutoFocusCommand}"
                 Command="{Binding StartAutoFocusCommand}" />
-
         </Grid>
     </ScrollViewer>
 </UserControl>

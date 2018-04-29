@@ -46,7 +46,6 @@
                                     Stretch="Uniform" />
                                 <TextBlock Foreground="{TemplateBinding ButtonForegroundBrush}" Text="{TemplateBinding ButtonText}" />
                             </Grid>
-
                         </Button>
                     </Grid>
                 </ControlTemplate>

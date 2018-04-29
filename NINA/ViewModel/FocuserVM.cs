@@ -11,7 +11,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
+
     internal class FocuserVM : DockableVM {
+
         public FocuserVM() {
             Title = "LblFocuser";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
@@ -338,6 +340,7 @@ namespace NINA.ViewModel {
     }
 
     internal class FocuserChooserVM : EquipmentChooserVM {
+
         public FocuserChooserVM() : base(typeof(FocuserChooserVM)) {
         }
 

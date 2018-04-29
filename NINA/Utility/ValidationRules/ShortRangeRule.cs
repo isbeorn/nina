@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace NINA.Utility.ValidationRules {
+
     public class ShortRangeRule : ValidationRule {
         private ShortRangeChecker _validRange;
 
@@ -39,20 +36,21 @@ namespace NINA.Utility.ValidationRules {
     }
 
     public class ShortRangeChecker : DependencyObject {
+
         public short Minimum {
             get { return (short)GetValue(MinimumProperty); }
             set { SetValue(MinimumProperty, value); }
         }
+
         public static readonly DependencyProperty MinimumProperty =
             DependencyProperty.Register("Minimum", typeof(short), typeof(ShortRangeChecker), new UIPropertyMetadata(short.MinValue));
-
 
         public short Maximum {
             get { return (short)GetValue(MaximumProperty); }
             set { SetValue(MaximumProperty, value); }
         }
+
         public static readonly DependencyProperty MaximumProperty =
             DependencyProperty.Register("Maximum", typeof(short), typeof(ShortRangeChecker), new UIPropertyMetadata(short.MaxValue));
-
     }
 }

@@ -1,17 +1,14 @@
 ﻿using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
+
     [Serializable()]
     [XmlRoot(nameof(Profile))]
     public class MeridianFlipSettings {
-
         private bool enabled = false;
+
         [XmlElement(nameof(Enabled))]
         public bool Enabled {
             get {
@@ -24,6 +21,7 @@ namespace NINA.Utility.Profile {
         }
 
         private bool recenter = true;
+
         [XmlElement(nameof(Recenter))]
         public bool Recenter {
             get {
@@ -36,6 +34,7 @@ namespace NINA.Utility.Profile {
         }
 
         private double minutesAfterMeridian = 1;
+
         [XmlElement(nameof(MinutesAfterMeridian))]
         public double MinutesAfterMeridian {
             get {
@@ -48,6 +47,7 @@ namespace NINA.Utility.Profile {
         }
 
         private int settleTime = 5;
+
         [XmlElement(nameof(SettleTime))]
         public int SettleTime {
             get {
@@ -60,6 +60,7 @@ namespace NINA.Utility.Profile {
         }
 
         private double pauseTimeBeforeMeridian = 1;
+
         [XmlElement(nameof(PauseTimeBeforeMeridian))]
         public double PauseTimeBeforeMeridian {
             get {

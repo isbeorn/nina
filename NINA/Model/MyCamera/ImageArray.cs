@@ -2,14 +2,12 @@
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
+
     public class ImageArray {
         public ushort[] FlatArray;
         public ImageStatistics Statistics { get; set; }
@@ -19,7 +17,6 @@ namespace NINA.Model.MyCamera {
         private ImageArray() {
             Statistics = new ImageStatistics { };
         }
-
 
         public static async Task<ImageArray> CreateInstance(Array input, bool isBayered = false) {
             ImageArray imgArray = new ImageArray();
@@ -84,7 +81,6 @@ namespace NINA.Model.MyCamera {
 
                     oldmin = min;
                     oldmax = max;
-
                 }
 
                 double mean = sum / count;
@@ -100,7 +96,6 @@ namespace NINA.Model.MyCamera {
                 this.Statistics.Histogram = histogram.Select(g => new OxyPlot.DataPoint(g.Key, g.Value))
                     .OrderBy(item => item.X).ToList();
             }
-
         }
 
         private void FlipAndConvert(Array input) {

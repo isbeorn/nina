@@ -5,7 +5,9 @@ using System.Linq;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
+
     internal abstract class EquipmentChooserVM : BaseVM {
+
         public EquipmentChooserVM(Type equipmentType) {
             SetupDialogCommand = new RelayCommand(OpenSetupDialog);
             GetEquipment();

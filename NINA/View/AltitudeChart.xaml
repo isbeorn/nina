@@ -95,6 +95,5 @@
                     Y="{Binding MaxAltitude.Y}" />
             </oxy:Plot.Annotations>
         </oxy:Plot>
-
     </Grid>
 </UserControl>

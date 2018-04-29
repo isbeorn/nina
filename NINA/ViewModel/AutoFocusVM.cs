@@ -1,5 +1,4 @@
 ﻿using NINA.Model;
-using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Mediator;
@@ -9,13 +8,14 @@ using OxyPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
+
     public class AutoFocusVM : DockableVM {
+
         public AutoFocusVM() {
             Title = "LblAutoFocus";
             ContentId = nameof(AutoFocusVM);
@@ -45,13 +45,11 @@ namespace NINA.ViewModel {
                     return await StartAutoFocus(msg.Filter, msg.Token, msg.Progress);
                 })
             );
-
         }
-
-
 
         private CancellationTokenSource _autoFocusCancelToken;
         private AsyncObservableCollection<DataPoint> _focusPoints;
+
         public AsyncObservableCollection<DataPoint> FocusPoints {
             get {
                 return _focusPoints;
@@ -65,6 +63,7 @@ namespace NINA.ViewModel {
         private DataPoint _minimum;
 
         private ApplicationStatus _status;
+
         public ApplicationStatus Status {
             get {
                 return _status;
@@ -79,6 +78,7 @@ namespace NINA.ViewModel {
         }
 
         private TrendLine _leftTrend;
+
         public TrendLine LeftTrend {
             get {
                 return _leftTrend;
@@ -90,6 +90,7 @@ namespace NINA.ViewModel {
         }
 
         private TrendLine _rightTrend;
+
         public TrendLine RightTrend {
             get {
                 return _rightTrend;
@@ -99,8 +100,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-
 
         private int _focusPosition;
         private bool _focuserConnected;
@@ -114,11 +113,8 @@ namespace NINA.ViewModel {
                 _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset * stepSize, Absolute = false, Token = token });
             }
 
-
-
             var comparer = new FocusPointComparer();
             for (int i = 0; i < nrOfSteps; i++) {
-
                 token.ThrowIfCancellationRequested();
 
                 Logger.Trace("Starting Exposure for autofocus");
@@ -127,7 +123,6 @@ namespace NINA.ViewModel {
                     expTime = filter.AutoFocusExposureTime;
                 }
                 var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
-
 
                 var iarr = await Mediator.Instance.RequestAsync(new CaptureImageMessage() { Sequence = seq, Token = token, Progress = progress });
 
@@ -171,7 +166,6 @@ namespace NINA.ViewModel {
             try {
                 await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Pause = true });
 
-
                 var offsetSteps = ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
                 var offset = offsetSteps;
 
@@ -203,7 +197,7 @@ namespace NINA.ViewModel {
                         await GetFocusPoints(filter, remainingSteps, progress, token, -1);
                     } else if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
                         Logger.Trace("More datapoints needed to the right of the minimum");
-                        //More points needed to the right                         
+                        //More points needed to the right
                         offset = laststeps + remainingSteps;  //todo
                         laststeps = remainingSteps - 1;
                         await GetFocusPoints(filter, remainingSteps, progress, token, offset);
@@ -214,8 +208,6 @@ namespace NINA.ViewModel {
 
                     token.ThrowIfCancellationRequested();
                 } while (rightcount < offsetSteps || leftcount < offsetSteps);
-
-
 
                 token.ThrowIfCancellationRequested();
 
@@ -242,6 +234,7 @@ namespace NINA.ViewModel {
         }
 
         private AutoFocusPoint _lastAutoFocusPoint;
+
         public AutoFocusPoint LastAutoFocusPoint {
             get {
                 return _lastAutoFocusPoint;
@@ -267,6 +260,7 @@ namespace NINA.ViewModel {
     }
 
     public class FocusPointComparer : IComparer<DataPoint> {
+
         public int Compare(DataPoint x, DataPoint y) {
             if (x.X < y.X) {
                 return -1;
@@ -279,6 +273,7 @@ namespace NINA.ViewModel {
     }
 
     public class TrendLine {
+
         public TrendLine(IEnumerable<DataPoint> l) {
             DataPoints = l;
 
@@ -299,7 +294,6 @@ namespace NINA.ViewModel {
 
             // y = alpha * x + beta
         }
-
 
         public double Slope { get; set; }
         public double Offset { get; set; }

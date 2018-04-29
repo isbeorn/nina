@@ -29,7 +29,6 @@
                         IsChecked="{Binding Guider.Connected, FallbackValue=False, Mode=OneWay}"
                         IsEnabled="False"
                         Style="{StaticResource CheckmarkCheckbox}" />
-
                 </UniformGrid>
             </Border>
             <Border
@@ -40,7 +39,6 @@
 
                     <TextBlock Text="{ns:Loc LblState}" />
                     <TextBlock Margin="5,0,0,0" Text="{Binding Guider.AppState.State}" />
-
                 </UniformGrid>
             </Border>
             <Border Grid.Row="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">

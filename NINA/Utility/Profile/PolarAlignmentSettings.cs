@@ -1,17 +1,14 @@
 ﻿using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
+
     [Serializable()]
     [XmlRoot(nameof(AstrometrySettings))]
     public class PolarAlignmentSettings {
-
         private double altitudeDeclination = 0;
+
         [XmlElement(nameof(AltitudeDeclination))]
         public double AltitudeDeclination {
             get {
@@ -24,6 +21,7 @@ namespace NINA.Utility.Profile {
         }
 
         private double altitudeMeridianOffset = -65;
+
         [XmlElement(nameof(AltitudeMeridianOffset))]
         public double AltitudeMeridianOffset {
             get {
@@ -36,6 +34,7 @@ namespace NINA.Utility.Profile {
         }
 
         private double azimuthDeclination = 0;
+
         [XmlElement(nameof(AzimuthDeclination))]
         public double AzimuthDeclination {
             get {
@@ -48,6 +47,7 @@ namespace NINA.Utility.Profile {
         }
 
         private double azimuthMeridianOffset = 90;
+
         [XmlElement(nameof(AzimuthMeridianOffset))]
         public double AzimuthMeridianOffset {
             get {

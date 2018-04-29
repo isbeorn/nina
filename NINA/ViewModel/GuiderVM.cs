@@ -1,25 +1,20 @@
-﻿using NINA.Utility;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using OxyPlot;
-using OxyPlot.Series;
-using OxyPlot.Axes;
-using System.Windows.Threading;
-using NINA.Model.MyGuider;
-using System.Windows.Input;
-using System.Threading;
-using NINA.Utility.Notification;
+﻿using NINA.Model.MyGuider;
+using NINA.Utility;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
-using NINA.Utility.Enum;
+using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    class GuiderVM : DockableVM {
+
+    internal class GuiderVM : DockableVM {
+
         public GuiderVM() : base() {
             Title = "LblGuider";
             ContentId = nameof(GuiderVM);
@@ -31,8 +26,6 @@ namespace NINA.ViewModel {
                     !(Guider?.Connected == true)
             );
             DisconnectGuiderCommand = new RelayCommand((object o) => Disconnect(), (object o) => Guider?.Connected == true);
-
-
 
             /*SetUpPlotModels();*/
 
@@ -50,7 +43,6 @@ namespace NINA.ViewModel {
         }
 
         private void RegisterMediatorMessages() {
-
             Mediator.Instance.RegisterAsyncRequest(
                 new DitherGuiderMessageHandle(async (DitherGuiderMessage msg) => {
                     return await Dither(msg.Token);
@@ -149,6 +141,7 @@ namespace NINA.ViewModel {
                 case GuideStepsHistoryType.GuideStepsLarge:
                     collectionToChange = GuideStepsHistory;
                     break;
+
                 case GuideStepsHistoryType.GuideStepsMinimal:
                     collectionToChange = GuideStepsHistoryMinimal;
                     break;
@@ -205,7 +198,7 @@ namespace NINA.ViewModel {
             RMSDec = Math.Sqrt(n * sum_y2 - sum_y * sum_y) / n;
             RMSTotal = Math.Sqrt((Math.Pow(RMSRA, 2) + Math.Pow(RMSDec, 2)));
 
-            if(GuiderScale == GuiderScaleEnum.ARCSECONDS) {
+            if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {
                 RMSRA *= PixelScale;
                 RMSDec *= PixelScale;
                 RMSTotal *= PixelScale;
@@ -260,10 +253,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        double _rmsTotal;
-        double _rmsRA;
-        double _rmsDec;
-
+        private double _rmsTotal;
+        private double _rmsRA;
+        private double _rmsDec;
 
         private void ConvertStepToArcSec(IGuideStep pixelStep) {
             // only displayed values are changed, not the raw ones
@@ -293,7 +285,6 @@ namespace NINA.ViewModel {
                     } else {
                         ConvertStepToPixels(s);
                     }
-
                 }
                 foreach (IGuideStep s in GuideStepsHistoryMinimal) {
                     if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {
@@ -308,6 +299,7 @@ namespace NINA.ViewModel {
         }
 
         private double _pixelScale;
+
         public double PixelScale {
             get {
                 return _pixelScale;
@@ -345,11 +337,11 @@ namespace NINA.ViewModel {
             }
         }
 
-
         public AsyncObservableLimitedSizedStack<IGuideStep> GuideStepsHistory { get; set; }
         public AsyncObservableLimitedSizedStack<IGuideStep> GuideStepsHistoryMinimal { get; set; }
 
         private IGuider _guider;
+
         public IGuider Guider {
             get {
                 return _guider;
@@ -367,6 +359,7 @@ namespace NINA.ViewModel {
         }
 
         private double _maxY;
+
         public double MaxY {
             get {
                 return _maxY;
@@ -379,13 +372,11 @@ namespace NINA.ViewModel {
             }
         }
 
-
         public double MinY {
             get {
                 return -MaxY;
             }
         }
-
 
         public ICommand ConnectGuiderCommand { get; private set; }
 

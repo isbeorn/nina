@@ -1,29 +1,24 @@
-//
 // This work is licensed under a Creative Commons Attribution 3.0 Unported License.
 //
 // Thomas Dideriksen (thomas@dideriksen.com)
-//
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
+using System.Text;
 
-namespace Nikon
-{
+namespace Nikon {
     // Note: This file is auto generated
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDActiveSelectionSelectedPictures
-    {
+    public unsafe struct NkMAIDActiveSelectionSelectedPictures {
         public UInt32 ulPicIDNum;
         public IntPtr pulSelPicIDs;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDArray
-    {
+    public unsafe struct NkMAIDArray {
         public eNkMAIDArrayType ulType; // one of eNkMAIDArrayType
         public UInt32 ulElements;       // total number of elements
         public UInt32 ulDimSize1;       // size of first dimention
@@ -35,15 +30,13 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDCallback
-    {
+    public unsafe struct NkMAIDCallback {
         public IntPtr pProc;
         public IntPtr refProc;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDCapInfo
-    {
+    public unsafe struct NkMAIDCapInfo {
         public eNkMAIDCapability ulID;            // one of eNkMAIDCapability or vendor specified
         public eNkMAIDCapType ulType;             // one of eNkMAIDCapabilityType
         public eNkMAIDCapVisibility ulVisibility; // eNkMAIDCapVisibility bits
@@ -52,8 +45,7 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDCMLProfile
-    {
+    public unsafe struct NkMAIDCMLProfile {
         public eNkMAIDColorSpace ulColorSpace;             // one of eNkMAIDColorSpace
         public UInt32 ulBits;                              // Bit depth of the supported image by this profile.
         public fixed UInt32 ulReserved[5];
@@ -61,22 +53,19 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDDataInfo
-    {
+    public unsafe struct NkMAIDDataInfo {
         public eNkMAIDDataObjType ulType; // one of eNkMAIDDataObjType
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDDateCounterData
-    {
+    public unsafe struct NkMAIDDateCounterData {
         public fixed UInt16 wcDate1[9]; // First date
         public fixed UInt16 wcDate2[9]; // Second date
         public fixed UInt16 wcDate3[9]; // Third date
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDDateTime
-    {
+    public unsafe struct NkMAIDDateTime {
         public UInt16 nYear;      // ie 1997, 1998
         public UInt16 nMonth;     // 0-11 = Jan-Dec
         public UInt16 nDay;       // 1-31
@@ -87,8 +76,7 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDEnum
-    {
+    public unsafe struct NkMAIDEnum {
         public eNkMAIDArrayType ulType; // one of eNkMAIDArrayType
         public UInt32 ulElements;       // total number of elements
         public UInt32 ulValue;          // current index
@@ -98,16 +86,14 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDEventParam
-    {
+    public unsafe struct NkMAIDEventParam {
         public eNkMAIDEvent ulEvent;    // one of eNkMAIDEvent
         public UInt32 ulElements;       // total number of valid params
         public fixed UInt32 ulParam[2]; // event parameter
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDFileInfo
-    {
+    public unsafe struct NkMAIDFileInfo {
         public NkMAIDDataInfo baseInfo;
         public eNkMAIDFileDataType ulFileDataType; // One of eNkMAIDFileDataTypes
         public UInt32 ulTotalLength;               // total number of bytes to be transferred
@@ -118,16 +104,14 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDGetPicCtrlInfo
-    {
+    public unsafe struct NkMAIDGetPicCtrlInfo {
         public UInt32 ulPicCtrlItem; // picture control item
         public UInt32 ulSize;        // the data sizer of pData
         public IntPtr pData;         // The pointer to Quick Adjust Param
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDGetSBAttrDesc
-    {
+    public unsafe struct NkMAIDGetSBAttrDesc {
         public UInt32 ulSBHandle;
         public UInt32 ulSBAttrID;
         public UInt32 ulSize;
@@ -135,8 +119,7 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDGetSBGroupAttrDesc
-    {
+    public unsafe struct NkMAIDGetSBGroupAttrDesc {
         public UInt32 ulSBGroupID;
         public UInt32 ulSBGroupAttrID;
         public UInt32 ulSize;
@@ -144,8 +127,7 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDGetSBHandles
-    {
+    public unsafe struct NkMAIDGetSBHandles {
         public UInt32 ulSBGroupID;
         public UInt32 ulNumber;
         public UInt32 ulSize;
@@ -153,8 +135,7 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDGetVideoImage
-    {
+    public unsafe struct NkMAIDGetVideoImage {
         public eNkMAIDArrayType ulType; // one of eNkMAIDArrayType
         public UInt32 ulOffset;         // Offset
         public UInt32 ulReadSize;       // size of get data
@@ -163,8 +144,7 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDImageInfo
-    {
+    public unsafe struct NkMAIDImageInfo {
         public NkMAIDDataInfo baseInfo;
         public NkMAIDSize szTotalPixels;       // total size of image to be transfered
         public eNkMAIDColorSpace ulColorSpace; // One of eNkMAIDColorSpace
@@ -176,23 +156,20 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDIPTCPresetInfo
-    {
+    public unsafe struct NkMAIDIPTCPresetInfo {
         public UInt32 ulPresetNo;
         public UInt32 ulSize;
         public IntPtr pData;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDLensTypeNikon1
-    {
+    public unsafe struct NkMAIDLensTypeNikon1 {
         public UInt32 ulLensType1;
         public UInt32 ulLensType2;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDObject
-    {
+    public unsafe struct NkMAIDObject {
         public eNkMAIDObjectType ulType; // One of eNkMAIDObjectType
         public UInt32 ulID;
         public IntPtr refClient;
@@ -200,8 +177,7 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDPicCtrlData
-    {
+    public unsafe struct NkMAIDPicCtrlData {
         public UInt32 ulPicCtrlItem; // picture control item
         public UInt32 ulSize;        // the data sizer of pData
         public UInt32 bModifiedFlag; // Flag to set New or current
@@ -209,15 +185,13 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDPoint
-    {
+    public unsafe struct NkMAIDPoint {
         public Int32 x;
         public Int32 y;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDRange
-    {
+    public unsafe struct NkMAIDRange {
         public double lfValue;
         public double lfDefault;
         public UInt32 ulValueIndex;
@@ -228,8 +202,7 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDRect
-    {
+    public unsafe struct NkMAIDRect {
         public Int32 x;  // left coordinate
         public Int32 y;  // top coordinate
         public UInt32 w; // width
@@ -237,8 +210,7 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDSBAttrValue
-    {
+    public unsafe struct NkMAIDSBAttrValue {
         public UInt32 ulSBHandle;
         public UInt32 ulSBAttrID;
         public UInt32 ulSize;
@@ -246,8 +218,7 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDSBGroupAttrValue
-    {
+    public unsafe struct NkMAIDSBGroupAttrValue {
         public UInt32 ulSBGroupID;
         public UInt32 ulSBGroupAttrID;
         public UInt32 ulSize;
@@ -255,15 +226,13 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDSize
-    {
+    public unsafe struct NkMAIDSize {
         public UInt32 w;
         public UInt32 h;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDSoundInfo
-    {
+    public unsafe struct NkMAIDSoundInfo {
         public NkMAIDDataInfo baseInfo;
         public UInt32 ulTotalSamples;   // number of full samples to be transferred
         public UInt32 fStereo;          // TRUE if stereo, FALSE if mono
@@ -275,28 +244,24 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDString
-    {
+    public unsafe struct NkMAIDString {
         public fixed byte str[256]; // allows a 255 character null terminated string
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDTerminateCapture
-    {
+    public unsafe struct NkMAIDTerminateCapture {
         public UInt32 ulParameter1; // Recognize client
         public UInt32 ulParameter2; // The shooting time specified 100msec unit
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDTestFlash
-    {
+    public unsafe struct NkMAIDTestFlash {
         public UInt32 ulType;
         public UInt32 ulParam;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDUIRequestInfo
-    {
+    public unsafe struct NkMAIDUIRequestInfo {
         public eNkMAIDUIRequestType ulType;      // one of eNkMAIDUIReqestType
         public eNkMAIDUIRequestResult ulDefault; // default return value � one of eNkMAIDUIRequestResult
         public UInt32 fSync;                     // TRUE if user must respond before returning
@@ -307,13 +272,11 @@ namespace Nikon
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public unsafe struct NkMAIDWBPresetData
-    {
+    public unsafe struct NkMAIDWBPresetData {
         public UInt32 ulPresetNumber;    // Preset Number
         public UInt32 ulPresetGain;      // Preset Gain
         public UInt32 ulThumbnailSize;   // Thumbnail size of pThumbnailData
         public UInt32 ulThumbnailRotate; // add for D70 One of eNkMAIDThumbnailRotate
         public IntPtr pThumbnailData;    // The pointer to Thumbnail Data
     }
-
 }

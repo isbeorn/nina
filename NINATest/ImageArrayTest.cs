@@ -1,13 +1,12 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NINA.Utility;
-using System.Threading.Tasks;
-using System.Linq;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NINA.Model.MyCamera;
+using System.Threading.Tasks;
 
 namespace NINATest {
+
     [TestClass]
     public class ImageArrayTest {
+
         [TestMethod]
         public async Task CreateInstance2dArray() {
             //Arrange
@@ -23,7 +22,7 @@ namespace NINATest {
             ushort[] expFlatArr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr);  
+            ImageArray result = await ImageArray.CreateInstance(arr);
 
             //Assert
             Assert.AreEqual(expX, result.Statistics.Width);
@@ -50,7 +49,6 @@ namespace NINATest {
             Assert.AreEqual(expY, result.Statistics.Height);
             CollectionAssert.AreEqual(expFlatArr, result.FlatArray);
         }
-
 
         [TestMethod]
         public async Task StDevTest() {
@@ -144,10 +142,7 @@ namespace NINATest {
 
             //Assert
             Assert.AreEqual(stdev, result.Statistics.StDev);
-            Assert.AreEqual(mean, result.Statistics.Mean);            
+            Assert.AreEqual(mean, result.Statistics.Mean);
         }
-
-
-        
     }
 }

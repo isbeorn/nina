@@ -3,14 +3,13 @@ using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    class WeatherDataVM : DockableVM {
+
+    internal class WeatherDataVM : DockableVM {
+
         public WeatherDataVM() {
             this.Title = "LblWeather";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CloudSVG"];
@@ -33,6 +32,7 @@ namespace NINA.ViewModel {
         private DispatcherTimer _updateWeatherDataTimer;
 
         private bool _doUpdate;
+
         public bool DoUpdate {
             get {
                 return _doUpdate;
@@ -53,7 +53,8 @@ namespace NINA.ViewModel {
             return await WeatherData.Update();
         }
 
-        IWeatherData _weatherData;
+        private IWeatherData _weatherData;
+
         public IWeatherData WeatherData {
             get {
                 if (_weatherData == null) {

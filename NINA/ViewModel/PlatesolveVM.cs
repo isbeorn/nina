@@ -9,21 +9,17 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel {
-    class PlatesolveVM : DockableVM {
 
+    internal class PlatesolveVM : DockableVM {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
         public PlatesolveVM() : base() {
@@ -73,19 +69,19 @@ namespace NINA.ViewModel {
                     } else {
                         if (msg.SyncReslewRepeat) {
                             var seq = new CaptureSequence(
-                                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime, 
-                                CaptureSequence.ImageTypes.SNAP, 
-                                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter, 
-                                new BinningMode(1,1), 
+                                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime,
+                                CaptureSequence.ImageTypes.SNAP,
+                                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter,
+                                new BinningMode(1, 1),
                                 1);
                             seq.Gain = SnapGain;
                             return await CaptureSolveSyncAndReslew(
-                                seq, 
-                                true, 
-                                true, 
-                                true, 
-                                msg.Token, 
-                                msg.Progress, 
+                                seq,
+                                true,
+                                true,
+                                true,
+                                msg.Token,
+                                msg.Progress,
                                 msg.Silent,
                                 ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold);
                         } else {
@@ -95,15 +91,13 @@ namespace NINA.ViewModel {
                                 return await Solve(msg.Image ?? Image, msg.Progress, msg.Token, msg.Silent);
                             }
                         }
-
                     }
-
                 })
             );
-
         }
 
         private ApplicationStatus _status;
+
         public ApplicationStatus Status {
             get {
                 return _status;
@@ -118,6 +112,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _syncScope;
+
         public bool SyncScope {
             get {
                 return _syncScope;
@@ -132,6 +127,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _slewToTarget;
+
         public bool SlewToTarget {
             get {
                 return _slewToTarget;
@@ -149,6 +145,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _repeat;
+
         public bool Repeat {
             get {
                 return _repeat;
@@ -163,6 +160,7 @@ namespace NINA.ViewModel {
         }
 
         private double _repeatThreshold;
+
         public double RepeatThreshold {
             get {
                 return _repeatThreshold;
@@ -172,8 +170,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-
 
         private BinningMode _snapBin;
         private Model.MyFilterWheel.FilterInfo _snapFilter;
@@ -213,6 +209,7 @@ namespace NINA.ViewModel {
         }
 
         private short _snapGain = -1;
+
         public short SnapGain {
             get {
                 return _snapGain;
@@ -243,7 +240,6 @@ namespace NINA.ViewModel {
             }
 
             if (PlateSolveResult != null && PlateSolveResult.Success) {
-
                 Coordinates solved = PlateSolveResult.Coordinates;
                 solved = solved.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);  //Transform to JNow if required
 
@@ -253,7 +249,6 @@ namespace NINA.ViewModel {
                 } else {
                     Notification.ShowWarning(Locale.Loc.Instance["LblSyncFailed"]);
                 }
-
             } else {
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCoordinatesForSync"]);
             }
@@ -261,6 +256,7 @@ namespace NINA.ViewModel {
         }
 
         private BitmapSource _image;
+
         public BitmapSource Image {
             get {
                 return _image;
@@ -277,11 +273,11 @@ namespace NINA.ViewModel {
         /// <summary>
         /// Captures an image and solves it
         /// </summary>
-        /// <param name="duration"></param>
-        /// <param name="progress"></param>
+        /// <param name="duration">   </param>
+        /// <param name="progress">   </param>
         /// <param name="canceltoken"></param>
-        /// <param name="filter"></param>
-        /// <param name="binning"></param>
+        /// <param name="filter">     </param>
+        /// <param name="binning">    </param>
         /// <returns></returns>
         private async Task<PlateSolveResult> SolveWithCapture(CaptureSequence seq, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false) {
             var oldAutoStretch = _autoStretch;
@@ -313,17 +309,16 @@ namespace NINA.ViewModel {
         /// <returns></returns>
         private async Task<PlateSolveResult> CaptureSolveSyncAndReslew(
                 CaptureSequence seq,
-                bool syncScope, 
-                bool slewToTarget, 
+                bool syncScope,
+                bool slewToTarget,
                 bool repeat,
-                CancellationToken token, 
-                IProgress<ApplicationStatus> progress, 
+                CancellationToken token,
+                IProgress<ApplicationStatus> progress,
                 bool silent = false,
                 double repeatThreshold = 1.0d) {
             PlateSolveResult solveresult = null;
             bool repeatPlateSolve = false;
             do {
-
                 solveresult = await SolveWithCapture(seq, progress, token, silent);
 
                 if (solveresult != null && solveresult.Success) {
@@ -347,7 +342,6 @@ namespace NINA.ViewModel {
                 } else {
                     repeatPlateSolve = false;
                 }
-
             } while (repeatPlateSolve);
 
             RaiseAllPropertiesChanged();
@@ -355,11 +349,11 @@ namespace NINA.ViewModel {
         }
 
         /// <summary>
-        /// Calculates the error based on the solved coordinates and the actual telescope coordinates and puts them into the PlateSolveResult
+        /// Calculates the error based on the solved coordinates and the actual telescope coordinates
+        /// and puts them into the PlateSolveResult
         /// </summary>
         private void CalculateError() {
             if (Telescope?.Connected == true) {
-
                 Coordinates solved = PlateSolveResult.Coordinates;
                 solved = solved.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
 
@@ -373,7 +367,7 @@ namespace NINA.ViewModel {
         /// <summary>
         /// Creates an instance of IPlatesolver, reads the image into memory and calls solve logic of platesolver
         /// </summary>
-        /// <param name="progress"></param>
+        /// <param name="progress">   </param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
         public async Task<PlateSolveResult> Solve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false) {
@@ -406,7 +400,7 @@ namespace NINA.ViewModel {
         /// <summary>
         /// Creates an instance of IPlatesolver, reads the image into memory and calls solve logic of platesolver
         /// </summary>
-        /// <param name="progress"></param>
+        /// <param name="progress">   </param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
         public async Task<PlateSolveResult> BlindSolve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false, bool blind = false) {
@@ -438,6 +432,7 @@ namespace NINA.ViewModel {
         }
 
         private CancellationTokenSource _solveCancelToken;
+
         private void CancelSolve(object o) {
             _solveCancelToken?.Cancel();
         }
@@ -476,6 +471,7 @@ namespace NINA.ViewModel {
         }
 
         private ITelescope _telescope;
+
         public ITelescope Telescope {
             get {
                 return _telescope;
@@ -487,6 +483,7 @@ namespace NINA.ViewModel {
         }
 
         private ICamera _cam;
+
         public ICamera Cam {
             get {
                 return _cam;
@@ -502,6 +499,7 @@ namespace NINA.ViewModel {
         public ICommand CancelSolveCommand { get; private set; }
 
         private AsyncObservableLimitedSizedStack<PlateSolveResult> _plateSolveResultList;
+
         public AsyncObservableLimitedSizedStack<PlateSolveResult> PlateSolveResultList {
             get {
                 if (_plateSolveResultList == null) {
@@ -516,6 +514,7 @@ namespace NINA.ViewModel {
         }
 
         private PlateSolveResult _plateSolveResult;
+
         public PlateSolveResult PlateSolveResult {
             get {
                 return _plateSolveResult;

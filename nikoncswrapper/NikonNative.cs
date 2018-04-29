@@ -1,24 +1,22 @@
-//
 // This work is licensed under a Creative Commons Attribution 3.0 Unported License.
 //
 // Thomas Dideriksen (thomas@dideriksen.com)
-//
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
 
-namespace Nikon
-{
+namespace Nikon {
+
     #region Kernel32 Imports
-    internal class Kernel32
-    {
-        const string _DLL = "Kernel32.dll";
+
+    internal class Kernel32 {
+        private const string _DLL = "Kernel32.dll";
 
         [DllImport(_DLL, CharSet = CharSet.Ansi)]
         internal static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)]string lpFileName);
@@ -29,33 +27,30 @@ namespace Nikon
         [DllImport(_DLL, CharSet = CharSet.Ansi)]
         internal static extern IntPtr GetProcAddress(IntPtr hModule, [MarshalAs(UnmanagedType.LPStr)]string lpProcName);
     }
+
     #endregion
 
     #region Nikon Native Structs Extensions
-    public static class NikonNativeStructExtensions
-    {
-        public static uint GetDataSize(this NkMAIDArray a)
-        {
+
+    public static class NikonNativeStructExtensions {
+
+        public static uint GetDataSize(this NkMAIDArray a) {
             return (uint)(a.ulElements * a.wPhysicalBytes);
         }
 
-        public static uint GetDataSize(this NkMAIDEnum e)
-        {
+        public static uint GetDataSize(this NkMAIDEnum e) {
             return (uint)(e.ulElements * e.wPhysicalBytes);
         }
 
-        public static unsafe string GetString(this NkMAIDString s)
-        {
+        public static unsafe string GetString(this NkMAIDString s) {
             return Marshal.PtrToStringAnsi(new IntPtr(s.str));
         }
 
-        public static unsafe string GetDescription(this NkMAIDCapInfo c)
-        {
+        public static unsafe string GetDescription(this NkMAIDCapInfo c) {
             return Marshal.PtrToStringAnsi(new IntPtr(c.szDescription));
         }
 
-        public static DateTime GetDateTime(this NkMAIDDateTime d)
-        {
+        public static DateTime GetDateTime(this NkMAIDDateTime d) {
             return new DateTime(
                 d.nYear,
                 d.nMonth + 1, // Note: Convert range from [0-11] to [1-12]
@@ -65,8 +60,7 @@ namespace Nikon
                 d.nSecond);
         }
 
-        public static NkMAIDDateTime Create(this NkMAIDDateTime d, DateTime value)
-        {
+        public static NkMAIDDateTime Create(this NkMAIDDateTime d, DateTime value) {
             NkMAIDDateTime res = new NkMAIDDateTime();
             res.nYear = (UInt16)value.Year;
             res.nMonth = (UInt16)(value.Month - 1); // Note: Convert range from [1-12] to [0-11]
@@ -77,29 +71,39 @@ namespace Nikon
             return res;
         }
 
-        public static bool CanStart(this NkMAIDCapInfo c)       { return (c.ulOperations & eNkMAIDCapOperation.kNkMAIDCapOperation_Start) != 0; }
-        public static bool CanGet(this NkMAIDCapInfo c)         { return (c.ulOperations & eNkMAIDCapOperation.kNkMAIDCapOperation_Get) != 0; }
-        public static bool CanSet(this NkMAIDCapInfo c)         { return (c.ulOperations & eNkMAIDCapOperation.kNkMAIDCapOperation_Set) != 0; }
-        public static bool CanGetArray(this NkMAIDCapInfo c)    { return (c.ulOperations & eNkMAIDCapOperation.kNkMAIDCapOperation_GetArray) != 0; }
-        public static bool CanGetDefault(this NkMAIDCapInfo c)  { return (c.ulOperations & eNkMAIDCapOperation.kNkMAIDCapOperation_GetDefault) != 0; }
+        public static bool CanStart(this NkMAIDCapInfo c) { return (c.ulOperations & eNkMAIDCapOperation.kNkMAIDCapOperation_Start) != 0; }
 
-        public static bool IsHidden(this NkMAIDCapInfo c)       { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_Hidden) != 0; }
-        public static bool IsAdvanced(this NkMAIDCapInfo c)     { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_Advanced) != 0; }
-        public static bool IsVendor(this NkMAIDCapInfo c)       { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_Vendor) != 0; }
-        public static bool IsGroup(this NkMAIDCapInfo c)        { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_Group) != 0; }
-        public static bool IsGroupMember(this NkMAIDCapInfo c)  { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_GroupMember) != 0; }
-        public static bool IsInvalid(this NkMAIDCapInfo c)      { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_Invalid) != 0; }
+        public static bool CanGet(this NkMAIDCapInfo c) { return (c.ulOperations & eNkMAIDCapOperation.kNkMAIDCapOperation_Get) != 0; }
+
+        public static bool CanSet(this NkMAIDCapInfo c) { return (c.ulOperations & eNkMAIDCapOperation.kNkMAIDCapOperation_Set) != 0; }
+
+        public static bool CanGetArray(this NkMAIDCapInfo c) { return (c.ulOperations & eNkMAIDCapOperation.kNkMAIDCapOperation_GetArray) != 0; }
+
+        public static bool CanGetDefault(this NkMAIDCapInfo c) { return (c.ulOperations & eNkMAIDCapOperation.kNkMAIDCapOperation_GetDefault) != 0; }
+
+        public static bool IsHidden(this NkMAIDCapInfo c) { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_Hidden) != 0; }
+
+        public static bool IsAdvanced(this NkMAIDCapInfo c) { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_Advanced) != 0; }
+
+        public static bool IsVendor(this NkMAIDCapInfo c) { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_Vendor) != 0; }
+
+        public static bool IsGroup(this NkMAIDCapInfo c) { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_Group) != 0; }
+
+        public static bool IsGroupMember(this NkMAIDCapInfo c) { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_GroupMember) != 0; }
+
+        public static bool IsInvalid(this NkMAIDCapInfo c) { return (c.ulVisibility & eNkMAIDCapVisibility.kNkMAIDCapVisibility_Invalid) != 0; }
     }
+
     #endregion
 
     #region NikonException class
-    public class NikonException : Exception
-    {
-        eNkMAIDResult _errorCode;
-        eNkMAIDCommand _errorCommand;
-        UInt32 _errorParam;
-        eNkMAIDDataType _errorDataType;
-        IntPtr _errorData;
+
+    public class NikonException : Exception {
+        private eNkMAIDResult _errorCode;
+        private eNkMAIDCommand _errorCommand;
+        private UInt32 _errorParam;
+        private eNkMAIDDataType _errorDataType;
+        private IntPtr _errorData;
 
         public NikonException(eNkMAIDResult errorCode, eNkMAIDCommand errorCommand, UInt32 errorParam, eNkMAIDDataType errorDataType, IntPtr errorData)
             : base(string.Format("[{0}] ({1}, {2}, {3}, {4})",
@@ -107,8 +111,7 @@ namespace Nikon
                 errorCommand.ToString(),
                 errorParam.ToString(),
                 errorDataType.ToString(),
-                errorData.ToString()))
-        {
+                errorData.ToString())) {
             _errorCode = errorCode;
             _errorCommand = errorCommand;
             _errorParam = errorParam;
@@ -117,59 +120,50 @@ namespace Nikon
         }
 
         public NikonException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
 
-        public override string Message
-        {
+        public override string Message {
             get { return ToString(); }
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return base.Message;
         }
 
-        public eNkMAIDResult ErrorCode
-        {
+        public eNkMAIDResult ErrorCode {
             get { return _errorCode; }
         }
     }
+
     #endregion
 
     #region Md3 class
-    internal unsafe class NikonMd3
-    {
-        MAIDEntryPointProcDelegate _entryPoint;
-        IntPtr _handle;
 
-        internal NikonMd3(string md3File, string md3EntryPoint)
-        {
+    internal unsafe class NikonMd3 {
+        private MAIDEntryPointProcDelegate _entryPoint;
+        private IntPtr _handle;
+
+        internal NikonMd3(string md3File, string md3EntryPoint) {
             _handle = Kernel32.LoadLibrary(md3File);
 
-            if (_handle == IntPtr.Zero)
-            {
+            if (_handle == IntPtr.Zero) {
                 const string message = "You can download MD3 files from Nikons website: https://sdk.nikonimaging.com/apply/";
 
-                if (!File.Exists(md3File))
-                {
+                if (!File.Exists(md3File)) {
                     throw new NikonException("Couldn't find MD3 file: " + md3File + ", " + message);
                 }
 
                 MachineType machineType = GetDllMachineType(md3File);
-                switch (machineType)
-                {
+                switch (machineType) {
                     case MachineType.x86:
-                        if (IntPtr.Size == 8)
-                        {
+                        if (IntPtr.Size == 8) {
                             throw new NikonException("It looks like you're trying to use a 32-bit MD3 file (" + md3File + ") in your 64-bit application. Please use the 64-bit (x64) MD3 file instead. " + message);
                         }
                         break;
 
                     case MachineType.x64:
-                        if (IntPtr.Size == 4)
-                        {
+                        if (IntPtr.Size == 4) {
                             throw new NikonException("It looks like you're trying to use a 64-bit MD3 file (" + md3File + ") in your 32-bit application. Please use the 32-bit (x86) MD3 file instead. " + message);
                         }
                         break;
@@ -180,76 +174,67 @@ namespace Nikon
 
             IntPtr entryPointPointer = Kernel32.GetProcAddress(_handle, md3EntryPoint);
 
-            if (entryPointPointer == IntPtr.Zero)
-            {
+            if (entryPointPointer == IntPtr.Zero) {
                 throw new NikonException("GetProcAddress failed to get the address for: " + md3EntryPoint);
             }
 
             _entryPoint = (MAIDEntryPointProcDelegate)Marshal.GetDelegateForFunctionPointer(entryPointPointer, typeof(MAIDEntryPointProcDelegate));
         }
 
-        internal void Close()
-        {
+        internal void Close() {
             Kernel32.FreeLibrary(_handle);
             _handle = IntPtr.Zero;
         }
 
-        internal MAIDEntryPointProcDelegate EntryPoint
-        {
+        internal MAIDEntryPointProcDelegate EntryPoint {
             get { return _entryPoint; }
         }
 
-        private enum MachineType
-        {
+        private enum MachineType {
             x86,
             x64,
             Unknown,
         }
 
-        private MachineType GetDllMachineType(string dllFile)
-        {
-            try
-            {
-                using (var stream = new FileStream(dllFile, FileMode.Open, FileAccess.Read))
-                {
-                    using (var reader = new BinaryReader(stream))
-                    {
+        private MachineType GetDllMachineType(string dllFile) {
+            try {
+                using (var stream = new FileStream(dllFile, FileMode.Open, FileAccess.Read)) {
+                    using (var reader = new BinaryReader(stream)) {
                         reader.BaseStream.Position = 60;
                         var offset = reader.ReadInt32();
                         reader.BaseStream.Position = offset + 4;
                         var machine = reader.ReadUInt16();
-                        switch (machine)
-                        {
+                        switch (machine) {
                             case 0x014c: return MachineType.x86;
                             case 0x8664: return MachineType.x64;
-                            default:     return MachineType.Unknown;
+                            default: return MachineType.Unknown;
                         }
                     }
                 }
-            } 
-            catch (IOException)
-            {
+            } catch (IOException) {
                 return MachineType.Unknown;
             }
         }
     };
+
     #endregion
 
     #region Structs for array types
-    internal struct NikonEnumWithData
-    {
+
+    internal struct NikonEnumWithData {
         internal NkMAIDEnum nativeEnum;
         internal byte[] buffer;
     }
 
-    internal struct NikonArrayWithData
-    {
+    internal struct NikonArrayWithData {
         internal NkMAIDArray nativeArray;
         internal byte[] buffer;
     }
+
     #endregion
 
     #region Native delegates
+
     internal unsafe delegate void MAIDEventProcDelegate(
         IntPtr refClient,               // Reference set by client
         eNkMAIDEvent ulEvent,           // One of eNkMAIDEvent
@@ -288,9 +273,11 @@ namespace Nikon
         IntPtr data,                    // Pointer or long integer
         IntPtr pfnComplete,             // Completion function, may be NULL
         IntPtr refComplete);            // Value passed to pfnComplete
+
     #endregion
 
     #region NikonObject delegates
+
     internal delegate void InternalProgressDelegate(
         NikonObject sender,
         eNkMAIDCommand ulCommand,
@@ -324,40 +311,41 @@ namespace Nikon
         NikonObject sender,
         NkMAIDSoundInfo soundInfo,
         IntPtr data);
+
     #endregion
 
     #region NikonObject
-    internal unsafe class NikonObject
-    {
-        //
-        // Class Members
-        //
-        static uint _uniqueValue = 100;
-        uint _id;
-        NikonMd3 _md3;
-        NikonObject _parent;
-        NkMAIDObject _object;
-        MAIDCompletionProcDelegate _completionProc;
-        MAIDEventProcDelegate _eventProc;
-        MAIDProgressProcDelegate _progressProc;
-        MAIDDataProcDelegate _dataProc;
-        MAIDUIRequestProcDelegate _uiRequestProc;
 
-        //
+    internal unsafe class NikonObject {
+
+        // Class Members
+        private static uint _uniqueValue = 100;
+
+        private uint _id;
+        private NikonMd3 _md3;
+        private NikonObject _parent;
+        private NkMAIDObject _object;
+        private MAIDCompletionProcDelegate _completionProc;
+        private MAIDEventProcDelegate _eventProc;
+        private MAIDProgressProcDelegate _progressProc;
+        private MAIDDataProcDelegate _dataProc;
+        private MAIDUIRequestProcDelegate _uiRequestProc;
+
         // Events
-        //
         internal event InternalDataFileDelegate DataFile;
+
         internal event InternalDataImageDelegate DataImage;
+
         internal event InternalDataSoundDelegate DataSound;
+
         internal event InternalProgressDelegate Progress;
+
         internal event InternalEventDelegate Event;
+
         internal event InternalUIRequestDelegate UIRequest;
 
-        //
         // Constructor
-        //
-        internal NikonObject(NikonMd3 md3, NikonObject parent, uint id)
-        {
+        internal NikonObject(NikonMd3 md3, NikonObject parent, uint id) {
             _md3 = md3;
             _parent = parent;
             _id = id;
@@ -373,32 +361,24 @@ namespace Nikon
             _uiRequestProc = new MAIDUIRequestProcDelegate(UIRequestProc);
         }
 
-        //
         // Id
-        //
-        internal uint Id
-        {
+        internal uint Id {
             get { return _id; }
         }
 
-        //
         // Open
-        //
-        internal void Open()
-        {
+        internal void Open() {
             // Get pointer to parent MAID object
             IntPtr parentPointer = IntPtr.Zero;
             NkMAIDObject parentObject;
 
-            if (_parent != null)
-            {
+            if (_parent != null) {
                 parentObject = _parent._object;
                 parentPointer = new IntPtr(&parentObject);
             }
 
             // Open MAID object
-            fixed (NkMAIDObject* p = &_object)
-            {
+            fixed (NkMAIDObject* p = &_object) {
                 CallEntryPoint(
                     parentPointer,
                     eNkMAIDCommand.kNkMAIDCommand_Open,
@@ -413,16 +393,12 @@ namespace Nikon
             SetSupportedCallbacks();
         }
 
-        //
         // Set Callbacks
-        //
-        void SetSupportedCallbacks()
-        {
+        private void SetSupportedCallbacks() {
             // Get supported caps and add them to a dictionary
             Dictionary<eNkMAIDCapability, NkMAIDCapInfo> caps = new Dictionary<eNkMAIDCapability, NkMAIDCapInfo>();
             NkMAIDCapInfo[] capsArray = GetCapInfo();
-            foreach (NkMAIDCapInfo c in capsArray)
-            {
+            foreach (NkMAIDCapInfo c in capsArray) {
                 caps.Add(c.ulID, c);
             }
 
@@ -447,13 +423,11 @@ namespace Nikon
             Debug.Assert(procCaps.Length == procDelegates.Length);
 
             // Set supported callbacks
-            for (int i = 0; i < procCaps.Length; i++)
-            {
+            for (int i = 0; i < procCaps.Length; i++) {
                 eNkMAIDCapability cap = procCaps[i];
 
                 if (caps.ContainsKey(cap) &&
-                    caps[cap].CanSet())
-                {
+                    caps[cap].CanSet()) {
                     NkMAIDCallback callback = new NkMAIDCallback();
                     callback.pProc = Marshal.GetFunctionPointerForDelegate(procDelegates[i]);
 
@@ -462,16 +436,12 @@ namespace Nikon
             }
         }
 
-        //
         // Event Callback
-        //
-        void EventProc(
+        private void EventProc(
             IntPtr refClient,
             eNkMAIDEvent ulEvent,
-            IntPtr data)
-        {
-            if (Event != null)
-            {
+            IntPtr data) {
+            if (Event != null) {
                 Event(
                     this,
                     refClient,
@@ -480,18 +450,14 @@ namespace Nikon
             }
         }
 
-        //
         // Progress Callback
-        //
-        void ProgressProc(
+        private void ProgressProc(
             eNkMAIDCommand ulCommand,
             UInt32 ulParam,
             IntPtr refComplete,
             UInt32 ulDone,
-            UInt32 ulTotal)
-        {
-            if (Progress != null)
-            {
+            UInt32 ulTotal) {
+            if (Progress != null) {
                 Progress(
                     this,
                     ulCommand,
@@ -502,15 +468,11 @@ namespace Nikon
             }
         }
 
-        //
         // UIRequest Callback
-        //
-        UInt32 UIRequestProc(
+        private UInt32 UIRequestProc(
             IntPtr refProc,
-            IntPtr pUIRequest)
-        {
-            if (UIRequest != null)
-            {
+            IntPtr pUIRequest) {
+            if (UIRequest != null) {
                 UIRequest(
                     this,
                     refProc,
@@ -520,41 +482,34 @@ namespace Nikon
             return 0;
         }
 
-        //
         // Data Callback
-        //
-        eNkMAIDResult DataProc(
+        private eNkMAIDResult DataProc(
             IntPtr refClient,
             IntPtr pDataInfo,
-            IntPtr pData)
-        {
+            IntPtr pData) {
             NkMAIDDataInfo info = *((NkMAIDDataInfo*)pDataInfo.ToPointer());
 
-            switch (info.ulType)
-            {
+            switch (info.ulType) {
                 case eNkMAIDDataObjType.kNkMAIDDataObjType_File:
                 case eNkMAIDDataObjType.kNkMAIDDataObjType_File | eNkMAIDDataObjType.kNkMAIDDataObjType_Image:
                 case eNkMAIDDataObjType.kNkMAIDDataObjType_File | eNkMAIDDataObjType.kNkMAIDDataObjType_Sound:
                 case eNkMAIDDataObjType.kNkMAIDDataObjType_File | eNkMAIDDataObjType.kNkMAIDDataObjType_Thumbnail:
                 case eNkMAIDDataObjType.kNkMAIDDataObjType_File | eNkMAIDDataObjType.kNkMAIDDataObjType_Video:
-                    if (DataFile != null)
-                    {
+                    if (DataFile != null) {
                         NkMAIDFileInfo fileInfo = *((NkMAIDFileInfo*)pDataInfo.ToPointer());
                         DataFile(this, fileInfo, pData);
                     }
                     break;
 
                 case eNkMAIDDataObjType.kNkMAIDDataObjType_Thumbnail:
-                    if (DataImage != null)
-                    {
+                    if (DataImage != null) {
                         NkMAIDImageInfo imageInfo = *((NkMAIDImageInfo*)pDataInfo.ToPointer());
                         DataImage(this, imageInfo, pData);
                     }
                     break;
 
                 case eNkMAIDDataObjType.kNkMAIDDataObjType_Sound:
-                    if (DataSound != null)
-                    {
+                    if (DataSound != null) {
                         NkMAIDSoundInfo soundInfo = *((NkMAIDSoundInfo*)pDataInfo.ToPointer());
                         DataSound(this, soundInfo, pData);
                     }
@@ -568,15 +523,11 @@ namespace Nikon
             return eNkMAIDResult.kNkMAIDResult_NoError;
         }
 
-        //
         // GetCapInfo
-        //
-        internal NkMAIDCapInfo[] GetCapInfo()
-        {
+        internal NkMAIDCapInfo[] GetCapInfo() {
             NkMAIDCapInfo[] capInfo = null;
 
-            while (true)
-            {
+            while (true) {
                 // Get capability count
                 uint count = GetCapCount();
 
@@ -584,13 +535,10 @@ namespace Nikon
                 capInfo = new NkMAIDCapInfo[count];
 
                 // GetCapInfo
-                if (GetCapInfo(capInfo))
-                {
+                if (GetCapInfo(capInfo)) {
                     // If GetCapInfo succeeds, we break out of the loop
                     break;
-                }
-                else
-                {
+                } else {
                     // Otherwise we keep trying
                     continue;
                 }
@@ -600,29 +548,19 @@ namespace Nikon
             return capInfo;
         }
 
-        //
         // GetCapInfo
-        //
-        bool GetCapInfo(NkMAIDCapInfo[] capInfo)
-        {
-            fixed (NkMAIDCapInfo* p = capInfo)
-            {
-                try
-                {
+        private bool GetCapInfo(NkMAIDCapInfo[] capInfo) {
+            fixed (NkMAIDCapInfo* p = capInfo) {
+                try {
                     CallEntryPointAsync(
                        eNkMAIDCommand.kNkMAIDCommand_GetCapInfo,
                        (uint)capInfo.Length,
                        eNkMAIDDataType.kNkMAIDDataType_CapInfoPtr,
                        new IntPtr(p));
-                }
-                catch (NikonException ex)
-                {
-                    if (ex.ErrorCode == eNkMAIDResult.kNkMAIDResult_BufferSize)
-                    {
+                } catch (NikonException ex) {
+                    if (ex.ErrorCode == eNkMAIDResult.kNkMAIDResult_BufferSize) {
                         return false;
-                    }
-                    else
-                    {
+                    } else {
                         throw;
                     }
                 }
@@ -631,11 +569,8 @@ namespace Nikon
             return true;
         }
 
-        //
         // GetCapCount
-        //
-        uint GetCapCount()
-        {
+        private uint GetCapCount() {
             uint count = 0;
 
             CallEntryPointAsync(
@@ -647,11 +582,8 @@ namespace Nikon
             return count;
         }
 
-        //
         // Close
-        //
-        internal void Close()
-        {
+        internal void Close() {
             CallEntryPointSync(
                 eNkMAIDCommand.kNkMAIDCommand_Close,
                 0,
@@ -659,11 +591,8 @@ namespace Nikon
                 IntPtr.Zero);
         }
 
-        //
         // EnumChildren
-        //
-        internal void EnumChildren()
-        {
+        internal void EnumChildren() {
             CallEntryPointAsync(
                 eNkMAIDCommand.kNkMAIDCommand_EnumChildren,
                 0,
@@ -671,11 +600,8 @@ namespace Nikon
                 IntPtr.Zero);
         }
 
-        //
         // CapStart
-        //
-        internal void CapStart(eNkMAIDCapability cap, eNkMAIDDataType dataType, IntPtr data)
-        {
+        internal void CapStart(eNkMAIDCapability cap, eNkMAIDDataType dataType, IntPtr data) {
             CallEntryPointAsync(
                 eNkMAIDCommand.kNkMAIDCommand_CapStart,
                 (uint)cap,
@@ -683,11 +609,8 @@ namespace Nikon
                 data);
         }
 
-        //
         // CapSet
-        //
-        internal void CapSet(eNkMAIDCapability capability, eNkMAIDDataType type, IntPtr data)
-        {
+        internal void CapSet(eNkMAIDCapability capability, eNkMAIDDataType type, IntPtr data) {
             CallEntryPointAsync(
                 eNkMAIDCommand.kNkMAIDCommand_CapSet,
                 (uint)capability,
@@ -695,11 +618,8 @@ namespace Nikon
                 data);
         }
 
-        //
         // CapGet
-        //
-        internal void CapGet(eNkMAIDCapability capability, eNkMAIDDataType type, IntPtr data)
-        {
+        internal void CapGet(eNkMAIDCapability capability, eNkMAIDDataType type, IntPtr data) {
             CallEntryPointAsync(
                 eNkMAIDCommand.kNkMAIDCommand_CapGet,
                 (uint)capability,
@@ -707,11 +627,8 @@ namespace Nikon
                 data);
         }
 
-        //
         // CapGetArray
-        //
-       internal void CapGetArray(eNkMAIDCapability capability, eNkMAIDDataType type, IntPtr data)
-        {
+        internal void CapGetArray(eNkMAIDCapability capability, eNkMAIDDataType type, IntPtr data) {
             CallEntryPointAsync(
                 eNkMAIDCommand.kNkMAIDCommand_CapGetArray,
                 (uint)capability,
@@ -719,11 +636,8 @@ namespace Nikon
                 data);
         }
 
-        //
         // CapGetDefault
-        //
-        internal void CapGetDefault(eNkMAIDCapability capability, eNkMAIDDataType type, IntPtr data)
-        {
+        internal void CapGetDefault(eNkMAIDCapability capability, eNkMAIDDataType type, IntPtr data) {
             CallEntryPointAsync(
                 eNkMAIDCommand.kNkMAIDCommand_CapGetDefault,
                 (uint)capability,
@@ -731,11 +645,8 @@ namespace Nikon
                 data);
         }
 
-        //
         // Async
-        //
-        internal void Async()
-        {
+        internal void Async() {
             CallEntryPointSync(
                 eNkMAIDCommand.kNkMAIDCommand_Async,
                 0,
@@ -743,17 +654,13 @@ namespace Nikon
                 IntPtr.Zero);
         }
 
-        //
         // Get Children
-        //
-        internal NikonObject[] GetChildren()
-        {
+        internal NikonObject[] GetChildren() {
             List<NikonObject> children = new List<NikonObject>();
 
             NikonEnumWithData e = GetEnumWithData(eNkMAIDCapability.kNkMAIDCapability_Children);
 
-            for (int i = 0; i < e.nativeEnum.ulElements; i++)
-            {
+            for (int i = 0; i < e.nativeEnum.ulElements; i++) {
                 uint childId = BitConverter.ToUInt32(e.buffer, i * 4);
 
                 NikonObject child = new NikonObject(_md3, this, childId);
@@ -764,23 +671,18 @@ namespace Nikon
             return children.ToArray();
         }
 
-        //
         // Enum
-        //
-        internal void SetEnum(eNkMAIDCapability capability, NkMAIDEnum enumeration)
-        {
+        internal void SetEnum(eNkMAIDCapability capability, NkMAIDEnum enumeration) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_EnumPtr,
                 new IntPtr(&enumeration));
         }
 
-        internal NikonEnumWithData GetEnumWithData(eNkMAIDCapability cap)
-        {
+        internal NikonEnumWithData GetEnumWithData(eNkMAIDCapability cap) {
             NikonEnumWithData e;
 
-            while (true)
-            {
+            while (true) {
                 CapGet(
                     cap,
                     eNkMAIDDataType.kNkMAIDDataType_EnumPtr,
@@ -788,25 +690,18 @@ namespace Nikon
 
                 e.buffer = new byte[e.nativeEnum.GetDataSize()];
 
-                fixed (byte* p = e.buffer)
-                {
+                fixed (byte* p = e.buffer) {
                     e.nativeEnum.pData = new IntPtr(p);
 
-                    try
-                    {
+                    try {
                         CapGetArray(
                             cap,
                             eNkMAIDDataType.kNkMAIDDataType_EnumPtr,
                             new IntPtr(&e.nativeEnum));
-                    }
-                    catch (NikonException ex)
-                    {
-                        if (ex.ErrorCode == eNkMAIDResult.kNkMAIDResult_BufferSize)
-                        {
+                    } catch (NikonException ex) {
+                        if (ex.ErrorCode == eNkMAIDResult.kNkMAIDResult_BufferSize) {
                             continue;
-                        }
-                        else
-                        {
+                        } else {
                             throw;
                         }
                     }
@@ -818,23 +713,18 @@ namespace Nikon
             return e;
         }
 
-        //
         // Array
-        //
-        internal void SetArray(eNkMAIDCapability capability, NkMAIDArray array)
-        {
+        internal void SetArray(eNkMAIDCapability capability, NkMAIDArray array) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_ArrayPtr,
                 new IntPtr(&array));
         }
 
-        internal NikonArrayWithData GetArrayWithData(eNkMAIDCapability cap)
-        {
+        internal NikonArrayWithData GetArrayWithData(eNkMAIDCapability cap) {
             NikonArrayWithData a;
 
-            while (true)
-            {
+            while (true) {
                 CapGet(
                     cap,
                     eNkMAIDDataType.kNkMAIDDataType_ArrayPtr,
@@ -842,25 +732,18 @@ namespace Nikon
 
                 a.buffer = new byte[a.nativeArray.GetDataSize()];
 
-                fixed (byte* p = a.buffer)
-                {
+                fixed (byte* p = a.buffer) {
                     a.nativeArray.pData = new IntPtr(p);
 
-                    try
-                    {
+                    try {
                         CapGetArray(
                             cap,
                             eNkMAIDDataType.kNkMAIDDataType_ArrayPtr,
                             new IntPtr(&a.nativeArray));
-                    }
-                    catch (NikonException ex)
-                    {
-                        if (ex.ErrorCode == eNkMAIDResult.kNkMAIDResult_BufferSize)
-                        {
+                    } catch (NikonException ex) {
+                        if (ex.ErrorCode == eNkMAIDResult.kNkMAIDResult_BufferSize) {
                             continue;
-                        }
-                        else
-                        {
+                        } else {
                             throw;
                         }
                     }
@@ -872,11 +755,8 @@ namespace Nikon
             return a;
         }
 
-        //
         // Range
-        //
-        internal NkMAIDRange GetRange(eNkMAIDCapability capability)
-        {
+        internal NkMAIDRange GetRange(eNkMAIDCapability capability) {
             NkMAIDRange result = new NkMAIDRange();
 
             CapGet(
@@ -887,16 +767,14 @@ namespace Nikon
             return result;
         }
 
-        internal void SetRange(eNkMAIDCapability capability, NkMAIDRange value)
-        {
+        internal void SetRange(eNkMAIDCapability capability, NkMAIDRange value) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_RangePtr,
                 new IntPtr(&value));
         }
 
-        internal NkMAIDRange GetDefaultRange(eNkMAIDCapability capability)
-        {
+        internal NkMAIDRange GetDefaultRange(eNkMAIDCapability capability) {
             NkMAIDRange result = new NkMAIDRange();
 
             CapGetDefault(
@@ -907,11 +785,8 @@ namespace Nikon
             return result;
         }
 
-        //
         // Point
-        //
-        internal NkMAIDPoint GetPoint(eNkMAIDCapability capability)
-        {
+        internal NkMAIDPoint GetPoint(eNkMAIDCapability capability) {
             NkMAIDPoint result = new NkMAIDPoint();
 
             CapGet(
@@ -922,16 +797,14 @@ namespace Nikon
             return result;
         }
 
-        internal void SetPoint(eNkMAIDCapability capability, NkMAIDPoint value)
-        {
+        internal void SetPoint(eNkMAIDCapability capability, NkMAIDPoint value) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_PointPtr,
                 new IntPtr(&value));
         }
 
-        internal NkMAIDPoint GetDefaultPoint(eNkMAIDCapability capability)
-        {
+        internal NkMAIDPoint GetDefaultPoint(eNkMAIDCapability capability) {
             NkMAIDPoint result = new NkMAIDPoint();
 
             CapGetDefault(
@@ -942,11 +815,8 @@ namespace Nikon
             return result;
         }
 
-        //
         // DateTime
-        //
-        internal DateTime GetDateTime(eNkMAIDCapability capability)
-        {
+        internal DateTime GetDateTime(eNkMAIDCapability capability) {
             NkMAIDDateTime result = new NkMAIDDateTime();
 
             CapGet(
@@ -957,8 +827,7 @@ namespace Nikon
             return result.GetDateTime();
         }
 
-        internal void SetDateTime(eNkMAIDCapability capability, DateTime value)
-        {
+        internal void SetDateTime(eNkMAIDCapability capability, DateTime value) {
             NkMAIDDateTime dateTime = new NkMAIDDateTime();
             dateTime = dateTime.Create(value);
 
@@ -968,8 +837,7 @@ namespace Nikon
                 new IntPtr(&dateTime));
         }
 
-        internal DateTime GetDefaultDateTime(eNkMAIDCapability capability)
-        {
+        internal DateTime GetDefaultDateTime(eNkMAIDCapability capability) {
             NkMAIDDateTime result = new NkMAIDDateTime();
 
             CapGetDefault(
@@ -980,19 +848,15 @@ namespace Nikon
             return result.GetDateTime();
         }
 
-        //
         // Rect
-        //
-        internal void SetRect(eNkMAIDCapability capability, NkMAIDRect rectangle)
-        {
+        internal void SetRect(eNkMAIDCapability capability, NkMAIDRect rectangle) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_RectPtr,
                 new IntPtr(&rectangle));
         }
 
-        internal NkMAIDRect GetRect(eNkMAIDCapability capability)
-        {
+        internal NkMAIDRect GetRect(eNkMAIDCapability capability) {
             NkMAIDRect rectangle = new NkMAIDRect();
 
             CapGet(
@@ -1003,8 +867,7 @@ namespace Nikon
             return rectangle;
         }
 
-        internal NkMAIDRect GetDefaultRect(eNkMAIDCapability capability)
-        {
+        internal NkMAIDRect GetDefaultRect(eNkMAIDCapability capability) {
             NkMAIDRect rectangle = new NkMAIDRect();
 
             CapGetDefault(
@@ -1015,19 +878,15 @@ namespace Nikon
             return rectangle;
         }
 
-        //
         // Size
-        //
-        internal void SetSize(eNkMAIDCapability capability, NkMAIDSize size)
-        {
+        internal void SetSize(eNkMAIDCapability capability, NkMAIDSize size) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_SizePtr,
                 new IntPtr(&size));
         }
 
-        internal NkMAIDSize GetSize(eNkMAIDCapability capability)
-        {
+        internal NkMAIDSize GetSize(eNkMAIDCapability capability) {
             NkMAIDSize size = new NkMAIDSize();
 
             CapGet(
@@ -1038,8 +897,7 @@ namespace Nikon
             return size;
         }
 
-        internal NkMAIDSize GetDefaultSize(eNkMAIDCapability capability)
-        {
+        internal NkMAIDSize GetDefaultSize(eNkMAIDCapability capability) {
             NkMAIDSize size = new NkMAIDSize();
 
             CapGetDefault(
@@ -1050,11 +908,8 @@ namespace Nikon
             return size;
         }
 
-        //
         // String
-        //
-        internal string GetString(eNkMAIDCapability capability)
-        {
+        internal string GetString(eNkMAIDCapability capability) {
             NkMAIDString str = new NkMAIDString();
 
             CapGet(
@@ -1065,8 +920,7 @@ namespace Nikon
             return str.GetString();
         }
 
-        internal void SetString(eNkMAIDCapability capability, string value)
-        {
+        internal void SetString(eNkMAIDCapability capability, string value) {
             NkMAIDString str = new NkMAIDString();
 
             byte[] ascii = ASCIIEncoding.ASCII.GetBytes(value);
@@ -1083,8 +937,7 @@ namespace Nikon
                 new IntPtr(&str));
         }
 
-        internal string GetDefaultString(eNkMAIDCapability capability)
-        {
+        internal string GetDefaultString(eNkMAIDCapability capability) {
             NkMAIDString str = new NkMAIDString();
 
             CapGetDefault(
@@ -1095,11 +948,8 @@ namespace Nikon
             return str.GetString();
         }
 
-        //
         // Integer
-        //
-        internal int GetInteger(eNkMAIDCapability capability)
-        {
+        internal int GetInteger(eNkMAIDCapability capability) {
             int result;
 
             CapGet(
@@ -1110,16 +960,14 @@ namespace Nikon
             return result;
         }
 
-        internal void SetInteger(eNkMAIDCapability capability, int value)
-        {
+        internal void SetInteger(eNkMAIDCapability capability, int value) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_Integer,
                 new IntPtr(value));
         }
 
-        internal int GetDefaultInteger(eNkMAIDCapability capability)
-        {
+        internal int GetDefaultInteger(eNkMAIDCapability capability) {
             int result;
 
             CapGetDefault(
@@ -1130,11 +978,8 @@ namespace Nikon
             return result;
         }
 
-        //
         // Unsigned
-        //
-        internal uint GetUnsigned(eNkMAIDCapability capability)
-        {
+        internal uint GetUnsigned(eNkMAIDCapability capability) {
             uint result;
 
             CapGet(
@@ -1145,16 +990,14 @@ namespace Nikon
             return result;
         }
 
-        internal void SetUnsigned(eNkMAIDCapability capability, uint value)
-        {
+        internal void SetUnsigned(eNkMAIDCapability capability, uint value) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_Unsigned,
                 new IntPtr((int)value));
         }
 
-        internal uint GetDefaultUnsigned(eNkMAIDCapability capability)
-        {
+        internal uint GetDefaultUnsigned(eNkMAIDCapability capability) {
             uint result;
 
             CapGetDefault(
@@ -1165,11 +1008,8 @@ namespace Nikon
             return result;
         }
 
-        //
         // Boolean
-        //
-        internal bool GetBoolean(eNkMAIDCapability capability)
-        {
+        internal bool GetBoolean(eNkMAIDCapability capability) {
             bool result;
 
             CapGet(
@@ -1180,16 +1020,14 @@ namespace Nikon
             return result;
         }
 
-        internal void SetBoolean(eNkMAIDCapability capability, bool value)
-        {
+        internal void SetBoolean(eNkMAIDCapability capability, bool value) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_Boolean,
                 new IntPtr(value ? 1 : 0));
         }
 
-        internal bool GetDefaultBoolean(eNkMAIDCapability capability)
-        {
+        internal bool GetDefaultBoolean(eNkMAIDCapability capability) {
             bool result;
 
             CapGetDefault(
@@ -1200,11 +1038,8 @@ namespace Nikon
             return result;
         }
 
-        //
         // Float
-        //
-        internal double GetFloat(eNkMAIDCapability capability)
-        {
+        internal double GetFloat(eNkMAIDCapability capability) {
             double result;
 
             CapGet(
@@ -1215,16 +1050,14 @@ namespace Nikon
             return result;
         }
 
-        internal void SetFloat(eNkMAIDCapability capability, double value)
-        {
+        internal void SetFloat(eNkMAIDCapability capability, double value) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_FloatPtr,
                 new IntPtr(&value));
         }
 
-        internal double GetDefaultFloat(eNkMAIDCapability capability)
-        {
+        internal double GetDefaultFloat(eNkMAIDCapability capability) {
             double result;
 
             CapGetDefault(
@@ -1235,11 +1068,8 @@ namespace Nikon
             return result;
         }
 
-        //
         // Callback
-        //
-        internal NkMAIDCallback GetCallback(eNkMAIDCapability capability)
-        {
+        internal NkMAIDCallback GetCallback(eNkMAIDCapability capability) {
             NkMAIDCallback callback = new NkMAIDCallback();
 
             CapGet(
@@ -1250,58 +1080,48 @@ namespace Nikon
             return callback;
         }
 
-        internal void SetCallback(eNkMAIDCapability capability, NkMAIDCallback callback)
-        {
+        internal void SetCallback(eNkMAIDCapability capability, NkMAIDCallback callback) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_CallbackPtr,
                 new IntPtr(&callback));
         }
 
-        //
         // Generic
-        //
-        internal void GetGeneric(eNkMAIDCapability capability, IntPtr destination)
-        {
+        internal void GetGeneric(eNkMAIDCapability capability, IntPtr destination) {
             CapGet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_GenericPtr,
                 destination);
         }
 
-        internal void SetGeneric(eNkMAIDCapability capability, IntPtr source)
-        {
+        internal void SetGeneric(eNkMAIDCapability capability, IntPtr source) {
             CapSet(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_GenericPtr,
                 source);
         }
 
-        internal void GetDefaultGeneric(eNkMAIDCapability capability, IntPtr destination)
-        {
+        internal void GetDefaultGeneric(eNkMAIDCapability capability, IntPtr destination) {
             CapGetDefault(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_GenericPtr,
                 destination);
         }
 
-        internal void GetArrayGeneric(eNkMAIDCapability capability, IntPtr destination)
-        {
+        internal void GetArrayGeneric(eNkMAIDCapability capability, IntPtr destination) {
             CapGetArray(
                 capability,
                 eNkMAIDDataType.kNkMAIDDataType_GenericPtr,
                 destination);
         }
 
-        //
         // Call Entry Point
-        //
-        void CallEntryPointSync(
+        private void CallEntryPointSync(
             eNkMAIDCommand ulCommand,
             UInt32 ulParam,
             eNkMAIDDataType ulDataType,
-            IntPtr data)
-        {
+            IntPtr data) {
             CallEntryPoint(
                 ulCommand,
                 ulParam,
@@ -1311,32 +1131,29 @@ namespace Nikon
                 IntPtr.Zero);
         }
 
-        struct Context
-        {
+        private struct Context {
             public bool Complete;
             public eNkMAIDResult Result;
         }
 
-        void CompletionProc(
+        private void CompletionProc(
             IntPtr pObject,
             eNkMAIDCommand ulCommand,
             UInt32 ulParam,
             eNkMAIDDataType ulDataType,
             IntPtr data,
             IntPtr refComplete,
-            eNkMAIDResult nResult)
-        {
+            eNkMAIDResult nResult) {
             Context* context = (Context*)refComplete.ToPointer();
             context->Complete = true;
             context->Result = nResult;
         }
 
-        void CallEntryPointAsync(
+        private void CallEntryPointAsync(
             eNkMAIDCommand ulCommand,
             UInt32 ulParam,
             eNkMAIDDataType ulDataType,
-            IntPtr data)
-        {
+            IntPtr data) {
             Context context;
             context.Complete = false;
             context.Result = eNkMAIDResult.kNkMAIDResult_NoError;
@@ -1349,24 +1166,21 @@ namespace Nikon
                 Marshal.GetFunctionPointerForDelegate(_completionProc),
                 new IntPtr(&context));
 
-            while (!context.Complete)
-            {
+            while (!context.Complete) {
                 Async();
             }
 
             // Note: Is it OK to ignore context.Result?
         }
 
-        void CallEntryPoint(
+        private void CallEntryPoint(
             eNkMAIDCommand ulCommand,
             UInt32 ulParam,
             eNkMAIDDataType ulDataType,
             IntPtr data,
             IntPtr pfnComplete,
-            IntPtr refComplete)
-        {
-            fixed (NkMAIDObject* p = &_object)
-            {
+            IntPtr refComplete) {
+            fixed (NkMAIDObject* p = &_object) {
                 CallEntryPoint(
                     new IntPtr(p),
                     ulCommand,
@@ -1378,15 +1192,14 @@ namespace Nikon
             }
         }
 
-        void CallEntryPoint(
+        private void CallEntryPoint(
             IntPtr pObject,
             eNkMAIDCommand ulCommand,
             UInt32 ulParam,
             eNkMAIDDataType ulDataType,
             IntPtr data,
             IntPtr pfnComplete,
-            IntPtr refComplete)
-        {
+            IntPtr refComplete) {
             Debug.Assert(_md3 != null);
 
             eNkMAIDResult result = _md3.EntryPoint(
@@ -1398,8 +1211,7 @@ namespace Nikon
                 pfnComplete,
                 refComplete);
 
-            switch (result)
-            {
+            switch (result) {
                 // Note: Ignore these return values
                 case eNkMAIDResult.kNkMAIDResult_NoError:
                 case eNkMAIDResult.kNkMAIDResult_Pending:
@@ -1416,5 +1228,6 @@ namespace Nikon
             }
         }
     }
+
     #endregion
 }

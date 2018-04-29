@@ -5,24 +5,22 @@ using NINA.Utility;
 using NINA.Utility.Notification;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
-    class AscomCamera : BaseINPC, ICamera, IDisposable {
+
+    internal class AscomCamera : BaseINPC, ICamera, IDisposable {
+
         public AscomCamera(string cameraId, string name) {
             Id = cameraId;
             Name = name;
         }
 
         private string _id;
+
         public string Id {
             get {
                 return _id;
@@ -53,8 +51,6 @@ namespace NINA.Model.MyCamera {
                 } else {
                     BinningModes.Add(new BinningMode(i, i));
                 }
-
-
             }
 
             Gains.Clear();
@@ -67,12 +63,11 @@ namespace NINA.Model.MyCamera {
                     }
                 }
             } catch (Exception) {
-
             }
-
         }
 
         private bool _hasBayerOffset;
+
         public short BayerOffsetX {
             get {
                 short offset = -1;
@@ -86,6 +81,7 @@ namespace NINA.Model.MyCamera {
                 return offset;
             }
         }
+
         public short BayerOffsetY {
             get {
                 short offset = -1;
@@ -119,6 +115,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public short BinY {
             get {
                 if (Connected) {
@@ -138,7 +135,6 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
-
 
         public string CameraState {
             get {
@@ -166,6 +162,7 @@ namespace NINA.Model.MyCamera {
                 return size;
             }
         }
+
         public int CameraYSize {
             get {
                 int size = -1;
@@ -185,6 +182,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public bool CanAsymmetricBin {
             get {
                 if (Connected) {
@@ -194,6 +192,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public bool CanFastReadout {
             get {
                 if (Connected) {
@@ -203,6 +202,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public bool CanGetCoolerPower {
             get {
                 if (Connected) {
@@ -212,6 +212,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public bool CanPulseGuide {
             get {
                 if (Connected) {
@@ -221,6 +222,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public bool CanSetCCDTemperature {
             get {
                 if (Connected) {
@@ -230,6 +232,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public bool CanStopExposure {
             get {
                 if (Connected) {
@@ -241,6 +244,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool _hasCCDTemperature;
+
         public double CCDTemperature {
             get {
                 double val = -1;
@@ -256,6 +260,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool _connected;
+
         public bool Connected {
             get {
                 if (_connected) {
@@ -270,7 +275,6 @@ namespace NINA.Model.MyCamera {
                         Disconnect();
                     }
                     return val;
-
                 } else {
                     return false;
                 }
@@ -279,7 +283,6 @@ namespace NINA.Model.MyCamera {
                 try {
                     _connected = value;
                     _camera.Connected = value;
-
                 } catch (Exception ex) {
                     Notification.ShowError(Locale.Loc.Instance["LblReconnectCamera"] + Environment.NewLine + ex.Message);
                     _connected = false;
@@ -289,6 +292,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool _hasCooler;
+
         public bool CoolerOn {
             get {
                 bool val = false;
@@ -437,6 +441,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool _canGetGain;
+
         public bool CanGetGain {
             get {
                 return _canGetGain;
@@ -446,7 +451,9 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged();
             }
         }
+
         private bool _canSetGain;
+
         public bool CanSetGain {
             get {
                 return _canSetGain;
@@ -456,6 +463,7 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged();
             }
         }
+
         public short Gain {
             get {
                 short val = -1;
@@ -466,7 +474,6 @@ namespace NINA.Model.MyCamera {
                         } else {
                             val = _camera.Gain;
                         }
-
                     } catch (PropertyNotImplementedException) {
                         CanGetGain = false;
                     }
@@ -494,6 +501,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool _canGetGainMinMax;
+
         public short GainMax {
             get {
                 short val = -1;
@@ -507,6 +515,7 @@ namespace NINA.Model.MyCamera {
                 return val;
             }
         }
+
         public short GainMin {
             get {
                 short val = -1;
@@ -520,7 +529,9 @@ namespace NINA.Model.MyCamera {
                 return val;
             }
         }
+
         private ArrayList _gains;
+
         public ArrayList Gains {
             get {
                 if (_gains == null) {
@@ -559,6 +570,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public object ImageArrayVariant {
             get {
                 if (Connected) {
@@ -568,6 +580,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public bool ImageReady {
             get {
                 if (Connected) {
@@ -588,6 +601,7 @@ namespace NINA.Model.MyCamera {
                 return val;
             }
         }
+
         public bool IsPulseGuiding {
             get {
                 if (Connected) {
@@ -599,6 +613,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool _hasLastExposureInfo;
+
         public double LastExposureDuration {
             get {
                 double val = -1;
@@ -607,13 +622,13 @@ namespace NINA.Model.MyCamera {
                         val = _camera.LastExposureDuration;
                     }
                 } catch (ASCOM.InvalidOperationException) {
-
                 } catch (PropertyNotImplementedException) {
                     _hasLastExposureInfo = false;
                 }
                 return val;
             }
         }
+
         public string LastExposureStartTime {
             get {
                 string val = string.Empty;
@@ -622,7 +637,6 @@ namespace NINA.Model.MyCamera {
                         val = _camera.LastExposureStartTime;
                     }
                 } catch (ASCOM.InvalidOperationException) {
-
                 } catch (PropertyNotImplementedException) {
                     _hasLastExposureInfo = false;
                 }
@@ -639,6 +653,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public short MaxBinX {
             get {
                 if (Connected) {
@@ -648,6 +663,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public short MaxBinY {
             get {
                 if (Connected) {
@@ -659,6 +675,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private string _name;
+
         public string Name {
             get {
                 return _name;
@@ -687,6 +704,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public int NumY {
             get {
                 if (Connected) {
@@ -707,6 +725,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool _hasPercentCompleted;
+
         public short PercentCompleted {
             get {
                 short val = -1;
@@ -715,7 +734,6 @@ namespace NINA.Model.MyCamera {
                         val = _camera.PercentCompleted;
                     }
                 } catch (ASCOM.InvalidOperationException) {
-
                 } catch (PropertyNotImplementedException) {
                     _hasPercentCompleted = false;
                 }
@@ -732,6 +750,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public double PixelSizeY {
             get {
                 if (Connected) {
@@ -758,6 +777,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public ArrayList ReadoutModes {
             get {
                 ArrayList val = new ArrayList();
@@ -775,7 +795,6 @@ namespace NINA.Model.MyCamera {
                     try {
                         val = _camera.SensorName;
                     } catch (PropertyNotImplementedException) {
-
                     }
                 }
                 return val;
@@ -827,6 +846,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public int StartY {
             get {
                 if (Connected) {
@@ -849,7 +869,6 @@ namespace NINA.Model.MyCamera {
                 try {
                     val = _camera.SupportedActions;
                 } catch (DriverException) {
-
                 }
                 return val;
             }
@@ -881,7 +900,6 @@ namespace NINA.Model.MyCamera {
             _camera = null;
         }
 
-
         public async Task<ImageArray> DownloadExposure(CancellationToken token) {
             return await Task<ImageArray>.Run(async () => {
                 try {
@@ -896,18 +914,14 @@ namespace NINA.Model.MyCamera {
                     if (ImageArray.GetType() == typeof(Int32[,])) {
                         arr = (Int32[,])ImageArray;
                         return await MyCamera.ImageArray.CreateInstance(arr, SensorType != SensorType.Monochrome);
-
                     } else {
                         arr = (Int32[,,])ImageArray;
                         return await MyCamera.ImageArray.CreateInstance(arr, false);
                     }
                 } catch (OperationCanceledException) {
-
                 } catch {
-
                 }
                 return null;
-
             });
         }
 
@@ -922,7 +936,6 @@ namespace NINA.Model.MyCamera {
                 } catch (Exception e) {
                     Notification.ShowError(e.Message);
                 }
-
             }
         }
 
@@ -933,7 +946,6 @@ namespace NINA.Model.MyCamera {
                 } catch (Exception e) {
                     Notification.ShowError(e.Message);
                 }
-
             }
         }
 
@@ -943,7 +955,6 @@ namespace NINA.Model.MyCamera {
             RaisePropertyChanged(nameof(HeatSinkTemperature));
             RaisePropertyChanged(nameof(CoolerPower));
             RaisePropertyChanged(nameof(IsPulseGuiding));
-
         }
 
         public void SetBinning(short x, short y) {
@@ -971,6 +982,7 @@ namespace NINA.Model.MyCamera {
                 return false;
             }
         }
+
         public bool CanSetUSBLimit {
             get {
                 return false;
@@ -982,7 +994,6 @@ namespace NINA.Model.MyCamera {
                 return -1;
             }
             set {
-
             }
         }
 
@@ -991,7 +1002,6 @@ namespace NINA.Model.MyCamera {
                 return -1;
             }
             set {
-
             }
         }
 

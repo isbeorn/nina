@@ -1,22 +1,20 @@
 ﻿using NINA.Model;
+using NINA.Model.MyCamera;
+using NINA.Model.MyTelescope;
 using NINA.Utility;
+using NINA.Utility.Astrometry;
+using NINA.Utility.Mediator;
+using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
-using NINA.Utility.Astrometry;
-using NINA.Model.MyCamera;
-using NINA.Model.MyTelescope;
-using NINA.Utility.Notification;
-using NINA.Utility.Mediator;
-using NINA.Utility.Profile;
 
 namespace NINA.ViewModel {
-    class PolarAlignmentVM : DockableVM {
+
+    internal class PolarAlignmentVM : DockableVM {
 
         public PolarAlignmentVM() : base() {
             Title = "LblPolarAlignment";
@@ -70,7 +68,6 @@ namespace NINA.ViewModel {
                 Telescope = (ITelescope)o;
             }, MediatorMessages.TelescopeChanged);
 
-
             Mediator.Instance.Register((object o) => {
                 _autoStretch = (bool)o;
             }, MediatorMessages.AutoStrechChanged);
@@ -87,6 +84,7 @@ namespace NINA.ViewModel {
         }
 
         private ApplicationStatus _status;
+
         public ApplicationStatus Status {
             get {
                 return _status;
@@ -102,6 +100,7 @@ namespace NINA.ViewModel {
         }
 
         private ITelescope _telescope;
+
         public ITelescope Telescope {
             get {
                 return _telescope;
@@ -113,6 +112,7 @@ namespace NINA.ViewModel {
         }
 
         private ICamera _cam;
+
         public ICamera Cam {
             get {
                 return _cam;
@@ -124,6 +124,7 @@ namespace NINA.ViewModel {
         }
 
         private PlateSolving.PlateSolveResult _plateSolveResult;
+
         public PlateSolving.PlateSolveResult PlateSolveResult {
             get {
                 return _plateSolveResult;
@@ -135,6 +136,7 @@ namespace NINA.ViewModel {
         }
 
         private double _rotation;
+
         public double Rotation {
             get {
                 return _rotation;
@@ -173,6 +175,7 @@ namespace NINA.ViewModel {
         public ICommand CancelDARVSlewCommand { get; private set; }
 
         private double _dARVSlewRate;
+
         public double DARVSlewRate {
             get {
                 return _dARVSlewRate;
@@ -231,6 +234,7 @@ namespace NINA.ViewModel {
         }
 
         private double _dARVSlewDuration;
+
         public double DARVSlewDuration {
             get {
                 return _dARVSlewDuration;
@@ -241,11 +245,9 @@ namespace NINA.ViewModel {
             }
         }
 
-
         private string _hourAngleTime;
 
-
-        DispatcherTimer _updateValues;
+        private DispatcherTimer _updateValues;
 
         private BinningMode _snapBin;
         private Model.MyFilterWheel.FilterInfo _snapFilter;
@@ -263,6 +265,7 @@ namespace NINA.ViewModel {
         }
 
         private short _snapGain = -1;
+
         public short SnapGain {
             get {
                 return _snapGain;
@@ -273,7 +276,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
 
         public Model.MyFilterWheel.FilterInfo SnapFilter {
             get {
@@ -297,9 +299,8 @@ namespace NINA.ViewModel {
             }
         }
 
-
-
         private ApplicationStatus _altitudepolarErrorStatus;
+
         public ApplicationStatus AltitudePolarErrorStatus {
             get {
                 return _altitudepolarErrorStatus;
@@ -314,6 +315,7 @@ namespace NINA.ViewModel {
         }
 
         private ApplicationStatus _azimuthpolarErrorStatus;
+
         public ApplicationStatus AzimuthPolarErrorStatus {
             get {
                 return _azimuthpolarErrorStatus;
@@ -326,7 +328,6 @@ namespace NINA.ViewModel {
                 Mediator.Instance.Request(new StatusUpdateMessage() { Status = _azimuthpolarErrorStatus });
             }
         }
-
 
         private string Deg2str(double deg, int precision) {
             if (Math.Abs(deg) > 1) {
@@ -341,6 +342,7 @@ namespace NINA.ViewModel {
         }
 
         private string _darvStatus;
+
         public string DarvStatus {
             get {
                 return _darvStatus;
@@ -349,7 +351,6 @@ namespace NINA.ViewModel {
                 _darvStatus = value;
                 RaisePropertyChanged();
             }
-
         }
 
         private async Task<bool> DarvTelescopeSlew(IProgress<string> progress, CancellationToken canceltoken) {
@@ -383,7 +384,6 @@ namespace NINA.ViewModel {
 
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken);
                 } catch (OperationCanceledException) {
-
                 } finally {
                     progress.Report("Restoring start position...");
                     await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = startPosition, Token = canceltoken });
@@ -416,7 +416,6 @@ namespace NINA.ViewModel {
                     Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
                     Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
                 } catch (OperationCanceledException) {
-
                 }
             } else {
                 Notification.ShowError(Locale.Loc.Instance["LblNoCameraConnected"]);
@@ -434,6 +433,7 @@ namespace NINA.ViewModel {
         }
 
         private AltitudeSite _altitudeSiteType;
+
         public AltitudeSite AltitudeSiteType {
             get {
                 return _altitudeSiteType;
@@ -444,14 +444,10 @@ namespace NINA.ViewModel {
             }
         }
 
-
-
         private async Task<bool> MeasurePolarError(IProgress<ApplicationStatus> progress, Direction direction) {
             if (Cam?.Connected == true) {
-
                 _cancelMeasureErrorToken = new CancellationTokenSource();
                 try {
-
                     double poleErr = await CalculatePoleError(progress, _cancelMeasureErrorToken.Token);
                     string poleErrString = Deg2str(Math.Abs(poleErr), 4);
                     _cancelMeasureErrorToken.Token.ThrowIfCancellationRequested();
@@ -465,7 +461,6 @@ namespace NINA.ViewModel {
 
                     if (direction == Direction.ALTITUDE) {
                         if (ProfileManager.Instance.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.NORTHERN) {
-
                             if (AltitudeSiteType == AltitudeSite.EAST) {
                                 if (poleErr < 0) {
                                     msg = poleErrString + " too low";
@@ -479,7 +474,6 @@ namespace NINA.ViewModel {
                                     msg = poleErrString + " too low";
                                 }
                             }
-
                         } else {
                             if (AltitudeSiteType == AltitudeSite.EAST) {
                                 if (poleErr < 0) {
@@ -495,7 +489,6 @@ namespace NINA.ViewModel {
                                 }
                             }
                         }
-
                     } else if (direction == Direction.AZIMUTH) {
                         //if northern
                         if (ProfileManager.Instance.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.NORTHERN) {
@@ -511,13 +504,10 @@ namespace NINA.ViewModel {
                                 msg = poleErrString + " too east";
                             }
                         }
-
                     }
 
                     progress.Report(new ApplicationStatus() { Status = msg });
-
                 } catch (OperationCanceledException) {
-
                 }
 
                 /*  Altitude
@@ -539,12 +529,9 @@ namespace NINA.ViewModel {
         }
 
         private async Task<double> CalculatePoleError(IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
-
-
             Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
             double poleError = double.NaN;
             try {
-
                 double movementdeg = 0.5d;
                 double movement = (movementdeg / 360) * 24;
 
@@ -556,7 +543,6 @@ namespace NINA.ViewModel {
 
                 canceltoken.ThrowIfCancellationRequested();
 
-
                 PlateSolving.PlateSolveResult startSolveResult = PlateSolveResult;
                 if (!startSolveResult.Success) {
                     return double.NaN;
@@ -565,16 +551,11 @@ namespace NINA.ViewModel {
                 Coordinates startSolve = PlateSolveResult.Coordinates;
                 startSolve = startSolve.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
 
-
-
-
                 Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 progress.Report(new ApplicationStatus() { Status = "Slewing..." });
                 await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = targetPosition, Token = canceltoken });
 
-
                 canceltoken.ThrowIfCancellationRequested();
-
 
                 progress.Report(new ApplicationStatus() { Status = "Settling..." });
                 await Task.Delay(3000);
@@ -588,7 +569,6 @@ namespace NINA.ViewModel {
                 PlateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
 
                 canceltoken.ThrowIfCancellationRequested();
-
 
                 PlateSolving.PlateSolveResult targetSolveResult = PlateSolveResult;
                 if (!targetSolveResult.Success) {
@@ -604,7 +584,6 @@ namespace NINA.ViewModel {
                 // Convert pole error from arcminutes to degrees
                 poleError = Astrometry.ArcminToDegree(poleError);
             } catch (OperationCanceledException) {
-
             } finally {
                 //progress.Report("Slewing back to origin...");
                 await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = startPosition, Token = canceltoken });
@@ -640,11 +619,9 @@ namespace NINA.ViewModel {
 
                 Rotation = -Astrometry.HoursToDegrees(hour_angle);
                 HourAngleTime = ascomutil.HoursToHMS(hour_angle);
-
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
-
         }
     }
 }

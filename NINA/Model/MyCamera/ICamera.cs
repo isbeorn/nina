@@ -1,16 +1,11 @@
 ﻿using NINA.Utility;
-using NINA.Utility.Notification;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
-    interface ICamera : IDevice {
 
+    internal interface ICamera : IDevice {
         bool HasShutter { get; }
         bool Connected { get; }
         double CCDTemperature { get; }
@@ -49,12 +44,16 @@ namespace NINA.Model.MyCamera {
 
         AsyncObservableCollection<BinningMode> BinningModes { get; }
 
-
         void UpdateValues();
+
         void SetBinning(short x, short y);
+
         void StartExposure(double exposureTime, bool isLightFrame);
+
         void StopExposure();
+
         void AbortExposure();
+
         Task<ImageArray> DownloadExposure(CancellationToken token);
     }
 }

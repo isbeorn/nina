@@ -1,15 +1,14 @@
 ﻿using NINA.Utility.Enum;
 using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Utility {
-    static class Logger {
+
+    internal static class Logger {
+
         static Logger() {
             LOGDATE = DateTime.Now.ToString("yyyy-MM-dd");
             var logDir = Path.Combine(Utility.APPLICATIONTEMPPATH, "Logs");
@@ -48,13 +47,11 @@ namespace NINA.Utility {
             int spaces = length - source.Length;
             int padLeft = spaces / 2 + source.Length;
             return source.PadLeft(padLeft, paddingChar).PadRight(length, paddingChar);
-
         }
 
-        static readonly object lockObj = new object();
-        static string LOGDATE;
-        static string LOGFILEPATH;
-
+        private static readonly object lockObj = new object();
+        private static string LOGDATE;
+        private static string LOGFILEPATH;
 
         private static void Append(string msg, params string[] msgParams) {
             try {
@@ -99,7 +96,6 @@ namespace NINA.Utility {
             if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 1) {
                 Append(EnrichLogMessage(LogLevelEnum.INFO, message, memberName, sourceFilePath));
             }
-
         }
 
         public static void Warning(string message,
@@ -136,7 +132,5 @@ namespace NINA.Utility {
             sb.AppendLine(string.Format("{0} \t [Message] {1}", prefix, message));
             return sb.ToString();
         }
-
-
     }
 }

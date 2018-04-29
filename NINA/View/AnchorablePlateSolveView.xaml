@@ -99,7 +99,6 @@
                         </UniformGrid>
                     </Border>
 
-
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
@@ -258,7 +257,6 @@
                                 IsReadOnly="True" />
                         </DataGrid.Columns>
                     </DataGrid>
-
                 </StackPanel>
             </Grid>
         </Grid>

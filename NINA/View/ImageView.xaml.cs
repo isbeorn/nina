@@ -1,33 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace NINA.View {
+
     /// <summary>
     /// Interaction logic for ImageView.xaml
     /// </summary>
     public partial class ImageView : UserControl {
-        Point? lastCenterPositionOnTarget;
-        Point? lastMousePositionOnTarget;
-        Point? lastDragPoint;
+        private Point? lastCenterPositionOnTarget;
+        private Point? lastMousePositionOnTarget;
+        private Point? lastDragPoint;
 
-        double fittingScale = 1;
+        private double fittingScale = 1;
 
         //0: 100%; 1: fit to screen; 2: custom
-        int mode = 0;
+        private int mode = 0;
 
         public ImageView() {
             InitializeComponent();
@@ -45,8 +36,6 @@ namespace NINA.View {
             PART_ScaleTransform.ScaleY = fittingScale;
             PART_TextblockScale.Text = 1d.ToString("P0", CultureInfo.InvariantCulture);
         }
-
-
 
         public static readonly DependencyProperty ImageAreaContentProperty =
             DependencyProperty.Register(nameof(ImageAreaContent), typeof(object), typeof(ImageView));
@@ -72,12 +61,11 @@ namespace NINA.View {
             set { SetValue(ImageProperty, value); }
         }
 
-
         private void Sv_SizeChanged(object sender, SizeChangedEventArgs e) {
             RecalculateScalingFactors();
         }
 
-        void OnMouseMove(object sender, MouseEventArgs e) {
+        private void OnMouseMove(object sender, MouseEventArgs e) {
             if (lastDragPoint.HasValue) {
                 Point posNow = e.GetPosition(PART_ScrollViewer);
 
@@ -91,7 +79,7 @@ namespace NINA.View {
             }
         }
 
-        void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             var mousePos = e.GetPosition(PART_ScrollViewer);
             if (!PART_ImageViewContent.IsHitTestVisible || !PART_ImageViewContent.IsMouseOver) {
                 if (mousePos.X <= PART_ScrollViewer.ViewportWidth && mousePos.Y <
@@ -103,7 +91,7 @@ namespace NINA.View {
             }
         }
 
-        void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {            
+        private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
             mode = 2;
             lastMousePositionOnTarget = Mouse.GetPosition(PART_Canvas);
 
@@ -114,7 +102,7 @@ namespace NINA.View {
             if (e.Delta < 0) {
                 val -= val * .25;
             }
-           
+
             Zoom(val);
 
             var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
@@ -123,7 +111,7 @@ namespace NINA.View {
             e.Handled = true;
         }
 
-        void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
             PART_ScrollViewer.Cursor = Cursors.Arrow;
             PART_ScrollViewer.ReleaseMouseCapture();
             lastDragPoint = null;
@@ -143,7 +131,7 @@ namespace NINA.View {
             PART_TextblockScale.Text = val.ToString("P0", CultureInfo.InvariantCulture);
         }
 
-        void OnSliderValueChanged(object sender,
+        private void OnSliderValueChanged(object sender,
              RoutedPropertyChangedEventArgs<double> e) {
             PART_ScaleTransform.ScaleX = e.NewValue;
             PART_ScaleTransform.ScaleY = e.NewValue;
@@ -153,7 +141,7 @@ namespace NINA.View {
             lastCenterPositionOnTarget = PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
         }
 
-        void RecalculateScalingFactors() {
+        private void RecalculateScalingFactors() {
             if (PART_Image?.ActualWidth > 0) {
                 var scale = Math.Min(PART_ScrollViewer.ActualWidth / PART_Image.ActualWidth, PART_ScrollViewer.ActualHeight / PART_Image.ActualHeight);
                 if (fittingScale != scale) {
@@ -162,13 +150,13 @@ namespace NINA.View {
                 }
                 /*if (mode == 0) {
                     Zoom(1);
-                } else if (mode == 1) {                    
-                    Zoom(fittingScale);                    
+                } else if (mode == 1) {
+                    Zoom(fittingScale);
                 }*/
             }
         }
 
-        void OnsvScrollChanged(object sender, ScrollChangedEventArgs e) {
+        private void OnsvScrollChanged(object sender, ScrollChangedEventArgs e) {
             if (e.ExtentHeightChange != 0 || e.ExtentWidthChange != 0) {
                 Point? targetBefore = null;
                 Point? targetNow = null;
@@ -219,8 +207,8 @@ namespace NINA.View {
                                                          PART_ScrollViewer.ViewportHeight / 2);
             lastCenterPositionOnTarget =
                   PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
-
         }
+
         private void ButtonZoomOut_Click(object sender, RoutedEventArgs e) {
             mode = 2;
             Zoom(PART_ScaleTransform.ScaleX - PART_ScaleTransform.ScaleX * 0.25);
@@ -229,6 +217,7 @@ namespace NINA.View {
             lastCenterPositionOnTarget =
                   PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
         }
+
         private void ButtonZoomReset_Click(object sender, RoutedEventArgs e) {
             RecalculateScalingFactors();
             mode = 1;

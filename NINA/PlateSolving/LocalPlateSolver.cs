@@ -1,27 +1,23 @@
 ﻿using NINA.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Threading;
-using nom.tam.fits;
 using NINA.Utility;
-using System.Globalization;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.PlateSolving {
-    class LocalPlateSolver : IPlateSolver {
 
+    internal class LocalPlateSolver : IPlateSolver {
+        private double _lowarcsecperpixel;
+        private double _higharcsecperpixel;
+        private double _searchradius;
 
-        double _lowarcsecperpixel;
-        double _higharcsecperpixel;
-        double _searchradius;
-
-        Coordinates _target;
+        private Coordinates _target;
 
         public LocalPlateSolver(int focallength, double pixelsize) {
             double arcsecperpixel = (pixelsize / focallength) * 206.3;
@@ -53,7 +49,6 @@ namespace NINA.PlateSolving {
             options.Add(string.Format("-L {0}", _lowarcsecperpixel.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
             options.Add(string.Format("-H {0}", _higharcsecperpixel.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
 
-
             if (_searchradius > 0) {
                 options.Add(string.Format("-3 {0} -4 {1} -5 {2}", _target.RADegrees.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), _target.Dec.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), _searchradius.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
             }
@@ -62,7 +57,6 @@ namespace NINA.PlateSolving {
         }
 
         private PlateSolveResult Solve(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
-
             PlateSolveResult result = new PlateSolveResult();
             string imgfilepath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.jpg");
             var wcsfilepath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.wcs");
@@ -99,7 +93,6 @@ namespace NINA.PlateSolving {
                     canceltoken.ThrowIfCancellationRequested();
                 }
 
-
                 if (File.Exists(wcsfilepath)) {
                     startInfo.Arguments = string.Format("/C {0} --login -c 'wcsinfo {1}'", cygwinbashpath, wcsfilepath.Replace("\\", "/"));
                     process.Start();
@@ -131,7 +124,6 @@ namespace NINA.PlateSolving {
                     result.Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
 
                     progress.Report(new ApplicationStatus() { Status = "Solved" });
-
 
                     /* This info does not get the center info. - removed
                         Fits solvedFits = new Fits(TMPIMGFILEPATH + "\\tmp.wcs");

@@ -1,35 +1,32 @@
 ﻿using ASCOM.Astrometry;
 using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Astrometry {
-    public class Astrometry {
 
+    public class Astrometry {
         private static ASCOM.Astrometry.AstroUtils.AstroUtils _astroUtils;
+
         public static ASCOM.Astrometry.AstroUtils.AstroUtils AstroUtils {
             get {
                 if (_astroUtils == null) {
                     _astroUtils = new ASCOM.Astrometry.AstroUtils.AstroUtils();
                 }
                 return _astroUtils;
-
             }
         }
 
         private static ASCOM.Astrometry.NOVAS.NOVAS31 _nOVAS31;
+
         public static ASCOM.Astrometry.NOVAS.NOVAS31 NOVAS31 {
             get {
                 if (_nOVAS31 == null) {
                     _nOVAS31 = new ASCOM.Astrometry.NOVAS.NOVAS31(); ;
                 }
                 return _nOVAS31;
-
             }
         }
 
@@ -50,7 +47,6 @@ namespace NINA.Utility.Astrometry {
         public static double ToDegree(double angle) {
             return angle * (180.0 / Math.PI);
         }
-
 
         public static double DegreeToArcmin(double degree) {
             return degree * 60;
@@ -94,16 +90,15 @@ namespace NINA.Utility.Astrometry {
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        /// <param name="date"></param>
+        /// <param name="date">     </param>
         /// <param name="longitude"></param>
         /// <returns>Sidereal Time in hours</returns>
         public static double GetLocalSiderealTime(DateTime date, double longitude) {
             var jd = GetJulianDate(date);
 
             /*
-            var jd = AstroUtils.JulianDateUtc; 
+            var jd = AstroUtils.JulianDateUtc;
             var d = (jd - 2451545.0);
             var UT = DateTime.UtcNow.ToUniversalTime();
             var lst2 = 100.46 + 0.985647 * d + longitude + 15 * (UT.Hour + UT.Minute / 60.0 + UT.Second / 60.0 / 60.0);
@@ -119,9 +114,8 @@ namespace NINA.Utility.Astrometry {
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        /// <param name="siderealTime"></param>
+        /// <param name="siderealTime">  </param>
         /// <param name="rightAscension"></param>
         /// <returns>Hour Angle in hours</returns>
         public static double GetHourAngle(double siderealTime, double rightAscension) {
@@ -133,11 +127,12 @@ namespace NINA.Utility.Astrometry {
         /*
          * some handy formulas: http://www.stargazing.net/kepler/altaz.html
          */
+
         /// <summary>
         /// Calculates Altitude based on given input
         /// </summary>
-        /// <param name="hourAngle">in degrees</param>
-        /// <param name="latitude">in degrees</param>
+        /// <param name="hourAngle">  in degrees</param>
+        /// <param name="latitude">   in degrees</param>
         /// <param name="declination">in degrees</param>
         /// <returns></returns>
         public static double GetAltitude(double hourAngle, double latitude, double declination) {
@@ -154,13 +149,12 @@ namespace NINA.Utility.Astrometry {
         /// <summary>
         /// Calculates Azimuth based on given input
         /// </summary>
-        /// <param name="hourAngle">in degrees</param>
-        /// <param name="altitude">in degrees</param>
-        /// <param name="latitude">in degrees</param>
+        /// <param name="hourAngle">  in degrees</param>
+        /// <param name="altitude">   in degrees</param>
+        /// <param name="latitude">   in degrees</param>
         /// <param name="declination">in degrees</param>
         /// <returns></returns>
         public static double GetAzimuth(double hourAngle, double altitude, double latitude, double declination) {
-
             var radHA = ToRadians(hourAngle);
             var radAlt = ToRadians(altitude);
             var radLat = ToRadians(latitude);
@@ -185,7 +179,7 @@ namespace NINA.Utility.Astrometry {
             var m = date.Month;
             var y = date.Year;
 
-            /*The returned zero based arraylist has the following values: 
+            /*The returned zero based arraylist has the following values:
              * Arraylist(0) - Boolean - True if the body is above the event limit at midnight (the beginning of the 24 hour day), false if it is below the event limit
              * Arraylist(1) - Integer - Number of rise events in this 24 hour period
              * Arraylist(2) - Integer - Number of set events in this 24 hour period
@@ -215,8 +209,6 @@ namespace NINA.Utility.Astrometry {
                 } else {
                     return null;
                 }
-
-
             }
             return null;
         }
@@ -331,6 +323,7 @@ namespace NINA.Utility.Astrometry {
         }
 
         public class RiseAndSetAstroEvent {
+
             public RiseAndSetAstroEvent(DateTime referenceDate, double rise, double set) {
                 RiseDate = new DateTime(referenceDate.Year, referenceDate.Month, referenceDate.Day, referenceDate.Hour, referenceDate.Minute, referenceDate.Second);
                 if (RiseDate.Hour + RiseDate.Minute / 60.0 + RiseDate.Second / 60.0 / 60.0 > rise) {
@@ -346,6 +339,7 @@ namespace NINA.Utility.Astrometry {
                 SetDate = SetDate.Date;
                 SetDate = SetDate.AddHours(set);
             }
+
             public DateTime RiseDate { get; private set; }
             public DateTime SetDate { get; private set; }
         }
@@ -354,6 +348,7 @@ namespace NINA.Utility.Astrometry {
     [Serializable()]
     [XmlRoot(nameof(Coordinates))]
     public class Coordinates {
+
         private Coordinates() { }
 
         public enum RAType {
@@ -405,9 +400,9 @@ namespace NINA.Utility.Astrometry {
         /// <summary>
         /// Creates new coordinates
         /// </summary>
-        /// <param name="ra">Right Ascension in degrees or hours. RAType has to be set accordingly</param>
-        /// <param name="dec">Declination in degrees</param>
-        /// <param name="epoch">J2000|JNOW</param>
+        /// <param name="ra">    Right Ascension in degrees or hours. RAType has to be set accordingly</param>
+        /// <param name="dec">   Declination in degrees</param>
+        /// <param name="epoch"> J2000|JNOW</param>
         /// <param name="ratype">Degrees|Hours</param>
         public Coordinates(double ra, double dec, Epoch epoch, RAType ratype) {
             this.RA = ra;
@@ -457,39 +452,45 @@ namespace NINA.Utility.Astrometry {
             transform.SetApparent(RA, Dec);
             return new Coordinates(transform.RAJ2000, transform.DecJ2000, Epoch.J2000, RAType.Hours);
         }
-
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum Epoch {
+
         [Description("LblJ2000")]
         J2000,
+
         [Description("LblJNOW")]
         JNOW
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum Hemisphere {
+
         [Description("LblNorthern")]
         NORTHERN,
+
         [Description("LblSouthern")]
         SOUTHERN
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum Direction {
+
         [Description("LblAltitude")]
         ALTITUDE,
+
         [Description("LblAzimuth")]
         AZIMUTH
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum AltitudeSite {
+
         [Description("LblEast")]
         EAST,
+
         [Description("LblWest")]
         WEST
     }
-
 }

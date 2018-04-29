@@ -2,18 +2,14 @@
 using NINA.Utility.Astrometry;
 using NINA.Utility.Profile;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Data.SQLite;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Utility {
-    class DatabaseInteraction {
+
+    internal class DatabaseInteraction {
         private string _connectionString;
 
         public DatabaseInteraction() {
@@ -32,9 +28,7 @@ namespace NINA.Utility {
 
                         var reader = await command.ExecuteReaderAsync(token);
 
-
                         while (reader.Read()) {
-
                             constellations.Add(reader["constellation"].ToString());
                         }
                     }
@@ -58,16 +52,11 @@ namespace NINA.Utility {
 
                         var reader = await command.ExecuteReaderAsync(token);
 
-
                         while (reader.Read()) {
-
                             dsotypes.Add(reader["dsotype"].ToString());
                         }
                     }
                 }
-
-
-
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.Notification.ShowError(ex.Message);
@@ -93,9 +82,8 @@ namespace NINA.Utility {
             string searchobjectname = null,
             string orderby = "id",
             string orderbydirection = "ASC") {
-
-            string query = @"SELECT id, ra, dec, dsotype, magnitude, sizemax, group_concat(cataloguenr.catalogue || ' ' || cataloguenr.designation) aka, constellation, surfacebrightness  
-                             FROM dsodetail 
+            string query = @"SELECT id, ra, dec, dsotype, magnitude, sizemax, group_concat(cataloguenr.catalogue || ' ' || cataloguenr.designation) aka, constellation, surfacebrightness
+                             FROM dsodetail
                                 INNER JOIN cataloguenr on dsodetail.id = cataloguenr.dsodetailid
                              WHERE (1=1) ";
 
@@ -163,8 +151,6 @@ namespace NINA.Utility {
 
             var dsos = new List<DeepSkyObject>();
             try {
-
-
                 using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
                     connection.Open();
                     using (SQLiteCommand command = connection.CreateCommand()) {
@@ -191,9 +177,7 @@ namespace NINA.Utility {
 
                         var reader = await command.ExecuteReaderAsync(token);
 
-
                         while (reader.Read()) {
-
                             var dso = new DeepSkyObject(reader.GetString(0));
 
                             var coords = new Coordinates(reader.GetDouble(1), reader.GetDouble(2), Epoch.J2000, Coordinates.RAType.Degrees);
@@ -236,6 +220,5 @@ namespace NINA.Utility {
 
             return dsos;
         }
-
     }
 }
