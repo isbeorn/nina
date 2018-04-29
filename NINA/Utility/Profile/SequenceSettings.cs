@@ -24,7 +24,6 @@ namespace NINA.Utility.Profile {
         }
 
         private TimeSpan estimatedDownloadTime = TimeSpan.FromSeconds(0);
-        //[XmlElement(nameof(EstimatedDownloadTime))]
         [XmlIgnore]
         public TimeSpan EstimatedDownloadTime {
             get {

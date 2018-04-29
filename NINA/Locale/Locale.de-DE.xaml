@@ -602,4 +602,16 @@ Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost">PHD2 Server Verbindung verloren!</s:String>
     <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain">Gewähltes Profil speichern und nicht nochmal fragen</s:String>
     <s:String x:Key="LblChooseProfile">Profil wählen</s:String>
+    <s:String x:Key="LblExposureCalculator">Optimale Belichtungszeit Rechner</s:String>
+    <s:String x:Key="LblMinOptimalADU">Minimum ADU</s:String>
+    <s:String x:Key="LblMaxOptimalADU">Maximum ADU</s:String>
+    <s:String x:Key="LblOptimalExposureTime">Optimale Belichtungszeit</s:String>
+    <s:String x:Key="LblMinimumExposureTime">Min empfohlene Bel.Zeit</s:String>
+    <s:String x:Key="LblMaximumExposureTime">Max empfohlene Bel.Zeit</s:String>
+    <s:String x:Key="LblReadNoise">Ausleserauschen in e</s:String>
+    <s:String x:Key="LblBiasMean">BIAS Mittelwert (in 16bit)</s:String>
+    <s:String x:Key="LblBitDepth">Bittiefe</s:String>
+    <s:String x:Key="LblFullWellCapacity">Volle Brunnentiefe</s:String>
+    <s:String x:Key="LblDataToDownloadRatio">Download zu Data Verhältnis</s:String>
+    <s:String x:Key="LblCurrentDownloadToDataRatio">Aktuelles Download:Data Verhältnis</s:String>
 </ResourceDictionary>

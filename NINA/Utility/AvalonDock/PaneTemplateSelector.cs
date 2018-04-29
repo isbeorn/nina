@@ -45,8 +45,6 @@ namespace NINA.Utility.AvalonDock {
 
         public DataTemplate ThumbnailTemplate { get; set; }
 
-        public DataTemplate ImageExposureCalculatorTemplate { get; set; }
-
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
 
@@ -76,9 +74,6 @@ namespace NINA.Utility.AvalonDock {
 
             if (item is ImageStatisticsVM)
                 return ImageStatisticsTemplate;
-
-            if (item is ImageExposureCalculatorVM)
-                return ImageExposureCalculatorTemplate;
 
             if (item is ImageControlVM)
                 return ImageControlTemplate;

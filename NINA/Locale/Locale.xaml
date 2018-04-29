@@ -602,6 +602,13 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblExposureCalculator">Optimal Exposure Calculator</s:String>
     <s:String x:Key="LblMinOptimalADU">Minimal ADU</s:String>
     <s:String x:Key="LblMaxOptimalADU">Maximum ADU</s:String>
-    <s:String x:Key="LblExposureBetweenADU">Exposure in between min and max</s:String>
     <s:String x:Key="LblOptimalExposureTime">Optimal exposure time</s:String>
+    <s:String x:Key="LblMinimumExposureTime">Min recommended time</s:String>
+    <s:String x:Key="LblMaximumExposureTime">Max recommended time</s:String>
+    <s:String x:Key="LblReadNoise">Read noise in e</s:String>
+    <s:String x:Key="LblBiasMean">BIAS mean value (in 16bit)</s:String>
+    <s:String x:Key="LblBitDepth">Bit Depth</s:String>
+    <s:String x:Key="LblFullWellCapacity">Full Well Capacity in e</s:String>
+    <s:String x:Key="LblDataToDownloadRatio">Download to Data ratio</s:String>
+    <s:String x:Key="LblCurrentDownloadToDataRatio">Current Download:Data ratio</s:String>
 </ResourceDictionary>

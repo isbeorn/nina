@@ -118,5 +118,17 @@ namespace NINA.Utility.Profile {
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
+
+        private double _downloadToDataRatio = 9;
+        [XmlElement(nameof(DownloadToDataRatio))]
+        public double DownloadToDataRatio {
+            get {
+                return _downloadToDataRatio;
+            }
+            set {
+                _downloadToDataRatio = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
     }
 }

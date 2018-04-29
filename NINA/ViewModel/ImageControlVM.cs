@@ -137,23 +137,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ImageExposureCalculatorVM _imgExposureCalcVM;
-        public ImageExposureCalculatorVM ImgExposureCalculatorVM {
-            get
-            {
-                if (_imgExposureCalcVM == null)
-                {
-                    _imgExposureCalcVM = new ImageExposureCalculatorVM();
-                }
-                return _imgExposureCalcVM;
-            }
-            set
-            {
-                _imgExposureCalcVM = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private BitmapSource _image;
         public BitmapSource Image {
             get {
@@ -293,7 +276,6 @@ namespace NINA.ViewModel {
                         Image = source;
                         ImgStatisticsVM.Add(ImgArr.Statistics);
                         ImgHistoryVM.Add(iarr.Statistics);
-                        ImgExposureCalculatorVM.Add(iarr.Statistics);
                     }));
 
                     if (bSave) {

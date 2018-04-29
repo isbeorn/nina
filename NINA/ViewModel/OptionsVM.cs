@@ -53,23 +53,18 @@ namespace NINA.ViewModel {
                 CameraPixelSize = (double)o;
             }, MediatorMessages.CameraPixelSizeChanged);
 
-            Mediator.Instance.RegisterRequest(new SetProfileByIdMessageHandle((SetProfileByIdMessage msg) =>
-            {
+            Mediator.Instance.RegisterRequest(new SetProfileByIdMessageHandle((SetProfileByIdMessage msg) => {
                 SelectedProfile = ProfileManager.Instance.Profiles.ProfileList.Single(p => p.Id == msg.Id);
                 SelectProfile(null);
                 return true;
             }));
 
-            Mediator.Instance.RegisterRequest(new GetDoublePropertyFromClassMessageHandle(typeof(OptionsVM), (GetDoublePropertyFromClassMessage msg) =>
-            {
-                try
-                {
+            Mediator.Instance.RegisterRequest(new GetDoublePropertyFromClassMessageHandle(typeof(OptionsVM), (GetDoublePropertyFromClassMessage msg) => {
+                try {
                     object value = GetType().GetProperty(msg.Property).GetValue(this);
-                    if(value.GetType() == typeof(double))
+                    if (value.GetType() == typeof(double))
                         return (double)value;
-                }
-                catch
-                {
+                } catch {
                     return -1;
                 }
 
@@ -80,7 +75,7 @@ namespace NINA.ViewModel {
         }
 
         private void RemoveProfile(object obj) {
-            if(MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblRemoveProfileText"], SelectedProfile?.Name, SelectedProfile?.Id), Locale.Loc.Instance["LblRemoveProfileCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
+            if (MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblRemoveProfileText"], SelectedProfile?.Name, SelectedProfile?.Id), Locale.Loc.Instance["LblRemoveProfileCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
                 ProfileManager.Instance.RemoveProfile(SelectedProfile.Id);
             }
         }
@@ -282,7 +277,7 @@ namespace NINA.ViewModel {
 
         public ICommand AddProfileCommand { get; private set; }
 
-        public ICommand RemoveProfileCommand { get; private set; }        
+        public ICommand RemoveProfileCommand { get; private set; }
 
         public ICommand SelectProfileCommand { get; private set; }
 
@@ -319,54 +314,52 @@ namespace NINA.ViewModel {
             }
         }
 
-        public double ReadNoise
-        {
-            get
-            {
+        public double ReadNoise {
+            get {
                 return ProfileManager.Instance.ActiveProfile.CameraSettings.ReadNoise;
             }
-            set
-            {
+            set {
                 ProfileManager.Instance.ActiveProfile.CameraSettings.ReadNoise = value;
                 RaisePropertyChanged();
             }
         }
 
-        public double BitDepth
-        {
-            get
-            {
+        public double BitDepth {
+            get {
                 return ProfileManager.Instance.ActiveProfile.CameraSettings.BitDepth;
             }
-            set
-            {
+            set {
                 ProfileManager.Instance.ActiveProfile.CameraSettings.BitDepth = value;
                 RaisePropertyChanged();
             }
         }
 
-        public double Offset
-        {
-            get
-            {
+        public double Offset {
+            get {
                 return ProfileManager.Instance.ActiveProfile.CameraSettings.Offset;
             }
-            set
-            {
+            set {
                 ProfileManager.Instance.ActiveProfile.CameraSettings.Offset = value;
                 RaisePropertyChanged();
             }
         }
 
-        public double FullWellCapacity
-        {
-            get
-            {
+        public double FullWellCapacity {
+            get {
                 return ProfileManager.Instance.ActiveProfile.CameraSettings.FullWellCapacity;
             }
-            set
-            {
+            set {
                 ProfileManager.Instance.ActiveProfile.CameraSettings.FullWellCapacity = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double DownloadToDataRatio {
+            get {
+                return ProfileManager.Instance.ActiveProfile.CameraSettings.DownloadToDataRatio;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.CameraSettings.DownloadToDataRatio = value;
                 RaisePropertyChanged();
             }
         }
