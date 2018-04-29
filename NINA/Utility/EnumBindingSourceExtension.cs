@@ -36,7 +36,7 @@ namespace NINA.Utility {
                 throw new InvalidOperationException("The EnumType must be specified.");
 
             Type actualEnumType = Nullable.GetUnderlyingType(this._enumType) ?? this._enumType;
-            Array enumValues = Enum.GetValues(actualEnumType);
+            Array enumValues = System.Enum.GetValues(actualEnumType);
 
             if (actualEnumType == this._enumType)
                 return enumValues;

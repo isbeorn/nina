@@ -16,6 +16,7 @@ using System.Threading;
 using NINA.Utility.Notification;
 using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
+using NINA.Utility.Enum;
 
 namespace NINA.ViewModel {
     class GuiderVM : DockableVM {

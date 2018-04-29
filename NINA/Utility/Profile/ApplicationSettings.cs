@@ -1,4 +1,5 @@
-﻿using NINA.Utility.Mediator;
+﻿using NINA.Utility.Enum;
+using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
