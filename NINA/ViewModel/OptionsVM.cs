@@ -2,6 +2,7 @@
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
 using System;
@@ -53,11 +54,29 @@ namespace NINA.ViewModel {
                 CameraPixelSize = (double)o;
             }, MediatorMessages.CameraPixelSizeChanged);
 
+            Mediator.Instance.RegisterRequest(new SetProfileByIdMessageHandle((SetProfileByIdMessage msg) => {
+                SelectedProfile = ProfileManager.Instance.Profiles.ProfileList.Single(p => p.Id == msg.Id);
+                SelectProfile(null);
+                return true;
+            }));
+
+            Mediator.Instance.RegisterRequest(new GetDoublePropertyFromClassMessageHandle(typeof(OptionsVM), (GetDoublePropertyFromClassMessage msg) => {
+                try {
+                    object value = GetType().GetProperty(msg.Property).GetValue(this);
+                    if (value.GetType() == typeof(double))
+                        return (double)value;
+                } catch {
+                    return -1;
+                }
+
+                return -1;
+            }));
+
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
         }
 
         private void RemoveProfile(object obj) {
-            if(MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblRemoveProfileText"], SelectedProfile?.Name, SelectedProfile?.Id), Locale.Loc.Instance["LblRemoveProfileCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
+            if (MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblRemoveProfileText"], SelectedProfile?.Name, SelectedProfile?.Id), Locale.Loc.Instance["LblRemoveProfileCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
                 ProfileManager.Instance.RemoveProfile(SelectedProfile.Id);
             }
         }
@@ -259,7 +278,7 @@ namespace NINA.ViewModel {
 
         public ICommand AddProfileCommand { get; private set; }
 
-        public ICommand RemoveProfileCommand { get; private set; }        
+        public ICommand RemoveProfileCommand { get; private set; }
 
         public ICommand SelectProfileCommand { get; private set; }
 
@@ -292,6 +311,56 @@ namespace NINA.ViewModel {
                 System.Threading.Thread.CurrentThread.CurrentUICulture = Language;
                 System.Threading.Thread.CurrentThread.CurrentCulture = Language;
                 Locale.Loc.Instance.ReloadLocale(Language.Name);
+                RaisePropertyChanged();
+            }
+        }
+
+        public double ReadNoise {
+            get {
+                return ProfileManager.Instance.ActiveProfile.CameraSettings.ReadNoise;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.CameraSettings.ReadNoise = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double BitDepth {
+            get {
+                return ProfileManager.Instance.ActiveProfile.CameraSettings.BitDepth;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.CameraSettings.BitDepth = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double Offset {
+            get {
+                return ProfileManager.Instance.ActiveProfile.CameraSettings.Offset;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.CameraSettings.Offset = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double FullWellCapacity {
+            get {
+                return ProfileManager.Instance.ActiveProfile.CameraSettings.FullWellCapacity;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.CameraSettings.FullWellCapacity = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double DownloadToDataRatio {
+            get {
+                return ProfileManager.Instance.ActiveProfile.CameraSettings.DownloadToDataRatio;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.CameraSettings.DownloadToDataRatio = value;
                 RaisePropertyChanged();
             }
         }
@@ -332,6 +401,26 @@ namespace NINA.ViewModel {
             }
             set {
                 ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerUrl = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int PHD2HistorySize {
+            get {
+                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int PHD2MinimalHistorySize {
+            get {
+                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize = value;
                 RaisePropertyChanged();
             }
         }
@@ -436,6 +525,36 @@ namespace NINA.ViewModel {
             }
             set {
                 ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Regions = value;
+                RaisePropertyChanged();
+            }
+        }
+        
+        public double PlateSolveExposureTime {
+            get {
+                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public FilterInfo PlateSolveFilter {
+            get {
+                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double PlateSolveThreshold {
+            get {
+                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold = value;
                 RaisePropertyChanged();
             }
         }
@@ -1006,6 +1125,16 @@ namespace NINA.ViewModel {
             }
             set {
                 ProfileManager.Instance.ActiveProfile.TelescopeSettings.SnapPortStop = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int TelescopeSettleTime {
+            get {
+                return ProfileManager.Instance.ActiveProfile.TelescopeSettings.SettleTime;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.TelescopeSettings.SettleTime = value;
                 RaisePropertyChanged();
             }
         }

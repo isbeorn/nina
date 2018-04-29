@@ -8,6 +8,7 @@
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:util="clr-namespace:NINA.Utility"
+    xmlns:enum="clr-namespace:NINA.Utility.Enum"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -32,7 +33,7 @@
                     Text="{ns:Loc LblSaveImageAs}" />
                 <ComboBox
                     Grid.Column="1"
-                    ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:FileTypeEnum}}}"
+                    ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:FileTypeEnum}}}"
                     SelectedItem="{Binding FileType}" />
 
                 <TextBlock

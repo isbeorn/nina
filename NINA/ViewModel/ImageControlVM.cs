@@ -6,6 +6,7 @@ using NINA.Model.MyFocuser;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -21,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -37,15 +39,105 @@ namespace NINA.ViewModel {
             AutoStretch = false;
             DetectStars = false;
             ShowCrossHair = false;
+            ShowBahtinovAnalyzer = false;
 
             _progress = new Progress<ApplicationStatus>(p => Status = p);
 
             PrepareImageCommand = new AsyncCommand<bool>(() => PrepareImageHelper());
             PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage());
             CancelPlateSolveImageCommand = new RelayCommand(CancelPlateSolveImage);
+            DragStartCommand = new RelayCommand(BahtinovDragStart);
+            DragStopCommand = new RelayCommand(BahtinovDragStop);
+            DragMoveCommand = new RelayCommand(BahtinovDragMove);
 
             RegisterMediatorMessages();
+
+            Rectangle = new ObservableRectangle(0, 0, 200, 200);
+            Rectangle.PropertyChanged += Rectangle_PropertyChanged;
         }
+
+        private void Rectangle_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if(Rectangle.Width > (Image?.Width * 0.8)) {
+                Rectangle.Width = Image.Width * 0.8;
+            }
+            if (Rectangle.Height > (Image?.Height * 0.8)) {
+                Rectangle.Height = Image.Height * 0.8;
+            }
+            BahtinovDragMove(new Vector(0, 0));
+        }
+
+        private bool _showBahtinovAnalyzer;
+        public bool ShowBahtinovAnalyzer {
+            get {
+                return _showBahtinovAnalyzer;
+            }
+            set {
+                _showBahtinovAnalyzer = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ObservableRectangle _rectangle;
+        public ObservableRectangle Rectangle {
+            get {
+                return _rectangle;
+            }
+            set {
+                _rectangle = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private void BahtinovDragStart(object obj) {
+        }
+
+        private void BahtinovDragStop(object obj) {
+
+        }
+
+        private void BahtinovDragMove(object obj) {
+            Rectangle.PropertyChanged -= Rectangle_PropertyChanged;
+            if (ShowBahtinovAnalyzer && Image != null) { 
+                var delta = (Vector)obj;
+                this.Rectangle.X += delta.X;
+                this.Rectangle.Y += delta.Y;
+
+                /* Check boundaries */
+                if(Rectangle.X + Rectangle.Width > Image.Width) {
+                    Rectangle.X = Image.Width - Rectangle.Width;
+                }
+                if (Rectangle.Y + Rectangle.Height > Image.Height) {
+                    Rectangle.Y = Image.Height - Rectangle.Height;
+                }
+                if (Rectangle.X < 0) {
+                    Rectangle.X = 0;
+                }
+                if (Rectangle.Y < 0) {
+                    Rectangle.Y = 0;
+                }
+
+                /* Get Pixels */
+                var crop = new CroppedBitmap(Image, new Int32Rect((int)Rectangle.X, (int)Rectangle.Y, (int)Rectangle.Width, (int)Rectangle.Height));
+                BahtinovImage = new BahtinovAnalysis(crop).GrabBahtinov();
+                Rectangle.PropertyChanged += Rectangle_PropertyChanged;
+            }
+        }
+
+        private BahtinovImage _bahtinovImage;
+        public BahtinovImage BahtinovImage {
+            get {
+                return _bahtinovImage;
+            }
+            private set {
+                _bahtinovImage = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ICommand DragStartCommand { get; private set; }
+        public ICommand DragStopCommand { get; private set; }
+        public ICommand DragMoveCommand { get; private set; }
+
 
         private async Task<bool> PlateSolveImage() {
             if (Image != null) {
@@ -262,6 +354,11 @@ namespace NINA.ViewModel {
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
                     }
 
+                    if (parameters != null)
+                    {
+                        iarr.Statistics.ExposureTime = parameters.ExposureTime;
+                    }
+
                     await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                         Image = null;
                         ImgArr = null;
@@ -271,8 +368,9 @@ namespace NINA.ViewModel {
                         Image = source;
                         ImgStatisticsVM.Add(ImgArr.Statistics);
                         ImgHistoryVM.Add(iarr.Statistics);
-
                     }));
+
+                    BahtinovDragMove(new Vector(0, 0));
 
                     if (bSave) {
                         await SaveToDisk(parameters, token);
@@ -374,12 +472,16 @@ namespace NINA.ViewModel {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
                     completefilename = SaveFits(completefilename, parameters);
                 } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF) {
-                    completefilename = SaveTiff(completefilename);
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.None);
+                } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_ZIP) {
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.Zip);
+                } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_LZW) {
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.Lzw);
                 } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.XISF) {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
                     completefilename = SaveXisf(completefilename, parameters);
                 } else {
-                    completefilename = SaveTiff(completefilename);
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.None);
                 }
                 await Mediator.Instance.RequestAsync(
                     new AddThumbnailMessage() {
@@ -561,7 +663,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string SaveTiff(String path) {
+        private string SaveTiff(String path, TiffCompressOption c) {
 
             try {
                 BitmapSource bmpSource = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
@@ -571,7 +673,7 @@ namespace NINA.ViewModel {
 
                 using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     TiffBitmapEncoder encoder = new TiffBitmapEncoder();
-                    encoder.Compression = TiffCompressOption.None;
+                    encoder.Compression = c;
                     encoder.Frames.Add(BitmapFrame.Create(bmpSource));
                     encoder.Save(fs);
                 }

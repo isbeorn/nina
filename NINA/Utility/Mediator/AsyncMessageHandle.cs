@@ -3,6 +3,7 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.PlateSolving;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -293,6 +294,7 @@ namespace NINA.Utility.Mediator {
     class SetImageMessage : AsyncMediatorMessage<bool> {
         public ImageArray ImageArray { get; set; }
         public double Mean { get; set; }
+        public Double ExposureTime { get; set; }
     }
 
 }

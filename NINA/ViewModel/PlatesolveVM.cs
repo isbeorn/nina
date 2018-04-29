@@ -4,6 +4,7 @@ using NINA.Model.MyTelescope;
 using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -35,9 +36,10 @@ namespace NINA.ViewModel {
             SolveCommand = new AsyncCommand<bool>(() => CaptureSolveSyncAndReslew(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSolveCommand = new RelayCommand(CancelSolve);
 
-            SnapExposureDuration = 2;
+            SnapExposureDuration = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime;
+            SnapFilter = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter;
             Repeat = false;
-            RepeatThreshold = 1.0d;
+            RepeatThreshold = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold;
 
             RegisterMediatorMessages();
         }
@@ -58,13 +60,34 @@ namespace NINA.ViewModel {
                 _detectStars = (bool)o;
             }, MediatorMessages.DetectStarsChanged);
 
+            Mediator.Instance.Register((object o) => {
+                SnapExposureDuration = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime;
+                SnapFilter = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter;
+                RepeatThreshold = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold;
+            }, MediatorMessages.ProfileChanged);
+
             Mediator.Instance.RegisterAsyncRequest(
                 new PlateSolveMessageHandle(async (PlateSolveMessage msg) => {
                     if (msg.Sequence != null) {
                         return await SolveWithCapture(msg.Sequence, msg.Progress, msg.Token, msg.Silent);
                     } else {
                         if (msg.SyncReslewRepeat) {
-                            return await CaptureSolveSyncAndReslew(true, true, msg.Token, msg.Progress, msg.Silent);
+                            var seq = new CaptureSequence(
+                                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime, 
+                                CaptureSequence.ImageTypes.SNAP, 
+                                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter, 
+                                new BinningMode(1,1), 
+                                1);
+                            seq.Gain = SnapGain;
+                            return await CaptureSolveSyncAndReslew(
+                                seq, 
+                                true, 
+                                true, 
+                                true, 
+                                msg.Token, 
+                                msg.Progress, 
+                                msg.Silent,
+                                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold);
                         } else {
                             if (msg.Blind) {
                                 return await BlindSolve(msg.Image ?? Image, msg.Progress, msg.Token);
@@ -278,7 +301,9 @@ namespace NINA.ViewModel {
 
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<ApplicationStatus> progress) {
             _solveCancelToken = new CancellationTokenSource();
-            return await this.CaptureSolveSyncAndReslew(this.SyncScope, this.SlewToTarget, _solveCancelToken.Token, progress) != null;
+            var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+            seq.Gain = SnapGain;
+            return await this.CaptureSolveSyncAndReslew(seq, this.SyncScope, this.SlewToTarget, this.Repeat, _solveCancelToken.Token, progress) != null;
         }
 
         /// <summary>
@@ -286,13 +311,19 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="progress"></param>
         /// <returns></returns>
-        private async Task<PlateSolveResult> CaptureSolveSyncAndReslew(bool syncScope, bool slewToTarget, CancellationToken token, IProgress<ApplicationStatus> progress, bool silent = false) {
+        private async Task<PlateSolveResult> CaptureSolveSyncAndReslew(
+                CaptureSequence seq,
+                bool syncScope, 
+                bool slewToTarget, 
+                bool repeat,
+                CancellationToken token, 
+                IProgress<ApplicationStatus> progress, 
+                bool silent = false,
+                double repeatThreshold = 1.0d) {
             PlateSolveResult solveresult = null;
             bool repeatPlateSolve = false;
             do {
 
-                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
-                seq.Gain = SnapGain;
                 solveresult = await SolveWithCapture(seq, progress, token, silent);
 
                 if (solveresult != null && solveresult.Success) {
@@ -308,11 +339,11 @@ namespace NINA.ViewModel {
                     }
                 }
 
-                if (solveresult?.Success == true && Repeat && Math.Abs(Astrometry.DegreeToArcmin(solveresult.RaError)) > RepeatThreshold) {
+                if (solveresult?.Success == true && repeat && Math.Abs(Astrometry.DegreeToArcmin(solveresult.RaError)) > repeatThreshold) {
                     repeatPlateSolve = true;
                     progress.Report(new ApplicationStatus() { Status = "Telescope not inside tolerance. Repeating..." });
                     //Let the scope settle
-                    await Task.Delay(2000);
+                    await Task.Delay(TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.TelescopeSettings.SettleTime));
                 } else {
                     repeatPlateSolve = false;
                 }

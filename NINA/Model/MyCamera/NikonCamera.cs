@@ -15,6 +15,7 @@ using NINA.Utility.Notification;
 using System.Globalization;
 using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
+using NINA.Utility.Enum;
 
 namespace NINA.Model.MyCamera {
     public class NikonCamera : BaseINPC, ICamera {
@@ -130,6 +131,10 @@ namespace NINA.Model.MyCamera {
                         Logger.Debug("Bulb index: " + i);
                         _bulbShutterSpeedIndex = i;
                         bulbFound = true;
+                    }
+                    else
+                    {
+                        _shutterSpeeds.Add(i, double.Parse(val));
                     }
                 } catch (Exception ex) {
                     Logger.Error("Unexpected Shutter Speed: ", ex);

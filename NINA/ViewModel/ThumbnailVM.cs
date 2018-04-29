@@ -1,6 +1,7 @@
 ﻿using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using nom.tam.fits;

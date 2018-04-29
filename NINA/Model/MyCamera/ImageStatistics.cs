@@ -18,6 +18,7 @@ namespace NINA.Model.MyCamera {
         public int Min { get; set; }
         public long MinOccurrences { get; set; }
         private double _hFR;
+        public double ExposureTime { get; set; }
 
         public List<OxyPlot.DataPoint> Histogram { get; set; }
 
