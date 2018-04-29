@@ -37,9 +37,15 @@ namespace NINA.ViewModel {
 
             MaxY = 4;
 
-            GuideStepsHistory = new AsyncObservableLimitedSizedStack<IGuideStep>(100);
-            GuideStepsHistoryMinimal = new AsyncObservableLimitedSizedStack<IGuideStep>(10);
+            GuideStepsHistory = new AsyncObservableLimitedSizedStack<IGuideStep>(HistorySize);
+            GuideStepsHistoryMinimal = new AsyncObservableLimitedSizedStack<IGuideStep>(MinimalHistorySize);
+
             RegisterMediatorMessages();
+        }
+
+        public enum GuideStepsHistoryType {
+            GuideStepsLarge,
+            GuideStepsMinimal
         }
 
         private void RegisterMediatorMessages() {
@@ -47,6 +53,12 @@ namespace NINA.ViewModel {
             Mediator.Instance.RegisterAsyncRequest(
                 new DitherGuiderMessageHandle(async (DitherGuiderMessage msg) => {
                     return await Dither(msg.Token);
+                })
+            );
+
+            Mediator.Instance.RegisterRequest(
+                new GuideStepHistoryCountMessageHandle((GuideStepHistoryCountMessage msg) => {
+                    return ChangeGuideSteps(msg.GuideSteps, msg.HistoryType);
                 })
             );
 
@@ -90,7 +102,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Pause(CancellationToken token) {
-            if(Guider?.Connected == true) {
+            if (Guider?.Connected == true) {
                 return await Guider?.Pause(true, token);
             } else {
                 return false;
@@ -105,10 +117,46 @@ namespace NINA.ViewModel {
             } else {
                 return false;
             }
+        }
 
+        public int HistorySize {
+            get {
+                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int MinimalHistorySize {
+            get {
+                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize = value;
+                RaisePropertyChanged();
+            }
         }
 
         private static Dispatcher Dispatcher = Dispatcher.CurrentDispatcher;
+
+        private bool ChangeGuideSteps(int historySize, GuideStepsHistoryType historyType) {
+            AsyncObservableLimitedSizedStack<IGuideStep> collectionToChange = new AsyncObservableLimitedSizedStack<IGuideStep>(0);
+
+            switch (historyType) {
+                case GuideStepsHistoryType.GuideStepsLarge:
+                    collectionToChange = GuideStepsHistory;
+                    break;
+                case GuideStepsHistoryType.GuideStepsMinimal:
+                    collectionToChange = GuideStepsHistoryMinimal;
+                    break;
+            }
+
+            collectionToChange.MaxSize = historySize;
+
+            return true;
+        }
 
         private async Task<bool> Connect() {
             GuideStepsHistory.Clear();
@@ -138,29 +186,105 @@ namespace NINA.ViewModel {
                 GuideStepsHistoryMinimal.Add(step);
                 GuideStepsHistory.Add(step);
             }
+
+            // really, that's how phd2 does it and I don't want to change it
+            int n = GuideStepsHistory.Count;
+            var items = GuideStepsHistory.Select(item => new Tuple<double, double>(item.RADistanceRaw, item.DecDistanceRaw));
+            var itemsRa = items.Select(item => item.Item1);
+            var itemsDec = items.Select(item => item.Item2);
+
+            double sum_y2 = itemsRa.Sum(y => y * y);
+            double sum_y = itemsRa.Sum(y => y);
+
+            RMSRA = Math.Sqrt(n * sum_y2 - sum_y * sum_y) / n;
+
+            sum_y2 = itemsDec.Sum(y => y * y);
+            sum_y = itemsDec.Sum(y => y);
+
+            RMSDec = Math.Sqrt(n * sum_y2 - sum_y * sum_y) / n;
+            RMSTotal = Math.Sqrt((Math.Pow(RMSRA, 2) + Math.Pow(RMSDec, 2)));
+
+            if(GuiderScale == GuiderScaleEnum.ARCSECONDS) {
+                RMSRA *= PixelScale;
+                RMSDec *= PixelScale;
+                RMSTotal *= PixelScale;
+            }
         }
 
+        public double RMSRA {
+            get {
+                return _rmsRA;
+            }
+            set {
+                _rmsRA = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double RMSDec {
+            get {
+                return _rmsDec;
+            }
+            set {
+                _rmsDec = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double RMSTotal {
+            get {
+                return _rmsTotal;
+            }
+            set {
+                _rmsTotal = value;
+                RaiseAllPropertiesChanged();
+            }
+        }
+
+        public string RMSRAText {
+            get {
+                return string.Format(Locale.Loc.Instance["LblPHD2RARMS"], RMSRA.ToString("0.00"));
+            }
+        }
+
+        public string RMSDecText {
+            get {
+                return string.Format(Locale.Loc.Instance["LblPHD2DecRMS"], RMSDec.ToString("0.00"));
+            }
+        }
+
+        public string RMSTotalText {
+            get {
+                return string.Format(Locale.Loc.Instance["LblPHD2TotalRMS"], RMSTotal.ToString("0.00"));
+            }
+        }
+
+        double _rmsTotal;
+        double _rmsRA;
+        double _rmsDec;
+
+
         private void ConvertStepToArcSec(IGuideStep pixelStep) {
-            pixelStep.RADistanceRaw = pixelStep.RADistanceRaw * PixelScale;
-            pixelStep.DecDistanceRaw = pixelStep.DecDistanceRaw * PixelScale;
-            pixelStep.RADistanceGuide = pixelStep.RADistanceGuide * PixelScale;
-            pixelStep.DecDistanceGuide = pixelStep.DecDistanceGuide * PixelScale;
+            // only displayed values are changed, not the raw ones
+            pixelStep.RADistanceRawDisplay = pixelStep.RADistanceRaw * PixelScale;
+            pixelStep.DecDistanceRawDisplay = pixelStep.DecDistanceRaw * PixelScale;
+            pixelStep.RADistanceGuideDisplay = pixelStep.RADistanceGuide * PixelScale;
+            pixelStep.DecDistanceGuideDisplay = pixelStep.DecDistanceGuide * PixelScale;
         }
 
         private void ConvertStepToPixels(IGuideStep arcsecStep) {
-            arcsecStep.RADistanceRaw = arcsecStep.RADistanceRaw / PixelScale;
-            arcsecStep.DecDistanceRaw = arcsecStep.DecDistanceRaw / PixelScale;
-            arcsecStep.RADistanceGuide = arcsecStep.RADistanceGuide / PixelScale;
-            arcsecStep.DecDistanceGuide = arcsecStep.DecDistanceGuide / PixelScale;
+            arcsecStep.RADistanceRawDisplay = arcsecStep.RADistanceRaw / PixelScale;
+            arcsecStep.DecDistanceRawDisplay = arcsecStep.DecDistanceRaw / PixelScale;
+            arcsecStep.RADistanceGuideDisplay = arcsecStep.RADistanceGuide / PixelScale;
+            arcsecStep.DecDistanceGuideDisplay = arcsecStep.DecDistanceGuide / PixelScale;
         }
 
-        private GuiderScaleEnum _guiderScale;
         public GuiderScaleEnum GuiderScale {
             get {
-                return _guiderScale;
+                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2GuiderScale;
             }
             set {
-                _guiderScale = value;
+                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2GuiderScale = value;
                 RaisePropertyChanged();
                 foreach (IGuideStep s in GuideStepsHistory) {
                     if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {

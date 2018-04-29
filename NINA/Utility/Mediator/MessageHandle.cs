@@ -54,6 +54,14 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(SendSnapPortMessage).Name; } }
     }
 
+
+    class GuideStepHistoryCountMessageHandle : MessageHandle<bool> {
+        public GuideStepHistoryCountMessageHandle(Func<GuideStepHistoryCountMessage, bool> callback) {
+            Callback = (f) => callback((GuideStepHistoryCountMessage)f);
+        }
+        public override string MessageType { get { return typeof(GuideStepHistoryCountMessage).Name; } }
+    }
+
     internal class GetCurrentFilterInfoMessageHandle : MessageHandle<FilterInfo> {
 
         public GetCurrentFilterInfoMessageHandle(Func<GetCurrentFilterInfoMessage, FilterInfo> callback) {
@@ -118,6 +126,11 @@ namespace NINA.Utility.Mediator {
     }
 
     /* Message definition */
+
+    class GuideStepHistoryCountMessage : MediatorMessage<bool> {
+        public int GuideSteps { get; set; }
+        public ViewModel.GuiderVM.GuideStepsHistoryType HistoryType { get; set; }
+    }
 
     internal abstract class MediatorMessage<TMessageResult> {
     }

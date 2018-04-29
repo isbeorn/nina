@@ -611,4 +611,9 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblFullWellCapacity">Full Well Capacity in e</s:String>
     <s:String x:Key="LblDataToDownloadRatio">Download to Data ratio</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio">Current Download:Data ratio</s:String>
+    <s:String x:Key="LblPHD2HistorySize">PHD2 History Size</s:String>
+    <s:String x:Key="LblPHD2MinimalHistorySize">PHD2 History Size (Imaging)</s:String>
+    <s:String x:Key="LblPHD2RARMS">RA: {0}"</s:String>
+    <s:String x:Key="LblPHD2DecRMS">Dec: {0}"</s:String>
+    <s:String x:Key="LblPHD2TotalRMS">Tot: {0}"</s:String>
 </ResourceDictionary>

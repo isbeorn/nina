@@ -614,4 +614,12 @@ Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
     <s:String x:Key="LblFullWellCapacity">Volle Brunnentiefe</s:String>
     <s:String x:Key="LblDataToDownloadRatio">Download zu Data Verhältnis</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio">Aktuelles Download:Data Verhältnis</s:String>
+    <s:String x:Key="LblPHD2HistorySize">PHD2 Historieneinträge</s:String>
+    <s:String x:Key="LblPHD2MinimalHistorySize">PHD2 Historieneinträge (Imaging)</s:String>
+    <s:String x:Key="LblPHD2RARMS">RA: {0}"</s:String>
+    <s:String x:Key="LblPHD2DecRMS">Dec: {0}"</s:String>
+    <s:String x:Key="LblPHD2TotalRMS">Tot: {0}"</s:String>
+    <s:String x:Key="LblYAxisScale">Y-Achse Skala</s:String>
+    <s:String x:Key="LblXAxisScale">X-Achse Skala</s:String>
+    <s:String x:Key="LblYAxisUnits">Y-Achse Einheit</s:String>
 </ResourceDictionary>

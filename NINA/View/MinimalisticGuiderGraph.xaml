@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:NINA.View"
+    xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
     d:DesignHeight="300"
@@ -18,7 +19,7 @@
                 <oxy:LinearAxis
                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     IntervalLength="50"
-                    IsAxisVisible="False"
+                    IsAxisVisible="true"
                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                     MajorGridlineStyle="LongDash"
                     Maximum="{Binding MaxY}"
@@ -31,18 +32,18 @@
             <oxy:Plot.Series>
                 <oxy:LineSeries
                     DataFieldX="Time"
-                    DataFieldY="RADistanceRaw"
+                    DataFieldY="RADistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
                     Color="Blue" />
                 <oxy:LineSeries
                     DataFieldX="Time"
-                    DataFieldY="DecDistanceRaw"
+                    DataFieldY="DecDistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
                     Color="Red" />
                 <oxy:LinearBarSeries
                     BarWidth="3"
                     DataFieldX="TimeRA"
-                    DataFieldY="RADistanceGuide"
+                    DataFieldY="RADuration"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
                     StrokeColor="Blue"
@@ -51,7 +52,7 @@
                 <oxy:LinearBarSeries
                     BarWidth="3"
                     DataFieldX="TimeDec"
-                    DataFieldY="DecDistanceGuide"
+                    DataFieldY="DECDuration"
                     DisplayMemberPath="DecDistanceGuide"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
