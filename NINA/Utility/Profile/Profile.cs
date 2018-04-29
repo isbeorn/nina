@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Model.MyFilterWheel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +13,29 @@ namespace NINA.Utility.Profile {
         public Profile() {
             this.name = "Default";
         }
-        public Profile(string name) {
+
+        public Profile(string name) : this() {
             this.name = name;
+        }
+        
+        /// <summary>
+        /// Called by the profile manager after deserializing, so the filter info object reference is matching with the fw list again
+        /// There should be a better solution to this...
+        /// </summary>
+        public void MatchFilterSettingsWithFilterList() {
+            if(this.PlateSolveSettings.Filter != null) { 
+                this.PlateSolveSettings.Filter = GetFilterFromList(this.PlateSolveSettings.Filter);
+            }
+        }
+
+        private FilterInfo GetFilterFromList(FilterInfo filterToMatch) {
+            var filter = this.FilterWheelSettings.FilterWheelFilters.Where((f) => f.Name == filterToMatch.Name).FirstOrDefault();
+            if (filter == null) {
+                filter = this.FilterWheelSettings.FilterWheelFilters.Where((f) => f.Position == filterToMatch.Position).FirstOrDefault();
+                if (filter == null) {
+                }
+            }
+            return filter;
         }
 
         private Guid id = Guid.NewGuid();

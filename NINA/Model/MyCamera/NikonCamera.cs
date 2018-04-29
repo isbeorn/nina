@@ -15,6 +15,7 @@ using NINA.Utility.Notification;
 using System.Globalization;
 using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
+using NINA.Utility.Enum;
 
 namespace NINA.Model.MyCamera {
     public class NikonCamera : BaseINPC, ICamera {

@@ -2,6 +2,7 @@
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
 using System;
@@ -524,6 +525,36 @@ namespace NINA.ViewModel {
             }
             set {
                 ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Regions = value;
+                RaisePropertyChanged();
+            }
+        }
+        
+        public double PlateSolveExposureTime {
+            get {
+                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public FilterInfo PlateSolveFilter {
+            get {
+                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double PlateSolveThreshold {
+            get {
+                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold = value;
                 RaisePropertyChanged();
             }
         }
@@ -1094,6 +1125,16 @@ namespace NINA.ViewModel {
             }
             set {
                 ProfileManager.Instance.ActiveProfile.TelescopeSettings.SnapPortStop = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int TelescopeSettleTime {
+            get {
+                return ProfileManager.Instance.ActiveProfile.TelescopeSettings.SettleTime;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.TelescopeSettings.SettleTime = value;
                 RaisePropertyChanged();
             }
         }

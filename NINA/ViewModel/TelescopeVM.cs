@@ -424,12 +424,11 @@ namespace NINA.ViewModel
         private async Task<bool> SlewToCoordinatesAsync(Coordinates coords)
         {
             coords = coords.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
-            if (Telescope?.Connected == true)
-            {
-                await Task.Run(() =>
-                {
-                    Telescope.SlewToCoordinates(coords.RA, coords.Dec);
+            if (Telescope?.Connected == true) {
+                await Task.Run(() => {
+                    Telescope.SlewToCoordinates(coords.RA, coords.Dec);                    
                 });
+                await Utility.Utility.Delay(TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.TelescopeSettings.SettleTime), new CancellationToken());
                 return true;
             }
             else

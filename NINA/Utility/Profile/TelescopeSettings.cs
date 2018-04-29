@@ -58,5 +58,17 @@ namespace NINA.Utility.Profile {
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
+
+        private int settleTime = 5;
+        [XmlElement(nameof(SettleTime))]
+        public int SettleTime {
+            get {
+                return settleTime;
+            }
+            set {
+                settleTime = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
     }
 }
