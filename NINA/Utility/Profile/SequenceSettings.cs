@@ -24,7 +24,8 @@ namespace NINA.Utility.Profile {
         }
 
         private TimeSpan estimatedDownloadTime = TimeSpan.FromSeconds(0);
-        [XmlElement(nameof(EstimatedDownloadTime))]
+        //[XmlElement(nameof(EstimatedDownloadTime))]
+        [XmlIgnore]
         public TimeSpan EstimatedDownloadTime {
             get {
                 return estimatedDownloadTime;
@@ -32,6 +33,16 @@ namespace NINA.Utility.Profile {
             set {
                 estimatedDownloadTime = value;
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
+
+        [XmlElement(nameof(EstimatedDownloadTime))]
+        public long TimeSpanInTicks {
+            get {
+                return estimatedDownloadTime.Ticks;
+            }
+            set {
+                estimatedDownloadTime = new TimeSpan(value);
             }
         }
     }
