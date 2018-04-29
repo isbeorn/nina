@@ -1,15 +1,11 @@
 ﻿using NINA.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace NINA.MyMessageBox {
-    class MyMessageBox : BaseVM {
 
+    internal class MyMessageBox : BaseVM {
         private string _title;
+
         public string Title {
             get {
                 return _title;
@@ -21,6 +17,7 @@ namespace NINA.MyMessageBox {
         }
 
         private string _text;
+
         public string Text {
             get {
                 return _text;
@@ -32,6 +29,7 @@ namespace NINA.MyMessageBox {
         }
 
         private bool? _dialogResult;
+
         public bool? DialogResult {
             get {
                 return _dialogResult;
@@ -43,6 +41,7 @@ namespace NINA.MyMessageBox {
         }
 
         private Visibility _cancelVisibility;
+
         public Visibility CancelVisibility {
             get {
                 return _cancelVisibility;
@@ -54,6 +53,7 @@ namespace NINA.MyMessageBox {
         }
 
         private Visibility _oKVisibility;
+
         public Visibility OKVisibility {
             get {
                 return _oKVisibility;
@@ -65,6 +65,7 @@ namespace NINA.MyMessageBox {
         }
 
         private Visibility _yesVisibility;
+
         public Visibility YesVisibility {
             get {
                 return _yesVisibility;
@@ -76,6 +77,7 @@ namespace NINA.MyMessageBox {
         }
 
         private Visibility _noVisibility;
+
         public Visibility NoVisibility {
             get {
                 return _noVisibility;
@@ -123,7 +125,6 @@ namespace NINA.MyMessageBox {
                     MyMessageBox.NoVisibility = System.Windows.Visibility.Hidden;
                 }
 
-
                 System.Windows.Window win = new MyMessageBoxView {
                     DataContext = MyMessageBox
                 };
@@ -132,26 +133,24 @@ namespace NINA.MyMessageBox {
                 var mainwindow = System.Windows.Application.Current.MainWindow;
                 mainwindow.Opacity = 0.8;
 
-            
-                    win.ShowDialog();
-            
-            
+                win.ShowDialog();
+
                 mainwindow.Opacity = 1;
 
                 if (win.DialogResult == null) {
                     return defaultresult;
                 } else if (win.DialogResult == true) {
-                    if(MyMessageBox.YesVisibility == Visibility.Visible) {
+                    if (MyMessageBox.YesVisibility == Visibility.Visible) {
                         return MessageBoxResult.Yes;
                     } else {
                         return MessageBoxResult.OK;
-                    }                
+                    }
                 } else if (win.DialogResult == false) {
                     if (MyMessageBox.NoVisibility == Visibility.Visible) {
                         return MessageBoxResult.No;
                     } else {
                         return MessageBoxResult.Cancel;
-                    }                
+                    }
                 } else {
                     return defaultresult;
                 }

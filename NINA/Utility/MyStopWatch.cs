@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Utility {
-    sealed class MyStopWatch : IDisposable {
 
+    internal sealed class MyStopWatch : IDisposable {
         private Stopwatch _stopWatch;
         private string _memberName;
         private string _filePath;
@@ -28,7 +24,7 @@ namespace NINA.Utility {
             Logger.Trace(message, _memberName, _filePath);
         }
 
-        void IDisposable.Dispose() {            
+        void IDisposable.Dispose() {
             this._stopWatch.Stop();
             this._stopTime = DateTime.UtcNow;
             Log();
@@ -39,7 +35,5 @@ namespace NINA.Utility {
                 [CallerFilePath] string filePath = "") {
             return new MyStopWatch(memberName, filePath);
         }
-
-
     }
 }

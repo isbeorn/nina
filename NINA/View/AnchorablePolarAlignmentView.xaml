@@ -101,7 +101,6 @@
                                     </Border>
                                 </StackPanel>
                             </StackPanel>
-
                         </GroupBox>
                         <GroupBox Margin="-20,0,-20,0" Header="{ns:Loc LblAzimuthMeasurement}">
                             <StackPanel Orientation="Vertical">
@@ -176,7 +175,6 @@
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
-
                             </TextBox>
                             <TextBlock Text="{ns:Loc LblSlewDuration}" />
                             <TextBox>
@@ -187,7 +185,6 @@
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
-
                             </TextBox>
                             <TextBlock Text="{Binding DarvStatus}" />
                         </StackPanel>

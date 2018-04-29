@@ -1,15 +1,14 @@
 ﻿using NINA.Model.MyFilterWheel;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
+
     [Serializable()]
     [XmlRoot(nameof(Profile))]
     public class Profile : BaseINPC {
+
         public Profile() {
             this.name = "Default";
         }
@@ -17,13 +16,13 @@ namespace NINA.Utility.Profile {
         public Profile(string name) : this() {
             this.name = name;
         }
-        
+
         /// <summary>
-        /// Called by the profile manager after deserializing, so the filter info object reference is matching with the fw list again
-        /// There should be a better solution to this...
+        /// Called by the profile manager after deserializing, so the filter info object reference is
+        /// matching with the fw list again There should be a better solution to this...
         /// </summary>
         public void MatchFilterSettingsWithFilterList() {
-            if(this.PlateSolveSettings.Filter != null) { 
+            if (this.PlateSolveSettings.Filter != null) {
                 this.PlateSolveSettings.Filter = GetFilterFromList(this.PlateSolveSettings.Filter);
             }
         }
@@ -39,6 +38,7 @@ namespace NINA.Utility.Profile {
         }
 
         private Guid id = Guid.NewGuid();
+
         [XmlElement(nameof(Id))]
         public Guid Id {
             get {
@@ -50,6 +50,7 @@ namespace NINA.Utility.Profile {
         }
 
         private string name;
+
         [XmlElement(nameof(Name))]
         public string Name {
             get {
@@ -60,8 +61,8 @@ namespace NINA.Utility.Profile {
             }
         }
 
-
         private bool isActive;
+
         [XmlIgnore()]
         public bool IsActive {
             get {
@@ -74,6 +75,7 @@ namespace NINA.Utility.Profile {
         }
 
         private ApplicationSettings applicationSettings = new ApplicationSettings();
+
         [XmlElement(nameof(ApplicationSettings))]
         public ApplicationSettings ApplicationSettings {
             get {
@@ -85,6 +87,7 @@ namespace NINA.Utility.Profile {
         }
 
         private AstrometrySettings astrometrySettings = new AstrometrySettings();
+
         [XmlElement(nameof(AstrometrySettings))]
         public AstrometrySettings AstrometrySettings {
             get {
@@ -96,6 +99,7 @@ namespace NINA.Utility.Profile {
         }
 
         private CameraSettings cameraSettings = new CameraSettings();
+
         [XmlElement(nameof(CameraSettings))]
         public CameraSettings CameraSettings {
             get {
@@ -107,6 +111,7 @@ namespace NINA.Utility.Profile {
         }
 
         private ColorSchemaSettings colorSchemaSettings = new ColorSchemaSettings();
+
         [XmlElement(nameof(ColorSchemaSettings))]
         public ColorSchemaSettings ColorSchemaSettings {
             get {
@@ -118,6 +123,7 @@ namespace NINA.Utility.Profile {
         }
 
         private FilterWheelSettings filterWheelSettings = new FilterWheelSettings();
+
         [XmlElement(nameof(FilterWheelSettings))]
         public FilterWheelSettings FilterWheelSettings {
             get {
@@ -129,6 +135,7 @@ namespace NINA.Utility.Profile {
         }
 
         private FocuserSettings focuserSettings = new FocuserSettings();
+
         [XmlElement(nameof(FocuserSettings))]
         public FocuserSettings FocuserSettings {
             get {
@@ -140,6 +147,7 @@ namespace NINA.Utility.Profile {
         }
 
         private FramingAssistantSettings framingAssistantSettings = new FramingAssistantSettings();
+
         [XmlElement(nameof(FramingAssistantSettings))]
         public FramingAssistantSettings FramingAssistantSettings {
             get {
@@ -151,6 +159,7 @@ namespace NINA.Utility.Profile {
         }
 
         private GuiderSettings guiderSettings = new GuiderSettings();
+
         [XmlElement(nameof(GuiderSettings))]
         public GuiderSettings GuiderSettings {
             get {
@@ -162,6 +171,7 @@ namespace NINA.Utility.Profile {
         }
 
         private ImageFileSettings imageFileSettings = new ImageFileSettings();
+
         [XmlElement(nameof(ImageFileSettings))]
         public ImageFileSettings ImageFileSettings {
             get {
@@ -173,6 +183,7 @@ namespace NINA.Utility.Profile {
         }
 
         private ImageSettings imageSettings = new ImageSettings();
+
         [XmlElement(nameof(ImageSettings))]
         public ImageSettings ImageSettings {
             get {
@@ -184,6 +195,7 @@ namespace NINA.Utility.Profile {
         }
 
         private MeridianFlipSettings meridianFlipSettings = new MeridianFlipSettings();
+
         [XmlElement(nameof(MeridianFlipSettings))]
         public MeridianFlipSettings MeridianFlipSettings {
             get {
@@ -195,6 +207,7 @@ namespace NINA.Utility.Profile {
         }
 
         private PlateSolveSettings plateSolveSettings = new PlateSolveSettings();
+
         [XmlElement(nameof(PlateSolveSettings))]
         public PlateSolveSettings PlateSolveSettings {
             get {
@@ -206,6 +219,7 @@ namespace NINA.Utility.Profile {
         }
 
         private PolarAlignmentSettings polarAlignmentSettings = new PolarAlignmentSettings();
+
         [XmlElement(nameof(PolarAlignmentSettings))]
         public PolarAlignmentSettings PolarAlignmentSettings {
             get {
@@ -217,6 +231,7 @@ namespace NINA.Utility.Profile {
         }
 
         private SequenceSettings sequenceSettings = new SequenceSettings();
+
         [XmlElement(nameof(SequenceSettings))]
         public SequenceSettings SequenceSettings {
             get {
@@ -228,6 +243,7 @@ namespace NINA.Utility.Profile {
         }
 
         private TelescopeSettings telescopeSettings = new TelescopeSettings();
+
         [XmlElement(nameof(TelescopeSettings))]
         public TelescopeSettings TelescopeSettings {
             get {
@@ -239,6 +255,7 @@ namespace NINA.Utility.Profile {
         }
 
         private WeatherDataSettings weatherDataSettings = new WeatherDataSettings();
+
         [XmlElement(nameof(WeatherDataSettings))]
         public WeatherDataSettings WeatherDataSettings {
             get {

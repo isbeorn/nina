@@ -1,24 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyGuider {
-    interface IGuider : INotifyPropertyChanged {
+
+    internal interface IGuider : INotifyPropertyChanged {
         bool Connected { get; }
         double PixelScale { get; set; }
         string State { get; }
         IGuideStep GuideStep { get; }
 
         Task<bool> Connect();
+
         Task<bool> AutoSelectGuideStar();
+
         bool Disconnect();
+
         Task<bool> Pause(bool pause, CancellationToken ct);
+
         Task<bool> StartGuiding(CancellationToken ct);
+
         Task<bool> StopGuiding(CancellationToken ct);
+
         Task<bool> Dither(CancellationToken ct);
     }
 

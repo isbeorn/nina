@@ -27,7 +27,6 @@
             </StackPanel>
         </DataTemplate>
 
-
         <DataTemplate x:Key="PassMeridianTemplate">
             <TextBlock
                 HorizontalAlignment="Center"
@@ -56,8 +55,6 @@
             </Grid>
         </DataTemplate>
 
-
-
         <!--  Default DataTemplate  -->
         <DataTemplate x:Key="DefaultTemplate">
             <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext}">
@@ -76,7 +73,6 @@
             PassMeridianTemplate="{StaticResource PassMeridianTemplate}"
             RecenterTemplate="{StaticResource RecenterTemplate}"
             SettleTemplate="{StaticResource SettleDataTemplate}" />
-
     </UserControl.Resources>
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
         <Grid>

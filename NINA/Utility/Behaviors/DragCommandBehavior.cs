@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 
 namespace NINA.Utility.Behaviors {
-    class DragCommandBehavior {
+
+    internal class DragCommandBehavior {
         private static DragCommandBehavior _instance = new DragCommandBehavior();
+
         public static DragCommandBehavior Instance {
             get { return _instance; }
             set { _instance = value; }
@@ -61,7 +58,6 @@ namespace NINA.Utility.Behaviors {
 
             var cmd = GetDragStartCommand(element);
             cmd?.Execute(null);
-
         }
 
         private void ElementOnMouseLeftButtonUp(object sender, MouseButtonEventArgs mouseButtonEventArgs) {

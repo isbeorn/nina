@@ -1,39 +1,31 @@
-﻿using NINA.Utility;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
+using NINA.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using NINA.Model;
 
 namespace NINA.PlateSolving {
-    class AstrometryPlateSolver : IPlateSolver {
 
-        const string AUTHURL = "/api/login/";
-        const string UPLOADURL = "/api/upload";
-        const string SUBMISSIONURL = "/api/submissions/{0}";
-        const string JOBSTATUSURL = "/api/jobs/{0}";
-        const string JOBINFOURL = "/api/jobs/{0}/info/";
-        const string ANNOTATEDIMAGEURL = "/annotated_display/{0}";
+    internal class AstrometryPlateSolver : IPlateSolver {
+        private const string AUTHURL = "/api/login/";
+        private const string UPLOADURL = "/api/upload";
+        private const string SUBMISSIONURL = "/api/submissions/{0}";
+        private const string JOBSTATUSURL = "/api/jobs/{0}";
+        private const string JOBINFOURL = "/api/jobs/{0}/info/";
+        private const string ANNOTATEDIMAGEURL = "/annotated_display/{0}";
 
-        string _domain;
-        string _apikey;
+        private string _domain;
+        private string _apikey;
 
         public AstrometryPlateSolver(string domain, string apikey) {
             this._domain = domain;
             this._apikey = apikey;
-
         }
 
         private async Task<JObject> Authenticate(CancellationToken canceltoken) {
-
             string response = string.Empty;
             string json = "{\"apikey\":\"" + _apikey + "\"}";
             json = Utility.Utility.EncodeUrl(json);
@@ -83,7 +75,6 @@ namespace NINA.PlateSolving {
             PlateSolveResult result = new PlateSolveResult();
 
             try {
-
                 progress.Report(new ApplicationStatus() { Status = "Authenticating..." });
                 JObject authentication = await Authenticate(canceltoken);
                 var status = authentication.GetValue("status");
@@ -99,7 +90,6 @@ namespace NINA.PlateSolving {
                     if (imagesubmission.GetValue("status")?.ToString() == "success") {
                         subid = imagesubmission.GetValue("subid").ToString();
 
-
                         progress.Report(new ApplicationStatus() { Status = "Waiting for plate solve to start ..." });
                         while (true) {
                             canceltoken.ThrowIfCancellationRequested();
@@ -113,14 +103,11 @@ namespace NINA.PlateSolving {
                                 if (jobid != "") {
                                     break;
                                 }
-
                             }
                             await Task.Delay(1000);
-
                         };
 
                         if (!string.IsNullOrWhiteSpace(jobid)) {
-
                             string jobstatus = string.Empty;
                             progress.Report(new ApplicationStatus() { Status = "Solving ..." });
                             while (true) {
@@ -132,7 +119,6 @@ namespace NINA.PlateSolving {
                                     break;
                                 }
                                 await Task.Delay(1000);
-
                             };
 
                             if (jobstatus == "success") {
@@ -162,16 +148,13 @@ namespace NINA.PlateSolving {
                     result.Success = false;
                     progress.Report(new ApplicationStatus() { Status = "Authorization failed ..." });
                 }
-
             } catch (System.OperationCanceledException) {
-
                 result.Success = false;
             } finally {
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return result;
         }
-
     }
 
     public class JobResult {
@@ -182,6 +165,7 @@ namespace NINA.PlateSolving {
         public string original_filename;
         public string[] objects_in_field;
     }
+
     public class Calibration {
         public double parity;
         public double orientation;

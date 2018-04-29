@@ -1,11 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -18,15 +15,16 @@ using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace NINA.Model.MyGuider {
+
     public class PHD2Guider : BaseINPC, IGuider {
 
         public PHD2Guider() {
         }
 
-
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private PhdEventVersion _version;
+
         public PhdEventVersion Version {
             get {
                 return _version;
@@ -38,6 +36,7 @@ namespace NINA.Model.MyGuider {
         }
 
         private ImageSource _image;
+
         public ImageSource Image {
             get {
                 return _image;
@@ -46,10 +45,10 @@ namespace NINA.Model.MyGuider {
                 _image = value;
                 RaisePropertyChanged();
             }
-
         }
 
         private PhdEventAppState _appState;
+
         public PhdEventAppState AppState {
             get {
                 return _appState;
@@ -62,6 +61,7 @@ namespace NINA.Model.MyGuider {
         }
 
         private PhdEventSettling _settling;
+
         public PhdEventSettling Settling {
             get {
                 return _settling;
@@ -73,6 +73,7 @@ namespace NINA.Model.MyGuider {
         }
 
         private PhdEventSettleDone _settleDone;
+
         public PhdEventSettleDone SettleDone {
             get {
                 return _settleDone;
@@ -84,6 +85,7 @@ namespace NINA.Model.MyGuider {
         }
 
         private PhdEventGuidingDithered _guidingDithered;
+
         public PhdEventGuidingDithered GuidingDithered {
             get {
                 return _guidingDithered;
@@ -95,6 +97,7 @@ namespace NINA.Model.MyGuider {
         }
 
         private IGuideStep _prevGuideStep;
+
         public IGuideStep PrevGuideStep {
             get {
                 return _prevGuideStep;
@@ -106,6 +109,7 @@ namespace NINA.Model.MyGuider {
         }
 
         private IGuideStep _guideStep;
+
         public IGuideStep GuideStep {
             get {
                 return _guideStep;
@@ -121,6 +125,7 @@ namespace NINA.Model.MyGuider {
         private static object lockobj = new object();
 
         private bool _connected;
+
         public bool Connected {
             get {
                 return _connected;
@@ -136,6 +141,7 @@ namespace NINA.Model.MyGuider {
         private bool _isDithering;
 
         private double _pixelScale;
+
         public double PixelScale {
             get {
                 return _pixelScale;
@@ -157,7 +163,7 @@ namespace NINA.Model.MyGuider {
             await client.ConnectAsync(Settings.PHD2ServerUrl, Settings.PHD2ServerPort);
             return client;
         }*/
-        TaskCompletionSource<bool> _tcs;
+        private TaskCompletionSource<bool> _tcs;
 
         public async Task<bool> Connect() {
             bool connected = false;
@@ -219,8 +225,6 @@ namespace NINA.Model.MyGuider {
                         }
                     }
                 }
-
-
             }
             return true;
         }
@@ -287,7 +291,6 @@ namespace NINA.Model.MyGuider {
         }
 
         private async Task<PhdMethodResponse> SendMessage(string msgId, string msg) {
-
             using (var client = new TcpClient()) {
                 try {
                     await client.ConnectAsync(ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerUrl, ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerPort);
@@ -314,9 +317,7 @@ namespace NINA.Model.MyGuider {
                             }
                         }
                     }
-
                 } finally {
-
                 }
             }
             return null;
@@ -393,7 +394,6 @@ namespace NINA.Model.MyGuider {
                         break;
                     }
             }
-
         }
 
         public static TcpState GetState(TcpClient tcpClient) {
@@ -414,7 +414,6 @@ namespace NINA.Model.MyGuider {
                         _tcs.TrySetResult(false);
 
                         using (NetworkStream s = client.GetStream()) {
-
                             while (true) {
                                 var state = GetState(client);
                                 if (state == TcpState.CloseWait) {
@@ -428,7 +427,6 @@ namespace NINA.Model.MyGuider {
                                 }
 
                                 foreach (string line in message.Split(new[] { Environment.NewLine }, StringSplitOptions.None)) {
-
                                     if (!string.IsNullOrEmpty(line) && !line.StartsWith("\0")) {
                                         JObject o = JObject.Parse(line, jls);
                                         JToken t = o.GetValue("Event");
@@ -437,13 +435,9 @@ namespace NINA.Model.MyGuider {
                                             phdevent = t.ToString();
                                             ProcessEvent(phdevent, o);
                                         }
-
-
                                     }
-
                                 }
                                 await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
-
                             }
                         }
                     } catch (OperationCanceledException) {
@@ -461,12 +455,6 @@ namespace NINA.Model.MyGuider {
             });
         }
 
-
-
-
-
-
-
         public class PhdMethodResponse {
             public string jsonrpc;
             public object result;
@@ -481,8 +469,6 @@ namespace NINA.Model.MyGuider {
             public double[] star_pos;
             public string pixels;
         }
-
-
 
         public class PhdError {
             public int code;
@@ -517,11 +503,9 @@ namespace NINA.Model.MyGuider {
         }
 
         public class PhdEventStartGuiding : PhdEvent {
-
         }
 
         public class PhdEventPaused : PhdEvent {
-
         }
 
         public class PhdEventStartCalibration : PhdEvent {
@@ -566,14 +550,12 @@ namespace NINA.Model.MyGuider {
         }
 
         public class PhdEventLoopingExposuresStopped : PhdEvent {
-
         }
 
         public class PhdEventSettling : PhdEvent {
             public int Distance;
             public int Time;
             public int SettleTime;
-
         }
 
         public class PhdEventSettleDone : PhdEvent {
@@ -592,11 +574,9 @@ namespace NINA.Model.MyGuider {
         }
 
         public class PhdEventGuidingStopped : PhdEvent {
-
         }
 
         public class PhdEventResumed : PhdEvent {
-
         }
 
         public class PhdEventGuideStep : PhdEvent, IGuideStep {
@@ -875,7 +855,6 @@ namespace NINA.Model.MyGuider {
         }
 
         public class PhdEventLockPositionLost : PhdEvent {
-
         }
 
         public class PhdEventAlert : PhdEvent {
@@ -883,6 +862,4 @@ namespace NINA.Model.MyGuider {
             public string Type;
         }
     }
-
-
 }

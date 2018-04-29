@@ -226,7 +226,6 @@
                             <TextBox Text="{Binding PageSize}" />
                         </UniformGrid>
 
-
                         <ninactrl:CancellableButton
                             Height="40"
                             Margin="5"
@@ -235,7 +234,6 @@
                             CancelCommand="{Binding CancelSearchCommand}"
                             Command="{Binding SearchCommand}"
                             Visibility="{Binding SearchCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
-
                     </StackPanel>
                 </ScrollViewer>
             </Border>
@@ -330,11 +328,6 @@
                             <TextBlock Text="{Binding TwilightRiseAndSet.SetDate, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
-
-
-
-
-
                 </StackPanel>
             </Border>
             <Border
@@ -362,8 +355,6 @@
             VerticalAlignment="Center"
             LoadingImageBrush="{StaticResource PrimaryBrush}"
             Visibility="{Binding SearchCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
-
-
 
         <!--  Search result area  -->
         <Grid Grid.Column="1" DataContext="{Binding SearchResult}">
@@ -405,7 +396,6 @@
                                             ImageSource="{Binding Image, IsAsync=True}"
                                             RenderOptions.BitmapScalingMode="LowQuality"
                                             Stretch="Uniform" />
-
                                     </Border.Background>
                                     <Grid>
                                         <Grid.RowDefinitions>
@@ -454,7 +444,6 @@
                                                 </StackPanel>
                                             </Grid>
 
-
                                             <Grid>
                                                 <StackPanel
                                                     Margin="0,6,0,6"
@@ -483,8 +472,6 @@
                                                         Text="{Binding Constellation}" />
                                                 </StackPanel>
                                             </Grid>
-
-
                                         </StackPanel>
                                         <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
 
@@ -548,7 +535,6 @@
                                                         Text="{Binding Size, Converter={StaticResource ArcsecToLabelConverter}, Mode=OneWay}" />
                                                 </StackPanel>
                                             </Grid>
-
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -612,7 +598,6 @@
                                         <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSlew}" />
                                     </Button>
                                 </UniformGrid>
-
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -691,6 +676,5 @@
                 </Border>
             </Grid>
         </Grid>
-
     </Grid>
 </UserControl>

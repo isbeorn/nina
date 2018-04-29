@@ -21,5 +21,4 @@
     <SolidColorBrush x:Key="AltBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltBackgroundColor}" />
     <SolidColorBrush x:Key="AltNotificationWarningBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationWarningColor}" />
     <SolidColorBrush x:Key="AltNotificationErrorBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationErrorColor}" />
-
 </ResourceDictionary>

@@ -1,18 +1,14 @@
 ﻿using NINA.Model;
 using NINA.Model.MyCamera;
-using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,7 +18,8 @@ using System.Windows.Threading;
 using System.Xml.Linq;
 
 namespace NINA.ViewModel {
-    class FramingAssistantVM : BaseVM {
+
+    internal class FramingAssistantVM : BaseVM {
 
         public FramingAssistantVM() {
             Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
@@ -64,11 +61,8 @@ namespace NINA.ViewModel {
                 return false;
             }, (object o) => SelectedCoordinates != null);
 
-
             RegisterMediatorMessages();
             LoadImageCacheList();
-
-
 
             Mediator.Instance.Register((o) => {
                 RaisePropertyChanged(nameof(CameraPixelSize));
@@ -77,7 +71,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(CameraWidth));
                 RaisePropertyChanged(nameof(CameraHeight));
             }, MediatorMessages.ProfileChanged);
-
         }
 
         private void ClearCache(object obj) {
@@ -100,6 +93,7 @@ namespace NINA.ViewModel {
         public static string FRAMINGASSISTANTCACHEINFOPATH = Path.Combine(FRAMINGASSISTANTCACHEPATH, "CacheInfo.xml");
 
         private ApplicationStatus _status;
+
         public ApplicationStatus Status {
             get {
                 return _status;
@@ -114,7 +108,6 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> LoadImageFromFile() {
-
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Title = Locale.Loc.Instance["LblLoadImage"];
             dialog.FileName = "";
@@ -123,16 +116,17 @@ namespace NINA.ViewModel {
             dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png";
 
             if (dialog.ShowDialog() == true) {
-
                 BitmapSource img = null;
                 switch (Path.GetExtension(dialog.FileName)) {
                     case ".tif":
                     case ".tiff":
                         img = LoadTiff(dialog.FileName);
                         break;
+
                     case ".png":
                         img = LoadPng(dialog.FileName);
                         break;
+
                     case ".jpg":
                         img = LoadJpg(dialog.FileName);
                         break;
@@ -171,12 +165,9 @@ namespace NINA.ViewModel {
                     } else {
                         return false;
                     }
-
                 } else {
                     return false;
                 }
-
-
             } else {
                 return false;
             }
@@ -217,7 +208,6 @@ namespace NINA.ViewModel {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates);
             }, MediatorMessages.LocationChanged);
 
-
             Mediator.Instance.Register((object o) => {
                 CameraPixelSize = (double)o;
             }, MediatorMessages.CameraPixelSizeChanged);
@@ -227,9 +217,10 @@ namespace NINA.ViewModel {
             _loadImageSource?.Cancel();
         }
 
-        Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
+        private Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
-        DeepSkyObject _dSO;
+        private DeepSkyObject _dSO;
+
         public DeepSkyObject DSO {
             get {
                 return _dSO;
@@ -241,7 +232,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        Coordinates _coordinates;
+        private Coordinates _coordinates;
+
         public Coordinates Coordinates {
             get {
                 return _coordinates;
@@ -252,7 +244,6 @@ namespace NINA.ViewModel {
             }
         }
 
-
         public int RAHours {
             get {
                 return (int)Math.Truncate(_coordinates.RA);
@@ -262,7 +253,6 @@ namespace NINA.ViewModel {
                     _coordinates.RA = _coordinates.RA - RAHours + value;
                     RaiseCoordinatesChanged();
                 }
-
             }
         }
 
@@ -275,7 +265,6 @@ namespace NINA.ViewModel {
                     _coordinates.RA = _coordinates.RA - RAMinutes / 60.0d + value / 60.0d;
                     RaiseCoordinatesChanged();
                 }
-
             }
         }
 
@@ -288,11 +277,8 @@ namespace NINA.ViewModel {
                     _coordinates.RA = _coordinates.RA - RASeconds / (60.0d * 60.0d) + value / (60.0d * 60.0d);
                     RaiseCoordinatesChanged();
                 }
-
             }
         }
-
-
 
         public int DecDegrees {
             get {
@@ -350,6 +336,7 @@ namespace NINA.ViewModel {
         }
 
         private int _downloadProgressValue;
+
         public int DownloadProgressValue {
             get {
                 return _downloadProgressValue;
@@ -360,7 +347,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        Coordinates _selectedCoordinates;
+        private Coordinates _selectedCoordinates;
+
         public Coordinates SelectedCoordinates {
             get {
                 return _selectedCoordinates;
@@ -404,6 +392,7 @@ namespace NINA.ViewModel {
         }
 
         private FramingAssistantSource _framingAssistantSource;
+
         public FramingAssistantSource FramingAssistantSource {
             get {
                 return _framingAssistantSource;
@@ -415,6 +404,7 @@ namespace NINA.ViewModel {
         }
 
         private double _cameraPixelSize;
+
         public double CameraPixelSize {
             get {
                 return _cameraPixelSize;
@@ -427,6 +417,7 @@ namespace NINA.ViewModel {
         }
 
         private int _focalLength;
+
         public int FocalLength {
             get {
                 return _focalLength;
@@ -439,6 +430,7 @@ namespace NINA.ViewModel {
         }
 
         private FramingImageParameter _imageParameter;
+
         public FramingImageParameter ImageParameter {
             get {
                 return _imageParameter;
@@ -450,6 +442,7 @@ namespace NINA.ViewModel {
         }
 
         private ObservableRectangle _rectangle;
+
         public ObservableRectangle Rectangle {
             get {
                 return _rectangle;
@@ -498,7 +491,6 @@ namespace NINA.ViewModel {
                 _statusUpdate.Report(new ApplicationStatus() { Status = "" });
             }
             return true;
-
         }
 
         private async Task<bool> LoadImage() {
@@ -545,7 +537,6 @@ namespace NINA.ViewModel {
                     ImageParameter = parameter;
                 }));
             }
-
         }
 
         private void FillImageCache() {
@@ -583,10 +574,10 @@ namespace NINA.ViewModel {
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);
             }
-
         }
 
         private XElement _imageCacheInfo;
+
         public XElement ImageCacheInfo {
             get {
                 return _imageCacheInfo;
@@ -598,6 +589,7 @@ namespace NINA.ViewModel {
         }
 
         private XElement _selectedImageCacheInfo;
+
         public XElement SelectedImageCacheInfo {
             get {
                 return _selectedImageCacheInfo;
@@ -638,13 +630,10 @@ namespace NINA.ViewModel {
             }
         }
 
-
-
         private void DragStart(object obj) {
         }
 
         private void DragStop(object obj) {
-
         }
 
         private void DragMove(object obj) {
@@ -681,18 +670,21 @@ namespace NINA.ViewModel {
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum FramingAssistantSource {
+
         [Description("LblDigitalSkySurvey")]
         DSS,
+
         [Description("LblFile")]
         FILE,
+
         [Description("LblCache")]
         CACHE
     }
 
-    class FramingImageParameter {
+    internal class FramingImageParameter {
         public BitmapSource Image { get; set; }
         public double FieldOfViewWidth { get; set; }
         public double FieldOfViewHeight { get; set; }
         public double Rotation { get; set; }
-    }    
+    }
 }

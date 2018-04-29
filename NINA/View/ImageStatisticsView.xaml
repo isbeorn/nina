@@ -147,7 +147,5 @@
                 </TabItem>
             </TabControl>
         </Expander>
-
     </Border>
-
 </UserControl>

@@ -140,7 +140,6 @@
                                         <Binding Path="TelescopeVM.Telescope.Connected" Source="{StaticResource AppVM}" />
                                         <Binding Path="GuiderVM.Guider.Connected" Source="{StaticResource AppVM}" />
                                     </MultiBinding>
-
                                 </Button.IsEnabled>
                             </Button>
                         </StackPanel>
@@ -197,7 +196,6 @@
                                     Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform" />
                             </Button>
-
                         </Grid>
 
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
@@ -231,7 +229,6 @@
                             </TextBox>
                         </StackPanel>
                     </StackPanel>
-
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblCurrentUIColorSchema}">
                     <UniformGrid Columns="2">
@@ -428,7 +425,6 @@
                                 Background="{StaticResource NotificationErrorBrush}" />
                         </StackPanel>
                     </UniformGrid>
-
                 </GroupBox>
                 <GroupBox Header="{ns:Loc LblAlternativeUIColorSchema}">
                     <UniformGrid Columns="2">
@@ -976,9 +972,6 @@
                                     Text="{Binding TelescopeSnapPortStop}" />
                             </UniformGrid>
                         </UniformGrid>
-
-
-
                     </StackPanel>
                 </GroupBox>
                 <GroupBox
@@ -1121,7 +1114,6 @@
                                 </Button.Content>
                             </Button>
                         </Grid>
-
                     </Grid>
                 </GroupBox>
                 <GroupBox Grid.Row="1" Header="{ns:Loc LblTelescope}">
@@ -1389,7 +1381,6 @@
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblPlateSolving}" />
             </TabItem.Header>
             <local:OptionsPlateSolverView />
-
         </TabItem>
     </TabControl>
 </UserControl>

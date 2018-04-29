@@ -3,14 +3,12 @@ using NINA.Utility;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyWeatherData {
-    class OpenWeatherMapData : BaseINPC, IWeatherData {
+
+    internal class OpenWeatherMapData : BaseINPC, IWeatherData {
         public double Latitude { get; private set; }
 
         public double Longitude { get; private set; }
@@ -77,7 +75,6 @@ namespace NINA.Model.MyWeatherData {
             public int id { get; set; }
             public string name { get; set; }
 
-
             public class OpenWeatherDataResponseMain {
                 public double temp { get; set; }
                 public double pressure { get; set; }
@@ -85,17 +82,21 @@ namespace NINA.Model.MyWeatherData {
                 public double temp_min { get; set; }
                 public double temp_max { get; set; }
             }
+
             public class OpenWeatherDataResponseCoord {
                 public double lon { get; set; }
                 public double lat { get; set; }
             }
+
             public class OpenWeatherDataResponseSys {
                 public double sunrise { get; set; }
                 public double sunset { get; set; }
             }
+
             public class OpenWeatherDataResponseClouds {
                 public double all { get; set; }
             }
+
             public class OpenWeatherDataResponseWind {
                 public double speed { get; set; }
                 public double deg { get; set; }

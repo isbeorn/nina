@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Utility.Mediator {
+
     internal class Mediator {
+
         private Mediator() {
         }
 

@@ -1,18 +1,15 @@
 ﻿using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
+
     [Serializable()]
     [XmlRoot(nameof(ApplicationSettings))]
     public class GuiderSettings {
-
         private double ditherPixels = 5;
+
         [XmlElement(nameof(DitherPixels))]
         public double DitherPixels {
             get {
@@ -25,6 +22,7 @@ namespace NINA.Utility.Profile {
         }
 
         private bool ditherRAOnly = false;
+
         [XmlElement(nameof(DitherRAOnly))]
         public bool DitherRAOnly {
             get {
@@ -37,6 +35,7 @@ namespace NINA.Utility.Profile {
         }
 
         private int settleTime = 10;
+
         [XmlElement(nameof(SettleTime))]
         public int SettleTime {
             get {
@@ -49,6 +48,7 @@ namespace NINA.Utility.Profile {
         }
 
         private string pHD2ServerUrl = "localhost";
+
         [XmlElement(nameof(PHD2ServerUrl))]
         public string PHD2ServerUrl {
             get {
@@ -61,6 +61,7 @@ namespace NINA.Utility.Profile {
         }
 
         private int pHD2ServerPort = 4400;
+
         [XmlElement(nameof(PHD2ServerPort))]
         public int PHD2ServerPort {
             get {
@@ -69,11 +70,11 @@ namespace NINA.Utility.Profile {
             set {
                 pHD2ServerPort = value;
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
-
             }
         }
 
         private int pHD2LargeHistorySize = 100;
+
         [XmlElement(nameof(PHD2HistorySize))]
         public int PHD2HistorySize {
             get {
@@ -90,6 +91,7 @@ namespace NINA.Utility.Profile {
         }
 
         private int pHD2MinimalHistorySize = 10;
+
         [XmlElement(nameof(PHD2MinimalHistorySize))]
         public int PHD2MinimalHistorySize {
             get {
@@ -106,6 +108,7 @@ namespace NINA.Utility.Profile {
         }
 
         private GuiderScaleEnum pHD2GuiderScale = GuiderScaleEnum.PIXELS;
+
         [XmlElement(nameof(PHD2GuiderScale))]
         public GuiderScaleEnum PHD2GuiderScale {
             get {

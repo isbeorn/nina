@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Utility {
+
     public class FITS {
         /* Specification: http://archive.stsci.edu/fits/fits_standard/fits_standard.html */
+
         public FITS(ushort[] data, int width, int height, string imageType, double exposuretime) {
             this._imageData = data;
             AddHeaderCard("SIMPLE", true, "C# FITS");
@@ -20,7 +20,7 @@ namespace NINA.Utility {
             AddHeaderCard("EXTEND", true, "Extensions are permitted");
             AddHeaderCard("DATE-OBS", DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture), "");
             AddHeaderCard("IMAGETYP", imageType, "");
-            AddHeaderCard("EXPOSURE", exposuretime, "");            
+            AddHeaderCard("EXPOSURE", exposuretime, "");
         }
 
         public void AddHeaderCard(string keyword, string value, string comment) {
@@ -39,9 +39,9 @@ namespace NINA.Utility {
             EncodeHeader(keyword, value ? "T" : "F", comment);
         }
 
-        public void Write(Stream s) {            
+        public void Write(Stream s) {
             /* Write header */
-            foreach(byte[] b in _encodedHeader) {
+            foreach (byte[] b in _encodedHeader) {
                 s.Write(b, 0, HEADERCARDSIZE);
             }
 
@@ -71,17 +71,17 @@ namespace NINA.Utility {
         }
 
         /* Blocksize specification: http://archive.stsci.edu/fits/fits_standard/node13.html#SECTION00810000000000000000 */
-        const int BLOCKSIZE = 2880;
+        private const int BLOCKSIZE = 2880;
         /* Header card size Specification: http://archive.stsci.edu/fits/fits_standard/node29.html#SECTION00912100000000000000 */
-        const int HEADERCARDSIZE = 80;
+        private const int HEADERCARDSIZE = 80;
         /* Extended ascii encoding*/
-        Encoding ascii = Encoding.GetEncoding("iso-8859-1"); 
+        private Encoding ascii = Encoding.GetEncoding("iso-8859-1");
 
         private List<byte[]> _encodedHeader = new List<byte[]>();
         private ushort[] _imageData;
-                
+
         private void EncodeHeader(string keyword, string value, string comment) {
-            /* Header Specification: http://archive.stsci.edu/fits/fits_standard/node29.html#SECTION00912100000000000000 */            
+            /* Header Specification: http://archive.stsci.edu/fits/fits_standard/node29.html#SECTION00912100000000000000 */
             var header = keyword.ToUpper().PadRight(8) + "=" + value.PadLeft(21) + " / " + comment.PadRight(47);
             _encodedHeader.Add(ascii.GetBytes(header));
         }

@@ -2,15 +2,13 @@
 using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINATest {
-    [TestClass] 
+
+    [TestClass]
     public class CaptureSequenceListTest {
+
         [TestMethod]
         public void DefaultConstructor_ValueTest() {
             //Arrange
@@ -102,7 +100,6 @@ namespace NINATest {
             //Act
             CaptureSequence actualSeq;
             while ((actualSeq = l.Next()) != null) {
-
             }
 
             //Assert
@@ -131,7 +128,7 @@ namespace NINATest {
             //Arrange
             var l = new CaptureSequenceList();
             l.Mode = SequenceMode.ROTATE;
-            
+
             //Act
             var actual = l.Next();
 
@@ -203,7 +200,6 @@ namespace NINATest {
             //Act
             CaptureSequence actualSeq;
             while ((actualSeq = l.Next()) != null) {
-
             }
 
             //Assert
@@ -236,7 +232,6 @@ namespace NINATest {
             Assert.AreEqual(delay, l.Delay);
         }
 
-
         [TestMethod]
         public void DeleteSequenceDuringPause_NextItemSelected() {
             var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 5 };
@@ -244,7 +239,6 @@ namespace NINATest {
 
             var l = new CaptureSequenceList();
             l.Add(seq);
-
 
             l.Next();
             l.Next();
@@ -266,7 +260,6 @@ namespace NINATest {
             l.Mode = SequenceMode.ROTATE;
             l.Add(seq);
 
-
             l.Next();
             l.Next();
             l.Next();
@@ -284,13 +277,14 @@ namespace NINATest {
 
             var l = new CaptureSequenceList();
             l.Add(seq);
-            
+
             Assert.AreEqual(seq, l.ActiveSequence);
         }
     }
 
     [TestClass]
     public class CaptureSequenceTest {
+
         [TestMethod]
         public void DefaultConstructor_ValueTest() {
             //Arrange
@@ -349,7 +343,7 @@ namespace NINATest {
             var exposuresTaken = 5;
 
             //Act
-            for(int i = 0; i < exposuresTaken; i++) {
+            for (int i = 0; i < exposuresTaken; i++) {
                 seq.ProgressExposureCount++;
             }
 
@@ -357,7 +351,5 @@ namespace NINATest {
             Assert.AreEqual(exposuresTaken, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
             Assert.AreEqual(exposureCount, seq.TotalExposureCount, "TotalExposureCount value not as expected");
         }
-
-
     }
 }

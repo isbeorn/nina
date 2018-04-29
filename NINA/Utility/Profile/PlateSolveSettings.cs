@@ -2,18 +2,15 @@
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
+
     [Serializable()]
     [XmlRoot(nameof(Profile))]
     public class PlateSolveSettings {
-
         private PlateSolverEnum plateSolverType = PlateSolverEnum.PLATESOLVE2;
+
         [XmlElement(nameof(PlateSolverType))]
         public PlateSolverEnum PlateSolverType {
             get {
@@ -26,6 +23,7 @@ namespace NINA.Utility.Profile {
         }
 
         private BlindSolverEnum blindSolverType = BlindSolverEnum.ASTROMETRY_NET;
+
         [XmlElement(nameof(BlindSolverType))]
         public BlindSolverEnum BlindSolverType {
             get {
@@ -38,6 +36,7 @@ namespace NINA.Utility.Profile {
         }
 
         private string astrometryAPIKey = string.Empty;
+
         [XmlElement(nameof(AstrometryAPIKey))]
         public string AstrometryAPIKey {
             get {
@@ -50,6 +49,7 @@ namespace NINA.Utility.Profile {
         }
 
         private string cygwinLocation = @"%localappdata%\NINA\cygwin";
+
         [XmlElement(nameof(CygwinLocation))]
         public string CygwinLocation {
             get {
@@ -62,6 +62,7 @@ namespace NINA.Utility.Profile {
         }
 
         private double searchRadius = 30;
+
         [XmlElement(nameof(SearchRadius))]
         public double SearchRadius {
             get {
@@ -74,6 +75,7 @@ namespace NINA.Utility.Profile {
         }
 
         private string pS2Location = string.Empty;
+
         [XmlElement(nameof(PS2Location))]
         public string PS2Location {
             get {
@@ -86,6 +88,7 @@ namespace NINA.Utility.Profile {
         }
 
         private int regions = 5000;
+
         [XmlElement(nameof(Regions))]
         public int Regions {
             get {
@@ -98,6 +101,7 @@ namespace NINA.Utility.Profile {
         }
 
         private double exposureTime = 2.0d;
+
         [XmlElement(nameof(ExposureTime))]
         public double ExposureTime {
             get {
@@ -110,6 +114,7 @@ namespace NINA.Utility.Profile {
         }
 
         private double threshold = 1.0d;
+
         [XmlElement(nameof(Threshold))]
         public double Threshold {
             get {
@@ -122,6 +127,7 @@ namespace NINA.Utility.Profile {
         }
 
         private FilterInfo filter = null;
+
         [XmlElement(nameof(Filter))]
         public FilterInfo Filter {
             get {
@@ -132,6 +138,5 @@ namespace NINA.Utility.Profile {
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
-
     }
 }

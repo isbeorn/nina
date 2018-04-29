@@ -112,7 +112,6 @@
                                         Text="{Binding DSO.Name}"
                                         TextAlignment="Right" />
                                 </UniformGrid>
-
                             </Border>
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                                 <UniformGrid
@@ -161,9 +160,7 @@
                                         </TextBox>
                                         <TextBlock VerticalAlignment="Center">s</TextBlock>
                                     </StackPanel>
-
                                 </UniformGrid>
-
                             </Border>
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                                 <UniformGrid
@@ -212,7 +209,6 @@
                                         </TextBox>
                                         <TextBlock VerticalAlignment="Center">s</TextBlock>
                                     </StackPanel>
-
                                 </UniformGrid>
                             </Border>
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
@@ -228,7 +224,6 @@
                                             VerticalAlignment="Center"
                                             Text="{ns:Loc LblDegree}" />
                                     </StackPanel>
-
                                 </UniformGrid>
                             </Border>
 
@@ -375,9 +370,6 @@
                                 TextWrapping="Wrap" />
                         </Button>
                     </UniformGrid>
-
-
-
                 </StackPanel>
                 <Grid
                     Grid.Row="1"
@@ -394,7 +386,6 @@
 
         <local:ImageView Grid.Column="2" Image="{Binding ImageParameter.Image, IsAsync=True}">
             <!--<local:ImageView.ButtonHeaderContent>
-
             </local:ImageView.ButtonHeaderContent>-->
             <local:ImageView.ImageAreaContent>
                 <Grid>
@@ -455,7 +446,6 @@
                             </MultiBinding>
                         </Grid.Margin>
                     </Grid>
-
                 </Grid>
             </local:ImageView.ImageAreaContent>
         </local:ImageView>

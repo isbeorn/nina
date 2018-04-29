@@ -1,15 +1,14 @@
 ﻿using NINA.Model.MyCamera;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace NINA.Utility {
-    class XISF {
-        XISFHeader Header { get; set; }
+
+    internal class XISF {
+        private XISFHeader Header { get; set; }
 
         public XISF(XISFHeader header) {
             this.Header = header;
@@ -28,7 +27,7 @@ namespace NINA.Utility {
                 var base64Img = xml.Element("Image").Element("Data").Value;
                 byte[] encodedImg = Convert.FromBase64String(base64Img);
                 ushort[] img = new ushort[(int)Math.Ceiling(encodedImg.Length / 2.0)];
-                Buffer.BlockCopy(encodedImg,0, img, 0, encodedImg.Length);
+                Buffer.BlockCopy(encodedImg, 0, img, 0, encodedImg.Length);
 
                 return await ImageArray.CreateInstance(img, width, height, isBayered);
             }
@@ -40,10 +39,10 @@ namespace NINA.Utility {
         }
     }
 
-
     /**
      * Specifications: http://pixinsight.com/doc/docs/XISF-1.0-spec/XISF-1.0-spec.html#xisf_header
      */
+
     public class XISFHeader {
         public XDocument Header { get; set; }
 
@@ -51,11 +50,12 @@ namespace NINA.Utility {
         public XElement Image { get; set; }
         private XElement Xisf;
 
-        XNamespace xmlns = XNamespace.Get("http://www.pixinsight.com/xisf");
-        XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
-        XNamespace propertyns = "XISF";
+        private XNamespace xmlns = XNamespace.Get("http://www.pixinsight.com/xisf");
+        private XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
+        private XNamespace propertyns = "XISF";
 
         /* Create Header with embedded Image */
+
         public XISFHeader() {
             Xisf = new XElement(xmlns + "xisf",
                     new XAttribute("version", "1.0"),
@@ -80,9 +80,9 @@ namespace NINA.Utility {
         /// <summary>
         /// Add meta data property to file
         /// </summary>
-        /// <param name="id">id</param>
-        /// <param name="type">datatype</param>
-        /// <param name="value">value of that specific property</param>
+        /// <param name="id">     id</param>
+        /// <param name="type">   datatype</param>
+        /// <param name="value">  value of that specific property</param>
         /// <param name="comment">optional comment</param>
         public void AddMetaDataProperty(string id, string type, string value, string comment = "") {
             string[] prop = { id, type };
@@ -93,8 +93,8 @@ namespace NINA.Utility {
         /// Add meta data property to file
         /// </summary>
         /// <param name="property">array of strings as [id, datatype]</param>
-        /// <param name="value">value of that specific property</param>
-        /// <param name="comment">optional comment</param>
+        /// <param name="value">   value of that specific property</param>
+        /// <param name="comment"> optional comment</param>
         public void AddMetaDataProperty(string[] property, string value, string comment = "") {
             AddProperty(MetaData, property, value, comment);
         }
@@ -102,9 +102,9 @@ namespace NINA.Utility {
         /// <summary>
         /// Add an image property to file
         /// </summary>
-        /// <param name="property">array of strings as [id, datatype, fitskey (optional)]</param>
-        /// <param name="value">value of that specific property</param>
-        /// <param name="comment">optional comment</param>
+        /// <param name="property">   array of strings as [id, datatype, fitskey (optional)]</param>
+        /// <param name="value">      value of that specific property</param>
+        /// <param name="comment">    optional comment</param>
         /// <param name="autoaddfits">default: true; if fitskey available automatically add FITSHeader</param>
         public void AddImageProperty(string[] property, string value, string comment = "", bool autoaddfits = true) {
             AddProperty(Image, property, value, comment);
@@ -146,7 +146,6 @@ namespace NINA.Utility {
         }
 
         public void AddEmbeddedImage(ImageArray arr, string imageType) {
-
             var image = new XElement("Image",
                     new XAttribute("geometry", arr.Statistics.Width + ":" + arr.Statistics.Height + ":" + "1"),
                     new XAttribute("sampleFormat", "UInt16"),
@@ -190,12 +189,14 @@ namespace NINA.Utility {
 
     public class XISFData {
         public ushort[] Data;
+
         public XISFData(ushort[] data) {
             this.Data = data;
         }
     }
 
     public static class XISFImageProperty {
+
         public static class Observer {
             public static readonly string Namespace = "Observer:";
             public static readonly string[] EmailAddress = { Namespace + nameof(EmailAddress), "String" };
@@ -225,6 +226,7 @@ namespace NINA.Utility {
                 public static readonly string[] X = { Namespace + nameof(X), "Float64" };
                 public static readonly string[] Y = { Namespace + nameof(Y), "Float64" };
             }
+
             public static readonly string[] Description = { Namespace + nameof(Description), "String" };
             public static readonly string[] Equinox = { Namespace + nameof(Equinox), "Float64" };
             public static readonly string[] GeodeticReferenceSystem = { Namespace + nameof(GeodeticReferenceSystem), "String" };

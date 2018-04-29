@@ -1,19 +1,15 @@
 ﻿using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
+
     [Serializable()]
     [XmlRoot(nameof(ApplicationSettings))]
     public class ApplicationSettings {
 
-        
         [XmlElement(nameof(Culture))]
         public string Culture {
             get {
@@ -26,6 +22,7 @@ namespace NINA.Utility.Profile {
         }
 
         private CultureInfo language = new CultureInfo("en-GB");
+
         [XmlIgnore()]
         public CultureInfo Language {
             get {
@@ -38,6 +35,7 @@ namespace NINA.Utility.Profile {
         }
 
         private LogLevelEnum logLevel = LogLevelEnum.ERROR;
+
         [XmlElement(nameof(LogLevel))]
         public LogLevelEnum LogLevel {
             get {
@@ -50,6 +48,7 @@ namespace NINA.Utility.Profile {
         }
 
         private string databaseLocation = @"%localappdata%\NINA\NINA.sqlite";
+
         [XmlElement(nameof(DatabaseLocation))]
         public string DatabaseLocation {
             get {
@@ -62,6 +61,7 @@ namespace NINA.Utility.Profile {
         }
 
         private double devicePollingInterval = 0.5;
+
         [XmlElement(nameof(DevicePollingInterval))]
         public double DevicePollingInterval {
             get {
@@ -74,6 +74,7 @@ namespace NINA.Utility.Profile {
         }
 
         private string skyAtlasImageRepository = string.Empty;
+
         [XmlElement(nameof(SkyAtlasImageRepository))]
         public string SkyAtlasImageRepository {
             get {
@@ -84,6 +85,5 @@ namespace NINA.Utility.Profile {
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
-
     }
 }

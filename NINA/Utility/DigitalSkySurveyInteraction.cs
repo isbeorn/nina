@@ -1,8 +1,5 @@
 ﻿using NINA.Utility.Astrometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,7 +7,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Utility {
-    class DigitalSkySurveyInteraction {
+
+    internal class DigitalSkySurveyInteraction {
+
         public DigitalSkySurveyInteraction(DigitalSkySurveyDomain dom) {
             switch (dom) {
                 case DigitalSkySurveyDomain.STSCI: {
@@ -36,6 +35,7 @@ namespace NINA.Utility {
     }
 
     public interface IDigitalSkySurvey {
+
         Task<BitmapSource> GetImage(DigitalSkySurveyParameters p, CancellationToken ct, IProgress<int> progress = null);
     }
 
@@ -46,13 +46,13 @@ namespace NINA.Utility {
             var arcSecPerPixel = 0.4;
             var targetFoVInArcSec = Astrometry.Astrometry.ArcminToArcsec(p.FoV);
             var pixels = Math.Min(targetFoVInArcSec / arcSecPerPixel, 2048);
-            if(pixels == 2048) {
+            if (pixels == 2048) {
                 arcSecPerPixel = targetFoVInArcSec / 2048;
             }
 
             var url = string.Format(
-                Url, 
-                p.Coordinates.RADegrees, 
+                Url,
+                p.Coordinates.RADegrees,
                 p.Coordinates.Dec,
                 pixels,
                 pixels,
@@ -65,14 +65,12 @@ namespace NINA.Utility {
     public class NasaDigitalSkySurvey : IDigitalSkySurvey {
         private const string Url = "https://skyview.gsfc.nasa.gov/current/cgi/runquery.pl?Survey=dss2r&Position={0},{1}&Size={2}&Pixels={3}&Return=JPG";
 
-        public async Task<BitmapSource> GetImage(DigitalSkySurveyParameters p, CancellationToken ct, IProgress<int> progress = null) {            
+        public async Task<BitmapSource> GetImage(DigitalSkySurveyParameters p, CancellationToken ct, IProgress<int> progress = null) {
             var arcSecPerPixel = 0.5;
             var pixels = Math.Min(Astrometry.Astrometry.ArcminToArcsec(p.FoV) * arcSecPerPixel, 5000);
             var url = string.Format(Url, p.Coordinates.RADegrees, p.Coordinates.Dec, Astrometry.Astrometry.ArcminToDegree(p.FoV), pixels);
             return await Utility.HttpClientGetImage(new Uri(url), ct, progress);
         }
-
-        
     }
 
     public class StsciDigitalSkySurvey : IDigitalSkySurvey {
@@ -85,7 +83,6 @@ namespace NINA.Utility {
             if (p.FoV > 240) {
                 throw new NotImplementedException();
             } else if (degrees > maxSingleDegrees) {
-
                 var nrOfRequiredFrames = Math.Pow(Math.Ceiling(degrees / maxSingleDegrees), 2);
                 if (nrOfRequiredFrames == 4) {
                     var p1 = new DigitalSkySurveyParameters() {
@@ -151,14 +148,11 @@ namespace NINA.Utility {
                     bmp.Render(drawingVisual);
 
                     return bmp;
-
                 } else if (nrOfRequiredFrames == 9) {
                     return null;
                 }
 
-
                 //var url = string.Format(Url, p.Coordinates.RADegrees, p.Coordinates.Dec, p.FoV, p.Height);
-
 
                 return null;
             } else {

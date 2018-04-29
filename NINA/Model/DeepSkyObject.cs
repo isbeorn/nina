@@ -1,26 +1,18 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
 using OxyPlot;
 using OxyPlot.Axes;
-using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace NINA.Model {
+
     public class DeepSkyObject : BaseINPC {
 
         private DeepSkyObject() {
@@ -28,7 +20,6 @@ namespace NINA.Model {
 
         public DeepSkyObject(string name) : this() {
             Name = name;
-
         }
 
         public DeepSkyObject(string name, Coordinates coords) : this(name) {
@@ -36,6 +27,7 @@ namespace NINA.Model {
         }
 
         private string _name;
+
         public string Name {
             get {
                 return _name;
@@ -47,6 +39,7 @@ namespace NINA.Model {
         }
 
         private Coordinates _coordinates;
+
         public Coordinates Coordinates {
             get {
                 return _coordinates;
@@ -58,6 +51,7 @@ namespace NINA.Model {
         }
 
         private string _dSOType;
+
         public string DSOType {
             get {
                 return _dSOType;
@@ -69,6 +63,7 @@ namespace NINA.Model {
         }
 
         private string _constellation;
+
         public string Constellation {
             get {
                 return _constellation;
@@ -80,6 +75,7 @@ namespace NINA.Model {
         }
 
         private double? _magnitude;
+
         public double? Magnitude {
             get {
                 return _magnitude;
@@ -89,7 +85,9 @@ namespace NINA.Model {
                 RaisePropertyChanged();
             }
         }
+
         private double? _size;
+
         public double? Size {
             get {
                 return _size;
@@ -99,7 +97,9 @@ namespace NINA.Model {
                 RaisePropertyChanged();
             }
         }
+
         private double? _surfaceBrightness;
+
         public double? SurfaceBrightness {
             get {
                 return _surfaceBrightness;
@@ -111,6 +111,7 @@ namespace NINA.Model {
         }
 
         private DataPoint _maxAltitude;
+
         public DataPoint MaxAltitude {
             get {
                 return _maxAltitude;
@@ -122,6 +123,7 @@ namespace NINA.Model {
         }
 
         private List<DataPoint> _altitudes;
+
         public List<DataPoint> Altitudes {
             get {
                 if (_altitudes == null) {
@@ -137,6 +139,7 @@ namespace NINA.Model {
         }
 
         private List<string> _alsoKnownAs;
+
         public List<string> AlsoKnownAs {
             get {
                 if (_alsoKnownAs == null) {
@@ -150,9 +153,9 @@ namespace NINA.Model {
             }
         }
 
-        DateTime _referenceDate;
-        double _latitude;
-        double _longitude;
+        private DateTime _referenceDate;
+        private double _latitude;
+        private double _longitude;
 
         public void SetDateAndPosition(DateTime start, double latitude, double longitude) {
             this._referenceDate = start;
@@ -189,6 +192,7 @@ namespace NINA.Model {
         }
 
         private bool _doesTransitSouth;
+
         public bool DoesTransitSouth {
             get {
                 return _doesTransitSouth;
@@ -201,9 +205,10 @@ namespace NINA.Model {
 
         //const string DSS_URL = "https://archive.stsci.edu/cgi-bin/dss_search";
 
-        Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
+        private Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
         private BitmapSource _image;
+
         public BitmapSource Image {
             get {
                 if (_image == null) {
@@ -220,17 +225,14 @@ namespace NINA.Model {
                     var file = Path.Combine(ProfileManager.Instance.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, this.Name + ".gif");
                     if (File.Exists(file)) {
                         _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                            //var img = new BitmapImage(new Uri(file));                            
+                            //var img = new BitmapImage(new Uri(file));
                             _image = new BitmapImage(new Uri(file)) { CacheOption = BitmapCacheOption.None, CreateOptions = BitmapCreateOptions.DelayCreation };
                             _image.Freeze();
                             RaisePropertyChanged(nameof(Image));
                         }));
                     }
-
-
                 }
                 return _image;
-
             }
         }
 
@@ -245,8 +247,6 @@ namespace NINA.Model {
         }*/
 
         /*private void Img_DownloadCompleted(object sender,EventArgs e) {
-
-
             var path = "D:\\img\\";
             using (FileStream fs = new FileStream(path + this.Name + ".gif",FileMode.Create)) {
                 var encoder = new GifBitmapEncoder();

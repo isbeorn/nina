@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyWeatherData {
-    interface IWeatherData {
 
+    internal interface IWeatherData {
         double Latitude { get; }
         double Longitude { get; }
         double Temperature { get; }

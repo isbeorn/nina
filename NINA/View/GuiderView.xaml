@@ -19,7 +19,6 @@
             </Grid.RowDefinitions>
             <UniformGrid Columns="2">
 
-
                 <GroupBox>
                     <GroupBox.Header>
                         <UniformGrid Columns="2">
@@ -125,7 +124,6 @@
                 Grid.Row="1"
                 DataContext="{Binding}"
                 IsEnabled="{Binding Guider.Connected}" />
-
         </Grid>
     </Grid>
 </UserControl>

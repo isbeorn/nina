@@ -1,13 +1,6 @@
-﻿using NINA.Utility.Profile;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -16,6 +9,7 @@ namespace NINA.Utility {
 
     [XmlRoot("ColorSchemas")]
     public class ColorSchemas {
+
         public ColorSchemas() {
             Items = new List<ColorSchema>();
         }
@@ -34,7 +28,6 @@ namespace NINA.Utility {
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(ColorSchemas));
 
                     schemas = (ColorSchemas)xmlSerializer.Deserialize(reader);
-
                 } catch (Exception e) {
                     schemas = new ColorSchemas();
                     Logger.Error("Could not load color schema xml", e);
@@ -89,28 +82,35 @@ namespace NINA.Utility {
 
         [XmlElement(Type = typeof(XmlColor))]
         public Color PrimaryColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color SecondaryColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color BorderColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color BackgroundColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color ButtonBackgroundColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color ButtonBackgroundSelectedColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color ButtonForegroundColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color ButtonForegroundDisabledColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color NotificationWarningColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color NotificationErrorColor { get; set; }
 
-
         public ColorSchema() {
-
         }
     }
 
@@ -118,10 +118,10 @@ namespace NINA.Utility {
         private Color _color = Colors.Black;
 
         public XmlColor() { }
+
         public XmlColor(Color c) {
             _color = c;
         }
-
 
         public Color ToColor() {
             return _color;

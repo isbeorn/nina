@@ -42,7 +42,6 @@
                             <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -81,12 +80,10 @@
                             <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
 
     <Style x:Key="itemStyle" TargetType="{x:Type CalendarItem}">
         <Setter Property="Template">
@@ -202,7 +199,6 @@
                             <Setter TargetName="PART_YearView" Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -243,5 +239,4 @@
         <Setter Property="TextBlock.Background" Value="{StaticResource BackgroundBrush}" />
         <Setter Property="CalendarStyle" Value="{StaticResource calendarStyle}" />
     </Style>
-
 </ResourceDictionary>

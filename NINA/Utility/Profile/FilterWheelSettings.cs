@@ -1,18 +1,15 @@
 ﻿using NINA.Model.MyFilterWheel;
 using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
+
     [Serializable()]
     [XmlRoot(nameof(FilterWheelSettings))]
     public class FilterWheelSettings {
-
         private string id = "No_Device";
+
         [XmlElement(nameof(Id))]
         public string Id {
             get {
@@ -25,6 +22,7 @@ namespace NINA.Utility.Profile {
         }
 
         private ObserveAllCollection<FilterInfo> filterWheelFilters;
+
         [XmlElement(nameof(FilterInfo))]
         public ObserveAllCollection<FilterInfo> FilterWheelFilters {
             get {

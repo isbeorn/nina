@@ -46,7 +46,6 @@
                         <RowDefinition Height="40" />
                         <RowDefinition Height="3*" />
                         <RowDefinition Height="3*" />
-
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
@@ -117,7 +116,6 @@
                                     Text="{Binding AltitudePolarErrorStatus}" />
                             </StackPanel>
                         </StackPanel>
-
                     </GroupBox>
                     <GroupBox Grid.Row="3" Header="Azimuth Measurement">
                         <StackPanel Orientation="Vertical">
@@ -139,7 +137,6 @@
                                     VerticalAlignment="Center"
                                     Text="{Binding AzimuthPolarErrorStatus}" />
                             </StackPanel>
-
                         </StackPanel>
                     </GroupBox>
 
@@ -180,7 +177,6 @@
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
-
                             </TextBox>
                             <TextBlock>Slew Duration:</TextBlock>
                             <TextBox>
@@ -191,7 +187,6 @@
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
-
                             </TextBox>
                             <TextBlock Text="{Binding DarvStatus}" />
                         </StackPanel>
@@ -207,7 +202,6 @@
                             ToolTip="This will take an exposure while slewing the scope slowly to one side and back&#10;when the lines are not aligned there is some PA error" />
                     </Grid>
                 </Grid>
-
             </GroupBox>
             <Grid.Style>
                 <Style TargetType="{x:Type Grid}">

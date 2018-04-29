@@ -12,13 +12,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
-    class SequenceVM : DockableVM {
+
+    internal class SequenceVM : DockableVM {
 
         public SequenceVM() {
             Title = "LblSequence";
@@ -51,7 +51,6 @@ namespace NINA.ViewModel {
                 var l = CaptureSequenceList.Load(dialog.FileName);
                 Sequence = l;
             }
-
         }
 
         private void SaveSequence(object obj) {
@@ -95,6 +94,7 @@ namespace NINA.ViewModel {
         }
 
         private ApplicationStatus _status;
+
         public ApplicationStatus Status {
             get {
                 return _status;
@@ -108,8 +108,8 @@ namespace NINA.ViewModel {
             }
         }
 
+        private Mutex mutex = new Mutex();
 
-        Mutex mutex = new Mutex();
         public async Task AddDownloadTime(TimeSpan t) {
             await Task.Run(() => {
                 var s = Stopwatch.StartNew();
@@ -133,6 +133,7 @@ namespace NINA.ViewModel {
         }
 
         private List<TimeSpan> _actualDownloadTimes = new List<TimeSpan>();
+
         public TimeSpan EstimatedDownloadTime {
             get {
                 return ProfileManager.Instance.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
@@ -145,6 +146,7 @@ namespace NINA.ViewModel {
         }
 
         private DateTime _eta;
+
         public DateTime ETA {
             get {
                 return _eta;
@@ -203,13 +205,12 @@ namespace NINA.ViewModel {
         }
 
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
-        static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         private async Task<bool> ProcessSequence(CancellationToken ct, PauseToken pt, IProgress<ApplicationStatus> progress) {
-
             return await Task.Run<bool>(async () => {
                 try {
-                    //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
+                    //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
                     await semaphoreSlim.WaitAsync(ct);
 
                     /* Validate if preconditions are met */
@@ -218,7 +219,6 @@ namespace NINA.ViewModel {
                     }
 
                     Sequence.IsRunning = true;
-
 
                     CaptureSequence seq;
                     var actualFilter = Mediator.Instance.Request(new GetCurrentFilterInfoMessage());
@@ -277,15 +277,17 @@ namespace NINA.ViewModel {
 
         /// <summary>
         /// Checks if auto meridian flip should be considered and executes it
-        /// 1) Compare next exposure length with time to meridian - If exposure length is greater than time to flip the system will wait
+        /// 1) Compare next exposure length with time to meridian - If exposure length is greater
+        ///    than time to flip the system will wait
         /// 2) Pause Guider
         /// 3) Execute the flip
-        /// 4) If recentering is enabled, platesolve current position, sync and recenter to old target position
+        /// 4) If recentering is enabled, platesolve current position, sync and recenter to old
+        ///    target position
         /// 5) Resume Guider
         /// </summary>
-        /// <param name="seq">Current Sequence row</param>
+        /// <param name="seq">        Current Sequence row</param>
         /// <param name="tokenSource">cancel token</param>
-        /// <param name="progress">progress reporter</param>
+        /// <param name="progress">   progress reporter</param>
         /// <returns></returns>
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = "Check Meridian Flip" });
@@ -348,7 +350,6 @@ namespace NINA.ViewModel {
                 })
             );
 
-
             Mediator.Instance.Register((object o) => {
                 var dso = new DeepSkyObject(Sequence.DSO.Name, Sequence.DSO.Coordinates);
                 Sequence.SetSequenceTarget(dso);
@@ -356,6 +357,7 @@ namespace NINA.ViewModel {
         }
 
         private CaptureSequenceList _sequence;
+
         public CaptureSequenceList Sequence {
             get {
                 if (_sequence == null) {
@@ -378,6 +380,7 @@ namespace NINA.ViewModel {
         }
 
         private int _selectedSequenceIdx;
+
         public int SelectedSequenceIdx {
             get {
                 return _selectedSequenceIdx;
@@ -389,6 +392,7 @@ namespace NINA.ViewModel {
         }
 
         private ObservableCollection<string> _imageTypes;
+
         public ObservableCollection<string> ImageTypes {
             get {
                 if (_imageTypes == null) {

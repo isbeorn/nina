@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Utility {
+
     public class ObservableRectangle : BaseINPC {
+
         public ObservableRectangle(double x, double y, double width, double height) {
             X = x;
             Y = y;
@@ -18,6 +16,7 @@ namespace NINA.Utility {
         }
 
         private double _x;
+
         public double X {
             get {
                 return _x;
@@ -27,7 +26,9 @@ namespace NINA.Utility {
                 RaisePropertyChanged();
             }
         }
+
         private double _y;
+
         public double Y {
             get {
                 return _y;
@@ -37,7 +38,9 @@ namespace NINA.Utility {
                 RaisePropertyChanged();
             }
         }
+
         private double _width;
+
         public double Width {
             get {
                 return _width;
@@ -47,7 +50,9 @@ namespace NINA.Utility {
                 RaisePropertyChanged();
             }
         }
+
         private double _height;
+
         public double Height {
             get {
                 return _height;
@@ -59,6 +64,7 @@ namespace NINA.Utility {
         }
 
         private double _rotation;
+
         public double Rotation {
             get {
                 return _rotation;
@@ -69,7 +75,9 @@ namespace NINA.Utility {
                 RaisePropertyChanged(nameof(DisplayedRotation));
             }
         }
+
         private double _rotationOffset;
+
         public double DisplayedRotation {
             get {
                 var rotation = Rotation - _rotationOffset;

@@ -3,17 +3,13 @@ using NINA.Utility;
 using NINA.Utility.Notification;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace NINA.Model.MyFilterWheel {
-    class AscomFilterWheel : BaseINPC, IFilterWheel, IDisposable {
+
+    internal class AscomFilterWheel : BaseINPC, IFilterWheel, IDisposable {
 
         public AscomFilterWheel(string filterWheelId, string name) {
             Id = filterWheelId;
@@ -29,6 +25,7 @@ namespace NINA.Model.MyFilterWheel {
         }
 
         private string _id;
+
         public string Id {
             get {
                 return _id;
@@ -60,6 +57,7 @@ namespace NINA.Model.MyFilterWheel {
         }
 
         private bool _connected;
+
         public bool Connected {
             get {
                 if (_connected) {
@@ -74,7 +72,6 @@ namespace NINA.Model.MyFilterWheel {
                         Disconnect();
                     }
                     return val;
-
                 } else {
                     return false;
                 }
@@ -83,7 +80,6 @@ namespace NINA.Model.MyFilterWheel {
                 try {
                     _connected = value;
                     _filterwheel.Connected = value;
-
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(Locale.Loc.Instance["LblReconnectFilterwheel"] + Environment.NewLine + ex.Message);
@@ -100,6 +96,7 @@ namespace NINA.Model.MyFilterWheel {
         }
 
         private string _name;
+
         public string Name {
             get {
                 return _name;
@@ -169,8 +166,6 @@ namespace NINA.Model.MyFilterWheel {
             }
         }
 
-
-
         public void Disconnect() {
             Connected = false;
             Filters.Clear();
@@ -182,8 +177,8 @@ namespace NINA.Model.MyFilterWheel {
             _filterwheel.Dispose();
         }
 
-
         private AsyncObservableCollection<FilterInfo> _filters;
+
         public AsyncObservableCollection<FilterInfo> Filters {
             get {
                 return _filters;
@@ -199,6 +194,7 @@ namespace NINA.Model.MyFilterWheel {
                 return true;
             }
         }
+
         public void SetupDialog() {
             if (HasSetupDialog) {
                 try {
@@ -217,7 +213,4 @@ namespace NINA.Model.MyFilterWheel {
             }
         }
     }
-
-
-
 }

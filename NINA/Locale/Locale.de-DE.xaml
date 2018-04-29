@@ -71,7 +71,6 @@
     <s:String x:Key="LblZoomStretch">Passe Bildgröße an Fläche an</s:String>
     <s:String x:Key="LblFocuser">Okularauszug</s:String>
 
-
     <s:String x:Key="LblCamera">Kamera</s:String>
 
     <s:String x:Key="LblChipTempShort">Chip Temp.</s:String>

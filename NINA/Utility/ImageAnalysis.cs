@@ -4,16 +4,12 @@ using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
 using NINA.Model;
 using NINA.Model.MyCamera;
-using NINA.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,15 +17,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Utility {
-    class BahtinovAnalysis {
+
+    internal class BahtinovAnalysis {
+
         public BahtinovAnalysis(BitmapSource source) {
             originalSource = source;
         }
 
-        BitmapSource originalSource;
-        Bitmap convertedSource;
-
-
+        private BitmapSource originalSource;
+        private Bitmap convertedSource;
 
         public BahtinovImage GrabBahtinov() {
             var bahtinovImage = new BahtinovImage();
@@ -56,19 +52,15 @@ namespace NINA.Utility {
             var drawingColor = System.Drawing.Color.FromArgb(mediaColor.A, mediaColor.R, mediaColor.G, mediaColor.B);
             var linePen = new System.Drawing.Pen(drawingColor, 1);
 
-
             List<Line> bahtinovLines = new List<Line>();
             foreach (HoughLine line in lines) {
                 var k = TranslateHughLineToLine(line, bahtinovedBitmap.Width, bahtinovedBitmap.Height);
                 bahtinovLines.Add(k);
-
             }
 
             float x1, x2, y1, y2;
 
             if (bahtinovLines.Count == 6) {
-
-
                 var orderedPoints = bahtinovLines.OrderBy(x => 1.0d / x.Slope).ToList();
                 var threeLines = new List<Line>();
 
@@ -76,12 +68,10 @@ namespace NINA.Utility {
                     var l1 = orderedPoints[i];
                     var l2 = orderedPoints[i + 1];
 
-
                     var inter = (l1.Intercept + l2.Intercept) / 2.0f;
                     var slope = (l1.Slope + l2.Slope) / 2.0f;
                     var centerLine = Line.FromSlopeIntercept(slope, inter);
                     threeLines.Add(centerLine);
-
 
                     x1 = 0;
                     x2 = convertedSource.Width;
@@ -105,12 +95,11 @@ namespace NINA.Utility {
                     var orthogonalCenter = Line.FromSlopeIntercept(orthogonalSlope, orthogonalIntercept);
                     var intersection2 = centerBahtinovLine.GetIntersectionWith(orthogonalCenter);
                     if (intersection2.HasValue && !double.IsInfinity(intersection2.Value.X)) {
-                                                
                         x1 = intersection.Value.X;
                         y1 = intersection.Value.Y;
                         x2 = intersection2.Value.X;
                         y2 = intersection2.Value.Y;
-                        
+
                         bahtinovImage.Distance = intersection.Value.DistanceTo(intersection2.Value);
 
                         var t = bahtinovImage.Distance * 4 / bahtinovImage.Distance;
@@ -124,17 +113,14 @@ namespace NINA.Utility {
                         graphics.DrawEllipse(
                             focusEllipsePen,
                             new RectangleF(x2 - r, y2 - r, 2 * r, 2 * r));
-                        
+
                         graphics.DrawLine(
                             intersectEllipsePen,
                             new PointF(x3, y3),
                             new PointF(x2, y2));
-
                     }
                 }
-
             }
-
 
             var img = ImageAnalysis.ConvertBitmap(bahtinovedBitmap, System.Windows.Media.PixelFormats.Bgr24);
             convertedSource.Dispose();
@@ -158,8 +144,7 @@ namespace NINA.Utility {
             // convert degrees to radians
             t = (t / 180) * Math.PI;
 
-            // get image centers (all coordinate are measured relative
-            // to center)
+            // get image centers (all coordinate are measured relative to center)
             int w2 = width / 2;
             int h2 = height / 2;
 
@@ -188,7 +173,6 @@ namespace NINA.Utility {
                     new IntPoint((int)x1 + w2, h2 - (int)y1)
                 );
         }
-
     }
 
     public class BahtinovImage {
@@ -196,9 +180,7 @@ namespace NINA.Utility {
         public double Distance { get; set; }
     }
 
-
-    class ImageAnalysis {
-
+    internal class ImageAnalysis {
         private static System.Drawing.Pen ELLIPSEPEN = new System.Drawing.Pen(System.Drawing.Brushes.LightYellow, 1);
         private static SolidBrush TEXTBRUSH = new SolidBrush(System.Drawing.Color.Yellow);
         private static System.Drawing.FontFamily FONTFAMILY = new System.Drawing.FontFamily("Arial");
@@ -235,17 +217,20 @@ namespace NINA.Utility {
         public int DetectedStars { get; private set; }
         public double AverageHFR { get; private set; }
 
-        class Star {
+        private class Star {
             public double radius;
             public double HFR;
             public AForge.Point Position;
             public List<PixelData> Pixeldata;
+
             public double Average {
                 get {
                     return Pixeldata.Average((x) => x.value);
                 }
             }
+
             public Rectangle Rectangle;
+
             public Star() {
                 Pixeldata = new List<PixelData>();
             }
@@ -282,7 +267,7 @@ namespace NINA.Utility {
             }
         }
 
-        class PixelData {
+        private class PixelData {
             public int PosX;
             public int PosY;
             public ushort value;
@@ -291,8 +276,6 @@ namespace NINA.Utility {
                 return value.ToString();
             }
         }
-
-
 
         public async Task DetectStarsAsync(IProgress<ApplicationStatus> progress, CancellationToken token) {
             _token = token;
@@ -317,7 +300,6 @@ namespace NINA.Utility {
 
                     /* Resize to speed up manipulation */
                     ResizeBitmapToAnalyze();
-
 
                     /* prepare image for structure detection */
                     PrepareForStructureDetection(_bitmapToAnalyze);
@@ -351,7 +333,6 @@ namespace NINA.Utility {
                     overall = null;
                 }
             } catch (OperationCanceledException) {
-
             } finally {
                 progress?.Report(new ApplicationStatus() { Status = string.Empty });
             }
@@ -404,7 +385,6 @@ namespace NINA.Utility {
                 }
                 s.CalculateHfr();
                 starlist.Add(s);
-
             }
 
             return starlist;
@@ -489,9 +469,7 @@ namespace NINA.Utility {
             }
         }
 
-
         public static ColorRemapping16bpp GetColorRemappingFilter(double mean, double targetHistogramMeanPct) {
-
             ushort[] map = GetStretchMap(mean, targetHistogramMeanPct);
 
             var filter = new ColorRemapping16bpp(map);
@@ -572,7 +550,6 @@ namespace NINA.Utility {
         }
 
         public static BitmapSource CreateSourceFromArray(ImageArray arr, System.Windows.Media.PixelFormat pf) {
-
             //int stride = C.CameraYSize * ((Convert.ToString(C.MaxADU, 2)).Length + 7) / 8;
             int stride = (arr.Statistics.Width * pf.BitsPerPixel + 7) / 8;
             double dpi = 96;
@@ -587,7 +564,6 @@ namespace NINA.Utility {
                 if (pf == System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
                     source = Convert16BppTo8BppSource(source);
                 } else if (pf == System.Drawing.Imaging.PixelFormat.Format8bppIndexed) {
-
                 } else {
                     throw new NotSupportedException();
                 }
@@ -609,10 +585,9 @@ namespace NINA.Utility {
         }
     }
 
-
-
     public class ColorRemapping16bpp : ColorRemapping {
         private ushort[] _grayMap16;
+
         public ushort[] GrayMap16 {
             get { return _grayMap16; }
             set {
@@ -627,11 +602,8 @@ namespace NINA.Utility {
         /// <summary>
         /// Initializes a new instance of the <see cref="ColorRemapping16bpp"/> class.
         /// </summary>
-        /// 
         /// <param name="grayMap">Gray map.</param>
-        /// 
         /// <remarks>This constructor is supposed for 16bit grayscale images.</remarks>
-        /// 
         public ColorRemapping16bpp(ushort[] grayMap) : base() {
             FormatTranslations[System.Drawing.Imaging.PixelFormat.Format16bppGrayScale] = System.Drawing.Imaging.PixelFormat.Format16bppGrayScale;
             GrayMap16 = grayMap;
@@ -640,10 +612,8 @@ namespace NINA.Utility {
         /// <summary>
         /// Process the filter on the specified image.
         /// </summary>
-        /// 
         /// <param name="image">Source image data.</param>
-        /// <param name="rect">Image rectangle for processing by the filter.</param>
-        ///
+        /// <param name="rect"> Image rectangle for processing by the filter.</param>
         protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect) {
             if (image.PixelFormat != System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
                 throw new UnsupportedImageFormatException("Source pixel format is not supported by the routine.");
@@ -664,7 +634,6 @@ namespace NINA.Utility {
             // allign pointer to the first pixel to process
             ptr += (startY * image.Stride + startX * pixelSize);
 
-
             // grayscale image
             for (int y = startY; y < stopY; y++) {
                 for (int x = startX; x < stopX; x++, ptr++) {
@@ -673,9 +642,6 @@ namespace NINA.Utility {
                 }
                 ptr += offset;
             }
-
         }
     }
-
-
 }

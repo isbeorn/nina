@@ -1,12 +1,8 @@
 ﻿using NINA.Utility;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
+
     public class ImageStatistics : BaseINPC {
         public int Id { get; set; }
         public int Width { get; set; }
@@ -45,6 +41,5 @@ namespace NINA.Model.MyCamera {
         }
 
         private int _detectedStars;
-
     }
 }

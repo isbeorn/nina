@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NINACustomControlLibrary {
-    public class CancellableButton : UserControl {        
+
+    public class CancellableButton : UserControl {
+
         static CancellableButton() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CancellableButton), new FrameworkPropertyMetadata(typeof(CancellableButton)));
         }

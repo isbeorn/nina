@@ -1,26 +1,21 @@
-﻿using NINA.Utility;
-using NINA.Utility.Astrometry;
+﻿using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.PlateSolving {
-    static class PlateSolverFactory {
+
+    internal static class PlateSolverFactory {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
         /// <summary>
         /// Creates an instance of a Platesolver depending on the solver
         /// </summary>
-        /// <param name="solver">Plate Solver that should be used</param>
+        /// <param name="solver"> Plate Solver that should be used</param>
         /// <param name="binning">Camera binning</param>
-        /// <param name="width">Width of the image</param>
-        /// <param name="height">Height of the image</param>
-        /// <param name="coords">Expected Coordinates of the image center</param>
+        /// <param name="width">  Width of the image</param>
+        /// <param name="height"> Height of the image</param>
+        /// <param name="coords"> Expected Coordinates of the image center</param>
         /// <returns></returns>
         public static IPlateSolver CreateInstance(PlateSolverEnum solver, int binning, double width, double height, Coordinates coords = null) {
             IPlateSolver Platesolver = null;

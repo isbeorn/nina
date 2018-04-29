@@ -70,10 +70,9 @@
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
                 <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
-            </Trigger>                     
+            </Trigger>
         </Style.Triggers>
     </Style>
-
 
     <Style TargetType="{x:Type DataGridCell}">
         <Setter Property="TextBlock.TextAlignment" Value="Center" />
@@ -84,5 +83,4 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
 </ResourceDictionary>

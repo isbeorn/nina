@@ -1,8 +1,5 @@
-﻿using Microsoft.Win32;
-using NINA.Model;
+﻿using NINA.Model;
 using NINA.Model.MyCamera;
-using NINA.Model.MyFilterWheel;
-using NINA.Model.MyFocuser;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
@@ -10,15 +7,12 @@ using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
-using NINA.ViewModel;
 using nom.tam.fits;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,9 +20,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using System.Xml.Linq;
 
 namespace NINA.ViewModel {
+
     public class ImageControlVM : DockableVM {
 
         public ImageControlVM() {
@@ -57,7 +51,7 @@ namespace NINA.ViewModel {
         }
 
         private void Rectangle_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if(Rectangle.Width > (Image?.Width * 0.8)) {
+            if (Rectangle.Width > (Image?.Width * 0.8)) {
                 Rectangle.Width = Image.Width * 0.8;
             }
             if (Rectangle.Height > (Image?.Height * 0.8)) {
@@ -67,6 +61,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _showBahtinovAnalyzer;
+
         public bool ShowBahtinovAnalyzer {
             get {
                 return _showBahtinovAnalyzer;
@@ -78,6 +73,7 @@ namespace NINA.ViewModel {
         }
 
         private ObservableRectangle _rectangle;
+
         public ObservableRectangle Rectangle {
             get {
                 return _rectangle;
@@ -92,18 +88,17 @@ namespace NINA.ViewModel {
         }
 
         private void BahtinovDragStop(object obj) {
-
         }
 
         private void BahtinovDragMove(object obj) {
             Rectangle.PropertyChanged -= Rectangle_PropertyChanged;
-            if (ShowBahtinovAnalyzer && Image != null) { 
+            if (ShowBahtinovAnalyzer && Image != null) {
                 var delta = (Vector)obj;
                 this.Rectangle.X += delta.X;
                 this.Rectangle.Y += delta.Y;
 
                 /* Check boundaries */
-                if(Rectangle.X + Rectangle.Width > Image.Width) {
+                if (Rectangle.X + Rectangle.Width > Image.Width) {
                     Rectangle.X = Image.Width - Rectangle.Width;
                 }
                 if (Rectangle.Y + Rectangle.Height > Image.Height) {
@@ -124,6 +119,7 @@ namespace NINA.ViewModel {
         }
 
         private BahtinovImage _bahtinovImage;
+
         public BahtinovImage BahtinovImage {
             get {
                 return _bahtinovImage;
@@ -138,11 +134,8 @@ namespace NINA.ViewModel {
         public ICommand DragStopCommand { get; private set; }
         public ICommand DragMoveCommand { get; private set; }
 
-
         private async Task<bool> PlateSolveImage() {
             if (Image != null) {
-
-
                 _plateSolveToken = new CancellationTokenSource();
                 if (!AutoStretch) {
                     AutoStretch = true;
@@ -191,6 +184,7 @@ namespace NINA.ViewModel {
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private ImageArray _imgArr;
+
         public ImageArray ImgArr {
             get {
                 return _imgArr;
@@ -202,6 +196,7 @@ namespace NINA.ViewModel {
         }
 
         private ImageHistoryVM _imgHistoryVM;
+
         public ImageHistoryVM ImgHistoryVM {
             get {
                 if (_imgHistoryVM == null) {
@@ -216,6 +211,7 @@ namespace NINA.ViewModel {
         }
 
         private ImageStatisticsVM _imgStatisticsVM;
+
         public ImageStatisticsVM ImgStatisticsVM {
             get {
                 if (_imgStatisticsVM == null) {
@@ -230,6 +226,7 @@ namespace NINA.ViewModel {
         }
 
         private BitmapSource _image;
+
         public BitmapSource Image {
             get {
                 return _image;
@@ -241,6 +238,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _autoStretch;
+
         public bool AutoStretch {
             get {
                 return _autoStretch;
@@ -258,7 +256,6 @@ namespace NINA.ViewModel {
             try {
                 _prepImageTask?.Wait(_prepImageCancellationSource.Token);
             } catch (OperationCanceledException) {
-
             }
             _prepImageCancellationSource = new CancellationTokenSource();
             _prepImageTask = PrepareImage(ImgArr, _prepImageCancellationSource.Token);
@@ -272,6 +269,7 @@ namespace NINA.ViewModel {
         private CancellationTokenSource _prepImageCancellationSource;
 
         private bool _showCrossHair;
+
         public bool ShowCrossHair {
             get {
                 return _showCrossHair;
@@ -283,6 +281,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _detectStars;
+
         public bool DetectStars {
             get {
                 return _detectStars;
@@ -296,6 +295,7 @@ namespace NINA.ViewModel {
         }
 
         private ApplicationStatus _status;
+
         public ApplicationStatus Status {
             get {
                 return _status;
@@ -331,7 +331,6 @@ namespace NINA.ViewModel {
                     _progress.Report(new ApplicationStatus() { Status = "Preparing image" });
                     source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
 
-
                     if (AutoStretch) {
                         _progress.Report(new ApplicationStatus() { Status = "Stretching image" });
                         source = await StretchAsync(iarr, source);
@@ -354,8 +353,7 @@ namespace NINA.ViewModel {
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
                     }
 
-                    if (parameters != null)
-                    {
+                    if (parameters != null) {
                         iarr.Statistics.ExposureTime = parameters.ExposureTime;
                     }
 
@@ -416,7 +414,6 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> SaveToDisk(ImageParameters parameters, CancellationToken token) {
-
             var filter = parameters.FilterName;
             var framenr = parameters.ExposureNumber;
             var success = false;
@@ -435,11 +432,9 @@ namespace NINA.ViewModel {
             return success;
         }
 
-
         private async Task<bool> SaveToDiskAsync(ImageParameters parameters, CancellationToken token) {
             _progress.Report(new ApplicationStatus() { Status = "Saving..." });
             await Task.Run(async () => {
-
                 List<OptionsVM.ImagePattern> p = new List<OptionsVM.ImagePattern>();
 
                 p.Add(new OptionsVM.ImagePattern("$$FILTER$$", "Filtername", parameters.FilterName));
@@ -500,8 +495,6 @@ namespace NINA.ViewModel {
                 sw.Stop();
                 Debug.Print("Time to save: " + sw.Elapsed);
                 sw = null;
-
-
             });
 
             token.ThrowIfCancellationRequested();
@@ -533,7 +526,6 @@ namespace NINA.ViewModel {
 
         private string SaveFits(string path, ImageParameters parameters) {
             try {
-
                 FITS f = new FITS(
                     this.ImgArr.FlatArray,
                     this.ImgArr.Statistics.Width,
@@ -623,7 +615,6 @@ namespace NINA.ViewModel {
                     h.AddValue("OBJCTDEC", Telescope.DeclinationString, "");
                 }
 
-
                 var temp = Cam.CCDTemperature;
                 if (!double.IsNaN(temp)) {
                     h.AddValue("TEMPERAT", temp, "");
@@ -632,7 +623,6 @@ namespace NINA.ViewModel {
 
                 h.AddValue("IMAGETYP", parameters.ImageType, "");
                 h.AddValue("EXPOSURE", parameters.ExposureTime, "");
-
 
                 short[][] curl = new short[this.ImgArr.Statistics.Height][];
                 int idx = 0;
@@ -664,7 +654,6 @@ namespace NINA.ViewModel {
         }
 
         private string SaveTiff(String path, TiffCompressOption c) {
-
             try {
                 BitmapSource bmpSource = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
 
@@ -687,8 +676,6 @@ namespace NINA.ViewModel {
 
         private string SaveXisf(String path, ImageParameters parameters) {
             try {
-
-
                 var header = new XISFHeader();
 
                 header.AddEmbeddedImage(ImgArr, parameters.ImageType);
@@ -737,9 +724,7 @@ namespace NINA.ViewModel {
                     if (!double.IsNaN(temp)) {
                         header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString(CultureInfo.InvariantCulture));
                     }
-
                 }
-
 
                 if (!string.IsNullOrEmpty(parameters.FilterName)) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName);
@@ -756,14 +741,12 @@ namespace NINA.ViewModel {
                     img.Save(fs);
                 }
                 return uniquePath;
-
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
                 return string.Empty;
             }
         }
-
     }
 
     public class ImageParameters {

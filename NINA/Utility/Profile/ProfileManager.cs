@@ -5,13 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
-    class ProfileManager {
+
+    internal class ProfileManager {
 
         private ProfileManager() {
             if (NINA.Properties.Settings.Default.UpdateSettings) {
@@ -22,8 +21,7 @@ namespace NINA.Utility.Profile {
             Load();
 
             Mediator.Mediator.Instance.RegisterRequest(
-                new SaveProfilesMessageHandle((SaveProfilesMessage m) => 
-                {
+                new SaveProfilesMessageHandle((SaveProfilesMessage m) => {
                     Save();
                     return true;
                 })
@@ -36,7 +34,6 @@ namespace NINA.Utility.Profile {
         public static ProfileManager Instance { get { return lazy.Value; } }
 
         public static string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
-
 
         public Profiles Profiles { get; set; }
 
@@ -51,7 +48,6 @@ namespace NINA.Utility.Profile {
                 using (StreamWriter writer = new StreamWriter(PROFILEFILEPATH)) {
                     xmlSerializer.Serialize(writer, Profiles);
                 }
-
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.Notification.ShowError(ex.Message);
@@ -73,7 +69,7 @@ namespace NINA.Utility.Profile {
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(Profiles));
 
                     Profiles = (Profiles)xmlSerializer.Deserialize(reader);
-                    foreach(Profile p in Profiles.ProfileList) {
+                    foreach (Profile p in Profiles.ProfileList) {
                         p.MatchFilterSettingsWithFilterList();
                     }
                     Profiles.SelectActiveProfile();
@@ -99,7 +95,7 @@ namespace NINA.Utility.Profile {
         }
 
         internal void RemoveProfile(Guid id) {
-            if(id != ActiveProfile.Id) {
+            if (id != ActiveProfile.Id) {
                 var p = Profiles.ProfileList.Where((x) => x.Id == id).FirstOrDefault();
                 if (p != null) {
                     Profiles.ProfileList.Remove(p);
@@ -116,8 +112,7 @@ namespace NINA.Utility.Profile {
             Profiles = new Profiles();
             Profile p;
             Object updateSettings = Properties.Settings.Default.GetPreviousVersion("UpdateSettings");
-            if(updateSettings != null) {
-
+            if (updateSettings != null) {
                 p = new Profile("Migrated");
                 Profiles.Add(p);
 
@@ -221,10 +216,6 @@ namespace NINA.Utility.Profile {
                 p = new Profile("Default");
                 Profiles.Add(p);
             }
-
-            
-            
-            
 
             SelectProfile(p.Id);
         }

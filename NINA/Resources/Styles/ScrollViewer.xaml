@@ -212,7 +212,6 @@
                             ViewportSize="{TemplateBinding ViewportWidth}"
                             Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
                             Value="{TemplateBinding HorizontalOffset}" />
-
                     </Grid>
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding ElementName=PART_VerticalScrollBar, Path=Visibility}" Value="Visible">
@@ -226,5 +225,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 </ResourceDictionary>

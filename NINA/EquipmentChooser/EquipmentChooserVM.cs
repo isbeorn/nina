@@ -5,17 +5,16 @@ using NINA.Utility;
 using NINA.Utility.Profile;
 using NINA.ViewModel;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using ZWOptical.ASISDK;
 
 namespace NINA.EquipmentChooser {
-    class EquipmentChooserVM : BaseVM {
+
+    internal class EquipmentChooserVM : BaseVM {
+
         private EquipmentChooserVM(EquipmentType equipment) {
             if (equipment == EquipmentType.Camera) {
                 GetCameras();
@@ -26,10 +25,10 @@ namespace NINA.EquipmentChooser {
             }
 
             SetupDialogCommand = new RelayCommand(OpenSetupDialog);
-
         }
 
         private bool? _dialogResult;
+
         public bool? DialogResult {
             get {
                 return _dialogResult;
@@ -50,7 +49,6 @@ namespace NINA.EquipmentChooser {
             var ascomDevices = new ASCOM.Utilities.Profile();
 
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("FilterWheel")) {
-
                 try {
                     AscomFilterWheel cam = new AscomFilterWheel(device.Key, device.Value);
                     Devices.Add(cam);
@@ -69,7 +67,6 @@ namespace NINA.EquipmentChooser {
             var ascomDevices = new ASCOM.Utilities.Profile();
 
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Telescope")) {
-
                 try {
                     AscomTelescope cam = new AscomTelescope(device.Key, device.Value);
                     Devices.Add(cam);
@@ -86,7 +83,6 @@ namespace NINA.EquipmentChooser {
 
         public static Model.IDevice Show(EquipmentType equipment) {
             var chooser = new EquipmentChooserVM(equipment);
-
 
             System.Windows.Window win = new EquipmentChooser {
                 Title = "Choose Equipment",
@@ -105,10 +101,10 @@ namespace NINA.EquipmentChooser {
             } else {
                 return null;
             }
-
         }
 
         private ObservableCollection<Model.IDevice> _devices;
+
         public ObservableCollection<Model.IDevice> Devices {
             get {
                 if (_devices == null) {
@@ -122,6 +118,7 @@ namespace NINA.EquipmentChooser {
         }
 
         private Model.IDevice _selectedDevice;
+
         public Model.IDevice SelectedDevice {
             get {
                 return _selectedDevice;
@@ -143,7 +140,6 @@ namespace NINA.EquipmentChooser {
             }
 
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
-
                 try {
                     AscomCamera cam = new AscomCamera(device.Key, "ASCOM --- " + device.Value);
                     Devices.Add(cam);
@@ -151,8 +147,6 @@ namespace NINA.EquipmentChooser {
                     //only add cameras which are supported. e.g. x86 drivers will not work in x64
                 }
             }
-
-
 
             /*IntPtr cameraList;
             uint err = EDSDK.EdsGetCameraList(out cameraList);
@@ -167,9 +161,8 @@ namespace NINA.EquipmentChooser {
                     EDSDK.EdsDeviceInfo info;
                     err = EDSDK.EdsGetDeviceInfo(cam, out info);
 
-
                     Devices.Add(new EDCamera(cam, info));*/
-            /*err = EDSDK.EdsOpenSession(cam);                        
+            /*err = EDSDK.EdsOpenSession(cam);
 
             IntPtr saveTo = (IntPtr)EDSDK.EdsSaveTo.Host;
             err = EDSDK.EdsSetPropertyData(cam, EDSDK.PropID_SaveTo, 0, 4, saveTo);
@@ -184,39 +177,33 @@ namespace NINA.EquipmentChooser {
 
             err = EDSDK.EdsCloseSession(cam);*/
             /* }
-
-
          }*/
-
-
-
-
-
-
 
             if (Devices.Count > 0) {
                 var items = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.CameraSettings.Id select device);
                 if (items.Count() > 0) {
                     SelectedDevice = items.First();
-
                 } else {
                     SelectedDevice = Devices.First();
                 }
             }
         }
 
-
         [TypeConverter(typeof(EnumDescriptionTypeConverter))]
         public enum EquipmentType {
+
             [Description("LblCamera")]
             Camera,
+
             [Description("LblTelescope")]
             Telescope,
+
             [Description("LblFilterWheel")]
             FilterWheel
         }
 
-        ICommand _setupDialogCommand;
+        private ICommand _setupDialogCommand;
+
         public ICommand SetupDialogCommand {
             get {
                 return _setupDialogCommand;
@@ -225,6 +212,5 @@ namespace NINA.EquipmentChooser {
                 _setupDialogCommand = value;
             }
         }
-
     }
 }

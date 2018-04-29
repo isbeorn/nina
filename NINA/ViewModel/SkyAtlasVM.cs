@@ -2,22 +2,21 @@
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
-using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using OxyPlot;
 using OxyPlot.Axes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
+
     public class SkyAtlasVM : BaseVM {
+
         public SkyAtlasVM() {
             SelectedDate = DateTime.Now;
 
@@ -42,7 +41,6 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 InitializeFilters();
             }, MediatorMessages.LocaleChanged);
-
         }
 
         private void ResetRiseAndSetTimes() {
@@ -72,6 +70,7 @@ namespace NINA.ViewModel {
         }
 
         private Ticker _ticker;
+
         public Ticker Ticker {
             get {
                 if (_ticker == null) {
@@ -82,10 +81,10 @@ namespace NINA.ViewModel {
         }
 
         private AsyncObservableCollection<DataPoint> _nightDuration;
+
         public AsyncObservableCollection<DataPoint> NightDuration {
             get {
                 if (_nightDuration == null) {
-
                     var twilight = TwilightRiseAndSet;
                     if (twilight != null) {
                         _nightDuration = new AsyncObservableCollection<DataPoint>() {
@@ -100,10 +99,10 @@ namespace NINA.ViewModel {
         }
 
         private AsyncObservableCollection<DataPoint> _twilightDuration;
+
         public AsyncObservableCollection<DataPoint> TwilightDuration {
             get {
                 if (_twilightDuration == null) {
-
                     var twilight = SunRiseAndSet;
                     var night = TwilightRiseAndSet;
                     if (twilight != null) {
@@ -118,7 +117,6 @@ namespace NINA.ViewModel {
                         }
 
                         _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate), 90));
-
                     } else {
                         _twilightDuration = new AsyncObservableCollection<DataPoint>();
                     }
@@ -128,6 +126,7 @@ namespace NINA.ViewModel {
         }
 
         private Astrometry.RiseAndSetAstroEvent _twilightRiseAndSet;
+
         public Astrometry.RiseAndSetAstroEvent TwilightRiseAndSet {
             get {
                 if (_twilightRiseAndSet == null) {
@@ -143,6 +142,7 @@ namespace NINA.ViewModel {
         }
 
         private Astrometry.RiseAndSetAstroEvent _moonRiseAndSet;
+
         public Astrometry.RiseAndSetAstroEvent MoonRiseAndSet {
             get {
                 if (_moonRiseAndSet == null) {
@@ -158,6 +158,7 @@ namespace NINA.ViewModel {
         }
 
         private double? _illumination;
+
         public double? Illumination {
             get {
                 if (_illumination == null) {
@@ -173,6 +174,7 @@ namespace NINA.ViewModel {
         }
 
         private Astrometry.MoonPhase _moonPhase;
+
         public Astrometry.MoonPhase MoonPhase {
             get {
                 if (_moonPhase == Astrometry.MoonPhase.Unknown) {
@@ -188,6 +190,7 @@ namespace NINA.ViewModel {
         }
 
         private Astrometry.RiseAndSetAstroEvent _sunRiseAndSet;
+
         public Astrometry.RiseAndSetAstroEvent SunRiseAndSet {
             get {
                 if (_sunRiseAndSet == null) {
@@ -203,6 +206,7 @@ namespace NINA.ViewModel {
         }
 
         private DateTime _selectedDate;
+
         public DateTime SelectedDate {
             get {
                 return _selectedDate;
@@ -250,7 +254,6 @@ namespace NINA.ViewModel {
                         OrderByField.ToString().ToLower(),
                         OrderByDirection.ToString());
 
-
                     var longitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude;
                     var latitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude;
 
@@ -279,7 +282,6 @@ namespace NINA.ViewModel {
                         SearchResult = new PagedList<DeepSkyObject>(PageSize, result);
                     }
                 } catch (OperationCanceledException) {
-
                 }
                 return true;
             });
@@ -326,7 +328,6 @@ namespace NINA.ViewModel {
             SizesFrom.Add(new KeyValuePair<string, string>(string.Empty, string.Empty));
             SizesThrough.Add(new KeyValuePair<string, string>(string.Empty, string.Empty));
 
-
             SizesFrom.Add(new KeyValuePair<string, string>("1", "1 " + Locale.Loc.Instance["LblArcsec"]));
             SizesFrom.Add(new KeyValuePair<string, string>("5", "5 " + Locale.Loc.Instance["LblArcsec"]));
             SizesFrom.Add(new KeyValuePair<string, string>("10", "10 " + Locale.Loc.Instance["LblArcsec"]));
@@ -353,7 +354,6 @@ namespace NINA.ViewModel {
                 BrightnessFrom.Add(i.ToString());
                 BrightnessThrough.Add(i.ToString());
             }
-
         }
 
         private void InitializeConstellationFilters() {
@@ -382,7 +382,6 @@ namespace NINA.ViewModel {
             }
         }
 
-
         private void InitializeRADecFilters() {
             RAFrom = new AsyncObservableCollection<KeyValuePair<double?, string>>();
             RAThrough = new AsyncObservableCollection<KeyValuePair<double?, string>>();
@@ -400,7 +399,6 @@ namespace NINA.ViewModel {
             SelectedDecThrough = null;
 
             for (int i = 0; i < 25; i++) {
-
                 Astrometry.HoursToDegrees(i);
 
                 RAFrom.Add(new KeyValuePair<double?, string>(Astrometry.HoursToDegrees(i), i.ToString()));
@@ -453,6 +451,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
         public AsyncObservableCollection<DateTime> AltitudeTimesThrough {
             get {
                 return _altitudeTimesThrough;
@@ -462,6 +461,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
         public AsyncObservableCollection<KeyValuePair<double, string>> MinimumAltitudeDegrees {
             get {
                 return _minimumAltitudeDegrees;
@@ -471,6 +471,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
         public DateTime SelectedAltitudeTimeFrom {
             get {
                 return _selectedAltitudeTimeFrom;
@@ -480,6 +481,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
         public DateTime SelectedAltitudeTimeThrough {
             get {
                 return _selectedAltitudeTimeThrough;
@@ -489,6 +491,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
         public double SelectedMinimumAltitudeDegrees {
             get {
                 return _selectedMinimumAltitudeDegrees;
@@ -498,8 +501,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-
 
         public string SearchObjectName {
             get {
@@ -776,6 +777,7 @@ namespace NINA.ViewModel {
         public ICommand SetFramingAssistantCoordinatesCommand { get; private set; }
 
         private int _pageSize;
+
         public int PageSize {
             get {
                 return _pageSize;
@@ -787,6 +789,7 @@ namespace NINA.ViewModel {
         }
 
         private SkyAtlasOrderByDirectionEnum _orderByDirection;
+
         public SkyAtlasOrderByDirectionEnum OrderByDirection {
             get {
                 return _orderByDirection;
@@ -798,6 +801,7 @@ namespace NINA.ViewModel {
         }
 
         private SkyAtlasOrderByFieldsEnum _orderByField;
+
         public SkyAtlasOrderByFieldsEnum OrderByField {
             get {
                 return _orderByField;
@@ -820,12 +824,14 @@ namespace NINA.ViewModel {
         }
 
         public class DSOObjectType : BaseINPC {
+
             public DSOObjectType(string s) {
                 Name = s;
                 Selected = false;
             }
 
             private bool _selected;
+
             public bool Selected {
                 get {
                     return _selected;
@@ -837,6 +843,7 @@ namespace NINA.ViewModel {
             }
 
             private string _name;
+
             public string Name {
                 get {
                     return _name;
@@ -846,11 +853,11 @@ namespace NINA.ViewModel {
                     RaisePropertyChanged();
                 }
             }
-
         }
     }
 
     public class PagedList<T> : BaseINPC {
+
         public PagedList(int pageSize, IEnumerable<T> items) {
             _items = new List<T>(items);
             PageSize = pageSize;
@@ -872,6 +879,7 @@ namespace NINA.ViewModel {
         private List<T> _items;
 
         private T _selectedItem;
+
         public T SelectedItem {
             get {
                 return _selectedItem;
@@ -921,6 +929,7 @@ namespace NINA.ViewModel {
         }
 
         private AsyncObservableCollection<T> _itemPage = new AsyncObservableCollection<T>();
+
         public AsyncObservableCollection<T> ItemPage {
             get {
                 return _itemPage;
@@ -952,6 +961,7 @@ namespace NINA.ViewModel {
         }
 
         private int _pageSize;
+
         public int PageSize {
             get {
                 return _pageSize;
@@ -963,6 +973,7 @@ namespace NINA.ViewModel {
         }
 
         private int _currentPage;
+
         public int CurrentPage {
             get {
                 return _currentPage;
@@ -972,11 +983,11 @@ namespace NINA.ViewModel {
                     _currentPage = value;
                     RaisePropertyChanged();
                 }
-
             }
         }
 
         private AsyncObservableCollection<int> _pages = new AsyncObservableCollection<int>();
+
         public AsyncObservableCollection<int> Pages {
             get {
                 return _pages;
@@ -1002,26 +1013,35 @@ namespace NINA.ViewModel {
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SkyAtlasOrderByFieldsEnum {
+
         [Description("LblSize")]
         SIZEMAX,
+
         [Description("LblApparentMagnitude")]
         MAGNITUDE,
+
         [Description("LblConstellation")]
         CONSTELLATION,
+
         [Description("LblRA")]
         RA,
+
         [Description("LblDec")]
         DEC,
+
         [Description("LblSurfaceBrightness")]
         SURFACEBRIGHTNESS,
+
         [Description("LblObjectType")]
         DSOTYPE
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SkyAtlasOrderByDirectionEnum {
+
         [Description("LblDescending")]
         DESC,
+
         [Description("LblAscending")]
         ASC
     }

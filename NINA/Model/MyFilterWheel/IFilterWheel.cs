@@ -1,14 +1,11 @@
 ﻿using NINA.Utility;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Model.MyFilterWheel {
-    interface IFilterWheel : IDevice {
+
+    internal interface IFilterWheel : IDevice {
         bool Connected { get; }
         string Description { get; }
         string DriverInfo { get; }
@@ -19,14 +16,14 @@ namespace NINA.Model.MyFilterWheel {
         short Position { get; set; }
         ArrayList SupportedActions { get; }
         AsyncObservableCollection<FilterInfo> Filters { get; }
-
-
     }
 
     [Serializable()]
     [XmlRoot(ElementName = nameof(FilterInfo))]
     public class FilterInfo : BaseINPC {
+
         private FilterInfo() { }
+
         private string _name;
         private int _focusOffset;
         private short _position;
@@ -43,6 +40,7 @@ namespace NINA.Model.MyFilterWheel {
                 RaisePropertyChanged();
             }
         }
+
         [XmlElement(nameof(FocusOffset))]
         public int FocusOffset {
             get {
@@ -54,6 +52,7 @@ namespace NINA.Model.MyFilterWheel {
                 RaisePropertyChanged();
             }
         }
+
         [XmlElement(nameof(Position))]
         public short Position {
             get {

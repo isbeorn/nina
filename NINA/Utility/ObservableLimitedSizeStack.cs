@@ -4,15 +4,14 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
 namespace NINA.Utility {
+
     public class AsyncObservableLimitedSizedStack<T> : ObservableLimitedSizedStack<T>, INotifyCollectionChanged, IEnumerable {
+
         private SynchronizationContext _synchronizationContext = new DispatcherSynchronizationContext(
                     Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher);
 
@@ -54,8 +53,8 @@ namespace NINA.Utility {
     }
 
     public class ObservableLimitedSizedStack<T> : ICollection<T>, INotifyCollectionChanged, INotifyPropertyChanged, IEnumerable {
-
         private int _maxSize;
+
         public ObservableLimitedSizedStack(int maxSize) {
             _underLyingLinkedList = new LinkedList<T>();
             _maxSize = maxSize;
@@ -189,6 +188,7 @@ namespace NINA.Utility {
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
+
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
             this.CollectionChanged?.Invoke(this, e);
             OnPropertyChanged(nameof(Count));
@@ -207,7 +207,6 @@ namespace NINA.Utility {
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
 
         IEnumerator IEnumerable.GetEnumerator() {
             return (_underLyingLinkedList as IEnumerable).GetEnumerator();
