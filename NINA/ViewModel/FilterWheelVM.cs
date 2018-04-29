@@ -242,6 +242,7 @@ namespace NINA.ViewModel {
 
         public void Disconnect() {
             if (FW != null) {
+                _changeFilterCancellationSource?.Cancel();
                 FW.Disconnect();
                 FW = null;
                 RaisePropertyChanged(nameof(FW));
