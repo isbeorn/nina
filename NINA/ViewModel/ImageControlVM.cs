@@ -6,6 +6,7 @@ using NINA.Model.MyFocuser;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -353,6 +354,11 @@ namespace NINA.ViewModel {
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
                     }
 
+                    if (parameters != null)
+                    {
+                        iarr.Statistics.ExposureTime = parameters.ExposureTime;
+                    }
+
                     await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                         Image = null;
                         ImgArr = null;
@@ -362,7 +368,6 @@ namespace NINA.ViewModel {
                         Image = source;
                         ImgStatisticsVM.Add(ImgArr.Statistics);
                         ImgHistoryVM.Add(iarr.Statistics);
-
                     }));
 
                     BahtinovDragMove(new Vector(0, 0));
@@ -467,12 +472,16 @@ namespace NINA.ViewModel {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
                     completefilename = SaveFits(completefilename, parameters);
                 } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF) {
-                    completefilename = SaveTiff(completefilename);
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.None);
+                } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_ZIP) {
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.Zip);
+                } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_LZW) {
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.Lzw);
                 } else if (ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.XISF) {
                     if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
                     completefilename = SaveXisf(completefilename, parameters);
                 } else {
-                    completefilename = SaveTiff(completefilename);
+                    completefilename = SaveTiff(completefilename, TiffCompressOption.None);
                 }
                 await Mediator.Instance.RequestAsync(
                     new AddThumbnailMessage() {
@@ -654,7 +663,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string SaveTiff(String path) {
+        private string SaveTiff(String path, TiffCompressOption c) {
 
             try {
                 BitmapSource bmpSource = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
@@ -664,7 +673,7 @@ namespace NINA.ViewModel {
 
                 using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                     TiffBitmapEncoder encoder = new TiffBitmapEncoder();
-                    encoder.Compression = TiffCompressOption.None;
+                    encoder.Compression = c;
                     encoder.Frames.Add(BitmapFrame.Create(bmpSource));
                     encoder.Save(fs);
                 }

@@ -1,4 +1,5 @@
-﻿using NINA.Utility.Mediator;
+﻿using NINA.Utility.Enum;
+using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +56,78 @@ namespace NINA.Utility.Profile {
             }
             set {
                 serialPort = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
+
+        private double _readNoise = 0.0;
+        [XmlElement(nameof(ReadNoise))]
+        public double ReadNoise {
+            get
+            {
+                return _readNoise;
+            }
+            set
+            {
+                _readNoise = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
+
+        private double _bitDepth = 16;
+        [XmlElement(nameof(BitDepth))]
+        public double BitDepth
+        {
+            get
+            {
+                return _bitDepth;
+            }
+            set
+            {
+                _bitDepth = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
+
+        private double _offset = 0;
+        [XmlElement(nameof(Offset))]
+        public double Offset
+        {
+            get
+            {
+                return _offset;
+            }
+            set
+            {
+                _offset = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
+
+
+        private double _fullWellCapacity = 20000;
+        [XmlElement(nameof(FullWellCapacity))]
+        public double FullWellCapacity
+        {
+            get
+            {
+                return _fullWellCapacity;
+            }
+            set
+            {
+                _fullWellCapacity = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
+
+        private double _downloadToDataRatio = 9;
+        [XmlElement(nameof(DownloadToDataRatio))]
+        public double DownloadToDataRatio {
+            get {
+                return _downloadToDataRatio;
+            }
+            set {
+                _downloadToDataRatio = value;
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }

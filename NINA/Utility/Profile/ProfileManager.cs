@@ -1,4 +1,5 @@
 ﻿using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace NINA.Utility.Profile {
 
         public static ProfileManager Instance { get { return lazy.Value; } }
 
-        string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
+        public static string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
 
 
         public Profiles Profiles { get; set; }
@@ -72,6 +73,9 @@ namespace NINA.Utility.Profile {
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(Profiles));
 
                     Profiles = (Profiles)xmlSerializer.Deserialize(reader);
+                    foreach(Profile p in Profiles.ProfileList) {
+                        p.MatchFilterSettingsWithFilterList();
+                    }
                     Profiles.SelectActiveProfile();
                 } catch (Exception ex) {
                     LoadDefaultProfile();

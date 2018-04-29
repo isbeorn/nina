@@ -1,4 +1,5 @@
-﻿using NINA.Utility.Profile;
+﻿using NINA.Utility.Enum;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.IO;
