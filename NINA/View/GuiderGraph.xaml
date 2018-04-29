@@ -20,7 +20,10 @@
         </Grid.ColumnDefinitions>
         <StackPanel>
             <!--<TextBlock Text="{ns:Loc LblYAxisScale}" />-->
-            <ComboBox SelectedValue="{Binding MaxY}" SelectedValuePath="Content" ItemStringFormat="y: +/-{0}&quot;">
+            <ComboBox
+                ItemStringFormat="y: +/-{0}&quot;"
+                SelectedValue="{Binding MaxY}"
+                SelectedValuePath="Content">
                 <ComboBoxItem>0.25</ComboBoxItem>
                 <ComboBoxItem>0.5</ComboBoxItem>
                 <ComboBoxItem>1</ComboBoxItem>
@@ -30,14 +33,21 @@
                 <ComboBoxItem>16</ComboBoxItem>
             </ComboBox>
             <!--<TextBlock Text="{ns:Loc LblXAxisScale}" />-->
-            <ComboBox SelectedValue="{Binding HistorySize}" MaxWidth="60" SelectedValuePath="Content" ItemStringFormat="x: {0}">
+            <ComboBox
+                MaxWidth="60"
+                ItemStringFormat="x: {0}"
+                SelectedValue="{Binding HistorySize}"
+                SelectedValuePath="Content">
                 <ComboBoxItem>50</ComboBoxItem>
                 <ComboBoxItem>100</ComboBoxItem>
                 <ComboBoxItem>200</ComboBoxItem>
                 <ComboBoxItem>400</ComboBoxItem>
             </ComboBox>
             <!--<TextBlock Text="{ns:Loc LblYAxisUnits}" />-->
-            <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type util:GuiderScaleEnum}}}" SelectedItem="{Binding GuiderScale}" ItemStringFormat="unit: {0}" />
+            <ComboBox
+                ItemStringFormat="unit: {0}"
+                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}"
+                SelectedItem="{Binding GuiderScale}" />
             <TextBlock Text="{Binding RMSRAText}" />
             <TextBlock Text="{Binding RMSDecText}" />
             <TextBlock Text="{Binding RMSTotalText}" />
