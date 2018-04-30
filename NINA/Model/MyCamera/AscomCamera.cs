@@ -901,28 +901,29 @@ namespace NINA.Model.MyCamera {
         }
 
         public async Task<ImageArray> DownloadExposure(CancellationToken token) {
-            return await Task<ImageArray>.Run(async () => {
-                try {
-                    ASCOM.Utilities.Util U = Utility.Utility.AscomUtil;
-                    while (!ImageReady && Connected) {
-                        //Console.Write(".");
-                        U.WaitForMilliseconds(10);
-                        token.ThrowIfCancellationRequested();
-                    }
+            using (MyStopWatch.Measure("ASCOM Download")) {
+                return await Task.Run(async () => {
+                    try {
+                        using (MyStopWatch.Measure("ASCOM WaitForCamera")) {
+                            ASCOM.Utilities.Util U = Utility.Utility.AscomUtil;
+                            while (!ImageReady && Connected) {
+                                //Console.Write(".");
+                                U.WaitForMilliseconds(100);
+                                token.ThrowIfCancellationRequested();
+                            }
+                        }
 
-                    Array arr;
-                    if (ImageArray.GetType() == typeof(Int32[,])) {
-                        arr = (Int32[,])ImageArray;
-                        return await MyCamera.ImageArray.CreateInstance(arr, SensorType != SensorType.Monochrome);
-                    } else {
-                        arr = (Int32[,,])ImageArray;
-                        return await MyCamera.ImageArray.CreateInstance(arr, false);
+                        if (SensorType != SensorType.Color) {
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, SensorType != SensorType.Monochrome);
+                        } else {
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, false);
+                        }
+                    } catch (OperationCanceledException) {
+                    } catch {
                     }
-                } catch (OperationCanceledException) {
-                } catch {
-                }
-                return null;
-            });
+                    return null;
+                });
+            }
         }
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
