@@ -515,9 +515,12 @@ namespace NINA.ViewModel {
 
             /* Atik */
             Logger.Trace("Adding Atik Cameras");
-            for (int i = 0; i < AtikCameraDll.RefreshDevicesCount(); i++) {
-                var cam = new AtikCamera(i);
-                Devices.Add(cam);                
+            var atikDevices = AtikCameraDll.RefreshDevicesCount();
+            for (int i = 0; i < atikDevices; i++) {
+                if (AtikCameraDll.ArtemisDeviceIsCamera(i)) {
+                    var cam = new AtikCamera(i);
+                    Devices.Add(cam);
+                }
             }
 
             DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.CameraSettings.Id);

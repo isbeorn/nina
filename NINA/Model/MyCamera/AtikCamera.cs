@@ -12,7 +12,9 @@ using NINA.Utility.AtikSDK;
 using NINA.Utility.Notification;
 
 namespace NINA.Model.MyCamera {
+
     internal class AtikCamera : BaseINPC, ICamera {
+
         public AtikCamera(int id) {
             _cameraId = id;
         }
@@ -95,7 +97,7 @@ namespace NINA.Model.MyCamera {
 
         public string Description {
             get {
-                return Info.Description;
+                return CleanedUpString(Info.Manufacturer) + " " + CleanedUpString(Info.Description);
             }
         }
 
@@ -185,13 +187,12 @@ namespace NINA.Model.MyCamera {
             }
 
             set {
-                
             }
         }
 
         public double CoolerPower {
             get {
-                if(CanSetCCDTemperature) {
+                if (CanSetCCDTemperature) {
                     return AtikCameraDll.CoolerPower(_cameraP);
                 } else {
                     return double.NaN;
@@ -263,7 +264,6 @@ namespace NINA.Model.MyCamera {
             }
 
             set {
-
             }
         }
 
@@ -274,9 +274,10 @@ namespace NINA.Model.MyCamera {
         }
 
         private AsyncObservableCollection<BinningMode> _binningModes;
+
         public AsyncObservableCollection<BinningMode> BinningModes {
             get {
-                if(_binningModes == null) { 
+                if (_binningModes == null) {
                     _binningModes = new AsyncObservableCollection<BinningMode>();
                     for (short i = 1; i <= MaxBinX; i++) {
                         _binningModes.Add(new BinningMode(i, i));
@@ -294,14 +295,18 @@ namespace NINA.Model.MyCamera {
 
         public string Id {
             get {
-                return Info.Description;
+                return CleanedUpString(Info.Description);
             }
         }
 
         public string Name {
             get {
-                return Info.Description;
+                return CleanedUpString(Info.Description);
             }
+        }
+
+        private string CleanedUpString(char[] values) {
+            return string.Join("", values.Take(Array.IndexOf(values, '\0')));
         }
 
         public void AbortExposure() {
@@ -334,20 +339,21 @@ namespace NINA.Model.MyCamera {
         }
 
         public async Task<ImageArray> DownloadExposure(CancellationToken token) {
-            return await Task.Run<ImageArray>(async () => {
-                try {
+            using (MyStopWatch.Measure("ATIK Download")) {
+                return await Task.Run<ImageArray>(async () => {
+                    try {
+                        do {
+                            await Task.Delay(100, token);
+                        } while (!AtikCameraDll.ImageReady(_cameraP));
 
-                    do {
-                        await Task.Delay(100, token);
-                    } while (!AtikCameraDll.ImageReady(_cameraP));
-
-                    return await AtikCameraDll.DownloadExposure(_cameraP, SensorType != SensorType.Monochrome);
-                } catch (OperationCanceledException) {
-                } catch (Exception ex) {
-                    Notification.ShowError(ex.Message);
-                }
-                return null;
-            });
+                        return await AtikCameraDll.DownloadExposure(_cameraP, SensorType != SensorType.Monochrome);
+                    } catch (OperationCanceledException) {
+                    } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
+                    }
+                    return null;
+                });
+            }
         }
 
         public void SetBinning(short x, short y) {
@@ -355,7 +361,6 @@ namespace NINA.Model.MyCamera {
         }
 
         public void SetupDialog() {
-
         }
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
