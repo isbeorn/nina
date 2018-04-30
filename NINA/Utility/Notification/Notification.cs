@@ -1,25 +1,23 @@
-﻿using NINA.Utility.Notification;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using ToastNotifications;
 using ToastNotifications.Core;
 using ToastNotifications.Lifetime;
-using ToastNotifications.Messages;
 using ToastNotifications.Position;
 using ToastNotifications.Utilities;
 
 namespace NINA.Utility.Notification {
-    static class Notification {
+
+    internal static class Notification {
+
         static Notification() {
             lock (_lock) {
                 Initialize();
@@ -28,9 +26,9 @@ namespace NINA.Utility.Notification {
 
         private static Dispatcher dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
-        static Notifier notifier;
+        private static Notifier notifier;
 
-        static object _lock = new object();
+        private static object _lock = new object();
 
         private static void Initialize() {
             notifier = new Notifier(cfg => {
@@ -45,7 +43,6 @@ namespace NINA.Utility.Notification {
                     offsetY: 40);
 
                 cfg.LifetimeSupervisor = new CustomLifetimeSupervisor();
-                
             });
         }
 
@@ -54,7 +51,7 @@ namespace NINA.Utility.Notification {
         }
 
         public static void ShowInformation(string message, TimeSpan lifetime) {
-            lock(_lock) {
+            lock (_lock) {
                 dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                     notifier.Notify<CustomNotification>(() => new CustomNotification(message));
                 }));
@@ -123,6 +120,7 @@ namespace NINA.Utility.Notification {
         public bool IsNeverEnding { get; }
 
         private string _message;
+
         public string Message {
             get {
                 return _message;
@@ -134,6 +132,7 @@ namespace NINA.Utility.Notification {
         }
 
         private Geometry _symbol;
+
         public Geometry Symbol {
             get {
                 return _symbol;
@@ -145,6 +144,7 @@ namespace NINA.Utility.Notification {
         }
 
         private Brush _color;
+
         public Brush Color {
             get {
                 return _color;
@@ -156,6 +156,7 @@ namespace NINA.Utility.Notification {
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected virtual void RaisePropertyChanged([CallerMemberName]string propertyName = null) {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -183,11 +184,10 @@ namespace NINA.Utility.Notification {
 
         public void PushNotification(INotification notification) {
             var neverEnding = false;
-            if(notification.GetType() == typeof(CustomNotification)) {
+            if (notification.GetType() == typeof(CustomNotification)) {
                 var customNotification = (CustomNotification)notification;
                 neverEnding = customNotification.IsNeverEnding;
             }
-
 
             if (_interval.IsRunning == false)
                 TimerStart();
@@ -210,7 +210,7 @@ namespace NINA.Utility.Notification {
 
             foreach (var n in notificationsToRemove)
                 CloseNotification(n.Notification);
-            
+
             _notifications.Add(notification, neverEnding);
             RequestShowNotification(new ShowNotificationEventArgs(notification));
         }
@@ -269,7 +269,6 @@ namespace NINA.Utility.Notification {
         }
 
         public void ClearMessages(string msg) {
-
             if (string.IsNullOrWhiteSpace(msg)) {
                 var notificationsToRemove = _notifications
                     .Select(x => x.Value)
@@ -289,9 +288,8 @@ namespace NINA.Utility.Notification {
             }
         }
 
-
-
         public event EventHandler<ShowNotificationEventArgs> ShowNotificationRequested;
+
         public event EventHandler<CloseNotificationEventArgs> CloseNotificationRequested;
     }
 
@@ -301,10 +299,10 @@ namespace NINA.Utility.Notification {
         public NotificationMetaData Add(INotification notification, bool neverEnding) {
             Interlocked.Increment(ref _id);
             var time = DateTimeNow.Local.TimeOfDay;
-            if(neverEnding) { time = DateTime.MaxValue.TimeOfDay; }
+            if (neverEnding) { time = DateTime.MaxValue.TimeOfDay; }
             var metaData = new NotificationMetaData(notification, _id, time);
             this[_id] = metaData;
             return metaData;
-        }        
+        }
     }
 }

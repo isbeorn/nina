@@ -68,7 +68,6 @@
                     MarkerFill="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
                     MarkerType="Circle"
                     YAxisKey="Secondary" />
-
             </oxy:Plot.Series>
         </oxy:Plot>
     </Grid>

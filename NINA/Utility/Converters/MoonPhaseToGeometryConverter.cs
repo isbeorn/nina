@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace NINA.Utility.Converters {
+
     public class MoonPhaseToGeometryConverter : IValueConverter {
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             Astrometry.Astrometry.MoonPhase phase = (Astrometry.Astrometry.MoonPhase)value;
             if (phase == Astrometry.Astrometry.MoonPhase.NewMoon) {

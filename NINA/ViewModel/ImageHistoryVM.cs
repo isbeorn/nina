@@ -1,12 +1,8 @@
 ﻿using NINA.Model.MyCamera;
 using NINA.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.ViewModel {
+
     public class ImageHistoryVM : DockableVM {
 
         public ImageHistoryVM() {
@@ -15,11 +11,12 @@ namespace NINA.ViewModel {
 
             ContentId = nameof(ImageHistoryVM);
             _nextStatHistoryId = 1;
-            ImgStatHistory = new AsyncObservableLimitedSizedStack<ImageStatistics>(25);
+            ImgStatHistory = new AsyncObservableLimitedSizedStack<ImageStatistics>(100);
         }
 
         private int _nextStatHistoryId;
         private AsyncObservableLimitedSizedStack<ImageStatistics> _imgStatHistory;
+
         public AsyncObservableLimitedSizedStack<ImageStatistics> ImgStatHistory {
             get {
                 return _imgStatHistory;

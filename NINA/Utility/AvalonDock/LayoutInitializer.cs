@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xceed.Wpf.AvalonDock.Layout;
 
 namespace NINA.Utility.AvalonDock {
-    class LayoutInitializer : ILayoutUpdateStrategy {
 
+    internal class LayoutInitializer : ILayoutUpdateStrategy {
         public static string LAYOUTFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "avalondock.config");
 
         public bool BeforeInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableToShow, ILayoutContainer destinationContainer) {
             //AD wants to add the anchorable into destinationContainer
-            //just for test provide a new anchorablepane 
+            //just for test provide a new anchorablepane
             //if the pane is floating let the manager go ahead
             LayoutAnchorablePane destPane = destinationContainer as LayoutAnchorablePane;
             if (destinationContainer != null &&
@@ -27,20 +23,16 @@ namespace NINA.Utility.AvalonDock {
             }
 
             return false;
-
         }
-
 
         public void AfterInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableShown) {
         }
-
 
         public bool BeforeInsertDocument(LayoutRoot layout, LayoutDocument anchorableToShow, ILayoutContainer destinationContainer) {
             return false;
         }
 
         public void AfterInsertDocument(LayoutRoot layout, LayoutDocument anchorableShown) {
-
         }
     }
 }

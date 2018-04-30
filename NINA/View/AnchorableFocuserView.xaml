@@ -108,7 +108,6 @@
                         <ninactrl:CancellableButton
                             Height="35"
                             Margin="10"
-                            HorizontalAlignment="Left"
                             ButtonText="{ns:Loc LblMove}"
                             CancelButtonImage="{StaticResource CancelSVG}"
                             CancelCommand="{Binding HaltFocuserCommand}"

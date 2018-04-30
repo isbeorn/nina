@@ -21,7 +21,6 @@
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}, Path=IsSelected}" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
             </DataTrigger>
-
         </Style.Triggers>
     </Style>
 

@@ -1,32 +1,28 @@
-﻿using NINA.Model;
-using NINA.Utility;
+﻿using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using ToastNotifications;
 
 namespace NINA.ViewModel {
-    class ApplicationVM : BaseVM {
+
+    internal class ApplicationVM : BaseVM {
 
         public ApplicationVM() {
+            var i = ProfileManager.Instance; //i.Save();
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
+            CheckProfileCommand = new RelayCommand(LoadProfile);
             CheckUpdateCommand = new AsyncCommand<bool>(() => CheckUpdate());
             ConnectAllDevicesCommand = new AsyncCommand<bool>(async () => {
                 var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblReconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag == MessageBoxResult.OK) {
                     return await Task<bool>.Run(async () => {
                         var cam = Mediator.Instance.RequestAsync(new ConnectCameraMessage());
-                        var fw = Mediator.Instance.RequestAsync(new ConnectFilterWheelMessage()); 
+                        var fw = Mediator.Instance.RequestAsync(new ConnectFilterWheelMessage());
                         var telescope = Mediator.Instance.RequestAsync(new ConnectTelescopeMessage());
                         var focuser = Mediator.Instance.RequestAsync(new ConnectFocuserMessage());
                         await Task.WhenAll(cam, fw, telescope, focuser);
@@ -34,7 +30,7 @@ namespace NINA.ViewModel {
                     });
                 } else {
                     return false;
-                }                
+                }
             });
             DisconnectAllDevicesCommand = new RelayCommand((object o) => {
                 var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblDisconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
@@ -48,6 +44,12 @@ namespace NINA.ViewModel {
             InitAvalonDockLayout();
 
             MeridianFlipVM = new MeridianFlipVM();
+        }
+
+        private void LoadProfile(object obj) {
+            if (ProfileManager.Instance.Profiles.ProfileList.Count > 1) {
+                new ProfileSelectVM().SelectProfile();
+            }
         }
 
         private async Task<bool> CheckUpdate() {
@@ -72,13 +74,12 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(AutoFocusVM);
         }
 
-
-
         private void RegisterMediatorMessages() {
-           
+            Mediator.Instance.RegisterRequest(new ChangeApplicationTabMessageHandle((ChangeApplicationTabMessage m) => {
+                TabIndex = (int)m.Tab;
+                return true;
+            }));
         }
-
-
 
         public string Version {
             get {
@@ -86,10 +87,23 @@ namespace NINA.ViewModel {
             }
         }
 
+        private int _tabIndex;
+
+        public int TabIndex {
+            get {
+                return _tabIndex;
+            }
+            set {
+                _tabIndex = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private ApplicationStatusVM _applicationStatusVM;
+
         public ApplicationStatusVM ApplicationStatusVM {
             get {
-                if(_applicationStatusVM == null) {
+                if (_applicationStatusVM == null) {
                     _applicationStatusVM = new ApplicationStatusVM();
                 }
                 return _applicationStatusVM;
@@ -99,7 +113,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
 
         private static void MaximizeWindow(object obj) {
             if (Application.Current.MainWindow.WindowState == WindowState.Maximized) {
@@ -125,7 +138,6 @@ namespace NINA.ViewModel {
                 DisconnectEquipment();
                 Application.Current.Shutdown();
             }
-
         }
 
         public void DisconnectEquipment() {
@@ -161,6 +173,7 @@ namespace NINA.ViewModel {
         }
 
         private DockManagerVM _dockManagerVM;
+
         public DockManagerVM DockManagerVM {
             get {
                 if (_dockManagerVM == null) {
@@ -175,6 +188,7 @@ namespace NINA.ViewModel {
         }
 
         private MeridianFlipVM _meridianFlipVM;
+
         public MeridianFlipVM MeridianFlipVM {
             get {
                 return _meridianFlipVM;
@@ -186,9 +200,10 @@ namespace NINA.ViewModel {
         }
 
         private ThumbnailVM _thumbnailVM;
+
         public ThumbnailVM ThumbnailVM {
             get {
-                if(_thumbnailVM == null) {
+                if (_thumbnailVM == null) {
                     _thumbnailVM = new ThumbnailVM();
                 }
                 return _thumbnailVM;
@@ -200,11 +215,11 @@ namespace NINA.ViewModel {
         }
 
         private CameraVM _cameraVM;
+
         public CameraVM CameraVM {
             get {
                 if (_cameraVM == null) {
                     _cameraVM = new CameraVM();
-
                 }
                 return _cameraVM;
             }
@@ -215,6 +230,7 @@ namespace NINA.ViewModel {
         }
 
         private FilterWheelVM _filterWheelVM;
+
         public FilterWheelVM FilterWheelVM {
             get {
                 if (_filterWheelVM == null) {
@@ -229,6 +245,7 @@ namespace NINA.ViewModel {
         }
 
         private FocuserVM _focuserVM;
+
         public FocuserVM FocuserVM {
             get {
                 if (_focuserVM == null) {
@@ -243,11 +260,11 @@ namespace NINA.ViewModel {
         }
 
         private WeatherDataVM _weatherDataVM;
+
         public WeatherDataVM WeatherDataVM {
             get {
                 if (_weatherDataVM == null) {
                     _weatherDataVM = new WeatherDataVM();
-
                 }
                 return _weatherDataVM;
             }
@@ -258,6 +275,7 @@ namespace NINA.ViewModel {
         }
 
         private SequenceVM _seqVM;
+
         public SequenceVM SeqVM {
             get {
                 if (_seqVM == null) {
@@ -272,6 +290,7 @@ namespace NINA.ViewModel {
         }
 
         private ImagingVM _imagingVM;
+
         public ImagingVM ImagingVM {
             get {
                 if (_imagingVM == null) {
@@ -286,6 +305,7 @@ namespace NINA.ViewModel {
         }
 
         private PolarAlignmentVM _polarAlignVM;
+
         public PolarAlignmentVM PolarAlignVM {
             get {
                 if (_polarAlignVM == null) {
@@ -300,6 +320,7 @@ namespace NINA.ViewModel {
         }
 
         private PlatesolveVM _platesolveVM;
+
         public PlatesolveVM PlatesolveVM {
             get {
                 if (_platesolveVM == null) {
@@ -314,6 +335,7 @@ namespace NINA.ViewModel {
         }
 
         private TelescopeVM _telescopeVM;
+
         public TelescopeVM TelescopeVM {
             get {
                 if (_telescopeVM == null) {
@@ -328,6 +350,7 @@ namespace NINA.ViewModel {
         }
 
         private GuiderVM _guiderVM;
+
         public GuiderVM GuiderVM {
             get {
                 if (_guiderVM == null) {
@@ -342,6 +365,7 @@ namespace NINA.ViewModel {
         }
 
         private OptionsVM _optionsVM;
+
         public OptionsVM OptionsVM {
             get {
                 if (_optionsVM == null) {
@@ -356,6 +380,7 @@ namespace NINA.ViewModel {
         }
 
         private AutoFocusVM _autoFocusVM;
+
         public AutoFocusVM AutoFocusVM {
             get {
                 if (_autoFocusVM == null) {
@@ -369,7 +394,23 @@ namespace NINA.ViewModel {
             }
         }
 
+        private FramingAssistantVM _framingAssistantVM;
+
+        public FramingAssistantVM FramingAssistantVM {
+            get {
+                if (_framingAssistantVM == null) {
+                    _framingAssistantVM = new FramingAssistantVM();
+                }
+                return _framingAssistantVM;
+            }
+            set {
+                _framingAssistantVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private SkyAtlasVM _skyAtlasVM;
+
         public SkyAtlasVM SkyAtlasVM {
             get {
                 if (_skyAtlasVM == null) {
@@ -386,9 +427,22 @@ namespace NINA.ViewModel {
         public ICommand MinimizeWindowCommand { get; private set; }
 
         public ICommand MaximizeWindowCommand { get; private set; }
+        public ICommand CheckProfileCommand { get; }
         public ICommand CheckUpdateCommand { get; private set; }
         public ICommand ExitCommand { get; private set; }
         public ICommand ConnectAllDevicesCommand { get; private set; }
         public ICommand DisconnectAllDevicesCommand { get; private set; }
+    }
+
+    public enum ApplicationTab {
+        CAMERA,
+        FWANDFOCUSER,
+        TELESCOPE,
+        GUIDER,
+        SKYATLAS,
+        FRAMINGASSISTANT,
+        SEQUENCE,
+        IMAGING,
+        OPTIONS
     }
 }

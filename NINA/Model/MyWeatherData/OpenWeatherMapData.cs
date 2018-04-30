@@ -1,15 +1,14 @@
 ﻿using Newtonsoft.Json.Linq;
 using NINA.Utility;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyWeatherData {
-    class OpenWeatherMapData : BaseINPC, IWeatherData {
+
+    internal class OpenWeatherMapData : BaseINPC, IWeatherData {
         public double Latitude { get; private set; }
 
         public double Longitude { get; private set; }
@@ -37,16 +36,16 @@ namespace NINA.Model.MyWeatherData {
         }
 
         public async Task<bool> Update() {
-            var apikey = Settings.OpenWeatherMapAPIKey;
-            var latitude = Settings.Latitude;
-            var longitude = Settings.Longitude;
+            var apikey = ProfileManager.Instance.ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey;
+            var latitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude;
+            var longitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude;
 
             if (string.IsNullOrEmpty(apikey)) {
                 Notification.ShowError("Unable to get weather data! No API Key set");
                 return false;
             }
 
-            var url = Settings.OpenWeatherMapUrl + "?appid={0}&lat={1}&lon={2}";
+            var url = ProfileManager.Instance.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl + "?appid={0}&lat={1}&lon={2}";
             string result = await Utility.Utility.HttpGetRequest(new CancellationToken(), url, apikey, latitude, longitude);
 
             JObject o = JObject.Parse(result);
@@ -76,7 +75,6 @@ namespace NINA.Model.MyWeatherData {
             public int id { get; set; }
             public string name { get; set; }
 
-
             public class OpenWeatherDataResponseMain {
                 public double temp { get; set; }
                 public double pressure { get; set; }
@@ -84,17 +82,21 @@ namespace NINA.Model.MyWeatherData {
                 public double temp_min { get; set; }
                 public double temp_max { get; set; }
             }
+
             public class OpenWeatherDataResponseCoord {
                 public double lon { get; set; }
                 public double lat { get; set; }
             }
+
             public class OpenWeatherDataResponseSys {
                 public double sunrise { get; set; }
                 public double sunset { get; set; }
             }
+
             public class OpenWeatherDataResponseClouds {
                 public double all { get; set; }
             }
+
             public class OpenWeatherDataResponseWind {
                 public double speed { get; set; }
                 public double deg { get; set; }

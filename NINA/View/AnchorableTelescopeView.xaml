@@ -53,7 +53,6 @@
 
                     <TextBlock Text="{ns:Loc LblSiderealTime}" />
                     <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.SiderealTimeString}" />
-
                 </UniformGrid>
             </Border>
             <Border
@@ -64,7 +63,6 @@
 
                     <TextBlock Text="{ns:Loc LblMeridianIn}" />
                     <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.HoursToMeridianString}" />
-
                 </UniformGrid>
             </Border>
             <Border
@@ -75,7 +73,6 @@
 
                     <TextBlock Text="{ns:Loc LblRightAscension}" />
                     <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.RightAscensionString}" />
-
                 </UniformGrid>
             </Border>
             <Border
@@ -86,7 +83,6 @@
 
                     <TextBlock Text="{ns:Loc LblDeclination}" />
                     <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.DeclinationString}" />
-
                 </UniformGrid>
             </Border>
             <Border
@@ -106,9 +102,7 @@
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblAzimuth}" />
 
-
                     <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.AzimuthString}" />
-
                 </UniformGrid>
             </Border>
         </StackPanel>

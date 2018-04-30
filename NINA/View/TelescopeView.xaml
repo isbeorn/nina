@@ -197,7 +197,6 @@
                                     <TextBlock Text="{ns:Loc LblSiteLongitude}" />
                                     <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.SiteLongitude}" />
                                 </UniformGrid>
-
                             </UniformGrid>
                         </Border>
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
@@ -371,7 +370,6 @@
                             <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSlew}" />
                         </Button>
                     </StackPanel>
-
                 </GroupBox>
             </Grid>
         </Grid>
@@ -569,7 +567,6 @@
                                 <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblUnpark}" />
                             </Button>
                         </Grid>
-
                     </Grid>
                 </GroupBox>
             </Grid>

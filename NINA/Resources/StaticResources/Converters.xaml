@@ -20,4 +20,9 @@
     <converters:ArcsecToLabelConverter x:Key="ArcsecToLabelConverter" />
     <converters:BoolToLabelConverter x:Key="BoolToLabelConverter" />
     <converters:MoonPhaseToGeometryConverter x:Key="MoonPhaseToGeometryConverter" />
+    <converters:MultiMarginConverter x:Key="MultiMarginConverter" />
+    <converters:ValueToLocaleConverter x:Key="ValueToLocaleConverter" />
+    <converters:HoursToHMSConverter x:Key="HoursToHMSConverter" />
+    <converters:DegreesToDMSConverter x:Key="DegreesToDMSConverter" />
+    <converters:InverseMultiBooleanANDConverter x:Key="InverseMultiBooleanANDConverter" />
 </ResourceDictionary>

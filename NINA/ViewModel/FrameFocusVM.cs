@@ -2,23 +2,16 @@
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Mediator;
-using NINA.Utility.Notification;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel {
-    class FrameFocusVM : DockableVM {
-        public FrameFocusVM() : base() {
 
+    internal class FrameFocusVM : DockableVM {
+
+        public FrameFocusVM() : base() {
             Title = "LblFrameNFocus";
             ContentId = nameof(FrameFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
@@ -26,11 +19,10 @@ namespace NINA.ViewModel {
             SnapCommand = new AsyncCommand<bool>(() => Snap(new Progress<ApplicationStatus>(p => Status = p)));
             Zoom = 1;
             SnapExposureDuration = 1;
-            
         }
 
-
         private ApplicationStatus _status;
+
         public ApplicationStatus Status {
             get {
                 return _status;
@@ -45,6 +37,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _loop;
+
         public bool Loop {
             get {
                 return _loop;
@@ -53,10 +46,10 @@ namespace NINA.ViewModel {
                 _loop = value;
                 RaisePropertyChanged();
             }
-
         }
 
         private bool _calcHFR;
+
         public bool CalcHFR {
             get {
                 return _calcHFR;
@@ -65,10 +58,10 @@ namespace NINA.ViewModel {
                 _calcHFR = value;
                 RaisePropertyChanged();
             }
-
         }
 
         private double _zoom;
+
         public double Zoom {
             get {
                 return _zoom;
@@ -80,6 +73,7 @@ namespace NINA.ViewModel {
         }
 
         private double _snapExposureDuration;
+
         public double SnapExposureDuration {
             get {
                 return _snapExposureDuration;
@@ -91,6 +85,7 @@ namespace NINA.ViewModel {
         }
 
         private Model.MyFilterWheel.FilterInfo _snapFilter;
+
         public Model.MyFilterWheel.FilterInfo SnapFilter {
             get {
                 return _snapFilter;
@@ -102,6 +97,7 @@ namespace NINA.ViewModel {
         }
 
         private BinningMode _snapBin;
+
         public BinningMode SnapBin {
             get {
                 if (_snapBin == null) {
@@ -115,10 +111,7 @@ namespace NINA.ViewModel {
             }
         }
 
-
-
         private async Task<bool> Snap(IProgress<ApplicationStatus> progress) {
-            
             do {
                 _captureImageToken = new CancellationTokenSource();
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
@@ -128,8 +121,6 @@ namespace NINA.ViewModel {
                 _captureImageToken.Token.ThrowIfCancellationRequested();
             } while (Loop);
             return true;
-            
-
         }
 
         private CancellationTokenSource _captureImageToken;

@@ -1,21 +1,20 @@
 ﻿using Newtonsoft.Json.Linq;
 using NINA.Utility;
-using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
-    class VersionCheckVM : BaseINPC {
-        const string VERSIONSURL = "https://api.bitbucket.org/2.0/repositories/Isbeorn/nina/versions";
-        const string DOWNLOADSURL = "https://api.bitbucket.org/2.0/repositories/Isbeorn/nina/downloads";
+
+    internal class VersionCheckVM : BaseINPC {
+        private const string VERSIONSURL = "https://api.bitbucket.org/2.0/repositories/Isbeorn/nina/versions";
+        private const string DOWNLOADSURL = "https://api.bitbucket.org/2.0/repositories/Isbeorn/nina/downloads";
 
         public VersionCheckVM() {
             UpdateCommand = new RelayCommand(Update);
@@ -37,15 +36,15 @@ namespace NINA.ViewModel {
                         WindowService ws = new WindowService();
                         ws.OnDialogResultChanged += (s, e) => {
                             var dialogResult = (WindowService.DialogResultEventArgs)e;
-                            if(dialogResult.DialogResult != true) {
+                            if (dialogResult.DialogResult != true) {
                                 _cancelTokenSource.Cancel();
-                            }                            
+                            }
                         };
-                        ws.ShowDialog(this, Locale.Loc.Instance["LblUpdating"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow );
+                        ws.ShowDialog(this, Locale.Loc.Instance["LblUpdating"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
 
                         _setupLocation = await DownloadLatestVersion();
                         _setupLocation = Unzip(_setupLocation);
-                        if(!string.IsNullOrEmpty(_setupLocation)) {
+                        if (!string.IsNullOrEmpty(_setupLocation)) {
                             UpdateReady = true;
                         }
                     }
@@ -54,7 +53,6 @@ namespace NINA.ViewModel {
                 }
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
-                Notification.ShowError(ex.Message);
                 Logger.Error(ex);
             }
             return true;
@@ -70,13 +68,18 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> CheckIfUpdateIsAvailable() {
-            _latestVersion = await GetLatestVersion();
+            try {
+                _latestVersion = await GetLatestVersion();
 
-            if (_latestVersion > CurrentVersion) {
-                return true;
-            } else {
-                return false;
+                if (_latestVersion > CurrentVersion) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
+            return false;
         }
 
         private string Unzip(string zipLocation) {
@@ -98,6 +101,7 @@ namespace NINA.ViewModel {
         }
 
         private int _progress;
+
         public int Progress {
             get {
                 return _progress;
@@ -109,6 +113,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _updateReady = false;
+
         public bool UpdateReady {
             get {
                 return _updateReady;
@@ -120,7 +125,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<string> GetDownloadUrl(string version) {
-            var downloads = await GetBitBucketRecursive<BitBucketDownload>(DOWNLOADSURL);            
+            var downloads = await GetBitBucketRecursive<BitBucketDownload>(DOWNLOADSURL);
 
             var filename = "NINASetup_{0}{1}.zip";
             if (DllLoader.IsX86()) {
@@ -128,10 +133,9 @@ namespace NINA.ViewModel {
             } else {
                 filename = string.Format(filename, version, "");
             }
-            
 
             var download = downloads.values.Where((x) => x.name == filename).FirstOrDefault();
-            if(download != null) {
+            if (download != null) {
                 return download.links.self.href;
             } else {
                 return "";
@@ -145,7 +149,7 @@ namespace NINA.ViewModel {
             return max;
         }
 
-        private async Task<BitBucketBase<T>> GetBitBucketRecursive<T>(string url) {            
+        private async Task<BitBucketBase<T>> GetBitBucketRecursive<T>(string url) {
             var stringversions = await Utility.Utility.HttpGetRequest(_cancelTokenSource.Token, url, null);
             JObject o = JObject.Parse(stringversions);
             BitBucketBase<T> versions = o.ToObject<BitBucketBase<T>>();
@@ -156,7 +160,7 @@ namespace NINA.ViewModel {
                 return versions;
             } else {
                 var next = await GetBitBucketRecursive<T>(versions.next);
-                foreach(T v in next.values) {
+                foreach (T v in next.values) {
                     versions.values.Add(v);
                 }
                 return versions;
@@ -195,9 +199,8 @@ namespace NINA.ViewModel {
     public class BitBucketHRef {
         public string href;
     }
-    
 
     public class BitBucketVersion {
-        public Version name;        
+        public Version name;
     }
 }

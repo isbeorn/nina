@@ -18,7 +18,7 @@
                                 <Setter Property="BorderThickness" Value="0" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=ThisWindow, Path=WindowState}" Value="Maximized">
-                                        <!--<Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}"/>-->
+                                        <!--<Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}" />-->
                                         <Setter Property="BorderThickness" Value="4" />
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -88,7 +88,6 @@
                                         Data="{StaticResource MinimizeWindowSVG}"
                                         Fill="{StaticResource PrimaryBrush}"
                                         Stretch="Uniform" />
-
                                 </Button>
                                 <Button
                                     Width="20"
@@ -123,7 +122,6 @@
                             <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}">
                                 <ContentPresenter Content="{TemplateBinding Content}" />
                             </Border>
-
                         </Grid>
                     </Border>
                 </ControlTemplate>

@@ -1,40 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using NINA.Utility.Enum;
+using NINA.Utility.Profile;
+using System;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Utility {
-    static class Logger {
+
+    internal static class Logger {
+
         static Logger() {
             LOGDATE = DateTime.Now.ToString("yyyy-MM-dd");
             var logDir = Path.Combine(Utility.APPLICATIONTEMPPATH, "Logs");
-            LOGFILEPATH = Path.Combine(logDir, LOGDATE + " - tracelog.txt");
+            LOGFILEPATH = Path.Combine(logDir, LOGDATE + " - v" + Utility.Version + " - log.txt");
 
-            if(!Directory.Exists(logDir)) {
+            if (!Directory.Exists(logDir)) {
                 Directory.CreateDirectory(logDir);
             }
 
-            var os = Environment.OSVersion;
-            
+            InitiateLog();
+        }
 
+        private static void InitiateLog() {
             /* Initial log of App Version, OS Info, Ascom Version, .NET Version */
-            Append(PadBoth("", 70, '-'));
-            Append(PadBoth("NINA - Nighttime Imaging 'N' Astronomy", 70, '-'));
-            Append(PadBoth(string.Format("Running NINA Version {0}" , Utility.Version), 70, '-'));
-            Append(PadBoth(DateTime.Now.ToString("s"), 70, '-'));
-            Append(PadBoth("ASCOM Platform Version {0}", 70, '-', Utility.AscomUtil.PlatformVersion));
-            Append(PadBoth(".NET Version {0}", 70, '-', Environment.Version.ToString()));
-            Append(PadBoth("Oparating System Information", 70, '-'));
-            Append(PadBoth("Is 64bit OS {0}", 70, '-', Environment.Is64BitOperatingSystem.ToString()));
-            Append(PadBoth("Is 64bit Process {0}", 70, '-', Environment.Is64BitProcess.ToString()));
-            Append(PadBoth("Platform {0:G}", 70, '-', os.Platform.ToString()));
-            Append(PadBoth("Version {0}", 70, '-', os.VersionString));
-            Append(PadBoth("Major {0} Minor {1}", 70, '-', os.Version.Major.ToString(), os.Version.Minor.ToString()));
-            Append(PadBoth("Service Pack {0}", 70, '-', os.ServicePack));
-            Append(PadBoth("", 70, '-'));
+            if (!File.Exists(LOGFILEPATH)) {
+                var os = Environment.OSVersion;
+                Append(PadBoth("", 70, '-'));
+                Append(PadBoth("NINA - Nighttime Imaging 'N' Astronomy", 70, '-'));
+                Append(PadBoth(string.Format("Running NINA Version {0}", Utility.Version), 70, '-'));
+                Append(PadBoth(DateTime.Now.ToString("s"), 70, '-'));
+                Append(PadBoth("ASCOM Platform Version {0}", 70, '-', Utility.AscomUtil.PlatformVersion));
+                Append(PadBoth(".NET Version {0}", 70, '-', Environment.Version.ToString()));
+                Append(PadBoth("Oparating System Information", 70, '-'));
+                Append(PadBoth("Is 64bit OS {0}", 70, '-', Environment.Is64BitOperatingSystem.ToString()));
+                Append(PadBoth("Is 64bit Process {0}", 70, '-', Environment.Is64BitProcess.ToString()));
+                Append(PadBoth("Platform {0:G}", 70, '-', os.Platform.ToString()));
+                Append(PadBoth("Version {0}", 70, '-', os.VersionString));
+                Append(PadBoth("Major {0} Minor {1}", 70, '-', os.Version.Major.ToString(), os.Version.Minor.ToString()));
+                Append(PadBoth("Service Pack {0}", 70, '-', os.ServicePack));
+                Append(PadBoth("", 70, '-'));
+            }
         }
 
         private static string PadBoth(string msg, int length, char paddingChar, params string[] msgParams) {
@@ -42,13 +47,11 @@ namespace NINA.Utility {
             int spaces = length - source.Length;
             int padLeft = spaces / 2 + source.Length;
             return source.PadLeft(padLeft, paddingChar).PadRight(length, paddingChar);
-
         }
 
-        static readonly object lockObj = new object();
-        static string LOGDATE;
-        static string LOGFILEPATH;
-        
+        private static readonly object lockObj = new object();
+        private static string LOGDATE;
+        private static string LOGFILEPATH;
 
         private static void Append(string msg, params string[] msgParams) {
             try {
@@ -57,7 +60,7 @@ namespace NINA.Utility {
                         writer.WriteLine(string.Format(msg, msgParams));
                         writer.Close();
                     }
-                }                    
+                }
             } catch (Exception ex) {
                 Notification.Notification.ShowError(ex.Message);
             }
@@ -74,7 +77,7 @@ namespace NINA.Utility {
 
         public static void Error(
                 string customMsg,
-                Exception ex,                
+                Exception ex,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
             Error(customMsg + ex?.Message ?? string.Empty, ex?.StackTrace ?? string.Empty, memberName, sourceFilePath);
@@ -90,16 +93,15 @@ namespace NINA.Utility {
         public static void Info(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            if (Settings.LogLevel >= 1) {
+            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 1) {
                 Append(EnrichLogMessage(LogLevelEnum.INFO, message, memberName, sourceFilePath));
             }
-
         }
 
         public static void Warning(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            if (Settings.LogLevel >= 2) {
+            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 2) {
                 Append(EnrichLogMessage(LogLevelEnum.WARNING, message, memberName, sourceFilePath));
             }
         }
@@ -107,7 +109,7 @@ namespace NINA.Utility {
         public static void Debug(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            if (Settings.LogLevel >= 3) {
+            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 3) {
                 Append(EnrichLogMessage(LogLevelEnum.DEBUG, message, memberName, sourceFilePath));
             }
         }
@@ -115,7 +117,7 @@ namespace NINA.Utility {
         public static void Trace(string message,
                              [CallerMemberName] string memberName = "",
                              [CallerFilePath] string sourceFilePath = "") {
-            if (Settings.LogLevel >= 4) {
+            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 4) {
                 Append(EnrichLogMessage(LogLevelEnum.TRACE, message, memberName, sourceFilePath));
             }
         }
@@ -130,7 +132,5 @@ namespace NINA.Utility {
             sb.AppendLine(string.Format("{0} \t [Message] {1}", prefix, message));
             return sb.ToString();
         }
-
-        
     }
 }

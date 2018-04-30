@@ -31,20 +31,21 @@
                     IsZoomEnabled="False"
                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                     MajorGridlineStyle="Solid"
-                    MajorStep="{x:Static cam:ImageStatistics.HistogramMajorStep}"
-                    Maximum="{x:Static cam:ImageStatistics.HistogramResolution}"
+                    MajorStep="{Binding Source={StaticResource AppVM}, Path=OptionsVM.HistogramMajorStep}"
+                    Maximum="{Binding Source={StaticResource AppVM}, Path=OptionsVM.HistogramResolution}"
                     Minimum="0"
                     MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
                     MinorGridlineStyle="Solid"
-                    MinorStep="{x:Static cam:ImageStatistics.HistogramMinorStep}"
+                    MinorStep="{Binding Source={StaticResource AppVM}, Path=OptionsVM.HistogramMinorStep}"
                     Position="Bottom"
                     TextColor="Transparent" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LinearBarSeries
-                    BarWidth="0.001"
-                    DataFieldX="Key"
-                    DataFieldY="Value"
+                <oxy:AreaSeries
+                    Color="Black"
+                    Color2="Black"
+                    DataFieldX="X"
+                    DataFieldY="Y"
                     ItemsSource="{Binding Histogram}" />
             </oxy:Plot.Series>
         </oxy:Plot>

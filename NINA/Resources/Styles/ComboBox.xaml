@@ -54,7 +54,6 @@
             Focusable="False" />
     </ControlTemplate>
 
-
     <Style TargetType="ComboBox">
         <Setter Property="Height" Value="30" />
         <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -167,7 +166,6 @@
 
                             <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
                             <Setter TargetName="Border" Property="Background" Value="{StaticResource PrimaryBrush}" />
-
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

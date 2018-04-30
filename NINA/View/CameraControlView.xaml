@@ -75,7 +75,6 @@
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
                     <Grid Margin="5,0,0,0">
 
-
                         <ComboBox
                             ItemsSource="{Binding MyGains}"
                             SelectedItem="{Binding MySelectedGain}"
@@ -147,7 +146,6 @@
                         </Style.Triggers>
                     </Style>
                 </ToggleButton.Style>
-
             </ToggleButton>
 
             <ninactrl:CancellableButton

@@ -24,6 +24,9 @@
                         <Trigger Property="IsPressed" Value="true">
                             <Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
                         </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{StaticResource ButtonForegroundDisabledBrush}" />
                         </Trigger>
@@ -62,9 +65,15 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <Border
+                        x:Name="PART_Thumb"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="1" />
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=PART_Thumb, Path=IsMouseOver}" Value="True">
+                            <Setter TargetName="PART_Thumb" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -203,7 +212,6 @@
                             ViewportSize="{TemplateBinding ViewportWidth}"
                             Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
                             Value="{TemplateBinding HorizontalOffset}" />
-
                     </Grid>
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding ElementName=PART_VerticalScrollBar, Path=Visibility}" Value="Visible">
@@ -217,5 +225,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 </ResourceDictionary>

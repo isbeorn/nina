@@ -18,8 +18,6 @@
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
-
-
         <local:ImageControlView Grid.Row="0" DataContext="{Binding Source={StaticResource AppVM}, Path=ImagingVM.ImageControl}" />
 
         <Grid

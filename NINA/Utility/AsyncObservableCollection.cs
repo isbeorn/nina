@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
 namespace NINA.Utility {
+
     public class AsyncObservableCollection<T> : ObservableCollection<T> {
+
         private SynchronizationContext _synchronizationContext = new DispatcherSynchronizationContext(
                     Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher);
 

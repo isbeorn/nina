@@ -19,8 +19,9 @@
      * Native ZWO Driver
           * Tested with ASI 1600 MMC
      * Nikon
-          * Tested with Nikon D7100
+          * Tested with Nikon D5100, D7100
           * Serial cable support for bulb exposures using either telescope snap port or serial cable using RTS signal
+               * Bulb exposure with snap port tested with EQ6-R + D5100
      * Canon 
           * Tested with Canon EOS 550d, 60d
      * Temperature control 
@@ -32,7 +33,7 @@
 
 * Filterwheel Control
      * ASCOM Driver
-          * Tested with Starlight XPress motorized Filterwheel
+          * Tested with Starlight XPress motorized Filterwheel, Atik EFW2
 
 * Autofocuser Control
      * ASCOM Driver
@@ -77,6 +78,15 @@
      * Night time duration based on your position
      * Set object as sequence target
 
+* Framing Assistant
+     * Multiple ways of importing an image for framing
+          * Digital Sky Survey (requires internet connection)
+          * Image File (tif, png, jpg)
+          * Image Cache (from a previously loaded image)
+     * By entering camera and telescope specs a rectangle with the respective field of view is generated
+     * The rectangle can be rotated and dragged to the desired location
+     * Once satisfied the coordinates where the rectangle is located can be set for a sequence to start imaging
+
 * Image History
      * Thumbnail and statistics of images during an image session
      * Reload images of one session to the UI
@@ -92,7 +102,7 @@ Through the issue tracker
 
 a mail to: isbeorn86+NINA@googlemail.com
 
-or directly via Discord: @[]()Isbeorn#1882 
+or directly via Discord: http://discord.gg/fwpmHU4
 
 ** Credit **
 

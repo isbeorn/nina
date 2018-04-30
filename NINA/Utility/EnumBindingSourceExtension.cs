@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Markup;
 
 namespace NINA.Utility {
+
     public class EnumBindingSourceExtension : MarkupExtension {
         private Type _enumType;
+
         public Type EnumType {
             get { return this._enumType; }
             set {
@@ -36,7 +34,7 @@ namespace NINA.Utility {
                 throw new InvalidOperationException("The EnumType must be specified.");
 
             Type actualEnumType = Nullable.GetUnderlyingType(this._enumType) ?? this._enumType;
-            Array enumValues = Enum.GetValues(actualEnumType);
+            Array enumValues = System.Enum.GetValues(actualEnumType);
 
             if (actualEnumType == this._enumType)
                 return enumValues;
@@ -48,12 +46,13 @@ namespace NINA.Utility {
     }
 
     public class EnumDescriptionTypeConverter : EnumConverter {
+
         public EnumDescriptionTypeConverter(Type type)
             : base(type) {
         }
+
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType) {
             if (destinationType == typeof(string)) {
-
                 FieldInfo fi = value?.GetType().GetField(value.ToString());
                 if (fi != null) {
                     var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
@@ -61,7 +60,6 @@ namespace NINA.Utility {
                     var s = Locale.Loc.Instance[label];
                     return s;
                 }
-
 
                 return string.Empty;
             }

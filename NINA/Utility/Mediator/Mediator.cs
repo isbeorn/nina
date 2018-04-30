@@ -4,20 +4,22 @@ using NINA.PlateSolving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Utility.Mediator {
-    class Mediator {
-        private Mediator() { }
+
+    internal class Mediator {
+
+        private Mediator() {
+        }
 
         private static readonly Lazy<Mediator> lazy =
             new Lazy<Mediator>(() => new Mediator());
 
         public static Mediator Instance { get { return lazy.Value; } }
 
-        Dictionary<MediatorMessages, List<Action<Object>>> _internalList
+        private Dictionary<MediatorMessages, List<Action<Object>>> _internalList
             = new Dictionary<MediatorMessages, List<Action<Object>>>();
 
         public void Register(Action<Object> callback,
@@ -37,7 +39,6 @@ namespace NINA.Utility.Mediator {
             }
         }
 
-
         /// <summary>
         /// Holds reference to handlers and identified by message type name
         /// </summary>
@@ -49,13 +50,13 @@ namespace NINA.Utility.Mediator {
         /// <param name="handle"></param>
         /// <returns></returns>
         public bool RegisterRequest(MessageHandle handle) {
-            if (!_handlers.ContainsKey(handle.MessageType)) {
-                _handlers.Add(handle.MessageType, handle);
+            if (!_handlers.ContainsKey(handle.RegisteredClass?.ToString() + handle.MessageType)) {
+                _handlers.Add(handle.RegisteredClass?.ToString() + handle.MessageType, handle);
                 return true;
             } else {
                 throw new Exception("Handle already registered");
             }
-        }        
+        }
 
         /// <summary>
         /// Request a value from a handler based on message
@@ -63,8 +64,8 @@ namespace NINA.Utility.Mediator {
         /// <typeparam name="T">Has to match the return type of the handle.Send()</typeparam>
         /// <param name="msg"></param>
         /// <returns></returns>
-        private T Request<T>(MediatorMessage<T> msg) {
-            var key = msg.GetType().Name;
+        private T Request<T>(MediatorMessage<T> msg, Type requestedClass = null) {
+            var key = requestedClass?.ToString() + msg.GetType().Name;
             if (_handlers.ContainsKey(key)) {
                 var entry = _handlers[key];
                 var handle = (MessageHandle<T>)entry;
@@ -74,18 +75,35 @@ namespace NINA.Utility.Mediator {
             }
         }
 
-        public bool Request(MediatorMessage<bool> msg) {
-            return Request<bool>(msg);
+        private ICollection<T> Request<T>(MediatorMessage<T> msg) {
+            var key = msg.GetType().Name;
+            List<T> returnMessages = new List<T>();
+            foreach (var handler in _handlers.Where((k, v) => k.Key.EndsWith(key))) {
+                var handle = (MessageHandle<T>)handler.Value;
+                returnMessages.Add(handle.Send(msg));
+            }
+            return returnMessages;
+        }
+
+        public double Request(MediatorMessage<double> msg, Type requestedClass = null) {
+            return Request<double>(msg, requestedClass);
+        }
+
+        public string Request(MediatorMessage<string> msg, Type requestedClass = null) {
+            return Request<string>(msg, requestedClass);
+        }
+
+        public bool Request(MediatorMessage<bool> msg, Type requestedClass = null) {
+            return Request<bool>(msg, requestedClass);
         }
 
         public FilterInfo Request(MediatorMessage<FilterInfo> msg) {
-            return Request<FilterInfo>(msg);
+            return Request<FilterInfo>(msg, null);
         }
 
         public ICollection<FilterInfo> Request(MediatorMessage<ICollection<FilterInfo>> msg) {
-            return Request<ICollection<FilterInfo>>(msg);
+            return Request(msg, null);
         }
-
 
         /// <summary>
         /// Holds reference to handlers and identified by message type name
@@ -130,7 +148,7 @@ namespace NINA.Utility.Mediator {
         public async Task<int> RequestAsync(AsyncMediatorMessage<int> msg) {
             return await RequestAsync<int>(msg);
         }
-        
+
         public async Task<PlateSolveResult> RequestAsync(AsyncMediatorMessage<PlateSolveResult> msg) {
             return await RequestAsync<PlateSolveResult>(msg);
         }
@@ -149,9 +167,8 @@ namespace NINA.Utility.Mediator {
 
         public async Task<FilterInfo> RequestAsync(AsyncMediatorMessage<FilterInfo> msg) {
             return await RequestAsync<FilterInfo>(msg);
-        }        
+        }
     }
-
 
     public enum MediatorMessages {
         TelescopeChanged = 3,
@@ -162,9 +179,10 @@ namespace NINA.Utility.Mediator {
         ChangeDetectStars = 15,
         LocaleChanged = 18,
         LocationChanged = 19,
-        SlewToCoordinates = 21,
         FocuserTemperatureChanged = 26,
         FocuserConnectedChanged = 28,
-        CameraConnectedChanged = 29
+        CameraConnectedChanged = 29,
+        CameraPixelSizeChanged = 30,
+        ProfileChanged = 31,
     };
 }

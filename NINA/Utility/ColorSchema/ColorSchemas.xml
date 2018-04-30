@@ -9,8 +9,8 @@
     <ButtonBackgroundSelectedColor Color="#FF2190DB" />
     <ButtonForegroundColor Color="#FFFFFFFF" />
     <ButtonForegroundDisabledColor Color="#FF1D2731" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
   <ColorSchema Name="Classic">
     <PrimaryColor Color="#FF000000" />
@@ -21,8 +21,8 @@
     <ButtonBackgroundSelectedColor Color="#FFb8e0f3" />
     <ButtonForegroundColor Color="#FF000000" />
     <ButtonForegroundDisabledColor Color="#FFF4F4F4" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
   <ColorSchema Name="Dark">
     <PrimaryColor Color="#FF550C18" />
@@ -33,8 +33,8 @@
     <ButtonBackgroundSelectedColor Color="#FF96031A" />
     <ButtonForegroundColor Color="#FF02010A" />
     <ButtonForegroundDisabledColor Color="#FF443730" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
   <ColorSchema Name="Seance">
     <PrimaryColor Color="#FF000000" />
@@ -45,8 +45,8 @@
     <ButtonBackgroundSelectedColor Color="#FF9A12B3" />
     <ButtonForegroundColor Color="#FFFFFFFF" />
     <ButtonForegroundDisabledColor Color="#FF674172" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
   <ColorSchema Name="Persian">
     <PrimaryColor Color="#FFECF0F1" />
@@ -57,8 +57,8 @@
     <ButtonBackgroundSelectedColor Color="#FF00A592" />
     <ButtonForegroundColor Color="#FFECF0F1" />
     <ButtonForegroundDisabledColor Color="#FF9E9E9E" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
   <ColorSchema Name="Persian Faint">
     <PrimaryColor Color="#FFBDC3C7" />
@@ -69,8 +69,8 @@
     <ButtonBackgroundSelectedColor Color="#FF00BCA6" />
     <ButtonForegroundColor Color="#FFBDC3C7" />
     <ButtonForegroundDisabledColor Color="#FF1D2731" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
   <ColorSchema Name="High Contrast">
     <PrimaryColor Color="#FFFFFFFF" />
@@ -81,8 +81,8 @@
     <ButtonBackgroundSelectedColor Color="#FF00b7b1" />
     <ButtonForegroundColor Color="#FFFFFFFF" />
     <ButtonForegroundDisabledColor Color="#FF9E9E9E" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
   <ColorSchema Name="Black Coral">
     <PrimaryColor Color="#FFDEDEE8" />
@@ -93,8 +93,8 @@
     <ButtonBackgroundSelectedColor Color="#FFe5a859" />
     <ButtonForegroundColor Color="#FFF7F7FF" />
     <ButtonForegroundDisabledColor Color="#FF22293A" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
   <ColorSchema Name="Arsenic">
     <PrimaryColor Color="#FFFFFFFF" />
@@ -105,8 +105,8 @@
     <ButtonBackgroundSelectedColor Color="#FF64A6BD" />
     <ButtonForegroundColor Color="#FFF8E9E9" />
     <ButtonForegroundDisabledColor Color="#FF696D7D" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
   <ColorSchema Name="Vivid Malachite">
     <PrimaryColor Color="#FFECF0F1" />
@@ -117,8 +117,8 @@
     <ButtonBackgroundSelectedColor Color="#FF04E824" />
     <ButtonForegroundColor Color="#FFBDC3C7" />
     <ButtonForegroundDisabledColor Color="#FF1D2731" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
   <ColorSchema Name="Shark">
     <PrimaryColor Color="#FFEDEDED" />
@@ -129,8 +129,8 @@
     <ButtonBackgroundSelectedColor Color="#FF24252A" />
     <ButtonForegroundColor Color="#FFA9AAAC" />
     <ButtonForegroundDisabledColor Color="#FF1D2731" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
   <ColorSchema Name="Wisteria">
     <PrimaryColor Color="#FFECF0F1" />
@@ -141,7 +141,7 @@
     <ButtonBackgroundSelectedColor Color="#FF9B59B6" />
     <ButtonForegroundColor Color="#FFECF0F1" />
     <ButtonForegroundDisabledColor Color="#FF371F68" />
-    <NotificationWarningColor Color="#FFF5A300" />
-    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningColor Color="#FF5E330B" />
+    <NotificationErrorColor Color="#FF700000" />
   </ColorSchema>
 </ColorSchemas>

@@ -86,6 +86,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -116,6 +117,9 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>NINA.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
@@ -161,10 +165,10 @@
       <HintPath>..\packages\CSharpFITS.1.1\lib\Net20\CSharpFITS_v1.1.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
@@ -179,8 +183,8 @@
     <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Nito.AsyncEx, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.dll</HintPath>
@@ -201,14 +205,14 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.106.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.106.0\lib\net46\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.108.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.108.0\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite.EF6, Version=1.0.106.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.106.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.108.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.108.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite.Linq, Version=1.0.106.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.106.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.108.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.108.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -298,7 +302,9 @@
     <Compile Include="Utility\ASISDK\ASICameras.cs" />
     <Compile Include="Utility\AvalonDock\PaneStyleSelector.cs" />
     <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
+    <Compile Include="Utility\Behaviors\DragCommandBehavior.cs" />
     <Compile Include="Utility\BindingProxy.cs" />
+    <Compile Include="Utility\ButtonHelper.cs" />
     <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
     <Compile Include="Utility\Converters\ArcsecToLabelConverter.cs" />
     <Compile Include="Utility\Converters\BooleanToVisibilityCollapsedConverter.cs" />
@@ -307,6 +313,8 @@
     <Compile Include="Utility\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DatabindingDebugConverter.cs" />
     <Compile Include="Utility\Converters\CollectionContainsItemsToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\DegreesToDMSConverter.cs" />
+    <Compile Include="Utility\Converters\HoursToHMSConverter.cs" />
     <Compile Include="Utility\Converters\InverseBooleanConverter.cs" />
     <Compile Include="Utility\Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\InverseCollectionContainsItemsToVisibilityConverter.cs" />
@@ -314,9 +322,12 @@
     <Compile Include="Utility\Converters\InverseNullToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\MinusOneToEmptyStringConverter.cs" />
     <Compile Include="Utility\Converters\MoonPhaseToGeometryConverter.cs" />
+    <Compile Include="Utility\Converters\InverseMultiBooleanANDConverter.cs" />
+    <Compile Include="Utility\Converters\MultiMarginConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
+    <Compile Include="Utility\Converters\ValueToLocaleConverter.cs" />
     <Compile Include="Utility\DatabaseInteraction.cs" />
     <Compile Include="Utility\DCRaw\DCRaw.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
@@ -324,15 +335,45 @@
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
     <Compile Include="Utility\DllLoader.cs" />
     <Compile Include="Utility\EDSDK\EDSDK.cs" />
+    <Compile Include="Utility\Enum\BlindSolverEnum.cs" />
+    <Compile Include="Utility\Enum\CameraBulbModeEnum.cs" />
+    <Compile Include="Utility\Enum\FileTypeEnum.cs" />
+    <Compile Include="Utility\Enum\GuiderScaleEnum.cs" />
+    <Compile Include="Utility\Enum\LogLevelEnum.cs" />
+    <Compile Include="Utility\Enum\PlateSolverEnum.cs" />
+    <Compile Include="Utility\Enum\WeatherDataEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraConnectionLostException.cs" />
+    <Compile Include="Utility\FITS.cs" />
     <Compile Include="Utility\Mediator\Mediator.cs" />
     <Compile Include="Utility\Mediator\AsyncMessageHandle.cs" />
     <Compile Include="Utility\Mediator\MessageHandle.cs" />
+    <Compile Include="Utility\MyStopWatch.cs" />
     <Compile Include="Utility\Notification\CustomDisplayPart.xaml.cs">
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
+    <Compile Include="Utility\ObservableRectangle.cs" />
     <Compile Include="Utility\ObserveAllCollection.cs" />
+    <Compile Include="Utility\DigitalSkySurveyInteraction.cs" />
+    <Compile Include="Utility\Profile\ApplicationSettings.cs" />
+    <Compile Include="Utility\Profile\AstrometrySettings.cs" />
+    <Compile Include="Utility\Profile\CameraSettings.cs" />
+    <Compile Include="Utility\Profile\ColorSchemaSettings.cs" />
+    <Compile Include="Utility\Profile\FilterWheelSettings.cs" />
+    <Compile Include="Utility\Profile\FocuserSettings.cs" />
+    <Compile Include="Utility\Profile\FramingAssistantSettings.cs" />
+    <Compile Include="Utility\Profile\GuiderSettings.cs" />
+    <Compile Include="Utility\Profile\ImageFileSettings.cs" />
+    <Compile Include="Utility\Profile\ImageSettings.cs" />
+    <Compile Include="Utility\Profile\MeridianFlipSettings.cs" />
+    <Compile Include="Utility\Profile\PlateSolveSettings.cs" />
+    <Compile Include="Utility\Profile\PolarAlignmentSettings.cs" />
+    <Compile Include="Utility\Profile\Profile.cs" />
+    <Compile Include="Utility\Profile\ProfileManager.cs" />
+    <Compile Include="Utility\Profile\Profiles.cs" />
+    <Compile Include="Utility\Profile\SequenceSettings.cs" />
+    <Compile Include="Utility\Profile\TelescopeSettings.cs" />
+    <Compile Include="Utility\Profile\WeatherDataSettings.cs" />
     <Compile Include="Utility\SerialPortInteraction.cs" />
     <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
@@ -351,6 +392,7 @@
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
+    <Compile Include="ViewModel\FramingAssistantVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
@@ -376,7 +418,6 @@
     <Compile Include="Utility\NotifyTaskCompletion.cs" />
     <Compile Include="Model\MyGuider\PHD2Methods.cs" />
     <Compile Include="Utility\RelayCommand.cs" />
-    <Compile Include="Utility\Settings.cs" />
     <Compile Include="Utility\Utility.cs" />
     <Compile Include="Utility\ValidationRules.cs" />
     <Compile Include="ViewModel\BaseVM.cs" />
@@ -390,6 +431,7 @@
     <Compile Include="ViewModel\GuiderVM.cs" />
     <Compile Include="ViewModel\PlatesolveVM.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
+    <Compile Include="ViewModel\ProfileSelectVM.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
     <Compile Include="ViewModel\SkyAtlasVM.cs" />
     <Compile Include="ViewModel\TelescopeVM.cs" />
@@ -459,11 +501,11 @@
     <Compile Include="View\FrameFocusView.xaml.cs">
       <DependentUpon>FrameFocusView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\FramingAssistantView.xaml.cs">
+      <DependentUpon>FramingAssistantView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\HistogramView.xaml.cs">
       <DependentUpon>HistogramView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ImageAreaView.xaml.cs">
-      <DependentUpon>ImageAreaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ImageControlView.xaml.cs">
       <DependentUpon>ImageControlView.xaml</DependentUpon>
@@ -474,6 +516,9 @@
     <Compile Include="View\ImageStatisticsView.xaml.cs">
       <DependentUpon>ImageStatisticsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ImageView.xaml.cs">
+      <DependentUpon>ImageView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ImagingView.xaml.cs">
       <DependentUpon>ImagingView.xaml</DependentUpon>
     </Compile>
@@ -482,6 +527,12 @@
     </Compile>
     <Compile Include="View\MinimalisticGuiderGraph.xaml.cs">
       <DependentUpon>MinimalisticGuiderGraph.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\OptionsImagingView.xaml.cs">
+      <DependentUpon>OptionsImagingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\OptionsPlateSolverView.xaml.cs">
+      <DependentUpon>OptionsPlateSolverView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
@@ -515,6 +566,9 @@
     </Compile>
     <Compile Include="View\ThumbnailListView.xaml.cs">
       <DependentUpon>ThumbnailListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProfileSelectView.xaml.cs">
+      <DependentUpon>ProfileSelectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\VersionCheckView.xaml.cs">
       <DependentUpon>VersionCheckView.xaml</DependentUpon>
@@ -760,11 +814,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\HistogramView.xaml">
+    <Page Include="View\FramingAssistantView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ImageAreaView.xaml">
+    <Page Include="View\HistogramView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -780,6 +834,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ImageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ImagingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -789,6 +847,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MinimalisticGuiderGraph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\OptionsImagingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\OptionsPlateSolverView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -836,6 +902,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ProfileSelectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\VersionCheckView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -850,6 +920,54 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Resource Include="Documentation\images\nina-logo.png" />
+    <Resource Include="Documentation\images\panel-autofocus.png" />
+    <Resource Include="Documentation\images\panel-camera.png" />
+    <Resource Include="Documentation\images\panel-customization_1.png" />
+    <Resource Include="Documentation\images\panel-customization_2.png" />
+    <Resource Include="Documentation\images\panel-customization_3.png" />
+    <Resource Include="Documentation\images\panel-customization_4.png" />
+    <Resource Include="Documentation\images\panel-filterwheel.png" />
+    <Resource Include="Documentation\images\panel-focuser.png" />
+    <Resource Include="Documentation\images\panel-guiding.png" />
+    <Resource Include="Documentation\images\panel-hfrhistory.png" />
+    <Resource Include="Documentation\images\panel-image.png" />
+    <Resource Include="Documentation\images\panel-imagehistory.png" />
+    <Resource Include="Documentation\images\panel-imaging.png" />
+    <Resource Include="Documentation\images\panel-platesolving.png" />
+    <Resource Include="Documentation\images\panel-polaralignment.png" />
+    <Resource Include="Documentation\images\panel-sequence-running.png" />
+    <Resource Include="Documentation\images\panel-sequence.png" />
+    <Resource Include="Documentation\images\panel-statistics.png" />
+    <Resource Include="Documentation\images\panel-telescope.png" />
+    <Resource Include="Documentation\images\panel-weather.png" />
+    <Resource Include="Documentation\images\quickstart-camera.png" />
+    <Resource Include="Documentation\images\quickstart-defocusedstarfield.png" />
+    <Resource Include="Documentation\images\quickstart-disablepanels.png" />
+    <Resource Include="Documentation\images\quickstart-focusedstarfield.png" />
+    <Resource Include="Documentation\images\quickstart-focusing.png" />
+    <Resource Include="Documentation\images\quickstart-imaging.png" />
+    <Resource Include="Documentation\images\quickstart-running-sequence.png" />
+    <Resource Include="Documentation\images\quickstart-sequence.png" />
+    <Resource Include="Documentation\images\quickstart-settings-equipment.png" />
+    <Resource Include="Documentation\images\quickstart-settings-imaging.png" />
+    <Resource Include="Documentation\images\quickstart-telescope.png" />
+    <Resource Include="Documentation\images\quickstart-ui-overview.png" />
+    <Resource Include="Documentation\images\tab-camera.png" />
+    <Resource Include="Documentation\images\tab-filterwheelfocuser.png" />
+    <Resource Include="Documentation\images\tab-framingassistant.png" />
+    <Resource Include="Documentation\images\tab-imaging.png" />
+    <Resource Include="Documentation\images\tab-objectbrowser.png" />
+    <Resource Include="Documentation\images\tab-phd2.png" />
+    <Resource Include="Documentation\images\tab-sequencing.png" />
+    <Resource Include="Documentation\images\tab-settings-equipment.png" />
+    <Resource Include="Documentation\images\tab-settings-general.png" />
+    <Resource Include="Documentation\images\tab-settings-imaging.png" />
+    <Resource Include="Documentation\images\tab-settings-platesolving-astrometry.png" />
+    <Resource Include="Documentation\images\tab-settings-platesolving-localplatesolver-indexfiles.png" />
+    <Resource Include="Documentation\images\tab-settings-platesolving-localplatesolver.png" />
+    <Resource Include="Documentation\images\tab-settings-platesolving-platesolve2.png" />
+    <Resource Include="Documentation\images\tab-telescope.png" />
     <Content Include="External\x64\ASI\ASICamera2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1071,6 +1189,7 @@
     <Content Include="External\x64\Nikon\Type0022\Type0022.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Documentation\NINA.md" />
     <None Include="External\x86\ASI\ASICamera2.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1207,10 +1326,10 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
-    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
-  <Import Project="..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -20,8 +20,6 @@
                 Stroke="{StaticResource PrimaryBrush}"
                 StrokeThickness="4" />
 
-
-
             <Grid Margin="20">
 
                 <Line
@@ -180,7 +178,6 @@
                         <RotateTransform Angle="-180" />
                     </Line.RenderTransform>
                 </Line>
-
             </Grid>
 
             <Ellipse
@@ -190,7 +187,6 @@
                 Fill="{StaticResource BackgroundBrush}"
                 Stretch="UniformToFill"
                 Stroke="{StaticResource PrimaryBrush}" />
-
 
             <Grid RenderTransformOrigin=".5,.5">
                 <Ellipse
@@ -254,12 +250,10 @@
                     </Grid.RenderTransform>
                 </Grid>
             </Grid>
-
         </Grid>
         <TextBlock
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Text="{Binding HourAngleTime}" />
-
     </Grid>
 </UserControl>

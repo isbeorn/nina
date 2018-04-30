@@ -1,27 +1,24 @@
 ﻿using NINA.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Threading;
-using nom.tam.fits;
 using NINA.Utility;
-using System.Globalization;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.PlateSolving {
-    class LocalPlateSolver : IPlateSolver {
 
+    internal class LocalPlateSolver : IPlateSolver {
+        private double _lowarcsecperpixel;
+        private double _higharcsecperpixel;
+        private double _searchradius;
 
-        double _lowarcsecperpixel;
-        double _higharcsecperpixel;
-        double _searchradius;
+        private Coordinates _target;
 
-        Coordinates _target;
-        
         public LocalPlateSolver(int focallength, double pixelsize) {
             double arcsecperpixel = (pixelsize / focallength) * 206.3;
             _lowarcsecperpixel = arcsecperpixel - 0.2;
@@ -52,7 +49,6 @@ namespace NINA.PlateSolving {
             options.Add(string.Format("-L {0}", _lowarcsecperpixel.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
             options.Add(string.Format("-H {0}", _higharcsecperpixel.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
 
-
             if (_searchradius > 0) {
                 options.Add(string.Format("-3 {0} -4 {1} -5 {2}", _target.RADegrees.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), _target.Dec.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), _searchradius.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
             }
@@ -61,18 +57,17 @@ namespace NINA.PlateSolving {
         }
 
         private PlateSolveResult Solve(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
-
             PlateSolveResult result = new PlateSolveResult();
             string imgfilepath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.jpg");
             var wcsfilepath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.wcs");
             try {
-                progress.Report(new ApplicationStatus() { Status = "Solving..." });                
+                progress.Report(new ApplicationStatus() { Status = "Solving..." });
 
                 using (FileStream fs = new FileStream(imgfilepath, FileMode.Create)) {
                     image.CopyTo(fs);
                 }
 
-                var cygwinbashpath = Path.GetFullPath(Path.Combine(Settings.CygwinLocation, "bin", "bash.exe"));
+                var cygwinbashpath = Path.GetFullPath(Path.Combine(ProfileManager.Instance.ActiveProfile.PlateSolveSettings.CygwinLocation, "bin", "bash.exe"));
 
                 if (!File.Exists(cygwinbashpath)) {
                     Logger.Error(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + cygwinbashpath, null);
@@ -98,7 +93,6 @@ namespace NINA.PlateSolving {
                     canceltoken.ThrowIfCancellationRequested();
                 }
 
-                
                 if (File.Exists(wcsfilepath)) {
                     startInfo.Arguments = string.Format("/C {0} --login -c 'wcsinfo {1}'", cygwinbashpath, wcsfilepath.Replace("\\", "/"));
                     process.Start();
@@ -131,7 +125,6 @@ namespace NINA.PlateSolving {
 
                     progress.Report(new ApplicationStatus() { Status = "Solved" });
 
-
                     /* This info does not get the center info. - removed
                         Fits solvedFits = new Fits(TMPIMGFILEPATH + "\\tmp.wcs");
                         BasicHDU solvedHDU = solvedFits.GetHDU(0);
@@ -147,12 +140,12 @@ namespace NINA.PlateSolving {
                 Logger.Error(ex);
                 result.Success = false;
             } finally {
-                if(File.Exists(wcsfilepath)) {
+                if (File.Exists(wcsfilepath)) {
                     File.Delete(wcsfilepath);
                 }
-                if(File.Exists(imgfilepath)) {
+                if (File.Exists(imgfilepath)) {
                     File.Delete(imgfilepath);
-                }                
+                }
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 

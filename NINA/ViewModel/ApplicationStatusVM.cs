@@ -1,17 +1,15 @@
 ﻿using NINA.Model;
-using NINA.Utility;
 using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    class ApplicationStatusVM : DockableVM {
+
+    internal class ApplicationStatusVM : DockableVM {
+
         public ApplicationStatusVM() {
             Title = "LblApplicationStatus";
             ContentId = nameof(ApplicationStatusVM);
@@ -20,6 +18,7 @@ namespace NINA.ViewModel {
         }
 
         private string _status;
+
         public string Status {
             get {
                 return _status;
@@ -31,6 +30,7 @@ namespace NINA.ViewModel {
         }
 
         private ObservableCollection<ApplicationStatus> _applicationStatus = new ObservableCollection<ApplicationStatus>();
+
         public ObservableCollection<ApplicationStatus> ApplicationStatus {
             get {
                 return _applicationStatus;
@@ -59,7 +59,7 @@ namespace NINA.ViewModel {
                                 ApplicationStatus.Remove(item);
                             }
                         } else {
-                            if(!string.IsNullOrEmpty(status.Status)) {
+                            if (!string.IsNullOrEmpty(status.Status)) {
                                 ApplicationStatus.Add(new ApplicationStatus() {
                                     Source = status.Source,
                                     Status = status.Status,
@@ -68,13 +68,11 @@ namespace NINA.ViewModel {
                                     ProgressType = status.ProgressType
                                 });
                             }
-                            
                         }
 
-                        RaisePropertyChanged(nameof(ApplicationStatus));                        
+                        RaisePropertyChanged(nameof(ApplicationStatus));
                     }));
                     return true;
-
                 })
             );
         }

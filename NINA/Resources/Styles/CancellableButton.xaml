@@ -6,5 +6,6 @@
 
     <Style TargetType="{x:Type ninactrl:CancellableButton}">
         <Setter Property="ButtonForegroundBrush" Value="{StaticResource ButtonForegroundBrush}" />
+        <Setter Property="ButtonStyle" Value="{StaticResource {x:Type Button}}" />
     </Style>
 </ResourceDictionary>

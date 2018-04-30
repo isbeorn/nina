@@ -1,20 +1,19 @@
 ﻿using NINA.Utility;
+using NINA.Utility.Astrometry;
+using NINA.Utility.Notification;
+using NINA.Utility.Profile;
+using NINA.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using NINA.Utility.Astrometry;
 using System.ComponentModel;
-using NINA.ViewModel;
-using System.Xml.Serialization;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using NINA.Utility.Notification;
+using System.Xml.Serialization;
 
 namespace NINA.Model {
+
     [Serializable()]
     [XmlRoot(nameof(CaptureSequenceList))]
     public class CaptureSequenceList : BaseINPC {
@@ -27,6 +26,7 @@ namespace NINA.Model {
         }
 
         private AsyncObservableCollection<CaptureSequence> _items = new AsyncObservableCollection<CaptureSequence>();
+
         [XmlElement(nameof(CaptureSequence))]
         public AsyncObservableCollection<CaptureSequence> Items {
             get {
@@ -45,10 +45,10 @@ namespace NINA.Model {
         public int Count {
             get {
                 return Items.Count;
-            }            
+            }
         }
 
-        public void Add(CaptureSequence s) {            
+        public void Add(CaptureSequence s) {
             Items.Add(s);
             if (Items.Count == 1) {
                 ActiveSequence = Items.First();
@@ -56,9 +56,9 @@ namespace NINA.Model {
         }
 
         public void RemoveAt(int idx) {
-            if(Items.Count > idx) {
-                if(Items[idx] == ActiveSequence) {
-                    if(idx == Items.Count -1) {
+            if (Items.Count > idx) {
+                if (Items[idx] == ActiveSequence) {
+                    if (idx == Items.Count - 1) {
                         ActiveSequence = null;
                     } else {
                         ActiveSequence = Items[idx + 1];
@@ -66,23 +66,20 @@ namespace NINA.Model {
                 }
                 Items.RemoveAt(idx);
             }
-            
         }
 
         public void Save(string path) {
             try {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CaptureSequenceList));
-                
+
                 using (StreamWriter writer = new StreamWriter(path)) {
                     xmlSerializer.Serialize(writer, this);
                 }
-                
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.ShowError(ex.Message);                
+                Notification.ShowError(ex.Message);
             }
-            
-        }        
+        }
 
         public static CaptureSequenceList Load(string path) {
             CaptureSequenceList l = null;
@@ -93,9 +90,20 @@ namespace NINA.Model {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CaptureSequenceList));
 
                 l = (CaptureSequenceList)xmlSerializer.Deserialize(reader);
+                foreach (CaptureSequence s in l) {
+                    //first try to match by name; otherwise match by position.
+                    var filter = ProfileManager.Instance.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
+                    if (filter == null) {
+                        filter = ProfileManager.Instance.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
+                        if (filter == null) {
+                            Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (s.FilterType.Position + 1)));
+                        }
+                    }
+                    s.FilterType = filter;
+                }
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.ShowError(ex.Message);
+                Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceFailed"] + Environment.NewLine + ex.Message);
             }
             return l;
         }
@@ -110,6 +118,7 @@ namespace NINA.Model {
         }
 
         private string _targetName;
+
         [XmlAttribute(nameof(TargetName))]
         public string TargetName {
             get {
@@ -122,6 +131,7 @@ namespace NINA.Model {
         }
 
         private SequenceMode _mode;
+
         [XmlAttribute(nameof(Mode))]
         public SequenceMode Mode {
             get {
@@ -134,6 +144,7 @@ namespace NINA.Model {
         }
 
         private bool _isRunning;
+
         [XmlIgnore]
         public bool IsRunning {
             get {
@@ -186,13 +197,14 @@ namespace NINA.Model {
             }
 
             ActiveSequence = seq;
-            if(seq != null) {
+            if (seq != null) {
                 seq.ProgressExposureCount++;
             }
             return seq;
         }
 
         private Coordinates _coordinates;
+
         [XmlElement(nameof(Coordinates))]
         public Coordinates Coordinates {
             get {
@@ -203,61 +215,65 @@ namespace NINA.Model {
                 RaiseCoordinatesChanged();
             }
         }
+
         [XmlAttribute(nameof(RAHours))]
         public int RAHours {
             get {
-                return (int)Math.Abs(Math.Truncate(_coordinates.RA));
+                return (int)Math.Truncate(_coordinates.RA);
             }
             set {
                 if (value >= 0) {
                     _coordinates.RA = _coordinates.RA - RAHours + value;
                     RaiseCoordinatesChanged();
                 }
-
             }
         }
+
         [XmlAttribute(nameof(RAMinutes))]
         public int RAMinutes {
             get {
-                return (int)Math.Abs(Math.Truncate((_coordinates.RA - RAHours) * 60));
+                return (int)(Math.Floor(_coordinates.RA * 60.0d) % 60);
             }
             set {
                 if (value >= 0) {
                     _coordinates.RA = _coordinates.RA - RAMinutes / 60.0d + value / 60.0d;
                     RaiseCoordinatesChanged();
                 }
-
             }
         }
+
         [XmlAttribute(nameof(RASeconds))]
         public int RASeconds {
             get {
-                return (int)Math.Abs(Math.Truncate((_coordinates.RA - RAHours - RAMinutes / 60.0d) * 60d * 60d));
+                return (int)(Math.Floor(_coordinates.RA * 60.0d * 60.0d) % 60);
             }
             set {
                 if (value >= 0) {
                     _coordinates.RA = _coordinates.RA - RASeconds / (60.0d * 60.0d) + value / (60.0d * 60.0d);
                     RaiseCoordinatesChanged();
                 }
-
             }
         }
-
 
         [XmlAttribute(nameof(DecDegrees))]
         public int DecDegrees {
             get {
-                return (int)(Math.Truncate(_coordinates.Dec));
+                return (int)Math.Truncate(_coordinates.Dec);
             }
             set {
-                _coordinates.Dec = _coordinates.Dec - DecDegrees + value;
+                if (value < 0) {
+                    _coordinates.Dec = value - DecMinutes / 60.0d - DecSeconds / (60.0d * 60.0d);
+                } else {
+                    _coordinates.Dec = value + DecMinutes / 60.0d + DecSeconds / (60.0d * 60.0d);
+                }
                 RaiseCoordinatesChanged();
             }
         }
+
         [XmlAttribute(nameof(DecMinutes))]
         public int DecMinutes {
             get {
-                return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees) * 60));
+                return (int)Math.Floor((Math.Abs(_coordinates.Dec * 60.0d) % 60));
             }
             set {
                 if (_coordinates.Dec < 0) {
@@ -269,14 +285,11 @@ namespace NINA.Model {
                 RaiseCoordinatesChanged();
             }
         }
+
         [XmlAttribute(nameof(DecSeconds))]
         public int DecSeconds {
             get {
-                if (_coordinates.Dec >= 0) {
-                    return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees - DecMinutes / 60.0d) * 60d * 60d));
-                } else {
-                    return (int)Math.Abs(Math.Truncate((_coordinates.Dec - DecDegrees + DecMinutes / 60.0d) * 60d * 60d));
-                }
+                return (int)Math.Floor((Math.Abs(_coordinates.Dec * 60.0d * 60.0d) % 60));
             }
             set {
                 if (_coordinates.Dec < 0) {
@@ -302,6 +315,7 @@ namespace NINA.Model {
         }
 
         private DeepSkyObject _dso;
+
         [XmlIgnore]
         public DeepSkyObject DSO {
             get {
@@ -309,13 +323,18 @@ namespace NINA.Model {
             }
             set {
                 _dso = value;
-                _dso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), Settings.Latitude, Settings.Longitude);
+                _dso.SetDateAndPosition(
+                    SkyAtlasVM.GetReferenceDate(DateTime.Now),
+                    ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude,
+                    ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude
+                );
                 RaisePropertyChanged();
             }
         }
 
         private object lockobj = new object();
         private CaptureSequence _activeSequence;
+
         [XmlIgnore]
         public CaptureSequence ActiveSequence {
             get {
@@ -339,6 +358,7 @@ namespace NINA.Model {
         }
 
         private int _delay;
+
         [XmlAttribute(nameof(Delay))]
         public int Delay {
             get {
@@ -351,6 +371,7 @@ namespace NINA.Model {
         }
 
         private bool _slewToTarget;
+
         [XmlAttribute(nameof(SlewToTarget))]
         public bool SlewToTarget {
             get {
@@ -364,6 +385,7 @@ namespace NINA.Model {
         }
 
         private bool _autoFocusOnStart;
+
         [XmlAttribute(nameof(AutoFocusOnStart))]
         public bool AutoFocusOnStart {
             get {
@@ -376,6 +398,7 @@ namespace NINA.Model {
         }
 
         private bool _centerTarget;
+
         [XmlAttribute(nameof(CenterTarget))]
         public bool CenterTarget {
             get {
@@ -389,6 +412,7 @@ namespace NINA.Model {
         }
 
         private bool _startGuiding;
+
         [XmlAttribute(nameof(StartGuiding))]
         public bool StartGuiding {
             get {
@@ -401,6 +425,7 @@ namespace NINA.Model {
         }
 
         private bool _autoFocusOnFilterChange;
+
         [XmlAttribute(nameof(AutoFocusOnFilterChange))]
         public bool AutoFocusOnFilterChange {
             get {
@@ -413,6 +438,7 @@ namespace NINA.Model {
         }
 
         private bool _altitudeVisisble;
+
         [XmlIgnore]
         public bool AltitudeVisible {
             get {
@@ -427,8 +453,10 @@ namespace NINA.Model {
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SequenceMode {
+
         [Description("LblSequenceModeStandard")]
         STANDARD,
+
         [Description("LblSequenceModeRotate")]
         ROTATE
     }
@@ -436,6 +464,7 @@ namespace NINA.Model {
     [Serializable()]
     [XmlRoot(ElementName = "CaptureSequence")]
     public class CaptureSequence : BaseINPC {
+
         public static class ImageTypes {
             public const string LIGHT = "LIGHT";
             public const string FLAT = "FLAT";
@@ -472,7 +501,7 @@ namespace NINA.Model {
         private string _imageType;
         private MyFilterWheel.FilterInfo _filterType;
         private MyCamera.BinningMode _binning;
-        private int _progressExposureCount;        
+        private int _progressExposureCount;
 
         [XmlElement(nameof(ExposureTime))]
         public double ExposureTime {
@@ -524,8 +553,9 @@ namespace NINA.Model {
                 RaisePropertyChanged();
             }
         }
-        
+
         private short _gain;
+
         [XmlElement(nameof(Gain))]
         public short Gain {
             get {
@@ -538,6 +568,7 @@ namespace NINA.Model {
         }
 
         private int _totalExposureCount;
+
         /// <summary>
         /// Total exposures of a sequence
         /// </summary>
@@ -548,7 +579,7 @@ namespace NINA.Model {
             }
             set {
                 _totalExposureCount = value;
-                if(_totalExposureCount < ProgressExposureCount && _totalExposureCount >= 0) {
+                if (_totalExposureCount < ProgressExposureCount && _totalExposureCount >= 0) {
                     ProgressExposureCount = _totalExposureCount;
                 }
                 RaisePropertyChanged();
@@ -565,7 +596,7 @@ namespace NINA.Model {
             }
             set {
                 _progressExposureCount = value;
-                if(ProgressExposureCount > TotalExposureCount) {
+                if (ProgressExposureCount > TotalExposureCount) {
                     TotalExposureCount = ProgressExposureCount;
                 }
                 RaisePropertyChanged();
@@ -573,6 +604,7 @@ namespace NINA.Model {
         }
 
         private bool _dither;
+
         [XmlElement(nameof(Dither))]
         public bool Dither {
             get {
@@ -585,6 +617,7 @@ namespace NINA.Model {
         }
 
         private int _ditherAmount;
+
         [XmlElement(nameof(DitherAmount))]
         public int DitherAmount {
             get {
