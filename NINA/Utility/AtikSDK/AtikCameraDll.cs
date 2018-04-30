@@ -88,7 +88,7 @@ namespace NINA.Utility.AtikSDK {
             int buffersize = (w * h * 16 + 7) / 8;
 
             ushort[] arr = new ushort[size / 2];
-            CopyToUShort(pointer, arr, 0, size / 2);
+            CopyToUShort(ptr, arr, 0, size / 2);
             Marshal.FreeHGlobal(pointer);
             return await ImageArray.CreateInstance(arr, w, h, isBayered);
         }
@@ -136,15 +136,17 @@ namespace NINA.Utility.AtikSDK {
 
         public static ArtemisPropertiesStruct GetCameraProperties(int cameraId) {
             var handle = Connect(cameraId);
-            var error = ArtemisProperties(handle, out var prop);
-            CheckError(error, MethodBase.GetCurrentMethod(), cameraId);
+            ArtemisColourProperties(handle, out ArtemisColourType type, out int x, out int y, out int px, out int py);
+            ArtemisPropertiesStruct outstruct = new ArtemisPropertiesStruct();
+            CheckError(ArtemisProperties(handle, ref outstruct), MethodBase.GetCurrentMethod(), cameraId);
             Disconnect(handle);
-            return prop;
+            return outstruct;
         }
 
         public static ArtemisPropertiesStruct GetCameraProperties(IntPtr camera) {
-            CheckError(ArtemisProperties(camera, out var prop), MethodBase.GetCurrentMethod(), camera);
-            return prop;
+            ArtemisPropertiesStruct outstruct = new ArtemisPropertiesStruct();
+            CheckError(ArtemisProperties(camera, ref outstruct), MethodBase.GetCurrentMethod(), camera);
+            return outstruct;
         }
 
         /// <summary>
@@ -251,7 +253,7 @@ namespace NINA.Utility.AtikSDK {
         /// Sets the supplied ARTEMISPROPERTIES to the value for the given camera.
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisProperties(IntPtr camera, out ArtemisPropertiesStruct prop);
+        private static extern ArtemisErrorCode ArtemisProperties(IntPtr camera, ref ArtemisPropertiesStruct prop);
 
         /// <summary>
         /// Gives the colour properties of the given camera. The offsets(Normal / Preview – X / Y)
@@ -503,19 +505,33 @@ namespace NINA.Utility.AtikSDK {
             ARTEMIS_OPERATION_FAILED
         }
 
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Size = 188)]
         public struct ArtemisPropertiesStruct {
 
             /// <summary>
-            /// The manufacturer of the camera. Usually Atik Cameras.
+            /// The firmware version of the camera
             /// </summary>
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string Manufacturer;
+            public int Protocol;
 
             /// <summary>
-            /// The name of the type of camera
+            /// The width of the sensor in pixels
             /// </summary>
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string Description;
+            public int nPixelsX;
+
+            /// <summary>
+            /// The height of the sensor in pixels
+            /// </summary>
+            public int nPixelsY;
+
+            /// <summary>
+            /// The width of each pixel in microns
+            /// </summary>
+            public float PixelMicronsX;
+
+            /// <summary>
+            /// The height of each pixel in microns
+            /// </summary>
+            public float PixelMicronsY;
 
             /// <summary>
             /// Represents the properties of the camera: 1 = Has FIFO 2 = Has External Trigger 4 =
@@ -531,29 +547,18 @@ namespace NINA.Utility.AtikSDK {
             public int ccdflags;
 
             /// <summary>
-            /// The height of each pixel in microns
+            /// The name of the type of camera
             /// </summary>
-            public float PixelMicronsY;
+            //[MarshalAs(UnmanagedType.LPStr)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 40)]
+            public char[] Description;
 
             /// <summary>
-            /// The width of each pixel in microns
+            /// The manufacturer of the camera. Usually Atik Cameras.
             /// </summary>
-            public float PixelMicronsX;
-
-            /// <summary>
-            /// The width of the sensor in pixels
-            /// </summary>
-            public int nPixelsX;
-
-            /// <summary>
-            /// The height of the sensor in pixels
-            /// </summary>
-            public int nPixelsY;
-
-            /// <summary>
-            /// The firmware version of the camera
-            /// </summary>
-            public int Protocol;
+            //[MarshalAs(UnmanagedType.LPStr)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 40)]
+            public char[] Manufacturer;
         }
 
         private static void CheckError(ArtemisErrorCode code, MethodBase callingMethod, params object[] parameters) {
