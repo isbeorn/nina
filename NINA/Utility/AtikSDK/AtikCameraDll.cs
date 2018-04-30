@@ -1,5 +1,12 @@
-﻿using System;
+﻿using NINA.Model.MyCamera;
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NINA.Utility.AtikSDK {
 
@@ -7,8 +14,138 @@ namespace NINA.Utility.AtikSDK {
         private const string DLLNAME = "ArtemisHSC.dll";
 
         static AtikCameraDll() {
+            DllLoader.LoadDll("Atik/" + "Atik.Core.dll");
+            DllLoader.LoadDll("Atik/" + "ArtemisHscDefvn.dll");
             DllLoader.LoadDll("Atik/" + DLLNAME);
         }
+
+        public static int RefreshDevicesCount() {
+            return ArtemisRefreshDevicesCount();
+        }
+
+        public static IntPtr Connect(int id) {
+            IntPtr cameraP = ArtemisConnect(id);
+            if(cameraP == IntPtr.Zero) {
+                throw new AtikCameraException("Unable to connect to camera", MethodBase.GetCurrentMethod(), new object[] { id });
+            }
+            return cameraP;
+        }
+
+        public static bool Disconnect(IntPtr camera) {
+            try { 
+                ArtemisCoolerWarmUp(camera);
+            } catch (Exception) { }
+            return ArtemisDisconnect(camera);
+        }
+
+        public static bool IsConnected(IntPtr camera) {
+            if(camera != null && camera != IntPtr.Zero) {
+                return ArtemisIsConnected(camera);
+            } else {
+                return false;
+            }
+        }
+
+        public static void StartExposure(IntPtr camera, double exposuretime) {
+            if (camera != null && camera != IntPtr.Zero) {
+                CheckError(ArtemisStartExposure(camera, (float)exposuretime), MethodBase.GetCurrentMethod(), camera);
+            }
+        }
+
+        public static bool ImageReady(IntPtr camera) {
+            if (camera != null && camera != IntPtr.Zero) {
+                return ArtemisImageReady(camera);
+            } else {
+                throw new Exception("Atik Camera not connected");
+            }            
+        }
+
+        public static bool HasCooler(IntPtr camera) {
+            var hasCooler = false;
+            try {
+                CheckError(ArtemisTemperatureSensorInfo(camera, 0, out var sensors), MethodBase.GetCurrentMethod(), camera);
+                return sensors > 0;
+            } catch(Exception) { }
+            return hasCooler;
+        }
+
+        public static double CoolerPower(IntPtr camera) {
+            CheckError(ArtemisCoolingInfo(camera, out var flags, out var level, out var minLevel, out var maxLevel, out var setPoint), MethodBase.GetCurrentMethod(), camera);
+            return level / 100d;
+        }
+
+        public static ArtemisCameraStateEnum CameraState(IntPtr camera) {
+            return ArtemisCameraState(camera);
+        }
+
+        public static async Task<ImageArray> DownloadExposure(IntPtr camera, bool isBayered) {
+            CheckError(ArtemisGetImageData(camera, out var x, out var y, out var w, out var h, out var binX, out var binY), MethodBase.GetCurrentMethod(), camera);
+
+            var ptr = ArtemisImageBuffer(camera);
+
+            int size = w * h * 2;
+            IntPtr pointer = Marshal.AllocHGlobal(size);
+            int buffersize = (w * h * 16 + 7) / 8;
+            
+            ushort[] arr = new ushort[size / 2];
+            CopyToUShort(pointer, arr, 0, size / 2);
+            Marshal.FreeHGlobal(pointer);
+            return await ImageArray.CreateInstance(arr, w, h, isBayered);
+        }
+
+        private static void CopyToUShort(IntPtr source, ushort[] destination, int startIndex, int length) {
+            unsafe {
+                var sourcePtr = (ushort*)source;
+                for (int i = startIndex; i < startIndex + length; ++i) {
+                    destination[i] = *sourcePtr++;
+                }
+            }
+        }
+
+        public static void StopExposure(IntPtr camera) {
+            if (camera != null && camera != IntPtr.Zero) {
+                CheckError(ArtemisStopExposure(camera), MethodBase.GetCurrentMethod(), camera);
+            }
+        }
+
+        public static void SetBinning(IntPtr camera, int x, int y) {
+            CheckError(ArtemisBin(camera, x, y), MethodBase.GetCurrentMethod(), camera);
+        }
+
+        public static void GetBinning(IntPtr camera, out int x, out int y) {
+            CheckError(ArtemisGetBin(camera, out x, out y), MethodBase.GetCurrentMethod(), camera);
+        }
+
+        public static void GetMaxBinning(IntPtr camera, out int x, out int y) {
+            CheckError(ArtemisGetMaxBin(camera, out x, out y), MethodBase.GetCurrentMethod(), camera);
+        }
+
+        public static double GetTemperature(IntPtr camera) {
+            CheckError(ArtemisTemperatureSensorInfo(camera, 0, out var sensors), MethodBase.GetCurrentMethod(), camera);
+            if(sensors > 0) {
+                CheckError(ArtemisTemperatureSensorInfo(camera, 1, out var temperature), MethodBase.GetCurrentMethod(), camera);
+                return temperature / 100.0d;
+            } else {
+                return double.NaN;
+            }            
+        }
+
+        public static void SetCooling(IntPtr camera, double setPoint) {
+            CheckError(ArtemisSetCooling(camera, (int)(setPoint * 100)), MethodBase.GetCurrentMethod(), camera);
+        }
+
+        public static ArtemisPropertiesStruct GetCameraProperties(int cameraId) {
+            var handle = Connect(cameraId);
+            CheckError(ArtemisProperties(handle, out var prop), MethodBase.GetCurrentMethod(), cameraId);
+            Disconnect(handle);
+            return prop;
+        }
+
+        public static ArtemisPropertiesStruct GetCameraProperties(IntPtr camera) {
+            CheckError(ArtemisProperties(camera, out var prop), MethodBase.GetCurrentMethod(), camera);
+            return prop;
+        }
+
 
         /// <summary>
         /// Returns the version of the API. This number comes from the services itself.
@@ -86,7 +223,7 @@ namespace NINA.Utility.AtikSDK {
         /// The camera list changes every time a USB device is connected or removed.
         /// Therefore, the purpose of this method is to tell the user that the cameras have changed and that it’s worth checking to make sure their camera(s) are still connected.
         /// </summary>
-        [DllImport(DLLNAME, EntryPoint = "ArtemisRefreshDevicesCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport("ArtemisHSC.dll", EntryPoint = "ArtemisRefreshDevicesCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern int ArtemisRefreshDevicesCount();
 
         /// <summary>
@@ -102,20 +239,20 @@ namespace NINA.Utility.AtikSDK {
         /// This method returns an ArtemisErrorCode as listed below.
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisCameraSerial", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisCameraSerial(IntPtr camera, ref int flags, ref int serial);
+        private static extern ArtemisErrorCode ArtemisCameraSerial(IntPtr camera, out int flags, out int serial);
 
         /// <summary>
         /// Sets the supplied ARTEMISPROPERTIES to the value for the given camera.
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisProperties(IntPtr camera, ArtemisPropertiesStruct prop);
+        private static extern ArtemisErrorCode ArtemisProperties(IntPtr camera, out ArtemisPropertiesStruct prop);
 
         /// <summary>
         /// Gives the colour properties of the given camera.
         /// The offsets(Normal / Preview – X / Y) give you information about the Bayer matrix used.
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisColourProperties", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisColourProperties(IntPtr camera, ref ArtemisColourType colorType, ref int normalOffsetX, ref int normalOffsetY, ref int previewOffsetX, ref int previewOffsetY);
+        private static extern ArtemisErrorCode ArtemisColourProperties(IntPtr camera, out ArtemisColourType colorType, out int normalOffsetX, out int normalOffsetY, out int previewOffsetX, out int previewOffsetY);
 
         /// <summary>
         /// As you might expect, this method is used to start an exposure on the camera.
@@ -159,7 +296,7 @@ namespace NINA.Utility.AtikSDK {
         /// Will populate the given values with the details of the image
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisGetImageData", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisGetImageData(IntPtr camera, ref int x, ref int y, ref int w, ref int h, ref int binX, ref int binY);
+        private static extern ArtemisErrorCode ArtemisGetImageData(IntPtr camera, out int x, out int y, out int w, out int h, out int binX, out int binY);
 
         /// <summary>
         /// Returns a pointer to the image buffer. You should call ArtemisGetImageData first to find out the dimensions of the image. This will return 0 if there is no image.
@@ -177,13 +314,13 @@ namespace NINA.Utility.AtikSDK {
         /// This function will populate the given parameters with the current binning values.
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisGetBin", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisGetBin(IntPtr camera, ref int x, ref int y);
+        private static extern ArtemisErrorCode ArtemisGetBin(IntPtr camera, out int x, out int y);
 
         /// <summary>
         /// This function will populate the given parameters with the maximum binning values for this camera.
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisGetMaxBin", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisGetMaxBin(IntPtr camera, ref int x, ref int y);
+        private static extern ArtemisErrorCode ArtemisGetMaxBin(IntPtr camera, out int x, out int y);
 
         /// <summary>
         /// This function will set the subframe values
@@ -207,7 +344,7 @@ namespace NINA.Utility.AtikSDK {
         /// This function will populate the given values with the current subframe values.
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisGetSubframe", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisGetSubframe(IntPtr camera, ref int x, ref int y, ref int w, ref int h);
+        private static extern ArtemisErrorCode ArtemisGetSubframe(IntPtr camera, out int x, out int y, out int w, out int h);
 
         /// <summary>
         /// Preview mode will produce images at a faster rate, but at a cost of quality.
@@ -224,7 +361,7 @@ namespace NINA.Utility.AtikSDK {
         /// The temperature is in 1/100 of a degree (Celcius), so a value of -1000 is actually -10C
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisTemperatureSensorInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisTemperatureSensorInfo(IntPtr camera, int sensor, ref int temperature);
+        private static extern ArtemisErrorCode ArtemisTemperatureSensorInfo(IntPtr camera, int sensor, out int temperature);
 
         /// <summary>
         /// This function is used to set the temperature of the camera.
@@ -237,7 +374,7 @@ namespace NINA.Utility.AtikSDK {
         /// Gives the current state of the cooling.
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisCoolingInfo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisCoolingInfo(IntPtr camera, ref int flags, ref int level, ref int minlvl, ref int maxlvl, ref int setPoint);
+        private static extern ArtemisErrorCode ArtemisCoolingInfo(IntPtr camera, out int flags, out int level, out int minlvl, out int maxlvl, out int setPoint);
 
         /// <summary>
         /// Tells the camera to start warming up.
@@ -252,7 +389,7 @@ namespace NINA.Utility.AtikSDK {
          * Not yet added: Internal and External Filter Wheel and Guiding Methods.
          */
 
-        private enum ArtemisCameraStateEnum {
+        public enum ArtemisCameraStateEnum {
 
             /// <summary>
             /// The default state of the camera. Indicates that the camera is ready to start and exposure
@@ -346,7 +483,7 @@ namespace NINA.Utility.AtikSDK {
             ARTEMIS_OPERATION_FAILED
         }
 
-        private struct ArtemisPropertiesStruct {
+        public struct ArtemisPropertiesStruct {
 
             /// <summary>
             /// The manufacturer of the camera. Usually Atik Cameras.
@@ -405,6 +542,49 @@ namespace NINA.Utility.AtikSDK {
             /// The firmware version of the camera
             /// </summary>
             public int Protocol;
+        }
+
+        private static void CheckError(ArtemisErrorCode code, MethodBase callingMethod, params object[] parameters) {
+            switch(code) {
+                case ArtemisErrorCode.ARTEMIS_OK:
+                    break;
+                case ArtemisErrorCode.ARTEMIS_NO_RESPONSE:
+                    throw new AtikCameraException("Atik Camera Operation timed out", callingMethod, parameters);
+                case ArtemisErrorCode.ARTEMIS_OPERATION_FAILED:
+                    throw new AtikCameraException("Atik Camera Operation failed", callingMethod, parameters);
+                case ArtemisErrorCode.ARTEMIS_NOT_IMPLEMENTED:
+                    throw new AtikCameraException("Atik Camera method not implemented", callingMethod, parameters);
+                case ArtemisErrorCode.ARTEMIS_NOT_CONNECTED:
+                    throw new AtikCameraException("Atik Camera not connected", callingMethod, parameters);
+                case ArtemisErrorCode.ARTEMIS_INVALID_PARAMETER:
+                    throw new AtikCameraException("Atik Camera invalid parameter for method", callingMethod, parameters);
+                case ArtemisErrorCode.ARTEMIS_INVALID_FUNCTION:
+                    throw new AtikCameraException("Atik Camera invalid method", callingMethod, parameters);
+                case ArtemisErrorCode.ARTEMIS_NOT_INITIALISED:
+                    throw new AtikCameraException("Atik Camera method not initialized", callingMethod, parameters);
+                default:
+                    throw new ArgumentOutOfRangeException("Atik Camera method error code");
+            }
+        }
+
+
+        public class AtikCameraException : Exception {
+
+            public AtikCameraException(string message, MethodBase callingMethod, object[] parameters) : base(CreateMessage(message, callingMethod, parameters)) {
+            }
+
+            private static string CreateMessage(string message, MethodBase callingMethod, object[] parameters) {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("Error '" + message + "' from call to ");
+                sb.Append("Atik" + callingMethod.Name + "(");
+                var paramNames = callingMethod.GetParameters().Select(x => x.Name);
+                foreach (var line in paramNames.Zip(parameters, (s, o) => string.Format("{0}={1}, ", s, o))) {
+                    sb.Append(line);
+                }
+                sb.Remove(sb.Length - 2, 2);
+                sb.Append(")");
+                return sb.ToString();
+            }
         }
     }
 }

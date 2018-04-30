@@ -2,6 +2,7 @@
 using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
+using NINA.Utility.AtikSDK;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -511,6 +512,13 @@ namespace NINA.ViewModel {
 
             /* NIKON */
             Devices.Add(new NikonCamera());
+
+            /* Atik */
+            Logger.Trace("Adding Atik Cameras");
+            for (int i = 0; i < AtikCameraDll.RefreshDevicesCount(); i++) {
+                var cam = new AtikCamera(i);
+                Devices.Add(cam);                
+            }
 
             DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.CameraSettings.Id);
         }
