@@ -450,7 +450,7 @@ namespace NINA.Model.MyCamera {
                 EDSDK.EdsGetPointer(stream, out var pointer);
                 EDSDK.EdsGetLength(stream, out var length);
                                 
-                byte[] bytes = new byte[length];
+                /*byte[] bytes = new byte[length];
 
                 //Move from unmanaged to managed code.
                 Marshal.Copy(pointer, bytes, 0, bytes.Length);
@@ -462,10 +462,10 @@ namespace NINA.Model.MyCamera {
                 var fileextension = ".cr2";
                 var filename = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, DCRaw.FILEPREFIX + fileextension);
                 System.IO.FileStream filestream = new System.IO.FileStream(filename, System.IO.FileMode.Create);
-                memoryStream.WriteTo(filestream);
+                memoryStream.WriteTo(filestream);*/
 
                 var handle = FreeImage.OpenMemory(pointer, (uint)length);
-                var img = FreeImage.LoadFromMemory(FREE_IMAGE_FORMAT.FIF_RAW, handle, FREE_IMAGE_LOAD_FLAGS.JPEG_EXIFROTATE);
+                var img = FreeImage.LoadFromMemory(FREE_IMAGE_FORMAT.FIF_RAW, handle, FREE_IMAGE_LOAD_FLAGS.RAW_UNPROCESSED);
                 var bits = FreeImage.GetBits(img);
                 FreeImage.FlipVertical(img);
                 FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Width", out MetadataTag widthTag);
@@ -503,6 +503,24 @@ namespace NINA.Model.MyCamera {
                     }
                 }
                 FreeImage.CloseMemory(handle);
+
+                token.ThrowIfCancellationRequested();
+
+                if (pointer != IntPtr.Zero) {
+                    EDSDK.EdsRelease(pointer);
+                    pointer = IntPtr.Zero;
+                }
+
+                if (this.DirectoryItem != IntPtr.Zero) {
+                    EDSDK.EdsRelease(this.DirectoryItem);
+                    this.DirectoryItem = IntPtr.Zero;
+                }
+
+                if (stream != IntPtr.Zero) {
+                    EDSDK.EdsRelease(stream);
+                    stream = IntPtr.Zero;
+                }
+
                 return await ImageArray.CreateInstance(flatArray, imgWidth, imgHeight, true);
                 
 
