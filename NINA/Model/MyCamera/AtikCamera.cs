@@ -45,6 +45,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private double _ccdTemperature;
+
         public double CCDTemperature {
             get {
                 return AtikCameraDll.GetTemperature(_cameraP);
@@ -54,7 +56,7 @@ namespace NINA.Model.MyCamera {
         public double SetCCDTemperature {
             get {
                 if (CanSetCCDTemperature) {
-                    return AtikCameraDll.GetTemperature(_cameraP);
+                    return _ccdTemperature;
                 } else {
                     return double.NaN;
                 }
@@ -62,7 +64,33 @@ namespace NINA.Model.MyCamera {
 
             set {
                 if (CanSetCCDTemperature) {
-                    AtikCameraDll.SetCooling(_cameraP, value);
+                    _ccdTemperature = value;
+                    AtikCameraDll.SetCooling(_cameraP, _ccdTemperature);
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool _coolerOn;
+
+        public bool CoolerOn {
+            get {
+                return _coolerOn;
+            }
+            set {
+                try {
+                    if (Connected) {
+                        if (_coolerOn != value) {
+                            _coolerOn = value;
+                            if (_coolerOn == false) {
+                                AtikCameraDll.SetWarmup(_cameraP);
+                            }
+                        }
+                        RaisePropertyChanged();
+                    }
+                } catch (Exception) {
+                    //_hasCooler = false;
+                    _coolerOn = false;
                 }
             }
         }
@@ -181,14 +209,14 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CoolerOn {
+        /*public bool CoolerOn {
             get {
                 return false;
             }
 
             set {
             }
-        }
+        }*/
 
         public double CoolerPower {
             get {
@@ -274,6 +302,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private AsyncObservableCollection<BinningMode> _binningModes;
+        private bool _hasCooler;
 
         public AsyncObservableCollection<BinningMode> BinningModes {
             get {

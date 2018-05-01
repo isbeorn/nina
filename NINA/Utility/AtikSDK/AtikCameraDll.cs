@@ -71,7 +71,7 @@ namespace NINA.Utility.AtikSDK {
 
         public static double CoolerPower(IntPtr camera) {
             CheckError(ArtemisCoolingInfo(camera, out var flags, out var level, out var minLevel, out var maxLevel, out var setPoint), MethodBase.GetCurrentMethod(), camera);
-            return level / 100d;
+            return level / 2.55d;
         }
 
         public static ArtemisCameraStateEnum CameraState(IntPtr camera) {
@@ -120,6 +120,10 @@ namespace NINA.Utility.AtikSDK {
             CheckError(ArtemisGetMaxBin(camera, out x, out y), MethodBase.GetCurrentMethod(), camera);
         }
 
+        public static void SetArtemisPreview(IntPtr camera, bool enabled) {
+            ArtemisSetPreview(camera, enabled);
+        }
+
         public static double GetTemperature(IntPtr camera) {
             CheckError(ArtemisTemperatureSensorInfo(camera, 0, out var sensors), MethodBase.GetCurrentMethod(), camera);
             if (sensors > 0) {
@@ -132,6 +136,10 @@ namespace NINA.Utility.AtikSDK {
 
         public static void SetCooling(IntPtr camera, double setPoint) {
             CheckError(ArtemisSetCooling(camera, (int)(setPoint * 100)), MethodBase.GetCurrentMethod(), camera);
+        }
+
+        public static void SetWarmup(IntPtr camera) {
+            CheckError(ArtemisCoolerWarmUp(camera), MethodBase.GetCurrentMethod(), camera);
         }
 
         public static ArtemisPropertiesStruct GetCameraProperties(int cameraId) {
