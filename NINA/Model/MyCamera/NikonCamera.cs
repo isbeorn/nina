@@ -520,7 +520,6 @@ namespace NINA.Model.MyCamera {
                 FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Height", out MetadataTag heightTag);
                 FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Left", out MetadataTag leftTag);
                 FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Top", out MetadataTag topTag);
-                Logger.Debug("Gathered tags");
                 left = int.Parse(leftTag.ToString());
                 top = int.Parse(topTag.ToString());
                 imgWidth = int.Parse(widthTag.ToString());
