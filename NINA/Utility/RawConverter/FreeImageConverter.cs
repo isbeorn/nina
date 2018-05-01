@@ -12,6 +12,10 @@ using NINA.Model.MyCamera;
 
 namespace NINA.Utility.RawConverter {
     class FreeImageConverter : IRawConverter {
+        public FreeImageConverter() {
+            DllLoader.LoadDll("FreeImage/FreeImage.dll");
+        }
+
         public async Task<ImageArray> ConvertToImageArray(MemoryStream s, CancellationToken token) {
             return await Task.Run(async () => {
                 using (MyStopWatch.Measure()) {

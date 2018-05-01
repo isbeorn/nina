@@ -11,7 +11,7 @@ namespace NINA.Utility.RawConverter {
     class RawConverter {
         public static IRawConverter CreateInstance() {
             //todo new config var
-            return new DCRaw();
+            //return new DCRaw();
             return new FreeImageConverter();
         }
     }

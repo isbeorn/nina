@@ -970,16 +970,13 @@
     <Resource Include="Documentation\images\tab-settings-platesolving-localplatesolver.png" />
     <Resource Include="Documentation\images\tab-settings-platesolving-platesolve2.png" />
     <Resource Include="Documentation\images\tab-telescope.png" />
-    <Content Include="Dependencies\FreeImage\x32\FreeImage.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\FreeImage\x64\FreeImage.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="External\x64\ASI\ASICamera2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\astrometry.net.png" />
+    <Content Include="External\x64\FreeImage\FreeImage.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\Nikon\Type0001\NkdPTP.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1050,6 +1047,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\Canon\EDSDK.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\Nikon\Type0001\NkdPTP.dll">
@@ -1324,6 +1324,7 @@
       <Name>NINACustomControlLibrary</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
