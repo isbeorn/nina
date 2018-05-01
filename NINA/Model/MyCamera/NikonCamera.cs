@@ -510,13 +510,11 @@ namespace NINA.Model.MyCamera {
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
             using (MyStopWatch.Measure("Nikon Capture")) {
-                Logger.Debug("Init Nikon Capture");
                 FIBITMAP img;
                 TiffBitmapDecoder decoder;
                 int left, top, imgWidth, imgHeight;
                 FREE_IMAGE_FORMAT format = FREE_IMAGE_FORMAT.FIF_RAW;
                 img = FreeImage.LoadFromStream(_memoryStream, (FREE_IMAGE_LOAD_FLAGS)8, ref format);
-                Logger.Debug("FreeImage loaded from stream: " + (img != null).ToString());
 
                 FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Width", out MetadataTag widthTag);
                 FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Height", out MetadataTag heightTag);
@@ -527,25 +525,18 @@ namespace NINA.Model.MyCamera {
                 top = int.Parse(topTag.ToString());
                 imgWidth = int.Parse(widthTag.ToString());
                 imgHeight = int.Parse(heightTag.ToString());
-                Logger.Debug("FreeImage gathered metadata");
 
                 var memStream = new MemoryStream();
                 FreeImage.SaveToStream(img, memStream, FREE_IMAGE_FORMAT.FIF_TIFF, FREE_IMAGE_SAVE_FLAGS.TIFF_NONE);
                 memStream.Position = 0;
-                Logger.Debug("FreeImage decoded and saved to memorystream");
 
                 decoder = new TiffBitmapDecoder(memStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                Logger.Debug("Decoded TIFF");
 
                 CroppedBitmap cropped = new CroppedBitmap(decoder.Frames[0], new System.Windows.Int32Rect(left, top, imgWidth, imgHeight));
-                Logger.Debug("Cropped Bitmap");
 
                 ushort[] outArray = new ushort[cropped.PixelWidth * cropped.PixelHeight];
                 cropped.CopyPixels(outArray, 2 * cropped.PixelWidth, 0);
-                Logger.Debug("Copied array");
-
                 memStream.Close();
-                Logger.Debug("Closing streams");
                 return await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, true);
             }
         }
