@@ -1,5 +1,7 @@
 ﻿using ASCOM.DeviceInterface;
 using EDSDKLib;
+using FreeImageAPI;
+using FreeImageAPI.Metadata;
 using NINA.Utility;
 using NINA.Utility.DCRaw;
 using NINA.Utility.Notification;
@@ -444,12 +446,10 @@ namespace NINA.Model.MyCamera {
                 sw.Restart();
 
                 //convert to memory stream
-                IntPtr pointer; //pointer to image stream
-                EDSDK.EdsGetPointer(stream, out pointer);
 
-                ulong length = 0;
-                EDSDK.EdsGetLength(stream, out length);
-
+                EDSDK.EdsGetPointer(stream, out var pointer);
+                EDSDK.EdsGetLength(stream, out var length);
+                                
                 byte[] bytes = new byte[length];
 
                 //Move from unmanaged to managed code.
@@ -464,8 +464,65 @@ namespace NINA.Model.MyCamera {
                 System.IO.FileStream filestream = new System.IO.FileStream(filename, System.IO.FileMode.Create);
                 memoryStream.WriteTo(filestream);
 
-                memoryStream.Dispose();
-                filestream.Dispose();
+                var handle = FreeImage.OpenMemory(pointer, (uint)length);
+                var img = FreeImage.LoadFromMemory(FREE_IMAGE_FORMAT.FIF_RAW, handle, FREE_IMAGE_LOAD_FLAGS.JPEG_EXIFROTATE);
+                var bits = FreeImage.GetBits(img);
+                FreeImage.FlipVertical(img);
+                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Width", out MetadataTag widthTag);
+                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Height", out MetadataTag heightTag);
+                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Left", out MetadataTag leftTag);
+                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Top", out MetadataTag topTag);
+                int left = int.Parse(leftTag.ToString());
+                int top = int.Parse(topTag.ToString());
+                int imgWidth = int.Parse(widthTag.ToString());
+                int imgHeight = int.Parse(heightTag.ToString());
+                int arrWidth = (int)FreeImage.GetWidth(img);
+                int arrHeight = (int)FreeImage.GetHeight(img);
+
+                ushort[] flatArray = new ushort[imgWidth * imgHeight];
+                var j = 0;
+                var row = 0;
+                unsafe {
+                    var sourcePtr = (UInt16*)bits;
+                    
+                    for (int i = 0; i < arrWidth * arrHeight; i++) {
+                        if (i % arrWidth == 0) {
+                            row++;
+                        }
+
+                        if (i % arrWidth < left) {
+                            //var a = *sourcePtr++;
+                            continue;
+                        }
+
+                        if(row > top) { 
+                            flatArray[j++] = sourcePtr[i];
+                        } else {
+                            //var a = *sourcePtr++;
+                        }
+                    }
+                }
+                FreeImage.CloseMemory(handle);
+                return await ImageArray.CreateInstance(flatArray, imgWidth, imgHeight, true);
+                
+
+
+                /*ushort[] data = new ushort[arrWidth * arrHeight];
+
+                unsafe {
+                    var sourcePtr = (ushort*)bits;
+                    for (int i = 0; i < arrWidth * arrHeight; ++i) {
+                        data[i] = *sourcePtr++;
+                    }
+                }
+                
+                FreeImage.CloseMemory(handle);
+                return await ImageArray.CreateInstance(data, arrWidth, arrHeight, false);
+*/
+                //FreeImage.Save(FREE_IMAGE_FORMAT.FIF_TIFF, img, @"d:\test.tiff", FREE_IMAGE_SAVE_FLAGS.TIFF_DEFLATE);
+                //memoryStream.Dispose();
+
+                /*filestream.Dispose();
 
                 Debug.Print("Write temp file: " + sw.Elapsed);
                 sw.Restart();
@@ -491,7 +548,7 @@ namespace NINA.Model.MyCamera {
                     stream = IntPtr.Zero;
                 }
 
-                return iarr;
+                return iarr;*/
             });
         }
 
