@@ -860,8 +860,6 @@
                                     ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:CameraBulbModeEnum}}}"
                                     SelectedItem="{Binding CameraBulbMode}" />
                             </UniformGrid>
-                        </UniformGrid>
-                        <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
                                 VerticalAlignment="Center"
