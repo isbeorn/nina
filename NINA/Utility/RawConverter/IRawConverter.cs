@@ -10,9 +10,14 @@ using System.Threading.Tasks;
 namespace NINA.Utility.RawConverter {
     class RawConverter {
         public static IRawConverter CreateInstance() {
-            //todo new config var
-            //return new DCRaw();
-            return new FreeImageConverter();
+            switch(Profile.ProfileManager.Instance.ActiveProfile.CameraSettings.RawConverter) {
+                case Enum.RawConverterEnum.DCRAW:
+                    return new DCRaw();
+                case Enum.RawConverterEnum.FREEIMAGE:
+                    return new FreeImageConverter();
+                default:
+                    return new DCRaw();
+            }            
         }
     }
 
