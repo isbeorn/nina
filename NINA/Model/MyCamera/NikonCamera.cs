@@ -156,19 +156,18 @@ namespace NINA.Model.MyCamera {
 
         private void Camera_ImageReady(NikonDevice sender, NikonImage image) {
             Logger.Debug("Image ready");
-            _fileExtension = (image.Type == NikonImageType.Jpeg) ? ".jpg" : ".nef";
+            _memoryStream = new MemoryStream(image.Buffer);
+            /*_fileExtension = (image.Type == NikonImageType.Jpeg) ? ".jpg" : ".nef";
             var filename = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, DCRaw.FILEPREFIX + _fileExtension);
 
             Logger.Debug("Writing Image to temp folder");
             _imageData = new byte[image.Buffer.Length];
             using (System.IO.MemoryStream s = new System.IO.MemoryStream(_imageData)) {
                 s.Write(image.Buffer, 0, image.Buffer.Length);
-            }
+            }*/
             Logger.Debug("Setting Download Exposure Taks to complete");
             _downloadExposure.TrySetResult(null);
         }
-
-        private byte[] _imageData;
 
         private NikonDevice _camera;
 
@@ -511,34 +510,42 @@ namespace NINA.Model.MyCamera {
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
             using (MyStopWatch.Measure("Nikon Capture")) {
+                Logger.Debug("Init Nikon Capture");
                 FIBITMAP img;
                 TiffBitmapDecoder decoder;
                 int left, top, imgWidth, imgHeight;
-                using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(_imageData)) {
-                    FREE_IMAGE_FORMAT format = FREE_IMAGE_FORMAT.FIF_RAW;
-                    img = FreeImage.LoadFromStream(memoryStream, (FREE_IMAGE_LOAD_FLAGS)8, ref format);
-                }
+                FREE_IMAGE_FORMAT format = FREE_IMAGE_FORMAT.FIF_RAW;
+                img = FreeImage.LoadFromStream(_memoryStream, (FREE_IMAGE_LOAD_FLAGS)8, ref format);
+                Logger.Debug("FreeImage loaded from stream: " + (img != null).ToString());
 
-                using (var memStream = new MemoryStream()) {
-                    FreeImage.SaveToStream(img, memStream, FREE_IMAGE_FORMAT.FIF_TIFF, FREE_IMAGE_SAVE_FLAGS.TIFF_NONE);
-                    memStream.Position = 0;
+                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Width", out MetadataTag widthTag);
+                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Height", out MetadataTag heightTag);
+                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Left", out MetadataTag leftTag);
+                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Top", out MetadataTag topTag);
+                Logger.Debug("Gathered tags");
+                left = int.Parse(leftTag.ToString());
+                top = int.Parse(topTag.ToString());
+                imgWidth = int.Parse(widthTag.ToString());
+                imgHeight = int.Parse(heightTag.ToString());
+                Logger.Debug("FreeImage gathered metadata");
 
-                    FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Width", out MetadataTag widthTag);
-                    FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Height", out MetadataTag heightTag);
-                    FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Left", out MetadataTag leftTag);
-                    FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Top", out MetadataTag topTag);
-                    left = int.Parse(leftTag.ToString());
-                    top = int.Parse(topTag.ToString());
-                    imgWidth = int.Parse(widthTag.ToString());
-                    imgHeight = int.Parse(heightTag.ToString());
+                var memStream = new MemoryStream();
+                FreeImage.SaveToStream(img, memStream, FREE_IMAGE_FORMAT.FIF_TIFF, FREE_IMAGE_SAVE_FLAGS.TIFF_NONE);
+                memStream.Position = 0;
+                Logger.Debug("FreeImage decoded and saved to memorystream");
 
-                    decoder = new TiffBitmapDecoder(memStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                }
+                decoder = new TiffBitmapDecoder(memStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                Logger.Debug("Decoded TIFF");
 
                 CroppedBitmap cropped = new CroppedBitmap(decoder.Frames[0], new System.Windows.Int32Rect(left, top, imgWidth, imgHeight));
+                Logger.Debug("Cropped Bitmap");
+
                 ushort[] outArray = new ushort[cropped.PixelWidth * cropped.PixelHeight];
                 cropped.CopyPixels(outArray, 2 * cropped.PixelWidth, 0);
+                Logger.Debug("Copied array");
 
+                memStream.Close();
+                Logger.Debug("Closing streams");
                 return await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, true);
             }
         }
@@ -698,6 +705,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private int _prevShutterSpeed;
+        private MemoryStream _memoryStream;
 
         private void SetCameraShutterSpeed(int index) {
             if (Capabilities.ContainsKey(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed) && Capabilities[eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed].CanSet()) {

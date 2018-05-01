@@ -968,6 +968,12 @@
     <Resource Include="Documentation\images\tab-settings-platesolving-localplatesolver.png" />
     <Resource Include="Documentation\images\tab-settings-platesolving-platesolve2.png" />
     <Resource Include="Documentation\images\tab-telescope.png" />
+    <Content Include="Dependencies\FreeImage\x32\FreeImage.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Dependencies\FreeImage\x64\FreeImage.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\ASI\ASICamera2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
