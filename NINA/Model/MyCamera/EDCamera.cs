@@ -16,9 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
-
     internal class EDCamera : BaseINPC, ICamera {
-
         public EDCamera(IntPtr cam, EDSDK.EdsDeviceInfo info) {
             _cam = cam;
             Id = info.szDeviceDescription;
@@ -449,7 +447,7 @@ namespace NINA.Model.MyCamera {
 
                 EDSDK.EdsGetPointer(stream, out var pointer);
                 EDSDK.EdsGetLength(stream, out var length);
-                                
+
                 byte[] bytes = new byte[length];
 
                 //Move from unmanaged to managed code.
@@ -484,7 +482,7 @@ namespace NINA.Model.MyCamera {
                 var row = 0;
                 unsafe {
                     var sourcePtr = (UInt16*)bits;
-                    
+
                     for (int i = 0; i < arrWidth * arrHeight; i++) {
                         if (i % arrWidth == 0) {
                             row++;
@@ -495,7 +493,7 @@ namespace NINA.Model.MyCamera {
                             continue;
                         }
 
-                        if(row > top) { 
+                        if (row > top) {
                             flatArray[j++] = sourcePtr[i];
                         } else {
                             //var a = *sourcePtr++;
@@ -503,35 +501,6 @@ namespace NINA.Model.MyCamera {
                     }
                 }
                 FreeImage.CloseMemory(handle);
-                return await ImageArray.CreateInstance(flatArray, imgWidth, imgHeight, true);
-                
-
-
-                /*ushort[] data = new ushort[arrWidth * arrHeight];
-
-                unsafe {
-                    var sourcePtr = (ushort*)bits;
-                    for (int i = 0; i < arrWidth * arrHeight; ++i) {
-                        data[i] = *sourcePtr++;
-                    }
-                }
-                
-                FreeImage.CloseMemory(handle);
-                return await ImageArray.CreateInstance(data, arrWidth, arrHeight, false);
-*/
-                //FreeImage.Save(FREE_IMAGE_FORMAT.FIF_TIFF, img, @"d:\test.tiff", FREE_IMAGE_SAVE_FLAGS.TIFF_DEFLATE);
-                //memoryStream.Dispose();
-
-                /*filestream.Dispose();
-
-                Debug.Print("Write temp file: " + sw.Elapsed);
-                sw.Restart();
-
-                var iarr = await new DCRaw().ConvertToImageArray(fileextension, token);
-
-                Debug.Print("Get Pixels from temp tiff: " + sw.Elapsed);
-                sw.Restart();
-                token.ThrowIfCancellationRequested();
 
                 if (pointer != IntPtr.Zero) {
                     EDSDK.EdsRelease(pointer);
@@ -548,7 +517,7 @@ namespace NINA.Model.MyCamera {
                     stream = IntPtr.Zero;
                 }
 
-                return iarr;*/
+                return await ImageArray.CreateInstance(flatArray, imgWidth, imgHeight, true);
             });
         }
 
