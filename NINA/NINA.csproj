@@ -329,7 +329,7 @@
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
     <Compile Include="Utility\Converters\ValueToLocaleConverter.cs" />
     <Compile Include="Utility\DatabaseInteraction.cs" />
-    <Compile Include="Utility\DCRaw\DCRaw.cs" />
+    <Compile Include="Utility\RawConverter\DCRaw.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
@@ -374,6 +374,8 @@
     <Compile Include="Utility\Profile\SequenceSettings.cs" />
     <Compile Include="Utility\Profile\TelescopeSettings.cs" />
     <Compile Include="Utility\Profile\WeatherDataSettings.cs" />
+    <Compile Include="Utility\RawConverter\FreeImageConverter.cs" />
+    <Compile Include="Utility\RawConverter\IRawConverter.cs" />
     <Compile Include="Utility\SerialPortInteraction.cs" />
     <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />

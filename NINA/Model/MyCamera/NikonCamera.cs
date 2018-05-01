@@ -1,7 +1,6 @@
 ﻿using ASCOM.DeviceInterface;
 using Nikon;
 using NINA.Utility;
-using NINA.Utility.DCRaw;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
@@ -17,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FreeImageAPI.Metadata;
 using System.Windows.Media.Imaging;
+using NINA.Utility.RawConverter;
 
 namespace NINA.Model.MyCamera {
 
@@ -157,14 +157,6 @@ namespace NINA.Model.MyCamera {
         private void Camera_ImageReady(NikonDevice sender, NikonImage image) {
             Logger.Debug("Image ready");
             _memoryStream = new MemoryStream(image.Buffer);
-            /*_fileExtension = (image.Type == NikonImageType.Jpeg) ? ".jpg" : ".nef";
-            var filename = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, DCRaw.FILEPREFIX + _fileExtension);
-
-            Logger.Debug("Writing Image to temp folder");
-            _imageData = new byte[image.Buffer.Length];
-            using (System.IO.MemoryStream s = new System.IO.MemoryStream(_imageData)) {
-                s.Write(image.Buffer, 0, image.Buffer.Length);
-            }*/
             Logger.Debug("Setting Download Exposure Taks to complete");
             _downloadExposure.TrySetResult(null);
         }
@@ -509,35 +501,10 @@ namespace NINA.Model.MyCamera {
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
-            using (MyStopWatch.Measure("Nikon Capture")) {
-                FIBITMAP img;
-                TiffBitmapDecoder decoder;
-                int left, top, imgWidth, imgHeight;
-                FREE_IMAGE_FORMAT format = FREE_IMAGE_FORMAT.FIF_RAW;
-                img = FreeImage.LoadFromStream(_memoryStream, (FREE_IMAGE_LOAD_FLAGS)8, ref format);
 
-                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Width", out MetadataTag widthTag);
-                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Height", out MetadataTag heightTag);
-                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Left", out MetadataTag leftTag);
-                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Top", out MetadataTag topTag);
-                left = int.Parse(leftTag.ToString());
-                top = int.Parse(topTag.ToString());
-                imgWidth = int.Parse(widthTag.ToString());
-                imgHeight = int.Parse(heightTag.ToString());
-
-                var memStream = new MemoryStream();
-                FreeImage.SaveToStream(img, memStream, FREE_IMAGE_FORMAT.FIF_TIFF, FREE_IMAGE_SAVE_FLAGS.TIFF_NONE);
-                memStream.Position = 0;
-
-                decoder = new TiffBitmapDecoder(memStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-
-                CroppedBitmap cropped = new CroppedBitmap(decoder.Frames[0], new System.Windows.Int32Rect(left, top, imgWidth, imgHeight));
-
-                ushort[] outArray = new ushort[cropped.PixelWidth * cropped.PixelHeight];
-                cropped.CopyPixels(outArray, 2 * cropped.PixelWidth, 0);
-                memStream.Close();
-                return await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, true);
-            }
+            var converter = RawConverter.CreateInstance();
+            var iarr = await converter.ConvertToImageArray(_memoryStream, token);
+            return iarr;
         }
 
         public void SetBinning(short x, short y) {

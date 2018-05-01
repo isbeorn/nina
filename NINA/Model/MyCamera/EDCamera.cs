@@ -3,8 +3,8 @@ using EDSDKLib;
 using FreeImageAPI;
 using FreeImageAPI.Metadata;
 using NINA.Utility;
-using NINA.Utility.DCRaw;
 using NINA.Utility.Notification;
+using NINA.Utility.RawConverter;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -457,50 +457,9 @@ namespace NINA.Model.MyCamera {
                 sw.Restart();
 
                 System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
-                var fileextension = ".cr2";
-                var filename = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, DCRaw.FILEPREFIX + fileextension);
-                System.IO.FileStream filestream = new System.IO.FileStream(filename, System.IO.FileMode.Create);
-                memoryStream.WriteTo(filestream);
-
-                var handle = FreeImage.OpenMemory(pointer, (uint)length);
-                var img = FreeImage.LoadFromMemory(FREE_IMAGE_FORMAT.FIF_RAW, handle, FREE_IMAGE_LOAD_FLAGS.JPEG_EXIFROTATE);
-                var bits = FreeImage.GetBits(img);
-                FreeImage.FlipVertical(img);
-                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Width", out MetadataTag widthTag);
-                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Height", out MetadataTag heightTag);
-                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Left", out MetadataTag leftTag);
-                FreeImage.GetMetadata(FREE_IMAGE_MDMODEL.FIMD_COMMENTS, img, "Raw.Frame.Top", out MetadataTag topTag);
-                int left = int.Parse(leftTag.ToString());
-                int top = int.Parse(topTag.ToString());
-                int imgWidth = int.Parse(widthTag.ToString());
-                int imgHeight = int.Parse(heightTag.ToString());
-                int arrWidth = (int)FreeImage.GetWidth(img);
-                int arrHeight = (int)FreeImage.GetHeight(img);
-
-                ushort[] flatArray = new ushort[imgWidth * imgHeight];
-                var j = 0;
-                var row = 0;
-                unsafe {
-                    var sourcePtr = (UInt16*)bits;
-
-                    for (int i = 0; i < arrWidth * arrHeight; i++) {
-                        if (i % arrWidth == 0) {
-                            row++;
-                        }
-
-                        if (i % arrWidth < left) {
-                            //var a = *sourcePtr++;
-                            continue;
-                        }
-
-                        if (row > top) {
-                            flatArray[j++] = sourcePtr[i];
-                        } else {
-                            //var a = *sourcePtr++;
-                        }
-                    }
-                }
-                FreeImage.CloseMemory(handle);
+                
+                var converter = RawConverter.CreateInstance();
+                var iarr = await converter.ConvertToImageArray(memoryStream, token);
 
                 if (pointer != IntPtr.Zero) {
                     EDSDK.EdsRelease(pointer);
@@ -517,7 +476,9 @@ namespace NINA.Model.MyCamera {
                     stream = IntPtr.Zero;
                 }
 
-                return await ImageArray.CreateInstance(flatArray, imgWidth, imgHeight, true);
+                memoryStream.Dispose();
+
+                return iarr;                
             });
         }
 
