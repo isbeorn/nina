@@ -620,7 +620,6 @@ Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
     <s:String x:Key="LblPHD2RARMS">RA: {0}"</s:String>
     <s:String x:Key="LblPHD2DecRMS">Dec: {0}"</s:String>
     <s:String x:Key="LblPHD2TotalRMS">Tot: {0}"</s:String>
-    <s:String x:Key="LblYAxisScale">Y-Achse Skala</s:String>
     <s:String x:Key="LblXAxisScale">X-Achse Skala</s:String>
     <s:String x:Key="LblYAxisUnits">Y-Achse Einheit</s:String>
     <s:String x:Key="LblTiff">TIFF</s:String>
