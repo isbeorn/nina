@@ -212,13 +212,13 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public double CCDTemperature {
+        public double Temperature {
             get {
                 return double.NaN;
             }
         }
 
-        public double SetCCDTemperature {
+        public double TemperatureSetPoint {
             get {
                 return double.NaN;
             }
@@ -316,7 +316,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CanSetCCDTemperature {
+        public bool CanSetTemperature {
             get {
                 return false;
             }
@@ -372,6 +372,12 @@ namespace NINA.Model.MyCamera {
         }
 
         public bool CanSetUSBLimit {
+            get {
+                return false;
+            }
+        }
+
+        public bool CanSubSample {
             get {
                 return false;
             }
@@ -484,6 +490,12 @@ namespace NINA.Model.MyCamera {
                 return false;
             }
         }
+
+        public bool EnableSubSample { get; set; }
+        public int SubSampleX { get; set; }
+        public int SubSampleY { get; set; }
+        public int SubSampleWidth { get; set; }
+        public int SubSampleHeight { get; set; }
 
         public void AbortExposure() {
             if (Connected) {

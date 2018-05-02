@@ -17,17 +17,17 @@ namespace NINA.Model.MyCamera {
 
         public AtikCamera(int id) {
             _cameraId = id;
+            _info = AtikCameraDll.GetCameraProperties(_cameraId);
         }
 
         private int _cameraId;
         private IntPtr _cameraP;
 
-        private AtikCameraDll.ArtemisPropertiesStruct? _info;
+        private AtikCameraDll.ArtemisPropertiesStruct _info;
 
         private AtikCameraDll.ArtemisPropertiesStruct Info {
-            // info is cached only while camera is open
             get {
-                return _info ?? AtikCameraDll.GetCameraProperties(_cameraId);
+                return _info;
             }
         }
 
@@ -45,31 +45,44 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private double _ccdTemperature;
-
-        public double CCDTemperature {
+        public double Temperature {
             get {
                 return AtikCameraDll.GetTemperature(_cameraP);
             }
         }
 
-        public double SetCCDTemperature {
+        private double _temperature;
+
+        public double TemperatureSetPoint {
             get {
-                if (CanSetCCDTemperature) {
-                    return _ccdTemperature;
-                } else {
-                    return double.NaN;
-                }
+                _temperature = AtikCameraDll.GetSetpoint(_cameraP);
+                return _temperature;
             }
 
             set {
-                if (CanSetCCDTemperature) {
-                    _ccdTemperature = value;
-                    AtikCameraDll.SetCooling(_cameraP, _ccdTemperature);
+                if (CanSetTemperature) {
+                    _temperature = value;
+                    if (CoolerOn) {
+                        AtikCameraDll.SetCooling(_cameraP, _temperature);
+                    }
                     RaisePropertyChanged();
                 }
             }
         }
+
+        public bool CanSubSample {
+            get {
+                var bitNumber = 5;
+                var bit = (Info.cameraflags & (1 << bitNumber - 1)) != 0;
+                return bit;
+            }
+        }
+
+        public bool EnableSubSample { get; set; }
+        public int SubSampleX { get; set; }
+        public int SubSampleY { get; set; }
+        public int SubSampleWidth { get; set; }
+        public int SubSampleHeight { get; set; }
 
         private bool _coolerOn;
 
@@ -84,12 +97,13 @@ namespace NINA.Model.MyCamera {
                             _coolerOn = value;
                             if (_coolerOn == false) {
                                 AtikCameraDll.SetWarmup(_cameraP);
+                            } else {
+                                AtikCameraDll.SetCooling(_cameraP, _temperature);
                             }
                         }
                         RaisePropertyChanged();
                     }
                 } catch (Exception) {
-                    //_hasCooler = false;
                     _coolerOn = false;
                 }
             }
@@ -125,19 +139,19 @@ namespace NINA.Model.MyCamera {
 
         public string Description {
             get {
-                return CleanedUpString(Info.Manufacturer) + " " + CleanedUpString(Info.Description);
+                return CleanedUpString(Info.Manufacturer) + " " + CleanedUpString(Info.Description) + " (SerialNo: " + AtikCameraDll.GetSerialNumber(_cameraP) + ")";
             }
         }
 
         public string DriverInfo {
             get {
-                return string.Empty;
+                return AtikCameraDll.DriverName;
             }
         }
 
         public string DriverVersion {
             get {
-                return string.Empty;
+                return AtikCameraDll.DriverVersion;
             }
         }
 
@@ -149,7 +163,7 @@ namespace NINA.Model.MyCamera {
 
         public SensorType SensorType {
             get {
-                return Info.ccdflags == 1 ? SensorType.RGGB : SensorType.Monochrome;
+                return AtikCameraDll.GetColorInformation(_cameraP);
             }
         }
 
@@ -173,21 +187,21 @@ namespace NINA.Model.MyCamera {
 
         public double ExposureMax {
             get {
-                return double.MaxValue;
+                return double.PositiveInfinity;
             }
         }
 
         public short MaxBinX {
             get {
                 AtikCameraDll.GetMaxBinning(_cameraP, out var x, out var y);
-                return (short)x;
+                return (short)x > 10 ? (short)10 : (short)x;
             }
         }
 
         public short MaxBinY {
             get {
                 AtikCameraDll.GetMaxBinning(_cameraP, out var x, out var y);
-                return (short)y;
+                return (short)y > 10 ? (short)10 : (short)y;
             }
         }
 
@@ -203,24 +217,15 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CanSetCCDTemperature {
+        public bool CanSetTemperature {
             get {
                 return AtikCameraDll.HasCooler(_cameraP);
             }
         }
 
-        /*public bool CoolerOn {
-            get {
-                return false;
-            }
-
-            set {
-            }
-        }*/
-
         public double CoolerPower {
             get {
-                if (CanSetCCDTemperature) {
+                if (CanSetTemperature) {
                     return AtikCameraDll.CoolerPower(_cameraP);
                 } else {
                     return double.NaN;
@@ -302,7 +307,6 @@ namespace NINA.Model.MyCamera {
         }
 
         private AsyncObservableCollection<BinningMode> _binningModes;
-        private bool _hasCooler;
 
         public AsyncObservableCollection<BinningMode> BinningModes {
             get {
@@ -362,7 +366,6 @@ namespace NINA.Model.MyCamera {
 
         public void Disconnect() {
             AtikCameraDll.Disconnect(_cameraP);
-            _info = null;
             _binningModes = null;
             RaisePropertyChanged(nameof(Connected));
         }
@@ -396,6 +399,11 @@ namespace NINA.Model.MyCamera {
             do {
                 System.Threading.Thread.Sleep(100);
             } while (AtikCameraDll.CameraState(_cameraP) != AtikCameraDll.ArtemisCameraStateEnum.CAMERA_IDLE);
+            if (EnableSubSample) {
+                AtikCameraDll.SetSubFrame(_cameraP, SubSampleX, SubSampleY, SubSampleWidth, SubSampleHeight);
+            } else {
+                AtikCameraDll.SetSubFrame(_cameraP, 0, 0, CameraXSize, CameraYSize);
+            }
             AtikCameraDll.StartExposure(_cameraP, exposureTime);
         }
 
@@ -404,10 +412,10 @@ namespace NINA.Model.MyCamera {
         }
 
         public void UpdateValues() {
-            RaisePropertyChanged(nameof(CCDTemperature));
+            RaisePropertyChanged(nameof(Temperature));
             RaisePropertyChanged(nameof(CoolerPower));
             RaisePropertyChanged(nameof(CoolerOn));
-            RaisePropertyChanged(nameof(SetCCDTemperature));
+            RaisePropertyChanged(nameof(TemperatureSetPoint));
             RaisePropertyChanged(nameof(CameraState));
         }
     }
