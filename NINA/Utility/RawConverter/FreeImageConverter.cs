@@ -11,7 +11,9 @@ using FreeImageAPI.Metadata;
 using NINA.Model.MyCamera;
 
 namespace NINA.Utility.RawConverter {
-    class FreeImageConverter : IRawConverter {
+
+    internal class FreeImageConverter : IRawConverter {
+
         public FreeImageConverter() {
             DllLoader.LoadDll("FreeImage/FreeImage.dll");
         }
@@ -43,10 +45,10 @@ namespace NINA.Utility.RawConverter {
 
                     ushort[] outArray = new ushort[cropped.PixelWidth * cropped.PixelHeight];
                     cropped.CopyPixels(outArray, 2 * cropped.PixelWidth, 0);
-                    memStream.Close();
+                    memStream.Dispose();
                     return await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, true);
                 }
-            });            
+            });
         }
     }
 }
