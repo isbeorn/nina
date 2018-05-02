@@ -43,13 +43,13 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public double CCDTemperature {
+        public double Temperature {
             get {
                 return double.NaN;
             }
         }
 
-        public double SetCCDTemperature {
+        public double TemperatureSetPoint {
             get {
                 return double.NaN;
             }
@@ -65,6 +65,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public bool CanSubSample {
+            get {
+                return false;
+            }
+        }
+
         public short BinY {
             get {
                 return 1;
@@ -72,6 +78,12 @@ namespace NINA.Model.MyCamera {
             set {
             }
         }
+
+        public bool EnableSubSample { get; set; }
+        public int SubSampleX { get; set; }
+        public int SubSampleY { get; set; }
+        public int SubSampleWidth { get; set; }
+        public int SubSampleHeight { get; set; }
 
         private string _name;
 
@@ -169,7 +181,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CanSetCCDTemperature {
+        public bool CanSetTemperature {
             get { return false; }
         }
 
