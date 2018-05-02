@@ -76,7 +76,8 @@
                     MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
                     MinorGridlineStyle="Dash"
                     Position="Left"
-                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                 <oxy:LinearAxis IsAxisVisible="False" Position="Bottom" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>

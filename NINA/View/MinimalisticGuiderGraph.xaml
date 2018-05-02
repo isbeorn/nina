@@ -13,6 +13,9 @@
     <Grid>
         <oxy:Plot
             Background="{StaticResource BackgroundBrush}"
+            LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
+            LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
+            LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
             PlotAreaBackground="{StaticResource BackgroundBrush}"
             PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
             <oxy:Plot.Axes>
@@ -28,7 +31,9 @@
                     Minimum="{Binding MinY}"
                     MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
                     MinorGridlineStyle="Dash"
-                    Position="Left" />
+                    Position="Left"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                 <oxy:LinearAxis IsAxisVisible="False" Position="Bottom" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
