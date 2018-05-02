@@ -12,7 +12,7 @@ namespace NINA.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -710,6 +710,30 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
+        public global::System.Windows.Media.Color NotificationWarningTextColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["NotificationWarningTextColor"]));
+            }
+            set {
+                this["NotificationWarningTextColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
+        public global::System.Windows.Media.Color NotificationErrorTextColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["NotificationErrorTextColor"]));
+            }
+            set {
+                this["NotificationErrorTextColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FFF5A300")]
         public global::System.Windows.Media.Color AltNotificationWarningColor {
             get {
@@ -729,6 +753,30 @@ namespace NINA.Properties {
             }
             set {
                 this["AltNotificationErrorColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF02010A")]
+        public global::System.Windows.Media.Color AltNotificationWarningTextColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AltNotificationWarningTextColor"]));
+            }
+            set {
+                this["AltNotificationWarningTextColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF02010A")]
+        public global::System.Windows.Media.Color AltNotificationErrorTextColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AltNotificationErrorTextColor"]));
+            }
+            set {
+                this["AltNotificationErrorTextColor"] = value;
             }
         }
         

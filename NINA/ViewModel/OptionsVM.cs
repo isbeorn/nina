@@ -91,6 +91,8 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(ButtonForegroundDisabledColor));
             RaisePropertyChanged(nameof(NotificationWarningColor));
             RaisePropertyChanged(nameof(NotificationErrorColor));
+            RaisePropertyChanged(nameof(NotificationWarningTextColor));
+            RaisePropertyChanged(nameof(NotificationErrorTextColor));
             RaisePropertyChanged(nameof(AlternativeColorSchemaName));
             RaisePropertyChanged(nameof(AltPrimaryColor));
             RaisePropertyChanged(nameof(AltSecondaryColor));
@@ -102,6 +104,8 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(AltButtonForegroundDisabledColor));
             RaisePropertyChanged(nameof(AltNotificationWarningColor));
             RaisePropertyChanged(nameof(AltNotificationErrorColor));
+            RaisePropertyChanged(nameof(AltNotificationErrorTextColor));
+            RaisePropertyChanged(nameof(AltNotificationWarningTextColor));
             //RaisePropertyChanged(nameof(ColorSchemas));
             //RaiseAllPropertiesChanged();
             foreach (System.Reflection.PropertyInfo p in this.GetType().GetProperties()) {
@@ -604,15 +608,19 @@ namespace NINA.ViewModel {
         }
 
         private void ToggleColors(object o) {
-            var s = ColorSchemaName;
-            var a = PrimaryColor;
-            var b = SecondaryColor;
-            var c = BorderColor;
-            var d = BackgroundColor;
-            var e = ButtonBackgroundColor;
-            var f = ButtonBackgroundSelectedColor;
-            var g = ButtonForegroundColor;
-            var h = ButtonForegroundDisabledColor;
+            var tmpSchemaName = ColorSchemaName;
+            var tmpPrimaryColor = PrimaryColor;
+            var tmpSecondaryColor = SecondaryColor;
+            var tmpBorderColor = BorderColor;
+            var tmpBackgroundColor = BackgroundColor;
+            var tmpButtonBackgroundColor = ButtonBackgroundColor;
+            var tmpButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor;
+            var tmpButtonForegroundColor = ButtonForegroundColor;
+            var tmpButtonForegroundDisabledColor = ButtonForegroundDisabledColor;
+            var tmpNotificationWarningColor = NotificationWarningColor;
+            var tmpNotificationWarningTextColor = NotificationWarningTextColor;
+            var tmpNotificationErrorColor = NotificationErrorColor;
+            var tmpNotificationErrorTextColor = NotificationErrorTextColor;
 
             ColorSchemaName = AlternativeColorSchemaName;
             PrimaryColor = AltPrimaryColor;
@@ -623,16 +631,24 @@ namespace NINA.ViewModel {
             ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor;
             ButtonForegroundColor = AltButtonForegroundColor;
             ButtonForegroundDisabledColor = AltButtonForegroundDisabledColor;
+            NotificationWarningColor = AltNotificationWarningColor;
+            NotificationWarningTextColor = AltNotificationWarningTextColor;
+            NotificationErrorColor = AltNotificationErrorColor;
+            NotificationErrorTextColor = AltNotificationErrorTextColor;
 
-            AlternativeColorSchemaName = s;
-            AltPrimaryColor = a;
-            AltSecondaryColor = b;
-            AltBorderColor = c;
-            AltBackgroundColor = d;
-            AltButtonBackgroundColor = e;
-            AltButtonBackgroundSelectedColor = f;
-            AltButtonForegroundColor = g;
-            AltButtonForegroundDisabledColor = h;
+            AlternativeColorSchemaName = tmpSchemaName;
+            AltPrimaryColor = tmpPrimaryColor;
+            AltSecondaryColor = tmpSecondaryColor;
+            AltBorderColor = tmpBorderColor;
+            AltBackgroundColor = tmpBackgroundColor;
+            AltButtonBackgroundColor = tmpButtonBackgroundColor;
+            AltButtonBackgroundSelectedColor = tmpButtonBackgroundSelectedColor;
+            AltButtonForegroundColor = tmpButtonForegroundColor;
+            AltButtonForegroundDisabledColor = tmpButtonForegroundDisabledColor;
+            AltNotificationWarningColor = tmpNotificationWarningColor;
+            AltNotificationWarningTextColor = tmpNotificationWarningTextColor;
+            AltNotificationErrorColor = tmpNotificationErrorColor;
+            AltNotificationErrorTextColor = tmpNotificationErrorTextColor;
         }
 
         public string ColorSchemaName {
@@ -652,6 +668,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(ButtonForegroundDisabledColor));
                 RaisePropertyChanged(nameof(NotificationWarningColor));
                 RaisePropertyChanged(nameof(NotificationErrorColor));
+                RaisePropertyChanged(nameof(NotificationWarningTextColor));
+                RaisePropertyChanged(nameof(NotificationErrorTextColor));
             }
         }
 
@@ -1030,6 +1048,26 @@ namespace NINA.ViewModel {
             }
         }
 
+        public Color NotificationWarningTextColor {
+            get {
+                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color NotificationErrorTextColor {
+            get {
+                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public Color AltNotificationWarningColor {
             get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningColor;
@@ -1046,6 +1084,26 @@ namespace NINA.ViewModel {
             }
             set {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color AltNotificationWarningTextColor {
+            get {
+                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color AltNotificationErrorTextColor {
+            get {
+                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor;
+            }
+            set {
+                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor = value;
                 RaisePropertyChanged();
             }
         }
