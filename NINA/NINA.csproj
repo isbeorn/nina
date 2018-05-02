@@ -276,6 +276,7 @@
     <Compile Include="Model\DeepSkyObject.cs" />
     <Compile Include="Model\DummyDevice.cs" />
     <Compile Include="Model\IDevice.cs" />
+    <Compile Include="Model\MyCamera\AtikCamera.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
     <Compile Include="Model\MyCamera\ImageArray.cs" />
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
@@ -300,6 +301,7 @@
     <Compile Include="Model\MyTelescope\AscomTelescope.cs" />
     <Compile Include="Model\MyTelescope\ITelescope.cs" />
     <Compile Include="Utility\ASISDK\ASICameras.cs" />
+    <Compile Include="Utility\AtikSDK\AtikCameraDll.cs" />
     <Compile Include="Utility\AvalonDock\PaneStyleSelector.cs" />
     <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
     <Compile Include="Utility\Behaviors\DragCommandBehavior.cs" />
@@ -972,6 +974,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\astrometry.net.png" />
+    <Content Include="External\x64\Atik\ArtemisHSC.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Atik\ArtemisHscDefn.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Atik\Atik.Core.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\Nikon\Type0001\NkdPTP.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1039,6 +1050,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\ASI\ASICamera2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\ArtemisHSC.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\ArtemisHscDefn.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\Atik.Core.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\Canon\EDSDK.dll">
