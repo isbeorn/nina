@@ -68,7 +68,7 @@ namespace NINA.Model.MyCamera {
 
         public bool CanSubSample {
             get {
-                return false;
+                return true;
             }
         }
 
@@ -939,6 +939,17 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
+            if (EnableSubSample) {
+                StartX = SubSampleX;
+                StartY = SubSampleY;
+                NumX = SubSampleWidth / BinX;
+                NumY = SubSampleHeight / BinY;
+            } else {
+                StartX = 0;
+                StartY = 0;
+                NumX = CameraXSize / BinX;
+                NumY = CameraYSize / BinY;
+            }
             _camera.StartExposure(exposureTime, isLightFrame);
         }
 
