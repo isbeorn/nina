@@ -107,20 +107,21 @@ namespace NINA.Model.MyCamera {
         }
 
         private ushort[] FlipAndConvert2d(Array input) {
-            using (MyStopWatch.Measure()) {
+            using (MyStopWatch.Measure("FlipAndConvert2d")) {
                 Int32[,] arr = (Int32[,])input;
                 int width = arr.GetLength(0);
                 int height = arr.GetLength(1);
 
                 this.Statistics.Width = width;
                 this.Statistics.Height = height;
-                ushort[] flatArray = new ushort[arr.Length];
+                int length = width * height;
+                ushort[] flatArray = new ushort[length];
                 ushort value;
 
                 unsafe {
                     fixed (Int32* ptr = arr) {
                         int idx = 0, row = 0;
-                        for (int i = 0; i < arr.Length; i++) {
+                        for (int i = 0; i < length; i++) {
                             value = (ushort)ptr[i];
 
                             idx = ((i % height) * width) + row;
