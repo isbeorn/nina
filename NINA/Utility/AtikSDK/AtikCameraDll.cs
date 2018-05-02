@@ -1,5 +1,7 @@
-﻿using NINA.Model.MyCamera;
+﻿using ASCOM.DeviceInterface;
+using NINA.Model.MyCamera;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -52,6 +54,21 @@ namespace NINA.Utility.AtikSDK {
             }
         }
 
+        public static void SetSubFrame(IntPtr camera, int x, int y, int width, int height) {
+            CheckError(ArtemisSubframe(camera, x, y, width, height), MethodBase.GetCurrentMethod(), camera);
+        }
+
+        public static void StartExposureMs(IntPtr camera, int ms) {
+            if (camera != null && camera != IntPtr.Zero) {
+                CheckError(ArtemisStartExposureMS(camera, ms), MethodBase.GetCurrentMethod(), camera);
+            }
+        }
+
+        public static SensorType GetColorInformation(IntPtr camera) {
+            CheckError(ArtemisColourProperties(camera, out ArtemisColourType colorType, out var offx, out var offy, out var prevx, out var prevy), MethodBase.GetCurrentMethod(), camera);
+            return colorType == ArtemisColourType.ARTEMIS_COLOUR_RGGB ? SensorType.RGGB : SensorType.Monochrome;
+        }
+
         public static bool ImageReady(IntPtr camera) {
             if (camera != null && camera != IntPtr.Zero) {
                 return ArtemisImageReady(camera);
@@ -71,7 +88,7 @@ namespace NINA.Utility.AtikSDK {
 
         public static double CoolerPower(IntPtr camera) {
             CheckError(ArtemisCoolingInfo(camera, out var flags, out var level, out var minLevel, out var maxLevel, out var setPoint), MethodBase.GetCurrentMethod(), camera);
-            return level / 100d;
+            return level / 2.55d;
         }
 
         public static ArtemisCameraStateEnum CameraState(IntPtr camera) {
@@ -120,6 +137,20 @@ namespace NINA.Utility.AtikSDK {
             CheckError(ArtemisGetMaxBin(camera, out x, out y), MethodBase.GetCurrentMethod(), camera);
         }
 
+        public static void SetArtemisPreview(IntPtr camera, bool enabled) {
+            ArtemisSetPreview(camera, enabled);
+        }
+
+        public static double GetSetpoint(IntPtr camera) {
+            CheckError(ArtemisCoolingInfo(camera, out var flags, out var level, out var minLevel, out var maxLevel, out var setPoint), MethodBase.GetCurrentMethod(), camera);
+            return setPoint / 100.0d;
+        }
+
+        public static int GetSerialNumber(IntPtr camera) {
+            CheckError(ArtemisCameraSerial(camera, out var flags, out int serial), MethodBase.GetCurrentMethod(), camera);
+            return serial;
+        }
+
         public static double GetTemperature(IntPtr camera) {
             CheckError(ArtemisTemperatureSensorInfo(camera, 0, out var sensors), MethodBase.GetCurrentMethod(), camera);
             if (sensors > 0) {
@@ -132,6 +163,10 @@ namespace NINA.Utility.AtikSDK {
 
         public static void SetCooling(IntPtr camera, double setPoint) {
             CheckError(ArtemisSetCooling(camera, (int)(setPoint * 100)), MethodBase.GetCurrentMethod(), camera);
+        }
+
+        public static void SetWarmup(IntPtr camera) {
+            CheckError(ArtemisCoolerWarmUp(camera), MethodBase.GetCurrentMethod(), camera);
         }
 
         public static ArtemisPropertiesStruct GetCameraProperties(int cameraId) {
@@ -147,6 +182,18 @@ namespace NINA.Utility.AtikSDK {
             ArtemisPropertiesStruct outstruct = new ArtemisPropertiesStruct();
             CheckError(ArtemisProperties(camera, ref outstruct), MethodBase.GetCurrentMethod(), camera);
             return outstruct;
+        }
+
+        public static string DriverVersion {
+            get {
+                return DllLoader.DllVersion("Atik/" + DLLNAME).ProductVersion;
+            }
+        }
+
+        public static string DriverName {
+            get {
+                return DllLoader.DllVersion("Atik/" + DLLNAME).ProductName;
+            }
         }
 
         /// <summary>
@@ -539,12 +586,12 @@ namespace NINA.Utility.AtikSDK {
             /// Guide Port 64 = Has GPIO capabilities 128 = Has Window Heater 256 = Can download
             /// 8-bit image 512 = Can Overlap exposure 1024 = Has Filter Wheel
             /// </summary>
-            public int cameraflags;
+            public int ccdflags;
 
             /// <summary>
             /// The value is ‘1’ if the sensor is interlaced. 0 otherwise
             /// </summary>
-            public int ccdflags;
+            public int cameraflags;
 
             /// <summary>
             /// The name of the type of camera
