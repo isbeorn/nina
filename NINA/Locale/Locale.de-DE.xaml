@@ -607,7 +607,7 @@ Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
     <s:String x:Key="LblMinimumExposureTime">Min empfohlene Bel.Zeit</s:String>
     <s:String x:Key="LblMaximumExposureTime">Max empfohlene Bel.Zeit</s:String>
     <s:String x:Key="LblReadNoise">Ausleserauschen in e</s:String>
-    <s:String x:Key="LblBiasMean">BIAS Mittelwert (in 16bit)</s:String>
+    <s:String x:Key="LblBiasMean">BIAS Mittelwert (Nativ)</s:String>
     <s:String x:Key="LblBitDepth">Bittiefe</s:String>
     <s:String x:Key="LblFullWellCapacity">Volle Brunnentiefe</s:String>
     <s:String x:Key="LblDataToDownloadRatio">Download zu Data Verhältnis</s:String>
