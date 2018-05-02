@@ -124,17 +124,5 @@ namespace NINA.Utility.Profile {
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
-
-        private RawConverterEnum _rawConverter = RawConverterEnum.DCRAW;
-        [XmlElement(nameof(RawConverter))]
-        public RawConverterEnum RawConverter {
-            get {
-                return _rawConverter;
-            }
-            set {
-                _rawConverter = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
-            }
-        }
     }
 }

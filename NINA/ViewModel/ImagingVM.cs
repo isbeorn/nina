@@ -70,18 +70,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private bool _snapSubSample;
-
-        public bool SnapSubSample {
-            get {
-                return _snapSubSample;
-            }
-            set {
-                _snapSubSample = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private ApplicationStatus _status;
 
         public ApplicationStatus Status {
@@ -197,10 +185,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SetSubSample(CaptureSequence seq) {
-            Cam.EnableSubSample = seq.EnableSubSample;
-        }
-
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             double duration = seq.ExposureTime;
             bool isLight = false;
@@ -296,8 +280,6 @@ namespace NINA.ViewModel {
 
                     /*Set Camera Binning*/
                     SetBinning(sequence);
-
-                    SetSubSample(sequence);
 
                     if (CameraConnected != true) {
                         throw new CameraConnectionLostException();
@@ -428,7 +410,6 @@ namespace NINA.ViewModel {
                 var success = true;
                 do {
                     var seq = new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1);
-                    seq.EnableSubSample = SnapSubSample;
                     seq.Gain = SnapGain;
                     success = await CaptureAndSaveImage(seq, SnapSave, _captureImageToken.Token, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();

@@ -2,7 +2,6 @@
 using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
-using NINA.Utility.AtikSDK;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -49,7 +48,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task CoolCamera_Tick(IProgress<double> progress, CancellationToken token) {
-            double currentTemp = Cam.Temperature;
+            double currentTemp = Cam.CCDTemperature;
             double deltaTemp = currentTemp - TargetTemp;
 
             var delta = await Utility.Utility.Delay(300, token);
@@ -59,7 +58,7 @@ namespace NINA.ViewModel {
             if (Duration < 0) { Duration = 0; }
 
             double newTemp = GetY(_startPoint, _endPoint, new Vector2(-_startPoint.X, _startPoint.Y), Duration);
-            Cam.TemperatureSetPoint = newTemp;
+            Cam.SetCCDTemperature = newTemp;
 
             var percentage = 1 - (Duration / _initalDuration);
             progress.Report(percentage);
@@ -147,19 +146,18 @@ namespace NINA.ViewModel {
         private async Task<bool> CoolCamera(IProgress<double> progress) {
             _cancelCoolCameraSource = new CancellationTokenSource();
             return await Task<bool>.Run(async () => {
+                Cam.CoolerOn = true;
                 if (Duration == 0) {
-                    Cam.TemperatureSetPoint = TargetTemp;
-                    Cam.CoolerOn = true;
+                    Cam.SetCCDTemperature = TargetTemp;
                     progress.Report(1);
                 } else {
                     try {
-                        double currentTemp = Cam.Temperature;
+                        double currentTemp = Cam.CCDTemperature;
                         _startPoint = new Vector2(Duration, currentTemp);
                         _endPoint = new Vector2(0, TargetTemp);
-                        Cam.TemperatureSetPoint = currentTemp;
+                        Cam.SetCCDTemperature = currentTemp;
                         _initalDuration = Duration;
 
-                        Cam.CoolerOn = true;
                         CoolingRunning = true;
                         do {
                             await CoolCamera_Tick(progress, _cancelCoolCameraSource.Token);
@@ -167,7 +165,7 @@ namespace NINA.ViewModel {
                             _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
                         } while (Duration > 0);
                     } catch (OperationCanceledException ex) {
-                        Cam.TemperatureSetPoint = Cam.Temperature;
+                        Cam.SetCCDTemperature = Cam.CCDTemperature;
                         Logger.Trace(ex.Message);
                     } finally {
                         progress.Report(1);
@@ -254,11 +252,9 @@ namespace NINA.ViewModel {
                         if (connected) {
                             this.Cam = cam;
                             Connected = true;
-                            if (Cam.CanSetTemperature) {
-                                TargetTemp = Cam.TemperatureSetPoint;
+                            if (Cam.CanSetCCDTemperature) {
+                                TargetTemp = Cam.SetCCDTemperature;
                             }
-
-                            CanSubSample = Cam.CanSubSample;
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
 
@@ -309,8 +305,8 @@ namespace NINA.ViewModel {
             cameraValues.TryGetValue(nameof(CoolerOn), out o);
             CoolerOn = (bool)(o ?? false);
 
-            cameraValues.TryGetValue(nameof(Temperature), out o);
-            Temperature = (double)(o ?? double.NaN);
+            cameraValues.TryGetValue(nameof(CCDTemperature), out o);
+            CCDTemperature = (double)(o ?? double.NaN);
 
             cameraValues.TryGetValue(nameof(CoolerPower), out o);
             CoolerPower = (double)(o ?? double.NaN);
@@ -320,7 +316,7 @@ namespace NINA.ViewModel {
 
             DateTime x = DateTime.Now;
             CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CoolerPower));
-            CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, Temperature));
+            CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, CCDTemperature));
         }
 
         private void GetCameraValues(IProgress<Dictionary<string, object>> progress, CancellationToken token) {
@@ -332,7 +328,7 @@ namespace NINA.ViewModel {
                     cameraValues.Clear();
                     cameraValues.Add(nameof(Connected), _cam?.Connected ?? false);
                     cameraValues.Add(nameof(CoolerOn), _cam?.CoolerOn ?? false);
-                    cameraValues.Add(nameof(Temperature), _cam?.Temperature ?? double.NaN);
+                    cameraValues.Add(nameof(CCDTemperature), _cam?.CCDTemperature ?? double.NaN);
                     cameraValues.Add(nameof(CoolerPower), _cam?.CoolerPower ?? double.NaN);
                     cameraValues.Add(nameof(CameraState), _cam?.CameraState ?? string.Empty);
 
@@ -383,26 +379,14 @@ namespace NINA.ViewModel {
             }
         }
 
-        private bool _canSubSample;
+        private double _cCDTemperature;
 
-        public bool CanSubSample {
+        public double CCDTemperature {
             get {
-                return _canSubSample;
+                return _cCDTemperature;
             }
             private set {
-                _canSubSample = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double _temperature;
-
-        public double Temperature {
-            get {
-                return _temperature;
-            }
-            private set {
-                _temperature = value;
+                _cCDTemperature = value;
                 RaisePropertyChanged();
             }
         }
@@ -490,16 +474,6 @@ namespace NINA.ViewModel {
                 var cam = ASICameras.GetCamera(i);
                 if (!string.IsNullOrEmpty(cam.Name)) {
                     Logger.Trace(string.Format("Adding {0}", cam.Name));
-                    Devices.Add(cam);
-                }
-            }
-
-            /* Atik */
-            Logger.Trace("Adding Atik Cameras");
-            var atikDevices = AtikCameraDll.RefreshDevicesCount();
-            for (int i = 0; i < atikDevices; i++) {
-                if (AtikCameraDll.ArtemisDeviceIsCamera(i)) {
-                    var cam = new AtikCamera(i);
                     Devices.Add(cam);
                 }
             }

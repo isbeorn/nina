@@ -13,7 +13,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
             <Grid IsEnabled="{Binding Cam.Connected}">
-                <StackPanel IsEnabled="{Binding Cam.CanSetTemperature}" Orientation="Vertical">
+                <StackPanel IsEnabled="{Binding Cam.CanSetCCDTemperature}" Orientation="Vertical">
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
@@ -52,7 +52,8 @@
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
-                                IsChecked="{Binding CoolerOn}" />
+                                IsChecked="{Binding CoolerOn}"
+                                IsEnabled="False" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -75,7 +76,7 @@
                             <TextBlock Text="{ns:Loc LblChipTempShort}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding Temperature, StringFormat=\{0:#.00\}}"
+                                Text="{Binding CCDTemperature, StringFormat=\{0:#.00\}}"
                                 Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>
@@ -88,7 +89,7 @@
                             <TextBlock
                                 MinWidth="20"
                                 Margin="5,0,0,0"
-                                Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:#.00\}}"
+                                Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}"
                                 Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>

@@ -567,19 +567,6 @@ namespace NINA.Model {
             }
         }
 
-        private bool _enableSubSample = false;
-
-        [XmlIgnore]
-        public bool EnableSubSample {
-            get {
-                return _enableSubSample;
-            }
-            set {
-                _enableSubSample = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private int _totalExposureCount;
 
         /// <summary>

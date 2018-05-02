@@ -18,19 +18,17 @@
         BorderThickness="1">
         <local:ImageView Image="{Binding Image}">
             <local:ImageView.ButtonHeaderContent>
-                <StackPanel Orientation="Horizontal">
-                    <!--<Grid.ColumnDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                    </Grid.ColumnDefinitions>-->
+                    </Grid.ColumnDefinitions>
                     <ninactrl:CancellableButton
-                        Width="35"
-                        Margin="2.5"
                         Grid.Column="0"
+                        Margin="2.5"
                         ButtonImage="{StaticResource PlatesolveSVG}"
                         CancelButtonImage="{StaticResource CancelSVG}"
                         CancelCommand="{Binding CancelPlateSolveImageCommand}"
@@ -194,53 +192,13 @@
                             </Style>
                         </ToggleButton.Style>
                     </ToggleButton>
-
-                    <ToggleButton
-                        Grid.Column="5"
-                        Margin="2.5"
-                        IsChecked="{Binding ShowSubSampler}"
-                        Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.CanSubSample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                        <ToggleButton.ToolTip>
-                            <ToolTip ToolTipService.ShowOnDisabled="True">
-                                <TextBlock Text="{ns:Loc LblToolTipSubSample}" />
-                            </ToolTip>
-                        </ToggleButton.ToolTip>
-                        <ToggleButton.Style>
-                            <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <Path
-                                                    Margin="5"
-                                                    Data="{StaticResource SubSamplerSVG}"
-                                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                                    Stretch="Uniform" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                    <Trigger Property="IsChecked" Value="False">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <Path
-                                                    Margin="5"
-                                                    Data="{StaticResource SubSamplerSVG}"
-                                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                                    Stretch="Uniform" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ToggleButton.Style>
-                    </ToggleButton>
-                </StackPanel>
+                </Grid>
             </local:ImageView.ButtonHeaderContent>
             <local:ImageView.ImageAreaContent>
-                <StackPanel>
-                    <StackPanel.Resources>
+                <Grid>
+                    <Grid.Resources>
                         <s:Int32 x:Key="zero">0</s:Int32>
-                    </StackPanel.Resources>
+                    </Grid.Resources>
                     <Path
                         Width="{Binding Image.Width}"
                         Height="{Binding Image.Height}"
@@ -250,7 +208,7 @@
                         StrokeThickness="1"
                         Visibility="{Binding ShowCrossHair, Converter={StaticResource VisibilityConverter}}" />
 
-                    <Grid Visibility="{Binding ShowBahtinovAnalyzer, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    <Grid Visibility="{Binding ShowBahtinovAnalyzer, Converter={StaticResource VisibilityConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition Width="Auto" />
@@ -277,7 +235,6 @@
                                 </MultiBinding>
                             </Rectangle.Margin>
                         </Rectangle>
-
                         <Border
                             Grid.Column="1"
                             BorderBrush="{StaticResource BorderBrush}"
@@ -323,81 +280,7 @@
                             </Border.Margin>
                         </Border>
                     </Grid>
-
-                    <Grid Visibility="{Binding ShowSubSampler, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Rectangle
-                            Width="{Binding SubSampleRectangle.Width}"
-                            Height="{Binding SubSampleRectangle.Height}"
-                            behaviors:DragCommandBehavior.Drag="True"
-                            behaviors:DragCommandBehavior.DragMoveCommand="{Binding SubSampleDragMoveCommand}"
-                            behaviors:DragCommandBehavior.DragStartCommand="{Binding SubSampleDragStartCommand}"
-                            behaviors:DragCommandBehavior.DragStopCommand="{Binding SubSampleDragStopCommand}"
-                            RenderTransformOrigin="0.5,0.5"
-                            Stroke="{StaticResource ButtonForegroundBrush}"
-                            StrokeThickness="5">
-                            <Rectangle.Fill>
-                                <SolidColorBrush Color="Red" Opacity=".2" />
-                            </Rectangle.Fill>
-                            <Rectangle.Margin>
-                                <MultiBinding Converter="{StaticResource MultiMarginConverter}">
-                                    <Binding Path="SubSampleRectangle.X" />
-                                    <Binding Path="SubSampleRectangle.Y" />
-                                    <Binding Source="{StaticResource zero}" />
-                                    <Binding Source="{StaticResource zero}" />
-                                </MultiBinding>
-                            </Rectangle.Margin>
-                        </Rectangle>
-
-                        <Border
-                            Grid.Column="1"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1">
-                            <Border.Background>
-                                <SolidColorBrush Opacity=".5" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
-                            </Border.Background>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <StackPanel VerticalAlignment="Top" Orientation="Vertical">
-                                    <UniformGrid VerticalAlignment="Center" Columns="2">
-                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
-                                        <TextBox Margin="5,0,0,0" Text="{Binding SubSampleRectangle.Width}" />
-                                    </UniformGrid>
-                                    <UniformGrid VerticalAlignment="Center" Columns="2">
-                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
-                                        <TextBox Margin="5,0,0,0" Text="{Binding SubSampleRectangle.Height}" />
-                                    </UniformGrid>
-                                </StackPanel>
-                                <StackPanel
-                                    Grid.Row="1"
-                                    VerticalAlignment="Bottom"
-                                    Orientation="Vertical">
-                                    <UniformGrid VerticalAlignment="Center" Columns="2">
-                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDistance}" />
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Margin="5,0,0,0" Text="{Binding SubSampleRectangle.Distance, StringFormat=\{0:#.00\}}" />
-                                            <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblPx}" />
-                                        </StackPanel>
-                                    </UniformGrid>
-                                </StackPanel>
-                            </Grid>
-                            <Border.Margin>
-                                <MultiBinding Converter="{StaticResource MultiMarginConverter}">
-                                    <Binding Source="{StaticResource zero}" />
-                                    <Binding Path="SubSampleRectangle.Y" />
-                                    <Binding Source="{StaticResource zero}" />
-                                    <Binding Source="{StaticResource zero}" />
-                                </MultiBinding>
-                            </Border.Margin>
-                        </Border>
-                    </Grid>
-                </StackPanel>
+                </Grid>
             </local:ImageView.ImageAreaContent>
         </local:ImageView>
     </Border>

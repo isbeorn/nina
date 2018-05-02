@@ -66,18 +66,6 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CanSubSample {
-            get {
-                return false;
-            }
-        }
-
-        public bool EnableSubSample { get; set; }
-        public int SubSampleX { get; set; }
-        public int SubSampleY { get; set; }
-        public int SubSampleWidth { get; set; }
-        public int SubSampleHeight { get; set; }
-
         private bool _hasBayerOffset;
 
         public short BayerOffsetX {
@@ -235,7 +223,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CanSetTemperature {
+        public bool CanSetCCDTemperature {
             get {
                 if (Connected) {
                     return _camera.CanSetCCDTemperature;
@@ -257,7 +245,7 @@ namespace NINA.Model.MyCamera {
 
         private bool _hasCCDTemperature;
 
-        public double Temperature {
+        public double CCDTemperature {
             get {
                 double val = -1;
                 try {
@@ -823,16 +811,16 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public double TemperatureSetPoint {
+        public double SetCCDTemperature {
             get {
                 double val = double.MinValue;
-                if (Connected && CanSetTemperature) {
+                if (Connected && CanSetCCDTemperature) {
                     val = _camera.SetCCDTemperature;
                 }
                 return val;
             }
             set {
-                if (Connected && CanSetTemperature) {
+                if (Connected && CanSetCCDTemperature) {
                     try {
                         _camera.SetCCDTemperature = value;
                         RaisePropertyChanged();
@@ -963,7 +951,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void UpdateValues() {
-            RaisePropertyChanged(nameof(Temperature));
+            RaisePropertyChanged(nameof(CCDTemperature));
             RaisePropertyChanged(nameof(FullWellCapacity));
             RaisePropertyChanged(nameof(HeatSinkTemperature));
             RaisePropertyChanged(nameof(CoolerPower));

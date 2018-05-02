@@ -61,18 +61,6 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CanSubSample {
-            get {
-                return false;
-            }
-        }
-
-        public bool EnableSubSample { get; set; }
-        public int SubSampleX { get; set; }
-        public int SubSampleY { get; set; }
-        public int SubSampleWidth { get; set; }
-        public int SubSampleHeight { get; set; }
-
         public string Name {
             get {
                 return Info.Name;
@@ -97,22 +85,22 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public double Temperature {
+        public double CCDTemperature {
             get {
                 return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TEMPERATURE) / 10; //ASI driver gets temperature in Celsius * 10
             }
         }
 
-        public double TemperatureSetPoint {
+        public double SetCCDTemperature {
             get {
-                if (CanSetTemperature) {
+                if (CanSetCCDTemperature) {
                     return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
                 } else {
                     return double.MinValue;
                 }
             }
             set {
-                if (CanSetTemperature) {
+                if (CanSetCCDTemperature) {
                     if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP, (int)value)) {
                         RaisePropertyChanged();
                     }
@@ -224,7 +212,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CanSetTemperature {
+        public bool CanSetCCDTemperature {
             get {
                 var val = GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);
                 if (val > 0) {
@@ -398,10 +386,10 @@ namespace NINA.Model.MyCamera {
         }
 
         public void UpdateValues() {
-            RaisePropertyChanged(nameof(Temperature));
+            RaisePropertyChanged(nameof(CCDTemperature));
             RaisePropertyChanged(nameof(CoolerPower));
             RaisePropertyChanged(nameof(CoolerOn));
-            RaisePropertyChanged(nameof(TemperatureSetPoint));
+            RaisePropertyChanged(nameof(SetCCDTemperature));
             RaisePropertyChanged(nameof(CameraState));
         }
 

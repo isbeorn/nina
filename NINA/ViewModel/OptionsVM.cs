@@ -1261,16 +1261,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-                
-        public RawConverterEnum RawConverter {
-            get {
-                return ProfileManager.Instance.ActiveProfile.CameraSettings.RawConverter;
-            }
-            set {
-                ProfileManager.Instance.ActiveProfile.CameraSettings.RawConverter = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public int HistogramResolution {
             get {

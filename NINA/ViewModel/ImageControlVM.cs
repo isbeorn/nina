@@ -34,7 +34,6 @@ namespace NINA.ViewModel {
             DetectStars = false;
             ShowCrossHair = false;
             ShowBahtinovAnalyzer = false;
-            ShowSubSampler = false;
 
             _progress = new Progress<ApplicationStatus>(p => Status = p);
 
@@ -44,36 +43,21 @@ namespace NINA.ViewModel {
             DragStartCommand = new RelayCommand(BahtinovDragStart);
             DragStopCommand = new RelayCommand(BahtinovDragStop);
             DragMoveCommand = new RelayCommand(BahtinovDragMove);
-            SubSampleDragStartCommand = new RelayCommand(SubSampleDragStart);
-            SubSampleDragStopCommand = new RelayCommand(SubSampleDragStop);
-            SubSampleDragMoveCommand = new RelayCommand(SubSampleDragMove);
 
             RegisterMediatorMessages();
 
-            BahtinovRectangle = new ObservableRectangle(-1, -1, 200, 200);
-            SubSampleRectangle = new ObservableRectangle(-1, -1, 600, 600);
-            BahtinovRectangle.PropertyChanged += Rectangle_PropertyChanged;
-            SubSampleRectangle.PropertyChanged += SubSampleRectangle_PropertyChanged;
+            Rectangle = new ObservableRectangle(0, 0, 200, 200);
+            Rectangle.PropertyChanged += Rectangle_PropertyChanged;
         }
 
         private void Rectangle_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (BahtinovRectangle.Width > (Image?.Width * 0.8)) {
-                BahtinovRectangle.Width = Image.Width * 0.8;
+            if (Rectangle.Width > (Image?.Width * 0.8)) {
+                Rectangle.Width = Image.Width * 0.8;
             }
-            if (BahtinovRectangle.Height > (Image?.Height * 0.8)) {
-                BahtinovRectangle.Height = Image.Height * 0.8;
+            if (Rectangle.Height > (Image?.Height * 0.8)) {
+                Rectangle.Height = Image.Height * 0.8;
             }
             BahtinovDragMove(new Vector(0, 0));
-        }
-
-        private void SubSampleRectangle_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (SubSampleRectangle.Width > (Image?.Width * 0.8)) {
-                SubSampleRectangle.Width = Image.Width * 0.8;
-            }
-            if (SubSampleRectangle.Height > (Image?.Height * 0.8)) {
-                SubSampleRectangle.Height = Image.Height * 0.8;
-            }
-            SubSampleDragMove(new Vector(0, 0));
         }
 
         private bool _showBahtinovAnalyzer;
@@ -84,35 +68,18 @@ namespace NINA.ViewModel {
             }
             set {
                 _showBahtinovAnalyzer = value;
-                if (value) {
-                    ShowSubSampler = false;
-                    ShowCrossHair = false;
-                    BahtinovDragMove(new Vector(0, 0));
-                }
                 RaisePropertyChanged();
             }
         }
 
         private ObservableRectangle _rectangle;
 
-        public ObservableRectangle BahtinovRectangle {
+        public ObservableRectangle Rectangle {
             get {
                 return _rectangle;
             }
             set {
                 _rectangle = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ObservableRectangle _subSampleRectangle;
-
-        public ObservableRectangle SubSampleRectangle {
-            get {
-                return _subSampleRectangle;
-            }
-            set {
-                _subSampleRectangle = value;
                 RaisePropertyChanged();
             }
         }
@@ -124,56 +91,30 @@ namespace NINA.ViewModel {
         }
 
         private void BahtinovDragMove(object obj) {
-            BahtinovRectangle.PropertyChanged -= Rectangle_PropertyChanged;
+            Rectangle.PropertyChanged -= Rectangle_PropertyChanged;
             if (ShowBahtinovAnalyzer && Image != null) {
-                MoveRectangleInBounds(BahtinovRectangle, (Vector)obj);
+                var delta = (Vector)obj;
+                this.Rectangle.X += delta.X;
+                this.Rectangle.Y += delta.Y;
+
+                /* Check boundaries */
+                if (Rectangle.X + Rectangle.Width > Image.Width) {
+                    Rectangle.X = Image.Width - Rectangle.Width;
+                }
+                if (Rectangle.Y + Rectangle.Height > Image.Height) {
+                    Rectangle.Y = Image.Height - Rectangle.Height;
+                }
+                if (Rectangle.X < 0) {
+                    Rectangle.X = 0;
+                }
+                if (Rectangle.Y < 0) {
+                    Rectangle.Y = 0;
+                }
 
                 /* Get Pixels */
-                var crop = new CroppedBitmap(Image, new Int32Rect((int)BahtinovRectangle.X, (int)BahtinovRectangle.Y, (int)BahtinovRectangle.Width, (int)BahtinovRectangle.Height));
+                var crop = new CroppedBitmap(Image, new Int32Rect((int)Rectangle.X, (int)Rectangle.Y, (int)Rectangle.Width, (int)Rectangle.Height));
                 BahtinovImage = new BahtinovAnalysis(crop).GrabBahtinov();
-                BahtinovRectangle.PropertyChanged += Rectangle_PropertyChanged;
-            }
-        }
-
-        private void SubSampleDragStart(object obj) {
-        }
-
-        private void SubSampleDragStop(object obj) {
-        }
-
-        private void SubSampleDragMove(object obj) {
-            SubSampleRectangle.PropertyChanged -= SubSampleRectangle_PropertyChanged;
-            if (ShowSubSampler && Image != null) {
-                MoveRectangleInBounds(SubSampleRectangle, (Vector)obj);
-
-                /* Get Pixels */
-                Cam.SubSampleHeight = (int)SubSampleRectangle.Height;
-                Cam.SubSampleWidth = (int)SubSampleRectangle.Width;
-                Cam.SubSampleX = (int)SubSampleRectangle.X;
-                Cam.SubSampleY = (int)SubSampleRectangle.Y;
-
-                var crop = new CroppedBitmap(Image, new Int32Rect((int)SubSampleRectangle.X, (int)SubSampleRectangle.Y, (int)SubSampleRectangle.Width, (int)SubSampleRectangle.Height));
-                //BahtinovImage = new BahtinovAnalysis(crop).GrabBahtinov();
-                SubSampleRectangle.PropertyChanged += SubSampleRectangle_PropertyChanged;
-            }
-        }
-
-        private void MoveRectangleInBounds(ObservableRectangle rect, Vector vector) {
-            rect.X += vector.X;
-            rect.Y += vector.Y;
-
-            /* Check boundaries */
-            if (rect.X + rect.Width > Image.Width) {
-                rect.X = Image.Width - rect.Width;
-            }
-            if (rect.Y + rect.Height > Image.Height) {
-                rect.Y = Image.Height - rect.Height;
-            }
-            if (rect.X < 0) {
-                rect.X = 0;
-            }
-            if (rect.Y < 0) {
-                rect.Y = 0;
+                Rectangle.PropertyChanged += Rectangle_PropertyChanged;
             }
         }
 
@@ -192,9 +133,6 @@ namespace NINA.ViewModel {
         public ICommand DragStartCommand { get; private set; }
         public ICommand DragStopCommand { get; private set; }
         public ICommand DragMoveCommand { get; private set; }
-        public ICommand SubSampleDragStartCommand { get; private set; }
-        public ICommand SubSampleDragStopCommand { get; private set; }
-        public ICommand SubSampleDragMoveCommand { get; private set; }
 
         private async Task<bool> PlateSolveImage() {
             if (Image != null) {
@@ -295,26 +233,7 @@ namespace NINA.ViewModel {
             }
             private set {
                 _image = value;
-                if (_image != null) {
-                    ResizeRectangleToImageSize(_image, BahtinovRectangle);
-                    // when subsampling is enabled and a new image is loaded disable the subsampler
-                    // so it doesn't get resized
-                    if (Cam.EnableSubSample) {
-                        ShowSubSampler = false;
-                    } else {
-                        ResizeRectangleToImageSize(_image, SubSampleRectangle);
-                    }
-                }
                 RaisePropertyChanged();
-            }
-        }
-
-        private void ResizeRectangleToImageSize(BitmapSource image, ObservableRectangle rectangle) {
-            if (rectangle.X < 0 || rectangle.Y < 0
-                || rectangle.X + rectangle.Width > image.PixelWidth
-                || rectangle.Y + rectangle.Height > image.PixelHeight) {
-                rectangle.X = image.PixelWidth / 2 - rectangle.Width / 2;
-                rectangle.Y = image.PixelHeight / 2 - rectangle.Height / 2;
             }
         }
 
@@ -357,10 +276,6 @@ namespace NINA.ViewModel {
             }
             set {
                 _showCrossHair = value;
-                if (value) {
-                    ShowBahtinovAnalyzer = false;
-                    ShowSubSampler = false;
-                }
                 RaisePropertyChanged();
             }
         }
@@ -395,28 +310,11 @@ namespace NINA.ViewModel {
         }
 
         private ICamera Cam { get; set; }
-
         private ITelescope Telescope { get; set; }
 
         public IAsyncCommand PlateSolveImageCommand { get; private set; }
 
         public ICommand CancelPlateSolveImageCommand { get; private set; }
-
-        private bool _showSubSampler;
-
-        public bool ShowSubSampler {
-            get {
-                return _showSubSampler;
-            }
-            set {
-                _showSubSampler = value;
-                if (value) {
-                    ShowBahtinovAnalyzer = false;
-                    ShowCrossHair = false;
-                }
-                RaisePropertyChanged();
-            }
-        }
 
         public static SemaphoreSlim ss = new SemaphoreSlim(1, 1);
 
@@ -554,7 +452,7 @@ namespace NINA.ViewModel {
                     p.Add(new OptionsVM.ImagePattern("$$BINNING$$", "Binning of the camera", parameters.Binning));
                 }
 
-                p.Add(new OptionsVM.ImagePattern("$$SENSORTEMP$$", "Temperature of the Camera", string.Format("{0:00}", Cam?.Temperature)));
+                p.Add(new OptionsVM.ImagePattern("$$SENSORTEMP$$", "Temperature of the Camera", string.Format("{0:00}", Cam?.CCDTemperature)));
 
                 p.Add(new OptionsVM.ImagePattern("$$TARGETNAME$$", "Target Name if available", parameters.TargetName));
 
@@ -661,7 +559,7 @@ namespace NINA.ViewModel {
                     f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(Telescope.Declination), "");
                 }
 
-                var temp = Cam.Temperature;
+                var temp = Cam.CCDTemperature;
                 if (!double.IsNaN(temp)) {
                     f.AddHeaderCard("TEMPERAT", temp, "");
                     f.AddHeaderCard("CCD-TEMP", temp, "");
@@ -717,7 +615,7 @@ namespace NINA.ViewModel {
                     h.AddValue("OBJCTDEC", Telescope.DeclinationString, "");
                 }
 
-                var temp = Cam.Temperature;
+                var temp = Cam.CCDTemperature;
                 if (!double.IsNaN(temp)) {
                     h.AddValue("TEMPERAT", temp, "");
                     h.AddValue("CCD-TEMP", temp, "");
@@ -822,7 +720,7 @@ namespace NINA.ViewModel {
                         header.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, Cam.BinY.ToString(CultureInfo.InvariantCulture));
                     }
 
-                    var temp = Cam.Temperature;
+                    var temp = Cam.CCDTemperature;
                     if (!double.IsNaN(temp)) {
                         header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString(CultureInfo.InvariantCulture));
                     }

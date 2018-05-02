@@ -373,7 +373,7 @@
             Grid.Column="1"
             IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
             <Grid IsEnabled="{Binding Connected}">
-                <GroupBox Header="{ns:Loc LblTempControl}" IsEnabled="{Binding Cam.CanSetTemperature}">
+                <GroupBox Header="{ns:Loc LblTempControl}" IsEnabled="{Binding Cam.CanSetCCDTemperature}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -420,7 +420,7 @@
                                         <TextBlock Text="{ns:Loc LblChipTemp}" />
                                         <TextBlock
                                             Margin="5,0,0,0"
-                                            Text="{Binding Temperature, StringFormat=\{0:#.00\}}"
+                                            Text="{Binding CCDTemperature, StringFormat=\{0:#.00\}}"
                                             Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </UniformGrid>
                                 </UniformGrid>
@@ -435,7 +435,7 @@
                                         <TextBlock
                                             MinWidth="20"
                                             Margin="5,0,0,0"
-                                            Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:#.00\}}"
+                                            Text="{Binding Cam.SetCCDTemperature, StringFormat=\{0:#.00\}}"
                                             Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </UniformGrid>
                                 </UniformGrid>

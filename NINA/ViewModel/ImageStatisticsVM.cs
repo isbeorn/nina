@@ -35,7 +35,7 @@ namespace NINA.ViewModel {
 
         public double MaxExposureADU {
             get {
-                return _offset + 10 * _squaredReadNoise;
+                return _offset + ConvertTo16Bit(10 * _squaredReadNoise);
             }
         }
 
@@ -51,7 +51,7 @@ namespace NINA.ViewModel {
 
         public double MinExposureADU {
             get {
-                return _offset + 3 * _squaredReadNoise;
+                return _offset + ConvertTo16Bit(3 * _squaredReadNoise);
             }
         }
 
@@ -85,14 +85,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private double ConvertToOutputBitDepth(double input) {
-            if (ProfileManager.Instance.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW) {
-                return input * (Math.Pow(2, 16) / Math.Pow(2, _bitDepth));
-            }
-
-            return input;
-        }
-
         private double _bitDepth {
             get {
                 return ProfileManager.Instance.ActiveProfile.CameraSettings.BitDepth;
@@ -101,13 +93,13 @@ namespace NINA.ViewModel {
 
         private double _offset {
             get {
-                return ConvertToOutputBitDepth(ProfileManager.Instance.ActiveProfile.CameraSettings.Offset);
+                return ProfileManager.Instance.ActiveProfile.CameraSettings.Offset;
             }
         }
 
         private double _squaredReadNoise {
             get {
-                return ConvertToOutputBitDepth(Math.Pow(ProfileManager.Instance.ActiveProfile.CameraSettings.ReadNoise / (ProfileManager.Instance.ActiveProfile.CameraSettings.FullWellCapacity / Math.Pow(2, _bitDepth)), 2));
+                return Math.Pow(ProfileManager.Instance.ActiveProfile.CameraSettings.ReadNoise / (ProfileManager.Instance.ActiveProfile.CameraSettings.FullWellCapacity / Math.Pow(2, _bitDepth)), 2);
             }
         }
 
@@ -138,6 +130,10 @@ namespace NINA.ViewModel {
 
             RaisePropertyChanged(nameof(MinExposureADU));
             RaisePropertyChanged(nameof(MaxExposureADU));
+        }
+
+        private double ConvertTo16Bit(double value) {
+            return value * (Math.Pow(2, 16) / Math.Pow(2, _bitDepth));
         }
     }
 }
