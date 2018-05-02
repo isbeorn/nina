@@ -1340,8 +1340,6 @@
                                     VerticalAlignment="Center"
                                     Text="{Binding PHD2ServerUrl}" />
                             </UniformGrid>
-                        </UniformGrid>
-                        <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
                                 VerticalAlignment="Center"
@@ -1355,8 +1353,6 @@
                                     VerticalAlignment="Center"
                                     Text="{Binding PHD2ServerPort}" />
                             </UniformGrid>
-                        </UniformGrid>
-                        <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
                                 VerticalAlignment="Center"
@@ -1375,8 +1371,6 @@
                                     </TextBox.Text>
                                 </TextBox>
                             </UniformGrid>
-                        </UniformGrid>
-                        <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
                                 VerticalAlignment="Center"
@@ -1391,8 +1385,6 @@
                                     HorizontalAlignment="Left"
                                     IsChecked="{Binding DitherRAOnly}" />
                             </UniformGrid>
-                        </UniformGrid>
-                        <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
                                 VerticalAlignment="Center"
@@ -1411,8 +1403,6 @@
                                     </TextBox.Text>
                                 </TextBox>
                             </UniformGrid>
-                        </UniformGrid>
-                        <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
                                 VerticalAlignment="Center"
@@ -1426,8 +1416,6 @@
                                     VerticalAlignment="Center"
                                     Text="{Binding PHD2HistorySize}" />
                             </UniformGrid>
-                        </UniformGrid>
-                        <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
                                 VerticalAlignment="Center"
