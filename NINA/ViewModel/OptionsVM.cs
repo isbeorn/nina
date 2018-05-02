@@ -608,15 +608,19 @@ namespace NINA.ViewModel {
         }
 
         private void ToggleColors(object o) {
-            var s = ColorSchemaName;
-            var a = PrimaryColor;
-            var b = SecondaryColor;
-            var c = BorderColor;
-            var d = BackgroundColor;
-            var e = ButtonBackgroundColor;
-            var f = ButtonBackgroundSelectedColor;
-            var g = ButtonForegroundColor;
-            var h = ButtonForegroundDisabledColor;
+            var tmpSchemaName = ColorSchemaName;
+            var tmpPrimaryColor = PrimaryColor;
+            var tmpSecondaryColor = SecondaryColor;
+            var tmpBorderColor = BorderColor;
+            var tmpBackgroundColor = BackgroundColor;
+            var tmpButtonBackgroundColor = ButtonBackgroundColor;
+            var tmpButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor;
+            var tmpButtonForegroundColor = ButtonForegroundColor;
+            var tmpButtonForegroundDisabledColor = ButtonForegroundDisabledColor;
+            var tmpNotificationWarningColor = NotificationWarningColor;
+            var tmpNotificationWarningTextColor = NotificationWarningTextColor;
+            var tmpNotificationErrorColor = NotificationErrorColor;
+            var tmpNotificationErrorTextColor = NotificationErrorTextColor;
 
             ColorSchemaName = AlternativeColorSchemaName;
             PrimaryColor = AltPrimaryColor;
@@ -627,16 +631,24 @@ namespace NINA.ViewModel {
             ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor;
             ButtonForegroundColor = AltButtonForegroundColor;
             ButtonForegroundDisabledColor = AltButtonForegroundDisabledColor;
+            NotificationWarningColor = AltNotificationWarningColor;
+            NotificationWarningTextColor = AltNotificationWarningTextColor;
+            NotificationErrorColor = AltNotificationErrorColor;
+            NotificationErrorTextColor = AltNotificationErrorTextColor;
 
-            AlternativeColorSchemaName = s;
-            AltPrimaryColor = a;
-            AltSecondaryColor = b;
-            AltBorderColor = c;
-            AltBackgroundColor = d;
-            AltButtonBackgroundColor = e;
-            AltButtonBackgroundSelectedColor = f;
-            AltButtonForegroundColor = g;
-            AltButtonForegroundDisabledColor = h;
+            AlternativeColorSchemaName = tmpSchemaName;
+            AltPrimaryColor = tmpPrimaryColor;
+            AltSecondaryColor = tmpSecondaryColor;
+            AltBorderColor = tmpBorderColor;
+            AltBackgroundColor = tmpBackgroundColor;
+            AltButtonBackgroundColor = tmpButtonBackgroundColor;
+            AltButtonBackgroundSelectedColor = tmpButtonBackgroundSelectedColor;
+            AltButtonForegroundColor = tmpButtonForegroundColor;
+            AltButtonForegroundDisabledColor = tmpButtonForegroundDisabledColor;
+            AltNotificationWarningColor = tmpNotificationWarningColor;
+            AltNotificationWarningTextColor = tmpNotificationWarningTextColor;
+            AltNotificationErrorColor = tmpNotificationErrorColor;
+            AltNotificationErrorTextColor = tmpNotificationErrorTextColor;
         }
 
         public string ColorSchemaName {
