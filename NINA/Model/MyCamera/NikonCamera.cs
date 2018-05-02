@@ -1,12 +1,12 @@
 ﻿using ASCOM.DeviceInterface;
 using Nikon;
 using NINA.Utility;
-using NINA.Utility.DCRaw;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
+using FreeImageAPI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,6 +14,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FreeImageAPI.Metadata;
+using System.Windows.Media.Imaging;
+using NINA.Utility.RawConverter;
 
 namespace NINA.Model.MyCamera {
 
@@ -153,13 +156,7 @@ namespace NINA.Model.MyCamera {
 
         private void Camera_ImageReady(NikonDevice sender, NikonImage image) {
             Logger.Debug("Image ready");
-            _fileExtension = (image.Type == NikonImageType.Jpeg) ? ".jpg" : ".nef";
-            var filename = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, DCRaw.FILEPREFIX + _fileExtension);
-
-            Logger.Debug("Writing Image to temp folder");
-            using (System.IO.FileStream s = new System.IO.FileStream(filename, System.IO.FileMode.Create, System.IO.FileAccess.Write)) {
-                s.Write(image.Buffer, 0, image.Buffer.Length);
-            }
+            _memoryStream = new MemoryStream(image.Buffer);
             Logger.Debug("Setting Download Exposure Taks to complete");
             _downloadExposure.TrySetResult(null);
         }
@@ -212,13 +209,13 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public double CCDTemperature {
+        public double Temperature {
             get {
                 return double.NaN;
             }
         }
 
-        public double SetCCDTemperature {
+        public double TemperatureSetPoint {
             get {
                 return double.NaN;
             }
@@ -316,7 +313,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CanSetCCDTemperature {
+        public bool CanSetTemperature {
             get {
                 return false;
             }
@@ -372,6 +369,12 @@ namespace NINA.Model.MyCamera {
         }
 
         public bool CanSetUSBLimit {
+            get {
+                return false;
+            }
+        }
+
+        public bool CanSubSample {
             get {
                 return false;
             }
@@ -485,6 +488,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public bool EnableSubSample { get; set; }
+        public int SubSampleX { get; set; }
+        public int SubSampleY { get; set; }
+        public int SubSampleWidth { get; set; }
+        public int SubSampleHeight { get; set; }
+
         public void AbortExposure() {
             if (Connected) {
                 _camera.StopBulbCapture();
@@ -504,10 +513,11 @@ namespace NINA.Model.MyCamera {
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
-            ImageArray iarr;
-            using (MyStopWatch.Measure("Nikon DCRaw")) {
-                iarr = await new DCRaw().ConvertToImageArray(_fileExtension, token);
-            }
+
+            var converter = RawConverter.CreateInstance();
+            var iarr = await converter.ConvertToImageArray(_memoryStream, token);
+            _memoryStream.Dispose();
+            _memoryStream = null;
             return iarr;
         }
 
@@ -666,6 +676,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private int _prevShutterSpeed;
+        private MemoryStream _memoryStream;
 
         private void SetCameraShutterSpeed(int index) {
             if (Capabilities.ContainsKey(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed) && Capabilities[eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed].CanSet()) {

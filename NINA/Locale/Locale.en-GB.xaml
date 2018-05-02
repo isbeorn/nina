@@ -608,16 +608,16 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblMinimumExposureTime">Min recommended time</s:String>
     <s:String x:Key="LblMaximumExposureTime">Max recommended time</s:String>
     <s:String x:Key="LblReadNoise">Read noise in e</s:String>
-    <s:String x:Key="LblBiasMean">BIAS mean value (in 16bit)</s:String>
+    <s:String x:Key="LblBiasMean">BIAS mean (native)</s:String>
     <s:String x:Key="LblBitDepth">Bit Depth</s:String>
     <s:String x:Key="LblFullWellCapacity">Full Well Capacity in e</s:String>
     <s:String x:Key="LblDataToDownloadRatio">Download to Data ratio</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio">Current Download:Data ratio</s:String>
     <s:String x:Key="LblPHD2HistorySize">PHD2 History Size</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize">PHD2 History Size (Imaging)</s:String>
-    <s:String x:Key="LblPHD2RARMS">RA: {0}"</s:String>
-    <s:String x:Key="LblPHD2DecRMS">Dec: {0}"</s:String>
-    <s:String x:Key="LblPHD2TotalRMS">Tot: {0}"</s:String>
+    <s:String x:Key="LblPHD2RARMS">RA: {0}&quot;</s:String>
+    <s:String x:Key="LblPHD2DecRMS">Dec: {0}&quot;</s:String>
+    <s:String x:Key="LblPHD2TotalRMS">Tot: {0}&quot;</s:String>
     <s:String x:Key="LblTiff">TIFF</s:String>
     <s:String x:Key="LblFits">FITS</s:String>
     <s:String x:Key="LblXisf">XISF</s:String>
@@ -628,4 +628,11 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblPx">px</s:String>
     <s:String x:Key="LblTooltipBahtinovAnalyzer" xml:space="preserve">Bahtinov Analyzer
 Drag the rectangle over a star whith the bahtinov spikes. NINA will try to detect the spikes and show the error.</s:String>
+    <s:String x:Key="LblSubSample">Enable SubSampling</s:String>
+    <s:String x:Key="LblToolTipSubSample" xml:space="preserve">SubSampling Frame
+Drag the rectangle over the part of the frame you want to subsample and enable subsampling in snap. Your camera will only download the selected area.</s:String>
+    <s:String x:Key="LblRawConverter">Raw converter</s:String>
+    <s:String x:Key="LblRawConverterTooltip">Specifies which tool should be used for DSLR raw file conversion</s:String>
+    <s:String x:Key="LblDCRaw">DCRaw</s:String>
+    <s:String x:Key="LblFreeImage">FreeImage</s:String>
 </ResourceDictionary>

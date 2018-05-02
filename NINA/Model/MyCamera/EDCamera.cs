@@ -1,8 +1,10 @@
 ﻿using ASCOM.DeviceInterface;
 using EDSDKLib;
+using FreeImageAPI;
+using FreeImageAPI.Metadata;
 using NINA.Utility;
-using NINA.Utility.DCRaw;
 using NINA.Utility.Notification;
+using NINA.Utility.RawConverter;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,9 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
-
     internal class EDCamera : BaseINPC, ICamera {
-
         public EDCamera(IntPtr cam, EDSDK.EdsDeviceInfo info) {
             _cam = cam;
             Id = info.szDeviceDescription;
@@ -43,13 +43,13 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public double CCDTemperature {
+        public double Temperature {
             get {
                 return double.NaN;
             }
         }
 
-        public double SetCCDTemperature {
+        public double TemperatureSetPoint {
             get {
                 return double.NaN;
             }
@@ -65,6 +65,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public bool CanSubSample {
+            get {
+                return false;
+            }
+        }
+
         public short BinY {
             get {
                 return 1;
@@ -72,6 +78,12 @@ namespace NINA.Model.MyCamera {
             set {
             }
         }
+
+        public bool EnableSubSample { get; set; }
+        public int SubSampleX { get; set; }
+        public int SubSampleY { get; set; }
+        public int SubSampleWidth { get; set; }
+        public int SubSampleHeight { get; set; }
 
         private string _name;
 
@@ -169,7 +181,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CanSetCCDTemperature {
+        public bool CanSetTemperature {
             get { return false; }
         }
 
@@ -444,11 +456,9 @@ namespace NINA.Model.MyCamera {
                 sw.Restart();
 
                 //convert to memory stream
-                IntPtr pointer; //pointer to image stream
-                EDSDK.EdsGetPointer(stream, out pointer);
 
-                ulong length = 0;
-                EDSDK.EdsGetLength(stream, out length);
+                EDSDK.EdsGetPointer(stream, out var pointer);
+                EDSDK.EdsGetLength(stream, out var length);
 
                 byte[] bytes = new byte[length];
 
@@ -459,22 +469,9 @@ namespace NINA.Model.MyCamera {
                 sw.Restart();
 
                 System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
-                var fileextension = ".cr2";
-                var filename = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, DCRaw.FILEPREFIX + fileextension);
-                System.IO.FileStream filestream = new System.IO.FileStream(filename, System.IO.FileMode.Create);
-                memoryStream.WriteTo(filestream);
-
-                memoryStream.Dispose();
-                filestream.Dispose();
-
-                Debug.Print("Write temp file: " + sw.Elapsed);
-                sw.Restart();
-
-                var iarr = await new DCRaw().ConvertToImageArray(fileextension, token);
-
-                Debug.Print("Get Pixels from temp tiff: " + sw.Elapsed);
-                sw.Restart();
-                token.ThrowIfCancellationRequested();
+                
+                var converter = RawConverter.CreateInstance();
+                var iarr = await converter.ConvertToImageArray(memoryStream, token);
 
                 if (pointer != IntPtr.Zero) {
                     EDSDK.EdsRelease(pointer);
@@ -491,7 +488,9 @@ namespace NINA.Model.MyCamera {
                     stream = IntPtr.Zero;
                 }
 
-                return iarr;
+                memoryStream.Dispose();
+
+                return iarr;                
             });
         }
 

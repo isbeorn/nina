@@ -8,8 +8,8 @@ namespace NINA.Model.MyCamera {
     internal interface ICamera : IDevice {
         bool HasShutter { get; }
         bool Connected { get; }
-        double CCDTemperature { get; }
-        double SetCCDTemperature { get; set; }
+        double Temperature { get; }
+        double TemperatureSetPoint { get; set; }
         short BinX { get; set; }
         short BinY { get; set; }
         string Description { get; }
@@ -25,10 +25,16 @@ namespace NINA.Model.MyCamera {
         short MaxBinY { get; }
         double PixelSizeX { get; }
         double PixelSizeY { get; }
-        bool CanSetCCDTemperature { get; }
+        bool CanSetTemperature { get; }
         bool CoolerOn { get; set; }
         double CoolerPower { get; }
         string CameraState { get; }
+        bool CanSubSample { get; }
+        bool EnableSubSample { get; set; }
+        int SubSampleX { get; set; }
+        int SubSampleY { get; set; }
+        int SubSampleWidth { get; set; }
+        int SubSampleHeight { get; set; }
 
         int Offset { get; set; }
         int USBLimit { get; set; }
