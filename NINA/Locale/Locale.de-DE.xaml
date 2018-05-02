@@ -301,7 +301,9 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblSunSet">Sonnenuntergang</s:String>
     <s:String x:Key="LblDusk">Abenddämmerung</s:String>
     <s:String x:Key="LblNotificationWarning">Warnungsbenachrichtigung</s:String>
+    <s:String x:Key="LblNotificationWarningText">Warnungstext</s:String>
     <s:String x:Key="LblNotificationError">Fehlerbenachrichtigung</s:String>
+    <s:String x:Key="LblNotificationErrorText">Fehlertext</s:String>
     <s:String x:Key="LblNow">Jetzt</s:String>
     <s:String x:Key="LblSequenceMode">Sequenzmodus</s:String>
     <s:String x:Key="LblSequenceModeStandard">Eine nach der anderen</s:String>
