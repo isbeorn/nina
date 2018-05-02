@@ -114,7 +114,6 @@
     <s:String x:Key="LblDisconnect">Trennen</s:String>
     <s:String x:Key="LblConnected">Verbunden</s:String>
     <s:String x:Key="LblState">Status</s:String>
-    <s:String x:Key="LblYAxisScale">Y-Axis Maßstab</s:String>
     <s:String x:Key="LblRA">RA</s:String>
     <s:String x:Key="LblDec">Dek</s:String>
     <s:String x:Key="LblRACorrections">RA Korrekturen</s:String>
@@ -615,9 +614,9 @@ Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio">Aktuelles Download:Data Verhältnis</s:String>
     <s:String x:Key="LblPHD2HistorySize">PHD2 Historieneinträge</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize">PHD2 Historieneinträge (Imaging)</s:String>
-    <s:String x:Key="LblPHD2RARMS">RA: {0}"</s:String>
-    <s:String x:Key="LblPHD2DecRMS">Dec: {0}"</s:String>
-    <s:String x:Key="LblPHD2TotalRMS">Tot: {0}"</s:String>
+    <s:String x:Key="LblPHD2RARMS">RA: {0}&quot;</s:String>
+    <s:String x:Key="LblPHD2DecRMS">Dec: {0}&quot;</s:String>
+    <s:String x:Key="LblPHD2TotalRMS">Tot: {0}&quot;</s:String>
     <s:String x:Key="LblYAxisScale">Y-Achse Skala</s:String>
     <s:String x:Key="LblXAxisScale">X-Achse Skala</s:String>
     <s:String x:Key="LblYAxisUnits">Y-Achse Einheit</s:String>

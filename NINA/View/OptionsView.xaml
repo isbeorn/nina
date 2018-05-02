@@ -860,6 +860,21 @@
                                     ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:CameraBulbModeEnum}}}"
                                     SelectedItem="{Binding CameraBulbMode}" />
                             </UniformGrid>
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblRawConverter}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblRawConverterTooltip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:RawConverterEnum}}}" SelectedItem="{Binding RawConverter}" />
+                            </UniformGrid>
                         </UniformGrid>
 
                         <!--  Serial Port  -->
