@@ -396,8 +396,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding 
-                                NotificationWarningColor}" />
+                                Text="{Binding NotificationWarningColor}" />
                             <Button
                                 Width="20"
                                 Height="20"

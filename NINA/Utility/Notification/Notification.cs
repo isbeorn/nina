@@ -162,14 +162,11 @@ namespace NINA.Utility.Notification {
 
         private Brush _foregroundColor;
 
-        public Brush ForegroundColor
-        {
-            get
-            {
+        public Brush ForegroundColor {
+            get {
                 return _foregroundColor;
             }
-            set
-            {
+            set {
                 _foregroundColor = value;
                 RaisePropertyChanged();
             }

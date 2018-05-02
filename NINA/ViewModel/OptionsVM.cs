@@ -1016,53 +1016,41 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Color NotificationWarningColor
-        {
-            get
-            {
+        public Color NotificationWarningColor {
+            get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningColor;
             }
-            set
-            {
+            set {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningColor = value;
                 RaisePropertyChanged();
             }
         }
 
-        public Color NotificationErrorColor
-        {
-            get
-            {
+        public Color NotificationErrorColor {
+            get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorColor;
             }
-            set
-            {
+            set {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorColor = value;
                 RaisePropertyChanged();
             }
         }
 
-        public Color NotificationWarningTextColor
-        {
-            get
-            {
+        public Color NotificationWarningTextColor {
+            get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor;
             }
-            set
-            {
+            set {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor = value;
                 RaisePropertyChanged();
             }
         }
 
-        public Color NotificationErrorTextColor
-        {
-            get
-            {
+        public Color NotificationErrorTextColor {
+            get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor;
             }
-            set
-            {
+            set {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor = value;
                 RaisePropertyChanged();
             }
@@ -1088,27 +1076,21 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Color AltNotificationWarningTextColor
-        {
-            get
-            {
+        public Color AltNotificationWarningTextColor {
+            get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor;
             }
-            set
-            {
+            set {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor = value;
                 RaisePropertyChanged();
             }
         }
 
-        public Color AltNotificationErrorTextColor
-        {
-            get
-            {
+        public Color AltNotificationErrorTextColor {
+            get {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor;
             }
-            set
-            {
+            set {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor = value;
                 RaisePropertyChanged();
             }
