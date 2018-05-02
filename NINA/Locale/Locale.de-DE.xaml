@@ -636,7 +636,6 @@ Das Rechteck über einen Stern mit Bahtinov Beugungsmuster bewegen. NINA versuch
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">Teilbild
 Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen und aktivieren Sie Teilbild im Imaging Fenster. Ihre Kamera wird nur den selektierten Bereich herunterladen.
     </s:String>
-Das Rechteck über einen Stern mit Bahtinov Beugungsmuster. NINA versucht die Beugung zu erkennen und stellt den Fehler dar.</s:String>
     <s:String x:Key="LblRawConverter">Raw Konvertierer</s:String>
     <s:String x:Key="LblRawConverterTooltip">Gibt an welches Tool zur Raw konvertierung genutzt werden soll</s:String>
     <s:String x:Key="LblDCRaw">DCRaw</s:String>
