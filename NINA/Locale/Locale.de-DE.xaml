@@ -631,13 +631,6 @@ Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
     <s:String x:Key="LblDistance">Abstand</s:String>
     <s:String x:Key="LblPx">px</s:String>
     <s:String x:Key="LblTooltipBahtinovAnalyzer" xml:space="preserve">Bahtinov Analyzer
-<<<<<<<<< Temporary merge branch 1
-Das Rechteck über einen Stern mit Bahtinov Beugungsmuster. NINA versucht die Beugung zu erkennen und stellt den Fehler dar.</s:String>
-    <s:String x:Key="LblRawConverter">Raw Konvertierer</s:String>
-    <s:String x:Key="LblRawConverterTooltip">Gibt an welches Tool zur Raw konvertierung genutzt werden soll</s:String>
-    <s:String x:Key="LblDCRaw">DCRaw</s:String>
-    <s:String x:Key="LblFreeImage">FreeImage</s:String>
-=========
 Das Rechteck über einen Stern mit Bahtinov Beugungsmuster bewegen. NINA versucht die Beugung zu erkennen und stellt den Fehler dar.</s:String>
     <s:String x:Key="LblSubSample">Teilbild aktivieren</s:String>
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">Teilbild
