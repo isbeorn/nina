@@ -28,9 +28,9 @@
                         <ColumnDefinition Width="40" />
                     </Grid.ColumnDefinitions>-->
                     <ninactrl:CancellableButton
+                        Grid.Column="0"
                         Width="35"
                         Margin="2.5"
-                        Grid.Column="0"
                         ButtonImage="{StaticResource PlatesolveSVG}"
                         CancelButtonImage="{StaticResource CancelSVG}"
                         CancelCommand="{Binding CancelPlateSolveImageCommand}"
@@ -256,8 +256,8 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Rectangle
-                            Width="{Binding Rectangle.Width}"
-                            Height="{Binding Rectangle.Height}"
+                            Width="{Binding BahtinovRectangle.Width}"
+                            Height="{Binding BahtinovRectangle.Height}"
                             behaviors:DragCommandBehavior.Drag="True"
                             behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
                             behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
@@ -270,8 +270,8 @@
                             </Rectangle.Fill>
                             <Rectangle.Margin>
                                 <MultiBinding Converter="{StaticResource MultiMarginConverter}">
-                                    <Binding Path="Rectangle.X" />
-                                    <Binding Path="Rectangle.Y" />
+                                    <Binding Path="BahtinovRectangle.X" />
+                                    <Binding Path="BahtinovRectangle.Y" />
                                     <Binding Source="{StaticResource zero}" />
                                     <Binding Source="{StaticResource zero}" />
                                 </MultiBinding>
@@ -293,11 +293,11 @@
                                 <StackPanel VerticalAlignment="Top" Orientation="Vertical">
                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
-                                        <TextBox Margin="5,0,0,0" Text="{Binding Rectangle.Width}" />
+                                        <TextBox Margin="5,0,0,0" Text="{Binding BahtinovRectangle.Width}" />
                                     </UniformGrid>
                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
-                                        <TextBox Margin="5,0,0,0" Text="{Binding Rectangle.Height}" />
+                                        <TextBox Margin="5,0,0,0" Text="{Binding BahtinovRectangle.Height}" />
                                     </UniformGrid>
                                 </StackPanel>
                                 <StackPanel
@@ -316,7 +316,7 @@
                             <Border.Margin>
                                 <MultiBinding Converter="{StaticResource MultiMarginConverter}">
                                     <Binding Source="{StaticResource zero}" />
-                                    <Binding Path="Rectangle.Y" />
+                                    <Binding Path="BahtinovRectangle.Y" />
                                     <Binding Source="{StaticResource zero}" />
                                     <Binding Source="{StaticResource zero}" />
                                 </MultiBinding>
@@ -340,7 +340,7 @@
                             Stroke="{StaticResource ButtonForegroundBrush}"
                             StrokeThickness="5">
                             <Rectangle.Fill>
-                                <SolidColorBrush Color="Red" Opacity=".2" />
+                                <SolidColorBrush Opacity=".2" Color="Red" />
                             </Rectangle.Fill>
                             <Rectangle.Margin>
                                 <MultiBinding Converter="{StaticResource MultiMarginConverter}">
