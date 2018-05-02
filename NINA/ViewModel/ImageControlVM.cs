@@ -50,27 +50,27 @@ namespace NINA.ViewModel {
 
             RegisterMediatorMessages();
 
-            Rectangle = new ObservableRectangle(-1, -1, 200, 200);
+            BahtinovRectangle = new ObservableRectangle(-1, -1, 200, 200);
             SubSampleRectangle = new ObservableRectangle(-1, -1, 600, 600);
-            Rectangle.PropertyChanged += Rectangle_PropertyChanged;
+            BahtinovRectangle.PropertyChanged += Rectangle_PropertyChanged;
             SubSampleRectangle.PropertyChanged += SubSampleRectangle_PropertyChanged;
         }
 
         private void Rectangle_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (Rectangle.Width > (Image?.Width * 0.8)) {
-                Rectangle.Width = Image.Width * 0.8;
+            if (BahtinovRectangle.Width > (Image?.Width * 0.8)) {
+                BahtinovRectangle.Width = Image.Width * 0.8;
             }
-            if (Rectangle.Height > (Image?.Height * 0.8)) {
-                Rectangle.Height = Image.Height * 0.8;
+            if (BahtinovRectangle.Height > (Image?.Height * 0.8)) {
+                BahtinovRectangle.Height = Image.Height * 0.8;
             }
             BahtinovDragMove(new Vector(0, 0));
         }
 
         private void SubSampleRectangle_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (SubSampleRectangle.Width > (Image?.Width)) {
+            if (SubSampleRectangle.Width > (Image?.Width * 0.8)) {
                 SubSampleRectangle.Width = Image.Width * 0.8;
             }
-            if (SubSampleRectangle.Height > (Image?.Height)) {
+            if (SubSampleRectangle.Height > (Image?.Height * 0.8)) {
                 SubSampleRectangle.Height = Image.Height * 0.8;
             }
             SubSampleDragMove(new Vector(0, 0));
@@ -95,7 +95,7 @@ namespace NINA.ViewModel {
 
         private ObservableRectangle _rectangle;
 
-        public ObservableRectangle Rectangle {
+        public ObservableRectangle BahtinovRectangle {
             get {
                 return _rectangle;
             }
@@ -124,30 +124,14 @@ namespace NINA.ViewModel {
         }
 
         private void BahtinovDragMove(object obj) {
-            Rectangle.PropertyChanged -= Rectangle_PropertyChanged;
+            BahtinovRectangle.PropertyChanged -= Rectangle_PropertyChanged;
             if (ShowBahtinovAnalyzer && Image != null) {
-                var delta = (Vector)obj;
-                this.Rectangle.X += delta.X;
-                this.Rectangle.Y += delta.Y;
-
-                /* Check boundaries */
-                if (Rectangle.X + Rectangle.Width > Image.Width) {
-                    Rectangle.X = Image.Width - Rectangle.Width;
-                }
-                if (Rectangle.Y + Rectangle.Height > Image.Height) {
-                    Rectangle.Y = Image.Height - Rectangle.Height;
-                }
-                if (Rectangle.X < 0) {
-                    Rectangle.X = 0;
-                }
-                if (Rectangle.Y < 0) {
-                    Rectangle.Y = 0;
-                }
+                MoveRectangleInBounds(BahtinovRectangle, (Vector)obj);
 
                 /* Get Pixels */
-                var crop = new CroppedBitmap(Image, new Int32Rect((int)Rectangle.X, (int)Rectangle.Y, (int)Rectangle.Width, (int)Rectangle.Height));
+                var crop = new CroppedBitmap(Image, new Int32Rect((int)BahtinovRectangle.X, (int)BahtinovRectangle.Y, (int)BahtinovRectangle.Width, (int)BahtinovRectangle.Height));
                 BahtinovImage = new BahtinovAnalysis(crop).GrabBahtinov();
-                Rectangle.PropertyChanged += Rectangle_PropertyChanged;
+                BahtinovRectangle.PropertyChanged += Rectangle_PropertyChanged;
             }
         }
 
@@ -160,23 +144,7 @@ namespace NINA.ViewModel {
         private void SubSampleDragMove(object obj) {
             SubSampleRectangle.PropertyChanged -= SubSampleRectangle_PropertyChanged;
             if (ShowSubSampler && Image != null) {
-                var delta = (Vector)obj;
-                this.SubSampleRectangle.X += delta.X;
-                this.SubSampleRectangle.Y += delta.Y;
-
-                /* Check boundaries */
-                if (SubSampleRectangle.X + SubSampleRectangle.Width > Image.Width) {
-                    SubSampleRectangle.X = Image.Width - SubSampleRectangle.Width;
-                }
-                if (SubSampleRectangle.Y + SubSampleRectangle.Height > Image.Height) {
-                    SubSampleRectangle.Y = Image.Height - SubSampleRectangle.Height;
-                }
-                if (SubSampleRectangle.X < 0) {
-                    SubSampleRectangle.X = 0;
-                }
-                if (SubSampleRectangle.Y < 0) {
-                    SubSampleRectangle.Y = 0;
-                }
+                MoveRectangleInBounds(SubSampleRectangle, (Vector)obj);
 
                 /* Get Pixels */
                 Cam.SubSampleHeight = (int)SubSampleRectangle.Height;
@@ -187,6 +155,25 @@ namespace NINA.ViewModel {
                 var crop = new CroppedBitmap(Image, new Int32Rect((int)SubSampleRectangle.X, (int)SubSampleRectangle.Y, (int)SubSampleRectangle.Width, (int)SubSampleRectangle.Height));
                 //BahtinovImage = new BahtinovAnalysis(crop).GrabBahtinov();
                 SubSampleRectangle.PropertyChanged += SubSampleRectangle_PropertyChanged;
+            }
+        }
+
+        private void MoveRectangleInBounds(ObservableRectangle rect, Vector vector) {
+            rect.X += vector.X;
+            rect.Y += vector.Y;
+
+            /* Check boundaries */
+            if (rect.X + rect.Width > Image.Width) {
+                rect.X = Image.Width - rect.Width;
+            }
+            if (rect.Y + rect.Height > Image.Height) {
+                rect.Y = Image.Height - rect.Height;
+            }
+            if (rect.X < 0) {
+                rect.X = 0;
+            }
+            if (rect.Y < 0) {
+                rect.Y = 0;
             }
         }
 
@@ -309,20 +296,25 @@ namespace NINA.ViewModel {
             private set {
                 _image = value;
                 if (_image != null) {
-                    if (Rectangle.X < 0 || Rectangle.Y < 0
-                        || Rectangle.X + Rectangle.Width > _image.PixelWidth
-                        || Rectangle.Y + Rectangle.Height > _image.PixelHeight) {
-                        Rectangle.X = _image.PixelWidth / 2 - Rectangle.Width / 2;
-                        Rectangle.Y = _image.PixelHeight / 2 - Rectangle.Height / 2;
-                    }
-                    if (SubSampleRectangle.X < 0 || SubSampleRectangle.Y < 0
-                        || SubSampleRectangle.X + SubSampleRectangle.Width > _image.PixelWidth
-                        || SubSampleRectangle.Y + SubSampleRectangle.Height > _image.PixelHeight) {
-                        SubSampleRectangle.X = _image.PixelWidth / 2 - SubSampleRectangle.Width / 2;
-                        SubSampleRectangle.Y = _image.PixelHeight / 2 - SubSampleRectangle.Height / 2;
+                    ResizeRectangleToImageSize(_image, BahtinovRectangle);
+                    // when subsampling is enabled and a new image is loaded disable the subsampler
+                    // so it doesn't get resized
+                    if (Cam.EnableSubSample) {
+                        ShowSubSampler = false;
+                    } else {
+                        ResizeRectangleToImageSize(_image, SubSampleRectangle);
                     }
                 }
                 RaisePropertyChanged();
+            }
+        }
+
+        private void ResizeRectangleToImageSize(BitmapSource image, ObservableRectangle rectangle) {
+            if (rectangle.X < 0 || rectangle.Y < 0
+                || rectangle.X + rectangle.Width > image.PixelWidth
+                || rectangle.Y + rectangle.Height > image.PixelHeight) {
+                rectangle.X = image.PixelWidth / 2 - rectangle.Width / 2;
+                rectangle.Y = image.PixelHeight / 2 - rectangle.Height / 2;
             }
         }
 

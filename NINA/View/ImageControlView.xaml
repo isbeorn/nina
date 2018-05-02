@@ -213,7 +213,7 @@
                                             <Setter.Value>
                                                 <Path
                                                     Margin="5"
-                                                    Data="{StaticResource BahtinovSVG}"
+                                                    Data="{StaticResource SubSamplerSVG}"
                                                     Fill="{StaticResource ButtonForegroundBrush}"
                                                     Stretch="Uniform" />
                                             </Setter.Value>
@@ -224,7 +224,7 @@
                                             <Setter.Value>
                                                 <Path
                                                     Margin="5"
-                                                    Data="{StaticResource BahtinovSVG}"
+                                                    Data="{StaticResource SubSamplerSVG}"
                                                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
                                                     Stretch="Uniform" />
                                             </Setter.Value>
