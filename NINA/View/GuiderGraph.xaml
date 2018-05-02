@@ -67,6 +67,8 @@
                 <oxy:LinearAxis
                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     IntervalLength="50"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                     MajorGridlineStyle="LongDash"
                     Maximum="{Binding MaxY}"
