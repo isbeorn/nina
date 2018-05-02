@@ -628,4 +628,7 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblPx">px</s:String>
     <s:String x:Key="LblTooltipBahtinovAnalyzer" xml:space="preserve">Bahtinov Analyzer
 Drag the rectangle over a star whith the bahtinov spikes. NINA will try to detect the spikes and show the error.</s:String>
+    <s:String x:Key="LblSubSample">Enable SubSampling</s:String>
+    <s:String x:Key="LblToolTipSubSample" xml:space="preserve">SubSampling Frame
+Drag the rectangle over the part of the frame you want to subsample and enable subsampling in snap. Your camera will only download the selected area.</s:String>
 </ResourceDictionary>
