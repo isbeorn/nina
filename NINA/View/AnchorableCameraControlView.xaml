@@ -126,7 +126,8 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0,0,0,1"
+                        Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.CanSubSample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSubSample}" />
                             <CheckBox
