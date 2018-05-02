@@ -127,6 +127,8 @@ namespace NINA.Utility.Profile {
                 p.ColorSchemaSettings.AltButtonForegroundDisabledColor = Properties.Settings.Default.AltButtonForegroundDisabledColor;
                 p.ColorSchemaSettings.AltNotificationErrorColor = Properties.Settings.Default.AltNotificationErrorColor;
                 p.ColorSchemaSettings.AltNotificationWarningColor = Properties.Settings.Default.AltNotificationWarningColor;
+                p.ColorSchemaSettings.AltNotificationErrorTextColor = Properties.Settings.Default.AltNotificationErrorTextColor;
+                p.ColorSchemaSettings.AltNotificationWarningTextColor = Properties.Settings.Default.AltNotificationWarningTextColor;
                 p.ColorSchemaSettings.AltPrimaryColor = Properties.Settings.Default.AltPrimaryColor;
                 p.ColorSchemaSettings.AltSecondaryColor = Properties.Settings.Default.AltSecondaryColor;
                 p.ColorSchemaSettings.BackgroundColor = Properties.Settings.Default.BackgroundColor;
@@ -137,6 +139,8 @@ namespace NINA.Utility.Profile {
                 p.ColorSchemaSettings.ButtonForegroundDisabledColor = Properties.Settings.Default.ButtonForegroundDisabledColor;
                 p.ColorSchemaSettings.NotificationErrorColor = Properties.Settings.Default.NotificationErrorColor;
                 p.ColorSchemaSettings.NotificationWarningColor = Properties.Settings.Default.NotificationWarningColor;
+                p.ColorSchemaSettings.NotificationErrorTextColor = Properties.Settings.Default.NotificationErrorTextColor;
+                p.ColorSchemaSettings.NotificationWarningTextColor = Properties.Settings.Default.NotificationWarningTextColor;
                 p.ColorSchemaSettings.PrimaryColor = Properties.Settings.Default.PrimaryColor;
 
                 p.ApplicationSettings.Language = Properties.Settings.Default.Language;
