@@ -504,7 +504,10 @@ namespace NINA.Model.MyCamera {
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
-            var iarr = await new DCRaw().ConvertToImageArray(_fileExtension, token);
+            ImageArray iarr;
+            using (MyStopWatch.Measure("Nikon DCRaw")) {
+                iarr = await new DCRaw().ConvertToImageArray(_fileExtension, token);
+            }
             return iarr;
         }
 
