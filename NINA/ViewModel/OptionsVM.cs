@@ -91,6 +91,8 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(ButtonForegroundDisabledColor));
             RaisePropertyChanged(nameof(NotificationWarningColor));
             RaisePropertyChanged(nameof(NotificationErrorColor));
+            RaisePropertyChanged(nameof(NotificationWarningTextColor));
+            RaisePropertyChanged(nameof(NotificationErrorTextColor));
             RaisePropertyChanged(nameof(AlternativeColorSchemaName));
             RaisePropertyChanged(nameof(AltPrimaryColor));
             RaisePropertyChanged(nameof(AltSecondaryColor));
@@ -102,6 +104,8 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(AltButtonForegroundDisabledColor));
             RaisePropertyChanged(nameof(AltNotificationWarningColor));
             RaisePropertyChanged(nameof(AltNotificationErrorColor));
+            RaisePropertyChanged(nameof(AltNotificationErrorTextColor));
+            RaisePropertyChanged(nameof(AltNotificationWarningTextColor));
             //RaisePropertyChanged(nameof(ColorSchemas));
             //RaiseAllPropertiesChanged();
             foreach (System.Reflection.PropertyInfo p in this.GetType().GetProperties()) {
@@ -652,6 +656,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(ButtonForegroundDisabledColor));
                 RaisePropertyChanged(nameof(NotificationWarningColor));
                 RaisePropertyChanged(nameof(NotificationErrorColor));
+                RaisePropertyChanged(nameof(NotificationWarningTextColor));
+                RaisePropertyChanged(nameof(NotificationErrorTextColor));
             }
         }
 
@@ -1010,22 +1016,54 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Color NotificationWarningColor {
-            get {
+        public Color NotificationWarningColor
+        {
+            get
+            {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningColor;
             }
-            set {
+            set
+            {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningColor = value;
                 RaisePropertyChanged();
             }
         }
 
-        public Color NotificationErrorColor {
-            get {
+        public Color NotificationErrorColor
+        {
+            get
+            {
                 return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorColor;
             }
-            set {
+            set
+            {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color NotificationWarningTextColor
+        {
+            get
+            {
+                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor;
+            }
+            set
+            {
+                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color NotificationErrorTextColor
+        {
+            get
+            {
+                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor;
+            }
+            set
+            {
+                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor = value;
                 RaisePropertyChanged();
             }
         }
@@ -1046,6 +1084,32 @@ namespace NINA.ViewModel {
             }
             set {
                 ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color AltNotificationWarningTextColor
+        {
+            get
+            {
+                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor;
+            }
+            set
+            {
+                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color AltNotificationErrorTextColor
+        {
+            get
+            {
+                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor;
+            }
+            set
+            {
+                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor = value;
                 RaisePropertyChanged();
             }
         }

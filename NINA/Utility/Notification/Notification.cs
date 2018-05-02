@@ -76,7 +76,8 @@ namespace NINA.Utility.Notification {
                 dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                     var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
                     var brush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningBrush"];
-                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush));
+                    var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningTextBrush"];
+                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush));
                 }));
             }
         }
@@ -86,7 +87,8 @@ namespace NINA.Utility.Notification {
                 dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                     var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
                     var brush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorBrush"];
-                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, true));
+                    var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorTextBrush"];
+                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush, true));
                 }));
             }
         }
@@ -100,6 +102,7 @@ namespace NINA.Utility.Notification {
         public CustomNotification(string message, bool isNeverEnding = false) {
             Message = message;
             Color = (Brush)System.Windows.Application.Current.Resources["ButtonBackgroundBrush"];
+            ForegroundColor = (Brush)System.Windows.Application.Current.Resources["ButtonForegroundBrush"];
             IsNeverEnding = isNeverEnding;
         }
 
@@ -107,13 +110,15 @@ namespace NINA.Utility.Notification {
             Message = message;
             Symbol = symbol;
             Color = (Brush)System.Windows.Application.Current.Resources["ButtonBackgroundBrush"];
+            ForegroundColor = (Brush)System.Windows.Application.Current.Resources["ButtonForegroundBrush"];
             IsNeverEnding = isNeverEnding;
         }
 
-        public CustomNotification(string message, Geometry symbol, Brush color, bool isNeverEnding = false) {
+        public CustomNotification(string message, Geometry symbol, Brush color, Brush foregroundColor, bool isNeverEnding = false) {
             Message = message;
             Symbol = symbol;
             Color = color;
+            ForegroundColor = foregroundColor;
             IsNeverEnding = isNeverEnding;
         }
 
@@ -151,6 +156,21 @@ namespace NINA.Utility.Notification {
             }
             set {
                 _color = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Brush _foregroundColor;
+
+        public Brush ForegroundColor
+        {
+            get
+            {
+                return _foregroundColor;
+            }
+            set
+            {
+                _foregroundColor = value;
                 RaisePropertyChanged();
             }
         }

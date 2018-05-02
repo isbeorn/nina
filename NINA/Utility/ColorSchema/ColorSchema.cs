@@ -52,7 +52,9 @@ namespace NINA.Utility {
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF443730"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300"),
-                NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606")
+                NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
+                NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
+                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A")
             };
         }
 
@@ -68,7 +70,9 @@ namespace NINA.Utility {
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF1D2731"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300"),
-                NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606")
+                NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
+                NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFFFF")
             };
         }
     }
@@ -109,6 +113,12 @@ namespace NINA.Utility {
 
         [XmlElement(Type = typeof(XmlColor))]
         public Color NotificationErrorColor { get; set; }
+
+        [XmlElement(Type = typeof(XmlColor))]
+        public Color NotificationWarningTextColor { get; set; }
+
+        [XmlElement(Type = typeof(XmlColor))]
+        public Color NotificationErrorTextColor { get; set; }
 
         public ColorSchema() {
         }
