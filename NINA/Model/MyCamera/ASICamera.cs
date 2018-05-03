@@ -63,7 +63,7 @@ namespace NINA.Model.MyCamera {
 
         public bool CanSubSample {
             get {
-                return false;
+                return true;
             }
         }
 
@@ -120,25 +120,33 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private short bin;
+
         public short BinX {
             get {
-                return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
+                return bin;
+                /*return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);*/
             }
             set {
-                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
+                bin = value;
+                RaisePropertyChanged();
+                /*if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
                     RaisePropertyChanged();
-                }
+                }*/
             }
         }
 
         public short BinY {
             get {
-                return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
+                return bin;
+                //return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
             }
             set {
-                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
+                bin = value;
+                RaisePropertyChanged();
+                /*if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
                     RaisePropertyChanged();
-                }
+                }*/
             }
         }
 
@@ -288,7 +296,7 @@ namespace NINA.Model.MyCamera {
                     Notification.ShowError(Locale.Loc.Instance["LblASIOnly16BitMono"]);
                     return false;
                 }
-                this.CaptureAreaInfo = new CaptureAreaInfo(this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+                this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
                 RaisePropertyChanged(nameof(Connected));
                 RaiseAllPropertiesChanged();
             } catch (Exception ex) {
@@ -316,10 +324,12 @@ namespace NINA.Model.MyCamera {
             get {
                 int bin;
                 ASICameraDll.ASI_IMG_TYPE imageType;
+                var p = ASICameraDll.GetStartPos(_cameraId);
                 var res = ASICameraDll.GetROIFormat(_cameraId, out bin, out imageType);
-                return new CaptureAreaInfo(res, bin, imageType);
+                return new CaptureAreaInfo(p, res, bin, imageType);
             }
             set {
+                ASICameraDll.SetStartPos(_cameraId, value.Start);
                 ASICameraDll.SetROIFormat(_cameraId, value.Size, value.Binning, value.ImageType);
             }
         }
@@ -346,14 +356,17 @@ namespace NINA.Model.MyCamera {
                         status = ExposureStatus;
                     } while (status == ASICameraDll.ASI_EXPOSURE_STATUS.ASI_EXP_WORKING);
 
-                    int size = Resolution.Width * Resolution.Height * 2;
+                    var width = CaptureAreaInfo.Size.Width;
+                    var height = CaptureAreaInfo.Size.Height;
+
+                    int size = width * height * 2;
                     IntPtr pointer = Marshal.AllocHGlobal(size);
-                    int buffersize = (Resolution.Width * Resolution.Height * 16 + 7) / 8;
+                    int buffersize = (width * height * 16 + 7) / 8;
                     if (GetExposureData(pointer, buffersize)) {
                         ushort[] arr = new ushort[size / 2];
                         CopyToUShort(pointer, arr, 0, size / 2);
                         Marshal.FreeHGlobal(pointer);
-                        return await ImageArray.CreateInstance(arr, Resolution.Width, Resolution.Height, SensorType != SensorType.Monochrome);
+                        return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome);
                     } else {
                         Notification.ShowError("Error retrieving image data from camera!");
                     }
@@ -379,9 +392,11 @@ namespace NINA.Model.MyCamera {
         }
 
         public void SetBinning(short x, short y) {
-            var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
+            /*var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
             binningControl.IsAuto = false;
-            binningControl.Value = x;
+            binningControl.Value = x;*/
+            BinX = x;
+            BinY = y;
         }
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
@@ -389,6 +404,12 @@ namespace NINA.Model.MyCamera {
             var exposureSettings = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE);
             exposureSettings.Value = exposureMs;
             exposureSettings.IsAuto = false;
+
+            if (EnableSubSample) {
+                this.CaptureAreaInfo = new CaptureAreaInfo(new Point(SubSampleX, SubSampleY), new Size(SubSampleWidth / BinX, SubSampleHeight / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+            } else {
+                this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), new Size(this.Resolution.Width / BinX, this.Resolution.Height / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+            }
 
             ASICameraDll.StartExposure(_cameraId, !isLightFrame);
         }
@@ -567,7 +588,7 @@ namespace NINA.Model.MyCamera {
                         Notification.ShowError("Only 16 bit Monochrome sensors supported currently");
                         return false;
                     }
-                    this.CaptureAreaInfo = new CaptureAreaInfo(this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+                    this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
                     RaisePropertyChanged(nameof(Connected));
                     RaiseAllPropertiesChanged();
                 } catch (Exception ex) {
@@ -579,11 +600,13 @@ namespace NINA.Model.MyCamera {
     }
 
     public class CaptureAreaInfo {
+        public Point Start { get; set; }
         public Size Size { get; set; }
         public int Binning { get; set; }
         public ASICameraDll.ASI_IMG_TYPE ImageType { get; set; }
 
-        public CaptureAreaInfo(Size size, int binning, ASICameraDll.ASI_IMG_TYPE imageType) {
+        public CaptureAreaInfo(Point start, Size size, int binning, ASICameraDll.ASI_IMG_TYPE imageType) {
+            Start = start;
             Size = size;
             Binning = binning;
             ImageType = imageType;

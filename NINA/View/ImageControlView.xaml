@@ -352,10 +352,6 @@
                                 <SolidColorBrush Opacity=".5" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                             </Border.Background>
                             <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
                                 <StackPanel VerticalAlignment="Top" Orientation="Vertical">
                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
@@ -364,18 +360,6 @@
                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
                                         <TextBox Margin="5,0,0,0" Text="{Binding SubSampleRectangle.Height}" />
-                                    </UniformGrid>
-                                </StackPanel>
-                                <StackPanel
-                                    Grid.Row="1"
-                                    VerticalAlignment="Bottom"
-                                    Orientation="Vertical">
-                                    <UniformGrid VerticalAlignment="Center" Columns="2">
-                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDistance}" />
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Margin="5,0,0,0" Text="{Binding SubSampleRectangle.Distance, StringFormat=\{0:#.00\}}" />
-                                            <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblPx}" />
-                                        </StackPanel>
                                     </UniformGrid>
                                 </StackPanel>
                             </Grid>
