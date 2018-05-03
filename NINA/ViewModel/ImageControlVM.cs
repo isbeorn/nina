@@ -146,14 +146,12 @@ namespace NINA.ViewModel {
             if (ShowSubSampler && Image != null) {
                 MoveRectangleInBounds(SubSampleRectangle, (Vector)obj);
 
-                /* Get Pixels */
+                /* set subsample values */
                 Cam.SubSampleHeight = (int)SubSampleRectangle.Height;
                 Cam.SubSampleWidth = (int)SubSampleRectangle.Width;
                 Cam.SubSampleX = (int)SubSampleRectangle.X;
                 Cam.SubSampleY = (int)SubSampleRectangle.Y;
 
-                var crop = new CroppedBitmap(Image, new Int32Rect((int)SubSampleRectangle.X, (int)SubSampleRectangle.Y, (int)SubSampleRectangle.Width, (int)SubSampleRectangle.Height));
-                //BahtinovImage = new BahtinovAnalysis(crop).GrabBahtinov();
                 SubSampleRectangle.PropertyChanged += SubSampleRectangle_PropertyChanged;
             }
         }
@@ -413,6 +411,7 @@ namespace NINA.ViewModel {
                 if (value) {
                     ShowBahtinovAnalyzer = false;
                     ShowCrossHair = false;
+                    SubSampleDragMove(new Vector(0, 0));
                 }
                 RaisePropertyChanged();
             }
