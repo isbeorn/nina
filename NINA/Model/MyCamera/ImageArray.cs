@@ -95,6 +95,7 @@ namespace NINA.Model.MyCamera {
                 this.Statistics.Mean = mean;
                 this.Statistics.Histogram = histogram.Select(g => new OxyPlot.DataPoint(g.Key, g.Value))
                     .OrderBy(item => item.X).ToList();
+                this.Statistics.IsBayered = IsBayered;
             }
         }
 

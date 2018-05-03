@@ -86,7 +86,8 @@ namespace NINA.ViewModel {
         }
 
         private double ConvertToOutputBitDepth(double input) {
-            if (ProfileManager.Instance.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW) {
+            if (Statistics.IsBayered && ProfileManager.Instance.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW
+                || !Statistics.IsBayered) {
                 return input * (Math.Pow(2, 16) / Math.Pow(2, _bitDepth));
             }
 
