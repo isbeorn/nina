@@ -70,6 +70,8 @@ namespace NINA.ViewModel {
             }
         }
 
+        public bool CanSeeSubSampling => Cam != null && Cam.CanSubSample;
+
         private bool _snapSubSample;
 
         public bool SnapSubSample {

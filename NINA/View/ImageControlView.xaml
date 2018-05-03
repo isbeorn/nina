@@ -19,14 +19,6 @@
         <local:ImageView Image="{Binding Image}">
             <local:ImageView.ButtonHeaderContent>
                 <StackPanel Orientation="Horizontal">
-                    <!--<Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                    </Grid.ColumnDefinitions>-->
                     <ninactrl:CancellableButton
                         Width="35"
                         Margin="2.5"
