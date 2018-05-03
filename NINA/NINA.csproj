@@ -976,6 +976,9 @@
     <Content Include="Documentation\NINA.html">
       <DependentUpon>NINA.md</DependentUpon>
     </Content>
+    <Content Include="Documentation\table-of-contents.html">
+      <DependentUpon>table-of-contents.md</DependentUpon>
+    </Content>
     <Content Include="External\x64\ASI\ASICamera2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1222,6 +1225,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Documentation\NINA.md" />
+    <None Include="Documentation\table-of-contents.md" />
     <None Include="External\x86\ASI\ASICamera2.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
