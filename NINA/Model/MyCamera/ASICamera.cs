@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -94,6 +95,12 @@ namespace NINA.Model.MyCamera {
             set {
                 _connected = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return false;
             }
         }
 
@@ -596,6 +603,10 @@ namespace NINA.Model.MyCamera {
                 }
                 return success;
             });
+        }
+
+        public MemoryStream GetLiveViewImage() {
+            throw new NotImplementedException();
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using System.Collections;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +36,7 @@ namespace NINA.Model.MyCamera {
         int SubSampleY { get; set; }
         int SubSampleWidth { get; set; }
         int SubSampleHeight { get; set; }
+        bool CanShowLiveView { get; }
 
         int Offset { get; set; }
         int USBLimit { get; set; }
@@ -59,6 +61,8 @@ namespace NINA.Model.MyCamera {
         void StopExposure();
 
         void AbortExposure();
+
+        MemoryStream GetLiveViewImage();
 
         Task<ImageArray> DownloadExposure(CancellationToken token);
     }

@@ -16,7 +16,9 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
+
     internal class EDCamera : BaseINPC, ICamera {
+
         public EDCamera(IntPtr cam, EDSDK.EdsDeviceInfo info) {
             _cam = cam;
             Id = info.szDeviceDescription;
@@ -118,6 +120,12 @@ namespace NINA.Model.MyCamera {
                     }
                 }
                 return property;
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return false;
             }
         }
 
@@ -469,7 +477,7 @@ namespace NINA.Model.MyCamera {
                 sw.Restart();
 
                 System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
-                
+
                 var converter = RawConverter.CreateInstance();
                 var iarr = await converter.ConvertToImageArray(memoryStream, token);
 
@@ -490,7 +498,7 @@ namespace NINA.Model.MyCamera {
 
                 memoryStream.Dispose();
 
-                return iarr;                
+                return iarr;
             });
         }
 
@@ -664,6 +672,10 @@ namespace NINA.Model.MyCamera {
                     return true;
                 }
             });
+        }
+
+        public MemoryStream GetLiveViewImage() {
+            throw new NotImplementedException();
         }
     }
 }

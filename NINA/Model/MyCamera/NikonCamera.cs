@@ -30,6 +30,7 @@ namespace NINA.Model.MyCamera {
 
         private List<NikonManager> _nikonManagers;
         private NikonManager _activeNikonManager;
+        private MemoryStream _videoStream;
 
         private void Mgr_DeviceRemoved(NikonManager sender, NikonDevice device) {
             Disconnect();
@@ -46,6 +47,8 @@ namespace NINA.Model.MyCamera {
 
                 Connected = true;
                 Name = _camera.Name;
+                _camera.VideoFragmentReady += VideoFragmentReady;
+                //_camera.LiveViewEnabled = true;
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
@@ -53,6 +56,22 @@ namespace NINA.Model.MyCamera {
                 RaiseAllPropertiesChanged();
                 _cameraConnected.TrySetResult(null);
             }
+        }
+
+        private void VideoFragmentReady(NikonDevice sender, NikonVideoFragment fragment) {
+            if (fragment.IsFirst) {
+                _videoStream = new MemoryStream();
+            }
+
+            _videoStream.Write(fragment.Buffer, 0, fragment.Buffer.Length);
+
+            if (fragment.IsLast) {
+                _videoStream.Close();
+            }
+        }
+
+        public MemoryStream GetLiveViewImage() {
+            return _memoryStream;
         }
 
         private void CleanupUnusedManagers(NikonManager activeManager) {
@@ -178,6 +197,12 @@ namespace NINA.Model.MyCamera {
             private set {
                 _name = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return _camera.SupportsCapability(eNkMAIDCapability.kNkMAIDCapability_GetLiveViewImage);
             }
         }
 
