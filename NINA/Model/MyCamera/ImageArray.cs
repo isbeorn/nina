@@ -18,22 +18,26 @@ namespace NINA.Model.MyCamera {
             Statistics = new ImageStatistics { };
         }
 
-        public static async Task<ImageArray> CreateInstance(Array input, bool isBayered = false) {
+        public static async Task<ImageArray> CreateInstance(Array input, bool isBayered = false, bool calculateStatistics = true) {
             ImageArray imgArray = new ImageArray();
             imgArray.IsBayered = isBayered;
             await Task.Run(() => imgArray.FlipAndConvert(input));
-            await Task.Run(() => imgArray.CalculateStatistics());
+            if (calculateStatistics) {
+                await Task.Run(() => imgArray.CalculateStatistics());
+            }
 
             return imgArray;
         }
 
-        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, bool isBayered = false) {
+        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, bool isBayered = false, bool calculateStatistics = true) {
             ImageArray imgArray = new ImageArray();
             imgArray.IsBayered = isBayered;
             imgArray.FlatArray = input;
             imgArray.Statistics.Width = width;
             imgArray.Statistics.Height = height;
-            await Task.Run(() => imgArray.CalculateStatistics());
+            if (calculateStatistics) {
+                await Task.Run(() => imgArray.CalculateStatistics());
+            }
 
             return imgArray;
         }

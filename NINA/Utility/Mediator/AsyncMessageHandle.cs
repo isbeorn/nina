@@ -152,6 +152,15 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(ConnectCameraMessage).Name; } }
     }
 
+    internal class LiveViewImageMessageHandle : AsyncMessageHandle<bool> {
+
+        public LiveViewImageMessageHandle(Func<LiveViewImageMessage, Task<bool>> callback) {
+            Callback = (f) => callback((LiveViewImageMessage)f);
+        }
+
+        public override string MessageType { get { return typeof(LiveViewImageMessage).Name; } }
+    }
+
     internal class ConnectFilterWheelMessageHandle : AsyncMessageHandle<bool> {
 
         public ConnectFilterWheelMessageHandle(Func<ConnectFilterWheelMessage, Task<bool>> callback) {
@@ -298,6 +307,10 @@ namespace NINA.Utility.Mediator {
     internal class ConnectFocuserMessage : AsyncMediatorMessage<bool> { }
 
     internal class ConnectTelescopeMessage : AsyncMediatorMessage<bool> { }
+
+    internal class LiveViewImageMessage : AsyncMediatorMessage<bool> {
+        public ImageArray Image { get; set; }
+    }
 
     internal class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {
         public CaptureSequence Sequence { get; set; }

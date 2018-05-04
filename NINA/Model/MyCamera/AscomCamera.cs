@@ -1074,7 +1074,7 @@ namespace NINA.Model.MyCamera {
             });
         }
 
-        public MemoryStream GetLiveViewImage() {
+        public void SetLiveView(bool enabled) {
             throw new System.NotImplementedException();
         }
     }

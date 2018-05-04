@@ -40,6 +40,7 @@ namespace NINA.ViewModel {
 
             PrepareImageCommand = new AsyncCommand<bool>(() => PrepareImageHelper());
             PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage());
+            EnableLiveViewCommand = new RelayCommand(EnableLiveViewExecute);
             CancelPlateSolveImageCommand = new RelayCommand(CancelPlateSolveImage);
             DragStartCommand = new RelayCommand(BahtinovDragStart);
             DragStopCommand = new RelayCommand(BahtinovDragStop);
@@ -74,6 +75,14 @@ namespace NINA.ViewModel {
                 SubSampleRectangle.Height = Image.Height * 0.8;
             }
             SubSampleDragMove(new Vector(0, 0));
+        }
+
+        public bool CanEnableLiveView() {
+            return Cam.CanShowLiveView;
+        }
+
+        public void EnableLiveViewExecute(object obj) {
+            Cam.SetLiveView(_liveViewEnabled);
         }
 
         private bool _showBahtinovAnalyzer;
@@ -392,9 +401,23 @@ namespace NINA.ViewModel {
             }
         }
 
+        private bool _liveViewEnabled = false;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+
+            set {
+                _liveViewEnabled = value;
+            }
+        }
+
         private ICamera Cam { get; set; }
 
         private ITelescope Telescope { get; set; }
+
+        public ICommand EnableLiveViewCommand { get; private set; }
 
         public IAsyncCommand PlateSolveImageCommand { get; private set; }
 

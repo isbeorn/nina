@@ -30,6 +30,46 @@
                         ToolTip="{ns:Loc LblPlateSolveImage}" />
 
                     <ToggleButton
+                        Grid.Column="2"
+                        Margin="2.5"
+                        Command="{Binding EnableLiveViewCommand}"
+                        IsChecked="{Binding LiveViewEnabled}">
+                        <ToggleButton.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="True">
+                                <TextBlock Text="{ns:Loc LblTooltipAutoStretch}" />
+                            </ToolTip>
+                        </ToggleButton.ToolTip>
+                        <ToggleButton.Style>
+                            <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{StaticResource WandSVG}"
+                                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Path
+                                                    Margin="5"
+                                                    Data="{StaticResource WandSVG}"
+                                                    Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                    Stretch="Uniform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+
+                    <ToggleButton
                         Grid.Column="1"
                         Margin="2.5"
                         IsChecked="{Binding ShowCrossHair}">

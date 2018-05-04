@@ -49,10 +49,22 @@ namespace NINA.ViewModel {
                 })
             );
 
+            Mediator.Instance.RegisterAsyncRequest(
+                new LiveViewImageMessageHandle(async (LiveViewImageMessage msg) => {
+                    return await GetLiveViewImage(msg.Image);
+                })
+            );
+
             Mediator.Instance.Register((object o) => _cameraConnected = (bool)o, MediatorMessages.CameraConnectedChanged);
             Mediator.Instance.Register((object o) => {
                 Cam = (ICamera)o;
             }, MediatorMessages.CameraChanged);
+        }
+
+        private async Task<bool> GetLiveViewImage(ImageArray image) {
+            CancellationTokenSource _prepImageCancellationSource = new CancellationTokenSource();
+            await _imageControl.PrepareImage(image, _prepImageCancellationSource.Token);
+            return true;
         }
 
         private ImageControlVM _imageControl;
