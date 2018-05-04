@@ -485,58 +485,78 @@ namespace NINA.ViewModel {
             Devices.Add(new Model.DummyDevice(Locale.Loc.Instance["LblNoCamera"]));
 
             /* ASI */
-            Logger.Trace("Adding ASI Cameras");
-            for (int i = 0; i < ASICameras.Count; i++) {
-                var cam = ASICameras.GetCamera(i);
-                if (!string.IsNullOrEmpty(cam.Name)) {
-                    Logger.Trace(string.Format("Adding {0}", cam.Name));
-                    Devices.Add(cam);
+            try {
+                Logger.Trace("Adding ASI Cameras");
+                for (int i = 0; i < ASICameras.Count; i++) {
+                    var cam = ASICameras.GetCamera(i);
+                    if (!string.IsNullOrEmpty(cam.Name)) {
+                        Logger.Trace(string.Format("Adding {0}", cam.Name));
+                        Devices.Add(cam);
+                    }
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             /* Atik */
-            Logger.Trace("Adding Atik Cameras");
-            var atikDevices = AtikCameraDll.RefreshDevicesCount();
-            for (int i = 0; i < atikDevices; i++) {
-                if (AtikCameraDll.ArtemisDeviceIsCamera(i)) {
-                    var cam = new AtikCamera(i);
-                    Devices.Add(cam);
+            try {
+                Logger.Trace("Adding Atik Cameras");
+                var atikDevices = AtikCameraDll.RefreshDevicesCount();
+                for (int i = 0; i < atikDevices; i++) {
+                    if (AtikCameraDll.ArtemisDeviceIsCamera(i)) {
+                        var cam = new AtikCamera(i);
+                        Devices.Add(cam);
+                    }
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             /* ASCOM */
-            var ascomDevices = new ASCOM.Utilities.Profile();
-            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
-                try {
-                    AscomCamera cam = new AscomCamera(device.Key, device.Value + " (ASCOM)");
-                    Logger.Trace(string.Format("Adding {0}", cam.Name));
-                    Devices.Add(cam);
-                } catch (Exception) {
-                    //only add cameras which are supported. e.g. x86 drivers will not work in x64
+            try {
+                var ascomDevices = new ASCOM.Utilities.Profile();
+                foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
+                    try {
+                        AscomCamera cam = new AscomCamera(device.Key, device.Value + " (ASCOM)");
+                        Logger.Trace(string.Format("Adding {0}", cam.Name));
+                        Devices.Add(cam);
+                    } catch (Exception) {
+                        //only add cameras which are supported. e.g. x86 drivers will not work in x64
+                    }
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             /* CANON */
-            IntPtr cameraList;
-            uint err = EDSDK.EdsGetCameraList(out cameraList);
-            if (err == (uint)EDSDK.EDS_ERR.OK) {
-                int count;
-                err = EDSDK.EdsGetChildCount(cameraList, out count);
+            try {
+                IntPtr cameraList;
+                uint err = EDSDK.EdsGetCameraList(out cameraList);
+                if (err == (uint)EDSDK.EDS_ERR.OK) {
+                    int count;
+                    err = EDSDK.EdsGetChildCount(cameraList, out count);
 
-                for (int i = 0; i < count; i++) {
-                    IntPtr cam;
-                    err = EDSDK.EdsGetChildAtIndex(cameraList, i, out cam);
+                    for (int i = 0; i < count; i++) {
+                        IntPtr cam;
+                        err = EDSDK.EdsGetChildAtIndex(cameraList, i, out cam);
 
-                    EDSDK.EdsDeviceInfo info;
-                    err = EDSDK.EdsGetDeviceInfo(cam, out info);
+                        EDSDK.EdsDeviceInfo info;
+                        err = EDSDK.EdsGetDeviceInfo(cam, out info);
 
-                    Logger.Trace(string.Format("Adding {0}", info.szDeviceDescription));
-                    Devices.Add(new EDCamera(cam, info));
+                        Logger.Trace(string.Format("Adding {0}", info.szDeviceDescription));
+                        Devices.Add(new EDCamera(cam, info));
+                    }
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             /* NIKON */
-            Devices.Add(new NikonCamera());
+            try {
+                Devices.Add(new NikonCamera());
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
 
             DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.CameraSettings.Id);
         }
