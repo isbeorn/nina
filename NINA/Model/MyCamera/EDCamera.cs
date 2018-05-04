@@ -3,6 +3,7 @@ using EDSDKLib;
 using FreeImageAPI;
 using FreeImageAPI.Metadata;
 using NINA.Utility;
+using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.RawConverter;
 using System;
@@ -14,6 +15,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Model.MyCamera {
 
@@ -125,7 +128,7 @@ namespace NINA.Model.MyCamera {
 
         public bool CanShowLiveView {
             get {
-                return false;
+                return true;
             }
         }
 
@@ -332,11 +335,19 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private System.Timers.Timer _liveViewTimer;
+
         private bool Initialize() {
             ValidateMode();
             GetISOSpeeds();
             SetSaveLocation();
             SubscribeEvents();
+
+            _liveViewTimer = new System.Timers.Timer();
+            _liveViewTimer.AutoReset = true;
+            _liveViewTimer.Interval = 250;
+            _liveViewTimer.Elapsed += DownloadLiveView;
+
             return true;
         }
 
@@ -682,9 +693,70 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 _liveViewEnabled = value;
-                // todo: code for start and stopping liveview
+                if (_liveViewEnabled) {
+                    StartLiveView();
+                    _liveViewTimer.Start();
+                } else {
+                    _liveViewTimer.Stop();
+                    StopLiveView();
+                }
                 RaisePropertyChanged();
             }
+        }
+
+        private void StartLiveView() {
+            SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_PC);
+        }
+
+        private void StopLiveView() {
+            SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_OFF);
+        }
+
+        private async void DownloadLiveView(object sender, ElapsedEventArgs e) {
+            if (HasError(EDSDK.EdsCreateMemoryStream(0, out var stream))) {
+                return;
+            }
+
+            if (HasError(EDSDK.EdsCreateEvfImageRef(stream, out var imageRef))) {
+                return;
+            }
+
+            if (HasError(EDSDK.EdsDownloadEvfImage(_cam, imageRef))) {
+                return;
+            }
+
+            EDSDK.EdsGetPointer(stream, out var pointer);
+            EDSDK.EdsGetLength(stream, out var length);
+
+            byte[] bytes = new byte[length];
+
+            //Move from unmanaged to managed code.
+            Marshal.Copy(pointer, bytes, 0, bytes.Length);
+
+            System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
+
+            JpegBitmapDecoder decoder = new JpegBitmapDecoder(memoryStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+
+            FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
+            bitmap.BeginInit();
+            bitmap.Source = decoder.Frames[0];
+            bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+            bitmap.EndInit();
+
+            ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
+            bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
+
+            var image = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false);
+
+            memoryStream.Close();
+            memoryStream.Dispose();
+
+            await Mediator.Instance.RequestAsync(new LiveViewImageMessage() {
+                Image = image
+            });
+
+            EDSDK.EdsRelease(stream);
+            EDSDK.EdsRelease(imageRef);
         }
     }
 }
