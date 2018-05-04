@@ -37,6 +37,7 @@ namespace NINA.Model.MyCamera {
         int SubSampleWidth { get; set; }
         int SubSampleHeight { get; set; }
         bool CanShowLiveView { get; }
+        bool LiveViewEnabled { get; set; }
 
         int Offset { get; set; }
         int USBLimit { get; set; }
@@ -61,8 +62,6 @@ namespace NINA.Model.MyCamera {
         void StopExposure();
 
         void AbortExposure();
-
-        void SetLiveView(bool enabled);
 
         Task<ImageArray> DownloadExposure(CancellationToken token);
     }

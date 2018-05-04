@@ -25,4 +25,5 @@
     <converters:HoursToHMSConverter x:Key="HoursToHMSConverter" />
     <converters:DegreesToDMSConverter x:Key="DegreesToDMSConverter" />
     <converters:InverseMultiBooleanANDConverter x:Key="InverseMultiBooleanANDConverter" />
+    <converters:BooleanAndConverter x:Key="BooleanAndConverter" />
 </ResourceDictionary>

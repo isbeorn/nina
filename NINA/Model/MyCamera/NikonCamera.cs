@@ -6,7 +6,6 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
-using FreeImageAPI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,7 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FreeImageAPI.Metadata;
 using System.Windows.Media.Imaging;
 using NINA.Utility.RawConverter;
 using System.Timers;
@@ -31,6 +29,7 @@ namespace NINA.Model.MyCamera {
 
         private List<NikonManager> _nikonManagers;
         private NikonManager _activeNikonManager;
+        private System.Timers.Timer _liveViewTimer;
 
         private void Mgr_DeviceRemoved(NikonManager sender, NikonDevice device) {
             Disconnect();
@@ -47,10 +46,10 @@ namespace NINA.Model.MyCamera {
 
                 Connected = true;
                 Name = _camera.Name;
-                LiveViewTimer = new System.Timers.Timer();
-                LiveViewTimer.AutoReset = true;
-                LiveViewTimer.Interval = 250;
-                LiveViewTimer.Elapsed += CaptureLiveViewAndSave;
+                _liveViewTimer = new System.Timers.Timer();
+                _liveViewTimer.AutoReset = true;
+                _liveViewTimer.Interval = 250;
+                _liveViewTimer.Elapsed += CaptureLiveViewAndSave;
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
@@ -60,15 +59,22 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private System.Timers.Timer LiveViewTimer;
+        private bool _liveViewEnabled;
 
-        public void SetLiveView(bool enabled) {
-            if (enabled) {
-                _camera.LiveViewEnabled = enabled;
-                LiveViewTimer.Start();
-            } else {
-                LiveViewTimer.Stop();
-                _camera.LiveViewEnabled = enabled;
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                if (_liveViewEnabled) {
+                    _camera.LiveViewEnabled = true;
+                    _liveViewTimer.Start();
+                } else {
+                    _liveViewTimer.Stop();
+                    _camera.LiveViewEnabled = false;
+                }
+                RaisePropertyChanged();
             }
         }
 
@@ -89,6 +95,8 @@ namespace NINA.Model.MyCamera {
             bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
             var image = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false);
+
+            _memoryStream.Close();
 
             await Mediator.Instance.RequestAsync(new LiveViewImageMessage() {
                 Image = image

@@ -33,10 +33,11 @@
                         Grid.Column="2"
                         Margin="2.5"
                         Command="{Binding EnableLiveViewCommand}"
-                        IsChecked="{Binding LiveViewEnabled}">
+                        IsChecked="{Binding LiveViewEnabled}"
+                        Width="35">
                         <ToggleButton.ToolTip>
                             <ToolTip ToolTipService.ShowOnDisabled="True">
-                                <TextBlock Text="{ns:Loc LblTooltipAutoStretch}" />
+                                <TextBlock Text="{ns:Loc LblToolTipLiveView}" />
                             </ToolTip>
                         </ToggleButton.ToolTip>
                         <ToggleButton.Style>
@@ -47,7 +48,7 @@
                                             <Setter.Value>
                                                 <Path
                                                     Margin="5"
-                                                    Data="{StaticResource WandSVG}"
+                                                    Data="{StaticResource LiveViewSVG}"
                                                     Fill="{StaticResource ButtonForegroundBrush}"
                                                     Stretch="Uniform" />
                                             </Setter.Value>
@@ -58,7 +59,7 @@
                                             <Setter.Value>
                                                 <Path
                                                     Margin="5"
-                                                    Data="{StaticResource WandSVG}"
+                                                    Data="{StaticResource LiveViewSVG}"
                                                     Fill="{StaticResource ButtonForegroundDisabledBrush}"
                                                     Stretch="Uniform" />
                                             </Setter.Value>

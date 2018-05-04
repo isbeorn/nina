@@ -148,6 +148,7 @@
                     CancelCommand="{Binding CancelSnapCommand}"
                     Command="{Binding SnapCommand}"
                     ToolTip="{ns:Loc LblTooltipTakeExposure}"
+                    IsEnabled="{Binding Cam.LiveViewEnabled, Converter={StaticResource InverseBooleanConverter}}"
                     Visibility="{Binding SnapCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
             </StackPanel>
         </Grid>

@@ -674,8 +674,17 @@ namespace NINA.Model.MyCamera {
             });
         }
 
-        public void SetLiveView(bool enabled) {
-            throw new System.NotImplementedException();
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                // todo: code for start and stopping liveview
+                RaisePropertyChanged();
+            }
         }
     }
 }

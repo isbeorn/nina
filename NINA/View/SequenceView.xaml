@@ -682,14 +682,15 @@
             <Grid
                 MinWidth="300"
                 HorizontalAlignment="Right"
-                DockPanel.Dock="Right">
+                DockPanel.Dock="Right"
+                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Connected, FallbackValue=False}">
                 <ninactrl:AsyncProcessButton
                     ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
                     ButtonImage="{StaticResource PlaySVG}"
                     CancelButtonImage="{StaticResource CancelSVG}"
                     CancelCommand="{Binding CancelSequenceCommand}"
                     Command="{Binding StartSequenceCommand}"
-                    IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Connected, FallbackValue=False}"
+                    IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
                     IsPaused="{Binding IsPaused}"
                     LoadingImageBrush="{StaticResource PrimaryBrush}"
                     PauseButtonImage="{StaticResource PauseSVG}"

@@ -426,8 +426,15 @@ namespace NINA.Model.MyCamera {
             RaisePropertyChanged(nameof(CameraState));
         }
 
-        public void SetLiveView(bool enabled) {
-            throw new System.NotImplementedException();
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+            }
         }
     }
 }
