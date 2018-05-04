@@ -1030,6 +1030,18 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_DF5A2D4D6810125DD0F34084F881CB8A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_11493249AADD0DF8B7A031567082C52D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_27EDB37F06A036C2EE4A6805E14B356A"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1277,18 +1289,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_123095E52099048816E65DCE26B8942E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DF5A2D4D6810125DD0F34084F881CB8A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_11493249AADD0DF8B7A031567082C52D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -5528,15 +5528,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:N.I.N.A. - Nighttime Imaging 'N' Astronomy"
-        "ProductCode" = "8:{521272D2-2057-42E2-8D29-11570D0D7CBC}"
-        "PackageCode" = "8:{C9A5BFE2-3136-4CCC-9CCF-73BFDFCC18E4}"
+        "ProductCode" = "8:{7AC11D75-2DDC-4D36-A311-4B1BAFA736E7}"
+        "PackageCode" = "8:{843A9849-3876-4E9B-9886-F2A26F4FA9BF}"
         "UpgradeCode" = "8:{5DC025EA-3D24-4E6B-9F82-79718D70896A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.5.01"
+        "ProductVersion" = "8:1.5.02"
         "Manufacturer" = "8: "
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -6540,7 +6540,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FF25606544D448558FB12DA74BACB4E5"
             {
-            "SourcePath" = "8:..\\NINA\\obj\\x64\\Release\\NINA.exe"
+            "SourcePath" = "8:..\\NINA\\obj\\x86\\Release\\NINA.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F3FA74C39C4C457D92C723B78A886707"
