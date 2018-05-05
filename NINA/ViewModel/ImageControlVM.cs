@@ -235,7 +235,7 @@ namespace NINA.ViewModel {
                 new SetImageMessageHandle(async (SetImageMessage msg) => {
                     ImgArr = msg.ImageArray;
 
-                    await PrepareImage(ImgArr, new CancellationToken());
+                    await PrepareImage(ImgArr, msg.Token);
                     return true;
                 })
             );

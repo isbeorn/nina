@@ -472,7 +472,7 @@ namespace NINA.ViewModel {
 
                     while(true) {
                         var iarr = await _cam.DownloadLiveView(ct);
-                        await Mediator.Instance.RequestAsync(new LiveViewImageArrayMessage() {
+                        await Mediator.Instance.RequestAsync(new SetImageMessage() {
                             ImageArray = iarr
                         });
 
