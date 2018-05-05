@@ -426,6 +426,18 @@ namespace NINA.Model.MyCamera {
             RaisePropertyChanged(nameof(CameraState));
         }
 
+        public void StartLiveView() {
+            throw new NotImplementedException();
+        }
+
+        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            throw new NotImplementedException();
+        }
+
+        public void StopLiveView() {
+            throw new NotImplementedException();
+        }
+
         private bool _liveViewEnabled;
 
         public bool LiveViewEnabled {

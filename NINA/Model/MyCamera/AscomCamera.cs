@@ -1074,6 +1074,18 @@ namespace NINA.Model.MyCamera {
             });
         }
 
+        public void StartLiveView() {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            throw new System.NotImplementedException();
+        }
+
+        public void StopLiveView() {
+            throw new System.NotImplementedException();
+        }
+
         private bool _liveViewEnabled;
 
         public bool LiveViewEnabled {

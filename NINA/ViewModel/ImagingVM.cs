@@ -24,6 +24,8 @@ namespace NINA.ViewModel {
             SnapExposureDuration = 1;
             SnapCommand = new AsyncCommand<bool>(() => SnapImage(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSnapCommand = new RelayCommand(CancelSnapImage);
+            StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
+            StopLiveViewCommand = new RelayCommand(StopLiveView);
 
             ImageControl = new ImageControlVM();
 
@@ -50,8 +52,8 @@ namespace NINA.ViewModel {
             );
 
             Mediator.Instance.RegisterAsyncRequest(
-                new LiveViewImageMessageHandle(async (LiveViewImageMessage msg) => {
-                    return await GetLiveViewImage(msg.Image);
+                new LiveViewImageMessageHandle(async (LiveViewImageArrayMessage msg) => {
+                    return await SetLiveViewImage(msg.ImageArray);
                 })
             );
 
@@ -61,7 +63,7 @@ namespace NINA.ViewModel {
             }, MediatorMessages.CameraChanged);
         }
 
-        private async Task<bool> GetLiveViewImage(ImageArray image) {
+        private async Task<bool> SetLiveViewImage(ImageArray image) {
             CancellationTokenSource _prepImageCancellationSource = new CancellationTokenSource();
             await _imageControl.PrepareImage(image, _prepImageCancellationSource.Token);
             return true;
@@ -94,6 +96,31 @@ namespace NINA.ViewModel {
                 _snapSubSample = value;
                 RaisePropertyChanged();
             }
+        }
+
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private CancellationTokenSource _liveViewCts;
+
+        private async Task<bool> StartLiveView() {
+            _liveViewCts = new CancellationTokenSource();
+            return await Task.Run(async () => {
+                return await Mediator.Instance.RequestAsync(new InitiateLiveViewMessage() { Token = _liveViewCts.Token });
+            });
+        }
+
+        private void StopLiveView(object o) {
+            _liveViewCts?.Cancel();
         }
 
         private ApplicationStatus _status;
@@ -190,6 +217,8 @@ namespace NINA.ViewModel {
         public IAsyncCommand SnapCommand { get; private set; }
 
         public ICommand CancelSnapCommand { get; private set; }
+        public IAsyncCommand StartLiveViewCommand { get; private set; }
+        public ICommand StopLiveViewCommand { get; private set; }
 
         private void CancelSnapImage(object o) {
             _captureImageToken?.Cancel();

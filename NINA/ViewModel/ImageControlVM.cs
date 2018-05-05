@@ -40,7 +40,6 @@ namespace NINA.ViewModel {
 
             PrepareImageCommand = new AsyncCommand<bool>(() => PrepareImageHelper());
             PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage());
-            EnableLiveViewCommand = new RelayCommand(EnableLiveViewExecute, b => Cam?.CanShowLiveView ?? false);
             CancelPlateSolveImageCommand = new RelayCommand(CancelPlateSolveImage);
             DragStartCommand = new RelayCommand(BahtinovDragStart);
             DragStopCommand = new RelayCommand(BahtinovDragStop);
@@ -392,30 +391,11 @@ namespace NINA.ViewModel {
                 Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
             }
         }
-
-        private bool _liveViewEnabled = false;
-
-        public bool LiveViewEnabled {
-            get {
-                return _liveViewEnabled;
-            }
-
-            set {
-                _liveViewEnabled = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public void EnableLiveViewExecute(object obj) {
-            Cam.LiveViewEnabled = _liveViewEnabled;
-        }
-
+        
         private ICamera Cam { get; set; }
 
         private ITelescope Telescope { get; set; }
-
-        public ICommand EnableLiveViewCommand { get; private set; }
-
+        
         public IAsyncCommand PlateSolveImageCommand { get; private set; }
 
         public ICommand CancelPlateSolveImageCommand { get; private set; }

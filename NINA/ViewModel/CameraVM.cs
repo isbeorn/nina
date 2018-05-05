@@ -41,6 +41,12 @@ namespace NINA.ViewModel {
                 })
             );
 
+            Mediator.Instance.RegisterAsyncRequest(
+                new InitiateLiveViewMessageHandle(async (InitiateLiveViewMessage msg) => {
+                    return await LiveView(msg.Token);                    
+                })
+            );
+
             Mediator.Instance.Register((o) => { RefreshCameraList(o); }, MediatorMessages.ProfileChanged);
         }
 
@@ -457,6 +463,31 @@ namespace NINA.ViewModel {
             Cam = null;
 
             Mediator.Instance.Notify(MediatorMessages.CameraChanged, null);
+        }
+
+        private async Task<bool> LiveView(CancellationToken ct) {
+            if(Connected && _cam.CanShowLiveView) {
+                try { 
+                    _cam.StartLiveView();
+
+                    while(true) {
+                        var iarr = await _cam.DownloadLiveView(ct);
+                        await Mediator.Instance.RequestAsync(new LiveViewImageArrayMessage() {
+                            ImageArray = iarr
+                        });
+
+                        ct.ThrowIfCancellationRequested();
+                    }
+                } catch(OperationCanceledException) {
+
+                } catch(Exception ex) {
+                    Logger.Error(ex);
+                    Notification.ShowError(ex.Message);
+                } finally {
+                    _cam.StopLiveView();
+                }
+            }
+            return true;
         }
 
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }

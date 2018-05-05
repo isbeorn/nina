@@ -154,11 +154,11 @@ namespace NINA.Utility.Mediator {
 
     internal class LiveViewImageMessageHandle : AsyncMessageHandle<bool> {
 
-        public LiveViewImageMessageHandle(Func<LiveViewImageMessage, Task<bool>> callback) {
-            Callback = (f) => callback((LiveViewImageMessage)f);
+        public LiveViewImageMessageHandle(Func<LiveViewImageArrayMessage, Task<bool>> callback) {
+            Callback = (f) => callback((LiveViewImageArrayMessage)f);
         }
 
-        public override string MessageType { get { return typeof(LiveViewImageMessage).Name; } }
+        public override string MessageType { get { return typeof(LiveViewImageArrayMessage).Name; } }
     }
 
     internal class ConnectFilterWheelMessageHandle : AsyncMessageHandle<bool> {
@@ -242,6 +242,15 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(SetImageMessage).Name; } }
     }
 
+    internal class InitiateLiveViewMessageHandle : AsyncMessageHandle<bool> {
+
+        public InitiateLiveViewMessageHandle(Func<InitiateLiveViewMessage, Task<bool>> callback) {
+            Callback = (f) => callback((InitiateLiveViewMessage)f);
+        }
+
+        public override string MessageType { get { return typeof(InitiateLiveViewMessage).Name; } }
+    }
+
     /* Message definition */
 
     internal abstract class AsyncMediatorMessage<TMessageResult> {
@@ -308,8 +317,8 @@ namespace NINA.Utility.Mediator {
 
     internal class ConnectTelescopeMessage : AsyncMediatorMessage<bool> { }
 
-    internal class LiveViewImageMessage : AsyncMediatorMessage<bool> {
-        public ImageArray Image { get; set; }
+    internal class LiveViewImageArrayMessage : AsyncMediatorMessage<bool> {
+        public ImageArray ImageArray { get; set; }
     }
 
     internal class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {
@@ -347,5 +356,8 @@ namespace NINA.Utility.Mediator {
         public ImageArray ImageArray { get; set; }
         public double Mean { get; set; }
         public Double ExposureTime { get; set; }
+    }
+
+    internal class InitiateLiveViewMessage : AsyncMediatorMessage<bool> {
     }
 }

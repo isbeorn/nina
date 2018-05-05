@@ -334,19 +334,12 @@ namespace NINA.Model.MyCamera {
                 return true;
             }
         }
-
-        private System.Timers.Timer _liveViewTimer;
-
+        
         private bool Initialize() {
             ValidateMode();
             GetISOSpeeds();
             SetSaveLocation();
             SubscribeEvents();
-
-            _liveViewTimer = new System.Timers.Timer();
-            _liveViewTimer.AutoReset = true;
-            _liveViewTimer.Interval = 250;
-            _liveViewTimer.Elapsed += DownloadLiveView;
 
             return true;
         }
@@ -693,36 +686,31 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 _liveViewEnabled = value;
-                if (_liveViewEnabled) {
-                    StartLiveView();
-                    _liveViewTimer.Start();
-                } else {
-                    _liveViewTimer.Stop();
-                    StopLiveView();
-                }
                 RaisePropertyChanged();
             }
         }
 
-        private void StartLiveView() {
+        public void StartLiveView() {
             SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_PC);
+            LiveViewEnabled = true;
         }
 
-        private void StopLiveView() {
+        public void StopLiveView() {
             SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_OFF);
+            LiveViewEnabled = false;
         }
 
-        private async void DownloadLiveView(object sender, ElapsedEventArgs e) {
+        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
             if (HasError(EDSDK.EdsCreateMemoryStream(0, out var stream))) {
-                return;
+                return null;
             }
 
             if (HasError(EDSDK.EdsCreateEvfImageRef(stream, out var imageRef))) {
-                return;
+                return null;
             }
 
             if (HasError(EDSDK.EdsDownloadEvfImage(_cam, imageRef))) {
-                return;
+                return null;
             }
 
             EDSDK.EdsGetPointer(stream, out var pointer);
@@ -746,17 +734,16 @@ namespace NINA.Model.MyCamera {
             ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
             bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-            var image = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false);
+            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false);
 
             memoryStream.Close();
             memoryStream.Dispose();
-
-            await Mediator.Instance.RequestAsync(new LiveViewImageMessage() {
-                Image = image
-            });
+                       
 
             EDSDK.EdsRelease(stream);
             EDSDK.EdsRelease(imageRef);
+
+            return iarr;
         }
     }
 }

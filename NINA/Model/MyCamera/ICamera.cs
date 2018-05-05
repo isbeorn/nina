@@ -61,6 +61,10 @@ namespace NINA.Model.MyCamera {
 
         void StopExposure();
 
+        void StartLiveView();
+        Task<ImageArray> DownloadLiveView(CancellationToken token);
+        void StopLiveView();
+
         void AbortExposure();
 
         Task<ImageArray> DownloadExposure(CancellationToken token);
