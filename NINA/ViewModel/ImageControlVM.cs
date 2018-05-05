@@ -3,6 +3,7 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Behaviors;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
@@ -63,7 +64,7 @@ namespace NINA.ViewModel {
             if (BahtinovRectangle.Height > (Image?.Height * 0.8)) {
                 BahtinovRectangle.Height = Image.Height * 0.8;
             }
-            BahtinovDragMove(new Vector(0, 0));
+            BahtinovDragMove(new DragResult() { Delta = new Vector(0, 0), Mode = DragMode.Move });
         }
 
         private void SubSampleRectangle_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -73,7 +74,7 @@ namespace NINA.ViewModel {
             if (SubSampleRectangle.Height > (Image?.Height * 0.8)) {
                 SubSampleRectangle.Height = Image.Height * 0.8;
             }
-            SubSampleDragMove(new Vector(0, 0));
+            SubSampleDragMove(new DragResult() { Delta = new Vector(0, 0), Mode = DragMode.Move });
         }
 
         private bool _showBahtinovAnalyzer;
@@ -87,7 +88,7 @@ namespace NINA.ViewModel {
                 if (value) {
                     ShowSubSampler = false;
                     ShowCrossHair = false;
-                    BahtinovDragMove(new Vector(0, 0));
+                    BahtinovDragMove(new DragResult() { Delta = new Vector(0, 0), Mode = DragMode.Move });
                 }
                 RaisePropertyChanged();
             }
@@ -117,6 +118,8 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double DragResizeBoundary { get; } = 10;
+
         private void BahtinovDragStart(object obj) {
         }
 
@@ -126,7 +129,13 @@ namespace NINA.ViewModel {
         private void BahtinovDragMove(object obj) {
             BahtinovRectangle.PropertyChanged -= Rectangle_PropertyChanged;
             if (ShowBahtinovAnalyzer && Image != null) {
-                MoveRectangleInBounds(BahtinovRectangle, (Vector)obj);
+                var dragResult = (DragResult)obj;
+
+                if (dragResult.Mode == DragMode.Move) {                    
+                    MoveRectangleInBounds(BahtinovRectangle, dragResult.Delta);
+                } else {
+                    ResizeRectangleBounds(BahtinovRectangle, dragResult.Delta, dragResult.Mode);
+                }
 
                 /* Get Pixels */
                 var crop = new CroppedBitmap(Image, new Int32Rect((int)BahtinovRectangle.X, (int)BahtinovRectangle.Y, (int)BahtinovRectangle.Width, (int)BahtinovRectangle.Height));
@@ -138,28 +147,69 @@ namespace NINA.ViewModel {
         private void SubSampleDragStart(object obj) {
         }
 
+        
+
+        
+
         private void SubSampleDragStop(object obj) {
         }
 
         private void SubSampleDragMove(object obj) {
-            SubSampleRectangle.PropertyChanged -= SubSampleRectangle_PropertyChanged;
             if (ShowSubSampler && Image != null) {
-                MoveRectangleInBounds(SubSampleRectangle, (Vector)obj);
+                SubSampleRectangle.PropertyChanged -= SubSampleRectangle_PropertyChanged;
+
+                var dragResult = (DragResult)obj;
+
+                if (dragResult.Mode == DragMode.Move) {                    
+                    MoveRectangleInBounds(SubSampleRectangle, dragResult.Delta);
+                } else {
+                    ResizeRectangleBounds(SubSampleRectangle, dragResult.Delta, dragResult.Mode);
+                }
 
                 /* set subsample values */
                 Cam.SubSampleHeight = (int)SubSampleRectangle.Height;
                 Cam.SubSampleWidth = (int)SubSampleRectangle.Width;
                 Cam.SubSampleX = (int)SubSampleRectangle.X;
                 Cam.SubSampleY = (int)SubSampleRectangle.Y;
-
                 SubSampleRectangle.PropertyChanged += SubSampleRectangle_PropertyChanged;
             }
         }
 
-        private void MoveRectangleInBounds(ObservableRectangle rect, Vector vector) {
-            rect.X += vector.X;
-            rect.Y += vector.Y;
+        private void ResizeRectangleBounds(ObservableRectangle rect, Vector vector, DragMode mode) {
+            if (mode == DragMode.Resize_Top_Left) {
+                rect.X += vector.X;
+                rect.Y += vector.Y;
+                rect.Width -= vector.X;
+                rect.Height -= vector.Y;
+            } else if (mode == DragMode.Resize_Top_Right) {
+                rect.Y += vector.Y;
+                rect.Width += vector.X;
+                rect.Height -= vector.Y;
+            } else if (mode == DragMode.Resize_Bottom_Left) {
+                rect.X += vector.X;
+                rect.Width -= vector.X;
+                rect.Height += vector.Y;
+            } else if (mode == DragMode.Resize_Left) {
+                rect.X += vector.X;
+                rect.Width -= vector.X;
+            } else if (mode == DragMode.Resize_Right) {
+                rect.Width += vector.X;
+            } else if (mode == DragMode.Resize_Top) {
+                rect.Y += vector.Y;
+                rect.Height -= vector.Y;
+            } else if (mode == DragMode.Resize_Bottom) {
+                rect.Height += vector.Y;
+            } else {
+                rect.Width += vector.X;
+                rect.Height += vector.Y;
+            }
+            
+            CheckRectangleBounds(rect);
+        }
 
+        private void CheckRectangleBounds(ObservableRectangle rect) {
+            rect.Width = Math.Round(rect.Width, 0);
+            rect.Height = Math.Round(rect.Height, 0);
             /* Check boundaries */
             if (rect.X + rect.Width > Image.Width) {
                 rect.X = Image.Width - rect.Width;
@@ -173,6 +223,24 @@ namespace NINA.ViewModel {
             if (rect.Y < 0) {
                 rect.Y = 0;
             }
+            if (rect.Width > Image.Width) {
+                rect.Width = Image.Width;
+            }
+            if (rect.Height > Image.Height) {
+                rect.Height = Image.Height;
+            }
+            if (rect.Width < 20) {
+                rect.Width = 20;
+            }
+            if (rect.Height < 20) {
+                rect.Height = 20;
+            }
+        }
+
+        private void MoveRectangleInBounds(ObservableRectangle rect, Vector vector) {
+            rect.X += vector.X;
+            rect.Y += vector.Y;
+            CheckRectangleBounds(rect);
         }
 
         private BahtinovImage _bahtinovImage;
@@ -391,11 +459,11 @@ namespace NINA.ViewModel {
                 Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
             }
         }
-        
+
         private ICamera Cam { get; set; }
 
         private ITelescope Telescope { get; set; }
-        
+
         public IAsyncCommand PlateSolveImageCommand { get; private set; }
 
         public ICommand CancelPlateSolveImageCommand { get; private set; }
@@ -411,7 +479,7 @@ namespace NINA.ViewModel {
                 if (value) {
                     ShowBahtinovAnalyzer = false;
                     ShowCrossHair = false;
-                    SubSampleDragMove(new Vector(0, 0));
+                    SubSampleDragMove(new DragResult() { Delta = new Vector(0, 0), Mode = DragMode.Move });
                 }
                 RaisePropertyChanged();
             }
@@ -469,7 +537,7 @@ namespace NINA.ViewModel {
                         ImgHistoryVM.Add(iarr.Statistics);
                     }));
 
-                    BahtinovDragMove(new Vector(0, 0));
+                    BahtinovDragMove(new DragResult() { Delta = new Vector(0, 0), Mode = DragMode.Move });
 
                     if (bSave) {
                         await SaveToDisk(parameters, token);
