@@ -100,7 +100,7 @@ namespace NINA.Model.MyCamera {
 
         public bool CanShowLiveView {
             get {
-                return false;
+                return true;
             }
         }
 
@@ -127,7 +127,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private short bin;
+        private short bin = 1;
 
         public short BinX {
             get {
@@ -606,15 +606,26 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartLiveView() {
-            throw new NotImplementedException();
+            ASICameraDll.StartVideoCapture(_cameraId);
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
-            throw new NotImplementedException();
+        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            var width = CaptureAreaInfo.Size.Width;
+            var height = CaptureAreaInfo.Size.Height;
+
+            int size = width * height * 2;
+            IntPtr pointer = Marshal.AllocHGlobal(size);
+            int buffersize = (width * height * 16 + 7) / 8;
+            ASICameraDll.GetVideoData(_cameraId, pointer, buffersize, -1);
+
+            ushort[] arr = new ushort[size / 2];
+            CopyToUShort(pointer, arr, 0, size / 2);
+            Marshal.FreeHGlobal(pointer);
+            return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome);
         }
 
         public void StopLiveView() {
-            throw new NotImplementedException();
+            ASICameraDll.StopVideoCapture(_cameraId);
         }
 
         private bool _liveViewEnabled;
