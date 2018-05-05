@@ -99,6 +99,7 @@ namespace NINA.ViewModel {
         private CancellationTokenSource _liveViewCts;
 
         private async Task<bool> StartLiveView() {
+            ImageControl.IsLiveViewEnabled = true;
             _liveViewCts = new CancellationTokenSource();
             return await Task.Run(async () => {
                 return await Mediator.Instance.RequestAsync(new InitiateLiveViewMessage() { Token = _liveViewCts.Token });
@@ -106,6 +107,7 @@ namespace NINA.ViewModel {
         }
 
         private void StopLiveView(object o) {
+            ImageControl.IsLiveViewEnabled = false;
             _liveViewCts?.Cancel();
         }
 

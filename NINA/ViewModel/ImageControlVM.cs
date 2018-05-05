@@ -136,12 +136,19 @@ namespace NINA.ViewModel {
                 } else {
                     ResizeRectangleBounds(BahtinovRectangle, dragResult.Delta, dragResult.Mode);
                 }
-
-                /* Get Pixels */
-                var crop = new CroppedBitmap(Image, new Int32Rect((int)BahtinovRectangle.X, (int)BahtinovRectangle.Y, (int)BahtinovRectangle.Width, (int)BahtinovRectangle.Height));
-                BahtinovImage = new BahtinovAnalysis(crop).GrabBahtinov();
+                
+                if(!IsLiveViewEnabled) {
+                    AnalyzeBahtinov();
+                }                
+                
                 BahtinovRectangle.PropertyChanged += Rectangle_PropertyChanged;
             }
+        }
+
+        private void AnalyzeBahtinov() {
+            /* Get Pixels */
+            var crop = new CroppedBitmap(Image, new Int32Rect((int)BahtinovRectangle.X, (int)BahtinovRectangle.Y, (int)BahtinovRectangle.Width, (int)BahtinovRectangle.Height));
+            BahtinovImage = new BahtinovAnalysis(crop).GrabBahtinov();
         }
 
         private void SubSampleDragStart(object obj) {
@@ -485,6 +492,8 @@ namespace NINA.ViewModel {
             }
         }
 
+        public bool IsLiveViewEnabled { get; internal set; }
+
         public static SemaphoreSlim ss = new SemaphoreSlim(1, 1);
 
         public async Task<BitmapSource> PrepareImage(
@@ -537,7 +546,7 @@ namespace NINA.ViewModel {
                         ImgHistoryVM.Add(iarr.Statistics);
                     }));
 
-                    BahtinovDragMove(new DragResult() { Delta = new Vector(0, 0), Mode = DragMode.Move });
+                    AnalyzeBahtinov();
 
                     if (bSave) {
                         await SaveToDisk(parameters, token);
