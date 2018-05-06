@@ -10,6 +10,12 @@
 
 * ASCOM Platform 6.3 or later
 
+**Manual**
+
+A manual including detailed descriptions about all features can be found inside the Wiki section  
+https://bitbucket.org/Isbeorn/nina/wiki/Home  
+  
+  
 
 **Features**
 
@@ -41,6 +47,8 @@
 
 * Autoguider Control
      * via communication with PHD2 Server
+     * Graphically shows corrections in a graph
+     * Calculates RMS Error values
 
 * Advanced Sequencing
      * Import/Export sequences for planning ahead
@@ -49,6 +57,11 @@
      * Macros to set up custom file names
      * Supported Image formats: FITS, TIFF, XISF
      * Automatic Meridian Flip
+
+* Focusing
+     * Snapping of images
+     * Live view (for DSLRs)     
+     * Subframing (for faster image processing)
 
 * Autofocus
      * Triggered manually
@@ -60,6 +73,8 @@
      * Statistics
      * Auto-Stretch
      * Star detection and HFR calculation, including stats history during imaging session
+     * Bahtinov Line detection to identify spikes and the error margin     
+     * Optimal exposure time recommendation by taking read noise, full well capacity and BIAS mean value into account
 
 * Platesolving
      * Astrometry.net
