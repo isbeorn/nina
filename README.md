@@ -10,6 +10,12 @@
 
 * ASCOM Platform 6.3 or later
 
+**Manual**
+
+A manual including detailed descriptions about all features can be found inside the Wiki section  
+https://bitbucket.org/Isbeorn/nina/wiki/Home  
+  
+  
 
 **Features**
 
