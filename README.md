@@ -50,6 +50,9 @@ https://bitbucket.org/Isbeorn/nina/wiki/Home
      * Graphically shows corrections in a graph
      * Calculates RMS Error values
 
+* Profiles
+     * Save and load individual profiles for different sets of equipment
+
 * Advanced Sequencing
      * Import/Export sequences for planning ahead
      * Dithering (via PHD2)
