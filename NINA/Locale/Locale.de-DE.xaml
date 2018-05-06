@@ -648,4 +648,5 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
     <s:String x:Key="LblPrepareImage">Bereite Bild vor</s:String>
     <s:String x:Key="LblStretchImage">Strecke Bild</s:String>
     <s:String x:Key="LblDebayerImage">Debayere Bild</s:String>
+    <s:String x:Key="LblToolTipLiveView">Live Vorschau</s:String>
 </ResourceDictionary>

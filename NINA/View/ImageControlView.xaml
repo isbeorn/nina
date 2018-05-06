@@ -254,6 +254,7 @@
                             behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
                             behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
                             behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
+                            behaviors:DragCommandBehavior.ResizeBoundary="{Binding DragResizeBoundary}"
                             RenderTransformOrigin="0.5,0.5"
                             Stroke="{StaticResource ButtonForegroundBrush}"
                             StrokeThickness="5">
@@ -328,6 +329,7 @@
                             behaviors:DragCommandBehavior.DragMoveCommand="{Binding SubSampleDragMoveCommand}"
                             behaviors:DragCommandBehavior.DragStartCommand="{Binding SubSampleDragStartCommand}"
                             behaviors:DragCommandBehavior.DragStopCommand="{Binding SubSampleDragStopCommand}"
+                            behaviors:DragCommandBehavior.ResizeBoundary="{Binding DragResizeBoundary}"
                             RenderTransformOrigin="0.5,0.5"
                             Stroke="{StaticResource ButtonForegroundBrush}"
                             StrokeThickness="5">

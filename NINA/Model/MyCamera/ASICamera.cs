@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -97,6 +98,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public bool CanShowLiveView {
+            get {
+                return true;
+            }
+        }
+
         public double Temperature {
             get {
                 return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TEMPERATURE) / 10; //ASI driver gets temperature in Celsius * 10
@@ -120,7 +127,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private short bin;
+        private short bin = 1;
 
         public short BinX {
             get {
@@ -596,6 +603,41 @@ namespace NINA.Model.MyCamera {
                 }
                 return success;
             });
+        }
+
+        public void StartLiveView() {
+            ASICameraDll.StartVideoCapture(_cameraId);
+        }
+
+        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            var width = CaptureAreaInfo.Size.Width;
+            var height = CaptureAreaInfo.Size.Height;
+
+            int size = width * height * 2;
+            IntPtr pointer = Marshal.AllocHGlobal(size);
+            int buffersize = (width * height * 16 + 7) / 8;
+            ASICameraDll.GetVideoData(_cameraId, pointer, buffersize, -1);
+
+            ushort[] arr = new ushort[size / 2];
+            CopyToUShort(pointer, arr, 0, size / 2);
+            Marshal.FreeHGlobal(pointer);
+            return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome);
+        }
+
+        public void StopLiveView() {
+            ASICameraDll.StopVideoCapture(_cameraId);
+        }
+
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                // todo: start liveview if possible
+            }
         }
     }
 

@@ -2,6 +2,7 @@
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Behaviors;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -637,7 +638,7 @@ namespace NINA.ViewModel {
         }
 
         private void DragMove(object obj) {
-            var delta = (Vector)obj;
+            var delta = ((DragResult)obj).Delta;
             this.Rectangle.X += delta.X;
             this.Rectangle.Y += delta.Y;
 

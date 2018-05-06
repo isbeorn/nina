@@ -6,6 +6,7 @@ using NINA.Utility.Notification;
 using System;
 using System.Collections;
 using System.Globalization;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -192,6 +193,12 @@ namespace NINA.Model.MyCamera {
                 } else {
                     return false;
                 }
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return false;
             }
         }
 
@@ -1065,6 +1072,30 @@ namespace NINA.Model.MyCamera {
                 }
                 return Connected;
             });
+        }
+
+        public void StartLiveView() {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            throw new System.NotImplementedException();
+        }
+
+        public void StopLiveView() {
+            throw new System.NotImplementedException();
+        }
+
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                // todo: code to start liveview if possible
+            }
         }
     }
 }

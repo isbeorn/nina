@@ -6,7 +6,6 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
-using FreeImageAPI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,9 +13,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FreeImageAPI.Metadata;
 using System.Windows.Media.Imaging;
 using NINA.Utility.RawConverter;
+using System.Timers;
 
 namespace NINA.Model.MyCamera {
 
@@ -53,6 +52,51 @@ namespace NINA.Model.MyCamera {
                 RaiseAllPropertiesChanged();
                 _cameraConnected.TrySetResult(null);
             }
+        }
+
+        private bool _liveViewEnabled;
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public void StartLiveView() {
+            _camera.LiveViewEnabled = true;
+            LiveViewEnabled = true;
+        }
+
+        public void StopLiveView() {
+            _camera.LiveViewEnabled = false;
+            LiveViewEnabled = false;
+        }
+
+        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            byte[] buffer = _camera.GetLiveViewImage().JpegBuffer;
+            var memStream = new MemoryStream(buffer);
+            memStream.Position = 0;
+
+            JpegBitmapDecoder decoder = new JpegBitmapDecoder(memStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+
+            FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
+            bitmap.BeginInit();
+            bitmap.Source = decoder.Frames[0];
+            bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+            bitmap.EndInit();
+
+            ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
+            bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
+
+            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false);
+
+            memStream.Close();
+            memStream.Dispose();
+
+            return iarr;
         }
 
         private void CleanupUnusedManagers(NikonManager activeManager) {
@@ -152,8 +196,6 @@ namespace NINA.Model.MyCamera {
             Logger.Debug("Capture complete");
         }
 
-        private string _fileExtension;
-
         private void Camera_ImageReady(NikonDevice sender, NikonImage image) {
             Logger.Debug("Image ready");
             _memoryStream = new MemoryStream(image.Buffer);
@@ -178,6 +220,12 @@ namespace NINA.Model.MyCamera {
             private set {
                 _name = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return _camera.SupportsCapability(eNkMAIDCapability.kNkMAIDCapability_GetLiveViewImage);
             }
         }
 

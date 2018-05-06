@@ -643,4 +643,5 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <s:String x:Key="LblPrepareImage">Preparing image</s:String>
     <s:String x:Key="LblStretchImage">Stretching image</s:String>
     <s:String x:Key="LblDebayerImage">Debayering image</s:String>
+    <s:String x:Key="LblToolTipLiveView">Live View</s:String>
 </ResourceDictionary>

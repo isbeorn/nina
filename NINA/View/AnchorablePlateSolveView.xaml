@@ -188,6 +188,7 @@
                         CancelButtonImage="{StaticResource CancelSVG}"
                         CancelCommand="{Binding CancelSolveCommand}"
                         Command="{Binding SolveCommand}"
+                        IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
                         ToolTip="{ns:Loc LblCaptureImageAndPlatesolve}" />
 
                     <DataGrid

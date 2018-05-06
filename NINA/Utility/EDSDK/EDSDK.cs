@@ -26,7 +26,7 @@ namespace EDSDKLib {
 
         public delegate uint EdsStateEventHandler(uint inEvent, uint inParameter, IntPtr inContext);
 
-        #endregion
+        #endregion Callback Functions
 
         #region Data Types
 
@@ -63,7 +63,7 @@ namespace EDSDKLib {
             PictureStyleDesc,
         }
 
-        #endregion
+        #endregion Data Types
 
         #region Property IDs
 
@@ -197,7 +197,7 @@ namespace EDSDKLib {
         public const uint PropID_GPSMapDatum = 0x00000812;
         public const uint PropID_GPSDateStamp = 0x0000081D;
 
-        #endregion
+        #endregion Property IDs
 
         #region Camera commands
 
@@ -227,7 +227,7 @@ namespace EDSDKLib {
             CameraCommand_ShutterButton_Completely_NonAF = 0x00010003,
         }
 
-        #endregion
+        #endregion Camera commands
 
         #region Camera status command
 
@@ -239,9 +239,9 @@ namespace EDSDKLib {
         public const uint CameraState_EnterDirectTransfer = 0x00000002;
         public const uint CameraState_ExitDirectTransfer = 0x00000003;
 
-        #endregion
+        #endregion Camera status command
 
-        #region  Enumeration of property value
+        #region Enumeration of property value
 
         /*-----------------------------------------------------------------------------
          Stream Seek Origins
@@ -538,6 +538,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
 		 EVF Output Device [Flag]
 		-----------------------------------------------------------------------------*/
+        public const uint EvfOutputDevice_OFF = 0;
         public const uint EvfOutputDevice_TFT = 1;
         public const uint EvfOutputDevice_PC = 2;
 
@@ -677,7 +678,7 @@ namespace EDSDKLib {
             kEdsImageQualityForLegacy_Unknown = 0xffffffff,
         }
 
-        #endregion
+        #endregion Enumeration of property value
 
         #region Event IDs
 
@@ -853,7 +854,7 @@ namespace EDSDKLib {
 
         public const uint StateEvent_BulbExposureTime = 0x00000310;
 
-        #endregion
+        #endregion Event IDs
 
         #region Proto type defenition of EDSDK API
 
@@ -1069,7 +1070,7 @@ namespace EDSDKLib {
             return err;
         }
 
-        #endregion
+        #endregion GetPorpertyData Wrapper
 
         /*-----------------------------------------------------------------------------
         // Function:   EdsSetPropertyData
@@ -1894,7 +1895,7 @@ namespace EDSDKLib {
         [DllImport("EDSDK.dll")]
         public extern static uint EdsDownloadEvfImage(IntPtr inCameraRef, IntPtr outEvfImageRef);
 
-        #endregion
+        #endregion Proto type defenition of EDSDK API
 
         #region Definition of base Structures
 
@@ -2105,9 +2106,9 @@ namespace EDSDKLib {
             public int Reset;
         }
 
-        #endregion
+        #endregion Definition of base Structures
 
-        #region  Definition of error Codes
+        #region Definition of error Codes
 
         public enum EDS_ERR : uint {
             OK = 0x00000000,
@@ -2272,7 +2273,7 @@ namespace EDSDKLib {
             CMP_ID_HLSDK_COMPONENTID = 0x03000000
         }
 
-        #endregion
+        #endregion Definition of error Codes
 
         public static Dictionary<short, int> ISOSpeeds = new Dictionary<short, int>() {
             {0 ,0x00000000  },

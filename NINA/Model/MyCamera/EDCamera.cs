@@ -3,6 +3,7 @@ using EDSDKLib;
 using FreeImageAPI;
 using FreeImageAPI.Metadata;
 using NINA.Utility;
+using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.RawConverter;
 using System;
@@ -14,9 +15,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Model.MyCamera {
+
     internal class EDCamera : BaseINPC, ICamera {
+
         public EDCamera(IntPtr cam, EDSDK.EdsDeviceInfo info) {
             _cam = cam;
             Id = info.szDeviceDescription;
@@ -118,6 +123,12 @@ namespace NINA.Model.MyCamera {
                     }
                 }
                 return property;
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return true;
             }
         }
 
@@ -323,12 +334,13 @@ namespace NINA.Model.MyCamera {
                 return true;
             }
         }
-
+        
         private bool Initialize() {
             ValidateMode();
             GetISOSpeeds();
             SetSaveLocation();
             SubscribeEvents();
+
             return true;
         }
 
@@ -469,7 +481,7 @@ namespace NINA.Model.MyCamera {
                 sw.Restart();
 
                 System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
-                
+
                 var converter = RawConverter.CreateInstance();
                 var iarr = await converter.ConvertToImageArray(memoryStream, token);
 
@@ -490,7 +502,7 @@ namespace NINA.Model.MyCamera {
 
                 memoryStream.Dispose();
 
-                return iarr;                
+                return iarr;
             });
         }
 
@@ -664,6 +676,74 @@ namespace NINA.Model.MyCamera {
                     return true;
                 }
             });
+        }
+
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public void StartLiveView() {
+            SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_PC);
+            LiveViewEnabled = true;
+        }
+
+        public void StopLiveView() {
+            SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_OFF);
+            LiveViewEnabled = false;
+        }
+
+        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            if (HasError(EDSDK.EdsCreateMemoryStream(0, out var stream))) {
+                return null;
+            }
+
+            if (HasError(EDSDK.EdsCreateEvfImageRef(stream, out var imageRef))) {
+                return null;
+            }
+
+            if (HasError(EDSDK.EdsDownloadEvfImage(_cam, imageRef))) {
+                return null;
+            }
+
+            EDSDK.EdsGetPointer(stream, out var pointer);
+            EDSDK.EdsGetLength(stream, out var length);
+
+            byte[] bytes = new byte[length];
+
+            //Move from unmanaged to managed code.
+            Marshal.Copy(pointer, bytes, 0, bytes.Length);
+
+            System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
+
+            JpegBitmapDecoder decoder = new JpegBitmapDecoder(memoryStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+
+            FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
+            bitmap.BeginInit();
+            bitmap.Source = decoder.Frames[0];
+            bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+            bitmap.EndInit();
+
+            ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
+            bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
+
+            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false);
+
+            memoryStream.Close();
+            memoryStream.Dispose();
+                       
+
+            EDSDK.EdsRelease(stream);
+            EDSDK.EdsRelease(imageRef);
+
+            return iarr;
         }
     }
 }

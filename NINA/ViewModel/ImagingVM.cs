@@ -24,6 +24,8 @@ namespace NINA.ViewModel {
             SnapExposureDuration = 1;
             SnapCommand = new AsyncCommand<bool>(() => SnapImage(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSnapCommand = new RelayCommand(CancelSnapImage);
+            StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
+            StopLiveViewCommand = new RelayCommand(StopLiveView);
 
             ImageControl = new ImageControlVM();
 
@@ -70,8 +72,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public bool CanSeeSubSampling => Cam != null && Cam.CanSubSample;
-
         private bool _snapSubSample;
 
         public bool SnapSubSample {
@@ -82,6 +82,33 @@ namespace NINA.ViewModel {
                 _snapSubSample = value;
                 RaisePropertyChanged();
             }
+        }
+
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private CancellationTokenSource _liveViewCts;
+
+        private async Task<bool> StartLiveView() {
+            ImageControl.IsLiveViewEnabled = true;
+            _liveViewCts = new CancellationTokenSource();
+            return await Task.Run(async () => {
+                return await Mediator.Instance.RequestAsync(new InitiateLiveViewMessage() { Token = _liveViewCts.Token });
+            });
+        }
+
+        private void StopLiveView(object o) {
+            ImageControl.IsLiveViewEnabled = false;
+            _liveViewCts?.Cancel();
         }
 
         private ApplicationStatus _status;
@@ -178,6 +205,8 @@ namespace NINA.ViewModel {
         public IAsyncCommand SnapCommand { get; private set; }
 
         public ICommand CancelSnapCommand { get; private set; }
+        public IAsyncCommand StartLiveViewCommand { get; private set; }
+        public ICommand StopLiveViewCommand { get; private set; }
 
         private void CancelSnapImage(object o) {
             _captureImageToken?.Cancel();

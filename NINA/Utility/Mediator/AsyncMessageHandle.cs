@@ -233,6 +233,15 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(SetImageMessage).Name; } }
     }
 
+    internal class InitiateLiveViewMessageHandle : AsyncMessageHandle<bool> {
+
+        public InitiateLiveViewMessageHandle(Func<InitiateLiveViewMessage, Task<bool>> callback) {
+            Callback = (f) => callback((InitiateLiveViewMessage)f);
+        }
+
+        public override string MessageType { get { return typeof(InitiateLiveViewMessage).Name; } }
+    }
+
     /* Message definition */
 
     internal abstract class AsyncMediatorMessage<TMessageResult> {
@@ -334,5 +343,8 @@ namespace NINA.Utility.Mediator {
         public ImageArray ImageArray { get; set; }
         public double Mean { get; set; }
         public Double ExposureTime { get; set; }
+    }
+
+    internal class InitiateLiveViewMessage : AsyncMediatorMessage<bool> {
     }
 }

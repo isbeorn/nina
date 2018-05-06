@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -48,6 +49,12 @@ namespace NINA.Model.MyCamera {
         public double Temperature {
             get {
                 return AtikCameraDll.GetTemperature(_cameraP);
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return false;
             }
         }
 
@@ -417,6 +424,29 @@ namespace NINA.Model.MyCamera {
             RaisePropertyChanged(nameof(CoolerOn));
             RaisePropertyChanged(nameof(TemperatureSetPoint));
             RaisePropertyChanged(nameof(CameraState));
+        }
+
+        public void StartLiveView() {
+            throw new NotImplementedException();
+        }
+
+        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            throw new NotImplementedException();
+        }
+
+        public void StopLiveView() {
+            throw new NotImplementedException();
+        }
+
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+            }
         }
     }
 }
