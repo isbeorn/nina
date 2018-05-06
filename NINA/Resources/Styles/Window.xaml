@@ -79,6 +79,20 @@
                                     Height="15"
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
+                                    Command="{Binding Source={StaticResource AppVM}, Path=OpenManualCommand}"
+                                    Style="{StaticResource BackgroundButton}"
+                                    WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Path
+                                        Margin="2"
+                                        Data="{StaticResource QuestionSVG}"
+                                        Fill="{StaticResource PrimaryBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                                <Button
+                                    Width="20"
+                                    Height="15"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=MinimizeWindowCommand}"
                                     Style="{StaticResource BackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">

@@ -635,5 +635,13 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <s:String x:Key="LblRawConverterTooltip">Specifies which tool should be used for DSLR raw file conversion</s:String>
     <s:String x:Key="LblDCRaw">DCRaw</s:String>
     <s:String x:Key="LblFreeImage">FreeImage</s:String>
+    <s:String x:Key="LblManualNotFound">Manual not found</s:String>
+    <s:String x:Key="LblOpenManual">Open Manual</s:String>
+    <s:String x:Key="LblWaitForImageProcessing">Waiting for previous image to finish processing</s:String>
+    <s:String x:Key="LblWaitForDither">Waiting for dither to finish</s:String>
+    <s:String x:Key="LblExposing">Exposing</s:String>
+    <s:String x:Key="LblPrepareImage">Preparing image</s:String>
+    <s:String x:Key="LblStretchImage">Stretching image</s:String>
+    <s:String x:Key="LblDebayerImage">Debayering image</s:String>
     <s:String x:Key="LblToolTipLiveView">Live View</s:String>
 </ResourceDictionary>

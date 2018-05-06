@@ -506,11 +506,11 @@ namespace NINA.ViewModel {
                 await ss.WaitAsync(token);
 
                 if (iarr != null) {
-                    _progress.Report(new ApplicationStatus() { Status = "Preparing image" });
+                    _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPrepareImage"] });
                     source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
 
                     if (AutoStretch) {
-                        _progress.Report(new ApplicationStatus() { Status = "Stretching image" });
+                        _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStretchImage"] });
                         source = await StretchAsync(iarr, source);
                     }
 
@@ -527,7 +527,7 @@ namespace NINA.ViewModel {
                     }
 
                     if (iarr.IsBayered) {
-                        _progress.Report(new ApplicationStatus() { Status = "Debayer image" });
+                        _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayerImage"] });
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
                     }
 
@@ -611,7 +611,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> SaveToDiskAsync(ImageParameters parameters, CancellationToken token) {
-            _progress.Report(new ApplicationStatus() { Status = "Saving..." });
+            _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSave"] });
             await Task.Run(async () => {
                 List<OptionsVM.ImagePattern> p = new List<OptionsVM.ImagePattern>();
 
