@@ -1,7 +1,9 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -17,6 +19,7 @@ namespace NINA.ViewModel {
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
             CheckProfileCommand = new RelayCommand(LoadProfile);
             CheckUpdateCommand = new AsyncCommand<bool>(() => CheckUpdate());
+            OpenManualCommand = new RelayCommand(OpenManual);
             ConnectAllDevicesCommand = new AsyncCommand<bool>(async () => {
                 var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblReconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag == MessageBoxResult.OK) {
@@ -54,6 +57,16 @@ namespace NINA.ViewModel {
 
         private async Task<bool> CheckUpdate() {
             return await new VersionCheckVM().CheckUpdate();
+        }
+
+        private static string NINAMANUAL = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Documentation", "NINA.html");
+
+        private void OpenManual(object o) {
+            if (File.Exists(NINAMANUAL)) {
+                System.Diagnostics.Process.Start(NINAMANUAL);
+            } else {
+                Notification.ShowError(Locale.Loc.Instance["LblManualNotFound"]);
+            }
         }
 
         public void InitAvalonDockLayout() {
@@ -429,6 +442,7 @@ namespace NINA.ViewModel {
         public ICommand MaximizeWindowCommand { get; private set; }
         public ICommand CheckProfileCommand { get; }
         public ICommand CheckUpdateCommand { get; private set; }
+        public ICommand OpenManualCommand { get; private set; }
         public ICommand ExitCommand { get; private set; }
         public ICommand ConnectAllDevicesCommand { get; private set; }
         public ICommand DisconnectAllDevicesCommand { get; private set; }

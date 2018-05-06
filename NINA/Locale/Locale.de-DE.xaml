@@ -640,4 +640,6 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
     <s:String x:Key="LblRawConverterTooltip">Gibt an welches Tool zur Raw konvertierung genutzt werden soll</s:String>
     <s:String x:Key="LblDCRaw">DCRaw</s:String>
     <s:String x:Key="LblFreeImage">FreeImage</s:String>
+    <s:String x:Key="LblManualNotFound">Handbuch wurde nicht gefunden</s:String>
+    <s:String x:Key="LblOpenManual">Öffne Handbuch</s:String>
 </ResourceDictionary>
