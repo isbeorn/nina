@@ -34,6 +34,7 @@ namespace NINA.ViewModel {
             AddFilterCommand = new RelayCommand(AddFilter);
             RemoveFilterCommand = new RelayCommand(RemoveFilter);
             AddProfileCommand = new RelayCommand(AddProfile);
+            CloneProfileCommand = new RelayCommand(CloneProfile, (object o) => { return SelectedProfile != null; });
             RemoveProfileCommand = new RelayCommand(RemoveProfile, (object o) => { return SelectedProfile != null && SelectedProfile.Id != ProfileManager.Instance.ActiveProfile.Id; });
             SelectProfileCommand = new RelayCommand(SelectProfile, (o) => {
                 return SelectedProfile != null;
@@ -70,6 +71,10 @@ namespace NINA.ViewModel {
             }));
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
+        }
+
+        private void CloneProfile(object obj) {
+            ProfileManager.Instance.Clone(SelectedProfile.Id);
         }
 
         private void RemoveProfile(object obj) {
@@ -275,7 +280,7 @@ namespace NINA.ViewModel {
         public ICommand RemoveFilterCommand { get; private set; }
 
         public ICommand AddProfileCommand { get; private set; }
-
+        public ICommand CloneProfileCommand { get; private set; }
         public ICommand RemoveProfileCommand { get; private set; }
 
         public ICommand SelectProfileCommand { get; private set; }

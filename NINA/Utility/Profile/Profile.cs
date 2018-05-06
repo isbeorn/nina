@@ -1,5 +1,6 @@
 ﻿using NINA.Model.MyFilterWheel;
 using System;
+using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -46,6 +47,18 @@ namespace NINA.Utility.Profile {
             }
             set {
                 id = value;
+            }
+        }
+
+        public static Profile Clone(Profile profileToClone) {
+            using (MemoryStream stream = new MemoryStream()) {
+                XmlSerializer xmlS = new XmlSerializer(typeof(Profile));
+                xmlS.Serialize(stream, profileToClone);
+                stream.Position = 0;
+                var newProfile = (Profile)xmlS.Deserialize(stream);
+                newProfile.Name = newProfile.Name + " Copy";
+                newProfile.Id = Guid.NewGuid();
+                return newProfile;
             }
         }
 

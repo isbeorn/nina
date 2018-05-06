@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 
 namespace NINA.Utility {
-
+    [System.Serializable()]
     public abstract class BaseINPC : INotifyPropertyChanged {
 
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {

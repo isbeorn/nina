@@ -41,6 +41,14 @@ namespace NINA.Utility.Profile {
             Profiles.Add(new Profile("Profile" + (Profiles.ProfileList.Count + 1)));
         }
 
+        public void Clone(Guid id) {
+            var p = Profiles.ProfileList.Where((x) => x.Id == id).FirstOrDefault();
+            if (p != null) {
+                var newProfile = Profile.Clone(p);
+                Profiles.Add(newProfile);
+            }
+        }
+
         private void Save() {
             try {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(Profiles));
