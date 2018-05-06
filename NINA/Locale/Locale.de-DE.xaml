@@ -642,4 +642,10 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
     <s:String x:Key="LblFreeImage">FreeImage</s:String>
     <s:String x:Key="LblManualNotFound">Handbuch wurde nicht gefunden</s:String>
     <s:String x:Key="LblOpenManual">Öffne Handbuch</s:String>
+    <s:String x:Key="LblWaitForImageProcessing">Warte auf Verarbeitung des vorherigen Bildes</s:String>
+    <s:String x:Key="LblWaitForDither">Warte auf Beendend des Ditherns</s:String>
+    <s:String x:Key="LblExposing">Belichten</s:String>
+    <s:String x:Key="LblPrepareImage">Bereite Bild vor</s:String>
+    <s:String x:Key="LblStretchImage">Strecke Bild</s:String>
+    <s:String x:Key="LblDebayerImage">Debayere Bild</s:String>
 </ResourceDictionary>

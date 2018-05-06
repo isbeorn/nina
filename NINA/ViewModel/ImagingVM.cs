@@ -214,7 +214,7 @@ namespace NINA.ViewModel {
             var elapsed = 0.0d;
             ExposureSeconds = 0;
             progress.Report(new ApplicationStatus() {
-                Status = ExposureStatus.EXPOSING,
+                Status = Locale.Loc.Instance["LblExposing"],
                 Progress = ExposureSeconds,
                 MaxProgress = (int)duration,
                 ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
@@ -229,7 +229,7 @@ namespace NINA.ViewModel {
                         token.ThrowIfCancellationRequested();
 
                         progress.Report(new ApplicationStatus() {
-                            Status = ExposureStatus.EXPOSING,
+                            Status = Locale.Loc.Instance["LblExposing"],
                             Progress = ExposureSeconds,
                             MaxProgress = (int)duration,
                             ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
@@ -241,7 +241,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
-            progress.Report(new ApplicationStatus() { Status = ExposureStatus.DOWNLOADING });
+            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
             return await Cam.DownloadExposure(token);
         }
 
@@ -323,20 +323,15 @@ namespace NINA.ViewModel {
                         throw new OperationCanceledException();
                     }
 
-                    /*Prepare Image for UI*/
-                    progress.Report(new ApplicationStatus() { Status = ImagingVM.ExposureStatus.PREPARING });
-
                     if (CameraConnected != true) {
                         throw new CameraConnectionLostException();
                     }
 
                     //Wait for previous prepare image task to complete
                     if (_currentPrepareImageTask != null && !_currentPrepareImageTask.IsCompleted) {
-                        progress.Report(new ApplicationStatus() { Status = "Waiting for previous image to finish processing" });
+                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageProcessing"] });
                         await _currentPrepareImageTask;
                     }
-                    //async prepare image and save
-                    progress.Report(new ApplicationStatus() { Status = "Prepare image saving" });
 
                     var parameters = new ImageParameters() {
                         Binning = sequence.Binning.Name,
@@ -349,7 +344,7 @@ namespace NINA.ViewModel {
                     _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters);
 
                     //Wait for dither to finish. Runs in parallel to download and save.
-                    progress.Report(new ApplicationStatus() { Status = "Waiting for dither to finish" });
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
                     await ditherTask;
                 } catch (System.OperationCanceledException ex) {
                     if (Cam == null || _cameraConnected == true) {
@@ -447,18 +442,6 @@ namespace NINA.ViewModel {
         public async Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
             await CaptureImage(seq, ct, progress, bsave, targetname);
             return true;
-        }
-
-        public static class ExposureStatus {
-            public const string EXPOSING = "Exposing...";
-            public const string DOWNLOADING = "Downloading...";
-            public const string FILTERCHANGE = "Switching Filter...";
-            public const string PREPARING = "Preparing...";
-            public const string CALCHFR = "Calculating HFR...";
-            public const string SAVING = "Saving...";
-            public const string IDLE = "";
-            public const string DITHERING = "Dithering...";
-            public const string SETTLING = "Settling...";
         }
     }
 }
