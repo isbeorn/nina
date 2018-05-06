@@ -640,4 +640,5 @@ Drag the rectangle over a star whith the bahtinov spikes. NINA will try to detec
     <s:String x:Key="LblPrepareImage">Preparing image</s:String>
     <s:String x:Key="LblStretchImage">Stretching image</s:String>
     <s:String x:Key="LblDebayerImage">Debayering image</s:String>
+    <s:String x:Key="LblToolTipLiveView">Live View</s:String>
 </ResourceDictionary>
