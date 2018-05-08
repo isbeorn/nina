@@ -10,82 +10,193 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid DataContext="{Binding Statistics}">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="120" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                <StackPanel Margin="5" VerticalAlignment="Top">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
+                <StackPanel>
+                    <StackPanel Margin="5" VerticalAlignment="Top" DataContext="{Binding Statistics}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
                             Width="70"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblWidth}" />
-                        <TextBlock
+                            <TextBlock
                             Width="70"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="{Binding Width, StringFormat=\{0:#0\}}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
                             Width="70"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblHeight}" />
-                        <TextBlock
+                            <TextBlock
                             Width="70"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="{Binding Height, StringFormat=\{0:#\}}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
                             Width="70"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblMean}" />
-                        <TextBlock
+                            <TextBlock
                             Width="70"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="{Binding Mean, StringFormat=\{0:#.00\}}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                            Width="70"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblMin}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding Min}" />
+                                <TextBlock Text=" (" />
+                                <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding MinOccurrences}" />
+                                <TextBlock Text="x)" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                            Width="70"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblMax}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding Max}" />
+                                <TextBlock Text=" (" />
+                                <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding MaxOccurrences}" />
+                                <TextBlock Text="x)" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
                             Width="70"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblStDev}" />
-                        <TextBlock
+                            <TextBlock
                             Width="70"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="{Binding StDev, StringFormat=\{0:#.00\}}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
                             Width="70"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblNrStars}" />
-                        <TextBlock
+                            <TextBlock
                             Width="70"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="{Binding DetectedStars, StringFormat=\{0:#\}}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
                             Width="70"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblHFR}" />
-                        <TextBlock
+                            <TextBlock
                             Width="70"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
+                        </StackPanel>
                     </StackPanel>
+                    <Expander Header="{ns:Loc LblExposureCalculator}">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <StackPanel Margin="5" VerticalAlignment="Top">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="170"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblMinOptimalADU}" />
+                                    <TextBlock
+                                        Width="40"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding MinExposureADU, StringFormat=\{0:#0\}, Mode=OneWay}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="170"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblMinimumExposureTime}" />
+                                    <TextBlock
+                                        Width="40"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding MinimumRecommendedExposureTime, StringFormat=\{0:#0.00\}, Mode=OneWay}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="170"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblMaxOptimalADU}" />
+                                    <TextBlock
+                                        Width="40"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding MaxExposureADU, StringFormat=\{0:#0\}, Mode=OneWay}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="170"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblMaximumExposureTime}" />
+                                    <TextBlock
+                                        Width="40"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding MaximumRecommendedExposureTime, StringFormat=\{0:#0.00\}, Mode=OneWay}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="170"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblOptimalExposureTime}" />
+                                    <TextBlock
+                                        Width="40"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding OptimizedExposureTime, StringFormat=\{0:#0.00\}, Mode=OneWay}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="170"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblCurrentDownloadToDataRatio}" />
+                                    <TextBlock
+                                        Width="40"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding CurrentDownloadToDataRatio, Mode=OneWay}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Expander>
                 </StackPanel>
             </Border>
             <Border
+                DataContext="{Binding Statistics}"
                 Grid.Row="1"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="1">

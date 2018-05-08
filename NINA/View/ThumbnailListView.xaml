@@ -111,7 +111,6 @@
                                     VerticalAlignment="Center"
                                     FontSize="12"
                                     Text="{Binding Date, StringFormat='{}{0:HH:mm:ss}'}" />
-
                             </Grid>
                         </Button>
                     </DataTemplate>

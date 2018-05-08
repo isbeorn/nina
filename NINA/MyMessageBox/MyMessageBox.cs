@@ -1,15 +1,11 @@
 ﻿using NINA.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace NINA.MyMessageBox {
-    class MyMessageBox : BaseVM {
 
+    internal class MyMessageBox : BaseVM {
         private string _title;
+
         public string Title {
             get {
                 return _title;
@@ -21,6 +17,7 @@ namespace NINA.MyMessageBox {
         }
 
         private string _text;
+
         public string Text {
             get {
                 return _text;
@@ -32,6 +29,7 @@ namespace NINA.MyMessageBox {
         }
 
         private bool? _dialogResult;
+
         public bool? DialogResult {
             get {
                 return _dialogResult;
@@ -43,6 +41,7 @@ namespace NINA.MyMessageBox {
         }
 
         private Visibility _cancelVisibility;
+
         public Visibility CancelVisibility {
             get {
                 return _cancelVisibility;
@@ -54,6 +53,7 @@ namespace NINA.MyMessageBox {
         }
 
         private Visibility _oKVisibility;
+
         public Visibility OKVisibility {
             get {
                 return _oKVisibility;
@@ -65,6 +65,7 @@ namespace NINA.MyMessageBox {
         }
 
         private Visibility _yesVisibility;
+
         public Visibility YesVisibility {
             get {
                 return _yesVisibility;
@@ -76,6 +77,7 @@ namespace NINA.MyMessageBox {
         }
 
         private Visibility _noVisibility;
+
         public Visibility NoVisibility {
             get {
                 return _noVisibility;
@@ -95,63 +97,65 @@ namespace NINA.MyMessageBox {
         }
 
         public static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button, MessageBoxResult defaultresult) {
+            var dialogresult = defaultresult;
+            dialogresult = Application.Current.Dispatcher.Invoke(() => {
+                var MyMessageBox = new MyMessageBox();
+                MyMessageBox.Title = caption;
+                MyMessageBox.Text = messageBoxText;
 
-
-            var MyMessageBox = new MyMessageBox();
-            MyMessageBox.Title = caption;
-            MyMessageBox.Text = messageBoxText;
-
-            if (button == MessageBoxButton.OKCancel) {
-                MyMessageBox.CancelVisibility = System.Windows.Visibility.Visible;
-                MyMessageBox.OKVisibility = System.Windows.Visibility.Visible;
-                MyMessageBox.YesVisibility = System.Windows.Visibility.Hidden;
-                MyMessageBox.NoVisibility = System.Windows.Visibility.Hidden;
-            } else if (button == MessageBoxButton.YesNo) {
-                MyMessageBox.CancelVisibility = System.Windows.Visibility.Hidden;
-                MyMessageBox.OKVisibility = System.Windows.Visibility.Hidden;
-                MyMessageBox.YesVisibility = System.Windows.Visibility.Visible;
-                MyMessageBox.NoVisibility = System.Windows.Visibility.Visible;
-            } else if (button == MessageBoxButton.OK) {
-                MyMessageBox.CancelVisibility = System.Windows.Visibility.Hidden;
-                MyMessageBox.OKVisibility = System.Windows.Visibility.Visible;
-                MyMessageBox.YesVisibility = System.Windows.Visibility.Hidden;
-                MyMessageBox.NoVisibility = System.Windows.Visibility.Hidden;
-            } else {
-                MyMessageBox.CancelVisibility = System.Windows.Visibility.Hidden;
-                MyMessageBox.OKVisibility = System.Windows.Visibility.Visible;
-                MyMessageBox.YesVisibility = System.Windows.Visibility.Hidden;
-                MyMessageBox.NoVisibility = System.Windows.Visibility.Hidden;
-            }
-
-
-            System.Windows.Window win = new MyMessageBoxView {
-                DataContext = MyMessageBox
-            };
-            win.SizeChanged += Win_SizeChanged;
-
-            var mainwindow = System.Windows.Application.Current.MainWindow;
-            mainwindow.Opacity = 0.8;
-
-            win.ShowDialog();
-            mainwindow.Opacity = 1;
-
-            if (win.DialogResult == null) {
-                return defaultresult;
-            } else if (win.DialogResult == true) {
-                if(MyMessageBox.YesVisibility == Visibility.Visible) {
-                    return MessageBoxResult.Yes;
+                if (button == MessageBoxButton.OKCancel) {
+                    MyMessageBox.CancelVisibility = System.Windows.Visibility.Visible;
+                    MyMessageBox.OKVisibility = System.Windows.Visibility.Visible;
+                    MyMessageBox.YesVisibility = System.Windows.Visibility.Hidden;
+                    MyMessageBox.NoVisibility = System.Windows.Visibility.Hidden;
+                } else if (button == MessageBoxButton.YesNo) {
+                    MyMessageBox.CancelVisibility = System.Windows.Visibility.Hidden;
+                    MyMessageBox.OKVisibility = System.Windows.Visibility.Hidden;
+                    MyMessageBox.YesVisibility = System.Windows.Visibility.Visible;
+                    MyMessageBox.NoVisibility = System.Windows.Visibility.Visible;
+                } else if (button == MessageBoxButton.OK) {
+                    MyMessageBox.CancelVisibility = System.Windows.Visibility.Hidden;
+                    MyMessageBox.OKVisibility = System.Windows.Visibility.Visible;
+                    MyMessageBox.YesVisibility = System.Windows.Visibility.Hidden;
+                    MyMessageBox.NoVisibility = System.Windows.Visibility.Hidden;
                 } else {
-                    return MessageBoxResult.OK;
-                }                
-            } else if (win.DialogResult == false) {
-                if (MyMessageBox.NoVisibility == Visibility.Visible) {
-                    return MessageBoxResult.No;
+                    MyMessageBox.CancelVisibility = System.Windows.Visibility.Hidden;
+                    MyMessageBox.OKVisibility = System.Windows.Visibility.Visible;
+                    MyMessageBox.YesVisibility = System.Windows.Visibility.Hidden;
+                    MyMessageBox.NoVisibility = System.Windows.Visibility.Hidden;
+                }
+
+                System.Windows.Window win = new MyMessageBoxView {
+                    DataContext = MyMessageBox
+                };
+                win.SizeChanged += Win_SizeChanged;
+
+                var mainwindow = System.Windows.Application.Current.MainWindow;
+                mainwindow.Opacity = 0.8;
+
+                win.ShowDialog();
+
+                mainwindow.Opacity = 1;
+
+                if (win.DialogResult == null) {
+                    return defaultresult;
+                } else if (win.DialogResult == true) {
+                    if (MyMessageBox.YesVisibility == Visibility.Visible) {
+                        return MessageBoxResult.Yes;
+                    } else {
+                        return MessageBoxResult.OK;
+                    }
+                } else if (win.DialogResult == false) {
+                    if (MyMessageBox.NoVisibility == Visibility.Visible) {
+                        return MessageBoxResult.No;
+                    } else {
+                        return MessageBoxResult.Cancel;
+                    }
                 } else {
-                    return MessageBoxResult.Cancel;
-                }                
-            } else {
-                return defaultresult;
-            }
+                    return defaultresult;
+                }
+            });
+            return dialogresult;
         }
 
         private static void Win_SizeChanged(object sender, SizeChangedEventArgs e) {

@@ -1,30 +1,19 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
 namespace NINA.Locale {
-    class Loc : BaseINPC {
+
+    internal class Loc : BaseINPC {
 
         private Loc() {
-
-
-            ReloadLocale();
-
-
         }
 
-        public void ReloadLocale() {
+        public void ReloadLocale(string culture) {
             try {
-                _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + Settings.Language.Name + ".xaml", UriKind.Relative) };
+                _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + culture + ".xaml", UriKind.Relative) };
             } catch (System.IO.IOException) {
                 // Fallback to default locale if setting is invalid
                 _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };
@@ -39,7 +28,6 @@ namespace NINA.Locale {
 
             RaiseAllPropertiesChanged();
             Mediator.Instance.Notify(MediatorMessages.LocaleChanged, null);
-
         }
 
         private static readonly Lazy<Loc> lazy =
@@ -47,17 +35,20 @@ namespace NINA.Locale {
 
         public static Loc Instance { get { return lazy.Value; } }
 
-        ResourceDictionary _locale = null;
+        private ResourceDictionary _locale = null;
 
         public string this[string key] {
             get {
+                if (_locale == null) {
+                    ReloadLocale("en-GB");
+                }
                 return _locale[key]?.ToString() ?? "MISSING LABEL " + key;
             }
         }
-
     }
 
     public class LocExtension : Binding {
+
         public LocExtension(string name) : base($"[{name}]") {
             this.Mode = BindingMode.OneWay;
             this.Source = Loc.Instance;

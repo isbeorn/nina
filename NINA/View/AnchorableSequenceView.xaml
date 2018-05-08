@@ -11,7 +11,7 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Orientation="Vertical">
+        <StackPanel IsEnabled="{Binding Cam.Connected}" Orientation="Vertical">
 
             <Grid Height="25" Margin="5">
                 <ProgressBar
@@ -38,9 +38,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Text="{Binding ETA, Mode=OneWay}" />
-
             </UniformGrid>
-
 
             <GroupBox Header="{ns:Loc LblActiveSequenceDetails}">
                 <StackPanel DataContext="{Binding Sequence.ActiveSequence}" Orientation="Vertical">
@@ -59,16 +57,6 @@
                             <TextBlock Text="{Binding ElementName=pbActiveSequence, Path=Maximum}" />
                         </StackPanel>
                     </Grid>
-
-                    <Border
-                        MinHeight="30"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
-                        <UniformGrid VerticalAlignment="Center" Columns="2">
-                            <TextBlock Text="{ns:Loc LblRemaining}" />
-                            <TextBlock Margin="5,0,0,0" Text="{Binding ExposureCount}" />
-                        </UniformGrid>
-                    </Border>
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
@@ -114,25 +102,24 @@
                             <TextBlock Margin="5,0,0,0" Text="{Binding Gain, Converter={StaticResource MinusOneToEmptyStringConverter}}" />
                         </UniformGrid>
                     </Border>
-
                 </StackPanel>
-
             </GroupBox>
 
             <ninactrl:AsyncProcessButton
                 Height="35"
                 Margin="10,0,10,0"
+                ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
                 ButtonImage="{StaticResource PlaySVG}"
                 CancelButtonImage="{StaticResource CancelSVG}"
                 CancelCommand="{Binding CancelSequenceCommand}"
                 Command="{Binding StartSequenceCommand}"
-                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Connected, FallbackValue=False}"
                 IsPaused="{Binding IsPaused}"
                 LoadingImageBrush="{StaticResource PrimaryBrush}"
                 PauseButtonImage="{StaticResource PauseSVG}"
                 PauseCommand="{Binding PauseSequenceCommand}"
                 ResumeButtonImage="{StaticResource PlaySVG}"
                 ResumeCommand="{Binding ResumeSequenceCommand}"
+                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
                 ToolTip="{ns:Loc LblTooltipStartSequence}" />
         </StackPanel>
     </ScrollViewer>

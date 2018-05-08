@@ -1,24 +1,23 @@
 ﻿using NINA.Utility;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
+
     public class ImageStatistics : BaseINPC {
         public int Id { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public double StDev { get; set; }
         public double Mean { get; set; }
+        public int Max { get; set; }
+        public long MaxOccurrences { get; set; }
+        public int Min { get; set; }
+        public long MinOccurrences { get; set; }
         private double _hFR;
+        public double ExposureTime { get; set; }
+        public bool IsBayered { get; set; }
 
-        public IEnumerable Histogram { get; set; }
-        public static double HistogramMajorStep = 642.5;
-        public static double HistogramMinorStep = 321.25;
-        public static double HistogramResolution = 1285;
+        public List<OxyPlot.DataPoint> Histogram { get; set; }
 
         public int DetectedStars {
             get {
@@ -43,6 +42,5 @@ namespace NINA.Model.MyCamera {
         }
 
         private int _detectedStars;
-
     }
 }

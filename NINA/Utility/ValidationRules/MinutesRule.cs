@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using System.Windows.Controls;
 
 namespace NINA.Utility.ValidationRules {
+
     public class MinutesRule : ValidationRule {
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo) {

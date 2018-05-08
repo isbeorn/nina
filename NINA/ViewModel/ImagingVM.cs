@@ -1,38 +1,22 @@
 ﻿using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
-using nom.tam.fits;
-using nom.tam.util;
+using NINA.Utility.Exceptions;
+using NINA.Utility.Mediator;
+using NINA.Utility.Notification;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static NINA.Model.CaptureSequence;
-using System.ComponentModel;
-using NINA.Model.MyFilterWheel;
-using NINA.Model.MyTelescope;
-using NINA.Utility.Notification;
-using Nito.AsyncEx;
-using System.Security;
-using System.Security.Permissions;
-using System.Security.AccessControl;
-using NINA.Utility.Exceptions;
-using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
-    class ImagingVM : DockableVM {
+
+    internal class ImagingVM : DockableVM {
 
         public ImagingVM() : base() {
-
             Title = "LblImaging";
             ContentId = nameof(ImagingVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
@@ -40,6 +24,8 @@ namespace NINA.ViewModel {
             SnapExposureDuration = 1;
             SnapCommand = new AsyncCommand<bool>(() => SnapImage(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSnapCommand = new RelayCommand(CancelSnapImage);
+            StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
+            StopLiveViewCommand = new RelayCommand(StopLiveView);
 
             ImageControl = new ImageControlVM();
 
@@ -69,23 +55,64 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 Cam = (ICamera)o;
             }, MediatorMessages.CameraChanged);
-
         }
 
-        ImageControlVM _imageControl;
+        private ImageControlVM _imageControl;
+
         public ImageControlVM ImageControl {
             get { return _imageControl; }
             set { _imageControl = value; RaisePropertyChanged(); }
         }
 
         private bool _cameraConnected;
+
         private bool CameraConnected {
             get {
                 return Cam != null && _cameraConnected;
             }
         }
 
+        private bool _snapSubSample;
+
+        public bool SnapSubSample {
+            get {
+                return _snapSubSample;
+            }
+            set {
+                _snapSubSample = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private CancellationTokenSource _liveViewCts;
+
+        private async Task<bool> StartLiveView() {
+            ImageControl.IsLiveViewEnabled = true;
+            _liveViewCts = new CancellationTokenSource();
+            return await Task.Run(async () => {
+                return await Mediator.Instance.RequestAsync(new InitiateLiveViewMessage() { Token = _liveViewCts.Token });
+            });
+        }
+
+        private void StopLiveView(object o) {
+            ImageControl.IsLiveViewEnabled = false;
+            _liveViewCts?.Cancel();
+        }
+
         private ApplicationStatus _status;
+
         public ApplicationStatus Status {
             get {
                 return _status;
@@ -102,6 +129,7 @@ namespace NINA.ViewModel {
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private bool _loop;
+
         public bool Loop {
             get {
                 return _loop;
@@ -110,10 +138,10 @@ namespace NINA.ViewModel {
                 _loop = value;
                 RaisePropertyChanged();
             }
-
         }
 
         private bool _snapSave;
+
         public bool SnapSave {
             get {
                 return _snapSave;
@@ -122,10 +150,10 @@ namespace NINA.ViewModel {
                 _snapSave = value;
                 RaisePropertyChanged();
             }
-
         }
 
         private ICamera _cam;
+
         public ICamera Cam {
             get {
                 return _cam;
@@ -137,6 +165,7 @@ namespace NINA.ViewModel {
         }
 
         private double _snapExposureDuration;
+
         public double SnapExposureDuration {
             get {
                 return _snapExposureDuration;
@@ -149,6 +178,7 @@ namespace NINA.ViewModel {
         }
 
         private int _exposureSeconds;
+
         public int ExposureSeconds {
             get {
                 return _exposureSeconds;
@@ -160,6 +190,7 @@ namespace NINA.ViewModel {
         }
 
         private String _expStatus;
+
         public String ExpStatus {
             get {
                 return _expStatus;
@@ -174,12 +205,14 @@ namespace NINA.ViewModel {
         public IAsyncCommand SnapCommand { get; private set; }
 
         public ICommand CancelSnapCommand { get; private set; }
+        public IAsyncCommand StartLiveViewCommand { get; private set; }
+        public ICommand StopLiveViewCommand { get; private set; }
 
         private void CancelSnapImage(object o) {
             _captureImageToken?.Cancel();
         }
 
-        CancellationTokenSource _captureImageToken;
+        private CancellationTokenSource _captureImageToken;
 
         private async Task ChangeFilter(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (seq.FilterType != null) {
@@ -195,7 +228,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {       
+        private void SetSubSample(CaptureSequence seq) {
+            Cam.EnableSubSample = seq.EnableSubSample;
+        }
+
+        private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             double duration = seq.ExposureTime;
             bool isLight = false;
             if (Cam.HasShutter) {
@@ -206,7 +243,7 @@ namespace NINA.ViewModel {
             var elapsed = 0.0d;
             ExposureSeconds = 0;
             progress.Report(new ApplicationStatus() {
-                Status = ExposureStatus.EXPOSING,
+                Status = Locale.Loc.Instance["LblExposing"],
                 Progress = ExposureSeconds,
                 MaxProgress = (int)duration,
                 ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
@@ -221,10 +258,10 @@ namespace NINA.ViewModel {
                         token.ThrowIfCancellationRequested();
 
                         progress.Report(new ApplicationStatus() {
-                            Status = ExposureStatus.EXPOSING,
+                            Status = Locale.Loc.Instance["LblExposing"],
                             Progress = ExposureSeconds,
                             MaxProgress = (int)duration,
-                            ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue                                
+                            ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
                         });
                     } while ((elapsed < duration) && Cam?.Connected == true);
                 });
@@ -233,26 +270,24 @@ namespace NINA.ViewModel {
         }
 
         private async Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
-            progress.Report(new ApplicationStatus() { Status = ExposureStatus.DOWNLOADING });
+            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
             return await Cam.DownloadExposure(token);
         }
 
         private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (seq.Dither && ((seq.ProgressExposureCount % seq.DitherAmount) == 0)) {                
-
-                return await Mediator.Instance.RequestAsync(new DitherGuiderMessage() { Token = token });                
+            if (seq.Dither && ((seq.ProgressExposureCount % seq.DitherAmount) == 0)) {
+                return await Mediator.Instance.RequestAsync(new DitherGuiderMessage() { Token = token });
             }
             token.ThrowIfCancellationRequested();
             return false;
         }
 
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
-        static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
-
+        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public async Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             var iarr = await CaptureImage(sequence, token, progress);
-            if(iarr != null) {
+            if (iarr != null) {
                 return await _currentPrepareImageTask;
             } else {
                 return null;
@@ -260,8 +295,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
-
-            //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
+            //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
             await semaphoreSlim.WaitAsync(token);
 
@@ -294,6 +328,8 @@ namespace NINA.ViewModel {
                     /*Set Camera Binning*/
                     SetBinning(sequence);
 
+                    SetSubSample(sequence);
+
                     if (CameraConnected != true) {
                         throw new CameraConnectionLostException();
                     }
@@ -316,21 +352,15 @@ namespace NINA.ViewModel {
                         throw new OperationCanceledException();
                     }
 
-                    /*Prepare Image for UI*/
-                    progress.Report(new ApplicationStatus() { Status = ImagingVM.ExposureStatus.PREPARING });
-
                     if (CameraConnected != true) {
                         throw new CameraConnectionLostException();
                     }
-                    
-                    
+
                     //Wait for previous prepare image task to complete
-                    if(_currentPrepareImageTask != null && !_currentPrepareImageTask.IsCompleted) {
-                        progress.Report(new ApplicationStatus() { Status = "Waiting for previous image to finish processing" });
+                    if (_currentPrepareImageTask != null && !_currentPrepareImageTask.IsCompleted) {
+                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageProcessing"] });
                         await _currentPrepareImageTask;
                     }
-                    //async prepare image and save
-                    progress.Report(new ApplicationStatus() { Status = "Prepare image saving" });
 
                     var parameters = new ImageParameters() {
                         Binning = sequence.Binning.Name,
@@ -343,22 +373,20 @@ namespace NINA.ViewModel {
                     _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters);
 
                     //Wait for dither to finish. Runs in parallel to download and save.
-                    progress.Report(new ApplicationStatus() { Status = "Waiting for dither to finish" });
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
                     await ditherTask;
-
                 } catch (System.OperationCanceledException ex) {
-                    Logger.Trace(ex.Message);
                     if (Cam == null || _cameraConnected == true) {
                         Cam?.AbortExposure();
                     }
                     throw ex;
                 } catch (CameraConnectionLostException ex) {
-                    Logger.Error(Locale.Loc.Instance["LblCameraConnectionLost"] + " " + ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.ShowError(Locale.Loc.Instance["LblCameraConnectionLost"]);
                     throw ex;
                 } catch (Exception ex) {
                     Notification.ShowError(Locale.Loc.Instance["LblUnexpectedError"]);
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     if (_cameraConnected == true) {
                         Cam.AbortExposure();
                     }
@@ -369,21 +397,19 @@ namespace NINA.ViewModel {
                 }
                 return arr;
             });
-
         }
 
-        Task<BitmapSource> _currentPrepareImageTask;
+        private Task<BitmapSource> _currentPrepareImageTask;
 
         private void SetGain(CaptureSequence seq) {
             if (seq.Gain != -1) {
                 Cam.Gain = seq.Gain;
             } else {
-
             }
         }
 
-
         private Model.MyFilterWheel.FilterInfo _snapFilter;
+
         public Model.MyFilterWheel.FilterInfo SnapFilter {
             get {
                 return _snapFilter;
@@ -395,6 +421,7 @@ namespace NINA.ViewModel {
         }
 
         private BinningMode _snapBin;
+
         public BinningMode SnapBin {
             get {
                 if (_snapBin == null) {
@@ -409,6 +436,7 @@ namespace NINA.ViewModel {
         }
 
         private short _snapGain = -1;
+
         public short SnapGain {
             get {
                 return _snapGain;
@@ -426,36 +454,23 @@ namespace NINA.ViewModel {
                 var success = true;
                 do {
                     var seq = new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                    seq.EnableSubSample = SnapSubSample;
                     seq.Gain = SnapGain;
                     success = await CaptureAndSaveImage(seq, SnapSave, _captureImageToken.Token, progress);
                     _captureImageToken.Token.ThrowIfCancellationRequested();
                 } while (Loop && success);
             } catch (OperationCanceledException) {
-
             } finally {
                 await _currentPrepareImageTask;
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 
             return true;
-
         }
 
         public async Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
-            await CaptureImage(seq, ct, progress, bsave, targetname);            
+            await CaptureImage(seq, ct, progress, bsave, targetname);
             return true;
-        }
-
-        public static class ExposureStatus {
-            public const string EXPOSING = "Exposing...";
-            public const string DOWNLOADING = "Downloading...";
-            public const string FILTERCHANGE = "Switching Filter...";
-            public const string PREPARING = "Preparing...";
-            public const string CALCHFR = "Calculating HFR...";
-            public const string SAVING = "Saving...";
-            public const string IDLE = "";
-            public const string DITHERING = "Dithering...";
-            public const string SETTLING = "Settling...";
         }
     }
 }

@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
 namespace NINA.Utility {
+
     /// <summary>
     /// A window should be associated to a viewmodel by the DataTemplates.xaml
     /// </summary>
-    class WindowService : IWindowService {
+    internal class WindowService : IWindowService {
         private Dispatcher dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
         public void ShowWindow(object viewModel) {
@@ -36,14 +34,15 @@ namespace NINA.Utility {
                 var result = _win.ShowDialog();
                 this.OnDialogResultChanged?.Invoke(this, new DialogResultEventArgs(result));
                 mainwindow.Opacity = 1;
-
             }));
         }
 
         public class DialogResultEventArgs : EventArgs {
+
             public DialogResultEventArgs(bool? dialogResult) {
                 DialogResult = dialogResult;
             }
+
             public bool? DialogResult { get; set; }
         }
 
@@ -64,7 +63,8 @@ namespace NINA.Utility {
         }
     }
 
-    interface IWindowService {
+    internal interface IWindowService {
+
         void ShowWindow(object dataContext);
     }
 }

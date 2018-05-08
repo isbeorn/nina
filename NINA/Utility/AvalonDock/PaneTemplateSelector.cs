@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using NINA.ViewModel;
 using System.Windows;
+using System.Windows.Controls;
 using Xceed.Wpf.AvalonDock.Layout;
-using NINA.ViewModel;
 
 namespace NINA.Utility.AvalonDock {
+
     public class PaneTemplateSelector : DataTemplateSelector {
+
         public PaneTemplateSelector() {
-
         }
-
 
         public DataTemplate CameraTemplate { get; set; }
 

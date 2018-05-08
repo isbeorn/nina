@@ -34,7 +34,6 @@
                     </UniformGrid>
                 </GroupBox.Header>
 
-
                 <StackPanel DataContext="{Binding Sequence}">
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                         <UniformGrid Columns="2">
@@ -137,7 +136,7 @@
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding AutoFocusOnFilterChange}" />
                                 </UniformGrid>
-                            </UniformGrid>                            
+                            </UniformGrid>
                         </Border>
                         <Border
                             BorderBrush="{StaticResource BorderBrush}"
@@ -191,8 +190,6 @@
                         </Border>
                     </StackPanel>
                 </StackPanel>
-
-
             </GroupBox>
             <GroupBox DataContext="{Binding Sequence}" Visibility="{Binding DSO, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                 <GroupBox.Header>
@@ -202,7 +199,6 @@
                             FontSize="20"
                             Text="{ns:Loc LblTarget}" />
                     </Grid>
-
                 </GroupBox.Header>
                 <Grid Visibility="{Binding Coordinates, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     <Grid.RowDefinitions>
@@ -273,10 +269,8 @@
                                     </TextBox>
                                     <TextBlock VerticalAlignment="Center">s</TextBlock>
                                 </StackPanel>
-
                             </UniformGrid>
                         </UniformGrid>
-
                     </Border>
                     <Border
                         Grid.Row="2"
@@ -329,10 +323,8 @@
                                     </TextBox>
                                     <TextBlock VerticalAlignment="Center">s</TextBlock>
                                 </StackPanel>
-
                             </UniformGrid>
                         </UniformGrid>
-
                     </Border>
 
                     <Grid
@@ -344,7 +336,6 @@
                             Margin="0,0,0,-20"
                             DataContext="{Binding DSO}" />
                     </Grid>
-
                 </Grid>
             </GroupBox>
         </UniformGrid>
@@ -624,8 +615,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
-
             </DataGrid.Columns>
         </DataGrid>
         <DockPanel Grid.Row="2" Margin="5">
@@ -689,18 +678,19 @@
                         Fill="{StaticResource ButtonForegroundBrush}"
                         Stretch="Uniform" />
                 </Button>
-
             </StackPanel>
             <Grid
                 MinWidth="300"
                 HorizontalAlignment="Right"
-                DockPanel.Dock="Right">
+                DockPanel.Dock="Right"
+                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Connected, FallbackValue=False}">
                 <ninactrl:AsyncProcessButton
+                    ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
                     ButtonImage="{StaticResource PlaySVG}"
                     CancelButtonImage="{StaticResource CancelSVG}"
                     CancelCommand="{Binding CancelSequenceCommand}"
                     Command="{Binding StartSequenceCommand}"
-                    IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Connected, FallbackValue=False}"
+                    IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
                     IsPaused="{Binding IsPaused}"
                     LoadingImageBrush="{StaticResource PrimaryBrush}"
                     PauseButtonImage="{StaticResource PauseSVG}"
@@ -709,8 +699,6 @@
                     ResumeCommand="{Binding ResumeSequenceCommand}"
                     ToolTip="{ns:Loc LblTooltipStartSequence}" />
             </Grid>
-
         </DockPanel>
-
     </Grid>
 </UserControl>

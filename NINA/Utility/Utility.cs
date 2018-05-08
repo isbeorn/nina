@@ -1,27 +1,30 @@
-﻿using Newtonsoft.Json.Linq;
-using nom.tam.fits;
-using nom.tam.util;
+﻿using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Cache;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Utility {
-    public static class Utility {
 
+    public static class Utility {
+        public static char[] PATHSEPARATORS = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+        public static string APPLICATIONTEMPPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NINA");
+
+        public static string Version {
+            get {
+                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                string version = fvi.FileVersion;
+                return version;
+            }
+        }
 
         private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
             new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
@@ -29,19 +32,19 @@ namespace NINA.Utility {
         public static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }
 
         /// <summary>
-        /// Replaces makros from Settings.ImageFilePattern into actual values based on input
-        /// e.g.: $$Filter$$ -> "Red"
+        /// Replaces makros from Settings.ImageFilePattern into actual values based on input e.g.:
+        /// $$Filter$$ -&gt; "Red"
         /// </summary>
-        /// <param name="patterns">KeyValue Collection of Makro -> Makrovalue</param>
+        /// <param name="patterns">KeyValue Collection of Makro -&gt; Makrovalue</param>
         /// <returns></returns>
         public static string GetImageFileString(ICollection<ViewModel.OptionsVM.ImagePattern> patterns) {
-            string s = Settings.ImageFilePattern;
+            string s = ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePattern;
             foreach (ViewModel.OptionsVM.ImagePattern p in patterns) {
                 s = s.Replace(p.Key, p.Value);
             }
+            s = Path.Combine(s.Split(PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries));
             return s;
         }
-
 
         public static async Task<string> HttpGetRequest(CancellationToken canceltoken, string url, params object[] parameters) {
             string result = string.Empty;
@@ -63,17 +66,13 @@ namespace NINA.Utility {
                         result = streamReader.ReadToEnd();
                     }
                 } catch (Exception ex) {
-                    canceltoken.ThrowIfCancellationRequested();
-
-                    //Logger.Error(ex.Message);
+                    Logger.Error(ex);
                     //Notification.ShowError(string.Format("Unable to connect to {0}", url));
-                    Notification.Notification.ShowError(ex.Message);
+                    //Notification.Notification.ShowError(ex.Message);
                     if (response != null) {
                         response.Close();
                         response = null;
                     }
-
-
                 } finally {
                     request = null;
                 }
@@ -90,8 +89,8 @@ namespace NINA.Utility {
         /// Get Image from url
         /// </summary>
         /// <param name="canceltoken"></param>
-        /// <param name="url"></param>
-        /// <param name="parameters"></param>
+        /// <param name="url">        </param>
+        /// <param name="parameters"> </param>
         /// <returns></returns>
         public static async Task<BitmapImage> HttpGetImage(CancellationToken canceltoken, string url, params object[] parameters) {
             BitmapImage bitmap = null;
@@ -118,13 +117,11 @@ namespace NINA.Utility {
                     }
                 } catch (Exception ex) {
                     canceltoken.ThrowIfCancellationRequested();
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
 
                     response?.Close();
                     response = null;
-
-
                 } finally {
                     request = null;
                 }
@@ -132,12 +129,11 @@ namespace NINA.Utility {
             return bitmap;
         }
 
-
         /// <summary>
         /// Send a post request that is encoded in application/x-www-form-urlencoded
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="body"></param>
+        /// <param name="url">        </param>
+        /// <param name="body">       </param>
         /// <param name="canceltoken"></param>
         /// <returns>result body of post request</returns>
         public static async Task<string> HttpPostRequest(string url, string body, CancellationToken canceltoken) {
@@ -162,41 +158,89 @@ namespace NINA.Utility {
                     }
                 } catch (Exception ex) {
                     canceltoken.ThrowIfCancellationRequested();
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
 
                     response?.Close();
                     response = null;
-
                 } finally {
                     request = null;
                 }
             }
 
             return result;
+        }
 
+        public static async Task<BitmapSource> HttpClientGetImage(Uri url, CancellationToken ct, IProgress<int> progress = null) {
+            var bitmap = new BitmapImage();
+            using (var client = new WebClient()) {
+                using (ct.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
+                    try {
+                        client.DownloadProgressChanged += (s, e) => {
+                            progress?.Report(e.ProgressPercentage);
+                        };
+                        var data = await client.DownloadDataTaskAsync(url);
+                        using (MemoryStream stream = new MemoryStream(data)) {
+                            bitmap.BeginInit();
+                            bitmap.StreamSource = stream;
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmap.EndInit();
+                            bitmap.Freeze();
+                        }
+                    } catch (WebException ex) {
+                        if (ex.Status == WebExceptionStatus.RequestCanceled) {
+                            throw new OperationCanceledException();
+                        } else {
+                            throw ex;
+                        }
+                    }
+                }
+            }
+            return bitmap;
         }
 
         public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken, IProgress<int> progress = null) {
             using (var client = new WebClient()) {
                 using (canceltoken.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
-                    client.DownloadProgressChanged += (s, e) => {
-                        progress?.Report(e.ProgressPercentage);
-                    };
-                    await client.DownloadFileTaskAsync(url, targetLocation);
+                    try {
+                        client.DownloadProgressChanged += (s, e) => {
+                            progress?.Report(e.ProgressPercentage);
+                        };
+                        await client.DownloadFileTaskAsync(url, targetLocation);
+                    } catch (WebException ex) {
+                        if (ex.Status == WebExceptionStatus.RequestCanceled) {
+                            throw new OperationCanceledException();
+                        } else {
+                            throw ex;
+                        }
+                    }
                 }
             }
         }
 
+        public static string GetUniqueFilePath(string fullPath) {
+            int count = 1;
+
+            string fileNameOnly = Path.GetFileNameWithoutExtension(fullPath);
+            string extension = Path.GetExtension(fullPath);
+            string path = Path.GetDirectoryName(fullPath);
+            string newFullPath = fullPath;
+
+            while (File.Exists(newFullPath)) {
+                string tempFileName = string.Format("{0}({1})", fileNameOnly, count++);
+                newFullPath = Path.Combine(path, tempFileName + extension);
+            }
+            return newFullPath;
+        }
 
         /// <summary>
         /// Upload a multipart file that is expected from astrometry.net
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="file"></param>
-        /// <param name="paramName"></param>
+        /// <param name="url">        </param>
+        /// <param name="file">       </param>
+        /// <param name="paramName">  </param>
         /// <param name="contentType"></param>
-        /// <param name="nvc"></param>
+        /// <param name="nvc">        </param>
         /// <param name="canceltoken"></param>
         /// <returns></returns>
         public static async Task<string> HttpUploadFile(string url, MemoryStream file, string paramName, string contentType, NameValueCollection nvc, CancellationToken canceltoken) {
@@ -248,12 +292,11 @@ namespace NINA.Utility {
                     }
                 } catch (Exception ex) {
                     canceltoken.ThrowIfCancellationRequested();
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.Notification.ShowError(string.Format("Unable to connect to {0}", url));
 
                     wresp?.Close();
                     wresp = null;
-
                 } finally {
                     wr = null;
                 }
@@ -293,51 +336,4 @@ namespace NINA.Utility {
             return elapsed;
         }
     }
-    public enum FileTypeEnum {
-        TIFF,
-        FITS,
-        XISF
-    }
-
-    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    public enum PlateSolverEnum {
-        [Description("LblAstrometryNet")]
-        ASTROMETRY_NET,
-        [Description("LblLocalPlatesolver")]
-        LOCAL,
-        [Description("LblPlatesolve2")]
-        PLATESOLVE2
-    }
-
-    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    public enum WeatherDataEnum {
-        [Description("LblOpenWeatherMapOrg")]
-        OPENWEATHERMAP
-    }
-
-
-    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    public enum LogLevelEnum {
-        [Description("LblError")]
-        ERROR,
-        [Description("LblInfo")]
-        INFO,
-        [Description("LblWarning")]
-        WARNING,
-        [Description("LblDebug")]
-        DEBUG,
-        [Description("LblTrace")]
-        TRACE
-    }
-
-    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    public enum CameraBulbModeEnum {
-        [Description("LblNative")]
-        NATIVE,
-        [Description("LblSerialPort")]
-        SERIALPORT,
-        [Description("LblTelescopeSnapPort")]
-        TELESCOPESNAPPORT
-    }
-
 }

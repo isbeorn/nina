@@ -71,14 +71,13 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-
         <dock:DockingManager
             x:Name="dockManager"
             AnchorablesSource="{Binding Anchorables}"
             DataContext="{Binding}"
             DocumentsSource="{Binding Documents}">
             <!--<dock:DockingManager.Theme>
-                <dock:MetroTheme/>
+                <dock:MetroTheme />
             </dock:DockingManager.Theme>-->
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Loaded">
@@ -87,7 +86,6 @@
             </i:Interaction.Triggers>
 
             <dock:DockingManager.Resources>
-
 
                 <!--<DataTemplate DataType="{x:Type vm:ImagingVM}">
                     <view:AnchorableCameraControlView />
@@ -134,7 +132,7 @@
 
                     <util:PaneTemplateSelector.ImageControlTemplate>
                         <DataTemplate>
-                            <view:ImageAreaView />
+                            <view:ImageControlView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ImageControlTemplate>
 
@@ -209,7 +207,6 @@
                             <view:AnchorableAutoFocusView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.AutoFocusTemplate>
-
                 </util:PaneTemplateSelector>
             </dock:DockingManager.LayoutItemTemplateSelector>
 
@@ -236,16 +233,15 @@
 
             <!--<dock:DockingManager.DocumentHeaderTemplate>
                                 <DataTemplate>
-                                    <Grid Background="{StaticResource ButtonBackgroundBrush}" >
+                                    <Grid Background="{StaticResource ButtonBackgroundBrush}">
                                         <Grid  Height="50" Width="50">
-                                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding Content.ImageGeometry}" Stretch="Uniform" Margin="5"  >
+                                            <Path Fill="{StaticResource ButtonForegroundBrush}" Data="{Binding Content.ImageGeometry}" Stretch="Uniform" Margin="5">
                                             </Path>
                                         </Grid>
                                     </Grid>
                                     <TextBlock Text="{Binding Content.Title}" />
                                 </DataTemplate>
                             </dock:DockingManager.DocumentHeaderTemplate>-->
-
 
             <dock:DockingManager.LayoutUpdateStrategy>
                 <util:LayoutInitializer />

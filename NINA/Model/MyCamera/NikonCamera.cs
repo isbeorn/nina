@@ -1,22 +1,26 @@
-﻿using System;
+﻿using ASCOM.DeviceInterface;
+using Nikon;
+using NINA.Utility;
+using NINA.Utility.Enum;
+using NINA.Utility.Mediator;
+using NINA.Utility.Notification;
+using NINA.Utility.Profile;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ASCOM.DeviceInterface;
-using NINA.Utility;
-using Nikon;
-using NINA.Utility.DCRaw;
-using System.IO;
-using NINA.Utility.Notification;
-using System.Globalization;
-using NINA.Utility.Mediator;
+using System.Windows.Media.Imaging;
+using NINA.Utility.RawConverter;
+using System.Timers;
 
 namespace NINA.Model.MyCamera {
+
     public class NikonCamera : BaseINPC, ICamera {
+
         public NikonCamera() {
             /* NIKON */
             Name = "Nikon";
@@ -43,11 +47,56 @@ namespace NINA.Model.MyCamera {
                 Name = _camera.Name;
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
             } finally {
                 RaiseAllPropertiesChanged();
                 _cameraConnected.TrySetResult(null);
             }
+        }
+
+        private bool _liveViewEnabled;
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public void StartLiveView() {
+            _camera.LiveViewEnabled = true;
+            LiveViewEnabled = true;
+        }
+
+        public void StopLiveView() {
+            _camera.LiveViewEnabled = false;
+            LiveViewEnabled = false;
+        }
+
+        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            byte[] buffer = _camera.GetLiveViewImage().JpegBuffer;
+            var memStream = new MemoryStream(buffer);
+            memStream.Position = 0;
+
+            JpegBitmapDecoder decoder = new JpegBitmapDecoder(memStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+
+            FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
+            bitmap.BeginInit();
+            bitmap.Source = decoder.Frames[0];
+            bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+            bitmap.EndInit();
+
+            ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
+            bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
+
+            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false);
+
+            memStream.Close();
+            memStream.Dispose();
+
+            return iarr;
         }
 
         private void CleanupUnusedManagers(NikonManager activeManager) {
@@ -59,13 +108,11 @@ namespace NINA.Model.MyCamera {
             _nikonManagers.Clear();
         }
 
-
         public void Init(NikonDevice cam) {
             Logger.Debug("Initializing Nikon camera");
             _camera = cam;
             _camera.ImageReady += Camera_ImageReady;
             _camera.CaptureComplete += _camera_CaptureComplete;
-
 
             //Set to shoot in RAW
             Logger.Debug("Setting compression to RAW");
@@ -108,7 +155,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private Dictionary<eNkMAIDCapability, NkMAIDCapInfo> Capabilities = new Dictionary<eNkMAIDCapability, NkMAIDCapInfo>(); 
+        private Dictionary<eNkMAIDCapability, NkMAIDCapInfo> Capabilities = new Dictionary<eNkMAIDCapability, NkMAIDCapInfo>();
 
         private void GetShutterSpeeds() {
             Logger.Debug("Getting Nikon shutter speeds");
@@ -129,13 +176,15 @@ namespace NINA.Model.MyCamera {
                         Logger.Debug("Bulb index: " + i);
                         _bulbShutterSpeedIndex = i;
                         bulbFound = true;
+                    } else {
+                        _shutterSpeeds.Add(i, double.Parse(val));
                     }
                 } catch (Exception ex) {
-                    Logger.Error("Unexpected Shutter Speed: " + ex.Message, ex.StackTrace);
+                    Logger.Error("Unexpected Shutter Speed: ", ex);
                 }
             }
             if (!bulbFound) {
-                Logger.Error("No Bulb speed found!");
+                Logger.Error("No Bulb speed found!", null);
                 throw new NikonException("Failed to find the 'Bulb' exposure mode");
             }
         }
@@ -147,23 +196,14 @@ namespace NINA.Model.MyCamera {
             Logger.Debug("Capture complete");
         }
 
-        private string _fileExtension;
-
         private void Camera_ImageReady(NikonDevice sender, NikonImage image) {
             Logger.Debug("Image ready");
-            _fileExtension = (image.Type == NikonImageType.Jpeg) ? ".jpg" : ".nef";
-            string filename = DCRaw.TMPIMGFILEPATH + _fileExtension;
-
-            Logger.Debug("Writing Image to temp folder");
-            using (System.IO.FileStream s = new System.IO.FileStream(filename, System.IO.FileMode.Create, System.IO.FileAccess.Write)) {
-                s.Write(image.Buffer, 0, image.Buffer.Length);
-            }
+            _memoryStream = new MemoryStream(image.Buffer);
             Logger.Debug("Setting Download Exposure Taks to complete");
             _downloadExposure.TrySetResult(null);
         }
 
         private NikonDevice _camera;
-
 
         public string Id {
             get {
@@ -172,6 +212,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private string _name;
+
         public string Name {
             get {
                 return _name;
@@ -179,6 +220,12 @@ namespace NINA.Model.MyCamera {
             private set {
                 _name = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return _camera.SupportsCapability(eNkMAIDCapability.kNkMAIDCapability_GetLiveViewImage);
             }
         }
 
@@ -199,6 +246,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool _connected;
+
         public bool Connected {
             get {
                 return _connected;
@@ -209,19 +257,18 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public double CCDTemperature {
+        public double Temperature {
             get {
                 return double.NaN;
             }
         }
 
-        public double SetCCDTemperature {
+        public double TemperatureSetPoint {
             get {
                 return double.NaN;
             }
 
             set {
-
             }
         }
 
@@ -314,7 +361,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CanSetCCDTemperature {
+        public bool CanSetTemperature {
             get {
                 return false;
             }
@@ -326,7 +373,6 @@ namespace NINA.Model.MyCamera {
             }
 
             set {
-
             }
         }
 
@@ -337,6 +383,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private string _cameraState;
+
         public string CameraState {
             get {
                 return _cameraState;
@@ -352,7 +399,6 @@ namespace NINA.Model.MyCamera {
                 return -1;
             }
             set {
-
             }
         }
 
@@ -361,7 +407,6 @@ namespace NINA.Model.MyCamera {
                 return -1;
             }
             set {
-
             }
         }
 
@@ -372,6 +417,12 @@ namespace NINA.Model.MyCamera {
         }
 
         public bool CanSetUSBLimit {
+            get {
+                return false;
+            }
+        }
+
+        public bool CanSubSample {
             get {
                 return false;
             }
@@ -445,6 +496,7 @@ namespace NINA.Model.MyCamera {
         private Dictionary<short, int> ISOSpeeds = new Dictionary<short, int>();
 
         private ArrayList _gains;
+
         public ArrayList Gains {
             get {
                 if (_gains == null) {
@@ -466,6 +518,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private AsyncObservableCollection<BinningMode> _binningModes;
+
         public AsyncObservableCollection<BinningMode> BinningModes {
             get {
                 if (_binningModes == null) {
@@ -482,6 +535,12 @@ namespace NINA.Model.MyCamera {
                 return false;
             }
         }
+
+        public bool EnableSubSample { get; set; }
+        public int SubSampleX { get; set; }
+        public int SubSampleY { get; set; }
+        public int SubSampleWidth { get; set; }
+        public int SubSampleHeight { get; set; }
 
         public void AbortExposure() {
             if (Connected) {
@@ -502,16 +561,18 @@ namespace NINA.Model.MyCamera {
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
-            var iarr = await new DCRaw().ConvertToImageArray(_fileExtension, token);
+
+            var converter = RawConverter.CreateInstance();
+            var iarr = await converter.ConvertToImageArray(_memoryStream, token);
+            _memoryStream.Dispose();
+            _memoryStream = null;
             return iarr;
         }
 
         public void SetBinning(short x, short y) {
-
         }
 
         public void SetupDialog() {
-
         }
 
         private Dictionary<int, double> _shutterSpeeds = new Dictionary<int, double>();
@@ -522,24 +583,22 @@ namespace NINA.Model.MyCamera {
                 Logger.Debug("Prepare start of exposure: " + exposureTime);
                 _downloadExposure = new TaskCompletionSource<object>();
 
-                var shutterspeed = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed);
+                if (exposureTime <= 30.0) {
+                    Logger.Debug("Exposuretime <= 30. Setting automatic shutter speed.");
+                    var speed = _shutterSpeeds.Aggregate((x, y) => Math.Abs(x.Value - exposureTime) < Math.Abs(y.Value - exposureTime) ? x : y);
+                    SetCameraShutterSpeed(speed.Key);
 
-                if (Settings.CameraBulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
-                    Logger.Debug("Use Telescope Snap Port");
-
-                    BulbCapture(exposureTime, RequestSnapPortCaptureStart, RequestSnapPortCaptureStop);
-                } else if (Settings.CameraBulbMode == CameraBulbModeEnum.SERIALPORT) {
-                    Logger.Debug("Use Serial Port for camera");
-
-                    BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
+                    Logger.Debug("Start capture");
+                    _camera.Capture();
                 } else {
-                    if (exposureTime <= 30.0) {
-                        Logger.Debug("Exposuretime <= 30. Setting automatic shutter speed.");
-                        var speed = _shutterSpeeds.Aggregate((x, y) => Math.Abs(x.Value - exposureTime) < Math.Abs(y.Value - exposureTime) ? x : y);
-                        SetCameraShutterSpeed(speed.Key);
+                    if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
+                        Logger.Debug("Use Telescope Snap Port");
 
-                        Logger.Debug("Start capture");
-                        _camera.Capture();
+                        BulbCapture(exposureTime, RequestSnapPortCaptureStart, RequestSnapPortCaptureStop);
+                    } else if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.SERIALPORT) {
+                        Logger.Debug("Use Serial Port for camera");
+
+                        BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
                     } else {
                         Logger.Debug("Use Bulb capture");
                         BulbCapture(exposureTime, StartBulbCapture, StopBulbCapture);
@@ -563,11 +622,11 @@ namespace NINA.Model.MyCamera {
         }
 
         private void OpenSerialPort() {
-            if (serialPortInteraction?.PortName != Settings.CameraSerialPort) {
-                serialPortInteraction = new SerialPortInteraction(Settings.CameraSerialPort);
+            if (serialPortInteraction?.PortName != ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort) {
+                serialPortInteraction = new SerialPortInteraction(ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort);
             }
             if (!serialPortInteraction.Open()) {
-                throw new Exception("Unable to open SerialPort " + Settings.CameraSerialPort);
+                throw new Exception("Unable to open SerialPort " + ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort);
             }
         }
 
@@ -578,6 +637,7 @@ namespace NINA.Model.MyCamera {
                 throw new Exception("Request to telescope snap port failed");
             }
         }
+
         private void RequestSnapPortCaptureStop() {
             Logger.Debug("Request stop of exposure");
             var success = Mediator.Instance.Request(new SendSnapPortMessage() { Start = false });
@@ -587,8 +647,6 @@ namespace NINA.Model.MyCamera {
         }
 
         private void BulbCapture(double exposureTime, Action capture, Action stopCapture) {
-            
-
             SetCameraToManual();
 
             SetCameraShutterSpeed(_bulbShutterSpeedIndex);
@@ -610,7 +668,7 @@ namespace NINA.Model.MyCamera {
 
                 Logger.Debug("Restore previous shutter speed");
                 // Restore original shutter speed
-                SetCameraShutterSpeed(_prevShutterSpeed);                
+                SetCameraShutterSpeed(_prevShutterSpeed);
             });
         }
 
@@ -662,10 +720,11 @@ namespace NINA.Model.MyCamera {
                 }
             } else {
                 Logger.Debug("Cannot set to manual mode. Skipping...");
-            }            
+            }
         }
 
         private int _prevShutterSpeed;
+        private MemoryStream _memoryStream;
 
         private void SetCameraShutterSpeed(int index) {
             if (Capabilities.ContainsKey(eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed) && Capabilities[eNkMAIDCapability.kNkMAIDCapability_ShutterSpeed].CanSet()) {
@@ -677,7 +736,6 @@ namespace NINA.Model.MyCamera {
             } else {
                 Logger.Debug("Cannot set camera shutter speed. Skipping...");
             }
-            
         }
 
         public void StopExposure() {

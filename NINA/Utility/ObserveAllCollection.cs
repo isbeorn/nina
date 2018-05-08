@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Utility {
+
     public class ObserveAllCollection<T> : ObservableCollection<T> {
+
         public ObserveAllCollection() : base() {
         }
 

@@ -3,14 +3,12 @@ using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyFocuser {
-    class AscomFocuser : BaseINPC, IFocuser, IDisposable {
+
+    internal class AscomFocuser : BaseINPC, IFocuser, IDisposable {
 
         public AscomFocuser(string focuser, string name) {
             Id = focuser;
@@ -20,6 +18,7 @@ namespace NINA.Model.MyFocuser {
         private Focuser _focuser;
 
         private string _id;
+
         public string Id {
             get {
                 return _id;
@@ -31,6 +30,7 @@ namespace NINA.Model.MyFocuser {
         }
 
         private string _name;
+
         public string Name {
             get {
                 return _name;
@@ -72,6 +72,7 @@ namespace NINA.Model.MyFocuser {
         }
 
         private bool _canGetPosition;
+
         public int Position {
             get {
                 int pos = -1;
@@ -87,6 +88,7 @@ namespace NINA.Model.MyFocuser {
         }
 
         private bool _canGetStepSize;
+
         public double StepSize {
             get {
                 double stepSize = double.NaN;
@@ -127,6 +129,7 @@ namespace NINA.Model.MyFocuser {
         }
 
         private bool _hasTemperature;
+
         public double Temperature {
             get {
                 double temperature = double.NaN;
@@ -142,6 +145,7 @@ namespace NINA.Model.MyFocuser {
         }
 
         private bool _connected;
+
         public bool Connected {
             get {
                 if (_connected) {
@@ -156,7 +160,6 @@ namespace NINA.Model.MyFocuser {
                         Disconnect();
                     }
                     return val;
-
                 } else {
                     return false;
                 }
@@ -165,9 +168,8 @@ namespace NINA.Model.MyFocuser {
                 try {
                     _focuser.Connected = value;
                     _connected = value;
-
                 } catch (Exception ex) {
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.ShowError(Locale.Loc.Instance["LblReconnectFocuser"] + Environment.NewLine + ex.Message);
                     _connected = false;
                 }
@@ -182,6 +184,7 @@ namespace NINA.Model.MyFocuser {
         }
 
         private bool _canHalt;
+
         public void Halt() {
             if (Connected && _canHalt) {
                 try {
@@ -189,11 +192,10 @@ namespace NINA.Model.MyFocuser {
                 } catch (MethodNotImplementedException) {
                     _canHalt = false;
                 } catch (Exception ex) {
-                    Logger.Error(ex.Message);
+                    Logger.Error(ex);
                 }
             }
         }
-
 
         public bool HasSetupDialog {
             get {

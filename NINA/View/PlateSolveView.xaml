@@ -11,7 +11,6 @@
     mc:Ignorable="d">
     <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
 
-
         <Grid IsEnabled="{Binding Cam.Connected}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -45,7 +44,6 @@
                         <TextBlock>Center Dec dms:</TextBlock>
                         <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.DecString}" />
                     </StackPanel>
-
 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock>Radius:</TextBlock>
@@ -141,8 +139,6 @@
                             Data="{StaticResource TelescopeSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform" />
-
-
                     </Grid>
                 </Button>
             </StackPanel>

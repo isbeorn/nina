@@ -1,12 +1,9 @@
 ﻿using OxyPlot.Axes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace NINA.Utility {
+
     public class Ticker : BaseINPC {
 
         public Ticker(double interval) {
@@ -30,7 +27,7 @@ namespace NINA.Utility {
             }
         }
 
-        void timer_Elapsed(object sender, ElapsedEventArgs e) {
+        private void timer_Elapsed(object sender, ElapsedEventArgs e) {
             RaisePropertyChanged(nameof(Now));
             RaisePropertyChanged(nameof(OxyNow));
         }
@@ -38,6 +35,5 @@ namespace NINA.Utility {
         public void Stop() {
             _timer.Stop();
         }
-
     }
 }

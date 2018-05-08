@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model {
+
     public class DummyDevice : IDevice {
+
         public DummyDevice(string name) {
             Name = name;
         }
@@ -25,13 +23,14 @@ namespace NINA.Model {
         }
 
         private string _name;
+
         public string Name {
             get {
                 return _name;
             }
             private set {
                 _name = value;
-            }            
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -45,7 +44,6 @@ namespace NINA.Model {
         }
 
         public void SetupDialog() {
-            
         }
     }
 }

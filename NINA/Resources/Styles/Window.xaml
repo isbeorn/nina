@@ -18,7 +18,7 @@
                                 <Setter Property="BorderThickness" Value="0" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=ThisWindow, Path=WindowState}" Value="Maximized">
-                                        <!--<Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}"/>-->
+                                        <!--<Setter Property="BorderThickness" Value="{Binding Source={x:Static SystemParameters.WindowResizeBorderThickness}}" />-->
                                         <Setter Property="BorderThickness" Value="4" />
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -79,6 +79,20 @@
                                     Height="15"
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
+                                    Command="{Binding Source={StaticResource AppVM}, Path=OpenManualCommand}"
+                                    Style="{StaticResource BackgroundButton}"
+                                    WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Path
+                                        Margin="2"
+                                        Data="{StaticResource QuestionSVG}"
+                                        Fill="{StaticResource PrimaryBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                                <Button
+                                    Width="20"
+                                    Height="15"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=MinimizeWindowCommand}"
                                     Style="{StaticResource BackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
@@ -88,7 +102,6 @@
                                         Data="{StaticResource MinimizeWindowSVG}"
                                         Fill="{StaticResource PrimaryBrush}"
                                         Stretch="Uniform" />
-
                                 </Button>
                                 <Button
                                     Width="20"
@@ -123,7 +136,6 @@
                             <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}">
                                 <ContentPresenter Content="{TemplateBinding Content}" />
                             </Border>
-
                         </Grid>
                     </Border>
                 </ControlTemplate>

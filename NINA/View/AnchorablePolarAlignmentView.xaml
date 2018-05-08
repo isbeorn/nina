@@ -20,43 +20,6 @@
                 <local:PolarScopeView MinHeight="200" />
                 <GroupBox Grid.Column="1" Header="{ns:Loc LblPlateSolvedPolarAlignment}">
                     <StackPanel Orientation="Vertical">
-                        <StackPanel Orientation="Vertical">
-                            <Border
-                                MinHeight="30"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1">
-                                <UniformGrid VerticalAlignment="Center" Columns="2">
-                                    <TextBlock Text="{ns:Loc LblMeridianOffset}" />
-                                    <TextBox Margin="0,0,10,0" Text="{Binding MeridianOffset}" />
-                                </UniformGrid>
-                            </Border>
-                            <Border
-                                MinHeight="30"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1">
-                                <UniformGrid VerticalAlignment="Center" Columns="2">
-                                    <TextBlock Text="{ns:Loc LblDeclination}" />
-                                    <TextBox Margin="0,0,10,0" Text="{Binding Declination}" />
-                                </UniformGrid>
-                            </Border>
-                            <Border
-                                MinHeight="30"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1">
-                                <Button
-                                    Height="35"
-                                    MinWidth="60"
-                                    Margin="10,10,10,10"
-                                    VerticalAlignment="Center"
-                                    Command="{Binding SlewToMeridianOffsetCommand}">
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Foreground="{StaticResource ButtonForegroundBrush}"
-                                        Text="{ns:Loc LblSlew}" />
-                                </Button>
-
-                            </Border>
-                        </StackPanel>
 
                         <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
                             <local:CameraControlView
@@ -91,7 +54,7 @@
                                     <ninactrl:CancellableButton
                                         Height="35"
                                         Margin="10,10,10,0"
-                                        ButtonImage="{StaticResource ArrowTwoSidesRotated}"
+                                        ButtonText="{ns:Loc LblAltitudeErrorMeasurement}"
                                         CancelButtonImage="{StaticResource CancelSVG}"
                                         CancelCommand="{Binding CancelMeasureAltitudeErrorCommand}"
                                         Command="{Binding MeasureAltitudeErrorCommand}"
@@ -99,21 +62,56 @@
                                     <TextBlock
                                         Margin="10,0,0,0"
                                         VerticalAlignment="Center"
-                                        Text="{Binding AltitudePolarErrorStatus}" />
+                                        Text="{Binding AltitudePolarErrorStatus.Status}" />
+
+                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,1">
+                                        <Expander Header="{ns:Loc LblTelescopeControl}">
+                                            <StackPanel Orientation="Vertical">
+                                                <Border
+                                                    MinHeight="30"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    BorderThickness="0,0,0,1">
+                                                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                                                        <TextBlock Text="{ns:Loc LblMeridianOffset}" />
+                                                        <TextBox Margin="0,0,10,0" Text="{Binding AltitudeMeridianOffset}" />
+                                                    </UniformGrid>
+                                                </Border>
+                                                <Border
+                                                    MinHeight="30"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    BorderThickness="0,0,0,1">
+                                                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                                                        <TextBlock Text="{ns:Loc LblDeclination}" />
+                                                        <TextBox Margin="0,0,10,0" Text="{Binding AltitudeDeclination}" />
+                                                    </UniformGrid>
+                                                </Border>
+                                                <Button
+                                                    Height="35"
+                                                    MinWidth="60"
+                                                    Margin="10,10,10,10"
+                                                    VerticalAlignment="Center"
+                                                    Command="{Binding SlewToAltitudeMeridianOffsetCommand}">
+                                                    <TextBlock
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                                        Text="{ns:Loc LblSlew}" />
+                                                </Button>
+                                            </StackPanel>
+                                        </Expander>
+                                    </Border>
                                 </StackPanel>
                             </StackPanel>
-
                         </GroupBox>
                         <GroupBox Margin="-20,0,-20,0" Header="{ns:Loc LblAzimuthMeasurement}">
                             <StackPanel Orientation="Vertical">
                                 <TextBlock Text="{ns:Loc LblAzimuthMeasurementDescription}" />
                                 <StackPanel
-                                    Margin="10,10,10,0"
+                                    Margin="0,20,0,0"
                                     VerticalAlignment="Center"
                                     Orientation="Vertical">
                                     <ninactrl:CancellableButton
                                         Height="35"
-                                        ButtonImage="{StaticResource ArrowTwoSides}"
+                                        ButtonText="{ns:Loc LblAzimuthErrorMeasurement}"
                                         CancelButtonImage="{StaticResource CancelSVG}"
                                         CancelCommand="{Binding CancelMeasureAzimuthErrorCommand}"
                                         Command="{Binding MeasureAzimuthErrorCommand}"
@@ -121,9 +119,44 @@
                                     <TextBlock
                                         Margin="10,0,0,0"
                                         VerticalAlignment="Center"
-                                        Text="{Binding AzimuthPolarErrorStatus}" />
-                                </StackPanel>
+                                        Text="{Binding AzimuthPolarErrorStatus.Status}" />
 
+                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,1">
+                                        <Expander Header="{ns:Loc LblTelescopeControl}">
+                                            <StackPanel Orientation="Vertical">
+                                                <Border
+                                                    MinHeight="30"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    BorderThickness="0,0,0,1">
+                                                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                                                        <TextBlock Text="{ns:Loc LblMeridianOffset}" />
+                                                        <TextBox Margin="0,0,10,0" Text="{Binding AzimuthMeridianOffset}" />
+                                                    </UniformGrid>
+                                                </Border>
+                                                <Border
+                                                    MinHeight="30"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    BorderThickness="0,0,0,1">
+                                                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                                                        <TextBlock Text="{ns:Loc LblDeclination}" />
+                                                        <TextBox Margin="0,0,10,0" Text="{Binding AzimuthDeclination}" />
+                                                    </UniformGrid>
+                                                </Border>
+                                                <Button
+                                                    Height="35"
+                                                    MinWidth="60"
+                                                    Margin="10,10,10,10"
+                                                    VerticalAlignment="Center"
+                                                    Command="{Binding SlewToAzimuthMeridianOffsetCommand}">
+                                                    <TextBlock
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                                        Text="{ns:Loc LblSlew}" />
+                                                </Button>
+                                            </StackPanel>
+                                        </Expander>
+                                    </Border>
+                                </StackPanel>
                             </StackPanel>
                         </GroupBox>
                     </StackPanel>
@@ -142,7 +175,6 @@
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
-
                             </TextBox>
                             <TextBlock Text="{ns:Loc LblSlewDuration}" />
                             <TextBox>
@@ -153,7 +185,6 @@
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
-
                             </TextBox>
                             <TextBlock Text="{Binding DarvStatus}" />
                         </StackPanel>

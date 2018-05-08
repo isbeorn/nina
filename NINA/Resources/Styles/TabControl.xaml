@@ -48,7 +48,6 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     ContentSource="Header" />
-
                             </Grid>
                         </Grid>
                     </Border>
@@ -91,9 +90,7 @@
                     VerticalAlignment="Stretch"
                     ContentSource="SelectedContent" />
             </Border>
-
         </Grid>
-
     </ControlTemplate>
 
     <ControlTemplate x:Key="TopTabTemplate" TargetType="TabControl">
@@ -117,8 +114,6 @@
         </Grid>
     </ControlTemplate>
 
-
-
     <Style TargetType="{x:Type TabControl}">
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
         <Style.Triggers>
@@ -132,5 +127,4 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
 </ResourceDictionary>

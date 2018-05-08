@@ -13,7 +13,6 @@
 
     <ItemsControl ItemsSource="{Binding Views}">
 
-
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
                 <UniformGrid Columns="3" />
@@ -37,7 +36,6 @@
                             Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform" />
 
-
                         <!--<Image Source="{Binding ImageURI}" />-->
                         <TextBlock
                             Grid.Row="1"
@@ -47,7 +45,6 @@
                             Text="{Binding Name}" />
                     </Grid>
                 </Button>
-
             </DataTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>

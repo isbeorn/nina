@@ -1,14 +1,9 @@
 ﻿using NINA.Utility;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
+
     public class DockManagerVM : BaseVM {
 
         public DockManagerVM(/*IEnumerable<DockableVM> dockWindowViewModels*/) {
@@ -21,8 +16,11 @@ namespace NINA.ViewModel {
             }*/
         }
 
-        /// <summary>Gets a collection of all visible documents</summary>
+        /// <summary>
+        /// Gets a collection of all visible documents
+        /// </summary>
         private ObservableCollection<DockableVM> _documents;
+
         public ObservableCollection<DockableVM> Documents {
             get {
                 if (_documents == null) {
@@ -37,6 +35,7 @@ namespace NINA.ViewModel {
         }
 
         private ObservableCollection<DockableVM> _anchorables;
+
         public ObservableCollection<DockableVM> Anchorables {
             get {
                 if (_anchorables == null) {
@@ -52,12 +51,12 @@ namespace NINA.ViewModel {
 
         private Xceed.Wpf.AvalonDock.DockingManager _dockmanager;
         private bool _dockloaded = false;
+
         public void LoadAvalonDockLayout(object o) {
             if (!_dockloaded) {
                 _dockmanager = (Xceed.Wpf.AvalonDock.DockingManager)o;
                 var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
                 serializer.LayoutSerializationCallback += (s, args) => {
-
                     args.Content = args.Content;
                 };
 
@@ -85,6 +84,5 @@ namespace NINA.ViewModel {
                     this.Documents.Remove(document);
             }
         }*/
-
     }
 }

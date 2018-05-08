@@ -14,18 +14,21 @@ namespace EDSDKLib {
             err = EDSDK.EdsInitializeSDK();
         }
 
-
         #region Callback Functions
 
         public delegate uint EdsProgressCallback(uint inPercent, IntPtr inContext, ref bool outCancel);
+
         public delegate uint EdsCameraAddedHandler(IntPtr inContext);
+
         public delegate uint EdsPropertyEventHandler(uint inEvent, uint inPropertyID, uint inParam, IntPtr inContext);
+
         public delegate uint EdsObjectEventHandler(uint inEvent, IntPtr inRef, IntPtr inContext);
+
         public delegate uint EdsStateEventHandler(uint inEvent, uint inParameter, IntPtr inContext);
 
-#endregion
+        #endregion Callback Functions
 
-#region Data Types
+        #region Data Types
 
         public enum EdsDataType : uint {
             Unknown = 0,
@@ -60,10 +63,9 @@ namespace EDSDKLib {
             PictureStyleDesc,
         }
 
-#endregion
+        #endregion Data Types
 
-
-#region Property IDs
+        #region Property IDs
 
         /*----------------------------------
          Camera Setting Properties
@@ -169,6 +171,7 @@ namespace EDSDKLib {
 
         // EVF IMAGE DATA Properties
         public const uint PropID_Evf_Zoom = 0x00000507;
+
         public const uint PropID_Evf_ZoomPosition = 0x00000508;
         public const uint PropID_Evf_FocusAid = 0x00000509;
         public const uint PropID_Evf_Histogram = 0x0000050A;
@@ -193,9 +196,10 @@ namespace EDSDKLib {
         public const uint PropID_GPSStatus = 0x00000809;
         public const uint PropID_GPSMapDatum = 0x00000812;
         public const uint PropID_GPSDateStamp = 0x0000081D;
-#endregion
 
-#region Camera commands
+        #endregion Property IDs
+
+        #region Camera commands
 
         /*-----------------------------------------------------------------------------
          Send Commands
@@ -222,9 +226,10 @@ namespace EDSDKLib {
             CameraCommand_ShutterButton_Halfway_NonAF = 0x00010001,
             CameraCommand_ShutterButton_Completely_NonAF = 0x00010003,
         }
-#endregion
 
-#region Camera status command
+        #endregion Camera commands
+
+        #region Camera status command
 
         /*----------------------------------
          Camera Status Commands
@@ -234,14 +239,14 @@ namespace EDSDKLib {
         public const uint CameraState_EnterDirectTransfer = 0x00000002;
         public const uint CameraState_ExitDirectTransfer = 0x00000003;
 
-#endregion
+        #endregion Camera status command
 
-
-#region  Enumeration of property value  
+        #region Enumeration of property value
 
         /*-----------------------------------------------------------------------------
          Stream Seek Origins
         -----------------------------------------------------------------------------*/
+
         public enum EdsSeekOrigin : uint {
             Cur = 0,
             Begin,
@@ -251,6 +256,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          File and Propaties Access
         -----------------------------------------------------------------------------*/
+
         public enum EdsAccess : uint {
             Read = 0,
             Write,
@@ -261,6 +267,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          File Create Disposition
         -----------------------------------------------------------------------------*/
+
         public enum EdsFileCreateDisposition : uint {
             CreateNew = 0,
             CreateAlways,
@@ -269,10 +276,10 @@ namespace EDSDKLib {
             TruncateExsisting,
         }
 
-
         /*-----------------------------------------------------------------------------
          Target Image Types
         -----------------------------------------------------------------------------*/
+
         public enum EdsTargetImageType : uint {
             Unknown = 0x00000000,
             Jpeg = 0x00000001,
@@ -282,10 +289,10 @@ namespace EDSDKLib {
             RGB16 = 0x0000000A,
         }
 
-
         /*-----------------------------------------------------------------------------
-         Image Source 
+         Image Source
         -----------------------------------------------------------------------------*/
+
         public enum EdsImageSource : uint {
             FullView = 0,
             Thumbnail,
@@ -295,16 +302,17 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Progress Option
         -----------------------------------------------------------------------------*/
+
         public enum EdsProgressOption : uint {
             NoReport = 0,
             Done,
             Periodically,
         }
 
-
         /*-----------------------------------------------------------------------------
          file attribute
         -----------------------------------------------------------------------------*/
+
         public enum EdsFileAttribute : uint {
             Normal = 0x00000000,
             ReadOnly = 0x00000001,
@@ -316,6 +324,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Save To
         -----------------------------------------------------------------------------*/
+
         public enum EdsSaveTo : uint {
             Camera = 1,
             Host = 2,
@@ -325,6 +334,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          StorageTypes
         -----------------------------------------------------------------------------*/
+
         public enum EdsStorageType : uint {
             Non = 0,
             CF = 1,
@@ -334,6 +344,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Transfer Option
         -----------------------------------------------------------------------------*/
+
         public enum EdsTransferOption : uint {
             ByDirectTransfer = 1,
             ByRelease = 2,
@@ -356,9 +367,8 @@ namespace EDSDKLib {
         public const uint EvfDepthOfFieldPreview_OFF = 0x00000000;
         public const uint EvfDepthOfFieldPreview_ON = 0x00000001;
 
-
         /*-----------------------------------------------------------------------------
-         Image Format 
+         Image Format
         -----------------------------------------------------------------------------*/
 
         public const int ImageFormat_Unknown = 0x00000000;
@@ -368,7 +378,6 @@ namespace EDSDKLib {
 
         public const int ImageFormat_CR2 = 0x00000006;
 
-
         public const int ImageSize_Large = 0;
         public const int ImageSize_Middle = 1;
         public const int ImageSize_Small = 2;
@@ -376,14 +385,11 @@ namespace EDSDKLib {
         public const int ImageSize_Middle2 = 6;
         public const int ImageSize_Unknown = -1;
 
-
-
         public const int CompressQuality_Normal = 2;
         public const int CompressQuality_Fine = 3;
         public const int CompressQuality_Lossless = 4;
         public const int CompressQuality_SuperFine = 5;
         public const int CompressQuality_Unknown = -1;
-
 
         /*-----------------------------------------------------------------------------
          Battery level
@@ -472,7 +478,6 @@ namespace EDSDKLib {
         public const uint PictureStyle_PC2 = 0x0042;
         public const uint PictureStyle_PC3 = 0x0043;
 
-
         /*-----------------------------------------------------------------------------
          AE Mode
         -----------------------------------------------------------------------------*/
@@ -530,13 +535,12 @@ namespace EDSDKLib {
         public const uint Bracket_FEB = 0x08;
         public const uint Bracket_Unknown = 0xffffffff;
 
-
         /*-----------------------------------------------------------------------------
 		 EVF Output Device [Flag]
 		-----------------------------------------------------------------------------*/
+        public const uint EvfOutputDevice_OFF = 0;
         public const uint EvfOutputDevice_TFT = 1;
         public const uint EvfOutputDevice_PC = 2;
-
 
         /*-----------------------------------------------------------------------------
 		 EVF Zoom
@@ -555,6 +559,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Strobo Mode
         -----------------------------------------------------------------------------*/
+
         public enum EdsStroboMode {
             kEdsStroboModeInternal = 0,
             kEdsStroboModeExternalETTL = 1,
@@ -673,9 +678,9 @@ namespace EDSDKLib {
             kEdsImageQualityForLegacy_Unknown = 0xffffffff,
         }
 
-#endregion
+        #endregion Enumeration of property value
 
-#region Event IDs
+        #region Event IDs
 
         /*-----------------------------------------------------------------------------
          Camera Events
@@ -686,24 +691,24 @@ namespace EDSDKLib {
         /* Notifies all property events. */
         public const uint PropertyEvent_All = 0x00000100;
 
-        /* Notifies that a camera property value has been changed. 
-         The changed property can be retrieved from event data. 
-         The changed value can be retrieved by means of EdsGetPropertyData. 
-         In the case of type 1 protocol standard cameras, 
-         notification of changed properties can only be issued for custom functions (CFn). 
-         If the property type is 0x0000FFFF, the changed property cannot be identified. 
+        /* Notifies that a camera property value has been changed.
+         The changed property can be retrieved from event data.
+         The changed value can be retrieved by means of EdsGetPropertyData.
+         In the case of type 1 protocol standard cameras,
+         notification of changed properties can only be issued for custom functions (CFn).
+         If the property type is 0x0000FFFF, the changed property cannot be identified.
          Thus, retrieve all required properties repeatedly. */
         public const uint PropertyEvent_PropertyChanged = 0x00000101;
 
-        /* Notifies of changes in the list of camera properties with configurable values. 
-         The list of configurable values for property IDs indicated in event data 
-          can be retrieved by means of EdsGetPropertyDesc. 
+        /* Notifies of changes in the list of camera properties with configurable values.
+         The list of configurable values for property IDs indicated in event data
+          can be retrieved by means of EdsGetPropertyDesc.
          For type 1 protocol standard cameras, the property ID is identified as "Unknown"
-          during notification. 
+          during notification.
           Thus, you must retrieve a list of configurable values for all properties and
-          retrieve the property values repeatedly. 
+          retrieve the property values repeatedly.
          (For details on properties for which you can retrieve a list of configurable
-          properties, 
+          properties,
           see the description of EdsGetPropertyDesc). */
         public const uint PropertyEvent_PropertyDescChanged = 0x00000102;
 
@@ -714,85 +719,85 @@ namespace EDSDKLib {
         public const uint ObjectEvent_All = 0x00000200;
 
         /* Notifies that the volume object (memory card) state (VolumeInfo)
-          has been changed. 
-         Changed objects are indicated by event data. 
-         The changed value can be retrieved by means of EdsGetVolumeInfo. 
+          has been changed.
+         Changed objects are indicated by event data.
+         The changed value can be retrieved by means of EdsGetVolumeInfo.
          Notification of this event is not issued for type 1 protocol standard cameras. */
         public const uint ObjectEvent_VolumeInfoChanged = 0x00000201;
 
         /* Notifies if the designated volume on a camera has been formatted.
          If notification of this event is received, get sub-items of the designated
-          volume again as needed. 
-         Changed volume objects can be retrieved from event data. 
+          volume again as needed.
+         Changed volume objects can be retrieved from event data.
          Objects cannot be identified on cameras earlier than the D30
-          if files are added or deleted. 
+          if files are added or deleted.
          Thus, these events are subject to notification. */
         public const uint ObjectEvent_VolumeUpdateItems = 0x00000202;
 
         /* Notifies if many images are deleted in a designated folder on a camera.
          If notification of this event is received, get sub-items of the designated
-          folder again as needed. 
+          folder again as needed.
          Changed folders (specifically, directory item objects) can be retrieved
           from event data. */
         public const uint ObjectEvent_FolderUpdateItems = 0x00000203;
 
         /* Notifies of the creation of objects such as new folders or files
-          on a camera compact flash card or the like. 
+          on a camera compact flash card or the like.
          This event is generated if the camera has been set to store captured
           images simultaneously on the camera and a computer,
           for example, but not if the camera is set to store images
-          on the computer alone. 
-         Newly created objects are indicated by event data. 
+          on the computer alone.
+         Newly created objects are indicated by event data.
          Because objects are not indicated for type 1 protocol standard cameras,
           (that is, objects are indicated as NULL),
-         you must again retrieve child objects under the camera object to 
+         you must again retrieve child objects under the camera object to
          identify the new objects. */
         public const uint ObjectEvent_DirItemCreated = 0x00000204;
 
         /* Notifies of the deletion of objects such as folders or files on a camera
-          compact flash card or the like. 
-         Deleted objects are indicated in event data. 
-         Because objects are not indicated for type 1 protocol standard cameras, 
+          compact flash card or the like.
+         Deleted objects are indicated in event data.
+         Because objects are not indicated for type 1 protocol standard cameras,
          you must again retrieve child objects under the camera object to
           identify deleted objects. */
         public const uint ObjectEvent_DirItemRemoved = 0x00000205;
 
-        /* Notifies that information of DirItem objects has been changed. 
-         Changed objects are indicated by event data. 
-         The changed value can be retrieved by means of EdsGetDirectoryItemInfo. 
+        /* Notifies that information of DirItem objects has been changed.
+         Changed objects are indicated by event data.
+         The changed value can be retrieved by means of EdsGetDirectoryItemInfo.
          Notification of this event is not issued for type 1 protocol standard cameras. */
         public const uint ObjectEvent_DirItemInfoChanged = 0x00000206;
 
         /* Notifies that header information has been updated, as for rotation information
-          of image files on the camera. 
-         If this event is received, get the file header information again, as needed. 
+          of image files on the camera.
+         If this event is received, get the file header information again, as needed.
          This function is for type 2 protocol standard cameras only. */
         public const uint ObjectEvent_DirItemContentChanged = 0x00000207;
 
-        /* Notifies that there are objects on a camera to be transferred to a computer. 
+        /* Notifies that there are objects on a camera to be transferred to a computer.
          This event is generated after remote release from a computer or local release
-          from a camera. 
+          from a camera.
          If this event is received, objects indicated in the event data must be downloaded.
           Furthermore, if the application does not require the objects, instead
           of downloading them,
-           execute EdsDownloadCancel and release resources held by the camera. 
+           execute EdsDownloadCancel and release resources held by the camera.
          The order of downloading from type 1 protocol standard cameras must be the order
           in which the events are received. */
         public const uint ObjectEvent_DirItemRequestTransfer = 0x00000208;
 
-        /* Notifies if the camera's direct transfer button is pressed. 
-         If this event is received, objects indicated in the event data must be downloaded. 
+        /* Notifies if the camera's direct transfer button is pressed.
+         If this event is received, objects indicated in the event data must be downloaded.
          Furthermore, if the application does not require the objects, instead of
-          downloading them, 
-          execute EdsDownloadCancel and release resources held by the camera. 
+          downloading them,
+          execute EdsDownloadCancel and release resources held by the camera.
          Notification of this event is not issued for type 1 protocol standard cameras. */
         public const uint ObjectEvent_DirItemRequestTransferDT = 0x00000209;
 
-        /* Notifies of requests from a camera to cancel object transfer 
-          if the button to cancel direct transfer is pressed on the camera. 
+        /* Notifies of requests from a camera to cancel object transfer
+          if the button to cancel direct transfer is pressed on the camera.
          If the parameter is 0, it means that cancellation of transfer is requested for
           objects still not downloaded,
-          with these objects indicated by kEdsObjectEvent_DirItemRequestTransferDT. 
+          with these objects indicated by kEdsObjectEvent_DirItemRequestTransferDT.
          Notification of this event is not issued for type 1 protocol standard cameras. */
         public const uint ObjectEvent_DirItemCancelTransferDT = 0x0000020a;
 
@@ -805,24 +810,24 @@ namespace EDSDKLib {
         /* Notifies all state events. */
         public const uint StateEvent_All = 0x00000300;
 
-        /* Indicates that a camera is no longer connected to a computer, 
+        /* Indicates that a camera is no longer connected to a computer,
          whether it was disconnected by unplugging a cord, opening
-          the compact flash compartment, 
+          the compact flash compartment,
           turning the camera off, auto shut-off, or by other means. */
         public const uint StateEvent_Shutdown = 0x00000301;
 
         /* Notifies of whether or not there are objects waiting to
-          be transferred to a host computer. 
-         This is useful when ensuring all shot images have been transferred 
-         when the application is closed. 
-         Notification of this event is not issued for type 1 protocol 
+          be transferred to a host computer.
+         This is useful when ensuring all shot images have been transferred
+         when the application is closed.
+         Notification of this event is not issued for type 1 protocol
          standard cameras. */
         public const uint StateEvent_JobStatusChanged = 0x00000302;
 
-        /* Notifies that the camera will shut down after a specific period. 
-         Generated only if auto shut-off is set. 
+        /* Notifies that the camera will shut down after a specific period.
+         Generated only if auto shut-off is set.
          Exactly when notification is issued (that is, the number of
-          seconds until shutdown) varies depending on the camera model. 
+          seconds until shutdown) varies depending on the camera model.
          To continue operation without having the camera shut down,
          use EdsSendCommand to extend the auto shut-off timer.
          The time in seconds until the camera shuts down is returned
@@ -831,7 +836,7 @@ namespace EDSDKLib {
 
         /* As the counterpart event to kEdsStateEvent_WillSoonShutDown,
          this event notifies of updates to the number of seconds until
-          a camera shuts down. 
+          a camera shuts down.
          After the update, the period until shutdown is model-dependent. */
         public const uint StateEvent_ShutDownTimerUpdate = 0x00000304;
 
@@ -839,7 +844,7 @@ namespace EDSDKLib {
           failure or similar factors. */
         public const uint StateEvent_CaptureError = 0x00000305;
 
-        /* Notifies of internal SDK errors. 
+        /* Notifies of internal SDK errors.
          If this error event is received, the issuing device will probably
           not be able to continue working properly,
           so cancel the remote connection. */
@@ -847,197 +852,172 @@ namespace EDSDKLib {
 
         public const uint StateEvent_AfResult = 0x00000309;
 
-
         public const uint StateEvent_BulbExposureTime = 0x00000310;
 
-#endregion
+        #endregion Event IDs
 
-
-#region Proto type defenition of EDSDK API
+        #region Proto type defenition of EDSDK API
 
         /*----------------------------------
          Basic functions
         ----------------------------------*/
         /*-----------------------------------------------------------------------------
+        // Function:   EdsInitializeSDK
         //
-        //  Function:   EdsInitializeSDK
+        // Description: Initializes the libraries. When using the EDSDK libraries, you must call this
+        // API once before using EDSDK APIs.
         //
-        //  Description:
-        //      Initializes the libraries. 
-        //      When using the EDSDK libraries, you must call this API once  
-        //          before using EDSDK APIs.
+        // Parameters:
+        // In:    None
+        // Out:    None
         //
-        //  Parameters:
-        //       In:    None
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsInitializeSDK();
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsTerminateSDK
         //
-        //  Function:   EdsTerminateSDK
+        // Description: Terminates use of the libraries. This function muse be called when ending the
+        // SDK. Calling this function releases all resources allocated by the libraries.
         //
-        //  Description:
-        //      Terminates use of the libraries. 
-        //      This function muse be called when ending the SDK.
-        //      Calling this function releases all resources allocated by the libraries.
+        // Parameters:
+        // In:    None
+        // Out:    None
         //
-        //  Parameters:
-        //       In:    None
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsTerminateSDK();
-
 
         /*-------------------------------------------
          Reference-counter operating functions
         --------------------------------------------*/
         /*-----------------------------------------------------------------------------
+        // Function:   EdsRetain
         //
-        //  Function:   EdsRetain
+        // Description: Increments the reference counter of existing objects.
         //
-        //  Description:
-        //      Increments the reference counter of existing objects.
+        // Parameters:
+        // In:    inRef - The reference for the item.
+        // Out:    None
         //
-        //  Parameters:
-        //       In:    inRef - The reference for the item.
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsRetain(IntPtr inRef);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsRelease
         //
-        //  Function:   EdsRelease
+        // Description: Decrements the reference counter to an object. When the reference counter
+        // reaches 0, the object is released.
         //
-        //  Description:
-        //      Decrements the reference counter to an object. 
-        //      When the reference counter reaches 0, the object is released.
-        //
-        //  Parameters:
-        //       In:    inRef - The reference of the item.
-        //      Out:    None
-        //  Returns:    Any of the sdk errors.
+        // Parameters:
+        // In:    inRef - The reference of the item.
+        // Out:    None
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsRelease(IntPtr inRef);
-
 
         /*----------------------------------
          Item-tree operating functions
         ----------------------------------*/
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetChildCount
         //
-        //  Function:   EdsGetChildCount
+        // Description: Gets the number of child objects of the designated object.
+        // Example: Number of files in a directory
         //
-        //  Description:
-        //      Gets the number of child objects of the designated object.
-        //      Example: Number of files in a directory
+        // Parameters:
+        // In:    inRef - The reference of the list.
+        // Out:    outCount - Number of elements in this list.
         //
-        //  Parameters:
-        //       In:    inRef - The reference of the list.
-        //      Out:    outCount - Number of elements in this list.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetChildCount(IntPtr inRef, out int outCount);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetChildAtIndex
         //
-        //  Function:   EdsGetChildAtIndex
+        // Description: Gets an indexed child object of the designated object.
         //
-        //  Description:
-        //       Gets an indexed child object of the designated object. 
+        // Parameters:
+        // In:    inRef - The reference of the item. inIndex - The index that is passed in, is zero based.
+        // Out:    outRef - The pointer which receives reference of the specified index .
         //
-        //  Parameters:
-        //       In:    inRef - The reference of the item.
-        //              inIndex -  The index that is passed in, is zero based.
-        //      Out:    outRef - The pointer which receives reference of the 
-        //                           specified index .
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetChildAtIndex(IntPtr inRef, int inIndex, out IntPtr outRef);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetParent
         //
-        //  Function:   EdsGetParent
+        // Description: Gets the parent object of the designated object.
         //
-        //  Description:
-        //      Gets the parent object of the designated object.
+        // Parameters:
+        // In:    inRef - The reference of the item.
+        // Out:    outParentRef - The pointer which receives reference.
         //
-        //  Parameters:
-        //       In:    inRef        - The reference of the item.
-        //      Out:    outParentRef - The pointer which receives reference.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetParent(IntPtr inRef, out IntPtr outParentRef);
-
 
         /*----------------------------------
           Property operating functions
         ----------------------------------*/
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetPropertySize
         //
-        //  Function:   EdsGetPropertySize
+        // Description: Gets the byte size and data type of a designated property from a camera
+        // object or image object.
         //
-        //  Description:
-        //      Gets the byte size and data type of a designated property 
-        //          from a camera object or image object.
+        // Parameters:
+        // In:    inRef - The reference of the item. inPropertyID - The ProprtyID inParam -
+        //        Additional information of property. We use this parameter in order to specify an
+        //        index in case there are two or more values over the same ID.
+        // Out:    outDataType - Pointer to the buffer that is to receive the property type data.
+        //         outSize - Pointer to the buffer that is to receive the property size.
         //
-        //  Parameters:
-        //       In:    inRef - The reference of the item.
-        //              inPropertyID - The ProprtyID
-        //              inParam - Additional information of property.
-        //                   We use this parameter in order to specify an index
-        //                   in case there are two or more values over the same ID.
-        //      Out:    outDataType - Pointer to the buffer that is to receive the property
-        //                        type data.
-        //              outSize - Pointer to the buffer that is to receive the property
-        //                        size.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetPropertySize(IntPtr inRef, uint inPropertyID, int inParam,
              out EdsDataType outDataType, out int outSize);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetPropertyData
         //
-        //  Function:   EdsGetPropertyData
+        // Description: Gets property information from the object designated in inRef.
         //
-        //  Description:
-        //      Gets property information from the object designated in inRef.
+        // Parameters:
+        // In:    inRef - The reference of the item. inPropertyID - The ProprtyID inParam -
+        //        Additional information of property. We use this parameter in order to specify an
+        //        index in case there are two or more values over the same ID. inPropertySize - The
+        //        number of bytes of the prepared buffer for receive property-value.
+        // Out:   outPropertyData - The buffer pointer to receive property-value.
         //
-        //  Parameters:
-        //       In:    inRef - The reference of the item.
-        //              inPropertyID - The ProprtyID
-        //              inParam - Additional information of property.
-        //                   We use this parameter in order to specify an index
-        //                   in case there are two or more values over the same ID.
-        //              inPropertySize - The number of bytes of the prepared buffer
-        //                  for receive property-value.
-        //       Out:   outPropertyData - The buffer pointer to receive property-value.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetPropertyData(IntPtr inRef, uint inPropertyID, int inParam,
              int inPropertySize, IntPtr outPropertyData);
 
-#region GetPorpertyData Wrapper
+        #region GetPorpertyData Wrapper
 
         public static uint EdsGetPropertyData(IntPtr inRef, uint inPropertyID, int inParam, out uint outPropertyData) {
             int size = Marshal.SizeOf(typeof(uint));
@@ -1089,48 +1069,41 @@ namespace EDSDKLib {
 
             return err;
         }
-#endregion
+
+        #endregion GetPorpertyData Wrapper
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsSetPropertyData
         //
-        //  Function:   EdsSetPropertyData
+        // Description: Sets property data for the object designated in inRef.
         //
-        //  Description:
-        //      Sets property data for the object designated in inRef. 
+        // Parameters:
+        // In:    inRef - The reference of the item. inPropertyID - The ProprtyID inParam -
+        //        Additional information of property. inPropertySize - The number of bytes of the
+        //        prepared buffer for set property-value. inPropertyData - The buffer pointer to set property-value.
+        // Out:    None
         //
-        //  Parameters:
-        //       In:    inRef - The reference of the item.
-        //              inPropertyID - The ProprtyID
-        //              inParam - Additional information of property.
-        //              inPropertySize - The number of bytes of the prepared buffer
-        //                  for set property-value.
-        //              inPropertyData - The buffer pointer to set property-value.
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSetPropertyData(IntPtr inRef, uint inPropertyID,
              int inParam, int inPropertySize, [MarshalAs(UnmanagedType.AsAny), In] object inPropertyData);
 
-
-
         /*-----------------------------------------------------------------------------
-        //  
-        //  Function:   EdsGetPropertyDesc
+        // Function:   EdsGetPropertyDesc
         //
-        //  Description:
-        //      Gets a list of property data that can be set for the object 
-        //          designated in inRef, as well as maximum and minimum values. 
-        //      This API is intended for only some shooting-related properties.
+        // Description: Gets a list of property data that can be set for the object designated in
+        // inRef, as well as maximum and minimum values. This API is intended for only some
+        // shooting-related properties.
         //
-        //  Parameters:
-        //       In:    inRef - The reference of the camera.
-        //              inPropertyID - The Property ID.
-        //       Out:   outPropertyDesc - Array of the value which can be set up.
+        // Parameters:
+        // In:    inRef - The reference of the camera. inPropertyID - The Property ID.
+        // Out:   outPropertyDesc - Array of the value which can be set up.
         //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetPropertyDesc(IntPtr inRef, uint inPropertyID,
              out EdsPropertyDesc outPropertyDesc);
@@ -1139,18 +1112,17 @@ namespace EDSDKLib {
           Device-list and device operating functions
         ---------------------------------------------*/
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetCameraList
         //
-        //  Function:   EdsGetCameraList
+        // Description: Gets camera list objects.
         //
-        //  Description:
-        //      Gets camera list objects.
+        // Parameters:
+        // In:    None
+        // Out:    outCameraListRef - Pointer to the camera-list.
         //
-        //  Parameters:
-        //       In:    None
-        //      Out:    outCameraListRef - Pointer to the camera-list.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetCameraList(out IntPtr outCameraListRef);
 
@@ -1158,318 +1130,280 @@ namespace EDSDKLib {
           Camera operating functions
         ---------------------------------------------*/
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetDeviceInfo
         //
-        //  Function:   EdsGetDeviceInfo
+        // Description: Gets device information, such as the device name. Because device information
+        // of remote cameras is stored on the host computer, you can use this API before the camera
+        // object initiates communication (that is, before a session is opened).
         //
-        //  Description:
-        //      Gets device information, such as the device name.  
-        //      Because device information of remote cameras is stored 
-        //          on the host computer, you can use this API 
-        //          before the camera object initiates communication
-        //          (that is, before a session is opened). 
+        // Parameters:
+        // In:    inCameraRef - The reference of the camera.
+        // Out:    outDeviceInfo - Information as device of camera.
         //
-        //  Parameters:
-        //       In:    inCameraRef - The reference of the camera.
-        //      Out:    outDeviceInfo - Information as device of camera.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetDeviceInfo(IntPtr inCameraRef, out EdsDeviceInfo outDeviceInfo);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsOpenSession
         //
-        //  Function:   EdsOpenSession
+        // Description: Establishes a logical connection with a remote camera. Use this API after
+        // getting the camera's EdsCamera object.
         //
-        //  Description:
-        //      Establishes a logical connection with a remote camera. 
-        //      Use this API after getting the camera's EdsCamera object.
+        // Parameters:
+        // In:    inCameraRef - The reference of the camera
+        // Out:    None
         //
-        //  Parameters:
-        //       In:    inCameraRef - The reference of the camera 
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsOpenSession(IntPtr inCameraRef);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsCloseSession
         //
-        //  Function:   EdsCloseSession
+        // Description: Closes a logical connection with a remote camera.
         //
-        //  Description:
-        //       Closes a logical connection with a remote camera.
+        // Parameters:
+        // In:    inCameraRef - The reference of the camera
+        // Out:    None
         //
-        //  Parameters:
-        //       In:    inCameraRef - The reference of the camera 
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsCloseSession(IntPtr inCameraRef);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsSendCommand
         //
-        //  Function:   EdsSendCommand
+        // Description: Sends a command such as "Shoot" to a remote camera.
         //
-        //  Description:
-        //       Sends a command such as "Shoot" to a remote camera. 
+        // Parameters:
+        // In:    inCameraRef - The reference of the camera which will receive the command. inCommand
+        // - Specifies the command to be sent. inParam - Specifies additional command-specific information.
+        // Out:    None
         //
-        //  Parameters:
-        //       In:    inCameraRef - The reference of the camera which will receive the 
-        //                      command.
-        //              inCommand - Specifies the command to be sent.
-        //              inParam -     Specifies additional command-specific information.
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSendCommand(IntPtr inCameraRef, uint inCommand, int inParam);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsSendStatusCommand
         //
-        //  Function:   EdsSendStatusCommand
+        // Description: Sets the remote camera state or mode.
         //
-        //  Description:
-        //       Sets the remote camera state or mode.
+        // Parameters:
+        // In:    inCameraRef - The reference of the camera which will receive the command.
+        //        inStatusCommand - Specifies the command to be sent. inParam - Specifies additional
+        //        command-specific information.
+        // Out:    None
         //
-        //  Parameters:
-        //       In:    inCameraRef - The reference of the camera which will receive the 
-        //                      command.
-        //              inStatusCommand - Specifies the command to be sent.
-        //              inParam -     Specifies additional command-specific information.
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSendStatusCommand(IntPtr inCameraRef, uint inCameraState, int inParam);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsSetCapacity
         //
-        //  Function:   EdsSetCapacity
+        // Description: Sets the remaining HDD capacity on the host computer (excluding the portion
+        // from image transfer), as calculated by subtracting the portion from the previous time. Set
+        // a reset flag initially and designate the cluster length and number of free clusters. Some
+        // type 2 protocol standard cameras can display the number of shots left on the camera based
+        // on the available disk capacity of the host computer. For these cameras, after the storage
+        // destination is set to the computer, use this API to notify the camera of the available
+        // disk capacity of the host computer.
         //
-        //  Description:
-        //      Sets the remaining HDD capacity on the host computer
-        //          (excluding the portion from image transfer),
-        //          as calculated by subtracting the portion from the previous time. 
-        //      Set a reset flag initially and designate the cluster length 
-        //          and number of free clusters.
-        //      Some type 2 protocol standard cameras can display the number of shots 
-        //          left on the camera based on the available disk capacity 
-        //          of the host computer. 
-        //      For these cameras, after the storage destination is set to the computer, 
-        //          use this API to notify the camera of the available disk capacity 
-        //          of the host computer.
+        // Parameters:
+        // In:    inCameraRef - The reference of the camera which will receive the command.
+        //        inCapacity - The remaining capacity of a transmission place.
+        // Out:    None
         //
-        //  Parameters:
-        //       In:    inCameraRef - The reference of the camera which will receive the 
-        //                      command.
-        //              inCapacity -  The remaining capacity of a transmission place.
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSetCapacity(IntPtr inCameraRef, EdsCapacity inCapacity);
-
 
         /*--------------------------------------------
           Volume operating functions
         ---------------------------------------------*/
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetVolumeInfo
         //
-        //  Function:   EdsGetVolumeInfo
+        // Description: Gets volume information for a memory card in the camera.
         //
-        //  Description:
-        //      Gets volume information for a memory card in the camera.
+        // Parameters:
+        // In:    inVolumeRef - The reference of the volume.
+        // Out:    outVolumeInfo - information of the volume.
         //
-        //  Parameters:
-        //       In:    inVolumeRef - The reference of the volume.
-        //      Out:    outVolumeInfo - information of  the volume.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetVolumeInfo(IntPtr inCameraRef, out EdsVolumeInfo outVolumeInfo);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsFormatVolume
         //
-        //  Function:   EdsFormatVolume
+        // Description: .
         //
-        //  Description:
-        //       .
+        // Parameters:
+        // In:    inVolumeRef - The reference of volume .
         //
-        //  Parameters:
-        //       In:    inVolumeRef - The reference of volume .
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsFormatVolume(IntPtr inVolumeRef);
-
 
         /*--------------------------------------------
           Directory-item operating functions
         ---------------------------------------------*/
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetDirectoryItemInfo
         //
-        //  Function:   EdsGetDirectoryItemInfo
+        // Description: Gets information about the directory or file objects on the memory card
+        // (volume) in a remote camera.
         //
-        //  Description:
-        //      Gets information about the directory or file objects 
-        //          on the memory card (volume) in a remote camera.
+        // Parameters:
+        // In:    inDirItemRef - The reference of the directory item.
+        // Out:    outDirItemInfo - information of the directory item.
         //
-        //  Parameters:
-        //       In:    inDirItemRef - The reference of the directory item.
-        //      Out:    outDirItemInfo - information of the directory item.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetDirectoryItemInfo(IntPtr inDirItemRef,
              out EdsDirectoryItemInfo outDirItemInfo);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsDeleteDirectoryItem
         //
-        //  Function:   EdsDeleteDirectoryItem
+        // Description: Deletes a camera folder or file. If folders with subdirectories are
+        // designated, all files are deleted except protected files. EdsDirectoryItem objects deleted
+        // by means of this API are implicitly released by the EDSDK. Thus, there is no need to
+        // release them by means of EdsRelease.
         //
-        //  Description:
-        //      Deletes a camera folder or file.
-        //      If folders with subdirectories are designated, all files are deleted 
-        //          except protected files. 
-        //      EdsDirectoryItem objects deleted by means of this API are implicitly 
-        //          released by the EDSDK. Thus, there is no need to release them 
-        //          by means of EdsRelease.
+        // Parameters:
+        // In:    inDirItemRef - The reference of the directory item.
         //
-        //  Parameters:
-        //       In:    inDirItemRef - The reference of the directory item.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsDeleteDirectoryItem(IntPtr inDirItemRef);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsDownload
         //
-        //  Function:   EdsDownload
+        // Description: Downloads a file on a remote camera (in the camera memory or on a memory
+        // card) to the host computer. The downloaded file is sent directly to a file stream created
+        // in advance. When dividing the file being retrieved, call this API repeatedly. Also in this
+        // case, make the data block size a multiple of 512 (bytes), excluding the final block.
         //
-        //  Description:
-        //       Downloads a file on a remote camera 
-        //          (in the camera memory or on a memory card) to the host computer. 
-        //      The downloaded file is sent directly to a file stream created in advance. 
-        //      When dividing the file being retrieved, call this API repeatedly. 
-        //      Also in this case, make the data block size a multiple of 512 (bytes), 
-        //          excluding the final block.
+        // Parameters:
+        // In:    inDirItemRef - The reference of the directory item. inReadSize -
         //
-        //  Parameters:
-        //       In:    inDirItemRef - The reference of the directory item.
-        //              inReadSize   - 
+        // Out:    outStream - The reference of the stream.
         //
-        //      Out:    outStream    - The reference of the stream.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsDownload(IntPtr inDirItemRef, UInt64 inReadSize, IntPtr outStream);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsDownloadCancel
         //
-        //  Function:   EdsDownloadCancel
+        // Description: Must be executed when downloading of a directory item is canceled. Calling
+        // this API makes the camera cancel file transmission. It also releases resources. This
+        // operation need not be executed when using EdsDownloadThumbnail.
         //
-        //  Description:
-        //       Must be executed when downloading of a directory item is canceled. 
-        //      Calling this API makes the camera cancel file transmission.
-        //      It also releases resources. 
-        //      This operation need not be executed when using EdsDownloadThumbnail. 
+        // Parameters:
+        // In:    inDirItemRef - The reference of the directory item.
         //
-        //  Parameters:
-        //       In:    inDirItemRef - The reference of the directory item.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsDownloadCancel(IntPtr inDirItemRef);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsDownloadComplete
         //
-        //  Function:   EdsDownloadComplete
+        // Description: Must be called when downloading of directory items is complete. Executing
+        // this API makes the camera recognize that file transmission is complete. This operation
+        // need not be executed when using EdsDownloadThumbnail.
         //
-        //  Description:
-        //       Must be called when downloading of directory items is complete. 
-        //          Executing this API makes the camera 
-        //              recognize that file transmission is complete. 
-        //          This operation need not be executed when using EdsDownloadThumbnail.
+        // Parameters:
+        // In:    inDirItemRef - The reference of the directory item.
         //
-        //  Parameters:
-        //       In:    inDirItemRef - The reference of the directory item.
+        // Out:    outStream - None.
         //
-        //      Out:    outStream    - None.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsDownloadComplete(IntPtr inDirItemRef);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsDownloadThumbnail
         //
-        //  Function:   EdsDownloadThumbnail
+        // Description: Extracts and downloads thumbnail information from image files in a camera.
+        // Thumbnail information in the camera's image files is downloaded to the host computer.
+        // Downloaded thumbnails are sent directly to a file stream created in advance.
         //
-        //  Description:
-        //      Extracts and downloads thumbnail information from image files in a camera. 
-        //      Thumbnail information in the camera's image files is downloaded 
-        //          to the host computer. 
-        //      Downloaded thumbnails are sent directly to a file stream created in advance.
+        // Parameters:
+        // In:    inDirItemRef - The reference of the directory item.
         //
-        //  Parameters:
-        //       In:    inDirItemRef - The reference of the directory item.
+        // Out:    outStream - The reference of the stream.
         //
-        //      Out:    outStream - The reference of the stream.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsDownloadThumbnail(IntPtr inDirItemRef, IntPtr outStream);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetAttribute
         //
-        //  Function:   EdsGetAttribute
+        // Description: Gets attributes of files on a camera.
         //
-        //  Description:
-        //      Gets attributes of files on a camera.
-        //  
-        //  Parameters:
-        //       In:    inDirItemRef - The reference of the directory item.
-        //      Out:    outFileAttribute  - Indicates the file attributes. 
-        //                  As for the file attributes, OR values of the value defined
-        //                  by enum EdsFileAttributes can be retrieved. Thus, when 
-        //                  determining the file attributes, you must check 
-        //                  if an attribute flag is set for target attributes. 
+        // Parameters:
+        // In:    inDirItemRef - The reference of the directory item.
+        // Out:    outFileAttribute - Indicates the file attributes. As for the file attributes, OR
+        //         values of the value defined by enum EdsFileAttributes can be retrieved. Thus, when
+        //         determining the file attributes, you must check if an attribute flag is set for
+        //         target attributes.
         //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetAttribute(IntPtr inDirItemRef, out EdsFileAttribute outFileAttribute);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsSetAttribute
         //
-        //  Function:   EdsSetAttribute
+        // Description: Changes attributes of files on a camera.
         //
-        //  Description:
-        //      Changes attributes of files on a camera.
-        //  
-        //  Parameters:
-        //       In:    inDirItemRef - The reference of the directory item.
-        //              inFileAttribute  - Indicates the file attributes. 
-        //                      As for the file attributes, OR values of the value 
-        //                      defined by enum EdsFileAttributes can be retrieved. 
-        //      Out:    None
+        // Parameters:
+        // In:    inDirItemRef - The reference of the directory item. inFileAttribute - Indicates the
+        //        file attributes. As for the file attributes, OR values of the value defined by enum
+        //        EdsFileAttributes can be retrieved.
+        // Out:    None
         //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSetAttribute(IntPtr inDirItemRef, EdsFileAttribute inFileAttribute);
 
@@ -1477,66 +1411,59 @@ namespace EDSDKLib {
           Stream operating functions
         ---------------------------------------------*/
         /*-----------------------------------------------------------------------------
+        // Function:   EdsCreateFileStream
         //
-        //  Function:   EdsCreateFileStream
+        // Description: Creates a new file on a host computer (or opens an existing file) and creates
+        // a file stream for access to the file. If a new file is designated before executing this
+        // API, the file is actually created following the timing of writing by means of EdsWrite or
+        // the like with respect to an open stream.
         //
-        //  Description:
-        //      Creates a new file on a host computer (or opens an existing file) 
-        //          and creates a file stream for access to the file. 
-        //      If a new file is designated before executing this API, 
-        //          the file is actually created following the timing of writing 
-        //          by means of EdsWrite or the like with respect to an open stream.
+        // Parameters:
+        // In:    inFileName - Pointer to a null-terminated string that specifies the file name.
+        //        inCreateDisposition - Action to take on files that exist, and which action to take
+        //        when files do not exist. inDesiredAccess - Access to the stream (reading, writing,
+        //        or both).
+        // Out:    outStream - The reference of the stream.
         //
-        //  Parameters:
-        //       In:    inFileName - Pointer to a null-terminated string that specifies
-        //                           the file name.
-        //              inCreateDisposition - Action to take on files that exist, 
-        //                                and which action to take when files do not exist.  
-        //              inDesiredAccess - Access to the stream (reading, writing, or both).
-        //      Out:    outStream - The reference of the stream.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsCreateFileStream(string inFileName, EdsFileCreateDisposition inCreateDisposition,
              EdsAccess inDesiredAccess, out IntPtr outStream);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsCreateMemoryStream
         //
-        //  Function:   EdsCreateMemoryStream
+        // Description: Creates a stream in the memory of a host computer. In the case of writing in
+        // excess of the allocated buffer size, the memory is automatically extended.
         //
-        //  Description:
-        //      Creates a stream in the memory of a host computer. 
-        //      In the case of writing in excess of the allocated buffer size, 
-        //          the memory is automatically extended.
+        // Parameters:
+        // In:    inBufferSize - The number of bytes of the memory to allocate.
+        // Out:    outStream - The reference of the stream.
         //
-        //  Parameters:
-        //       In:    inBufferSize - The number of bytes of the memory to allocate.
-        //      Out:    outStream - The reference of the stream.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsCreateMemoryStream(UInt64 inBufferSize, out IntPtr outStream);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsCreateStreamEx
         //
-        //  Function:   EdsCreateStreamEx
+        // Description: An extended version of EdsCreateStreamFromFile. Use this function when
+        // working with Unicode file names.
         //
-        //  Description:
-        //      An extended version of EdsCreateStreamFromFile. 
-        //      Use this function when working with Unicode file names.
+        // Parameters:
+        // In:    inFileName - Designate the file name. inCreateDisposition - Action to take on files
+        //        that exist, and which action to take when files do not exist. inDesiredAccess -
+        //        Access to the stream (reading, writing, or both).
         //
-        //  Parameters:
-        //       In:    inFileName - Designate the file name. 
-        //              inCreateDisposition - Action to take on files that exist, 
-        //                                and which action to take when files do not exist.  
-        //              inDesiredAccess - Access to the stream (reading, writing, or both).
+        // Out:    outStream - The reference of the stream.
         //
-        //      Out:    outStream - The reference of the stream.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsCreateStreamEx(
            string inFileName,
@@ -1546,517 +1473,431 @@ namespace EDSDKLib {
            );
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsCreateMemoryStreamFromPointer
         //
-        //  Function:   EdsCreateMemoryStreamFromPointer        
+        // Description: Creates a stream from the memory buffer you prepare. Unlike the buffer size
+        // of streams created by means of EdsCreateMemoryStream, the buffer size you prepare for
+        // streams created this way does not expand.
         //
-        //  Description:
-        //      Creates a stream from the memory buffer you prepare. 
-        //      Unlike the buffer size of streams created by means of EdsCreateMemoryStream, 
-        //      the buffer size you prepare for streams created this way does not expand.
+        // Parameters:
+        // In:    inBufferSize - The number of bytes of the memory to allocate.
+        // Out:    outStream - The reference of the stream.
         //
-        //  Parameters:
-        //       In:    inBufferSize - The number of bytes of the memory to allocate.
-        //      Out:    outStream - The reference of the stream.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsCreateMemoryStreamFromPointer(IntPtr inUserBuffer,
              UInt64 inBufferSize, out IntPtr outStream);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetPointer
         //
-        //  Function:   EdsGetPointer
+        // Description: Gets the pointer to the start address of memory managed by the memory stream.
+        // As the EDSDK automatically resizes the buffer, the memory stream provides you with the
+        // same access methods as for the file stream. If access is attempted that is excessive with
+        // regard to the buffer size for the stream, data before the required buffer size is
+        // allocated is copied internally, and new writing occurs. Thus, the buffer pointer might be
+        // switched on an unknown timing. Caution in use is therefore advised.
         //
-        //  Description:
-        //      Gets the pointer to the start address of memory managed by the memory stream. 
-        //      As the EDSDK automatically resizes the buffer, the memory stream provides 
-        //          you with the same access methods as for the file stream. 
-        //      If access is attempted that is excessive with regard to the buffer size
-        //          for the stream, data before the required buffer size is allocated 
-        //          is copied internally, and new writing occurs. 
-        //      Thus, the buffer pointer might be switched on an unknown timing. 
-        //      Caution in use is therefore advised. 
+        // Parameters:
+        // In:    inStream - Designate the memory stream for the pointer to retrieve.
+        // Out:    outPointer - If successful, returns the pointer to the buffer written in the
+        //         memory stream.
         //
-        //  Parameters:
-        //       In:    inStream - Designate the memory stream for the pointer to retrieve. 
-        //      Out:    outPointer - If successful, returns the pointer to the buffer 
-        //                  written in the memory stream.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetPointer(IntPtr inStreamRef, out IntPtr outPointer);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsRead
         //
-        //  Function:   EdsRead
+        // Description: Reads data the size of inReadSize into the outBuffer buffer, starting at the
+        // current read or write position of the stream. The size of data actually read can be
+        // designated in outReadSize.
         //
-        //  Description:
-        //      Reads data the size of inReadSize into the outBuffer buffer, 
-        //          starting at the current read or write position of the stream. 
-        //      The size of data actually read can be designated in outReadSize.
+        // Parameters:
+        // In:    inStreamRef - The reference of the stream or image. inReadSize - The number of
+        //        bytes to read.
+        // Out:    outBuffer - Pointer to the user-supplied buffer that is to receive the data read
+        //         from the stream. outReadSize - The actually read number of bytes.
         //
-        //  Parameters:
-        //       In:    inStreamRef - The reference of the stream or image.
-        //              inReadSize -  The number of bytes to read.
-        //      Out:    outBuffer - Pointer to the user-supplied buffer that is to receive
-        //                          the data read from the stream. 
-        //              outReadSize - The actually read number of bytes.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsRead(IntPtr inStreamRef, UInt64 inReadSize, IntPtr outBuffer,
              out UInt64 outReadSize);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsWrite
         //
-        //  Function:   EdsWrite
+        // Description: Writes data of a designated buffer to the current read or write position of
+        // the stream.
         //
-        //  Description:
-        //      Writes data of a designated buffer 
-        //          to the current read or write position of the stream. 
+        // Parameters:
+        // In:    inStreamRef - The reference of the stream or image. inWriteSize - The number of
+        //        bytes to write. inBuffer - A pointer to the user-supplied buffer that contains the
+        //        data to be written to the stream.
+        // Out:    outWrittenSize - The actually written-in number of bytes.
         //
-        //  Parameters:
-        //       In:    inStreamRef  - The reference of the stream or image.
-        //              inWriteSize - The number of bytes to write.
-        //              inBuffer - A pointer to the user-supplied buffer that contains 
-        //                         the data to be written to the stream.
-        //      Out:    outWrittenSize - The actually written-in number of bytes.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsWrite(IntPtr inStreamRef, UInt64 inWriteSize, IntPtr inBuffer,
              out uint outWrittenSize);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsSeek
         //
-        //  Function:   EdsSeek
-        //
-        //  Description:
-        //      Moves the read or write position of the stream
+        // Description: Moves the read or write position of the stream
                     (that is, the file position indicator).
+        // Parameters:
+        // In:    inStreamRef - The reference of the stream or image. inSeekOffset - Number of bytes
+        //        to move the pointer. inSeekOrigin - Pointer movement mode. Must be one of the
+        //        following values. kEdsSeek_Cur Move the stream pointer inSeekOffset bytes from the
+        //        current position in the stream. kEdsSeek_Begin Move the stream pointer inSeekOffset
+        //        bytes forward from the beginning of the stream. kEdsSeek_End Move the stream
+        //        pointer inSeekOffset bytes from the end of the stream.
         //
-        //  Parameters:
-        //       In:    inStreamRef  - The reference of the stream or image. 
-        //              inSeekOffset - Number of bytes to move the pointer. 
-        //              inSeekOrigin - Pointer movement mode. Must be one of the following 
-        //                             values.
-        //                  kEdsSeek_Cur     Move the stream pointer inSeekOffset bytes 
-        //                                   from the current position in the stream. 
-        //                  kEdsSeek_Begin   Move the stream pointer inSeekOffset bytes
-        //                                   forward from the beginning of the stream. 
-        //                  kEdsSeek_End     Move the stream pointer inSeekOffset bytes
-        //                                   from the end of the stream. 
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSeek(IntPtr inStreamRef, Int64 inSeekOffset, EdsSeekOrigin inSeekOrigin);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetPosition
         //
-        //  Function:   EdsGetPosition
+        // Description: Gets the current read or write position of the stream (that is, the file
+        // position indicator).
         //
-        //  Description:
-        //       Gets the current read or write position of the stream
-        //          (that is, the file position indicator).
+        // Parameters:
+        // In:    inStreamRef - The reference of the stream or image.
+        // Out:    outPosition - The current stream pointer.
         //
-        //  Parameters:
-        //       In:    inStreamRef - The reference of the stream or image.
-        //      Out:    outPosition - The current stream pointer.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetPosition(IntPtr inStreamRef, out UInt64 outPosition);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetLength
         //
-        //  Function:   EdsGetLength
+        // Description: Gets the stream size.
         //
-        //  Description:
-        //      Gets the stream size.
+        // Parameters:
+        // In:    inStreamRef - The reference of the stream or image.
+        // Out:    outLength - The length of the stream.
         //
-        //  Parameters:
-        //       In:    inStreamRef - The reference of the stream or image.
-        //      Out:    outLength - The length of the stream.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetLength(IntPtr inStreamRef, out UInt64 outLength);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsCopyData
         //
-        //  Function:   EdsCopyData
+        // Description: Copies data from the copy source stream to the copy destination stream. The
+        // read or write position of the data to copy is determined from the current file read or
+        // write position of the respective stream. After this API is executed, the read or write
+        // positions of the copy source and copy destination streams are moved an amount
+        // corresponding to inWriteSize in the positive direction.
         //
-        //  Description:
-        //      Copies data from the copy source stream to the copy destination stream. 
-        //      The read or write position of the data to copy is determined from 
-        //          the current file read or write position of the respective stream. 
-        //      After this API is executed, the read or write positions of the copy source 
-        //          and copy destination streams are moved an amount corresponding to 
-        //          inWriteSize in the positive direction. 
+        // Parameters:
+        // In:    inStreamRef - The reference of the stream or image. inWriteSize - The number of
+        //        bytes to copy.
+        // Out:    outStreamRef - The reference of the stream or image.
         //
-        //  Parameters:
-        //       In:    inStreamRef - The reference of the stream or image.
-        //              inWriteSize - The number of bytes to copy.
-        //      Out:    outStreamRef - The reference of the stream or image.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsCopyData(IntPtr inStreamRef, UInt64 inWriteSize, IntPtr outStreamRef);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsSetProgressCallback
         //
-        //  Function:   EdsSetProgressCallback
+        // Description: Register a progress callback function. An event is received as notification
+        // of progress during processing that takes a relatively long time, such as downloading files
+        // from a remote camera. If you register the callback function, the EDSDK calls the callback
+        // function during execution or on completion of the following APIs. This timing can be used
+        // in updating on-screen progress bars, for example.
         //
-        //  Description:
-        //      Register a progress callback function. 
-        //      An event is received as notification of progress during processing that 
-        //          takes a relatively long time, such as downloading files from a
-        //          remote camera. 
-        //      If you register the callback function, the EDSDK calls the callback
-        //          function during execution or on completion of the following APIs. 
-        //      This timing can be used in updating on-screen progress bars, for example.
+        // Parameters:
+        // In:    inRef - The reference of the stream or image. inProgressCallback - Pointer to a
+        //        progress callback function. inProgressOption - The option about progress is
+        //        specified. Must be one of the following values. kEdsProgressOption_Done When
+        //        processing is completed,a callback function is called only at once.
+        //        kEdsProgressOption_Periodically A callback function is performed periodically.
+        //        inContext - Application information, passed in the argument when the callback
+        //        function is called. Any information required for your program may be added.
+        // Out:    None
         //
-        //  Parameters:
-        //       In:    inRef - The reference of the stream or image.
-        //              inProgressCallback - Pointer to a progress callback function.
-        //              inProgressOption - The option about progress is specified.
-        //                              Must be one of the following values.
-        //                         kEdsProgressOption_Done 
-        //                             When processing is completed,a callback function
-        //                             is called only at once.
-        //                         kEdsProgressOption_Periodically
-        //                             A callback function is performed periodically.
-        //              inContext - Application information, passed in the argument 
-        //                      when the callback function is called. Any information 
-        //                      required for your program may be added. 
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSetProgressCallback(IntPtr inRef, EdsProgressCallback inProgressFunc,
              EdsProgressOption inProgressOption, IntPtr inContext);
-
 
         /*--------------------------------------------
           Image operating functions
         ---------------------------------------------*/
         /*-----------------------------------------------------------------------------
+        // Function:   EdsCreateImageRef
         //
-        //  Function:   EdsCreateImageRef
+        // Description: Creates an image object from an image file. Without modification, stream
+        // objects cannot be worked with as images. Thus, when extracting images from image files,
+        // you must use this API to create image objects. The image object created this way can be
+        // used to get image information (such as the height and width, number of color components,
+        // and resolution), thumbnail image data, and the image data itself.
         //
-        //  Description:
-        //      Creates an image object from an image file. 
-        //      Without modification, stream objects cannot be worked with as images. 
-        //      Thus, when extracting images from image files, 
-        //          you must use this API to create image objects. 
-        //      The image object created this way can be used to get image information 
-        //          (such as the height and width, number of color components, and
-        //           resolution), thumbnail image data, and the image data itself.
+        // Parameters:
+        // In:    inStreamRef - The reference of the stream.
         //
-        //  Parameters:
-        //       In:    inStreamRef - The reference of the stream.
+        // Out:    outImageRef - The reference of the image.
         //
-        //       Out:    outImageRef - The reference of the image.
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsCreateImageRef(IntPtr inStreamRef, out IntPtr outImageRef);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetImageInfo
         //
-        //  Function:   EdsGetImageInfo
+        // Description: Gets image information from a designated image object. Here, image
+        // information means the image width and height, number of color components, resolution, and
+        // effective image area.
         //
-        //  Description:
-        //      Gets image information from a designated image object. 
-        //      Here, image information means the image width and height, 
-        //          number of color components, resolution, and effective image area.
+        // Parameters:
+        // In:    inStreamRef - Designate the object for which to get image information.
+        //        inImageSource - Of the various image data items in the image file, designate the
+        //        type of image data representing the information you want to get. Designate the
+        //        image as defined in Enum EdsImageSource.
         //
-        //  Parameters:
-        //       In:    inStreamRef - Designate the object for which to get image information. 
-        //              inImageSource - Of the various image data items in the image file,
-        //                  designate the type of image data representing the 
-        //                  information you want to get. Designate the image as
-        //                  defined in Enum EdsImageSource. 
+        // kEdsImageSrc_FullView The image itself (a full-sized image) kEdsImageSrc_Thumbnail A
+        // thumbnail image kEdsImageSrc_Preview A preview image kEdsImageSrc_RAWThumbnail A RAW
+        // thumbnail image kEdsImageSrc_RAWFullView A RAW full-sized image
+        // Out:    outImageInfo - Stores the image data information designated in inImageSource.
         //
-        //                      kEdsImageSrc_FullView
-        //                                  The image itself (a full-sized image) 
-        //                      kEdsImageSrc_Thumbnail
-        //                                  A thumbnail image 
-        //                      kEdsImageSrc_Preview
-        //                                  A preview image
-        //                      kEdsImageSrc_RAWThumbnail
-        //                                  A RAW thumbnail image 
-        //                      kEdsImageSrc_RAWFullView
-        //                                  A RAW full-sized image 
-        //       Out:    outImageInfo - Stores the image data information designated 
-        //                      in inImageSource. 
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetImageInfo(IntPtr inImageRef, EdsImageSource inImageSource,
               out EdsImageInfo outImageInfo);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsGetImage
         //
-        //  Function:   EdsGetImage                         
+        // Description: Gets designated image data from an image file, in the form of a designated
+        // rectangle. Returns uncompressed results for JPEGs and processed results in the designated
+        // pixel order (RGB, Top-down BGR, and so on) for RAW images. Additionally, by designating
+        // the input/output rectangle, it is possible to get reduced, enlarged, or partial images.
+        // However, because images corresponding to the designated output rectangle are always
+        // returned by the SDK, the SDK does not take the aspect ratio into account. To maintain the
+        // aspect ratio, you must keep the aspect ratio in mind when designating the rectangle.
         //
-        //  Description:
-        //      Gets designated image data from an image file, in the form of a
-        //          designated rectangle. 
-        //      Returns uncompressed results for JPEGs and processed results 
-        //          in the designated pixel order (RGB, Top-down BGR, and so on) for
-        //           RAW images. 
-        //      Additionally, by designating the input/output rectangle, 
-        //          it is possible to get reduced, enlarged, or partial images. 
-        //      However, because images corresponding to the designated output rectangle 
-        //          are always returned by the SDK, the SDK does not take the aspect 
-        //          ratio into account. 
-        //      To maintain the aspect ratio, you must keep the aspect ratio in mind 
-        //          when designating the rectangle. 
+        // Parameters: In: inImageRef - Designate the image object for which to get the image data.
+        // inImageSource - Designate the type of image data to get from the image file (thumbnail,
+        // preview, and so on). Designate values as defined in Enum EdsImageSource. inImageType -
+        // Designate the output image type. Because the output format of EdGetImage may only be RGB,
+        // only kEdsTargetImageType_RGB or kEdsTargetImageType_RGB16 can be designated. However,
+        // image types exceeding the resolution of inImageSource cannot be designated. inSrcRect -
+        // Designate the coordinates and size of the rectangle to be retrieved (processed) from the
+        // source image. inDstSize - Designate the rectangle size for output.
         //
-        //  Parameters:
-        //      In:     
-        //              inImageRef - Designate the image object for which to get 
-        //                      the image data.
-        //              inImageSource - Designate the type of image data to get from
-        //                      the image file (thumbnail, preview, and so on). 
-        //                      Designate values as defined in Enum EdsImageSource. 
-        //              inImageType - Designate the output image type. Because
-        //                      the output format of EdGetImage may only be RGB, only
-        //                      kEdsTargetImageType_RGB or kEdsTargetImageType_RGB16
-        //                      can be designated. 
-        //                      However, image types exceeding the resolution of 
-        //                      inImageSource cannot be designated. 
-        //              inSrcRect - Designate the coordinates and size of the rectangle
-        //                      to be retrieved (processed) from the source image. 
-        //              inDstSize - Designate the rectangle size for output. 
-        //
-        //      Out:    
-        //              outStreamRef - Designate the memory or file stream for output of
-        //                      the image.
-        //  Returns:    Any of the sdk errors.
+        // Out: outStreamRef - Designate the memory or file stream for output of the image.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsGetImage(IntPtr inImageRef, EdsImageSource inImageSource,
              EdsTargetImageType inImageType, EdsRect inSrcRect, EdsSize inDstSize, IntPtr outStreamRef);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsSaveImage
         //
-        //  Function:   EdsSaveImage            
+        // Description: Saves as a designated image type after RAW processing. When saving with JPEG
+        // compression, the JPEG quality setting applies with respect to EdsOptionRef.
         //
-        //  Description:
-        //      Saves as a designated image type after RAW processing. 
-        //      When saving with JPEG compression, 
-        //          the JPEG quality setting applies with respect to EdsOptionRef.
+        // Parameters: In: inImageRef - Designate the image object for which to produce the file.
+        // inImageType - Designate the image type to produce. Designate the following image types.
         //
-        //  Parameters:
-        //      In:    
-        //          inImageRef - Designate the image object for which to produce the file. 
-        //          inImageType - Designate the image type to produce. Designate the 
-        //                  following image types.
-        //
-        //                  kEdsTargetImageType - Jpeg  JPEG
-        //                  kEdsTargetImageType - TIFF  8-bit TIFF
-        //                  kEdsTargetImageType - TIFF16    16-bit TIFF
-        //          inSaveSetting - Designate saving options, such as JPEG image quality.
-        //      Out:    
-        //          outStreamRef - Specifies the output file stream. The memory stream 
-        //                  cannot be specified here.
-        //  Returns:    Any of the sdk errors.
+        // kEdsTargetImageType - Jpeg JPEG kEdsTargetImageType - TIFF 8-bit TIFF kEdsTargetImageType
+        // - TIFF16 16-bit TIFF inSaveSetting - Designate saving options, such as JPEG image quality.
+        // Out: outStreamRef - Specifies the output file stream. The memory stream cannot be
+        // specified here.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSaveImage(IntPtr inImageRef, EdsTargetImageType inImageType,
              EdsSaveImageSetting inSaveSetting, IntPtr outStreamRef);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsCacheImage
         //
-        //  Function:   EdsCacheImage                       
+        // Description: Switches a setting on and off for creation of an image cache in the SDK for a
+        // designated image object during extraction (processing) of the image data. Creating the
+        // cache increases the processing speed, starting from the second time.
         //
-        //  Description:
-        //      Switches a setting on and off for creation of an image cache in the SDK 
-        //          for a designated image object during extraction (processing) of
-        //          the image data. 
-        //          Creating the cache increases the processing speed, starting from
-        //          the second time.
+        // Parameters:
+        // In:     inImageRef - The reference of the image. inUseCache - If cache image data or not
+        //         If set to FALSE, the cached image data will released.
+        // Out:    None
         //
-        //  Parameters:
-        //      In:     inImageRef - The reference of the image.
-        //              inUseCache - If cache image data or not
-        //                          If set to FALSE, the cached image data will released.
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsCacheImage(IntPtr inImageRef, bool inUseCache);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsReflectImageProperty Description: Incorporates image object property
+        //             changes (effected by means of EdsSetPropertyData) in the stream.
         //
-        //  Function:   EdsReflectImageProperty         
-        //  Description:
-        //      Incorporates image object property changes 
-        //          (effected by means of EdsSetPropertyData) in the stream. 
+        // Parameters:
+        // In:     inImageRef - The reference of the image.
+        // Out:    None
         //
-        //  Parameters:
-        //      In:     inImageRef - The reference of the image.
-        //      Out:    None
-        //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsReflectImageProperty(IntPtr inImageRef);
 
         //----------------------------------------------
         //   Event handler registering functions
-        //----------------------------------------------            
+        //----------------------------------------------
         /*-----------------------------------------------------------------------------
+       // Function:   EdsSetCameraAddedHandler
        //
-       //  Function:   EdsSetCameraAddedHandler
+       // Description: Registers a callback function for when a camera is detected.
        //
-       //  Description:
-       //      Registers a callback function for when a camera is detected.
+       // Parameters:
+       // In:    inCameraAddedHandler - Pointer to a callback function called when a camera is
+       //        connected physically inContext - Specifies an application-defined value to be sent
+       //        to the callback function pointed to by CallBack parameter.
+       // Out:    None
        //
-       //  Parameters:
-       //       In:    inCameraAddedHandler - Pointer to a callback function
-       //                          called when a camera is connected physically
-       //              inContext - Specifies an application-defined value to be sent to
-       //                          the callback function pointed to by CallBack parameter.
-       //      Out:    None
-       //
-       //  Returns:    Any of the sdk errors.
+       // Returns:    Any of the sdk errors.
        -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSetCameraAddedHandler(EdsCameraAddedHandler inCameraAddedHandler,
               IntPtr inContext);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsSetPropertyEventHandler
         //
-        //  Function:   EdsSetPropertyEventHandler
-        //              
-        //  Description:
-        //       Registers a callback function for receiving status 
-        //          change notification events for property states on a camera.
+        // Description: Registers a callback function for receiving status change notification events
+        // for property states on a camera.
         //
-        //  Parameters:
-        //       In:    inCameraRef - Designate the camera object. 
-        //              inEvent - Designate one or all events to be supplemented.
-        //              inPropertyEventHandler - Designate the pointer to the callback
-        //                      function for receiving property-related camera events.
-        //              inContext - Designate application information to be passed by 
-        //                      means of the callback function. Any data needed for
-        //                      your application can be passed. 
-        //      Out:    None
+        // Parameters:
+        // In:    inCameraRef - Designate the camera object. inEvent - Designate one or all events to
+        //        be supplemented. inPropertyEventHandler - Designate the pointer to the callback
+        //        function for receiving property-related camera events. inContext - Designate
+        //        application information to be passed by means of the callback function. Any data
+        //        needed for your application can be passed.
+        // Out:    None
         //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSetPropertyEventHandler(IntPtr inCameraRef, uint inEvnet,
              EdsPropertyEventHandler inPropertyEventHandler, IntPtr inContext);
 
         /*-----------------------------------------------------------------------------
+        // Function:   EdsSetObjectEventHandler
         //
-        //  Function:   EdsSetObjectEventHandler
-        //              
-        //  Description:
-        //       Registers a callback function for receiving status 
-        //          change notification events for objects on a remote camera. 
-        //      Here, object means volumes representing memory cards, files and directories, 
-        //          and shot images stored in memory, in particular. 
+        // Description: Registers a callback function for receiving status change notification events
+        // for objects on a remote camera. Here, object means volumes representing memory cards,
+        // files and directories, and shot images stored in memory, in particular.
         //
-        //  Parameters:
-        //       In:    inCameraRef - Designate the camera object. 
-        //              inEvent - Designate one or all events to be supplemented.
-        //                  To designate all events, use kEdsObjectEvent_All. 
-        //              inObjectEventHandler - Designate the pointer to the callback function
-        //                  for receiving object-related camera events.
-        //              inContext - Passes inContext without modification,
-        //                  as designated as an EdsSetObjectEventHandler argument. 
-        //      Out:    None
+        // Parameters:
+        // In:    inCameraRef - Designate the camera object. inEvent - Designate one or all events to
+        //        be supplemented. To designate all events, use kEdsObjectEvent_All.
+        //        inObjectEventHandler - Designate the pointer to the callback function for receiving
+        //        object-related camera events. inContext - Passes inContext without modification, as
+        //        designated as an EdsSetObjectEventHandler argument.
+        // Out:    None
         //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSetObjectEventHandler(IntPtr inCameraRef, uint inEvnet,
              EdsObjectEventHandler inObjectEventHandler, IntPtr inContext);
 
         /*-----------------------------------------------------------------------------
+        // Function:  EdsSetCameraStateEventHandler
         //
-        //  Function:  EdsSetCameraStateEventHandler
-        //              
-        //  Description:
-        //      Registers a callback function for receiving status 
-        //          change notification events for property states on a camera.
+        // Description: Registers a callback function for receiving status change notification events
+        // for property states on a camera.
         //
-        //  Parameters:
-        //       In:    inCameraRef - Designate the camera object. 
-        //              inEvent - Designate one or all events to be supplemented.
-        //                  To designate all events, use kEdsStateEvent_All. 
-        //              inStateEventHandler - Designate the pointer to the callback function
-        //                  for receiving events related to camera object states.
-        //              inContext - Designate application information to be passed
-        //                  by means of the callback function. Any data needed for
-        //                  your application can be passed. 
-        //      Out:    None
+        // Parameters:
+        // In:    inCameraRef - Designate the camera object. inEvent - Designate one or all events to
+        //        be supplemented. To designate all events, use kEdsStateEvent_All.
+        //        inStateEventHandler - Designate the pointer to the callback function for receiving
+        //        events related to camera object states. inContext - Designate application
+        //        information to be passed by means of the callback function. Any data needed for
+        //        your application can be passed.
+        // Out:    None
         //
-        //  Returns:    Any of the sdk errors.
+        // Returns:    Any of the sdk errors.
         -----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsSetCameraStateEventHandler(IntPtr inCameraRef, uint inEvnet,
              EdsStateEventHandler inStateEventHandler, IntPtr inContext);
 
         /*-----------------------------------------------------------------------------
+		// Function:   EdsCreateEvfImageRef Description: Creates an object used to get the live view
+		//             image data set.
 		//
-		//  Function:   EdsCreateEvfImageRef         
-		//  Description:
-		//       Creates an object used to get the live view image data set. 
+		// Parameters:
+		// In:     inStreamRef - The stream reference which opened to get EVF JPEG image.
+		// Out:    outEvfImageRef - The EVFData reference.
 		//
-		//  Parameters:
-		//      In:     inStreamRef - The stream reference which opened to get EVF JPEG image.
-		//      Out:    outEvfImageRef - The EVFData reference.
-		//
-		//  Returns:    Any of the sdk errors.
+		// Returns:    Any of the sdk errors.
 		-----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsCreateEvfImageRef(IntPtr inStreamRef, out IntPtr outEvfImageRef);
 
-
         /*-----------------------------------------------------------------------------
+		// Function:   EdsDownloadEvfImage Description: Downloads the live view image data set for a
+		//             camera currently in live view mode. Live view can be started by using the
+		//             property ID:kEdsPropertyID_Evf_OutputDevice and data:EdsOutputDevice_PC to
+		//             call EdsSetPropertyData. In addition to image data, information such as zoom,
+		//             focus position, and histogram data is included in the image data set. Image
+		//             data is saved in a stream maintained by EdsEvfImageRef. EdsGetPropertyData can
+		//             be used to get information such as the zoom, focus position, etc. Although the
+		//             information of the zoom and focus position can be obtained from
+		//             EdsEvfImageRef, settings are applied to EdsCameraRef.
 		//
-		//  Function:   EdsDownloadEvfImage         
-		//  Description:
-		//		Downloads the live view image data set for a camera currently in live view mode.
-		//		Live view can be started by using the property ID:kEdsPropertyID_Evf_OutputDevice and
-		//		data:EdsOutputDevice_PC to call EdsSetPropertyData.
-		//		In addition to image data, information such as zoom, focus position, and histogram data
-		//		is included in the image data set. Image data is saved in a stream maintained by EdsEvfImageRef.
-		//		EdsGetPropertyData can be used to get information such as the zoom, focus position, etc.
-		//		Although the information of the zoom and focus position can be obtained from EdsEvfImageRef,
-		//		settings are applied to EdsCameraRef.
+		// Parameters:
+		// In:     inCameraRef - The Camera reference.
+		// In:     inEvfImageRef - The EVFData reference.
 		//
-		//  Parameters:
-		//      In:     inCameraRef - The Camera reference.
-		//      In:     inEvfImageRef - The EVFData reference.
-		//
-		//  Returns:    Any of the sdk errors.
+		// Returns:    Any of the sdk errors.
 		-----------------------------------------------------------------------------*/
+
         [DllImport("EDSDK.dll")]
         public extern static uint EdsDownloadEvfImage(IntPtr inCameraRef, IntPtr outEvfImageRef);
 
-#endregion
+        #endregion Proto type defenition of EDSDK API
 
-
-#region Definition of base Structures
+        #region Definition of base Structures
 
         public const int EDS_MAX_NAME = 256;
         public const int EDS_TRANSFER_BLOCK_SIZE = 512;
@@ -2064,6 +1905,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Point
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsPoint {
             public int x;
@@ -2073,6 +1915,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Rectangle
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsRect {
             public int x;
@@ -2084,6 +1927,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Size
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsSize {
             public int width;
@@ -2093,6 +1937,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Rational
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsRational {
             public int Numerator;
@@ -2102,6 +1947,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Time
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsTime {
             public int Year;
@@ -2113,12 +1959,13 @@ namespace EDSDKLib {
             public int Milliseconds;
         }
 
-
         /*-----------------------------------------------------------------------------
          Device Info
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsDeviceInfo {
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = EDS_MAX_NAME)]
             public string szPortName;
 
@@ -2133,6 +1980,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Volume Info
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsVolumeInfo {
             public uint StorageType;
@@ -2144,10 +1992,10 @@ namespace EDSDKLib {
             public string szVolumeLabel;
         }
 
-
         /*-----------------------------------------------------------------------------
          DirectoryItem Info
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsDirectoryItemInfo {
             public UInt64 Size;
@@ -2162,41 +2010,41 @@ namespace EDSDKLib {
             public uint dateTime;
         }
 
-
         /*-----------------------------------------------------------------------------
          Image Info
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsImageInfo {
-            public uint Width;                  // image width 
+            public uint Width;                  // image width
             public uint Height;                 // image height
 
             public uint NumOfComponents;        // number of color components in image.
             public uint ComponentDepth;         // bits per sample.  8 or 16.
 
-            public EdsRect EffectiveRect;          // Effective rectangles except 
-                                                   // a black line of the image. 
-                                                   // A black line might be in the top and bottom
-                                                   // of the thumbnail image. 
+            public EdsRect EffectiveRect;          // Effective rectangles except
+                                                   // a black line of the image. A black line might
+                                                   // be in the top and bottom of the thumbnail image.
 
             public uint reserved1;
             public uint reserved2;
-
         }
 
         /*-----------------------------------------------------------------------------
          SaveImage Setting
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsSaveImageSetting {
             public uint JPEGQuality;
-            IntPtr iccProfileStream;
+            private IntPtr iccProfileStream;
             public uint reserved;
         }
 
         /*-----------------------------------------------------------------------------
          Property Desc
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsPropertyDesc {
             public int Form;
@@ -2210,6 +2058,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Picture Style Desc
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsPictureStyleDesc {
             public int contrast;
@@ -2225,6 +2074,7 @@ namespace EDSDKLib {
         /*-----------------------------------------------------------------------------
          Focus Info
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential)]
         public struct EdsFocusPoint {
             public uint valid;
@@ -2241,13 +2091,14 @@ namespace EDSDKLib {
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
             public EdsFocusPoint[] focusPoint;
+
             public uint executeMode;
         }
-
 
         /*-----------------------------------------------------------------------------
          Capacity
         -----------------------------------------------------------------------------*/
+
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
         public struct EdsCapacity {
             public int NumberOfFreeClusters;
@@ -2255,11 +2106,9 @@ namespace EDSDKLib {
             public int Reset;
         }
 
-#endregion
+        #endregion Definition of base Structures
 
-
-#region  Definition of error Codes
-
+        #region Definition of error Codes
 
         public enum EDS_ERR : uint {
             OK = 0x00000000,
@@ -2406,7 +2255,6 @@ namespace EDSDKLib {
             TAKE_PICTURE_CARD_NG = 0x00008D07,
             TAKE_PICTURE_CARD_PROTECT_NG = 0x00008D08,
 
-
             LAST_GENERIC_ERROR_PLUS_ONE = 0x000000F5,
 
             /*-----------------------------------------------------------------------
@@ -2425,9 +2273,7 @@ namespace EDSDKLib {
             CMP_ID_HLSDK_COMPONENTID = 0x03000000
         }
 
-
-
-#endregion
+        #endregion Definition of error Codes
 
         public static Dictionary<short, int> ISOSpeeds = new Dictionary<short, int>() {
             {0 ,0x00000000  },
@@ -2460,7 +2306,6 @@ namespace EDSDKLib {
             /*{0x00000090, 51200 },
             {0x00000098, 102400}*/
         };
-
 
         public static Dictionary<double, int> ShutterSpeeds = new Dictionary<double, int> {
             {double.MaxValue      , 0x0C },
@@ -2531,9 +2376,5 @@ namespace EDSDKLib {
             {1/6400d ,0x9D},
             {1/8000d ,0xA0}
         };
-
-
     }
-
-
 }

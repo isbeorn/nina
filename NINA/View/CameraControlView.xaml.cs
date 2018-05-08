@@ -1,28 +1,19 @@
 ﻿using NINA.Model.MyCamera;
 using NINA.Utility;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 
 namespace NINA.View {
+
     /// <summary>
     /// Interaction logic for CameraControlView.xaml
     /// </summary>
     public partial class CameraControlView : UserControl {
+
         public CameraControlView() {
             InitializeComponent();
             LayoutRoot.DataContext = this;
@@ -232,7 +223,6 @@ namespace NINA.View {
             }
         }
 
-
         public static readonly DependencyProperty MySelectedGainProperty =
             DependencyProperty.Register(nameof(MySelectedGain), typeof(short), typeof(CameraControlView), new UIPropertyMetadata((short)-1));
 
@@ -244,7 +234,5 @@ namespace NINA.View {
                 SetValue(MySelectedGainProperty, value);
             }
         }
-
-
     }
 }

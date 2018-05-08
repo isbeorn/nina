@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -15,6 +9,7 @@ namespace NINA.Utility {
 
     [XmlRoot("ColorSchemas")]
     public class ColorSchemas {
+
         public ColorSchemas() {
             Items = new List<ColorSchema>();
         }
@@ -33,49 +28,21 @@ namespace NINA.Utility {
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(ColorSchemas));
 
                     schemas = (ColorSchemas)xmlSerializer.Deserialize(reader);
-
                 } catch (Exception e) {
                     schemas = new ColorSchemas();
-                    Logger.Error("Could not load color schema xml" + e.Message, e.StackTrace);
+                    Logger.Error("Could not load color schema xml", e);
                 }
             } else {
                 schemas = new ColorSchemas();
-                Logger.Error("Color schema xml not found!");
+                Logger.Error("Color schema xml not found!", null);
             }
-
-            schemas.Items.Add(new ColorSchema {
-                Name = "Custom",
-                PrimaryColor = Properties.Settings.Default.PrimaryColor,
-                SecondaryColor = Properties.Settings.Default.SecondaryColor,
-                BorderColor = Properties.Settings.Default.BorderColor,
-                BackgroundColor = Properties.Settings.Default.BackgroundColor,
-                ButtonBackgroundColor = Properties.Settings.Default.ButtonBackgroundColor,
-                ButtonBackgroundSelectedColor = Properties.Settings.Default.ButtonBackgroundSelectedColor,
-                ButtonForegroundColor = Properties.Settings.Default.ButtonForegroundColor,
-                ButtonForegroundDisabledColor = Properties.Settings.Default.ButtonForegroundDisabledColor,
-                NotificationWarningColor = Properties.Settings.Default.NotificationWarningColor,
-                NotificationErrorColor = Properties.Settings.Default.NotificationErrorColor
-            });
-
-            schemas.Items.Add(new ColorSchema {
-                Name = "Alternative Custom",
-                PrimaryColor = Properties.Settings.Default.AltPrimaryColor,
-                SecondaryColor = Properties.Settings.Default.AltSecondaryColor,
-                BorderColor = Properties.Settings.Default.AltBorderColor,
-                BackgroundColor = Properties.Settings.Default.AltBackgroundColor,
-                ButtonBackgroundColor = Properties.Settings.Default.AltButtonBackgroundColor,
-                ButtonBackgroundSelectedColor = Properties.Settings.Default.AltButtonBackgroundSelectedColor,
-                ButtonForegroundColor = Properties.Settings.Default.AltButtonForegroundColor,
-                ButtonForegroundDisabledColor = Properties.Settings.Default.AltButtonForegroundDisabledColor,
-                NotificationWarningColor = Properties.Settings.Default.AltNotificationWarningColor,
-                NotificationErrorColor = Properties.Settings.Default.AltNotificationErrorColor
-            });
 
             return schemas;
         }
 
         public ColorSchema CreateDefaultAltSchema() {
             return new ColorSchema {
+                Name = "Dark",
                 PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
                 SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1B2A41"),
                 BorderColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
@@ -85,14 +52,17 @@ namespace NINA.Utility {
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF443730"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300"),
-                NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606")
+                NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
+                NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
+                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A")
             };
         }
 
         public ColorSchema CreateDefaultSchema() {
             return new ColorSchema {
+                Name = "Light",
                 PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF000000"),
-                SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1D2731"),
+                SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF54748C"),
                 BorderColor = (Color)ColorConverter.ConvertFromString("#AABCBCBC"),
                 BackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0B3C5D"),
@@ -100,7 +70,9 @@ namespace NINA.Utility {
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
                 ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF1D2731"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300"),
-                NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606")
+                NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
+                NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFFFF")
             };
         }
     }
@@ -109,33 +81,46 @@ namespace NINA.Utility {
     [XmlRoot(ElementName = "ColorSchema")]
     public class ColorSchema {
 
-        [XmlAttribute("Name")]
+        [XmlAttribute(nameof(Name))]
         public String Name { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
         public Color PrimaryColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color SecondaryColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color BorderColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color BackgroundColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color ButtonBackgroundColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color ButtonBackgroundSelectedColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color ButtonForegroundColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color ButtonForegroundDisabledColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color NotificationWarningColor { get; set; }
+
         [XmlElement(Type = typeof(XmlColor))]
         public Color NotificationErrorColor { get; set; }
 
+        [XmlElement(Type = typeof(XmlColor))]
+        public Color NotificationWarningTextColor { get; set; }
+
+        [XmlElement(Type = typeof(XmlColor))]
+        public Color NotificationErrorTextColor { get; set; }
 
         public ColorSchema() {
-
         }
     }
 
@@ -143,10 +128,10 @@ namespace NINA.Utility {
         private Color _color = Colors.Black;
 
         public XmlColor() { }
+
         public XmlColor(Color c) {
             _color = c;
         }
-
 
         public Color ToColor() {
             return _color;

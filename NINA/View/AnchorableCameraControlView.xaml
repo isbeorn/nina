@@ -123,15 +123,41 @@
                                 IsChecked="{Binding SnapSave, Mode=TwoWay}" />
                         </UniformGrid>
                     </Border>
+                    <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.CanSubSample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSubSample}" />
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding SnapSubSample, Mode=TwoWay}" />
+                        </UniformGrid>
+                    </Border>
+
+                    <ninactrl:CancellableButton
+                        Height="35"
+                        Margin="10,10,10,0"
+                        ButtonImage="{StaticResource LiveViewSVG}"
+                        CancelButtonImage="{StaticResource CancelSVG}"
+                        CancelCommand="{Binding StopLiveViewCommand}"
+                        Command="{Binding StartLiveViewCommand}"
+                        ToolTip="{ns:Loc LblToolTipLiveView}"
+                        Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanShowLiveView, FallbackValue=Collapsed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 </StackPanel>
 
                 <ninactrl:CancellableButton
                     Height="35"
                     Margin="10,10,10,0"
-                    ButtonImage="{StaticResource PlaySVG}"
+                    ButtonImage="{StaticResource CameraSVG}"
                     CancelButtonImage="{StaticResource CancelSVG}"
                     CancelCommand="{Binding CancelSnapCommand}"
                     Command="{Binding SnapCommand}"
+                    IsEnabled="{Binding Cam.LiveViewEnabled, Converter={StaticResource InverseBooleanConverter}}"
                     ToolTip="{ns:Loc LblTooltipTakeExposure}"
                     Visibility="{Binding SnapCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
             </StackPanel>

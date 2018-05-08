@@ -3,20 +3,16 @@ using NINA.Model.MyFocuser;
 using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-    class FocuserVM : DockableVM {
+
+    internal class FocuserVM : DockableVM {
 
         public FocuserVM() {
             Title = "LblFocuser";
@@ -32,7 +28,7 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsyncRequest(
                 new MoveFocuserMessageHandle(async (MoveFocuserMessage msg) => {
-                    if(msg.Absolute) {
+                    if (msg.Absolute) {
                         return await MoveFocuser(msg.Position);
                     } else {
                         return await MoveFocuserRelative(msg.Position);
@@ -46,6 +42,8 @@ namespace NINA.ViewModel {
                     return true;
                 })
             );
+
+            Mediator.Instance.Register((o) => { RefreshFocuserList(o); }, MediatorMessages.ProfileChanged);
         }
 
         private void HaltFocuser(object obj) {
@@ -53,10 +51,11 @@ namespace NINA.ViewModel {
             Focuser.Halt();
         }
 
-        CancellationTokenSource _cancelMove;
+        private CancellationTokenSource _cancelMove;
 
         private async Task<int> MoveFocuser(int position) {
             _cancelMove = new CancellationTokenSource();
+            int pos = -1;
             await Task.Run(() => {
                 try {
                     while (Focuser.Position != position) {
@@ -65,20 +64,20 @@ namespace NINA.ViewModel {
                         Focuser.Move(position);
                     }
                     Position = position;
+                    pos = position;
                 } catch (OperationCanceledException) {
-
                 }
-
             });
-            return Position;
+            return pos;
         }
 
         private async Task<int> MoveFocuserRelative(int offset) {
+            int pos = -1;
             if (Focuser?.Connected == true) {
-                var pos = Focuser.Position + offset;
+                pos = Focuser.Position + offset;
                 await MoveFocuser(pos);
             }
-            return Position;
+            return pos;
         }
 
         private void UpdateFocuser_Tick(object sender, EventArgs e) {
@@ -88,9 +87,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        CancellationTokenSource _cancelChooseFocuserSource;
+        private CancellationTokenSource _cancelChooseFocuserSource;
 
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
+
         public async Task<bool> ChooseFocuser() {
             await ss.WaitAsync();
             try {
@@ -98,7 +98,7 @@ namespace NINA.ViewModel {
                 _cancelUpdateFocuserValues?.Cancel();
 
                 if (FocuserChooserVM.SelectedDevice.Id == "No_Device") {
-                    Settings.FocuserId = FocuserChooserVM.SelectedDevice.Id;
+                    ProfileManager.Instance.ActiveProfile.FocuserSettings.Id = FocuserChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
@@ -124,7 +124,7 @@ namespace NINA.ViewModel {
                             _updateFocuserValuesTask = Task.Run(() => GetFocuserValues(_updateFocuserValuesProgress, _cancelUpdateFocuserValues.Token));
 
                             TargetPosition = Focuser.Position;
-                            Settings.FocuserId = Focuser.Id;
+                            ProfileManager.Instance.ActiveProfile.FocuserSettings.Id = Focuser.Id;
                             return true;
                         } else {
                             Connected = false;
@@ -135,7 +135,6 @@ namespace NINA.ViewModel {
                         if (Connected) { Disconnect(); }
                         return false;
                     }
-
                 } else {
                     return false;
                 }
@@ -170,12 +169,10 @@ namespace NINA.ViewModel {
                     p.Report(focuserValues);
 
                     token.ThrowIfCancellationRequested();
-                    
-                    Thread.Sleep((int)(Settings.DevicePollingInterval * 1000));
 
+                    Thread.Sleep((int)(ProfileManager.Instance.ActiveProfile.ApplicationSettings.DevicePollingInterval * 1000));
                 } while (Connected == true);
             } catch (OperationCanceledException) {
-
             } finally {
                 focuserValues.Clear();
                 focuserValues.Add(nameof(Connected), false);
@@ -201,10 +198,8 @@ namespace NINA.ViewModel {
             TempComp = (bool)(o ?? false);
         }
 
-
-
-
         private bool _connected;
+
         public bool Connected {
             get {
                 return _connected;
@@ -217,6 +212,7 @@ namespace NINA.ViewModel {
         }
 
         private int _position;
+
         public int Position {
             get {
                 return _position;
@@ -228,6 +224,7 @@ namespace NINA.ViewModel {
         }
 
         private double _temperature;
+
         public double Temperature {
             get {
                 return _temperature;
@@ -240,6 +237,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _isMoving;
+
         public bool IsMoving {
             get {
                 return _isMoving;
@@ -251,6 +249,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _tempComp;
+
         public bool TempComp {
             get {
                 return _tempComp;
@@ -266,6 +265,7 @@ namespace NINA.ViewModel {
         }
 
         private int _targetPosition;
+
         public int TargetPosition {
             get {
                 return _targetPosition;
@@ -284,7 +284,6 @@ namespace NINA.ViewModel {
         }
 
         public void Disconnect() {
-
             Connected = false;
             _cancelUpdateFocuserValues?.Cancel();
             do {
@@ -293,7 +292,6 @@ namespace NINA.ViewModel {
             Focuser?.Disconnect();
             Focuser = null;
             RaisePropertyChanged(nameof(Focuser));
-
         }
 
         public void RefreshFocuserList(object obj) {
@@ -301,6 +299,7 @@ namespace NINA.ViewModel {
         }
 
         private IFocuser _focuser;
+
         public IFocuser Focuser {
             get {
                 return _focuser;
@@ -312,6 +311,7 @@ namespace NINA.ViewModel {
         }
 
         private FocuserChooserVM _focuserChooserVM;
+
         public FocuserChooserVM FocuserChooserVM {
             get {
                 if (_focuserChooserVM == null) {
@@ -324,7 +324,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        IProgress<Dictionary<string, object>> _updateFocuserValuesProgress;
+        private IProgress<Dictionary<string, object>> _updateFocuserValuesProgress;
         private CancellationTokenSource _cancelUpdateFocuserValues;
         private Task _updateFocuserValuesTask;
 
@@ -339,7 +339,11 @@ namespace NINA.ViewModel {
         public ICommand HaltFocuserCommand { get; private set; }
     }
 
-    class FocuserChooserVM : EquipmentChooserVM {
+    internal class FocuserChooserVM : EquipmentChooserVM {
+
+        public FocuserChooserVM() : base(typeof(FocuserChooserVM)) {
+        }
+
         public override void GetEquipment() {
             Devices.Clear();
 
@@ -348,7 +352,6 @@ namespace NINA.ViewModel {
             var ascomDevices = new ASCOM.Utilities.Profile();
 
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Focuser")) {
-
                 try {
                     AscomFocuser focuser = new AscomFocuser(device.Key, device.Value);
                     Devices.Add(focuser);
@@ -357,10 +360,7 @@ namespace NINA.ViewModel {
                 }
             }
 
-            if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == Settings.FocuserId select device).FirstOrDefault();
-                SelectedDevice = selected;
-            }
+            DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.FocuserSettings.Id);
         }
     }
 }

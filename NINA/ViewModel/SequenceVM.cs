@@ -3,6 +3,7 @@ using NINA.Utility;
 using NINA.Utility.Exceptions;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -11,19 +12,19 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
-    class SequenceVM : DockableVM {
+
+    internal class SequenceVM : DockableVM {
 
         public SequenceVM() {
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SequenceSVG"];
 
-            EstimatedDownloadTime = Settings.EstimatedDownloadTime;
+            EstimatedDownloadTime = ProfileManager.Instance.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
 
             ContentId = nameof(SequenceVM);
             AddSequenceCommand = new RelayCommand(AddSequence);
@@ -50,7 +51,6 @@ namespace NINA.ViewModel {
                 var l = CaptureSequenceList.Load(dialog.FileName);
                 Sequence = l;
             }
-            
         }
 
         private void SaveSequence(object obj) {
@@ -62,7 +62,7 @@ namespace NINA.ViewModel {
 
             if (dialog.ShowDialog() == true) {
                 Sequence.Save(dialog.FileName);
-            }            
+            }
         }
 
         private void ResumeSequence(object obj) {
@@ -94,6 +94,7 @@ namespace NINA.ViewModel {
         }
 
         private ApplicationStatus _status;
+
         public ApplicationStatus Status {
             get {
                 return _status;
@@ -107,8 +108,8 @@ namespace NINA.ViewModel {
             }
         }
 
+        private Mutex mutex = new Mutex();
 
-        Mutex mutex = new Mutex();
         public async Task AddDownloadTime(TimeSpan t) {
             await Task.Run(() => {
                 var s = Stopwatch.StartNew();
@@ -132,18 +133,20 @@ namespace NINA.ViewModel {
         }
 
         private List<TimeSpan> _actualDownloadTimes = new List<TimeSpan>();
+
         public TimeSpan EstimatedDownloadTime {
             get {
-                return Settings.EstimatedDownloadTime;
+                return ProfileManager.Instance.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
             }
             set {
-                Settings.EstimatedDownloadTime = value;
+                ProfileManager.Instance.ActiveProfile.SequenceSettings.EstimatedDownloadTime = value;
                 RaisePropertyChanged();
                 CalculateETA();
             }
         }
 
         private DateTime _eta;
+
         public DateTime ETA {
             get {
                 return _eta;
@@ -155,7 +158,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> StartSequence(IProgress<ApplicationStatus> progress) {
-            if(Sequence.Count <= 0) {
+            if (Sequence.Count <= 0) {
                 return false;
             }
             _actualDownloadTimes.Clear();
@@ -170,8 +173,8 @@ namespace NINA.ViewModel {
                 await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = Sequence.Coordinates, Token = _canceltoken.Token });
                 if (Sequence.CenterTarget) {
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
-                    var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });                    
-                    if(result == null || !result.Success) {
+                    var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });
+                    if (result == null || !result.Success) {
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlatesolveFailed"] });
                         return false;
                     }
@@ -187,13 +190,13 @@ namespace NINA.ViewModel {
             }
 
             if (Sequence.AutoFocusOnStart) {
-                await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = Sequence.Items[0].FilterType, Token = _canceltoken.Token, Progress = progress });             
+                await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = Sequence.Items[0].FilterType, Token = _canceltoken.Token, Progress = progress });
             }
 
             if (Sequence.StartGuiding) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartGuiding"] });
                 var guiderStarted = await Mediator.Instance.RequestAsync(new StartGuiderMessage() { Token = _canceltoken.Token });
-                if(!guiderStarted) {
+                if (!guiderStarted) {
                     Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
                 }
             }
@@ -202,13 +205,12 @@ namespace NINA.ViewModel {
         }
 
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
-        static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         private async Task<bool> ProcessSequence(CancellationToken ct, PauseToken pt, IProgress<ApplicationStatus> progress) {
-
             return await Task.Run<bool>(async () => {
                 try {
-                    //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released 
+                    //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
                     await semaphoreSlim.WaitAsync(ct);
 
                     /* Validate if preconditions are met */
@@ -217,17 +219,16 @@ namespace NINA.ViewModel {
                     }
 
                     Sequence.IsRunning = true;
-                    
 
                     CaptureSequence seq;
                     var actualFilter = Mediator.Instance.Request(new GetCurrentFilterInfoMessage());
-                    short prevFilterPosition = actualFilter?.Position ?? -1; 
+                    short prevFilterPosition = actualFilter?.Position ?? -1;
                     while ((seq = Sequence.Next()) != null) {
-                        Stopwatch seqDuration = Stopwatch.StartNew();
                         await CheckMeridianFlip(seq, ct, progress);
 
+                        Stopwatch seqDuration = Stopwatch.StartNew();
                         //Autofocus on filter change
-                        if(seq.FilterType != null && seq.FilterType.Position != prevFilterPosition 
+                        if (seq.FilterType != null && seq.FilterType.Position != prevFilterPosition
                                 && seq.FilterType.Position >= 0
                                 && Sequence.AutoFocusOnFilterChange) {
                             await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
@@ -241,7 +242,7 @@ namespace NINA.ViewModel {
                                 Progress = progress,
                                 Token = ct
                             }
-                        );                        
+                        );
 
                         seqDuration.Stop();
 
@@ -263,7 +264,7 @@ namespace NINA.ViewModel {
                 } catch (OperationCanceledException) {
                 } catch (CameraConnectionLostException) {
                 } catch (Exception ex) {
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 } finally {
                     progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -276,25 +277,27 @@ namespace NINA.ViewModel {
 
         /// <summary>
         /// Checks if auto meridian flip should be considered and executes it
-        /// 1) Compare next exposure length with time to meridian - If exposure length is greater than time to flip the system will wait
+        /// 1) Compare next exposure length with time to meridian - If exposure length is greater
+        ///    than time to flip the system will wait
         /// 2) Pause Guider
         /// 3) Execute the flip
-        /// 4) If recentering is enabled, platesolve current position, sync and recenter to old target position
+        /// 4) If recentering is enabled, platesolve current position, sync and recenter to old
+        ///    target position
         /// 5) Resume Guider
         /// </summary>
-        /// <param name="seq">Current Sequence row</param>
+        /// <param name="seq">        Current Sequence row</param>
         /// <param name="tokenSource">cancel token</param>
-        /// <param name="progress">progress reporter</param>
+        /// <param name="progress">   progress reporter</param>
         /// <returns></returns>
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = "Check Meridian Flip" });
-            await Mediator.Instance.RequestAsync(new CheckMeridianFlipMessage() { Sequence = seq, Token = token });;
+            await Mediator.Instance.RequestAsync(new CheckMeridianFlipMessage() { Sequence = seq, Token = token }); ;
         }
 
         private bool CheckPreconditions() {
             bool valid = true;
 
-            valid = HasWritePermission(Settings.ImageFilePath);
+            valid = HasWritePermission(ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePath);
 
             return valid;
         }
@@ -336,26 +339,37 @@ namespace NINA.ViewModel {
         private void RegisterMediatorMessages() {
             Mediator.Instance.RegisterAsyncRequest(
                 new SetSequenceCoordinatesMessageHandle(async (SetSequenceCoordinatesMessage msg) => {
-                    var sequenceDso = new DeepSkyObject(msg.DSO.AlsoKnownAs.FirstOrDefault(), msg.DSO.Coordinates);
+                    Mediator.Instance.Request(new ChangeApplicationTabMessage() { Tab = ApplicationTab.SEQUENCE });
+                    var sequenceDso = new DeepSkyObject(msg.DSO.AlsoKnownAs.FirstOrDefault() ?? msg.DSO.Name ?? string.Empty, msg.DSO.Coordinates);
                     await Task.Run(() => {
-                        sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), Settings.Latitude, Settings.Longitude);
+                        sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude, ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude);
                     });
 
                     Sequence.SetSequenceTarget(sequenceDso);
                     return true;
                 })
             );
+
+            Mediator.Instance.Register((object o) => {
+                var dso = new DeepSkyObject(Sequence.DSO.Name, Sequence.DSO.Coordinates);
+                Sequence.SetSequenceTarget(dso);
+            }, MediatorMessages.LocationChanged);
         }
 
         private CaptureSequenceList _sequence;
+
         public CaptureSequenceList Sequence {
             get {
                 if (_sequence == null) {
-                    var seq = new CaptureSequence();
-                    _sequence = new CaptureSequenceList(seq);
-                    SelectedSequenceIdx = _sequence.Count - 1;
-                    //_sequence.Save(@"D:\test.xml");
-                    //_sequence = CaptureSequenceList.Load(@"D:\test.xml");
+                    if (File.Exists(ProfileManager.Instance.ActiveProfile.SequenceSettings.TemplatePath)) {
+                        _sequence = CaptureSequenceList.Load(ProfileManager.Instance.ActiveProfile.SequenceSettings.TemplatePath);
+                    }
+                    if (_sequence == null) {
+                        /* Fallback when no template is set or load failed */
+                        var seq = new CaptureSequence();
+                        _sequence = new CaptureSequenceList(seq);
+                        SelectedSequenceIdx = _sequence.Count - 1;
+                    }
                 }
                 return _sequence;
             }
@@ -366,6 +380,7 @@ namespace NINA.ViewModel {
         }
 
         private int _selectedSequenceIdx;
+
         public int SelectedSequenceIdx {
             get {
                 return _selectedSequenceIdx;
@@ -377,6 +392,7 @@ namespace NINA.ViewModel {
         }
 
         private ObservableCollection<string> _imageTypes;
+
         public ObservableCollection<string> ImageTypes {
             get {
                 if (_imageTypes == null) {

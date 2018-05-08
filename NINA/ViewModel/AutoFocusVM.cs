@@ -1,20 +1,21 @@
 ﻿using NINA.Model;
-using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using OxyPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
+
     public class AutoFocusVM : DockableVM {
+
         public AutoFocusVM() {
             Title = "LblAutoFocus";
             ContentId = nameof(AutoFocusVM);
@@ -25,7 +26,7 @@ namespace NINA.ViewModel {
             StartAutoFocusCommand = new AsyncCommand<bool>(
                 () =>
                     Task.Run(
-                        
+
                         async () => {
                             _autoFocusCancelToken = new CancellationTokenSource();
                             return await StartAutoFocus(null, _autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
@@ -34,7 +35,7 @@ namespace NINA.ViewModel {
                 (p) => { return _focuserConnected && _cameraConnected; }
             );
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
-                       
+
             Mediator.Instance.Register((object o) => _focuserConnected = (bool)o, MediatorMessages.FocuserConnectedChanged);
             Mediator.Instance.Register((object o) => _cameraConnected = (bool)o, MediatorMessages.CameraConnectedChanged);
             Mediator.Instance.Register((object o) => _temperature = (double)o, MediatorMessages.FocuserTemperatureChanged);
@@ -44,13 +45,11 @@ namespace NINA.ViewModel {
                     return await StartAutoFocus(msg.Filter, msg.Token, msg.Progress);
                 })
             );
-            
         }
-
-        
 
         private CancellationTokenSource _autoFocusCancelToken;
         private AsyncObservableCollection<DataPoint> _focusPoints;
+
         public AsyncObservableCollection<DataPoint> FocusPoints {
             get {
                 return _focusPoints;
@@ -64,6 +63,7 @@ namespace NINA.ViewModel {
         private DataPoint _minimum;
 
         private ApplicationStatus _status;
+
         public ApplicationStatus Status {
             get {
                 return _status;
@@ -78,6 +78,7 @@ namespace NINA.ViewModel {
         }
 
         private TrendLine _leftTrend;
+
         public TrendLine LeftTrend {
             get {
                 return _leftTrend;
@@ -89,6 +90,7 @@ namespace NINA.ViewModel {
         }
 
         private TrendLine _rightTrend;
+
         public TrendLine RightTrend {
             get {
                 return _rightTrend;
@@ -99,25 +101,20 @@ namespace NINA.ViewModel {
             }
         }
 
-
-                
         private int _focusPosition;
         private bool _focuserConnected;
         private bool _cameraConnected;
         private double _temperature;
 
         private async Task GetFocusPoints(FilterInfo filter, int nrOfSteps, IProgress<ApplicationStatus> progress, CancellationToken token, int offset = 0) {
-            var stepSize = Settings.FocuserAutoFocusStepSize;
+            var stepSize = ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusStepSize;
             if (offset != 0) {
                 //Move to initial position
                 _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset * stepSize, Absolute = false, Token = token });
             }
 
-
-
             var comparer = new FocusPointComparer();
             for (int i = 0; i < nrOfSteps; i++) {
-
                 token.ThrowIfCancellationRequested();
                                 
                 var iarr = await TakeExposure(filter, token, progress);
@@ -181,21 +178,22 @@ namespace NINA.ViewModel {
             LeftTrend = new TrendLine(leftTrendPoints);
             RightTrend = new TrendLine(rightTrendPoints);
         }
-        
+
         private async Task<bool> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (!(_focuserConnected && _cameraConnected)) {
                 Notification.ShowError(Locale.Loc.Instance["LblAutoFocusGearNotConnected"]);
                 return false;
-            }            
+            }
 
             Logger.Trace("Starting Autofocus");
             FocusPoints.Clear();
             LeftTrend = null;
             RightTrend = null;
             _minimum = new DataPoint(0, 0);
-            try {                
+            try {
+                await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Pause = true });
 
-                var offsetSteps = Settings.FocuserAutoFocusInitialOffsetSteps;
+                var offsetSteps = ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
                 var offset = offsetSteps;
 
                 var nrOfSteps = offsetSteps + 1;
@@ -226,7 +224,7 @@ namespace NINA.ViewModel {
                         await GetFocusPoints(filter, remainingSteps, progress, token, -1);
                     } else if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
                         Logger.Trace("More datapoints needed to the right of the minimum");
-                        //More points needed to the right                         
+                        //More points needed to the right
                         offset = laststeps + remainingSteps;  //todo
                         laststeps = remainingSteps - 1;
                         await GetFocusPoints(filter, remainingSteps, progress, token, offset);
@@ -237,8 +235,6 @@ namespace NINA.ViewModel {
 
                     token.ThrowIfCancellationRequested();
                 } while (rightcount < offsetSteps || leftcount < offsetSteps);
-
-
 
                 token.ThrowIfCancellationRequested();
 
@@ -257,13 +253,16 @@ namespace NINA.ViewModel {
                 FocusPoints.Clear();
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
-                Logger.Error(ex.Message, ex.StackTrace);
+                Logger.Error(ex);
+            } finally {
+                await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Pause = false });
             }
 
             return true;
         }
 
         private AutoFocusPoint _lastAutoFocusPoint;
+
         public AutoFocusPoint LastAutoFocusPoint {
             get {
                 return _lastAutoFocusPoint;
@@ -289,6 +288,7 @@ namespace NINA.ViewModel {
     }
 
     public class FocusPointComparer : IComparer<DataPoint> {
+
         public int Compare(DataPoint x, DataPoint y) {
             if (x.X < y.X) {
                 return -1;
@@ -301,6 +301,7 @@ namespace NINA.ViewModel {
     }
 
     public class TrendLine {
+
         public TrendLine(IEnumerable<DataPoint> l) {
             DataPoints = l;
 
@@ -321,7 +322,6 @@ namespace NINA.ViewModel {
 
             // y = alpha * x + beta
         }
-
 
         public double Slope { get; set; }
         public double Offset { get; set; }

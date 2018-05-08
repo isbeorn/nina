@@ -3,10 +3,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Utility.Enum"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+    xmlns:util="clr-namespace:NINA.Utility"
     xmlns:vm="clr-namespace:NINA.ViewModel"
     d:DesignHeight="300"
     d:DesignWidth="300"
@@ -17,8 +19,11 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <TextBlock Text="{ns:Loc LblYAxisScale}" />
-            <ComboBox SelectedValue="{Binding MaxY}" SelectedValuePath="Content">
+            <!--<TextBlock Text="{ns:Loc LblYAxisScale}" />-->
+            <ComboBox
+                ItemStringFormat="y: +/-{0}&quot;"
+                SelectedValue="{Binding MaxY}"
+                SelectedValuePath="Content">
                 <ComboBoxItem>0.25</ComboBoxItem>
                 <ComboBoxItem>0.5</ComboBoxItem>
                 <ComboBoxItem>1</ComboBoxItem>
@@ -27,6 +32,25 @@
                 <ComboBoxItem>8</ComboBoxItem>
                 <ComboBoxItem>16</ComboBoxItem>
             </ComboBox>
+            <!--<TextBlock Text="{ns:Loc LblXAxisScale}" />-->
+            <ComboBox
+                MaxWidth="60"
+                ItemStringFormat="x: {0}"
+                SelectedValue="{Binding HistorySize}"
+                SelectedValuePath="Content">
+                <ComboBoxItem>50</ComboBoxItem>
+                <ComboBoxItem>100</ComboBoxItem>
+                <ComboBoxItem>200</ComboBoxItem>
+                <ComboBoxItem>400</ComboBoxItem>
+            </ComboBox>
+            <!--<TextBlock Text="{ns:Loc LblYAxisUnits}" />-->
+            <ComboBox
+                ItemStringFormat="unit: {0}"
+                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}"
+                SelectedItem="{Binding GuiderScale}" />
+            <TextBlock Text="{Binding RMSRAText}" />
+            <TextBlock Text="{Binding RMSDecText}" />
+            <TextBlock Text="{Binding RMSTotalText}" />
         </StackPanel>
 
         <oxy:Plot
@@ -43,6 +67,8 @@
                 <oxy:LinearAxis
                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     IntervalLength="50"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                     MajorGridlineStyle="LongDash"
                     Maximum="{Binding MaxY}"
@@ -50,27 +76,28 @@
                     MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
                     MinorGridlineStyle="Dash"
                     Position="Left"
-                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}" />
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                 <oxy:LinearAxis IsAxisVisible="False" Position="Bottom" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries
                     Title="{ns:Loc LblRA}"
                     DataFieldX="Time"
-                    DataFieldY="RADistanceRaw"
+                    DataFieldY="RADistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistory}"
                     Color="Blue" />
                 <oxy:LineSeries
                     Title="{ns:Loc LblDec}"
                     DataFieldX="Time"
-                    DataFieldY="DecDistanceRaw"
+                    DataFieldY="DecDistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistory}"
                     Color="Red" />
                 <oxy:LinearBarSeries
                     Title="{ns:Loc LblRACorrections}"
                     BarWidth="3"
                     DataFieldX="TimeRA"
-                    DataFieldY="RADistanceGuide"
+                    DataFieldY="RADuration"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideStepsHistory}"
                     StrokeColor="Blue"
@@ -80,8 +107,8 @@
                     Title="{ns:Loc LblDecCorrections}"
                     BarWidth="3"
                     DataFieldX="TimeDec"
-                    DataFieldY="DecDistanceGuide"
-                    DisplayMemberPath="DecDistanceGuide"
+                    DataFieldY="DECDuration"
+                    DisplayMemberPath="DecDistanceGuideDisplay"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideStepsHistory}"
                     StrokeColor="Red"
@@ -89,6 +116,5 @@
                     Color="Red" />
             </oxy:Plot.Series>
         </oxy:Plot>
-
     </Grid>
 </UserControl>

@@ -1,15 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NINA.Utility.Astrometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINATest {
+
     [TestClass]
     public class AstrometryTest {
-        const int DOUBLE_TOLERANCE = 12;
+        private const int DOUBLE_TOLERANCE = 12;
 
         [TestMethod]
         public void ToRadians_ValueTest() {
@@ -18,7 +15,7 @@ namespace NINATest {
 
             var rad = Astrometry.ToRadians(degree);
 
-            Assert.AreEqual(expectedRad,rad);
+            Assert.AreEqual(expectedRad, rad);
         }
 
         [TestMethod]
@@ -28,7 +25,7 @@ namespace NINATest {
 
             var deg = Astrometry.ToDegree(rad);
 
-            Assert.AreEqual(expectedDeg,deg);
+            Assert.AreEqual(expectedDeg, deg);
         }
 
         [TestMethod]
@@ -38,7 +35,7 @@ namespace NINATest {
 
             var arcmin = Astrometry.DegreeToArcmin(degree);
 
-            Assert.AreEqual(expectedarcmin,arcmin);
+            Assert.AreEqual(expectedarcmin, arcmin);
         }
 
         [TestMethod]
@@ -48,7 +45,7 @@ namespace NINATest {
 
             var arcsec = Astrometry.DegreeToArcsec(degree);
 
-            Assert.AreEqual(expectedarcsec,arcsec);
+            Assert.AreEqual(expectedarcsec, arcsec);
         }
 
         [TestMethod]
@@ -58,7 +55,7 @@ namespace NINATest {
 
             var arcsec = Astrometry.ArcminToArcsec(arcmin);
 
-            Assert.AreEqual(expectedarcsec,arcsec);
+            Assert.AreEqual(expectedarcsec, arcsec);
         }
 
         [TestMethod]
@@ -68,7 +65,7 @@ namespace NINATest {
 
             var deg = Astrometry.ArcminToDegree(arcmin);
 
-            Assert.AreEqual(expecteddeg,deg);
+            Assert.AreEqual(expecteddeg, deg);
         }
 
         [TestMethod]
@@ -78,7 +75,7 @@ namespace NINATest {
 
             var arcmin = Astrometry.ArcsecToArcmin(arcsec);
 
-            Assert.AreEqual(expectedarcmin,arcmin);
+            Assert.AreEqual(expectedarcmin, arcmin);
         }
 
         [TestMethod]
@@ -88,9 +85,9 @@ namespace NINATest {
 
             var deg = Astrometry.ArcsecToDegree(arcsec);
 
-            Assert.AreEqual(expecteddeg,deg);
+            Assert.AreEqual(expecteddeg, deg);
         }
-        
+
         [TestMethod]
         public void HoursToDegree_ValueTest() {
             var hours = 5.2;
@@ -98,28 +95,28 @@ namespace NINATest {
 
             var deg = Astrometry.HoursToDegrees(hours);
 
-            Assert.AreEqual(expecteddeg,deg);
+            Assert.AreEqual(expecteddeg, deg);
         }
 
         [TestMethod]
         public void DegreesToHours_ValueTest() {
             var deg = 78;
-            var expectedhours = 5.2;            
+            var expectedhours = 5.2;
 
             var hours = Astrometry.DegreesToHours(deg);
 
-            Assert.AreEqual(expectedhours,hours);
+            Assert.AreEqual(expectedhours, hours);
         }
-        
+
         [TestMethod]
         public void GetAltitude_0Angle_Northern_ValueTest() {
             var angle = 0;
             var latitude = 0;
             var longitude = 0;
 
-            var alt = Astrometry.GetAltitude(angle,latitude,longitude);
+            var alt = Astrometry.GetAltitude(angle, latitude, longitude);
 
-            Assert.AreEqual(90,alt);
+            Assert.AreEqual(90, alt);
         }
 
         [TestMethod]
@@ -128,32 +125,32 @@ namespace NINATest {
             var latitude = 0;
             var longitude = 0;
 
-            var alt = Astrometry.GetAltitude(angle,latitude,longitude);
+            var alt = Astrometry.GetAltitude(angle, latitude, longitude);
 
-            Assert.AreEqual(90,alt);
+            Assert.AreEqual(90, alt);
         }
-        
+
         [TestMethod]
         public void GetAltitude_180Angle_Northern_ValueTest() {
             var angle = 180;
             var latitude = 0;
             var longitude = 0;
 
-            var alt = Astrometry.GetAltitude(angle,latitude,longitude);
+            var alt = Astrometry.GetAltitude(angle, latitude, longitude);
 
-            Assert.AreEqual(-90,alt);
+            Assert.AreEqual(-90, alt);
         }
-        
+
         [TestMethod]
         public void GetAltitude_90Angle_Northern_ValueTest() {
             var angle = 90;
             var latitude = 0;
             var longitude = 0;
 
-            var alt = Astrometry.GetAltitude(angle,latitude,longitude);
-            alt = Math.Round(alt,DOUBLE_TOLERANCE);
+            var alt = Astrometry.GetAltitude(angle, latitude, longitude);
+            alt = Math.Round(alt, DOUBLE_TOLERANCE);
 
-            Assert.AreEqual(0,alt);
+            Assert.AreEqual(0, alt);
         }
 
         [TestMethod]
@@ -162,12 +159,10 @@ namespace NINATest {
             var latitude = 0;
             var longitude = 0;
 
-            var alt = Astrometry.GetAltitude(angle,latitude,longitude);
-            alt = Math.Round(alt,DOUBLE_TOLERANCE);
+            var alt = Astrometry.GetAltitude(angle, latitude, longitude);
+            alt = Math.Round(alt, DOUBLE_TOLERANCE);
 
-            Assert.AreEqual(0,alt);
+            Assert.AreEqual(0, alt);
         }
-
-        
     }
 }

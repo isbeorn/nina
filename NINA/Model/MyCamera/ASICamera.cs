@@ -1,18 +1,19 @@
-﻿using NINA.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ASCOM.DeviceInterface;
-using System.Threading;
-using ZWOptical.ASISDK;
-using System.Drawing;
-using System.Runtime.InteropServices;
+﻿using ASCOM.DeviceInterface;
+using NINA.Utility;
 using NINA.Utility.Notification;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
+using ZWOptical.ASISDK;
 
 namespace NINA.Model.MyCamera {
+
     public class ASICamera : BaseINPC, ICamera {
 
         public ASICamera(int cameraId) {
@@ -23,6 +24,7 @@ namespace NINA.Model.MyCamera {
         private int _cameraId;
 
         private string _id;
+
         public string Id {
             get {
                 return _id;
@@ -34,6 +36,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private ASICameraDll.ASI_CAMERA_INFO? _info;
+
         private ASICameraDll.ASI_CAMERA_INFO Info {
             // info is cached only while camera is open
             get {
@@ -43,6 +46,7 @@ namespace NINA.Model.MyCamera {
 
         private string _cachedName;
         private List<CameraControl> _controls;
+
         public List<CameraControl> Controls {
             get {
                 if (_controls == null || _cachedName != Name) {
@@ -58,11 +62,24 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public bool CanSubSample {
+            get {
+                return true;
+            }
+        }
+
+        public bool EnableSubSample { get; set; }
+        public int SubSampleX { get; set; }
+        public int SubSampleY { get; set; }
+        public int SubSampleWidth { get; set; }
+        public int SubSampleHeight { get; set; }
+
         public string Name {
             get {
                 return Info.Name;
             }
         }
+
         public bool HasShutter {
             get {
                 return Info.MechanicalShutter != ASICameraDll.ASI_BOOL.ASI_FALSE;
@@ -70,6 +87,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool _connected;
+
         public bool Connected {
             get {
                 return _connected;
@@ -80,46 +98,62 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public double CCDTemperature {
+        public bool CanShowLiveView {
+            get {
+                return true;
+            }
+        }
+
+        public double Temperature {
             get {
                 return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TEMPERATURE) / 10; //ASI driver gets temperature in Celsius * 10
             }
         }
 
-        public double SetCCDTemperature {
+        public double TemperatureSetPoint {
             get {
-                if (CanSetCCDTemperature) {
+                if (CanSetTemperature) {
                     return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
                 } else {
                     return double.MinValue;
                 }
             }
             set {
-                if (CanSetCCDTemperature) {
+                if (CanSetTemperature) {
                     if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP, (int)value)) {
                         RaisePropertyChanged();
                     }
                 }
             }
         }
+
+        private short bin = 1;
+
         public short BinX {
             get {
-                return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
+                return bin;
+                /*return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);*/
             }
             set {
-                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
+                bin = value;
+                RaisePropertyChanged();
+                /*if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
                     RaisePropertyChanged();
-                }
+                }*/
             }
         }
+
         public short BinY {
             get {
-                return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
+                return bin;
+                //return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
             }
             set {
-                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
+                bin = value;
+                RaisePropertyChanged();
+                /*if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
                     RaisePropertyChanged();
-                }
+                }*/
             }
         }
 
@@ -162,6 +196,7 @@ namespace NINA.Model.MyCamera {
                 return Info.MaxWidth;
             }
         }
+
         public int CameraYSize {
             get {
                 return Info.MaxHeight;
@@ -173,6 +208,7 @@ namespace NINA.Model.MyCamera {
                 return (double)GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE) / 1000000;
             }
         }
+
         public double ExposureMax {
             get {
                 return (double)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE) / 1000000;
@@ -184,6 +220,7 @@ namespace NINA.Model.MyCamera {
                 return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
             }
         }
+
         public short MaxBinY {
             get {
                 return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
@@ -195,13 +232,14 @@ namespace NINA.Model.MyCamera {
                 return Info.PixelSize;
             }
         }
+
         public double PixelSizeY {
             get {
                 return Info.PixelSize;
             }
         }
 
-        public bool CanSetCCDTemperature {
+        public bool CanSetTemperature {
             get {
                 var val = GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);
                 if (val > 0) {
@@ -231,6 +269,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private AsyncObservableCollection<BinningMode> _binningModes;
+
         public AsyncObservableCollection<BinningMode> BinningModes {
             get {
                 if (_binningModes == null) {
@@ -242,7 +281,6 @@ namespace NINA.Model.MyCamera {
                 return _binningModes;
             }
             private set {
-
             }
         }
 
@@ -265,7 +303,7 @@ namespace NINA.Model.MyCamera {
                     Notification.ShowError(Locale.Loc.Instance["LblASIOnly16BitMono"]);
                     return false;
                 }
-                this.CaptureAreaInfo = new CaptureAreaInfo(this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+                this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
                 RaisePropertyChanged(nameof(Connected));
                 RaiseAllPropertiesChanged();
             } catch (Exception ex) {
@@ -293,10 +331,12 @@ namespace NINA.Model.MyCamera {
             get {
                 int bin;
                 ASICameraDll.ASI_IMG_TYPE imageType;
+                var p = ASICameraDll.GetStartPos(_cameraId);
                 var res = ASICameraDll.GetROIFormat(_cameraId, out bin, out imageType);
-                return new CaptureAreaInfo(res, bin, imageType);
+                return new CaptureAreaInfo(p, res, bin, imageType);
             }
             set {
+                ASICameraDll.SetStartPos(_cameraId, value.Start);
                 ASICameraDll.SetROIFormat(_cameraId, value.Size, value.Binning, value.ImageType);
             }
         }
@@ -308,7 +348,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private ASICameraDll.ExposureStatus ExposureStatus {
+        private ASICameraDll.ASI_EXPOSURE_STATUS ExposureStatus {
             get {
                 return ASICameraDll.GetExposureStatus(_cameraId);
             }
@@ -317,20 +357,23 @@ namespace NINA.Model.MyCamera {
         public async Task<ImageArray> DownloadExposure(CancellationToken token) {
             return await Task.Run<ImageArray>(async () => {
                 try {
-                    ASICameraDll.ExposureStatus status;
+                    ASICameraDll.ASI_EXPOSURE_STATUS status;
                     do {
                         await Task.Delay(100, token);
                         status = ExposureStatus;
-                    } while (status == ASICameraDll.ExposureStatus.ExpWorking);
+                    } while (status == ASICameraDll.ASI_EXPOSURE_STATUS.ASI_EXP_WORKING);
 
-                    int size = Resolution.Width * Resolution.Height * 2;
+                    var width = CaptureAreaInfo.Size.Width;
+                    var height = CaptureAreaInfo.Size.Height;
+
+                    int size = width * height * 2;
                     IntPtr pointer = Marshal.AllocHGlobal(size);
-                    int buffersize = (Resolution.Width * Resolution.Height * 16 + 7) / 8;
-                    if(GetExposureData(pointer, buffersize)) {
+                    int buffersize = (width * height * 16 + 7) / 8;
+                    if (GetExposureData(pointer, buffersize)) {
                         ushort[] arr = new ushort[size / 2];
                         CopyToUShort(pointer, arr, 0, size / 2);
                         Marshal.FreeHGlobal(pointer);
-                        return await ImageArray.CreateInstance(arr, Resolution.Width, Resolution.Height, SensorType != SensorType.Monochrome);
+                        return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome);
                     } else {
                         Notification.ShowError("Error retrieving image data from camera!");
                     }
@@ -340,12 +383,10 @@ namespace NINA.Model.MyCamera {
                 }
                 return null;
             });
-
         }
 
         private void CopyToUShort(IntPtr source, ushort[] destination, int startIndex, int length) {
-            unsafe
-            {
+            unsafe {
                 var sourcePtr = (ushort*)source;
                 for (int i = startIndex; i < startIndex + length; ++i) {
                     destination[i] = *sourcePtr++;
@@ -358,10 +399,11 @@ namespace NINA.Model.MyCamera {
         }
 
         public void SetBinning(short x, short y) {
-            var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
+            /*var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
             binningControl.IsAuto = false;
-            binningControl.Value = x;
-
+            binningControl.Value = x;*/
+            BinX = x;
+            BinY = y;
         }
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
@@ -369,6 +411,12 @@ namespace NINA.Model.MyCamera {
             var exposureSettings = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE);
             exposureSettings.Value = exposureMs;
             exposureSettings.IsAuto = false;
+
+            if (EnableSubSample) {
+                this.CaptureAreaInfo = new CaptureAreaInfo(new Point(SubSampleX, SubSampleY), new Size(SubSampleWidth / BinX, SubSampleHeight / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+            } else {
+                this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), new Size(this.Resolution.Width / BinX, this.Resolution.Height / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+            }
 
             ASICameraDll.StartExposure(_cameraId, !isLightFrame);
         }
@@ -378,10 +426,10 @@ namespace NINA.Model.MyCamera {
         }
 
         public void UpdateValues() {
-            RaisePropertyChanged(nameof(CCDTemperature));
+            RaisePropertyChanged(nameof(Temperature));
             RaisePropertyChanged(nameof(CoolerPower));
             RaisePropertyChanged(nameof(CoolerOn));
-            RaisePropertyChanged(nameof(SetCCDTemperature));
+            RaisePropertyChanged(nameof(TemperatureSetPoint));
             RaisePropertyChanged(nameof(CameraState));
         }
 
@@ -394,6 +442,7 @@ namespace NINA.Model.MyCamera {
                 return true;
             }
         }
+
         public bool CanSetGain {
             get {
                 return true;
@@ -428,6 +477,7 @@ namespace NINA.Model.MyCamera {
                 return true;
             }
         }
+
         public bool CanSetUSBLimit {
             get {
                 return true;
@@ -444,6 +494,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public int OffsetMin {
             get {
                 return GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BRIGHTNESS);
@@ -466,11 +517,13 @@ namespace NINA.Model.MyCamera {
                 }
             }
         }
+
         public int USBLimitMin {
             get {
                 return GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
             }
         }
+
         public int USBLimitMax {
             get {
                 return GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_BANDWIDTHOVERLOAD);
@@ -521,7 +574,6 @@ namespace NINA.Model.MyCamera {
         }
 
         public void SetupDialog() {
-
         }
 
         public void Initialize() {
@@ -543,7 +595,7 @@ namespace NINA.Model.MyCamera {
                         Notification.ShowError("Only 16 bit Monochrome sensors supported currently");
                         return false;
                     }
-                    this.CaptureAreaInfo = new CaptureAreaInfo(this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+                    this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
                     RaisePropertyChanged(nameof(Connected));
                     RaiseAllPropertiesChanged();
                 } catch (Exception ex) {
@@ -552,15 +604,51 @@ namespace NINA.Model.MyCamera {
                 return success;
             });
         }
+
+        public void StartLiveView() {
+            ASICameraDll.StartVideoCapture(_cameraId);
+        }
+
+        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            var width = CaptureAreaInfo.Size.Width;
+            var height = CaptureAreaInfo.Size.Height;
+
+            int size = width * height * 2;
+            IntPtr pointer = Marshal.AllocHGlobal(size);
+            int buffersize = (width * height * 16 + 7) / 8;
+            ASICameraDll.GetVideoData(_cameraId, pointer, buffersize, -1);
+
+            ushort[] arr = new ushort[size / 2];
+            CopyToUShort(pointer, arr, 0, size / 2);
+            Marshal.FreeHGlobal(pointer);
+            return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome);
+        }
+
+        public void StopLiveView() {
+            ASICameraDll.StopVideoCapture(_cameraId);
+        }
+
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                // todo: start liveview if possible
+            }
+        }
     }
 
-
     public class CaptureAreaInfo {
+        public Point Start { get; set; }
         public Size Size { get; set; }
         public int Binning { get; set; }
         public ASICameraDll.ASI_IMG_TYPE ImageType { get; set; }
 
-        public CaptureAreaInfo(Size size, int binning, ASICameraDll.ASI_IMG_TYPE imageType) {
+        public CaptureAreaInfo(Point start, Size size, int binning, ASICameraDll.ASI_IMG_TYPE imageType) {
+            Start = start;
             Size = size;
             Binning = binning;
             ImageType = imageType;

@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
     d:DesignHeight="300"
     d:DesignWidth="300"
@@ -12,37 +13,44 @@
     <Grid>
         <oxy:Plot
             Background="{StaticResource BackgroundBrush}"
+            LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
+            LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
+            LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
             PlotAreaBackground="{StaticResource BackgroundBrush}"
             PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
             <oxy:Plot.Axes>
                 <oxy:LinearAxis
                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     IntervalLength="50"
-                    IsAxisVisible="False"
+                    IsAxisVisible="true"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                     MajorGridlineStyle="LongDash"
                     Maximum="{Binding MaxY}"
                     Minimum="{Binding MinY}"
                     MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
                     MinorGridlineStyle="Dash"
-                    Position="Left" />
+                    Position="Left"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                 <oxy:LinearAxis IsAxisVisible="False" Position="Bottom" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries
                     DataFieldX="Time"
-                    DataFieldY="RADistanceRaw"
+                    DataFieldY="RADistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
                     Color="Blue" />
                 <oxy:LineSeries
                     DataFieldX="Time"
-                    DataFieldY="DecDistanceRaw"
+                    DataFieldY="DecDistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
                     Color="Red" />
                 <oxy:LinearBarSeries
                     BarWidth="3"
                     DataFieldX="TimeRA"
-                    DataFieldY="RADistanceGuide"
+                    DataFieldY="RADuration"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
                     StrokeColor="Blue"
@@ -51,7 +59,7 @@
                 <oxy:LinearBarSeries
                     BarWidth="3"
                     DataFieldX="TimeDec"
-                    DataFieldY="DecDistanceGuide"
+                    DataFieldY="DECDuration"
                     DisplayMemberPath="DecDistanceGuide"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
@@ -60,6 +68,5 @@
                     Color="Red" />
             </oxy:Plot.Series>
         </oxy:Plot>
-
     </Grid>
 </UserControl>

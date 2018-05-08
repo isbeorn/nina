@@ -1,20 +1,20 @@
 ﻿using NINA.Utility;
 using System;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 
-
 namespace ZWOptical.ASISDK {
+
     public static class ASICameraDll {
+        private const string DLLNAME = "ASICamera2.dll";
 
         static ASICameraDll() {
-            DllLoader.LoadDll("ASI/ASICamera2.dll");
-        }        
+            DllLoader.LoadDll("ASI/" + DLLNAME);
+        }
 
         public enum ASI_CONTROL_TYPE {
             ASI_GAIN = 0,
@@ -38,19 +38,21 @@ namespace ZWOptical.ASISDK {
             ASI_MONO_BIN,
             ASI_FAN_ON,
             ASI_PATTERN_ADJUST,
-            ASI_ANTI_DEW_HEATER
+            ASI_ANTI_DEW_HEATER,
+            ASI_HUMIDITY,
+            ASI_ENABLE_DDR
         }
 
-
         public enum ASI_IMG_TYPE {
+
             //Supported image type
             ASI_IMG_RAW8 = 0,
+
             ASI_IMG_RGB24,
             ASI_IMG_RAW16,
             ASI_IMG_Y8,
             ASI_IMG_END = -1
         }
-
 
         public enum ASI_GUIDE_DIRECTION {
             ASI_GUIDE_NORTH = 0,
@@ -93,29 +95,34 @@ namespace ZWOptical.ASISDK {
             ASI_ERROR_GENERAL_ERROR,//general error, eg: value is out of valid range
             ASI_ERROR_END
         };
+
         public enum ASI_BOOL {
             ASI_FALSE = 0,
             ASI_TRUE
         };
+
         public enum ASI_FLIP_STATUS {
             ASI_FLIP_NONE = 0,//: original
             ASI_FLIP_HORIZ,//: horizontal flip
             ASI_FLIP_VERT,// vertical flip
             ASI_FLIP_BOTH,//:both horizontal and vertical flip
-
         };
+
         public struct ASI_CAMERA_INFO {
+
             [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 64)]
-            private byte[] name; //the name of the camera, you can display this to the UI
+            public byte[] name;// char[64]; //the name of the camera, you can display this to the UI
+
             public int CameraID; //this is used to control everything of the camera in other functions
             public int MaxHeight; //the max height of the camera
-            public int MaxWidth; //the max width of the camera
+            public int MaxWidth;	//the max width of the camera
 
             public ASI_BOOL IsColorCam;
             public ASI_BAYER_PATTERN BayerPattern;
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public int[] SupportedBins; //1 means bin1 which is supported by every camera, 2 means bin 2 etc.. 0 is the end of supported binning method
+            public int[] SupportedBins;// int[16]; //1 means bin1 which is supported by every camera, 2 means bin 2 etc.. 0 is the end of supported binning method
+
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
             public ASI_IMG_TYPE[] SupportedVideoFormat;// ASI_IMG_TYPE[8]; //this array will content with the support output format type.IMG_END is the end of supported video format
 
@@ -126,29 +133,33 @@ namespace ZWOptical.ASISDK {
             public ASI_BOOL IsUSB3Host;
             public ASI_BOOL IsUSB3Camera;
             public float ElecPerADU;
+
             [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 24)]
-            public byte[] Unused;
+            public byte[] Unused;//[20];
 
             public string Name {
                 get { return Encoding.ASCII.GetString(name).TrimEnd((Char)0); }
             }
         };
 
-
         [StructLayout(LayoutKind.Sequential)]
         public struct ASI_CONTROL_CAPS {
+
             [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 64)]
-            private byte[] name; //the name of the Control like Exposure, Gain etc..
+            public byte[] name; //the name of the Control like Exposure, Gain etc..
+
             [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 128)]
-            private byte[] description; //description of this control
+            public byte[] description; //description of this control
+
             public int MaxValue;
             public int MinValue;
             public int DefaultValue;
             public ASI_BOOL IsAutoSupported; //support auto set 1, don't support 0
-            public ASI_BOOL IsWritable; //some control like temperature can only be read by some cameras 
+            public ASI_BOOL IsWritable; //some control like temperature can only be read by some cameras
             public ASI_CONTROL_TYPE ControlType;//this is used to get value and set value of the control
+
             [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 32)]
-            public byte[] Unused;
+            public byte[] Unused;//[32];
 
             public string Name {
                 get { return Encoding.ASCII.GetString(name).TrimEnd((Char)0); }
@@ -159,20 +170,90 @@ namespace ZWOptical.ASISDK {
             }
         }
 
-        public enum ExposureStatus {
-            ExpIdle = 0, //: idle states, you can start exposure now
-            ExpWorking, //: exposing
-            ExpSuccess, // exposure finished and waiting for download
-            ExpFailed, //:exposure failed, you need to start exposure again
+        public struct ASI_ID {
 
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 8)]
+            public byte[] id;
+
+            public string ID {
+                get { return Encoding.ASCII.GetString(id).TrimEnd((Char)0); }
+            }
         }
 
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ASIGetNumOfConnectedCameras")]
-        public static extern int GetNumOfConnectedCameras();
+        [DllImport(DLLNAME, EntryPoint = "ASIGetNumOfConnectedCameras", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ASIGetNumOfConnectedCameras();
 
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, EntryPoint = "ASIGetCameraProperty", CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASIGetCameraProperty(out ASI_CAMERA_INFO pASICameraInfo, int iCameraIndex);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIOpenCamera", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIOpenCamera(int iCameraID);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIInitCamera", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIInitCamera(int iCameraID);
+
+        [DllImport(DLLNAME, EntryPoint = "ASICloseCamera", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASICloseCamera(int iCameraID);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIGetNumOfControls", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetNumOfControls(int iCameraID, out int piNumberOfControls);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIGetControlCaps", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetControlCaps(int iCameraID, int iControlIndex, out ASI_CONTROL_CAPS pControlCaps);
+
+        [DllImport(DLLNAME, EntryPoint = "ASISetControlValue", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASISetControlValue(int iCameraID, ASI_CONTROL_TYPE ControlType, int lValue, ASI_BOOL bAuto);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIGetControlValue", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetControlValue(int iCameraID, ASI_CONTROL_TYPE ControlType, out int plValue, out ASI_BOOL pbAuto);
+
+        [DllImport(DLLNAME, EntryPoint = "ASISetROIFormat", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASISetROIFormat(int iCameraID, int iWidth, int iHeight, int iBin, ASI_IMG_TYPE Img_type);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIGetROIFormat", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetROIFormat(int iCameraID, out int piWidth, out int piHeight, out int piBin, out ASI_IMG_TYPE pImg_type);
+
+        [DllImport(DLLNAME, EntryPoint = "ASISetStartPos", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASISetStartPos(int iCameraID, int iStartX, int iStartY);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIGetStartPos", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetStartPos(int iCameraID, out int piStartX, out int piStartY);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIStartVideoCapture", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIStartVideoCapture(int iCameraID);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIStopVideoCapture", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIStopVideoCapture(int iCameraID);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIGetVideoData", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetVideoData(int iCameraID, IntPtr pBuffer, int lBuffSize, int iWaitms);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIPulseGuideOn", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIPulseGuideOn(int iCameraID, ASI_GUIDE_DIRECTION direction);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIPulseGuideOff", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIPulseGuideOff(int iCameraID, ASI_GUIDE_DIRECTION direction);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIStartExposure", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIStartExposure(int iCameraID, ASI_BOOL bIsDark);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIStopExposure", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIStopExposure(int iCameraID);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIGetExpStatus", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetExpStatus(int iCameraID, out ASI_EXPOSURE_STATUS pExpStatus);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIGetDataAfterExp", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetDataAfterExp(int iCameraID, IntPtr pBuffer, int lBuffSize);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIGetGainOffset", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetGainOffset(int iCameraID, out int Offset_HighestDR, out int Offset_UnityGain, out int Gain_LowestRN, out int Offset_LowestRN);
+
+        [DllImport(DLLNAME, EntryPoint = "ASIGetID", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASIGetID(int iCameraID, out ASI_ID pID);
+
+        [DllImport(DLLNAME, EntryPoint = "ASISetID", CallingConvention = CallingConvention.Cdecl)]
+        private static extern ASI_ERROR_CODE ASISetID(int iCameraID, ASI_ID ID);
 
         public static ASI_CAMERA_INFO GetCameraProperties(int cameraIndex) {
             ASI_CAMERA_INFO result;
@@ -184,6 +265,7 @@ namespace ZWOptical.ASISDK {
             switch (errorCode) {
                 case ASI_ERROR_CODE.ASI_SUCCESS:
                     break;
+
                 case ASI_ERROR_CODE.ASI_ERROR_INVALID_INDEX:
                 case ASI_ERROR_CODE.ASI_ERROR_INVALID_ID:
                 case ASI_ERROR_CODE.ASI_ERROR_INVALID_CONTROL_TYPE:
@@ -207,34 +289,21 @@ namespace ZWOptical.ASISDK {
             }
         }
 
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIOpenCamera(int iCameraID);
+        public static int GetNumOfConnectedCameras() {
+            return ASIGetNumOfConnectedCameras();
+        }
 
         public static void OpenCamera(int cameraId) {
             CheckReturn(ASIOpenCamera(cameraId), MethodBase.GetCurrentMethod(), cameraId);
         }
 
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIInitCamera(int iCameraID);
-
         public static void InitCamera(int cameraId) {
             CheckReturn(ASIInitCamera(cameraId), MethodBase.GetCurrentMethod(), cameraId);
         }
 
-
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASICloseCamera(int iCameraID);
-
         public static void CloseCamera(int cameraId) {
             CheckReturn(ASICloseCamera(cameraId), MethodBase.GetCurrentMethod(), cameraId);
         }
-
-
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIGetNumOfControls(int iCameraID, out int piNumberOfControls);
 
         public static int GetNumOfControls(int cameraId) {
             int result;
@@ -242,18 +311,11 @@ namespace ZWOptical.ASISDK {
             return result;
         }
 
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIGetControlCaps(int iCameraID, int iControlIndex, out ASI_CONTROL_CAPS pControlCaps);
-
         public static ASI_CONTROL_CAPS GetControlCaps(int cameraIndex, int controlIndex) {
             ASI_CONTROL_CAPS result;
             CheckReturn(ASIGetControlCaps(cameraIndex, controlIndex, out result), MethodBase.GetCurrentMethod(), cameraIndex, controlIndex);
             return result;
         }
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIGetControlValue(int iCameraID, ASI_CONTROL_TYPE controlType, out int plValue, out ASI_BOOL pbAuto);
 
         public static int GetControlValue(int cameraId, ASI_CONTROL_TYPE controlType, out bool isAuto) {
             ASI_BOOL auto;
@@ -263,26 +325,13 @@ namespace ZWOptical.ASISDK {
             return result;
         }
 
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASISetControlValue(int iCameraID, ASI_CONTROL_TYPE controlType, int lValue, ASI_BOOL bAuto);
-
         public static void SetControlValue(int cameraId, ASI_CONTROL_TYPE controlType, int value, bool auto) {
             CheckReturn(ASISetControlValue(cameraId, controlType, value, auto ? ASI_BOOL.ASI_TRUE : ASI_BOOL.ASI_FALSE), MethodBase.GetCurrentMethod(), cameraId, controlType, value, auto);
         }
 
-
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASISetROIFormat(int iCameraID, int iWidth, int iHeight, int iBin, ASI_IMG_TYPE Img_type);
-
         public static void SetROIFormat(int cameraId, Size size, int bin, ASI_IMG_TYPE imageType) {
             CheckReturn(ASISetROIFormat(cameraId, size.Width, size.Height, bin, imageType), MethodBase.GetCurrentMethod(), cameraId, size, bin, imageType);
         }
-
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIGetROIFormat(int iCameraID, out int piWidth, out int piHeight, out int piBin, out ASI_IMG_TYPE pImg_type);
 
         public static Size GetROIFormat(int cameraId, out int bin, out ASI_IMG_TYPE imageType) {
             int width, height;
@@ -290,16 +339,9 @@ namespace ZWOptical.ASISDK {
             return new Size(width, height);
         }
 
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASISetStartPos(int iCameraID, int iStartX, int iStartY);
-
         public static void SetStartPos(int cameraId, Point startPos) {
             CheckReturn(ASISetStartPos(cameraId, startPos.X, startPos.Y), MethodBase.GetCurrentMethod(), cameraId, startPos);
         }
-
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIGetStartPos(int iCameraID, out int piStartX, out int piStartY);
 
         public static Point GetStartPos(int cameraId) {
             int x, y;
@@ -307,19 +349,11 @@ namespace ZWOptical.ASISDK {
             return new Point(x, y);
         }
 
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIGetDroppedFrames(int iCameraID, out int piDropFrames);
-
-        public static int GetDroppedFrames(int cameraId) {
+        /*public static int GetDroppedFrames(int cameraId) {
             int result;
             CheckReturn(ASIGetDroppedFrames(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
             return result;
         }
-
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIEnableDarkSubtract(int iCameraID, [MarshalAs(UnmanagedType.LPStr)] string pcBMPPath, out ASI_BOOL bIsSubDarkWorking);
 
         public static bool EnableDarkSubtract(int cameraId, string darkFilePath) {
             ASI_BOOL result;
@@ -327,32 +361,17 @@ namespace ZWOptical.ASISDK {
             return result != ASI_BOOL.ASI_FALSE;
         }
 
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIDisableDarkSubtract(int iCameraID);
-
         public static void DisableDarkSubtract(int cameraId) {
             CheckReturn(ASIDisableDarkSubtract(cameraId), MethodBase.GetCurrentMethod(), cameraId);
-        }
-
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIStartVideoCapture(int iCameraID);
+        }*/
 
         public static void StartVideoCapture(int cameraId) {
             CheckReturn(ASIStartVideoCapture(cameraId), MethodBase.GetCurrentMethod(), cameraId);
         }
 
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIStopVideoCapture(int iCameraID);
-
         public static void StopVideoCapture(int cameraId) {
             CheckReturn(ASIStopVideoCapture(cameraId), MethodBase.GetCurrentMethod(), cameraId);
         }
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIGetVideoData(int iCameraID, IntPtr pBuffer, int lBuffSize, int iWaitms);
 
         public static bool GetVideoData(int cameraId, IntPtr buffer, int bufferSize, int waitMs) {
             var result = ASIGetVideoData(cameraId, buffer, bufferSize, waitMs);
@@ -364,52 +383,27 @@ namespace ZWOptical.ASISDK {
             return true;
         }
 
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIPulseGuideOn(int iCameraID, ASI_GUIDE_DIRECTION direction);
-
         public static void PulseGuideOn(int cameraId, ASI_GUIDE_DIRECTION direction) {
             CheckReturn(ASIPulseGuideOn(cameraId, direction), MethodBase.GetCurrentMethod(), cameraId, direction);
         }
-
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIPulseGuideOff(int iCameraID, ASI_GUIDE_DIRECTION direction);
 
         public static void PulseGuideOff(int cameraId, ASI_GUIDE_DIRECTION direction) {
             CheckReturn(ASIPulseGuideOff(cameraId, direction), MethodBase.GetCurrentMethod(), cameraId, direction);
         }
 
-
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIStartExposure(int iCameraID, ASI_BOOL bIsDark);
-
         public static void StartExposure(int cameraId, bool isDark) {
             CheckReturn(ASIStartExposure(cameraId, isDark ? ASI_BOOL.ASI_TRUE : ASI_BOOL.ASI_FALSE), MethodBase.GetCurrentMethod(), cameraId, isDark);
         }
-
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIStopExposure(int iCameraID);
 
         public static void StopExposure(int cameraId) {
             CheckReturn(ASIStopExposure(cameraId), MethodBase.GetCurrentMethod(), cameraId);
         }
 
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIGetExpStatus(int iCameraID, out ExposureStatus pExpStatus);
-
-        public static ExposureStatus GetExposureStatus(int cameraId) {
-            ExposureStatus result;
+        public static ASI_EXPOSURE_STATUS GetExposureStatus(int cameraId) {
+            ASI_EXPOSURE_STATUS result;
             CheckReturn(ASIGetExpStatus(cameraId, out result), MethodBase.GetCurrentMethod(), cameraId);
             return result;
         }
-
-
-        [DllImport("ASICamera2.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern ASI_ERROR_CODE ASIGetDataAfterExp(int iCameraID, IntPtr pBuffer, int lBuffSize);
 
         public static bool GetDataAfterExp(int cameraId, IntPtr buffer, int bufferSize) {
             var result = ASIGetDataAfterExp(cameraId, buffer, bufferSize);
@@ -423,8 +417,8 @@ namespace ZWOptical.ASISDK {
 
     [Serializable]
     public class ASICameraException : Exception {
-        public ASICameraException(SerializationInfo info, StreamingContext context) : base(info, context) {
 
+        public ASICameraException(SerializationInfo info, StreamingContext context) : base(info, context) {
         }
 
         public ASICameraException(ASICameraDll.ASI_ERROR_CODE errorCode) : base(errorCode.ToString()) {

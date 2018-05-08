@@ -74,7 +74,6 @@
                                         Stretch="Uniform" />
                                 </Button>
                             </Grid>
-
                         </Grid>
                         <Button Command="{TemplateBinding Command}" Visibility="{Binding Command.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type local:AsyncProcessButton}}}">
                             <Button.ToolTip>
@@ -92,7 +91,6 @@
                                     Stretch="Uniform" />
                                 <TextBlock Foreground="{TemplateBinding ButtonForegroundBrush}" Text="{TemplateBinding ButtonText}" />
                             </Grid>
-
                         </Button>
                     </Grid>
                 </ControlTemplate>

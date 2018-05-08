@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace NINACustomControlLibrary {
+
     [TemplatePart(Name = "PART_TextBox", Type = typeof(TextBox))]
     [TemplatePart(Name = "PART_Decrement", Type = typeof(Button))]
     [TemplatePart(Name = "PART_Increment", Type = typeof(Button))]
     public class IntStepperControl : UserControl {
+
         static IntStepperControl() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(IntStepperControl), new FrameworkPropertyMetadata(typeof(IntStepperControl)));
         }
@@ -124,6 +121,7 @@ namespace NINACustomControlLibrary {
                 Value = MaxValue;
             }
         }
+
         private void Button_PART_Decrement_Click(object sender, RoutedEventArgs e) {
             Value -= StepSize;
             if (Value < MinValue) {

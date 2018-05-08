@@ -12,7 +12,7 @@ namespace NINA.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -710,6 +710,30 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
+        public global::System.Windows.Media.Color NotificationWarningTextColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["NotificationWarningTextColor"]));
+            }
+            set {
+                this["NotificationWarningTextColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
+        public global::System.Windows.Media.Color NotificationErrorTextColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["NotificationErrorTextColor"]));
+            }
+            set {
+                this["NotificationErrorTextColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FFF5A300")]
         public global::System.Windows.Media.Color AltNotificationWarningColor {
             get {
@@ -729,6 +753,30 @@ namespace NINA.Properties {
             }
             set {
                 this["AltNotificationErrorColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF02010A")]
+        public global::System.Windows.Media.Color AltNotificationWarningTextColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AltNotificationWarningTextColor"]));
+            }
+            set {
+                this["AltNotificationWarningTextColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF02010A")]
+        public global::System.Windows.Media.Color AltNotificationErrorTextColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AltNotificationErrorTextColor"]));
+            }
+            set {
+                this["AltNotificationErrorTextColor"] = value;
             }
         }
         
@@ -866,6 +914,30 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CameraBulbMode {
+            get {
+                return ((int)(this["CameraBulbMode"]));
+            }
+            set {
+                this["CameraBulbMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("COM1")]
+        public string CameraSerialPort {
+            get {
+                return ((string)(this["CameraSerialPort"]));
+            }
+            set {
+                this["CameraSerialPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("800")]
         public int TelescopeFocalLength {
             get {
@@ -901,25 +973,157 @@ namespace NINA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int CameraBulbMode {
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public string FilterWheelFilterPositions {
             get {
-                return ((int)(this["CameraBulbMode"]));
+                return ((string)(this["FilterWheelFilterPositions"]));
             }
             set {
-                this["CameraBulbMode"] = value;
+                this["FilterWheelFilterPositions"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("COM1")]
-        public string CameraSerialPort {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int BlindSolverType {
             get {
-                return ((string)(this["CameraSerialPort"]));
+                return ((int)(this["BlindSolverType"]));
             }
             set {
-                this["CameraSerialPort"] = value;
+                this["BlindSolverType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public int HistogramResolution {
+            get {
+                return ((int)(this["HistogramResolution"]));
+            }
+            set {
+                this["HistogramResolution"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int GuiderSettleTime {
+            get {
+                return ((int)(this["GuiderSettleTime"]));
+            }
+            set {
+                this["GuiderSettleTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public double FramingAssistantFieldOfView {
+            get {
+                return ((double)(this["FramingAssistantFieldOfView"]));
+            }
+            set {
+                this["FramingAssistantFieldOfView"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4500")]
+        public int FramingAssistantCameraWidth {
+            get {
+                return ((int)(this["FramingAssistantCameraWidth"]));
+            }
+            set {
+                this["FramingAssistantCameraWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3500")]
+        public int FramingAssistantCameraHeight {
+            get {
+                return ((int)(this["FramingAssistantCameraHeight"]));
+            }
+            set {
+                this["FramingAssistantCameraHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SequenceTemplatePath {
+            get {
+                return ((string)(this["SequenceTemplatePath"]));
+            }
+            set {
+                this["SequenceTemplatePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("90")]
+        public double AzimuthMeridianOffset {
+            get {
+                return ((double)(this["AzimuthMeridianOffset"]));
+            }
+            set {
+                this["AzimuthMeridianOffset"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double AzimuthDeclination {
+            get {
+                return ((double)(this["AzimuthDeclination"]));
+            }
+            set {
+                this["AzimuthDeclination"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-65")]
+        public double AltitudeMeridianOffset {
+            get {
+                return ((double)(this["AltitudeMeridianOffset"]));
+            }
+            set {
+                this["AltitudeMeridianOffset"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double AltitudeDeclination {
+            get {
+                return ((double)(this["AltitudeDeclination"]));
+            }
+            set {
+                this["AltitudeDeclination"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseSavedProfileSelection {
+            get {
+                return ((bool)(this["UseSavedProfileSelection"]));
+            }
+            set {
+                this["UseSavedProfileSelection"] = value;
             }
         }
     }

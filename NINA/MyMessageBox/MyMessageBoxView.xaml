@@ -47,7 +47,7 @@
                 Grid.Column="1"
                 Click="Button_OK_Click"
                 IsDefault="True"
-                Visibility="{Binding CancelVisibility}">
+                Visibility="{Binding OKVisibility}">
                 <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblOK}" />
             </Button>
             <Button

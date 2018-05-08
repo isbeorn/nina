@@ -41,9 +41,9 @@
                             <Setter Property="Opacity" Value="0.4" />
                         </Trigger>
                         <!-- <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource ButtonBackgroundBrush}"/>
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource BorderBrush}"/>
-                                <Setter Property="TextElement.Foreground" TargetName="MyContentPresenter" Value="{StaticResource PrimaryBrush}"/>
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource ButtonBackgroundBrush}" />
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource BorderBrush}" />
+                                <Setter Property="TextElement.Foreground" TargetName="MyContentPresenter" Value="{StaticResource PrimaryBrush}" />
                             </Trigger>-->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

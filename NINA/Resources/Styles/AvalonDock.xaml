@@ -30,7 +30,6 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
-
     <Style TargetType="{x:Type dock:LayoutDocumentTabItem}">
         <Setter Property="Margin" Value="-6,-10,-6,-10" />
         <Setter Property="Template">
@@ -69,8 +68,6 @@
                                 </Grid>
                             </Grid>
                         </Border>
-
-
                     </dock:DropDownControlArea>
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding Path=IsSelected}" Value="true">
@@ -133,7 +130,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 
     <ControlTemplate x:Key="AnchorTemplate" TargetType="{x:Type dock:LayoutAnchorControl}">
         <Border
@@ -331,7 +327,6 @@
         </Setter>
     </Style>
 
-
     <Style TargetType="{x:Type dock:LayoutAutoHideWindowControl}">
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
     </Style>
@@ -349,7 +344,6 @@
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
     </Style>
-
 
     <Style TargetType="dock:AnchorablePaneTitle">
         <Setter Property="Template">
@@ -379,9 +373,8 @@
                                 Grid.Column="1"
                                 DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}"
                                 DropDownContextMenuDataContext="{Binding Path=LayoutItem, RelativeSource={RelativeSource TemplatedParent}}"
-                                ToolTip="{x:Static avalonDockProperties:Resources.Anchorable_CxMenu_Hint}"
-                                >
-                                <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/PinMenu.png"/>
+                                ToolTip="{x:Static avalonDockProperties:Resources.Anchorable_CxMenu_Hint}">
+                                <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/PinMenu.png" />
                             </avalonDockControls:DropDownButton>-->
 
                             <!--<Button x:Name="PART_AutoHidePin"
@@ -391,7 +384,7 @@
                                 Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
                                 Command="{Binding Path=LayoutItem.AutoHideCommand, RelativeSource={RelativeSource TemplatedParent}}"
                                 ToolTip="">
-                                <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/PinAutoHide.png"/>
+                                <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/PinAutoHide.png" />
                             </Button>-->
 
                             <Button
@@ -404,26 +397,23 @@
                                 Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
                                 <Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/PinClose.png" />
                             </Button>
-
-
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
                         <!--<DataTrigger Binding="{Binding Model.IsAutoHidden, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                             <Setter Property="LayoutTransform" TargetName="PART_AutoHidePin">
                                 <Setter.Value>
-                                    <RotateTransform Angle="90"/>
+                                    <RotateTransform Angle="90" />
                                 </Setter.Value>
                             </Setter>
                         </DataTrigger>-->
                         <!--<DataTrigger Binding="{Binding Path=CanClose}" Value="false">
-                            <Setter Property="IsEnabled" Value="False" TargetName="PART_HidePin"  />
-                            <Setter Property="Visibility" Value="Collapsed" TargetName="PART_ContextMenu"  />
+                            <Setter Property="IsEnabled" Value="False" TargetName="PART_HidePin" />
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="PART_ContextMenu" />
                         </DataTrigger>-->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
 </ResourceDictionary>

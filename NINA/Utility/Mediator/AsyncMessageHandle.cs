@@ -3,260 +3,331 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.PlateSolving;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Utility.Mediator {
-    
-
-    
     /* Handler definition */
-    abstract class AsyncMessageHandle {
+
+    internal abstract class AsyncMessageHandle {
         public abstract string MessageType { get; }
     }
 
-    abstract class AsyncMessageHandle<TResult> : AsyncMessageHandle {
+    internal abstract class AsyncMessageHandle<TResult> : AsyncMessageHandle {
         protected Func<AsyncMediatorMessage<TResult>, Task<TResult>> Callback { get; set; }
+
         public async Task<TResult> Send(AsyncMediatorMessage<TResult> msg) {
             return await Callback(msg);
         }
     }
 
-
     /* Specific handler */
-    class PauseGuiderMessageHandle : AsyncMessageHandle<bool> {
+
+    internal class PauseGuiderMessageHandle : AsyncMessageHandle<bool> {
+
         public PauseGuiderMessageHandle(Func<PauseGuiderMessage, Task<bool>> callback) {
             Callback = (f) => callback((PauseGuiderMessage)f);
         }
+
         public override string MessageType { get { return typeof(PauseGuiderMessage).Name; } }
     }
 
-    class StartGuiderMessageHandle : AsyncMessageHandle<bool> {
+    internal class StartGuiderMessageHandle : AsyncMessageHandle<bool> {
+
         public StartGuiderMessageHandle(Func<StartGuiderMessage, Task<bool>> callback) {
             Callback = (f) => callback((StartGuiderMessage)f);
         }
+
         public override string MessageType { get { return typeof(StartGuiderMessage).Name; } }
     }
 
-    class DitherGuiderMessageHandle : AsyncMessageHandle<bool> {
+    internal class StopGuiderMessageHandle : AsyncMessageHandle<bool> {
+
+        public StopGuiderMessageHandle(Func<StopGuiderMessage, Task<bool>> callback) {
+            Callback = (f) => callback((StopGuiderMessage)f);
+        }
+
+        public override string MessageType { get { return typeof(StopGuiderMessage).Name; } }
+    }
+
+    internal class DitherGuiderMessageHandle : AsyncMessageHandle<bool> {
+
         public DitherGuiderMessageHandle(Func<DitherGuiderMessage, Task<bool>> callback) {
             Callback = (f) => callback((DitherGuiderMessage)f);
         }
+
         public override string MessageType { get { return typeof(DitherGuiderMessage).Name; } }
     }
 
-    class AutoSelectGuideStarMessageHandle : AsyncMessageHandle<bool> {
+    internal class AutoSelectGuideStarMessageHandle : AsyncMessageHandle<bool> {
+
         public AutoSelectGuideStarMessageHandle(Func<AutoSelectGuideStarMessage, Task<bool>> callback) {
             Callback = (f) => callback((AutoSelectGuideStarMessage)f);
         }
+
         public override string MessageType { get { return typeof(AutoSelectGuideStarMessage).Name; } }
     }
 
-    class CheckMeridianFlipMessageHandle : AsyncMessageHandle<bool> {
+    internal class CheckMeridianFlipMessageHandle : AsyncMessageHandle<bool> {
+
         public CheckMeridianFlipMessageHandle(Func<CheckMeridianFlipMessage, Task<bool>> callback) {
             Callback = (f) => callback((CheckMeridianFlipMessage)f);
         }
+
         public override string MessageType { get { return typeof(CheckMeridianFlipMessage).Name; } }
     }
 
-    class SlewTocoordinatesMessageHandle : AsyncMessageHandle<bool> {
+    internal class SlewTocoordinatesMessageHandle : AsyncMessageHandle<bool> {
+
         public SlewTocoordinatesMessageHandle(Func<SlewToCoordinatesMessage, Task<bool>> callback) {
             Callback = (f) => callback((SlewToCoordinatesMessage)f);
         }
+
         public override string MessageType { get { return typeof(SlewToCoordinatesMessage).Name; } }
     }
 
-    class SetSequenceCoordinatesMessageHandle : AsyncMessageHandle<bool> {
+    internal class SetSequenceCoordinatesMessageHandle : AsyncMessageHandle<bool> {
+
         public SetSequenceCoordinatesMessageHandle(Func<SetSequenceCoordinatesMessage, Task<bool>> callback) {
             Callback = (f) => callback((SetSequenceCoordinatesMessage)f);
         }
+
         public override string MessageType { get { return typeof(SetSequenceCoordinatesMessage).Name; } }
     }
 
-    class MoveFocuserMessageHandle : AsyncMessageHandle<int> {
+    internal class SetFramingAssistantCoordinatesMessageHandle : AsyncMessageHandle<bool> {
+
+        public SetFramingAssistantCoordinatesMessageHandle(Func<SetFramingAssistantCoordinatesMessage, Task<bool>> callback) {
+            Callback = (f) => callback((SetFramingAssistantCoordinatesMessage)f);
+        }
+
+        public override string MessageType { get { return typeof(SetFramingAssistantCoordinatesMessage).Name; } }
+    }
+
+    internal class MoveFocuserMessageHandle : AsyncMessageHandle<int> {
+
         public MoveFocuserMessageHandle(Func<MoveFocuserMessage, Task<int>> callback) {
             Callback = (f) => callback((MoveFocuserMessage)f);
         }
+
         public override string MessageType { get { return typeof(MoveFocuserMessage).Name; } }
     }
 
-    class PlateSolveMessageHandle : AsyncMessageHandle<PlateSolveResult> {
+    internal class PlateSolveMessageHandle : AsyncMessageHandle<PlateSolveResult> {
+
         public PlateSolveMessageHandle(Func<PlateSolveMessage, Task<PlateSolveResult>> callback) {
             Callback = (f) => callback((PlateSolveMessage)f);
         }
+
         public override string MessageType { get { return typeof(PlateSolveMessage).Name; } }
     }
 
-    class ChangeFilterWheelPositionMessageHandle : AsyncMessageHandle<FilterInfo> {
+    internal class ChangeFilterWheelPositionMessageHandle : AsyncMessageHandle<FilterInfo> {
+
         public ChangeFilterWheelPositionMessageHandle(Func<ChangeFilterWheelPositionMessage, Task<FilterInfo>> callback) {
             Callback = (f) => callback((ChangeFilterWheelPositionMessage)f);
         }
+
         public override string MessageType { get { return typeof(ChangeFilterWheelPositionMessage).Name; } }
     }
 
-    class StartAutoFocusMessageHandle : AsyncMessageHandle<bool> {
+    internal class StartAutoFocusMessageHandle : AsyncMessageHandle<bool> {
+
         public StartAutoFocusMessageHandle(Func<StartAutoFocusMessage, Task<bool>> callback) {
             Callback = (f) => callback((StartAutoFocusMessage)f);
         }
+
         public override string MessageType { get { return typeof(StartAutoFocusMessage).Name; } }
     }
 
-    class ConnectCameraMessageHandle : AsyncMessageHandle<bool> {
+    internal class ConnectCameraMessageHandle : AsyncMessageHandle<bool> {
+
         public ConnectCameraMessageHandle(Func<ConnectCameraMessage, Task<bool>> callback) {
             Callback = (f) => callback((ConnectCameraMessage)f);
         }
+
         public override string MessageType { get { return typeof(ConnectCameraMessage).Name; } }
     }
 
-    class ConnectFilterWheelMessageHandle : AsyncMessageHandle<bool> {
+    internal class ConnectFilterWheelMessageHandle : AsyncMessageHandle<bool> {
+
         public ConnectFilterWheelMessageHandle(Func<ConnectFilterWheelMessage, Task<bool>> callback) {
             Callback = (f) => callback((ConnectFilterWheelMessage)f);
         }
+
         public override string MessageType { get { return typeof(ConnectFilterWheelMessage).Name; } }
     }
 
-    class ConnectFocuserMessageHandle : AsyncMessageHandle<bool> {
+    internal class ConnectFocuserMessageHandle : AsyncMessageHandle<bool> {
+
         public ConnectFocuserMessageHandle(Func<ConnectFocuserMessage, Task<bool>> callback) {
             Callback = (f) => callback((ConnectFocuserMessage)f);
         }
+
         public override string MessageType { get { return typeof(ConnectFocuserMessage).Name; } }
     }
 
-    class ConnectTelescopeMessageHandle : AsyncMessageHandle<bool> {
+    internal class ConnectTelescopeMessageHandle : AsyncMessageHandle<bool> {
+
         public ConnectTelescopeMessageHandle(Func<ConnectTelescopeMessage, Task<bool>> callback) {
             Callback = (f) => callback((ConnectTelescopeMessage)f);
         }
+
         public override string MessageType { get { return typeof(ConnectTelescopeMessage).Name; } }
     }
 
+    internal class CaptureImageMessageHandle : AsyncMessageHandle<ImageArray> {
 
-
-
-    class CaptureImageMessageHandle : AsyncMessageHandle<ImageArray> {
         public CaptureImageMessageHandle(Func<CaptureImageMessage, Task<ImageArray>> callback) {
             Callback = (f) => callback((CaptureImageMessage)f);
         }
+
         public override string MessageType { get { return typeof(CaptureImageMessage).Name; } }
     }
 
-    class CalculateHFRMessageHandle : AsyncMessageHandle<double> {
+    internal class CalculateHFRMessageHandle : AsyncMessageHandle<double> {
+
         public CalculateHFRMessageHandle(Func<CalculateHFRMessage, Task<double>> callback) {
             Callback = (f) => callback((CalculateHFRMessage)f);
         }
+
         public override string MessageType { get { return typeof(CalculateHFRMessage).Name; } }
     }
 
-    class CaptureAndPrepareImageMessageHandle : AsyncMessageHandle<BitmapSource> {
+    internal class CaptureAndPrepareImageMessageHandle : AsyncMessageHandle<BitmapSource> {
+
         public CaptureAndPrepareImageMessageHandle(Func<CaptureAndPrepareImageMessage, Task<BitmapSource>> callback) {
             Callback = (f) => callback((CaptureAndPrepareImageMessage)f);
         }
+
         public override string MessageType { get { return typeof(CaptureAndPrepareImageMessage).Name; } }
     }
 
-    class CapturePrepareAndSaveImageMessageHandle : AsyncMessageHandle<bool> {
+    internal class CapturePrepareAndSaveImageMessageHandle : AsyncMessageHandle<bool> {
+
         public CapturePrepareAndSaveImageMessageHandle(Func<CapturePrepareAndSaveImageMessage, Task<bool>> callback) {
             Callback = (f) => callback((CapturePrepareAndSaveImageMessage)f);
         }
+
         public override string MessageType { get { return typeof(CapturePrepareAndSaveImageMessage).Name; } }
     }
 
-    class AddThumbnailMessageHandle : AsyncMessageHandle<bool> {
+    internal class AddThumbnailMessageHandle : AsyncMessageHandle<bool> {
+
         public AddThumbnailMessageHandle(Func<AddThumbnailMessage, Task<bool>> callback) {
             Callback = (f) => callback((AddThumbnailMessage)f);
         }
+
         public override string MessageType { get { return typeof(AddThumbnailMessage).Name; } }
     }
 
-    class SetImageMessageHandle : AsyncMessageHandle<bool> {
+    internal class SetImageMessageHandle : AsyncMessageHandle<bool> {
+
         public SetImageMessageHandle(Func<SetImageMessage, Task<bool>> callback) {
             Callback = (f) => callback((SetImageMessage)f);
         }
+
         public override string MessageType { get { return typeof(SetImageMessage).Name; } }
     }
 
+    internal class InitiateLiveViewMessageHandle : AsyncMessageHandle<bool> {
+
+        public InitiateLiveViewMessageHandle(Func<InitiateLiveViewMessage, Task<bool>> callback) {
+            Callback = (f) => callback((InitiateLiveViewMessage)f);
+        }
+
+        public override string MessageType { get { return typeof(InitiateLiveViewMessage).Name; } }
+    }
 
     /* Message definition */
-    abstract class AsyncMediatorMessage<TMessageResult> {
+
+    internal abstract class AsyncMediatorMessage<TMessageResult> {
         public CancellationToken Token { get; set; } = default(CancellationToken);
         public IProgress<ApplicationStatus> Progress { get; set; }
     }
 
-
     /* Specific message */
-    class PauseGuiderMessage : AsyncMediatorMessage<bool> {
+
+    internal class PauseGuiderMessage : AsyncMediatorMessage<bool> {
         public bool Pause { get; set; }
     }
 
-    class StartGuiderMessage : AsyncMediatorMessage<bool> { }
+    internal class StartGuiderMessage : AsyncMediatorMessage<bool> { }
 
-    class DitherGuiderMessage : AsyncMediatorMessage<bool> { }
+    internal class StopGuiderMessage : AsyncMediatorMessage<bool> { }
 
-    class AutoSelectGuideStarMessage : AsyncMediatorMessage<bool> { }
+    internal class DitherGuiderMessage : AsyncMediatorMessage<bool> { }
 
-    class CheckMeridianFlipMessage : AsyncMediatorMessage<bool> {
+    internal class AutoSelectGuideStarMessage : AsyncMediatorMessage<bool> { }
+
+    internal class CheckMeridianFlipMessage : AsyncMediatorMessage<bool> {
         public CaptureSequence Sequence { get; set; }
     }
 
-    class SlewToCoordinatesMessage : AsyncMediatorMessage<bool> {
+    internal class SlewToCoordinatesMessage : AsyncMediatorMessage<bool> {
         public Coordinates Coordinates { get; set; }
     }
 
-    class SetSequenceCoordinatesMessage : AsyncMediatorMessage<bool> {
+    internal class SetSequenceCoordinatesMessage : AsyncMediatorMessage<bool> {
         public DeepSkyObject DSO { get; set; }
     }
 
-    class MoveFocuserMessage : AsyncMediatorMessage<int> {
+    internal class SetFramingAssistantCoordinatesMessage : AsyncMediatorMessage<bool> {
+        public DeepSkyObject DSO { get; set; }
+    }
+
+    internal class MoveFocuserMessage : AsyncMediatorMessage<int> {
         public int Position { get; set; }
         public bool Absolute { get; set; } = true;
     }
 
-    class PlateSolveMessage : AsyncMediatorMessage<PlateSolveResult> {
+    internal class PlateSolveMessage : AsyncMediatorMessage<PlateSolveResult> {
         public CaptureSequence Sequence { get; set; }
         public bool SyncReslewRepeat { get; set; }
         public BitmapSource Image { get; internal set; }
+        public bool Silent { get; set; }
+        public bool Blind { get; set; }
     }
 
-    class ChangeFilterWheelPositionMessage : AsyncMediatorMessage<FilterInfo> {
+    internal class ChangeFilterWheelPositionMessage : AsyncMediatorMessage<FilterInfo> {
         public FilterInfo Filter { get; set; }
     }
 
-    class StartAutoFocusMessage : AsyncMediatorMessage<bool> {
-        public FilterInfo Filter{ get; set; }
+    internal class StartAutoFocusMessage : AsyncMediatorMessage<bool> {
+        public FilterInfo Filter { get; set; }
     }
 
-    class ConnectCameraMessage : AsyncMediatorMessage<bool> { }
-    class ConnectFilterWheelMessage : AsyncMediatorMessage<bool> { }
-    class ConnectFocuserMessage : AsyncMediatorMessage<bool> { }
-    class ConnectTelescopeMessage : AsyncMediatorMessage<bool> { }
+    internal class ConnectCameraMessage : AsyncMediatorMessage<bool> { }
 
+    internal class ConnectFilterWheelMessage : AsyncMediatorMessage<bool> { }
 
+    internal class ConnectFocuserMessage : AsyncMediatorMessage<bool> { }
 
+    internal class ConnectTelescopeMessage : AsyncMediatorMessage<bool> { }
 
-    class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {        
+    internal class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {
         public CaptureSequence Sequence { get; set; }
     }
 
     //todo
-    class CalculateHFRMessage : AsyncMediatorMessage<double> {
+    internal class CalculateHFRMessage : AsyncMediatorMessage<double> {
         public ImageArray ImageArray { get; set; }
     }
 
-    class CaptureAndPrepareImageMessage : AsyncMediatorMessage<BitmapSource> {
+    internal class CaptureAndPrepareImageMessage : AsyncMediatorMessage<BitmapSource> {
         public CaptureSequence Sequence { get; set; }
     }
-    
-    class CapturePrepareAndSaveImageMessage : AsyncMediatorMessage<bool> {
+
+    internal class CapturePrepareAndSaveImageMessage : AsyncMediatorMessage<bool> {
         public CaptureSequence Sequence { get; set; }
         public bool Save { get; set; }
         public string TargetName { get; set; }
     }
 
-    class AddThumbnailMessage : AsyncMediatorMessage<bool> {
+    internal class AddThumbnailMessage : AsyncMediatorMessage<bool> {
         public BitmapSource Image { get; set; }
         public double Mean { get; set; }
         public Uri PathToImage { get; set; }
@@ -268,9 +339,12 @@ namespace NINA.Utility.Mediator {
         public int StatisticsId { get; internal set; }
     }
 
-    class SetImageMessage : AsyncMediatorMessage<bool> {
+    internal class SetImageMessage : AsyncMediatorMessage<bool> {
         public ImageArray ImageArray { get; set; }
         public double Mean { get; set; }
+        public Double ExposureTime { get; set; }
     }
 
+    internal class InitiateLiveViewMessage : AsyncMediatorMessage<bool> {
+    }
 }

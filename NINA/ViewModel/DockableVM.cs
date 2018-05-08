@@ -1,15 +1,12 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NINA.ViewModel {
+
     public class DockableVM : BaseVM {
+
         public DockableVM() : base() {
             this.CanClose = true;
             this.IsClosed = false;
@@ -23,6 +20,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _isClosed;
+
         public bool IsClosed {
             get {
                 return _isClosed;
@@ -33,8 +31,8 @@ namespace NINA.ViewModel {
             }
         }
 
-
         private bool _canClose;
+
         public bool CanClose {
             get {
                 return _canClose;
@@ -42,11 +40,11 @@ namespace NINA.ViewModel {
             set {
                 _canClose = value;
                 RaisePropertyChanged();
-
             }
         }
 
         private string _contentId;
+
         public string ContentId {
             get {
                 return _contentId;
@@ -54,11 +52,11 @@ namespace NINA.ViewModel {
             set {
                 _contentId = value;
                 RaisePropertyChanged();
-
             }
         }
 
         private string _titleLabel;
+
         public string Title {
             get {
                 return Locale.Loc.Instance[_titleLabel]; ;
@@ -66,11 +64,11 @@ namespace NINA.ViewModel {
             set {
                 _titleLabel = value;
                 RaisePropertyChanged();
-
             }
         }
 
         protected bool _isVisible;
+
         public bool IsVisible {
             get {
                 return _isVisible;
@@ -82,6 +80,7 @@ namespace NINA.ViewModel {
         }
 
         private GeometryGroup _imageGeometry;
+
         public GeometryGroup ImageGeometry {
             get {
                 return _imageGeometry;
@@ -97,6 +96,5 @@ namespace NINA.ViewModel {
         public void Hide(object o) {
             this.IsVisible = !IsVisible;
         }
-
     }
 }

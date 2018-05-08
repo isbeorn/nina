@@ -1,14 +1,10 @@
 ﻿using NINA.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace NINA.Model
-{
+namespace NINA.Model {
+
     public class ApplicationStatus : BaseINPC {
         private string _source;
+
         public string Source {
             get {
                 return _source;
@@ -20,6 +16,7 @@ namespace NINA.Model
         }
 
         private string _status;
+
         public string Status {
             get {
                 return _status;
@@ -31,6 +28,7 @@ namespace NINA.Model
         }
 
         private double _progress = -1;
+
         public double Progress {
             get {
                 return _progress;
@@ -42,6 +40,7 @@ namespace NINA.Model
         }
 
         private int _maxProgress = 1;
+
         public int MaxProgress {
             get {
                 return _maxProgress;
@@ -53,6 +52,7 @@ namespace NINA.Model
         }
 
         private StatusProgressType _progressType = StatusProgressType.Percent;
+
         public StatusProgressType ProgressType {
             get {
                 return _progressType;
@@ -63,12 +63,9 @@ namespace NINA.Model
             }
         }
 
-
         public enum StatusProgressType {
             Percent,
             ValueOfMaxValue
         }
-
-
     }
 }

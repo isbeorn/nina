@@ -5,15 +5,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.AstrometryIndexDownloader {
+
     public class AstrometryIndexDownloaderVM : BaseINPC {
         private const string WIDEFIELDINDEXESURL = "http://broiler.astrometry.net/~dstn/4100/";
         private const string INDEXESURL = "http://broiler.astrometry.net/~dstn/4200/";
-
 
         private AstrometryIndexDownloaderVM(string destinationfolder) {
             _focalLength = 750;
@@ -32,7 +31,8 @@ namespace NINA.AstrometryIndexDownloader {
 
         private string _destinationfolder;
 
-        CancellationTokenSource _cancelDownloadToken;
+        private CancellationTokenSource _cancelDownloadToken;
+
         private void CancelDownload(object obj) {
             _cancelDownloadToken?.Cancel();
         }
@@ -41,10 +41,10 @@ namespace NINA.AstrometryIndexDownloader {
             _cancelDownloadToken = new CancellationTokenSource();
 
             return await Task<bool>.Run(async () => await Download(progress));
-
         }
 
         private int _maximumFiles;
+
         public int MaximumFiles {
             get {
                 return _maximumFiles;
@@ -56,6 +56,7 @@ namespace NINA.AstrometryIndexDownloader {
         }
 
         private int _processedFiles;
+
         public int ProcessedFiles {
             get {
                 return _processedFiles;
@@ -89,7 +90,6 @@ namespace NINA.AstrometryIndexDownloader {
                     }
                 }
             } catch (OperationCanceledException) {
-
             }
             progress.Report("Finished");
             return true;
@@ -102,16 +102,24 @@ namespace NINA.AstrometryIndexDownloader {
                 try {
                     await client.DownloadFileTaskAsync(url, _destinationfolder + file.Name);
                     success = true;
+                } catch (WebException ex) {
+                    if (ex.InnerException.GetType() == typeof(System.UnauthorizedAccessException)) {
+                        Logger.Error(ex.InnerException);
+                        System.Windows.MessageBox.Show(ex.InnerException.Message);
+                    } else {
+                        Logger.Error(ex);
+                        System.Windows.MessageBox.Show(ex.Message);
+                    }
                 } catch (Exception ex) {
-                    Logger.Error(ex.Message, ex.StackTrace);
+                    Logger.Error(ex);
                     System.Windows.MessageBox.Show(ex.Message);
                 }
-
             }
             return success;
         }
 
         private IAsyncCommand _downloadCommand;
+
         public IAsyncCommand DownloadCommand {
             get {
                 return _downloadCommand;
@@ -123,6 +131,7 @@ namespace NINA.AstrometryIndexDownloader {
         }
 
         private RelayCommand _cancelDownloadCommand;
+
         public RelayCommand CancelDownloadCommand {
             get {
                 return _cancelDownloadCommand;
@@ -135,6 +144,7 @@ namespace NINA.AstrometryIndexDownloader {
         }
 
         private string _downloadStatus;
+
         public string DownloadStatus {
             get {
                 return _downloadStatus;
@@ -163,6 +173,7 @@ namespace NINA.AstrometryIndexDownloader {
         }
 
         private int _focalLength;
+
         public int FocalLength {
             get {
                 return _focalLength;
@@ -177,6 +188,7 @@ namespace NINA.AstrometryIndexDownloader {
         }
 
         private double _pixelSize;
+
         public double PixelSize {
             get {
                 return _pixelSize;
@@ -191,6 +203,7 @@ namespace NINA.AstrometryIndexDownloader {
         }
 
         private double _camWidth;
+
         public double CamWidth {
             get {
                 return _camWidth;
@@ -205,6 +218,7 @@ namespace NINA.AstrometryIndexDownloader {
         }
 
         private double _camHeight;
+
         public double CamHeight {
             get {
                 return _camHeight;
@@ -215,11 +229,11 @@ namespace NINA.AstrometryIndexDownloader {
                 RaisePropertyChanged(nameof(ArcsecPerPixel));
                 RaisePropertyChanged(nameof(FieldOfView));
                 RaisePropertyChanged(nameof(RecommendedIndexes));
-
             }
         }
 
-        IndexFile _selectedNarrowest;
+        private IndexFile _selectedNarrowest;
+
         public IndexFile SelectedNarrowest {
             get {
                 return _selectedNarrowest;
@@ -230,7 +244,8 @@ namespace NINA.AstrometryIndexDownloader {
             }
         }
 
-        IndexFile _selectedWidest;
+        private IndexFile _selectedWidest;
+
         public IndexFile SelectedWidest {
             get {
                 return _selectedWidest;
@@ -243,13 +258,13 @@ namespace NINA.AstrometryIndexDownloader {
 
         public double ArcsecPerPixel {
             get {
-                return (PixelSize / FocalLength) * 206.3; ;
+                return Astrometry.ArcsecPerPixel(PixelSize, FocalLength);
             }
         }
 
         public double FieldOfView {
             get {
-                return Astrometry.ArcsecToArcmin(ArcsecPerPixel * Math.Max(CamWidth, CamHeight));
+                return Astrometry.MaxFieldOfView(ArcsecPerPixel, CamWidth, CamHeight);
             }
         }
 
@@ -266,7 +281,6 @@ namespace NINA.AstrometryIndexDownloader {
                 return nearestmin.Name + " to " + nearestmax.Name;
             }
         }
-
 
         private void GetIndexList() {
             Indexes.Add(new IndexFile { Name = "index-4219.fits", Stars = 1080, MinArcMin = 1.4e+03, MaxArcMin = 2e+03 });
@@ -587,6 +601,7 @@ namespace NINA.AstrometryIndexDownloader {
         }
 
         private ObservableCollection<IndexFile> _indexes;
+
         public ObservableCollection<IndexFile> Indexes {
             get {
                 if (_indexes == null) {
@@ -600,9 +615,7 @@ namespace NINA.AstrometryIndexDownloader {
         }
 
         /*public string GetDirectoryListingRegexForUrl(string url) {
-            
                 return "<a href=\".*\">(?<name>.*.fits)</a>";
-           
         }
         public void SendWebRequest(string url) {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -621,7 +634,6 @@ namespace NINA.AstrometryIndexDownloader {
                     }
                 }
             }
-
         }
         */
 
@@ -631,6 +643,5 @@ namespace NINA.AstrometryIndexDownloader {
             public double MinArcMin { get; set; }
             public double MaxArcMin { get; set; }
         }
-
     }
 }
