@@ -437,6 +437,32 @@ namespace NINA.Model {
             }
         }
 
+        private bool _autoFocusAfterSetTime;
+
+        [XmlAttribute(nameof(AutoFocusAfterSetTime))]
+        public bool AutoFocusAfterSetTime {
+            get {
+                return _autoFocusAfterSetTime;
+            }
+            set {
+                _autoFocusAfterSetTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _autoFocusSetTime = 30;
+
+        [XmlAttribute(nameof(AutoFocusSetTime))]
+        public double AutoFocusSetTime {
+            get {
+                return _autoFocusSetTime;
+            }
+            set {
+                _autoFocusSetTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool _altitudeVisisble;
 
         [XmlIgnore]

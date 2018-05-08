@@ -653,4 +653,7 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
 Aktueller HFR : {1}
 Berechneter HFR: {2}
     </s:String>
+    <s:String x:Key="LblMinutesShort">min</s:String>
+    <s:String x:Key="LblAutoFocusAfterSetTime">Autofokus nach verstrichener Zeit</s:String>
+    <s:String x:Key="LblAutoFocusSetTime">Zeit</s:String>
 </ResourceDictionary>

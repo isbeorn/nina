@@ -223,6 +223,7 @@ namespace NINA.ViewModel {
                     CaptureSequence seq;
                     var actualFilter = Mediator.Instance.Request(new GetCurrentFilterInfoMessage());
                     short prevFilterPosition = actualFilter?.Position ?? -1;
+                    var lastAutoFocusTime = DateTime.Now;
                     while ((seq = Sequence.Next()) != null) {
                         await CheckMeridianFlip(seq, ct, progress);
 
@@ -231,6 +232,11 @@ namespace NINA.ViewModel {
                         if (seq.FilterType != null && seq.FilterType.Position != prevFilterPosition
                                 && seq.FilterType.Position >= 0
                                 && Sequence.AutoFocusOnFilterChange) {
+                            await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
+                        }
+
+                        /* Trigger autofocus after a set time if enabled */
+                        if (Sequence.AutoFocusAfterSetTime && (DateTime.Now - lastAutoFocusTime) > TimeSpan.FromMinutes(Sequence.AutoFocusSetTime)) {
                             await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
                         }
 

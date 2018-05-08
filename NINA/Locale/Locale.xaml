@@ -645,4 +645,7 @@ Drag the rectangle over a star whith the bahtinov spikes. NINA will try to detec
 Actual HFR : {1}
 Calculated HFR: {2}
     </s:String>
+    <s:String x:Key="LblMinutesShort">min</s:String>
+    <s:String x:Key="LblAutoFocusAfterSetTime">Auto Focus after elapsed Time</s:String>
+    <s:String x:Key="LblAutoFocusSetTime">Time</s:String>
 </ResourceDictionary>

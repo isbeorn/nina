@@ -648,4 +648,7 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
 Actual HFR : {1}
 Calculated HFR: {2}
     </s:String>
+    <s:String x:Key="LblMinutesShort">min</s:String>
+    <s:String x:Key="LblAutoFocusAfterSetTime">Auto Focus after elapsed Time</s:String>
+    <s:String x:Key="LblAutoFocusSetTime">Time</s:String>
 </ResourceDictionary>

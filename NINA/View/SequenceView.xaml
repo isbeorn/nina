@@ -138,6 +138,40 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterSetTime}" />
+                                    <CheckBox
+                                        Width="75"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        IsChecked="{Binding AutoFocusAfterSetTime}" />
+                                </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusSetTime}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox
+                                            Width="75"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            Text="{Binding AutoFocusSetTime}" />
+                                        <TextBlock
+                                            Width="75"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblMinutesShort}" />
+                                    </StackPanel>
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
                         <Border
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0,0,0,1"
