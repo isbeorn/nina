@@ -463,6 +463,32 @@ namespace NINA.Model {
             }
         }
 
+        private bool _autoFocusAfterSetExposures;
+
+        [XmlAttribute(nameof(AutoFocusAfterSetExposures))]
+        public bool AutoFocusAfterSetExposures {
+            get {
+                return _autoFocusAfterSetExposures;
+            }
+            set {
+                _autoFocusAfterSetExposures = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _autoFocusSetExposures = 10;
+
+        [XmlAttribute(nameof(AutoFocusSetExposures))]
+        public double AutoFocusSetExposures {
+            get {
+                return _autoFocusSetExposures;
+            }
+            set {
+                _autoFocusSetExposures = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool _altitudeVisisble;
 
         [XmlIgnore]

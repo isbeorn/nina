@@ -224,7 +224,10 @@ namespace NINA.ViewModel {
                     var actualFilter = Mediator.Instance.Request(new GetCurrentFilterInfoMessage());
                     short prevFilterPosition = actualFilter?.Position ?? -1;
                     var lastAutoFocusTime = DateTime.Now;
+                    var exposureCount = 0;
                     while ((seq = Sequence.Next()) != null) {
+                        exposureCount++;
+
                         await CheckMeridianFlip(seq, ct, progress);
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
@@ -237,6 +240,10 @@ namespace NINA.ViewModel {
 
                         /* Trigger autofocus after a set time if enabled */
                         if (Sequence.AutoFocusAfterSetTime && (DateTime.Now - lastAutoFocusTime) > TimeSpan.FromMinutes(Sequence.AutoFocusSetTime)) {
+                            await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
+                        }
+
+                        if (Sequence.AutoFocusAfterSetExposures && exposureCount % Sequence.AutoFocusSetExposures == 0) {
                             await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
                         }
 

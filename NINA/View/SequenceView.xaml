@@ -172,6 +172,32 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterSetExposures}" />
+                                    <CheckBox
+                                        Width="75"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        IsChecked="{Binding AutoFocusAfterSetExposures}" />
+                                </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusNrOfExposures}" />
+                                    <TextBox
+                                        Width="75"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        Text="{Binding AutoFocusSetExposures}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
                         <Border
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0,0,0,1"
