@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Mediator;
@@ -116,11 +117,11 @@ namespace NINA.ViewModel {
             var comparer = new FocusPointComparer();
             for (int i = 0; i < nrOfSteps; i++) {
                 token.ThrowIfCancellationRequested();
-                                
+
                 var iarr = await TakeExposure(filter, token, progress);
 
                 var hfr = await EvaluateExposure(iarr, token, progress);
-                
+
                 token.ThrowIfCancellationRequested();
 
                 FocusPoints.AddSorted(new DataPoint(_focusPosition, hfr), comparer);
@@ -136,12 +137,11 @@ namespace NINA.ViewModel {
 
         private async Task<ImageArray> TakeExposure(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Starting Exposure for autofocus");
-            double expTime = Settings.FocuserAutoFocusExposureTime;
+            double expTime = ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusExposureTime;
             if (filter != null && filter.AutoFocusExposureTime > 0) {
                 expTime = filter.AutoFocusExposureTime;
             }
             var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
-
 
             return await Mediator.Instance.RequestAsync(new CaptureImageMessage() { Sequence = seq, Token = token, Progress = progress });
         }
@@ -165,10 +165,9 @@ namespace NINA.ViewModel {
 
             var hfr = await EvaluateExposure(iarr, token, progress);
 
-            if(hfr > (focusPoint.Y * 1.25)) {
+            if (hfr > (focusPoint.Y * 1.25)) {
                 Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, focusPoint.Y, hfr));
             }
-
         }
 
         private void CalculateTrends() {
