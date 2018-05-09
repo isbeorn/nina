@@ -489,6 +489,31 @@ namespace NINA.Model {
             }
         }
 
+        private bool _autoFocusAfterTemperatureChange = false;
+        [XmlAttribute(nameof(AutoFocusAfterTemperatureChange))]
+        public bool AutoFocusAfterTemperatureChange {
+            get {
+                return _autoFocusAfterTemperatureChange;
+            }
+            set {
+                _autoFocusAfterTemperatureChange = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _autoFocusAfterTemperatureChangeAmount = 5;
+
+        [XmlAttribute(nameof(AutoFocusAfterTemperatureChangeAmount))]
+        public double AutoFocusAfterTemperatureChangeAmount {
+            get {
+                return _autoFocusAfterTemperatureChangeAmount;
+            }
+            set {
+                _autoFocusAfterTemperatureChangeAmount = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool _altitudeVisisble;
 
         [XmlIgnore]

@@ -265,6 +265,47 @@
                                             </UniformGrid>
                                         </UniformGrid>
                                     </Border>
+                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                        <UniformGrid Columns="2">
+                                            <UniformGrid
+                                                Margin="0,6,0,6"
+                                                VerticalAlignment="Center"
+                                                Columns="2">
+                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterTemperatureChange}" />
+                                                <CheckBox
+                                                    Width="75"
+                                                    Margin="5,0,0,0"
+                                                    HorizontalAlignment="Left"
+                                                    IsChecked="{Binding AutoFocusAfterTemperatureChange}" />
+                                            </UniformGrid>
+                                            <UniformGrid
+                                                Margin="0,6,0,6"
+                                                VerticalAlignment="Center"
+                                                Columns="2">
+                                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterTemperatureChangeAmount}" />
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBox
+                                                        Width="75"
+                                                        Margin="5,0,0,0"
+                                                        HorizontalAlignment="Left">
+                                                        <TextBox.Text>
+                                                            <Binding Path="AutoFocusAfterTemperatureChangeAmount" UpdateSourceTrigger="LostFocus">
+                                                                <Binding.ValidationRules>
+                                                                    <rules:GreaterZeroRule />
+                                                                </Binding.ValidationRules>
+                                                            </Binding>
+                                                        </TextBox.Text>
+                                                    </TextBox>
+                                                    <TextBlock
+                                                        Width="75"
+                                                        Margin="5,0,0,0"
+                                                        HorizontalAlignment="Left"
+                                                        VerticalAlignment="Center"
+                                                        Text="{ns:Loc LblDegreeShort}" />
+                                                </StackPanel>
+                                            </UniformGrid>
+                                        </UniformGrid>
+                                    </Border>
                                 </StackPanel>
                             </Expander>
                         </Border>

@@ -341,7 +341,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblCenterTarget">Ziel zentrieren</s:String>
     <s:String x:Key="LblStartGuiding">Nachführung starten</s:String>
     <s:String x:Key="LblTarget">Ziel (J2000)</s:String>
-    <s:String x:Key="LblAutoFocusOnStart">Autofokus beim Start</s:String>
+    <s:String x:Key="LblAutoFocusOnStart">Beim Start</s:String>
     <s:String x:Key="LblSwitchingFilter">Wechsle Filter</s:String>
     <s:String x:Key="LblEstimatedDownloadTime">Vorauss. Downloadzeit</s:String>
     <s:String x:Key="LblETA">Vorauss. Ende</s:String>
@@ -410,7 +410,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblEquipment">Ausrüstung</s:String>
     <s:String x:Key="LblImportFromFilterWheel">Von Filterrad importieren</s:String>
     <s:String x:Key="LblWaitingForCamera">Warten auf Kamera</s:String>
-    <s:String x:Key="LblAutoFocusOnFilterChange">Autofokus bei Filterwechsel</s:String>
+    <s:String x:Key="LblAutoFocusOnFilterChange">Bei Filterwechsel</s:String>
     <s:String x:Key="LblBulbSerialPort">Serieller Port für Bulb</s:String>
     <s:String x:Key="LblOf">von</s:String>
     <s:String x:Key="LblTo">bis</s:String>
@@ -654,8 +654,11 @@ Aktueller HFR : {1}
 Berechneter HFR: {2}
     </s:String>
     <s:String x:Key="LblMinutesShort">min</s:String>
-    <s:String x:Key="LblAutoFocusAfterSetTime">Autofokus nach verstrichener Zeit</s:String>
+    <s:String x:Key="LblAutoFocusAfterSetTime">Nach verstrichener Zeit</s:String>
     <s:String x:Key="LblAutoFocusSetTime">Zeit</s:String>
-    <s:String x:Key="LblAutoFocusAfterSetExposures">Auto Focus after # exposures</s:String>
-    <s:String x:Key="LblAutoFocusNrOfExposures"># exposures</s:String>
+    <s:String x:Key="LblAutoFocusAfterSetExposures">Nach # Bildern</s:String>
+    <s:String x:Key="LblAutoFocusNrOfExposures"># Bildern</s:String>
+    <s:String x:Key="LblDegreeShort">°</s:String>
+    <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount">Temperaturbetrag</s:String>
+    <s:String x:Key="LblAutoFocusAfterTemperatureChange">Nach Temperaturänderung</s:String>
 </ResourceDictionary>
