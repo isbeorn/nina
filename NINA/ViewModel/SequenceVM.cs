@@ -231,21 +231,11 @@ namespace NINA.ViewModel {
                         await CheckMeridianFlip(seq, ct, progress);
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
-                        //Autofocus on filter change
-                        if (seq.FilterType != null && seq.FilterType.Position != prevFilterPosition
-                                && seq.FilterType.Position >= 0
-                                && Sequence.AutoFocusOnFilterChange) {
-                            await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
-                        }
-
-                        /* Trigger autofocus after a set time if enabled */
-                        if (Sequence.AutoFocusAfterSetTime && (DateTime.UtcNow - lastAutoFocusTime) > TimeSpan.FromMinutes(Sequence.AutoFocusSetTime)) {
+                        
+                        //Check if autofocus should be done
+                        if(ShouldAutoFocus(seq, exposureCount, prevFilterPosition, lastAutoFocusTime)){ 
                             await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
                             lastAutoFocusTime = DateTime.UtcNow;
-                        }
-
-                        if (Sequence.AutoFocusAfterSetExposures && exposureCount % Sequence.AutoFocusSetExposures == 0) {
-                            await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
                         }
 
                         await Mediator.Instance.RequestAsync(
@@ -287,6 +277,27 @@ namespace NINA.ViewModel {
                 }
                 return true;
             });
+        }
+
+        private bool ShouldAutoFocus(CaptureSequence seq, int exposureCount, short previousFilterPosition, DateTime lastAutoFocusTime) {            
+            if (seq.FilterType != null && seq.FilterType.Position != previousFilterPosition
+                    && seq.FilterType.Position >= 0
+                    && Sequence.AutoFocusOnFilterChange) {
+                /* Trigger autofocus after filter change */
+                return true;
+            }
+
+            
+            if (Sequence.AutoFocusAfterSetTime && (DateTime.UtcNow - lastAutoFocusTime) > TimeSpan.FromMinutes(Sequence.AutoFocusSetTime)) {
+                /* Trigger autofocus after a set time */
+                return true;
+            }
+
+            if (Sequence.AutoFocusAfterSetExposures && exposureCount % Sequence.AutoFocusSetExposures == 0) {
+                /* Trigger autofocus after amount of exposures*/
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
