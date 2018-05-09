@@ -338,6 +338,7 @@ namespace NINA.Model.MyCamera {
         private bool Initialize() {
             ValidateMode();
             GetISOSpeeds();
+            SetRawFormat();
             SetSaveLocation();
             SubscribeEvents();
 
@@ -363,7 +364,7 @@ namespace NINA.Model.MyCamera {
         private void SetSaveLocation() {
             /* 1: memory card; 2: pc; 3: both */
             if (HasError(SetProperty(EDSDK.PropID_SaveTo, 2))) {
-                return;
+                throw new Exception("Unable to set save location to PC");
             }
 
             EDSDK.EdsCapacity capacity = new EDSDK.EdsCapacity();
@@ -371,6 +372,12 @@ namespace NINA.Model.MyCamera {
             capacity.BytesPerSector = 0x1000;
             capacity.Reset = 1;
             EDSDK.EdsSetCapacity(_cam, capacity);
+        }
+
+        private void SetRawFormat() {
+            if (HasError(SetProperty(EDSDK.PropID_ImageQuality, (uint)EDSDK.ImageQuality.EdsImageQuality_LR))) {
+                throw new Exception("Error setting Canon image quality to RAW");
+            }
         }
 
         private Dictionary<double, int> ShutterSpeeds = new Dictionary<double, int>();
