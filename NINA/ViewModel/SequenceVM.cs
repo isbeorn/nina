@@ -240,8 +240,8 @@ namespace NINA.ViewModel {
 
                         /* Trigger autofocus after a set time if enabled */
                         if (Sequence.AutoFocusAfterSetTime && (DateTime.UtcNow - lastAutoFocusTime) > TimeSpan.FromMinutes(Sequence.AutoFocusSetTime)) {
-                            lastAutoFocusTime = DateTime.UtcNow;
                             await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
+                            lastAutoFocusTime = DateTime.UtcNow;
                         }
 
                         if (Sequence.AutoFocusAfterSetExposures && exposureCount % Sequence.AutoFocusSetExposures == 0) {
