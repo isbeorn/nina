@@ -318,7 +318,7 @@
                                             </UniformGrid>
                                         </UniformGrid>
                                     </Border>
-                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,0">
+                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                                         <UniformGrid Columns="2">
                                             <UniformGrid
                                                 Margin="0,6,0,6"
@@ -351,7 +351,7 @@
                                             </UniformGrid>
                                         </UniformGrid>
                                     </Border>
-                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,0">
                                         <UniformGrid Columns="2">
                                             <UniformGrid
                                                 Margin="0,6,0,6"
