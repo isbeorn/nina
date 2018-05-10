@@ -63,7 +63,7 @@ namespace NINATest {
         [TestMethod]
         public void GetNextSequence_ModeStandard_NextSequenceSelected() {
             //Arrange
-            var seq = new CaptureSequence() { ProgressExposureCount = 2 };
+            var seq = new CaptureSequence() { TotalExposureCount = 2 };
             var seq2 = new CaptureSequence();
             var l = new CaptureSequenceList();
             l.Mode = SequenceMode.STANDARD;
@@ -279,6 +279,57 @@ namespace NINATest {
             l.Add(seq);
 
             Assert.AreEqual(seq, l.ActiveSequence);
+        }
+
+        [TestMethod]
+        public void RunSequenceMultipleTimes_NumberOfExposuresCorrect() {
+            var seq1 = new CaptureSequence() { TotalExposureCount = 50 };
+            var seq2 = new CaptureSequence() { TotalExposureCount = 10 };
+            var seq3 = new CaptureSequence() { TotalExposureCount = 30 };
+
+            var l = new CaptureSequenceList();
+            l.Add(seq1);
+
+            while (l.Next() != null) { }
+
+            l.Add(seq2);
+
+            while (l.Next() != null) { }
+
+            l.Add(seq3);
+
+            while (l.Next() != null) { }
+
+
+            Assert.AreEqual(50, seq1.ProgressExposureCount);
+            Assert.AreEqual(10, seq2.ProgressExposureCount);
+            Assert.AreEqual(30, seq3.ProgressExposureCount);
+        }
+
+        [TestMethod]
+        public void RunSequenceMultipleTimes_ModeRotate_NumberOfExposuresCorrect() {
+            var seq1 = new CaptureSequence() { TotalExposureCount = 50 };
+            var seq2 = new CaptureSequence() { TotalExposureCount = 10 };
+            var seq3 = new CaptureSequence() { TotalExposureCount = 30 };
+
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.ROTATE;
+            l.Add(seq1);
+
+            while (l.Next() != null) { }
+
+            l.Add(seq2);
+
+            while (l.Next() != null) { }
+
+            l.Add(seq3);
+
+            while (l.Next() != null) { }
+
+
+            Assert.AreEqual(50, seq1.ProgressExposureCount);
+            Assert.AreEqual(10, seq2.ProgressExposureCount);
+            Assert.AreEqual(30, seq3.ProgressExposureCount);
         }
     }
 

@@ -164,15 +164,17 @@ namespace NINA.Model {
 
             if (Mode == SequenceMode.STANDARD) {
                 seq = ActiveSequence ?? Items.First();
-                if (seq.ProgressExposureCount < seq.TotalExposureCount) {
-                } else {
+                if (seq.ProgressExposureCount == seq.TotalExposureCount) {
                     //No exposures remaining. Get next Sequence
                     var idx = Items.IndexOf(seq) + 1;
                     if (idx < Items.Count) {
                         seq = Items[idx];
+                        ActiveSequence = seq;
+                        return this.Next();
                     } else {
                         seq = null;
                     }
+                    
                 }
             } else if (Mode == SequenceMode.ROTATE) {
                 //Check if all sequences are done
