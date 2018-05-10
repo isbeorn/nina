@@ -14,7 +14,7 @@ namespace NINA.ViewModel {
 
     internal class FilterWheelVM : DockableVM {
 
-        public FilterWheelVM() : base() {
+        public FilterWheelVM(IProfileService profileService) : base(profileService) {
             Title = "LblFilterWheel";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FWSVG"];
 
@@ -97,7 +97,7 @@ namespace NINA.ViewModel {
                     if (FW?.Position != filter.Position) {
                         IsMoving = true;
                         Task changeFocus = null;
-                        if (ProfileManager.Instance.ActiveProfile.FocuserSettings.UseFilterWheelOffsets) {
+                        if (profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets) {
                             if (prevFilter != null) {
                                 int offset = filter.FocusOffset - prevFilter.FocusOffset;
                                 changeFocus = Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset, Absolute = false, Token = token });
@@ -180,7 +180,7 @@ namespace NINA.ViewModel {
                 Disconnect();
 
                 if (FilterWheelChooserVM.SelectedDevice.Id == "No_Device") {
-                    ProfileManager.Instance.ActiveProfile.FilterWheelSettings.Id = FilterWheelChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.FilterWheelSettings.Id = FilterWheelChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
@@ -200,7 +200,7 @@ namespace NINA.ViewModel {
                         if (connected) {
                             this.FW = fW;
                             Notification.ShowSuccess(Locale.Loc.Instance["LblFilterwheelConnected"]);
-                            ProfileManager.Instance.ActiveProfile.FilterWheelSettings.Id = FW.Id;
+                            profileService.ActiveProfile.FilterWheelSettings.Id = FW.Id;
                             if (FW.Position > -1) {
                                 SelectedFilter = FW.Filters[FW.Position];
                             }
@@ -254,7 +254,7 @@ namespace NINA.ViewModel {
         public FilterWheelChooserVM FilterWheelChooserVM {
             get {
                 if (_filterWheelChooserVM == null) {
-                    _filterWheelChooserVM = new FilterWheelChooserVM();
+                    _filterWheelChooserVM = new FilterWheelChooserVM(profileService);
                 }
                 return _filterWheelChooserVM;
             }
@@ -271,7 +271,7 @@ namespace NINA.ViewModel {
 
     internal class FilterWheelChooserVM : EquipmentChooserVM {
 
-        public FilterWheelChooserVM() : base(typeof(FilterWheelChooserVM)) {
+        public FilterWheelChooserVM(IProfileService profileService) : base(typeof(FilterWheelChooserVM), profileService) {
         }
 
         public override void GetEquipment() {
@@ -290,7 +290,7 @@ namespace NINA.ViewModel {
                 }
             }
 
-            DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.FilterWheelSettings.Id);
+            DetermineSelectedDevice(profileService.ActiveProfile.FilterWheelSettings.Id);
         }
     }
 }

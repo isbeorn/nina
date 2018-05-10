@@ -14,7 +14,7 @@ namespace NINA.Utility {
             this.Header = header;
         }
 
-        public static async Task<ImageArray> LoadImageArrayFromFile(Uri filePath, bool isBayered = false) {
+        public static async Task<ImageArray> LoadImageArrayFromFile(Uri filePath, bool isBayered, double histogramResolution) {
             using (FileStream fs = new FileStream(filePath.AbsolutePath, FileMode.Open)) {
                 byte[] arr = new byte[16];
                 fs.Read(arr, 0, 16);
@@ -29,7 +29,7 @@ namespace NINA.Utility {
                 ushort[] img = new ushort[(int)Math.Ceiling(encodedImg.Length / 2.0)];
                 Buffer.BlockCopy(encodedImg, 0, img, 0, encodedImg.Length);
 
-                return await ImageArray.CreateInstance(img, width, height, isBayered);
+                return await ImageArray.CreateInstance(img, width, height, isBayered, true, histogramResolution);
             }
         }
 

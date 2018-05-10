@@ -10,9 +10,9 @@ using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
-    internal class ProfileManager {
+    internal class ProfileService : IProfileService {
 
-        private ProfileManager() {
+        public ProfileService() {
             if (NINA.Properties.Settings.Default.UpdateSettings) {
                 NINA.Properties.Settings.Default.Upgrade();
                 NINA.Properties.Settings.Default.UpdateSettings = false;
@@ -27,11 +27,6 @@ namespace NINA.Utility.Profile {
                 })
             );
         }
-
-        private static readonly Lazy<ProfileManager> lazy =
-        new Lazy<ProfileManager>(() => new ProfileManager());
-
-        public static ProfileManager Instance { get { return lazy.Value; } }
 
         public static string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
 
@@ -102,7 +97,7 @@ namespace NINA.Utility.Profile {
             SelectProfile(Profiles.ProfileList[0].Id);
         }
 
-        internal void RemoveProfile(Guid id) {
+        public void RemoveProfile(Guid id) {
             if (id != ActiveProfile.Id) {
                 var p = Profiles.ProfileList.Where((x) => x.Id == id).FirstOrDefault();
                 if (p != null) {

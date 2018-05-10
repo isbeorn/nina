@@ -81,7 +81,7 @@ namespace NINA.Model {
             }
         }
 
-        public static CaptureSequenceList Load(string path) {
+        public static CaptureSequenceList Load(string path, ICollection<MyFilterWheel.FilterInfo> filters) {
             CaptureSequenceList l = null;
             try {
                 var listXml = XElement.Load(path);
@@ -92,9 +92,9 @@ namespace NINA.Model {
                 l = (CaptureSequenceList)xmlSerializer.Deserialize(reader);
                 foreach (CaptureSequence s in l) {
                     //first try to match by name; otherwise match by position.
-                    var filter = ProfileManager.Instance.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
+                    var filter = filters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
                     if (filter == null) {
-                        filter = ProfileManager.Instance.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
+                        filter = filters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
                         if (filter == null) {
                             Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (s.FilterType.Position + 1)));
                         }
@@ -115,6 +115,7 @@ namespace NINA.Model {
         public void SetSequenceTarget(DeepSkyObject dso) {
             TargetName = dso.Name;
             Coordinates = dso.Coordinates;
+            this.DSO = dso;
         }
 
         private string _targetName;
@@ -311,7 +312,7 @@ namespace NINA.Model {
             RaisePropertyChanged(nameof(DecMinutes));
             RaisePropertyChanged(nameof(DecSeconds));
             AltitudeVisible = true;
-            DSO = new DeepSkyObject(this.TargetName, Coordinates);
+            DSO = new DeepSkyObject(this.TargetName, Coordinates, string.Empty);
         }
 
         private DeepSkyObject _dso;
@@ -321,13 +322,13 @@ namespace NINA.Model {
             get {
                 return _dso;
             }
-            set {
+            private set {
                 _dso = value;
-                _dso.SetDateAndPosition(
+                /*_dso.SetDateAndPosition(
                     SkyAtlasVM.GetReferenceDate(DateTime.Now),
-                    ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude,
-                    ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude
-                );
+                    profileService.ActiveProfile.AstrometrySettings.Latitude,
+                    profileService.ActiveProfile.AstrometrySettings.Longitude
+                );*/
                 RaisePropertyChanged();
             }
         }

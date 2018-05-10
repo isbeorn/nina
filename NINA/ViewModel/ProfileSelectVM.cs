@@ -14,11 +14,14 @@ namespace NINA.ViewModel {
         private Profile _tempProfile;
         private bool _useSavedProfile = Properties.Settings.Default.UseSavedProfileSelection;
 
-        public ProfileSelectVM() {
-            Profiles = ProfileManager.Instance.Profiles.ProfileList;
-            ActiveProfile = ProfileManager.Instance.ActiveProfile;
+        public ProfileSelectVM(IProfileService profileService) {
+            this.profileService = profileService;
+            Profiles = profileService.Profiles.ProfileList;
+            ActiveProfile = profileService.ActiveProfile;
             _defaultProfile = ActiveProfile;
         }
+
+        private IProfileService profileService;
 
         public Profile ActiveProfile {
             get {

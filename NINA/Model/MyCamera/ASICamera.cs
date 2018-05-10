@@ -1,6 +1,7 @@
 ﻿using ASCOM.DeviceInterface;
 using NINA.Utility;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,11 +17,13 @@ namespace NINA.Model.MyCamera {
 
     public class ASICamera : BaseINPC, ICamera {
 
-        public ASICamera(int cameraId) {
+        public ASICamera(int cameraId, IProfileService profileService) {
+            this.profileService = profileService;
             _cameraId = cameraId;
             Id = cameraId.ToString();
         }
 
+        private IProfileService profileService;
         private int _cameraId;
 
         private string _id;
@@ -373,7 +376,7 @@ namespace NINA.Model.MyCamera {
                         ushort[] arr = new ushort[size / 2];
                         CopyToUShort(pointer, arr, 0, size / 2);
                         Marshal.FreeHGlobal(pointer);
-                        return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome);
+                        return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                     } else {
                         Notification.ShowError("Error retrieving image data from camera!");
                     }
@@ -621,7 +624,7 @@ namespace NINA.Model.MyCamera {
             ushort[] arr = new ushort[size / 2];
             CopyToUShort(pointer, arr, 0, size / 2);
             Marshal.FreeHGlobal(pointer);
-            return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome);
+            return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
         }
 
         public void StopLiveView() {

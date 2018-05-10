@@ -18,8 +18,11 @@ namespace NINA.Model.MyGuider {
 
     public class PHD2Guider : BaseINPC, IGuider {
 
-        public PHD2Guider() {
+        public PHD2Guider(IProfileService profileService) {
+            this.profileService = profileService;
         }
+
+        private IProfileService profileService;
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
@@ -182,7 +185,7 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> Dither(CancellationToken ct) {
             if (Connected) {
                 _isDithering = true;
-                var ditherMsg = await SendMessage(PHD2EventId.DITHER, string.Format(PHD2Methods.DITHER, ProfileManager.Instance.ActiveProfile.GuiderSettings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), ProfileManager.Instance.ActiveProfile.GuiderSettings.DitherRAOnly.ToString().ToLower()));
+                var ditherMsg = await SendMessage(PHD2EventId.DITHER, string.Format(PHD2Methods.DITHER, profileService.ActiveProfile.GuiderSettings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), profileService.ActiveProfile.GuiderSettings.DitherRAOnly.ToString().ToLower()));
                 if (ditherMsg.error != null) {
                     /* Dither failed */
                     _isDithering = false;
@@ -293,7 +296,7 @@ namespace NINA.Model.MyGuider {
         private async Task<PhdMethodResponse> SendMessage(string msgId, string msg) {
             using (var client = new TcpClient()) {
                 try {
-                    await client.ConnectAsync(ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerUrl, ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                    await client.ConnectAsync(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
 
                     var stream = client.GetStream();
                     var data = System.Text.Encoding.ASCII.GetBytes(msg);
@@ -409,7 +412,7 @@ namespace NINA.Model.MyGuider {
                 _clientCTS = new CancellationTokenSource();
                 using (var client = new TcpClient()) {
                     try {
-                        await client.ConnectAsync(ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerUrl, ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                        await client.ConnectAsync(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
                         Connected = true;
                         _tcs.TrySetResult(false);
 

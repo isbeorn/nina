@@ -333,6 +333,7 @@
     <Compile Include="Utility\Converters\ValueToLocaleConverter.cs" />
     <Compile Include="Utility\DatabaseInteraction.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
+    <Compile Include="Utility\Profile\IProfileService.cs" />
     <Compile Include="Utility\RawConverter\DCRaw.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
@@ -373,7 +374,7 @@
     <Compile Include="Utility\Profile\PlateSolveSettings.cs" />
     <Compile Include="Utility\Profile\PolarAlignmentSettings.cs" />
     <Compile Include="Utility\Profile\Profile.cs" />
-    <Compile Include="Utility\Profile\ProfileManager.cs" />
+    <Compile Include="Utility\Profile\ProfileService.cs" />
     <Compile Include="Utility\Profile\Profiles.cs" />
     <Compile Include="Utility\Profile\SequenceSettings.cs" />
     <Compile Include="Utility\Profile\TelescopeSettings.cs" />

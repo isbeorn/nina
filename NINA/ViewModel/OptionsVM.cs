@@ -17,7 +17,7 @@ namespace NINA.ViewModel {
 
     public class OptionsVM : DockableVM {
 
-        public OptionsVM() {
+        public OptionsVM(IProfileService profileService) : base(profileService) {
             Title = "LblOptions";
             ContentId = nameof(OptionsVM);
             CanClose = false;
@@ -35,7 +35,7 @@ namespace NINA.ViewModel {
             RemoveFilterCommand = new RelayCommand(RemoveFilter);
             AddProfileCommand = new RelayCommand(AddProfile);
             CloneProfileCommand = new RelayCommand(CloneProfile, (object o) => { return SelectedProfile != null; });
-            RemoveProfileCommand = new RelayCommand(RemoveProfile, (object o) => { return SelectedProfile != null && SelectedProfile.Id != ProfileManager.Instance.ActiveProfile.Id; });
+            RemoveProfileCommand = new RelayCommand(RemoveProfile, (object o) => { return SelectedProfile != null && SelectedProfile.Id != profileService.ActiveProfile.Id; });
             SelectProfileCommand = new RelayCommand(SelectProfile, (o) => {
                 return SelectedProfile != null;
             });
@@ -53,7 +53,7 @@ namespace NINA.ViewModel {
             }, MediatorMessages.CameraPixelSizeChanged);
 
             Mediator.Instance.RegisterRequest(new SetProfileByIdMessageHandle((SetProfileByIdMessage msg) => {
-                SelectedProfile = ProfileManager.Instance.Profiles.ProfileList.Single(p => p.Id == msg.Id);
+                SelectedProfile = profileService.Profiles.ProfileList.Single(p => p.Id == msg.Id);
                 SelectProfile(null);
                 return true;
             }));
@@ -74,17 +74,17 @@ namespace NINA.ViewModel {
         }
 
         private void CloneProfile(object obj) {
-            ProfileManager.Instance.Clone(SelectedProfile.Id);
+            profileService.Clone(SelectedProfile.Id);
         }
 
         private void RemoveProfile(object obj) {
             if (MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblRemoveProfileText"], SelectedProfile?.Name, SelectedProfile?.Id), Locale.Loc.Instance["LblRemoveProfileCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
-                ProfileManager.Instance.RemoveProfile(SelectedProfile.Id);
+                profileService.RemoveProfile(SelectedProfile.Id);
             }
         }
 
         private void SelectProfile(object obj) {
-            ProfileManager.Instance.SelectProfile(SelectedProfile.Id);
+            profileService.SelectProfile(SelectedProfile.Id);
             RaisePropertyChanged(nameof(ColorSchemaName));
             RaisePropertyChanged(nameof(PrimaryColor));
             RaisePropertyChanged(nameof(SecondaryColor));
@@ -121,7 +121,7 @@ namespace NINA.ViewModel {
         }
 
         private void AddProfile(object obj) {
-            ProfileManager.Instance.Add();
+            profileService.Add();
         }
 
         private void RemoveFilter(object obj) {
@@ -177,7 +177,7 @@ namespace NINA.ViewModel {
 
         private void OpenSkyAtlasImageRepositoryDiag(object obj) {
             System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.SelectedPath = ProfileManager.Instance.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
+            dialog.SelectedPath = profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 SkyAtlasImageRepository = dialog.SelectedPath;
@@ -212,7 +212,7 @@ namespace NINA.ViewModel {
 
         private void OpenCygwinFileDiag(object o) {
             System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.SelectedPath = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.CygwinLocation;
+            dialog.SelectedPath = profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 CygwinLocation = dialog.SelectedPath;
@@ -221,7 +221,7 @@ namespace NINA.ViewModel {
 
         private void OpenPS2FileDiag(object o) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.FileName = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.PS2Location;
+            dialog.FileName = profileService.ActiveProfile.PlateSolveSettings.PS2Location;
 
             if (dialog.ShowDialog() == true) {
                 PS2Location = dialog.FileName;
@@ -286,7 +286,7 @@ namespace NINA.ViewModel {
         public ICommand SelectProfileCommand { get; private set; }
 
         private void PreviewFile(object o) {
-            MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(ImagePatterns), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
+            MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern, ImagePatterns), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
         }
 
         private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
@@ -307,10 +307,10 @@ namespace NINA.ViewModel {
 
         public CultureInfo Language {
             get {
-                return ProfileManager.Instance.ActiveProfile.ApplicationSettings.Language;
+                return profileService.ActiveProfile.ApplicationSettings.Language;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ApplicationSettings.Language = value;
+                profileService.ActiveProfile.ApplicationSettings.Language = value;
 
                 System.Threading.Thread.CurrentThread.CurrentUICulture = Language;
                 System.Threading.Thread.CurrentThread.CurrentCulture = Language;
@@ -321,170 +321,170 @@ namespace NINA.ViewModel {
 
         public double ReadNoise {
             get {
-                return ProfileManager.Instance.ActiveProfile.CameraSettings.ReadNoise;
+                return profileService.ActiveProfile.CameraSettings.ReadNoise;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.CameraSettings.ReadNoise = value;
+                profileService.ActiveProfile.CameraSettings.ReadNoise = value;
                 RaisePropertyChanged();
             }
         }
 
         public double BitDepth {
             get {
-                return ProfileManager.Instance.ActiveProfile.CameraSettings.BitDepth;
+                return profileService.ActiveProfile.CameraSettings.BitDepth;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.CameraSettings.BitDepth = value;
+                profileService.ActiveProfile.CameraSettings.BitDepth = value;
                 RaisePropertyChanged();
             }
         }
 
         public double Offset {
             get {
-                return ProfileManager.Instance.ActiveProfile.CameraSettings.Offset;
+                return profileService.ActiveProfile.CameraSettings.Offset;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.CameraSettings.Offset = value;
+                profileService.ActiveProfile.CameraSettings.Offset = value;
                 RaisePropertyChanged();
             }
         }
 
         public double FullWellCapacity {
             get {
-                return ProfileManager.Instance.ActiveProfile.CameraSettings.FullWellCapacity;
+                return profileService.ActiveProfile.CameraSettings.FullWellCapacity;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.CameraSettings.FullWellCapacity = value;
+                profileService.ActiveProfile.CameraSettings.FullWellCapacity = value;
                 RaisePropertyChanged();
             }
         }
 
         public double DownloadToDataRatio {
             get {
-                return ProfileManager.Instance.ActiveProfile.CameraSettings.DownloadToDataRatio;
+                return profileService.ActiveProfile.CameraSettings.DownloadToDataRatio;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.CameraSettings.DownloadToDataRatio = value;
+                profileService.ActiveProfile.CameraSettings.DownloadToDataRatio = value;
                 RaisePropertyChanged();
             }
         }
 
         public string ImageFilePath {
             get {
-                return ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePath;
+                return profileService.ActiveProfile.ImageFileSettings.FilePath;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePath = value;
+                profileService.ActiveProfile.ImageFileSettings.FilePath = value;
                 RaisePropertyChanged();
             }
         }
 
         public string SequenceTemplatePath {
             get {
-                return ProfileManager.Instance.ActiveProfile.SequenceSettings.TemplatePath;
+                return profileService.ActiveProfile.SequenceSettings.TemplatePath;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.SequenceSettings.TemplatePath = value;
+                profileService.ActiveProfile.SequenceSettings.TemplatePath = value;
                 RaisePropertyChanged();
             }
         }
 
         public string ImageFilePattern {
             get {
-                return ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePattern;
+                return profileService.ActiveProfile.ImageFileSettings.FilePattern;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePattern = value;
+                profileService.ActiveProfile.ImageFileSettings.FilePattern = value;
                 RaisePropertyChanged();
             }
         }
 
         public string PHD2ServerUrl {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerUrl;
+                return profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerUrl = value;
+                profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl = value;
                 RaisePropertyChanged();
             }
         }
 
         public int PHD2HistorySize {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize;
+                return profileService.ActiveProfile.GuiderSettings.PHD2HistorySize;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize = value;
+                profileService.ActiveProfile.GuiderSettings.PHD2HistorySize = value;
                 RaisePropertyChanged();
             }
         }
 
         public int PHD2MinimalHistorySize {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize;
+                return profileService.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize = value;
+                profileService.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize = value;
                 RaisePropertyChanged();
             }
         }
 
         public double AutoStretchFactor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ImageSettings.AutoStretchFactor;
+                return profileService.ActiveProfile.ImageSettings.AutoStretchFactor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ImageSettings.AutoStretchFactor = value;
+                profileService.ActiveProfile.ImageSettings.AutoStretchFactor = value;
                 RaisePropertyChanged();
             }
         }
 
         public bool AnnotateImage {
             get {
-                return ProfileManager.Instance.ActiveProfile.ImageSettings.AnnotateImage;
+                return profileService.ActiveProfile.ImageSettings.AnnotateImage;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ImageSettings.AnnotateImage = value;
+                profileService.ActiveProfile.ImageSettings.AnnotateImage = value;
                 RaisePropertyChanged();
             }
         }
 
         public PlateSolverEnum PlateSolverType {
             get {
-                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.PlateSolverType;
+                return profileService.ActiveProfile.PlateSolveSettings.PlateSolverType;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.PlateSolverType = value;
+                profileService.ActiveProfile.PlateSolveSettings.PlateSolverType = value;
                 RaisePropertyChanged();
             }
         }
 
         public BlindSolverEnum BlindSolverType {
             get {
-                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.BlindSolverType;
+                return profileService.ActiveProfile.PlateSolveSettings.BlindSolverType;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.BlindSolverType = value;
+                profileService.ActiveProfile.PlateSolveSettings.BlindSolverType = value;
                 RaisePropertyChanged();
             }
         }
 
         public Epoch EpochType {
             get {
-                return ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType;
+                return profileService.ActiveProfile.AstrometrySettings.EpochType;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType = value;
+                profileService.ActiveProfile.AstrometrySettings.EpochType = value;
                 RaisePropertyChanged();
             }
         }
 
         public Hemisphere HemisphereType {
             get {
-                return ProfileManager.Instance.ActiveProfile.AstrometrySettings.HemisphereType;
+                return profileService.ActiveProfile.AstrometrySettings.HemisphereType;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.AstrometrySettings.HemisphereType = value;
+                profileService.ActiveProfile.AstrometrySettings.HemisphereType = value;
                 RaisePropertyChanged();
                 Latitude = Latitude;
                 Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
@@ -493,10 +493,10 @@ namespace NINA.ViewModel {
 
         public string CygwinLocation {
             get {
-                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.CygwinLocation;
+                return profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.CygwinLocation = value;
+                profileService.ActiveProfile.PlateSolveSettings.CygwinLocation = value;
                 ScanForIndexFiles();
                 RaisePropertyChanged();
             }
@@ -504,110 +504,110 @@ namespace NINA.ViewModel {
 
         public string PS2Location {
             get {
-                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.PS2Location;
+                return profileService.ActiveProfile.PlateSolveSettings.PS2Location;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.PS2Location = value;
+                profileService.ActiveProfile.PlateSolveSettings.PS2Location = value;
                 RaisePropertyChanged();
             }
         }
 
         public double AnsvrSearchRadius {
             get {
-                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.SearchRadius;
+                return profileService.ActiveProfile.PlateSolveSettings.SearchRadius;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.SearchRadius = value;
+                profileService.ActiveProfile.PlateSolveSettings.SearchRadius = value;
                 RaisePropertyChanged();
             }
         }
 
         public int PS2Regions {
             get {
-                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Regions;
+                return profileService.ActiveProfile.PlateSolveSettings.Regions;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Regions = value;
+                profileService.ActiveProfile.PlateSolveSettings.Regions = value;
                 RaisePropertyChanged();
             }
         }
 
         public double PlateSolveExposureTime {
             get {
-                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime;
+                return profileService.ActiveProfile.PlateSolveSettings.ExposureTime;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime = value;
+                profileService.ActiveProfile.PlateSolveSettings.ExposureTime = value;
                 RaisePropertyChanged();
             }
         }
 
         public FilterInfo PlateSolveFilter {
             get {
-                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter;
+                return profileService.ActiveProfile.PlateSolveSettings.Filter;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter = value;
+                profileService.ActiveProfile.PlateSolveSettings.Filter = value;
                 RaisePropertyChanged();
             }
         }
 
         public double PlateSolveThreshold {
             get {
-                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold;
+                return profileService.ActiveProfile.PlateSolveSettings.Threshold;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold = value;
+                profileService.ActiveProfile.PlateSolveSettings.Threshold = value;
                 RaisePropertyChanged();
             }
         }
 
         public WeatherDataEnum WeatherDataType {
             get {
-                return ProfileManager.Instance.ActiveProfile.WeatherDataSettings.WeatherDataType;
+                return profileService.ActiveProfile.WeatherDataSettings.WeatherDataType;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.WeatherDataSettings.WeatherDataType = value;
+                profileService.ActiveProfile.WeatherDataSettings.WeatherDataType = value;
                 RaisePropertyChanged();
             }
         }
 
         public string OpenWeatherMapAPIKey {
             get {
-                return ProfileManager.Instance.ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey;
+                return profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey = value;
+                profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey = value;
                 RaisePropertyChanged();
             }
         }
 
         public string OpenWeatherMapUrl {
             get {
-                return ProfileManager.Instance.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl;
+                return profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl = value;
+                profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl = value;
                 RaisePropertyChanged();
             }
         }
 
         public string AstrometryAPIKey {
             get {
-                return ProfileManager.Instance.ActiveProfile.PlateSolveSettings.AstrometryAPIKey;
+                return profileService.ActiveProfile.PlateSolveSettings.AstrometryAPIKey;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.AstrometryAPIKey = value;
+                profileService.ActiveProfile.PlateSolveSettings.AstrometryAPIKey = value;
                 RaisePropertyChanged();
             }
         }
 
         public int PHD2ServerPort {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerPort;
+                return profileService.ActiveProfile.GuiderSettings.PHD2ServerPort;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2ServerPort = value;
+                profileService.ActiveProfile.GuiderSettings.PHD2ServerPort = value;
                 RaisePropertyChanged();
             }
         }
@@ -658,10 +658,10 @@ namespace NINA.ViewModel {
 
         public string ColorSchemaName {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ColorSchemaName;
+                return profileService.ActiveProfile.ColorSchemaSettings.ColorSchemaName;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ColorSchemaName = value;
+                profileService.ActiveProfile.ColorSchemaSettings.ColorSchemaName = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(PrimaryColor));
                 RaisePropertyChanged(nameof(SecondaryColor));
@@ -680,16 +680,16 @@ namespace NINA.ViewModel {
 
         public ColorSchemas ColorSchemas {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ColorSchemas;
+                return profileService.ActiveProfile.ColorSchemaSettings.ColorSchemas;
             }
         }
 
         public string AlternativeColorSchemaName {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltColorSchemaName;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltColorSchemaName;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltColorSchemaName = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltColorSchemaName = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(AltPrimaryColor));
                 RaisePropertyChanged(nameof(AltSecondaryColor));
@@ -706,110 +706,110 @@ namespace NINA.ViewModel {
 
         public Color PrimaryColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.PrimaryColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.PrimaryColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.PrimaryColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.PrimaryColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color SecondaryColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.SecondaryColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.SecondaryColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.SecondaryColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.SecondaryColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color BorderColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.BorderColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.BorderColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.BorderColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.BorderColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color BackgroundColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.BackgroundColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.BackgroundColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.BackgroundColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.BackgroundColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public FileTypeEnum FileType {
             get {
-                return ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType;
+                return profileService.ActiveProfile.ImageFileSettings.FileType;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ImageFileSettings.FileType = value;
+                profileService.ActiveProfile.ImageFileSettings.FileType = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color ButtonBackgroundColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.ButtonBackgroundColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.ButtonBackgroundColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color ButtonBackgroundSelectedColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color ButtonForegroundColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonForegroundColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.ButtonForegroundColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonForegroundColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.ButtonForegroundColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color ButtonForegroundDisabledColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonForegroundDisabledColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.ButtonForegroundDisabledColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonForegroundDisabledColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.ButtonForegroundDisabledColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public double DitherPixels {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.DitherPixels;
+                return profileService.ActiveProfile.GuiderSettings.DitherPixels;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.DitherPixels = value;
+                profileService.ActiveProfile.GuiderSettings.DitherPixels = value;
                 RaisePropertyChanged();
             }
         }
 
         public bool DitherRAOnly {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.DitherRAOnly;
+                return profileService.ActiveProfile.GuiderSettings.DitherRAOnly;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.DitherRAOnly = value;
+                profileService.ActiveProfile.GuiderSettings.DitherRAOnly = value;
                 RaisePropertyChanged();
             }
         }
@@ -870,143 +870,143 @@ namespace NINA.ViewModel {
 
         public Color AltPrimaryColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltPrimaryColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltPrimaryColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltPrimaryColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltPrimaryColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color AltSecondaryColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltSecondaryColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltSecondaryColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color AltBorderColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltBorderColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltBorderColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltBorderColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltBorderColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color AltBackgroundColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltBackgroundColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltBackgroundColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltBackgroundColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltBackgroundColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color AltButtonBackgroundColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color AltButtonBackgroundSelectedColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundSelectedColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundSelectedColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundSelectedColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundSelectedColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color AltButtonForegroundColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonForegroundColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltButtonForegroundColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonForegroundColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltButtonForegroundColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color AltButtonForegroundDisabledColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonForegroundDisabledColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltButtonForegroundDisabledColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltButtonForegroundDisabledColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltButtonForegroundDisabledColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public bool AutoMeridianFlip {
             get {
-                return ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.Enabled;
+                return profileService.ActiveProfile.MeridianFlipSettings.Enabled;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.Enabled = value;
+                profileService.ActiveProfile.MeridianFlipSettings.Enabled = value;
                 RaisePropertyChanged();
             }
         }
 
         public double MinutesAfterMeridian {
             get {
-                return ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian;
+                return profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian = value;
+                profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian = value;
                 RaisePropertyChanged();
             }
         }
 
         public double PauseTimeBeforeMeridian {
             get {
-                return ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian;
+                return profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian = value;
+                profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian = value;
                 RaisePropertyChanged();
             }
         }
 
         public int MeridianFlipSettleTime {
             get {
-                return ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.SettleTime;
+                return profileService.ActiveProfile.MeridianFlipSettings.SettleTime;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.SettleTime = value;
+                profileService.ActiveProfile.MeridianFlipSettings.SettleTime = value;
                 RaisePropertyChanged();
             }
         }
 
         public bool RecenterAfterFlip {
             get {
-                return ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.Recenter;
+                return profileService.ActiveProfile.MeridianFlipSettings.Recenter;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.Recenter = value;
+                profileService.ActiveProfile.MeridianFlipSettings.Recenter = value;
                 RaisePropertyChanged();
             }
         }
 
         public double Latitude {
             get {
-                return ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude;
+                return profileService.ActiveProfile.AstrometrySettings.Latitude;
             }
             set {
                 if ((HemisphereType == Hemisphere.SOUTHERN && value > 0) || (HemisphereType == Hemisphere.NORTHERN && value < 0)) {
                     value = -value;
                 }
-                ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude = value;
+                profileService.ActiveProfile.AstrometrySettings.Latitude = value;
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
@@ -1014,10 +1014,10 @@ namespace NINA.ViewModel {
 
         public double Longitude {
             get {
-                return ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude;
+                return profileService.ActiveProfile.AstrometrySettings.Longitude;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude = value;
+                profileService.ActiveProfile.AstrometrySettings.Longitude = value;
                 RaisePropertyChanged();
                 Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
@@ -1025,171 +1025,171 @@ namespace NINA.ViewModel {
 
         public string SkyAtlasImageRepository {
             get {
-                return ProfileManager.Instance.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
+                return profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = value;
+                profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color NotificationWarningColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.NotificationWarningColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.NotificationWarningColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color NotificationErrorColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.NotificationErrorColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.NotificationErrorColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color NotificationWarningTextColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color NotificationErrorTextColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color AltNotificationWarningColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltNotificationWarningColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltNotificationWarningColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color AltNotificationErrorColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltNotificationErrorColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltNotificationErrorColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color AltNotificationWarningTextColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public Color AltNotificationErrorTextColor {
             get {
-                return ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor;
+                return profileService.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor = value;
+                profileService.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor = value;
                 RaisePropertyChanged();
             }
         }
 
         public bool FocuserUseFilterWheelOffsets {
             get {
-                return ProfileManager.Instance.ActiveProfile.FocuserSettings.UseFilterWheelOffsets;
+                return profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.FocuserSettings.UseFilterWheelOffsets = value;
+                profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets = value;
                 RaisePropertyChanged();
             }
         }
 
         public int FocuserAutoFocusInitialOffsetSteps {
             get {
-                return ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
+                return profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps = value;
+                profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps = value;
                 RaisePropertyChanged();
             }
         }
 
         public int FocuserAutoFocusStepSize {
             get {
-                return ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusStepSize;
+                return profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusStepSize = value;
+                profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize = value;
                 RaisePropertyChanged();
             }
         }
 
         public int FocuserAutoFocusExposureTime {
             get {
-                return ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusExposureTime;
+                return profileService.ActiveProfile.FocuserSettings.AutoFocusExposureTime;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusExposureTime = value;
+                profileService.ActiveProfile.FocuserSettings.AutoFocusExposureTime = value;
                 RaisePropertyChanged();
             }
         }
 
         public string TelescopeSnapPortStart {
             get {
-                return ProfileManager.Instance.ActiveProfile.TelescopeSettings.SnapPortStart;
+                return profileService.ActiveProfile.TelescopeSettings.SnapPortStart;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.TelescopeSettings.SnapPortStart = value;
+                profileService.ActiveProfile.TelescopeSettings.SnapPortStart = value;
                 RaisePropertyChanged();
             }
         }
 
         public string TelescopeSnapPortStop {
             get {
-                return ProfileManager.Instance.ActiveProfile.TelescopeSettings.SnapPortStop;
+                return profileService.ActiveProfile.TelescopeSettings.SnapPortStop;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.TelescopeSettings.SnapPortStop = value;
+                profileService.ActiveProfile.TelescopeSettings.SnapPortStop = value;
                 RaisePropertyChanged();
             }
         }
 
         public int TelescopeSettleTime {
             get {
-                return ProfileManager.Instance.ActiveProfile.TelescopeSettings.SettleTime;
+                return profileService.ActiveProfile.TelescopeSettings.SettleTime;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.TelescopeSettings.SettleTime = value;
+                profileService.ActiveProfile.TelescopeSettings.SettleTime = value;
                 RaisePropertyChanged();
             }
         }
 
         public double DevicePollingInterval {
             get {
-                return ProfileManager.Instance.ActiveProfile.ApplicationSettings.DevicePollingInterval;
+                return profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
             }
             set {
                 if (value > 0) {
-                    ProfileManager.Instance.ActiveProfile.ApplicationSettings.DevicePollingInterval = value;
+                    profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval = value;
                     RaisePropertyChanged();
                 }
             }
@@ -1197,60 +1197,61 @@ namespace NINA.ViewModel {
 
         public LogLevelEnum LogLevel {
             get {
-                return ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel;
+                return profileService.ActiveProfile.ApplicationSettings.LogLevel;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel = value;
+                profileService.ActiveProfile.ApplicationSettings.LogLevel = value;
+                Logger.SetLogLevel(value);
                 RaisePropertyChanged();
             }
         }
 
         public CameraBulbModeEnum CameraBulbMode {
             get {
-                return ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode;
+                return profileService.ActiveProfile.CameraSettings.BulbMode;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode = value;
+                profileService.ActiveProfile.CameraSettings.BulbMode = value;
                 RaisePropertyChanged();
             }
         }
 
         public string CameraSerialPort {
             get {
-                return ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort;
+                return profileService.ActiveProfile.CameraSettings.SerialPort;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort = value;
+                profileService.ActiveProfile.CameraSettings.SerialPort = value;
                 RaisePropertyChanged();
             }
         }
 
         public double CameraPixelSize {
             get {
-                return ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize;
+                return profileService.ActiveProfile.CameraSettings.PixelSize;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize = value;
+                profileService.ActiveProfile.CameraSettings.PixelSize = value;
                 RaisePropertyChanged();
             }
         }
 
         public int TelescopeFocalLength {
             get {
-                return ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength;
+                return profileService.ActiveProfile.TelescopeSettings.FocalLength;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength = value;
+                profileService.ActiveProfile.TelescopeSettings.FocalLength = value;
                 RaisePropertyChanged();
             }
         }
 
         public ObserveAllCollection<FilterInfo> FilterWheelFilters {
             get {
-                return ProfileManager.Instance.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                return profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.FilterWheelSettings.FilterWheelFilters = value;
+                profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters = value;
                 RaisePropertyChanged();
             }
         }
@@ -1266,23 +1267,23 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-                
+
         public RawConverterEnum RawConverter {
             get {
-                return ProfileManager.Instance.ActiveProfile.CameraSettings.RawConverter;
+                return profileService.ActiveProfile.CameraSettings.RawConverter;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.CameraSettings.RawConverter = value;
+                profileService.ActiveProfile.CameraSettings.RawConverter = value;
                 RaisePropertyChanged();
             }
         }
 
         public int HistogramResolution {
             get {
-                return ProfileManager.Instance.ActiveProfile.ImageSettings.HistogramResolution;
+                return profileService.ActiveProfile.ImageSettings.HistogramResolution;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.ImageSettings.HistogramResolution = value;
+                profileService.ActiveProfile.ImageSettings.HistogramResolution = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(HistogramMajorStep));
                 RaisePropertyChanged(nameof(HistogramMinorStep));
@@ -1303,10 +1304,10 @@ namespace NINA.ViewModel {
 
         public int GuiderSettleTime {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.SettleTime;
+                return profileService.ActiveProfile.GuiderSettings.SettleTime;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.SettleTime = value;
+                profileService.ActiveProfile.GuiderSettings.SettleTime = value;
                 RaisePropertyChanged();
             }
         }
@@ -1325,7 +1326,7 @@ namespace NINA.ViewModel {
 
         public ObservableCollection<Profile> Profiles {
             get {
-                return ProfileManager.Instance.Profiles.ProfileList;
+                return profileService.Profiles.ProfileList;
             }
         }
     }

@@ -3,6 +3,7 @@ using ASCOM.DeviceInterface;
 using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections;
 using System.Globalization;
@@ -15,12 +16,14 @@ namespace NINA.Model.MyCamera {
 
     internal class AscomCamera : BaseINPC, ICamera, IDisposable {
 
-        public AscomCamera(string cameraId, string name) {
+        public AscomCamera(string cameraId, string name, IProfileService profileService) {
+            this.profileService = profileService;
             Id = cameraId;
             Name = name;
         }
 
         private string _id;
+        private IProfileService profileService;
 
         public string Id {
             get {
@@ -933,9 +936,9 @@ namespace NINA.Model.MyCamera {
                         }
 
                         if (SensorType != SensorType.Color) {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, SensorType != SensorType.Monochrome);
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         } else {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, false);
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         }
                     } catch (OperationCanceledException) {
                     } catch {

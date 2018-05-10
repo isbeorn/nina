@@ -19,7 +19,7 @@ namespace NINA.Utility.RawConverter {
             DllLoader.LoadDll("FreeImage/FreeImage.dll");
         }
 
-        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, CancellationToken token) {
+        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, CancellationToken token, double histogramResolution) {
             return await Task.Run(async () => {
                 using (MyStopWatch.Measure()) {
                     FIBITMAP img;
@@ -47,7 +47,7 @@ namespace NINA.Utility.RawConverter {
                     ushort[] outArray = new ushort[cropped.PixelWidth * cropped.PixelHeight];
                     cropped.CopyPixels(outArray, 2 * cropped.PixelWidth, 0);
                     memStream.Dispose();
-                    return await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, true);
+                    return await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, true, true, histogramResolution);
                 }
             });
         }

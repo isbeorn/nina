@@ -2,6 +2,7 @@
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Profile;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace NINA.ViewModel {
 
     internal class FrameFocusVM : DockableVM {
 
-        public FrameFocusVM() : base() {
+        public FrameFocusVM(IProfileService profileService) : base(profileService) {
             Title = "LblFrameNFocus";
             ContentId = nameof(FrameFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];

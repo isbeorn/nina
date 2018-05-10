@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Profile;
 using System;
 using System.Linq;
 using System.Windows.Input;
@@ -8,7 +9,8 @@ namespace NINA.ViewModel {
 
     internal abstract class EquipmentChooserVM : BaseVM {
 
-        public EquipmentChooserVM(Type equipmentType) {
+        public EquipmentChooserVM(Type equipmentType, IProfileService profileService) : base(profileService) {
+            this.profileService = profileService;
             SetupDialogCommand = new RelayCommand(OpenSetupDialog);
             GetEquipment();
             Mediator.Instance.RegisterRequest(new GetEquipmentNameByIdMessageHandle(equipmentType, (GetEquipmentNameByIdMessage msg) => {

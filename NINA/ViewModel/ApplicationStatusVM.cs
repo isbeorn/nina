@@ -1,5 +1,6 @@
 ﻿using NINA.Model;
 using NINA.Utility.Mediator;
+using NINA.Utility.Profile;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace NINA.ViewModel {
 
     internal class ApplicationStatusVM : DockableVM {
 
-        public ApplicationStatusVM() {
+        public ApplicationStatusVM(IProfileService profileService) : base(profileService) {
             Title = "LblApplicationStatus";
             ContentId = nameof(ApplicationStatusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ApplicationStatusSVG"];

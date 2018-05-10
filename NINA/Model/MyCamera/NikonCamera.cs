@@ -21,12 +21,14 @@ namespace NINA.Model.MyCamera {
 
     public class NikonCamera : BaseINPC, ICamera {
 
-        public NikonCamera() {
+        public NikonCamera(IProfileService profileService) {
+            this.profileService = profileService;
             /* NIKON */
             Name = "Nikon";
             _nikonManagers = new List<NikonManager>();
         }
 
+        private IProfileService profileService;
         private List<NikonManager> _nikonManagers;
         private NikonManager _activeNikonManager;
 
@@ -55,6 +57,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool _liveViewEnabled;
+
         public bool LiveViewEnabled {
             get {
                 return _liveViewEnabled;
@@ -91,7 +94,7 @@ namespace NINA.Model.MyCamera {
             ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
             bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false);
+            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
 
             memStream.Close();
             memStream.Dispose();
@@ -562,8 +565,8 @@ namespace NINA.Model.MyCamera {
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
-            var converter = RawConverter.CreateInstance();
-            var iarr = await converter.ConvertToImageArray(_memoryStream, token);
+            var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
+            var iarr = await converter.ConvertToImageArray(_memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
             _memoryStream.Dispose();
             _memoryStream = null;
             return iarr;
@@ -591,11 +594,11 @@ namespace NINA.Model.MyCamera {
                     Logger.Debug("Start capture");
                     _camera.Capture();
                 } else {
-                    if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
+                    if (profileService.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
                         Logger.Debug("Use Telescope Snap Port");
 
                         BulbCapture(exposureTime, RequestSnapPortCaptureStart, RequestSnapPortCaptureStop);
-                    } else if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.SERIALPORT) {
+                    } else if (profileService.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.SERIALPORT) {
                         Logger.Debug("Use Serial Port for camera");
 
                         BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
@@ -622,11 +625,11 @@ namespace NINA.Model.MyCamera {
         }
 
         private void OpenSerialPort() {
-            if (serialPortInteraction?.PortName != ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort) {
-                serialPortInteraction = new SerialPortInteraction(ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort);
+            if (serialPortInteraction?.PortName != profileService.ActiveProfile.CameraSettings.SerialPort) {
+                serialPortInteraction = new SerialPortInteraction(profileService.ActiveProfile.CameraSettings.SerialPort);
             }
             if (!serialPortInteraction.Open()) {
-                throw new Exception("Unable to open SerialPort " + ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort);
+                throw new Exception("Unable to open SerialPort " + profileService.ActiveProfile.CameraSettings.SerialPort);
             }
         }
 

@@ -14,12 +14,15 @@ namespace NINA.Model.MyCamera {
 
         public bool IsBayered { get; private set; }
 
-        private ImageArray() {
+        private ImageArray(double histogramResolution) {
+            this.histogramResolution = histogramResolution;
             Statistics = new ImageStatistics { };
         }
 
-        public static async Task<ImageArray> CreateInstance(Array input, bool isBayered = false, bool calculateStatistics = true) {
-            ImageArray imgArray = new ImageArray();
+        private double histogramResolution;
+
+        public static async Task<ImageArray> CreateInstance(Array input, bool isBayered, bool calculateStatistics, double histogramResolution = 0.25) {
+            ImageArray imgArray = new ImageArray(histogramResolution);
             imgArray.IsBayered = isBayered;
             await Task.Run(() => imgArray.FlipAndConvert(input));
             if (calculateStatistics) {
@@ -29,8 +32,8 @@ namespace NINA.Model.MyCamera {
             return imgArray;
         }
 
-        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, bool isBayered = false, bool calculateStatistics = true) {
-            ImageArray imgArray = new ImageArray();
+        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, bool isBayered, bool calculateStatistics, double histogramResolution) {
+            ImageArray imgArray = new ImageArray(histogramResolution);
             imgArray.IsBayered = isBayered;
             imgArray.FlatArray = input;
             imgArray.Statistics.Width = width;
@@ -54,7 +57,7 @@ namespace NINA.Model.MyCamera {
                 ushort oldmin = min;
                 long minOccurrences = 0;
 
-                double resolution = ProfileManager.Instance.ActiveProfile.ImageSettings.HistogramResolution;
+                double resolution = histogramResolution;
                 Dictionary<double, int> histogram = new Dictionary<double, int>();
 
                 for (var i = 0; i < this.FlatArray.Length; i++) {

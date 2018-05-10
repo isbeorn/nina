@@ -15,7 +15,7 @@ namespace NINA.ViewModel {
 
     internal class GuiderVM : DockableVM {
 
-        public GuiderVM() : base() {
+        public GuiderVM(IProfileService profileService) : base(profileService) {
             Title = "LblGuider";
             ContentId = nameof(GuiderVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
@@ -105,7 +105,7 @@ namespace NINA.ViewModel {
         private async Task<bool> Resume(CancellationToken token) {
             if (Guider?.Connected == true) {
                 await Guider?.Pause(false, token);
-                await Utility.Utility.Wait(TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.GuiderSettings.SettleTime), token);
+                await Utility.Utility.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTime), token);
                 return true;
             } else {
                 return false;
@@ -114,20 +114,20 @@ namespace NINA.ViewModel {
 
         public int HistorySize {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize;
+                return profileService.ActiveProfile.GuiderSettings.PHD2HistorySize;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize = value;
+                profileService.ActiveProfile.GuiderSettings.PHD2HistorySize = value;
                 RaisePropertyChanged();
             }
         }
 
         public int MinimalHistorySize {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize;
+                return profileService.ActiveProfile.GuiderSettings.PHD2HistorySize;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize = value;
+                profileService.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize = value;
                 RaisePropertyChanged();
             }
         }
@@ -155,7 +155,7 @@ namespace NINA.ViewModel {
         private async Task<bool> Connect() {
             GuideStepsHistory.Clear();
             GuideStepsHistoryMinimal.Clear();
-            Guider = new PHD2Guider();
+            Guider = new PHD2Guider(profileService);
             Guider.PropertyChanged += Guider_PropertyChanged;
             return await Guider.Connect();
         }
@@ -274,10 +274,10 @@ namespace NINA.ViewModel {
 
         public GuiderScaleEnum GuiderScale {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2GuiderScale;
+                return profileService.ActiveProfile.GuiderSettings.PHD2GuiderScale;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2GuiderScale = value;
+                profileService.ActiveProfile.GuiderSettings.PHD2GuiderScale = value;
                 RaisePropertyChanged();
                 foreach (IGuideStep s in GuideStepsHistory) {
                     if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {

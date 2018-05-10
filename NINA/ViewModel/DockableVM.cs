@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Profile;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -7,7 +8,7 @@ namespace NINA.ViewModel {
 
     public class DockableVM : BaseVM {
 
-        public DockableVM() : base() {
+        public DockableVM(IProfileService profileService) : base(profileService) {
             this.CanClose = true;
             this.IsClosed = false;
             IsVisible = true;

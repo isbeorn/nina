@@ -20,11 +20,12 @@ namespace NINA.ViewModel {
 
     internal class SequenceVM : DockableVM {
 
-        public SequenceVM() {
+        public SequenceVM(IProfileService profileService) : base(profileService) {
+            this.profileService = profileService;
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SequenceSVG"];
 
-            EstimatedDownloadTime = ProfileManager.Instance.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
+            EstimatedDownloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
 
             ContentId = nameof(SequenceVM);
             AddSequenceCommand = new RelayCommand(AddSequence);
@@ -48,7 +49,7 @@ namespace NINA.ViewModel {
             dialog.Filter = "XML documents|*.xml";
 
             if (dialog.ShowDialog() == true) {
-                var l = CaptureSequenceList.Load(dialog.FileName);
+                var l = CaptureSequenceList.Load(dialog.FileName, profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters);
                 Sequence = l;
             }
         }
@@ -136,10 +137,10 @@ namespace NINA.ViewModel {
 
         public TimeSpan EstimatedDownloadTime {
             get {
-                return ProfileManager.Instance.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
+                return profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.SequenceSettings.EstimatedDownloadTime = value;
+                profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime = value;
                 RaisePropertyChanged();
                 CalculateETA();
             }
@@ -297,7 +298,7 @@ namespace NINA.ViewModel {
         private bool CheckPreconditions() {
             bool valid = true;
 
-            valid = HasWritePermission(ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePath);
+            valid = HasWritePermission(profileService.ActiveProfile.ImageFileSettings.FilePath);
 
             return valid;
         }
@@ -340,9 +341,9 @@ namespace NINA.ViewModel {
             Mediator.Instance.RegisterAsyncRequest(
                 new SetSequenceCoordinatesMessageHandle(async (SetSequenceCoordinatesMessage msg) => {
                     Mediator.Instance.Request(new ChangeApplicationTabMessage() { Tab = ApplicationTab.SEQUENCE });
-                    var sequenceDso = new DeepSkyObject(msg.DSO.AlsoKnownAs.FirstOrDefault() ?? msg.DSO.Name ?? string.Empty, msg.DSO.Coordinates);
+                    var sequenceDso = new DeepSkyObject(msg.DSO.AlsoKnownAs.FirstOrDefault() ?? msg.DSO.Name ?? string.Empty, msg.DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
                     await Task.Run(() => {
-                        sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude, ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude);
+                        sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                     });
 
                     Sequence.SetSequenceTarget(sequenceDso);
@@ -351,7 +352,8 @@ namespace NINA.ViewModel {
             );
 
             Mediator.Instance.Register((object o) => {
-                var dso = new DeepSkyObject(Sequence.DSO.Name, Sequence.DSO.Coordinates);
+                var dso = new DeepSkyObject(Sequence.DSO.Name, Sequence.DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+                dso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                 Sequence.SetSequenceTarget(dso);
             }, MediatorMessages.LocationChanged);
         }
@@ -361,8 +363,8 @@ namespace NINA.ViewModel {
         public CaptureSequenceList Sequence {
             get {
                 if (_sequence == null) {
-                    if (File.Exists(ProfileManager.Instance.ActiveProfile.SequenceSettings.TemplatePath)) {
-                        _sequence = CaptureSequenceList.Load(ProfileManager.Instance.ActiveProfile.SequenceSettings.TemplatePath);
+                    if (File.Exists(profileService.ActiveProfile.SequenceSettings.TemplatePath)) {
+                        _sequence = CaptureSequenceList.Load(profileService.ActiveProfile.SequenceSettings.TemplatePath, profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters);
                     }
                     if (_sequence == null) {
                         /* Fallback when no template is set or load failed */

@@ -174,7 +174,7 @@ namespace NINA.Utility.Astrometry {
             }
         }
 
-        public static RiseAndSetAstroEvent GetRiseAndSetEvent(DateTime date, EventType type) {
+        public static RiseAndSetAstroEvent GetRiseAndSetEvent(DateTime date, EventType type, double latitude, double longitude) {
             var d = date.Day;
             var m = date.Month;
             var y = date.Year;
@@ -185,7 +185,7 @@ namespace NINA.Utility.Astrometry {
              * Arraylist(2) - Integer - Number of set events in this 24 hour period
              * Arraylist(3) onwards - Double - Values of rise events in hours Arraylist
              * (3 + NumberOfRiseEvents) onwards - Double - Values of set events in hours*/
-            var times = AstroUtils.EventTimes(type, d, m, y, ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude, ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude, TimeZone.CurrentTimeZone.GetUtcOffset(date).Hours + TimeZone.CurrentTimeZone.GetUtcOffset(date).Minutes / 60.0);
+            var times = AstroUtils.EventTimes(type, d, m, y, latitude, longitude, TimeZone.CurrentTimeZone.GetUtcOffset(date).Hours + TimeZone.CurrentTimeZone.GetUtcOffset(date).Minutes / 60.0);
 
             if (times.Count > 3) {
                 int nrOfRiseEvents = (int)times[1];
@@ -213,16 +213,16 @@ namespace NINA.Utility.Astrometry {
             return null;
         }
 
-        public static RiseAndSetAstroEvent GetNightTimes(DateTime date) {
-            return GetRiseAndSetEvent(date, EventType.AstronomicalTwilight);
+        public static RiseAndSetAstroEvent GetNightTimes(DateTime date, double latitude, double longitude) {
+            return GetRiseAndSetEvent(date, EventType.AstronomicalTwilight, latitude, longitude);
         }
 
-        public static RiseAndSetAstroEvent GetMoonRiseAndSet(DateTime date) {
-            return GetRiseAndSetEvent(date, EventType.MoonRiseMoonSet);
+        public static RiseAndSetAstroEvent GetMoonRiseAndSet(DateTime date, double latitude, double longitude) {
+            return GetRiseAndSetEvent(date, EventType.MoonRiseMoonSet, latitude, longitude);
         }
 
-        public static RiseAndSetAstroEvent GetSunRiseAndSet(DateTime date) {
-            return GetRiseAndSetEvent(date, EventType.SunRiseSunset);
+        public static RiseAndSetAstroEvent GetSunRiseAndSet(DateTime date, double latitude, double longitude) {
+            return GetRiseAndSetEvent(date, EventType.SunRiseSunset, latitude, longitude);
         }
 
         /// <summary>
@@ -349,7 +349,8 @@ namespace NINA.Utility.Astrometry {
     [XmlRoot(nameof(Coordinates))]
     public class Coordinates {
 
-        private Coordinates() { }
+        private Coordinates() {
+        }
 
         public enum RAType {
             Degrees,

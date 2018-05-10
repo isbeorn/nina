@@ -1,9 +1,10 @@
-﻿using NINA.ViewModel;
+﻿using NINA.Utility;
+using NINA.ViewModel;
 using System.Windows;
 
 namespace NINA.MyMessageBox {
 
-    internal class MyMessageBox : BaseVM {
+    internal class MyMessageBox : BaseINPC {
         private string _title;
 
         public string Title {

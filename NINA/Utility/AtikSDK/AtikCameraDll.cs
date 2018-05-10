@@ -95,7 +95,7 @@ namespace NINA.Utility.AtikSDK {
             return ArtemisCameraState(camera);
         }
 
-        public static async Task<ImageArray> DownloadExposure(IntPtr camera, bool isBayered) {
+        public static async Task<ImageArray> DownloadExposure(IntPtr camera, bool isBayered, double histogramResolution) {
             CheckError(ArtemisGetImageData(camera, out var x, out var y, out var w, out var h, out var binX, out var binY), MethodBase.GetCurrentMethod(), camera);
 
             var ptr = ArtemisImageBuffer(camera);
@@ -107,7 +107,7 @@ namespace NINA.Utility.AtikSDK {
             ushort[] arr = new ushort[size / 2];
             CopyToUShort(ptr, arr, 0, size / 2);
             Marshal.FreeHGlobal(pointer);
-            return await ImageArray.CreateInstance(arr, w, h, isBayered);
+            return await ImageArray.CreateInstance(arr, w, h, isBayered, true, histogramResolution);
         }
 
         private static void CopyToUShort(IntPtr source, ushort[] destination, int startIndex, int length) {

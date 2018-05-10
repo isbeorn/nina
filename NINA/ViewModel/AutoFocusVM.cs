@@ -16,7 +16,7 @@ namespace NINA.ViewModel {
 
     public class AutoFocusVM : DockableVM {
 
-        public AutoFocusVM() {
+        public AutoFocusVM(IProfileService profileService) : base(profileService) {
             Title = "LblAutoFocus";
             ContentId = nameof(AutoFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["AutoFocusSVG"];
@@ -107,7 +107,7 @@ namespace NINA.ViewModel {
         private double _temperature;
 
         private async Task GetFocusPoints(FilterInfo filter, int nrOfSteps, IProgress<ApplicationStatus> progress, CancellationToken token, int offset = 0) {
-            var stepSize = ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusStepSize;
+            var stepSize = profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize;
             if (offset != 0) {
                 //Move to initial position
                 _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset * stepSize, Absolute = false, Token = token });
@@ -118,7 +118,7 @@ namespace NINA.ViewModel {
                 token.ThrowIfCancellationRequested();
 
                 Logger.Trace("Starting Exposure for autofocus");
-                double expTime = ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusExposureTime;
+                double expTime = profileService.ActiveProfile.FocuserSettings.AutoFocusExposureTime;
                 if (filter != null && filter.AutoFocusExposureTime > 0) {
                     expTime = filter.AutoFocusExposureTime;
                 }
@@ -127,7 +127,7 @@ namespace NINA.ViewModel {
                 var iarr = await Mediator.Instance.RequestAsync(new CaptureImageMessage() { Sequence = seq, Token = token, Progress = progress });
 
                 var source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
-                source = await ImageControlVM.StretchAsync(iarr, source);
+                source = await ImageControlVM.StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor);
                 var analysis = new ImageAnalysis(source, iarr);
                 await analysis.DetectStarsAsync(progress, token);
 
@@ -166,7 +166,7 @@ namespace NINA.ViewModel {
             try {
                 await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Pause = true });
 
-                var offsetSteps = ProfileManager.Instance.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
+                var offsetSteps = profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
                 var offset = offsetSteps;
 
                 var nrOfSteps = offsetSteps + 1;

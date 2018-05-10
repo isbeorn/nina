@@ -4,6 +4,7 @@ using NINA.Utility;
 using NINA.Utility.Exceptions;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace NINA.ViewModel {
 
     internal class ImagingVM : DockableVM {
 
-        public ImagingVM() : base() {
+        public ImagingVM(IProfileService profileService) : base(profileService) {
             Title = "LblImaging";
             ContentId = nameof(ImagingVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
@@ -27,7 +28,7 @@ namespace NINA.ViewModel {
             StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
             StopLiveViewCommand = new RelayCommand(StopLiveView);
 
-            ImageControl = new ImageControlVM();
+            ImageControl = new ImageControlVM(profileService);
 
             RegisterMediatorMessages();
         }

@@ -11,12 +11,14 @@ using ASCOM.DeviceInterface;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 
 namespace NINA.Model.MyCamera {
 
     internal class AtikCamera : BaseINPC, ICamera {
 
-        public AtikCamera(int id) {
+        public AtikCamera(int id, IProfileService profileService) {
+            this.profileService = profileService;
             _cameraId = id;
             _info = AtikCameraDll.GetCameraProperties(_cameraId);
         }
@@ -385,7 +387,7 @@ namespace NINA.Model.MyCamera {
                             await Task.Delay(100, token);
                         } while (!AtikCameraDll.ImageReady(_cameraP));
 
-                        return await AtikCameraDll.DownloadExposure(_cameraP, SensorType != SensorType.Monochrome);
+                        return await AtikCameraDll.DownloadExposure(_cameraP, SensorType != SensorType.Monochrome, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
                         Notification.ShowError(ex.Message);
@@ -439,6 +441,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool _liveViewEnabled;
+        private IProfileService profileService;
 
         public bool LiveViewEnabled {
             get {

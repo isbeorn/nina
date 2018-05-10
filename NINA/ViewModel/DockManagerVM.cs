@@ -1,4 +1,5 @@
 ﻿using NINA.Utility;
+using NINA.Utility.Profile;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -6,7 +7,7 @@ namespace NINA.ViewModel {
 
     public class DockManagerVM : BaseVM {
 
-        public DockManagerVM(/*IEnumerable<DockableVM> dockWindowViewModels*/) {
+        public DockManagerVM(IProfileService profileService/*IEnumerable<DockableVM> dockWindowViewModels*/) : base(profileService) {
             LoadAvalonDockLayoutCommand = new RelayCommand(LoadAvalonDockLayout);
 
             /*foreach (var document in dockWindowViewModels) {
