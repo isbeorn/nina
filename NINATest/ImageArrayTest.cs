@@ -22,7 +22,7 @@ namespace NINATest {
             ushort[] expFlatArr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr);
+            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
 
             //Assert
             Assert.AreEqual(expX, result.Statistics.Width);
@@ -42,7 +42,7 @@ namespace NINATest {
             ushort[] expFlatArr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr, width, height);
+            ImageArray result = await ImageArray.CreateInstance(arr, width, height, false, true, 100);
 
             //Assert
             Assert.AreEqual(expX, result.Statistics.Width);
@@ -80,7 +80,7 @@ namespace NINATest {
             double mean = 4116;
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr);
+            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
 
             //Assert
             Assert.AreEqual(stdev, result.Statistics.StDev);
@@ -117,7 +117,7 @@ namespace NINATest {
             double mean = 32767.5;
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr);
+            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
 
             //Assert
             Assert.AreEqual(stdev, result.Statistics.StDev);
@@ -138,7 +138,7 @@ namespace NINATest {
             double mean = 65535;
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr);
+            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
 
             //Assert
             Assert.AreEqual(stdev, result.Statistics.StDev);
