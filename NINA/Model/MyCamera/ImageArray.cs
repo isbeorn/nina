@@ -14,14 +14,14 @@ namespace NINA.Model.MyCamera {
 
         public bool IsBayered { get; private set; }
 
-        private ImageArray(double histogramResolution) {
+        private ImageArray(int histogramResolution) {
             this.histogramResolution = histogramResolution;
             Statistics = new ImageStatistics { };
         }
 
-        private double histogramResolution;
+        private int histogramResolution;
 
-        public static async Task<ImageArray> CreateInstance(Array input, bool isBayered, bool calculateStatistics, double histogramResolution = 0.25) {
+        public static async Task<ImageArray> CreateInstance(Array input, bool isBayered, bool calculateStatistics, int histogramResolution) {
             ImageArray imgArray = new ImageArray(histogramResolution);
             imgArray.IsBayered = isBayered;
             await Task.Run(() => imgArray.FlipAndConvert(input));
@@ -32,7 +32,7 @@ namespace NINA.Model.MyCamera {
             return imgArray;
         }
 
-        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, bool isBayered, bool calculateStatistics, double histogramResolution) {
+        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, bool isBayered, bool calculateStatistics, int histogramResolution) {
             ImageArray imgArray = new ImageArray(histogramResolution);
             imgArray.IsBayered = isBayered;
             imgArray.FlatArray = input;

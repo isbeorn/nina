@@ -88,7 +88,7 @@ namespace NINA.ViewModel {
 
     public class Thumbnail : BaseINPC {
 
-        public Thumbnail(double histogramResolution) {
+        public Thumbnail(int histogramResolution) {
             this.histogramResolution = histogramResolution;
             SelectCommand = new AsyncCommand<bool>(() => {
                 return SelectImage();
@@ -174,7 +174,7 @@ namespace NINA.ViewModel {
 
         public FileTypeEnum FileType { get; set; }
 
-        private double histogramResolution;
+        private int histogramResolution;
 
         public ICommand SelectCommand { get; set; }
 

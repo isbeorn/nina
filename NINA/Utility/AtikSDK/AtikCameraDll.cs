@@ -95,7 +95,7 @@ namespace NINA.Utility.AtikSDK {
             return ArtemisCameraState(camera);
         }
 
-        public static async Task<ImageArray> DownloadExposure(IntPtr camera, bool isBayered, double histogramResolution) {
+        public static async Task<ImageArray> DownloadExposure(IntPtr camera, bool isBayered, int histogramResolution) {
             CheckError(ArtemisGetImageData(camera, out var x, out var y, out var w, out var h, out var binX, out var binY), MethodBase.GetCurrentMethod(), camera);
 
             var ptr = ArtemisImageBuffer(camera);
