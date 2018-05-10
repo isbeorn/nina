@@ -163,7 +163,93 @@
                             </UniformGrid>
                         </Border>
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                            <Expander Header="{ns:Loc LblAutoFocus}">
+                            <Expander x:Name="PART_AutoFocusExpander">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{ns:Loc LblAutoFocus}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                                <TextBlock Text="|" />
+                                                <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblAutoFocusOnStart}" />
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding AutoFocusOnStart}" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                            </StackPanel>
+                                            <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                                <TextBlock Text="|" />
+                                                <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblAutoFocusOnFilterChange}" />
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding AutoFocusOnFilterChange}" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                            </StackPanel>
+
+                                            <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                                <TextBlock Text="|" />
+                                                <TextBlock Margin="5,0,0,0" Text="{Binding AutoFocusSetTime}" />
+                                                <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblMinutesShort}" />
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding AutoFocusAfterSetTime}" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                            </StackPanel>
+                                            <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                                <TextBlock Text="|" />
+                                                <TextBlock Margin="5,0,0,0" Text="{Binding AutoFocusSetExposures}" />
+                                                <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblExposures}" />
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding AutoFocusAfterSetExposures}" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                            </StackPanel>
+                                            <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                                <TextBlock Text="|" />
+                                                <TextBlock Margin="5,0,0,0" Text="{Binding AutoFocusAfterTemperatureChangeAmount}" />
+                                                <TextBlock Text="{ns:Loc LblDegreeShort}" />
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding AutoFocusAfterTemperatureChange}" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                            </StackPanel>
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ElementName=PART_AutoFocusExpander, Path=IsExpanded}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Expander.Header>
+
                                 <StackPanel Orientation="Vertical">
                                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                                         <UniformGrid Columns="2">

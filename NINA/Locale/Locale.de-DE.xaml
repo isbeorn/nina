@@ -661,4 +661,6 @@ Berechneter HFR: {2}
     <s:String x:Key="LblDegreeShort">°</s:String>
     <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount">Temperaturbetrag</s:String>
     <s:String x:Key="LblAutoFocusAfterTemperatureChange">Nach Temperaturänderung</s:String>
+    <s:String x:Key="LblAfter">Nach</s:String>
+    <s:String x:Key="LblExposures">Bildern</s:String>
 </ResourceDictionary>
