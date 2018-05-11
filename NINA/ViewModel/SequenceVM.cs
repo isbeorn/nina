@@ -157,6 +157,8 @@ namespace NINA.ViewModel {
             }
         }
 
+        private double _currentTemperature = double.NaN;
+
         private async Task<bool> StartSequence(IProgress<ApplicationStatus> progress) {
             if (Sequence.Count <= 0) {
                 return false;
@@ -223,15 +225,21 @@ namespace NINA.ViewModel {
                     CaptureSequence seq;
                     var actualFilter = Mediator.Instance.Request(new GetCurrentFilterInfoMessage());
                     short prevFilterPosition = actualFilter?.Position ?? -1;
+                    var lastAutoFocusTime = DateTime.UtcNow;
+                    var lastAutoFocusTemperature = _currentTemperature;
+                    var exposureCount = 0;
                     while ((seq = Sequence.Next()) != null) {
+                        exposureCount++;
+
                         await CheckMeridianFlip(seq, ct, progress);
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
-                        //Autofocus on filter change
-                        if (seq.FilterType != null && seq.FilterType.Position != prevFilterPosition
-                                && seq.FilterType.Position >= 0
-                                && Sequence.AutoFocusOnFilterChange) {
+                        
+                        //Check if autofocus should be done
+                        if(ShouldAutoFocus(seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)){ 
                             await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
+                            lastAutoFocusTime = DateTime.UtcNow;
+                            lastAutoFocusTemperature = _currentTemperature;
                         }
 
                         await Mediator.Instance.RequestAsync(
@@ -273,6 +281,33 @@ namespace NINA.ViewModel {
                 }
                 return true;
             });
+        }
+
+        private bool ShouldAutoFocus(CaptureSequence seq, int exposureCount, short previousFilterPosition, DateTime lastAutoFocusTime, double lastAutoFocusTemperature) {            
+            if (seq.FilterType != null && seq.FilterType.Position != previousFilterPosition
+                    && seq.FilterType.Position >= 0
+                    && Sequence.AutoFocusOnFilterChange) {
+                /* Trigger autofocus after filter change */
+                return true;
+            }
+
+            
+            if (Sequence.AutoFocusAfterSetTime && (DateTime.UtcNow - lastAutoFocusTime) > TimeSpan.FromMinutes(Sequence.AutoFocusSetTime)) {
+                /* Trigger autofocus after a set time */
+                return true;
+            }
+
+            if (Sequence.AutoFocusAfterSetExposures && exposureCount % Sequence.AutoFocusSetExposures == 0) {
+                /* Trigger autofocus after amount of exposures*/
+                return true;
+            }
+
+            if(Sequence.AutoFocusAfterTemperatureChange && !double.IsNaN(_currentTemperature) && Math.Abs(lastAutoFocusTemperature - _currentTemperature) > Sequence.AutoFocusAfterTemperatureChangeAmount) {
+                /* Trigger autofocus after temperature change*/
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -349,6 +384,8 @@ namespace NINA.ViewModel {
                     return true;
                 })
             );
+
+            Mediator.Instance.Register((object o) => _currentTemperature = (double)o, MediatorMessages.FocuserTemperatureChanged);
 
             Mediator.Instance.Register((object o) => {
                 var dso = new DeepSkyObject(Sequence.DSO.Name, Sequence.DSO.Coordinates);
