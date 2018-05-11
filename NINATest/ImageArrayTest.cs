@@ -139,23 +139,23 @@ namespace NINATest {
         }
 
         [Test]
-        public async Task StDevTest_LargeDataSetTest() {
+        [TestCase(4, 3, 12345, 35483, 23914, 11569)]
+        [TestCase(46, 35, 12345,35483, 23914, 11569)]
+        [TestCase(460, 350, 12345, 35483, 23914, 11569)]
+        public async Task StDevTest_LargeDataSetTest(int width, int height, int value1, int value2, double mean, double stdev) {
             //Arrange
-            int[,] arr = new int[4656, 3520];
+            int[,] arr = new int[width, height];
             for (int x = 0; x < arr.GetLength(0); x += 1) {
                 for (int y = 0; y < arr.GetLength(1); y += 1) {
-                    arr[x, y] = 65535;
+                    arr[x, y] = (x+y)%2 == 0? value1 : value2;
                 }
             }
-
-            double stdev = 0;
-            double mean = 65535;
-
+            
             //Act
             ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
 
             //Assert
-            Assert.AreEqual(stdev, result.Statistics.StDev);
+            Assert.AreEqual(stdev, result.Statistics.StDev, 0.000001);
             Assert.AreEqual(mean, result.Statistics.Mean);
         }
 
