@@ -1312,9 +1312,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Profile _selectedProfile;
+        private IProfile _selectedProfile;
 
-        public Profile SelectedProfile {
+        public IProfile SelectedProfile {
             get {
                 return _selectedProfile;
             }
@@ -1324,7 +1324,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public ObservableCollection<Profile> Profiles {
+        public ObservableCollection<IProfile> Profiles {
             get {
                 return profileService.Profiles.ProfileList;
             }

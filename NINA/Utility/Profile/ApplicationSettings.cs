@@ -2,15 +2,16 @@
 using NINA.Utility.Mediator;
 using System;
 using System.Globalization;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(ApplicationSettings))]
-    public class ApplicationSettings {
+    [DataContract]
+    public class ApplicationSettings : IApplicationSettings {
 
-        [XmlElement(nameof(Culture))]
+        [DataMember]
         public string Culture {
             get {
                 return Language.Name;
@@ -23,7 +24,6 @@ namespace NINA.Utility.Profile {
 
         private CultureInfo language = new CultureInfo("en-GB");
 
-        [XmlIgnore()]
         public CultureInfo Language {
             get {
                 return language;
@@ -36,7 +36,7 @@ namespace NINA.Utility.Profile {
 
         private LogLevelEnum logLevel = LogLevelEnum.ERROR;
 
-        [XmlElement(nameof(LogLevel))]
+        [DataMember]
         public LogLevelEnum LogLevel {
             get {
                 return logLevel;
@@ -49,7 +49,7 @@ namespace NINA.Utility.Profile {
 
         private string databaseLocation = @"%localappdata%\NINA\NINA.sqlite";
 
-        [XmlElement(nameof(DatabaseLocation))]
+        [DataMember]
         public string DatabaseLocation {
             get {
                 return Environment.ExpandEnvironmentVariables(databaseLocation);
@@ -62,7 +62,7 @@ namespace NINA.Utility.Profile {
 
         private double devicePollingInterval = 0.5;
 
-        [XmlElement(nameof(DevicePollingInterval))]
+        [DataMember]
         public double DevicePollingInterval {
             get {
                 return devicePollingInterval;
@@ -75,7 +75,7 @@ namespace NINA.Utility.Profile {
 
         private string skyAtlasImageRepository = string.Empty;
 
-        [XmlElement(nameof(SkyAtlasImageRepository))]
+        [DataMember]
         public string SkyAtlasImageRepository {
             get {
                 return skyAtlasImageRepository;

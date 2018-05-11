@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 
 namespace NINA.Utility {
+
     [System.Serializable()]
     public abstract class BaseINPC : INotifyPropertyChanged {
 
@@ -9,6 +10,7 @@ namespace NINA.Utility {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        [field: System.NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void ChildChanged(object sender, PropertyChangedEventArgs e) {

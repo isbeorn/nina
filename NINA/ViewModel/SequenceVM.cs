@@ -18,12 +18,12 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    internal class SequenceVM : DockableVM {
+    public class SequenceVM : DockableVM {
 
         public SequenceVM(IProfileService profileService) : base(profileService) {
             this.profileService = profileService;
             Title = "LblSequence";
-            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SequenceSVG"];
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current?.Resources["SequenceSVG"];
 
             EstimatedDownloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
 
@@ -235,9 +235,9 @@ namespace NINA.ViewModel {
                         await CheckMeridianFlip(seq, ct, progress);
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
-                        
+
                         //Check if autofocus should be done
-                        if(ShouldAutoFocus(seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)){ 
+                        if (ShouldAutoFocus(seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
                             await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
                             lastAutoFocusTime = DateTime.UtcNow;
                             lastAutoFocusTemperature = _currentTemperature;
@@ -284,7 +284,7 @@ namespace NINA.ViewModel {
             });
         }
 
-        private bool ShouldAutoFocus(CaptureSequence seq, int exposureCount, short previousFilterPosition, DateTime lastAutoFocusTime, double lastAutoFocusTemperature) {            
+        private bool ShouldAutoFocus(CaptureSequence seq, int exposureCount, short previousFilterPosition, DateTime lastAutoFocusTime, double lastAutoFocusTemperature) {
             if (seq.FilterType != null && seq.FilterType.Position != previousFilterPosition
                     && seq.FilterType.Position >= 0
                     && Sequence.AutoFocusOnFilterChange) {
@@ -292,7 +292,6 @@ namespace NINA.ViewModel {
                 return true;
             }
 
-            
             if (Sequence.AutoFocusAfterSetTime && (DateTime.UtcNow - lastAutoFocusTime) > TimeSpan.FromMinutes(Sequence.AutoFocusSetTime)) {
                 /* Trigger autofocus after a set time */
                 return true;
@@ -303,7 +302,7 @@ namespace NINA.ViewModel {
                 return true;
             }
 
-            if(Sequence.AutoFocusAfterTemperatureChange && !double.IsNaN(_currentTemperature) && Math.Abs(lastAutoFocusTemperature - _currentTemperature) > Sequence.AutoFocusAfterTemperatureChangeAmount) {
+            if (Sequence.AutoFocusAfterTemperatureChange && !double.IsNaN(_currentTemperature) && Math.Abs(lastAutoFocusTemperature - _currentTemperature) > Sequence.AutoFocusAfterTemperatureChangeAmount) {
                 /* Trigger autofocus after temperature change*/
                 return true;
             }

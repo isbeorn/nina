@@ -8,7 +8,7 @@ namespace NINA.Utility.Profile {
 
     public interface IProfileService {
         Profiles Profiles { get; }
-        Profile ActiveProfile { get; }
+        IProfile ActiveProfile { get; }
 
         void Clone(Guid guid);
 

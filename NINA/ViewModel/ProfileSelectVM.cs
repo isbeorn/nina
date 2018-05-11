@@ -9,10 +9,8 @@ namespace NINA.ViewModel {
 
     internal class ProfileSelectVM : BaseINPC {
         private CancellationTokenSource _cancelTokenSource;
-        private Profile _defaultProfile;
-        private ObserveAllCollection<Profile> _profileList;
-        private Profile _tempProfile;
-        private bool _useSavedProfile = Properties.Settings.Default.UseSavedProfileSelection;
+        private IProfile _defaultProfile;
+        private IProfile _tempProfile;
 
         public ProfileSelectVM(IProfileService profileService) {
             this.profileService = profileService;
@@ -23,7 +21,7 @@ namespace NINA.ViewModel {
 
         private IProfileService profileService;
 
-        public Profile ActiveProfile {
+        public IProfile ActiveProfile {
             get {
                 return _tempProfile;
             }
@@ -68,14 +66,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public ObserveAllCollection<Profile> Profiles {
-            set {
-                _profileList = value;
-            }
-            get {
-                return _profileList;
-            }
-        }
+        public ObserveAllCollection<IProfile> Profiles { set; get; }
 
         public string Telescope {
             get {
@@ -85,14 +76,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public bool UseSavedProfile {
-            get {
-                return _useSavedProfile;
-            }
-            set {
-                _useSavedProfile = value;
-            }
-        }
+        public bool UseSavedProfile { get; set; } = Properties.Settings.Default.UseSavedProfileSelection;
 
         public void SelectProfile() {
             _cancelTokenSource = new CancellationTokenSource();

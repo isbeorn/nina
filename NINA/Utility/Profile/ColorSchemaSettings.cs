@@ -1,17 +1,17 @@
 ﻿using NINA.Utility.Mediator;
 using System;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows.Media;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(ColorSchemaSettings))]
-    public class ColorSchemaSettings {
+    [DataContract]
+    public class ColorSchemaSettings : IColorSchemaSettings {
 
         public ColorSchemaSettings() {
-            ColorSchemas = ColorSchemas.ReadColorSchemas();
             ColorSchemas.Items.Add(new ColorSchema {
                 Name = "Custom",
                 PrimaryColor = PrimaryColor,
@@ -45,12 +45,22 @@ namespace NINA.Utility.Profile {
             });
         }
 
-        [XmlIgnore]
-        public ColorSchemas ColorSchemas { get; set; }
+        private ColorSchemas colorSchemas;
+
+        public ColorSchemas ColorSchemas {
+            get {
+                if (colorSchemas == null) {
+                    colorSchemas = ColorSchemas.ReadColorSchemas();
+                }
+                return colorSchemas;
+            }
+            set {
+                colorSchemas = value;
+            }
+        }
 
         private ColorSchema colorSchema;
 
-        [XmlElement(nameof(ColorSchema))]
         public ColorSchema ColorSchema {
             get {
                 if (colorSchema == null) {
@@ -68,7 +78,6 @@ namespace NINA.Utility.Profile {
 
         private ColorSchema altColorSchema;
 
-        [XmlElement(nameof(AltColorSchema))]
         public ColorSchema AltColorSchema {
             get {
                 if (altColorSchema == null) {
@@ -86,7 +95,7 @@ namespace NINA.Utility.Profile {
 
         private string colorSchemaName = "Light";
 
-        [XmlElement(nameof(ColorSchemaName))]
+        [DataMember]
         public string ColorSchemaName {
             get {
                 return colorSchemaName;
@@ -100,7 +109,7 @@ namespace NINA.Utility.Profile {
 
         private string altColorSchemaName = "Dark";
 
-        [XmlElement(nameof(AltColorSchemaName))]
+        [DataMember]
         public string AltColorSchemaName {
             get {
                 return altColorSchemaName;
@@ -114,7 +123,7 @@ namespace NINA.Utility.Profile {
 
         private Color primaryColor = (Color)ColorConverter.ConvertFromString("#FF000000");
 
-        [XmlElement(nameof(PrimaryColor))]
+        [DataMember]
         public Color PrimaryColor {
             get {
                 return ColorSchema.PrimaryColor;
@@ -130,7 +139,7 @@ namespace NINA.Utility.Profile {
 
         private Color secondaryColor = (Color)ColorConverter.ConvertFromString("#FF54748C");
 
-        [XmlElement(nameof(SecondaryColor))]
+        [DataMember]
         public Color SecondaryColor {
             get {
                 return ColorSchema.SecondaryColor;
@@ -146,7 +155,7 @@ namespace NINA.Utility.Profile {
 
         private Color borderColor = (Color)ColorConverter.ConvertFromString("#AABCBCBC");
 
-        [XmlElement(nameof(BorderColor))]
+        [DataMember]
         public Color BorderColor {
             get {
                 return ColorSchema.BorderColor;
@@ -162,7 +171,7 @@ namespace NINA.Utility.Profile {
 
         private Color backgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
 
-        [XmlElement(nameof(BackgroundColor))]
+        [DataMember]
         public Color BackgroundColor {
             get {
                 return ColorSchema.BackgroundColor;
@@ -178,7 +187,7 @@ namespace NINA.Utility.Profile {
 
         private Color buttonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0B3C5D");
 
-        [XmlElement(nameof(ButtonBackgroundColor))]
+        [DataMember]
         public Color ButtonBackgroundColor {
             get {
                 return ColorSchema.ButtonBackgroundColor;
@@ -194,7 +203,7 @@ namespace NINA.Utility.Profile {
 
         private Color buttonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF2190DB");
 
-        [XmlElement(nameof(ButtonBackgroundSelectedColor))]
+        [DataMember]
         public Color ButtonBackgroundSelectedColor {
             get {
                 return ColorSchema.ButtonBackgroundSelectedColor;
@@ -210,7 +219,7 @@ namespace NINA.Utility.Profile {
 
         private Color buttonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF1D2731");
 
-        [XmlElement(nameof(ButtonForegroundDisabledColor))]
+        [DataMember]
         public Color ButtonForegroundDisabledColor {
             get {
                 return ColorSchema.ButtonForegroundDisabledColor;
@@ -226,7 +235,7 @@ namespace NINA.Utility.Profile {
 
         private Color buttonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
 
-        [XmlElement(nameof(ButtonForegroundColor))]
+        [DataMember]
         public Color ButtonForegroundColor {
             get {
                 return ColorSchema.ButtonForegroundColor;
@@ -242,7 +251,7 @@ namespace NINA.Utility.Profile {
 
         private Color notificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300");
 
-        [XmlElement(nameof(NotificationWarningColor))]
+        [DataMember]
         public Color NotificationWarningColor {
             get {
                 return ColorSchema.NotificationWarningColor;
@@ -258,7 +267,7 @@ namespace NINA.Utility.Profile {
 
         private Color notificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606");
 
-        [XmlElement(nameof(NotificationErrorColor))]
+        [DataMember]
         public Color NotificationErrorColor {
             get {
                 return ColorSchema.NotificationErrorColor;
@@ -274,7 +283,7 @@ namespace NINA.Utility.Profile {
 
         private Color notificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
 
-        [XmlElement(nameof(NotificationWarningTextColor))]
+        [DataMember]
         public Color NotificationWarningTextColor {
             get {
                 return ColorSchema.NotificationWarningTextColor;
@@ -290,7 +299,7 @@ namespace NINA.Utility.Profile {
 
         private Color notificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
 
-        [XmlElement(nameof(NotificationErrorTextColor))]
+        [DataMember]
         public Color NotificationErrorTextColor {
             get {
                 return ColorSchema.NotificationErrorTextColor;
@@ -306,7 +315,7 @@ namespace NINA.Utility.Profile {
 
         private Color altPrimaryColor = (Color)ColorConverter.ConvertFromString("#FF550C18");
 
-        [XmlElement(nameof(AltPrimaryColor))]
+        [DataMember]
         public Color AltPrimaryColor {
             get {
                 return AltColorSchema.PrimaryColor;
@@ -322,7 +331,7 @@ namespace NINA.Utility.Profile {
 
         private Color altSecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1B2A41");
 
-        [XmlElement(nameof(AltSecondaryColor))]
+        [DataMember]
         public Color AltSecondaryColor {
             get {
                 return AltColorSchema.SecondaryColor;
@@ -338,7 +347,7 @@ namespace NINA.Utility.Profile {
 
         private Color altBorderColor = (Color)ColorConverter.ConvertFromString("#FF550C18");
 
-        [XmlElement(nameof(AltBorderColor))]
+        [DataMember]
         public Color AltBorderColor {
             get {
                 return AltColorSchema.BorderColor;
@@ -354,7 +363,7 @@ namespace NINA.Utility.Profile {
 
         private Color altBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A");
 
-        [XmlElement(nameof(AltBackgroundColor))]
+        [DataMember]
         public Color AltBackgroundColor {
             get {
                 return AltColorSchema.BackgroundColor;
@@ -370,7 +379,7 @@ namespace NINA.Utility.Profile {
 
         private Color altButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF550C18");
 
-        [XmlElement(nameof(AltButtonBackgroundColor))]
+        [DataMember]
         public Color AltButtonBackgroundColor {
             get {
                 return AltColorSchema.ButtonBackgroundColor;
@@ -386,7 +395,7 @@ namespace NINA.Utility.Profile {
 
         private Color altButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF96031A");
 
-        [XmlElement(nameof(AltButtonBackgroundSelectedColor))]
+        [DataMember]
         public Color AltButtonBackgroundSelectedColor {
             get {
                 return AltColorSchema.ButtonBackgroundSelectedColor;
@@ -402,7 +411,7 @@ namespace NINA.Utility.Profile {
 
         private Color altButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF443730");
 
-        [XmlElement(nameof(AltButtonForegroundDisabledColor))]
+        [DataMember]
         public Color AltButtonForegroundDisabledColor {
             get {
                 return AltColorSchema.ButtonForegroundDisabledColor;
@@ -418,7 +427,7 @@ namespace NINA.Utility.Profile {
 
         private Color altButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A");
 
-        [XmlElement(nameof(AltButtonForegroundColor))]
+        [DataMember]
         public Color AltButtonForegroundColor {
             get {
                 return AltColorSchema.ButtonForegroundColor;
@@ -434,7 +443,7 @@ namespace NINA.Utility.Profile {
 
         private Color altNotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300");
 
-        [XmlElement(nameof(AltNotificationWarningColor))]
+        [DataMember]
         public Color AltNotificationWarningColor {
             get {
                 return AltColorSchema.NotificationWarningColor;
@@ -450,7 +459,7 @@ namespace NINA.Utility.Profile {
 
         private Color altNotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFF5A300");
 
-        [XmlElement(nameof(AltNotificationErrorColor))]
+        [DataMember]
         public Color AltNotificationErrorColor {
             get {
                 return AltColorSchema.NotificationErrorColor;
@@ -466,7 +475,7 @@ namespace NINA.Utility.Profile {
 
         private Color altNotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A");
 
-        [XmlElement(nameof(AltNotificationWarningTextColor))]
+        [DataMember]
         public Color AltNotificationWarningTextColor {
             get {
                 return AltColorSchema.NotificationWarningTextColor;
@@ -482,7 +491,7 @@ namespace NINA.Utility.Profile {
 
         private Color altNotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A");
 
-        [XmlElement(nameof(AltNotificationErrorTextColor))]
+        [DataMember]
         public Color AltNotificationErrorTextColor {
             get {
                 return AltColorSchema.NotificationErrorTextColor;

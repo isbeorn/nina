@@ -220,6 +220,7 @@
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -333,7 +334,24 @@
     <Compile Include="Utility\Converters\ValueToLocaleConverter.cs" />
     <Compile Include="Utility\DatabaseInteraction.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
+    <Compile Include="Utility\Profile\IApplicationSettings.cs" />
+    <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
+    <Compile Include="Utility\Profile\ICameraSettings.cs" />
+    <Compile Include="Utility\Profile\IColorSchemaSettings.cs" />
+    <Compile Include="Utility\Profile\IFilterWheelSettings.cs" />
+    <Compile Include="Utility\Profile\IFocuserSettings.cs" />
+    <Compile Include="Utility\Profile\IFramingAssistantSettings.cs" />
+    <Compile Include="Utility\Profile\IGuiderSettings.cs" />
+    <Compile Include="Utility\Profile\IImageFileSettings.cs" />
+    <Compile Include="Utility\Profile\IImageSettings.cs" />
+    <Compile Include="Utility\Profile\IMeridianFlipSettings.cs" />
+    <Compile Include="Utility\Profile\IPlateSolveSettings.cs" />
+    <Compile Include="Utility\Profile\IPolarAlignmentSettings.cs" />
+    <Compile Include="Utility\Profile\IProfile.cs" />
     <Compile Include="Utility\Profile\IProfileService.cs" />
+    <Compile Include="Utility\Profile\ISequenceSettings.cs" />
+    <Compile Include="Utility\Profile\ITelescopeSettings.cs" />
+    <Compile Include="Utility\Profile\IWeatherDataSettings.cs" />
     <Compile Include="Utility\RawConverter\DCRaw.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
