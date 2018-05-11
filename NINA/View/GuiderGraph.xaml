@@ -48,9 +48,9 @@
                 ItemStringFormat="unit: {0}"
                 ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}"
                 SelectedItem="{Binding GuiderScale}" />
-            <TextBlock Text="{Binding RMSRAText}" />
-            <TextBlock Text="{Binding RMSDecText}" />
-            <TextBlock Text="{Binding RMSTotalText}" />
+            <TextBlock Text="{Binding RMS.RAText}" />
+            <TextBlock Text="{Binding RMS.DecText}" />
+            <TextBlock Text="{Binding RMS.TotalText}" />
         </StackPanel>
 
         <oxy:Plot

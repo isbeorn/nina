@@ -457,6 +457,7 @@
     <Compile Include="ViewModel\PlatesolveVM.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
+    <Compile Include="Model\RMS.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
     <Compile Include="ViewModel\SkyAtlasVM.cs" />
     <Compile Include="ViewModel\TelescopeVM.cs" />

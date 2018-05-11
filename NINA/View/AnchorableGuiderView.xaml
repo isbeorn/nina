@@ -41,11 +41,23 @@
                     <TextBlock Margin="5,0,0,0" Text="{Binding Guider.AppState.State}" />
                 </UniformGrid>
             </Border>
-            <Border Grid.Row="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+            <Border
+                Grid.Row="2"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
                 <UniformGrid VerticalAlignment="Center" Columns="3">
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding RMSRAText}" />
-                    <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding RMSDecText}" />
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding RMSTotalText}" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Text="{Binding RMS.RAText}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Text="{Binding RMS.DecText}" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Text="{Binding RMS.TotalText}" />
                 </UniformGrid>
             </Border>
             <local:MinimalisticGuiderGraph
