@@ -401,6 +401,7 @@ namespace NINA.ViewModel {
                 if (_sequence == null) {
                     if (File.Exists(profileService.ActiveProfile.SequenceSettings.TemplatePath)) {
                         _sequence = CaptureSequenceList.Load(profileService.ActiveProfile.SequenceSettings.TemplatePath, profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters);
+                        _sequence.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                     }
                     if (_sequence == null) {
                         /* Fallback when no template is set or load failed */
