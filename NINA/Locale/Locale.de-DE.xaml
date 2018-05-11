@@ -341,7 +341,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblCenterTarget">Ziel zentrieren</s:String>
     <s:String x:Key="LblStartGuiding">Nachführung starten</s:String>
     <s:String x:Key="LblTarget">Ziel (J2000)</s:String>
-    <s:String x:Key="LblAutoFocusOnStart">Autofokus beim Start</s:String>
+    <s:String x:Key="LblAutoFocusOnStart">Beim Start</s:String>
     <s:String x:Key="LblSwitchingFilter">Wechsle Filter</s:String>
     <s:String x:Key="LblEstimatedDownloadTime">Vorauss. Downloadzeit</s:String>
     <s:String x:Key="LblETA">Vorauss. Ende</s:String>
@@ -410,7 +410,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblEquipment">Ausrüstung</s:String>
     <s:String x:Key="LblImportFromFilterWheel">Von Filterrad importieren</s:String>
     <s:String x:Key="LblWaitingForCamera">Warten auf Kamera</s:String>
-    <s:String x:Key="LblAutoFocusOnFilterChange">Autofokus bei Filterwechsel</s:String>
+    <s:String x:Key="LblAutoFocusOnFilterChange">Bei Filterwechsel</s:String>
     <s:String x:Key="LblBulbSerialPort">Serieller Port für Bulb</s:String>
     <s:String x:Key="LblOf">von</s:String>
     <s:String x:Key="LblTo">bis</s:String>
@@ -649,4 +649,18 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
     <s:String x:Key="LblStretchImage">Strecke Bild</s:String>
     <s:String x:Key="LblDebayerImage">Debayere Bild</s:String>
     <s:String x:Key="LblToolTipLiveView">Live Vorschau</s:String>
+    <s:String x:Key="LblFocusPointValidationFailed" xml:space="preserve">Berechneter HFR an position {0} weicht um mehr als 25% vom aktuellen HFR ab.
+Aktueller HFR : {1}
+Berechneter HFR: {2}
+    </s:String>
+    <s:String x:Key="LblMinutesShort">min</s:String>
+    <s:String x:Key="LblAutoFocusAfterSetTime">Nach verstrichener Zeit</s:String>
+    <s:String x:Key="LblAutoFocusSetTime">Zeit</s:String>
+    <s:String x:Key="LblAutoFocusAfterSetExposures">Nach # Bildern</s:String>
+    <s:String x:Key="LblAutoFocusNrOfExposures"># Bildern</s:String>
+    <s:String x:Key="LblDegreeShort">°</s:String>
+    <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount">Temperaturbetrag</s:String>
+    <s:String x:Key="LblAutoFocusAfterTemperatureChange">Nach Temperaturänderung</s:String>
+    <s:String x:Key="LblAfter">Nach</s:String>
+    <s:String x:Key="LblExposures">Bildern</s:String>
 </ResourceDictionary>

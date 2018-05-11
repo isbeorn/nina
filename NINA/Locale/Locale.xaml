@@ -340,7 +340,7 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblCenterTarget">Center target</s:String>
     <s:String x:Key="LblStartGuiding">Start guiding</s:String>
     <s:String x:Key="LblTarget">Target (J2000)</s:String>
-    <s:String x:Key="LblAutoFocusOnStart">Auto Focus on start</s:String>
+    <s:String x:Key="LblAutoFocusOnStart">On start</s:String>
     <s:String x:Key="LblSwitchingFilter">Switching filter</s:String>
     <s:String x:Key="LblEstimatedDownloadTime">Estimated Download Time</s:String>
     <s:String x:Key="LblETA">Estimated Finish Time</s:String>
@@ -415,7 +415,7 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblEquipment">Equipment</s:String>
     <s:String x:Key="LblImportFromFilterWheel">Import Filters from Filterwheel</s:String>
     <s:String x:Key="LblWaitingForCamera">Waiting for Camera</s:String>
-    <s:String x:Key="LblAutoFocusOnFilterChange">Auto Focus on filter change</s:String>
+    <s:String x:Key="LblAutoFocusOnFilterChange">On filter change</s:String>
     <s:String x:Key="LblBulbSerialPort">Bulb Serial Port</s:String>
     <s:String x:Key="LblRotation">Rotation</s:String>
     <s:String x:Key="LblFieldOfView">Field Of View</s:String>
@@ -641,4 +641,20 @@ Drag the rectangle over a star whith the bahtinov spikes. NINA will try to detec
     <s:String x:Key="LblStretchImage">Stretching image</s:String>
     <s:String x:Key="LblDebayerImage">Debayering image</s:String>
     <s:String x:Key="LblToolTipLiveView">Live View</s:String>
+    <s:String x:Key="LblFocusPointValidationFailed" xml:space="preserve">Calculated HFR for focus at position {0} differs more than 25% from actual HFR
+Actual HFR : {1}
+Calculated HFR: {2}
+    </s:String>
+    <s:String x:Key="LblMinutesShort">min</s:String>
+    <s:String x:Key="LblAutoFocusAfterSetTime">After elapsed Time</s:String>
+    <s:String x:Key="LblAutoFocusSetTime">Time</s:String>
+    <s:String x:Key="LblAutoFocusAfterSetExposures">After # exposures</s:String>
+    <s:String x:Key="LblAutoFocusNrOfExposures"># exposures</s:String>
+    <s:String x:Key="LblDegreeShort">°</s:String>
+    <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount">Temperature amount</s:String>
+    <s:String x:Key="LblAutoFocusAfterTemperatureChange">After temperature change</s:String>
+    <s:String x:Key="LblAfter">After</s:String>
+    <s:String x:Key="LblExposures">Exposures</s:String>
+
+
 </ResourceDictionary>

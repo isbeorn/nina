@@ -440,6 +440,83 @@ namespace NINA.Model {
             }
         }
 
+        private bool _autoFocusAfterSetTime;
+
+        [XmlAttribute(nameof(AutoFocusAfterSetTime))]
+        public bool AutoFocusAfterSetTime {
+            get {
+                return _autoFocusAfterSetTime;
+            }
+            set {
+                _autoFocusAfterSetTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _autoFocusSetTime = 30;
+
+        [XmlAttribute(nameof(AutoFocusSetTime))]
+        public double AutoFocusSetTime {
+            get {
+                return _autoFocusSetTime;
+            }
+            set {
+                _autoFocusSetTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _autoFocusAfterSetExposures;
+
+        [XmlAttribute(nameof(AutoFocusAfterSetExposures))]
+        public bool AutoFocusAfterSetExposures {
+            get {
+                return _autoFocusAfterSetExposures;
+            }
+            set {
+                _autoFocusAfterSetExposures = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _autoFocusSetExposures = 10;
+
+        [XmlAttribute(nameof(AutoFocusSetExposures))]
+        public double AutoFocusSetExposures {
+            get {
+                return _autoFocusSetExposures;
+            }
+            set {
+                _autoFocusSetExposures = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _autoFocusAfterTemperatureChange = false;
+        [XmlAttribute(nameof(AutoFocusAfterTemperatureChange))]
+        public bool AutoFocusAfterTemperatureChange {
+            get {
+                return _autoFocusAfterTemperatureChange;
+            }
+            set {
+                _autoFocusAfterTemperatureChange = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _autoFocusAfterTemperatureChangeAmount = 5;
+
+        [XmlAttribute(nameof(AutoFocusAfterTemperatureChangeAmount))]
+        public double AutoFocusAfterTemperatureChangeAmount {
+            get {
+                return _autoFocusAfterTemperatureChangeAmount;
+            }
+            set {
+                _autoFocusAfterTemperatureChangeAmount = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool _altitudeVisisble;
 
         [XmlIgnore]
