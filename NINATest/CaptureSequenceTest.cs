@@ -341,22 +341,52 @@ namespace NINATest {
             Assert.AreEqual(coordinates.Dec, l.DecDegrees + l.DecMinutes + l.DecSeconds);
         }
 
-        [Test]
-        public void CoordinatesTest_ManualInput_RaDecPartialsEqualCoordinates() {
+        [TestCase(5,10,15, 5.17083333333333)]
+        [TestCase(0, 0, 0,  0)]
+        [TestCase(15, 01, 01, 15.01694444444444)]
+        [TestCase(0, 0, 1, 0.00027777777)]  //Lower bound
+        [TestCase(23, 59, 59, 23.99972222222222)]   //upper bound
+        [TestCase(0, 0, 0, 0)]  //Lowest bound
+        //[TestCase(24, 0, 0, 0)] //Overflow
+        //[TestCase(0, 0, -1, 0)] //Overflow
+        public void CoordinatesTest_ManualInput_RACheck(int raHours, int raMinutes, int raSeconds, double expected) {
             var l = new CaptureSequenceList();
-            var coordinates = new NINA.Utility.Astrometry.Coordinates(10, 10, NINA.Utility.Astrometry.Epoch.J2000, NINA.Utility.Astrometry.Coordinates.RAType.Hours);
+            var coordinates = new NINA.Utility.Astrometry.Coordinates(0, 0, NINA.Utility.Astrometry.Epoch.J2000, NINA.Utility.Astrometry.Coordinates.RAType.Hours);
 
-            l.Coordinates = coordinates.Transform(NINA.Utility.Astrometry.Epoch.J2000);
-            l.RAHours = 5;
-            l.RAMinutes = 10;
-            l.RASeconds = 15;
+            l.RAHours = raHours;
+            l.RAMinutes = raMinutes;
+            l.RASeconds = raSeconds;
 
-            l.DecDegrees = 5;
-            l.DecMinutes = 10;
-            l.DecSeconds = 15;
+            Assert.AreEqual(expected, l.Coordinates.RA, 0.000001, "Coordinates failed");
+            Assert.AreEqual(raHours, l.RAHours, 0.000001, "Hours failed");
+            Assert.AreEqual(raMinutes, l.RAMinutes, 0.000001, "Minutes failed");
+            Assert.AreEqual(raSeconds, l.RASeconds, 0.000001, "Seconds failed");
+        }
 
-            Assert.AreEqual(5 + 10 / 60.0 + 15 / (60.0 * 60.0), l.Coordinates.RA);
-            Assert.AreEqual(5 + 10 / 60.0 + 15 / (60.0 * 60.0), l.Coordinates.Dec);
+        [TestCase(5, 10, 15, 5.17083333333333)]
+        [TestCase(0, 0, 0, 0)]
+        [TestCase(15, 01, 01, 15.01694444444444)]
+        [TestCase(-15, 01, 01, -15.01694444444444)]
+        [TestCase(0, 0, 1, 0.00027777777)] //Low bound
+        [TestCase(89, 59, 59, 89.99972222222222)] //high bound
+        [TestCase(-90, 0, 0, -90)] //Lowest bound
+        [TestCase(90, 0, 0, 90)] //Highest bound
+        [TestCase(0, 0, -1, -0.00027777777)] //Low bound
+        [TestCase(-89, 59, 59, -89.99972222222222)] //high bound
+        //[TestCase(90, 0, 1, 90)] //overflow
+        //[TestCase(-90, 0, 1, 90)] //overflow
+        public void CoordinatesTest_ManualInput_DecCheck(int decDegrees, int decMinutes, int decSeconds, double expected) {
+            var l = new CaptureSequenceList();
+            var coordinates = new NINA.Utility.Astrometry.Coordinates(0, 0, NINA.Utility.Astrometry.Epoch.J2000, NINA.Utility.Astrometry.Coordinates.RAType.Hours);
+
+            l.DecDegrees = decDegrees;
+            l.DecMinutes = decMinutes;
+            l.DecSeconds = decSeconds;
+
+            Assert.AreEqual(expected, l.Coordinates.Dec, 0.000001, "Coordinates failed");
+            Assert.AreEqual(decDegrees, l.DecDegrees, 0.000001, "Degrees failed");
+            Assert.AreEqual(decMinutes, l.DecMinutes, 0.000001, "Minutes failed");
+            Assert.AreEqual(decSeconds, l.DecSeconds, 0.000001, "Seconds failed");
         }
     }
 
