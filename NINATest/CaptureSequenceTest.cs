@@ -300,7 +300,6 @@ namespace NINATest {
 
             while (l.Next() != null) { }
 
-
             Assert.AreEqual(50, seq1.ProgressExposureCount);
             Assert.AreEqual(10, seq2.ProgressExposureCount);
             Assert.AreEqual(30, seq3.ProgressExposureCount);
@@ -326,10 +325,38 @@ namespace NINATest {
 
             while (l.Next() != null) { }
 
-
             Assert.AreEqual(50, seq1.ProgressExposureCount);
             Assert.AreEqual(10, seq2.ProgressExposureCount);
             Assert.AreEqual(30, seq3.ProgressExposureCount);
+        }
+
+        [TestMethod]
+        public void CoordinatesTest_SetCoordinates_RaDecPartialsEqualCoordinates() {
+            var l = new CaptureSequenceList();
+            var coordinates = new NINA.Utility.Astrometry.Coordinates(10, 10, NINA.Utility.Astrometry.Epoch.J2000, NINA.Utility.Astrometry.Coordinates.RAType.Hours);
+
+            l.Coordinates = coordinates.Transform(NINA.Utility.Astrometry.Epoch.J2000);
+
+            Assert.AreEqual(coordinates.RA, l.RAHours + l.RAMinutes + l.RASeconds);
+            Assert.AreEqual(coordinates.Dec, l.DecDegrees + l.DecMinutes + l.DecSeconds);
+        }
+
+        [TestMethod]
+        public void CoordinatesTest_ManualInput_RaDecPartialsEqualCoordinates() {
+            var l = new CaptureSequenceList();
+            var coordinates = new NINA.Utility.Astrometry.Coordinates(10, 10, NINA.Utility.Astrometry.Epoch.J2000, NINA.Utility.Astrometry.Coordinates.RAType.Hours);
+
+            l.Coordinates = coordinates.Transform(NINA.Utility.Astrometry.Epoch.J2000);
+            l.RAHours = 5;
+            l.RAMinutes = 10;
+            l.RASeconds = 15;
+
+            l.DecDegrees = 5;
+            l.DecMinutes = 10;
+            l.DecSeconds = 15;
+
+            Assert.AreEqual(5 + 10 / 60.0 + 15 / (60.0 * 60.0), l.Coordinates.RA);
+            Assert.AreEqual(5 + 10 / 60.0 + 15 / (60.0 * 60.0), l.Coordinates.Dec);
         }
     }
 

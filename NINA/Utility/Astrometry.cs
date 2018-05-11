@@ -422,7 +422,7 @@ namespace NINA.Utility.Astrometry {
         /// <returns></returns>
         public Coordinates Transform(Epoch targetEpoch) {
             if (Epoch == targetEpoch) {
-                return this;
+                return new Coordinates(this.RA, this.Dec, this.Epoch, RAType.Hours);
             }
 
             if (targetEpoch == Epoch.JNOW) {
