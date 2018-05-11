@@ -1,7 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NINA.Utility.Enum;
+﻿using NINA.Utility.Enum;
 using NINA.Utility.Profile;
 using NINA.ViewModel;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,20 +10,20 @@ using System.Threading.Tasks;
 
 namespace NINATest {
 
-    [TestClass]
+    [TestFixture]
     public class SequenceVMTest {
         public TestContext TestContext { get; set; }
 
         private SequenceProfileService profileService;
 
-        [TestInitialize]
+        [SetUp]
         public void SequenceVM_TestInit() {
             profileService = new SequenceProfileService();
             profileService.ActiveProfile = new SequenceProfile();
-            profileService.ActiveProfile.ImageFileSettings.FilePath = TestContext.TestDir;
+            profileService.ActiveProfile.ImageFileSettings.FilePath = TestContext.CurrentContext.TestDirectory;
         }
 
-        [TestMethod]
+        [Test]
         public async Task ProcessSequence_Default() {
             var vm = new SequenceVM(profileService);
 

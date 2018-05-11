@@ -1,14 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NINA.Model.MyCamera;
+﻿using NINA.Model.MyCamera;
+using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 
 namespace NINATest {
 
-    [TestClass]
+    [TestFixture]
     public class ImageArrayTest {
 
-        [TestMethod]
+        [Test]
         public async Task CreateInstance2dArray() {
             //Arrange
             int[,] arr = new int[4, 5];
@@ -31,7 +31,7 @@ namespace NINATest {
             CollectionAssert.AreEqual(expFlatArr, result.FlatArray);
         }
 
-        [TestMethod]
+        [Test]
         public async Task CreateInstanceFlatArrArray() {
             //Arrange
             ushort[] arr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
@@ -51,17 +51,20 @@ namespace NINATest {
             CollectionAssert.AreEqual(expFlatArr, result.FlatArray);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(NotSupportedException))]
-        public async Task CreateInstance3dArray_ExceptionThrown() {
-            //Arrange
-            var arr = new Int32[5, 5, 5];
-            //Act
-            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
+        [Test]
+        public void CreateInstance3dArray_ExceptionThrown() {
+            Assert.ThrowsAsync<NotSupportedException>(async () => { 
+                //Arrange
+                var arr = new Int32[5, 5, 5];
+                //Act
+                ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
+            }
+            );
+            
         }
     
 
-        [TestMethod]
+        [Test]
         public async Task StDevTest() {
             //Arrange
             int[,] arr = new int[4, 5];
@@ -98,7 +101,7 @@ namespace NINATest {
             Assert.AreEqual(mean, result.Statistics.Mean);
         }
 
-        [TestMethod]
+        [Test]
         public async Task StDevTest_ExtremeDistribution() {
             //Arrange
             int[,] arr = new int[4, 5];
@@ -135,7 +138,7 @@ namespace NINATest {
             Assert.AreEqual(mean, result.Statistics.Mean);
         }
 
-        [TestMethod]
+        [Test]
         public async Task StDevTest_LargeDataSetTest() {
             //Arrange
             int[,] arr = new int[4656, 3520];
@@ -156,7 +159,7 @@ namespace NINATest {
             Assert.AreEqual(mean, result.Statistics.Mean);
         }
 
-        [TestMethod]
+        [Test]
         public async Task MinMaxTest() {
             //Arrange
             int[,] arr = new int[4, 5];

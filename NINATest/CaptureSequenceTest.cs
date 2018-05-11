@@ -1,15 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NINA.Model;
+﻿using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
+using NUnit.Framework;
 using System.Linq;
 
 namespace NINATest {
 
-    [TestClass]
+    [TestFixture]
     public class CaptureSequenceListTest {
 
-        [TestMethod]
+        [Test]
         public void DefaultConstructor_ValueTest() {
             //Arrange
             var l = new CaptureSequenceList();
@@ -23,7 +23,7 @@ namespace NINATest {
             Assert.AreEqual(0, l.Delay);
         }
 
-        [TestMethod]
+        [Test]
         public void SequenceConstructor_ValueTest() {
             //Arrange
             var seq = new CaptureSequence();
@@ -38,7 +38,7 @@ namespace NINATest {
             Assert.AreEqual(0, l.Delay);
         }
 
-        [TestMethod]
+        [Test]
         public void GetNextSequence_ModeStandard_Initial() {
             //Arrange
             var seq = new CaptureSequence();
@@ -60,7 +60,7 @@ namespace NINATest {
             Assert.AreEqual(0, l.Delay);
         }
 
-        [TestMethod]
+        [Test]
         public void GetNextSequence_ModeStandard_NextSequenceSelected() {
             //Arrange
             var seq = new CaptureSequence() { TotalExposureCount = 2 };
@@ -84,7 +84,7 @@ namespace NINATest {
             Assert.AreEqual(0, l.Delay);
         }
 
-        [TestMethod]
+        [Test]
         public void GetNextSequence_ModeStandard_AllFinished() {
             //Arrange
             var seq = new CaptureSequence() { ProgressExposureCount = 5 };
@@ -108,7 +108,7 @@ namespace NINATest {
             Assert.AreEqual(0, l.Items.Where(x => x.ProgressExposureCount < x.TotalExposureCount).Count());
         }
 
-        [TestMethod]
+        [Test]
         public void GetNextSequence_ModeStandard_EmptyListNextNull() {
             //Arrange
             var l = new CaptureSequenceList();
@@ -123,7 +123,7 @@ namespace NINATest {
             Assert.AreEqual(-1, l.ActiveSequenceIndex);
         }
 
-        [TestMethod]
+        [Test]
         public void GetNextSequence_ModeRotate_EmptyListNextNull() {
             //Arrange
             var l = new CaptureSequenceList();
@@ -138,7 +138,7 @@ namespace NINATest {
             Assert.AreEqual(-1, l.ActiveSequenceIndex);
         }
 
-        [TestMethod]
+        [Test]
         public void GetNextSequence_ModeRotate_NextSequenceSelected() {
             //Arrange
             var seq = new CaptureSequence() { TotalExposureCount = 5 };
@@ -164,7 +164,7 @@ namespace NINATest {
             Assert.AreSame(seq, actualFourth, "Fourth wrong");
         }
 
-        [TestMethod]
+        [Test]
         public void GetNextSequence_ModeRotate_FirstEmptySecondSelected() {
             //Arrange
             var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 0 };
@@ -184,7 +184,7 @@ namespace NINATest {
             Assert.AreSame(seq2, actual);
         }
 
-        [TestMethod]
+        [Test]
         public void GetNextSequence_ModeRotate_AllFinished() {
             //Arrange
             var seq = new CaptureSequence() { TotalExposureCount = 5 };
@@ -208,7 +208,7 @@ namespace NINATest {
             Assert.AreEqual(0, l.Items.Where(x => x.ProgressExposureCount < x.TotalExposureCount || x.ProgressExposureCount > x.TotalExposureCount).Count());
         }
 
-        [TestMethod]
+        [Test]
         public void SetTargetName_ValueTest() {
             //Arrange
             var l = new CaptureSequenceList();
@@ -220,7 +220,7 @@ namespace NINATest {
             Assert.AreEqual(target, l.TargetName);
         }
 
-        [TestMethod]
+        [Test]
         public void SetDelay_ValueTest() {
             //Arrange
             var l = new CaptureSequenceList();
@@ -232,7 +232,7 @@ namespace NINATest {
             Assert.AreEqual(delay, l.Delay);
         }
 
-        [TestMethod]
+        [Test]
         public void DeleteSequenceDuringPause_NextItemSelected() {
             var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 5 };
             var seq2 = new CaptureSequence() { TotalExposureCount = 10 };
@@ -251,7 +251,7 @@ namespace NINATest {
             Assert.AreEqual(seq2, l.ActiveSequence);
         }
 
-        [TestMethod]
+        [Test]
         public void DeleteSequenceDuringPause_ModeRotate_NextItemSelected() {
             var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 5 };
             var seq2 = new CaptureSequence() { TotalExposureCount = 10 };
@@ -271,7 +271,7 @@ namespace NINATest {
             Assert.AreEqual(seq2, l.ActiveSequence);
         }
 
-        [TestMethod]
+        [Test]
         public void AddFirstSequence_ActiveSequenceSet() {
             var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 5 };
 
@@ -281,7 +281,7 @@ namespace NINATest {
             Assert.AreEqual(seq, l.ActiveSequence);
         }
 
-        [TestMethod]
+        [Test]
         public void RunSequenceMultipleTimes_NumberOfExposuresCorrect() {
             var seq1 = new CaptureSequence() { TotalExposureCount = 50 };
             var seq2 = new CaptureSequence() { TotalExposureCount = 10 };
@@ -305,7 +305,7 @@ namespace NINATest {
             Assert.AreEqual(30, seq3.ProgressExposureCount);
         }
 
-        [TestMethod]
+        [Test]
         public void RunSequenceMultipleTimes_ModeRotate_NumberOfExposuresCorrect() {
             var seq1 = new CaptureSequence() { TotalExposureCount = 50 };
             var seq2 = new CaptureSequence() { TotalExposureCount = 10 };
@@ -330,7 +330,7 @@ namespace NINATest {
             Assert.AreEqual(30, seq3.ProgressExposureCount);
         }
 
-        [TestMethod]
+        [Test]
         public void CoordinatesTest_SetCoordinates_RaDecPartialsEqualCoordinates() {
             var l = new CaptureSequenceList();
             var coordinates = new NINA.Utility.Astrometry.Coordinates(10, 10, NINA.Utility.Astrometry.Epoch.J2000, NINA.Utility.Astrometry.Coordinates.RAType.Hours);
@@ -341,7 +341,7 @@ namespace NINATest {
             Assert.AreEqual(coordinates.Dec, l.DecDegrees + l.DecMinutes + l.DecSeconds);
         }
 
-        [TestMethod]
+        [Test]
         public void CoordinatesTest_ManualInput_RaDecPartialsEqualCoordinates() {
             var l = new CaptureSequenceList();
             var coordinates = new NINA.Utility.Astrometry.Coordinates(10, 10, NINA.Utility.Astrometry.Epoch.J2000, NINA.Utility.Astrometry.Coordinates.RAType.Hours);
@@ -360,10 +360,10 @@ namespace NINATest {
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class CaptureSequenceTest {
 
-        [TestMethod]
+        [Test]
         public void DefaultConstructor_ValueTest() {
             //Arrange
 
@@ -383,7 +383,7 @@ namespace NINATest {
             Assert.AreEqual(1, seq.TotalExposureCount, "TotalExposureCount value not as expected");
         }
 
-        [TestMethod]
+        [Test]
         public void Constructor_ValueTest() {
             //Arrange
             var exposureTime = 5;
@@ -408,7 +408,7 @@ namespace NINATest {
             Assert.AreEqual(exposureCount, seq.TotalExposureCount, "TotalExposureCount value not as expected");
         }
 
-        [TestMethod]
+        [Test]
         public void ReduceExposureCount_ProgressReflectedCorrectly() {
             //Arrange
             var exposureTime = 5;

@@ -1,5 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NINA.Model;
+﻿using NINA.Model;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINATest {
-    [TestClass]
+    [TestFixture]
     public class RMSTest {
 
-        [TestMethod]
+        [Test]
         public void RMS_DefaultConstructorTest() {
             RMS rms = new RMS();
 
@@ -20,7 +20,7 @@ namespace NINATest {
             Assert.AreEqual(0, rms.Total);
         }
 
-        [TestMethod]
+        [Test]
         public void RMS_AddSingleValue_CalculateCorrect() {
             RMS rms = new RMS();
 
@@ -31,7 +31,7 @@ namespace NINATest {
             Assert.AreEqual(0, rms.Total);
         }
 
-        [TestMethod]
+        [Test]
         public void RMS_AddMultipleDataPoints_CalculateCorrect() {
             RMS rms = new RMS();
             
@@ -46,7 +46,7 @@ namespace NINATest {
             Assert.AreEqual(total, rms.Total);
         }
 
-        [TestMethod]
+        [Test]
         public void RMS_AddMultipleDataPoints2_CalculateCorrect() {
             RMS rms = new RMS();
 
@@ -61,7 +61,7 @@ namespace NINATest {
             Assert.AreEqual(total, rms.Total);
         }
 
-        [TestMethod]
+        [Test]
         public void RMS_AddMultipleDataPointsAndSetScale_CalculateCorrect() {
             RMS rms = new RMS();
 
@@ -79,7 +79,7 @@ namespace NINATest {
             Assert.AreEqual(total, rms.Total);
         }
 
-        [TestMethod]
+        [Test]
         public void RMS_AddValuesAndClear_AllResetExceptScale() {
             RMS rms = new RMS();
 
