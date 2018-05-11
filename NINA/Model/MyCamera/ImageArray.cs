@@ -90,7 +90,7 @@ namespace NINA.Model.MyCamera {
                     oldmax = max;
                 }
 
-                double mean = sum / count;
+                double mean = sum / (double)count;
                 double variance = (squareSum - count * mean * mean) / (count);
                 double stdev = Math.Sqrt(variance);
 
