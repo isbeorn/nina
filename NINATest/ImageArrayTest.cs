@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NINA.Model.MyCamera;
+using System;
 using System.Threading.Tasks;
 
 namespace NINATest {
@@ -49,6 +50,16 @@ namespace NINATest {
             Assert.AreEqual(expY, result.Statistics.Height);
             CollectionAssert.AreEqual(expFlatArr, result.FlatArray);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotSupportedException))]
+        public async Task CreateInstance3dArray_ExceptionThrown() {
+            //Arrange
+            var arr = new Int32[5, 5, 5];
+            //Act
+            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
+        }
+    
 
         [TestMethod]
         public async Task StDevTest() {
@@ -143,6 +154,43 @@ namespace NINATest {
             //Assert
             Assert.AreEqual(stdev, result.Statistics.StDev);
             Assert.AreEqual(mean, result.Statistics.Mean);
+        }
+
+        [TestMethod]
+        public async Task MinMaxTest() {
+            //Arrange
+            int[,] arr = new int[4, 5];
+
+            arr[0, 0] = 10;
+            arr[0, 1] = 10;
+            arr[0, 2] = 20;
+            arr[0, 3] = 20;
+            arr[0, 4] = 30;
+            arr[1, 0] = 30;
+            arr[1, 1] = 50;
+            arr[1, 2] = 50;
+            arr[1, 3] = 50;
+            arr[1, 4] = 50;
+            arr[2, 0] = 80;
+            arr[2, 1] = 80;
+            arr[2, 2] = 80;
+            arr[2, 3] = 10;
+            arr[2, 4] = 10;
+            arr[3, 0] = 10;
+            arr[3, 1] = 7;
+            arr[3, 2] = 7;
+            arr[3, 3] = 5;
+            arr[3, 4] = 5;
+                        
+
+            //Act
+            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
+
+            //Assert
+            Assert.AreEqual(5, result.Statistics.Min);
+            Assert.AreEqual(2, result.Statistics.MinOccurrences);
+            Assert.AreEqual(80, result.Statistics.Max);
+            Assert.AreEqual(3, result.Statistics.MaxOccurrences);
         }
     }
 }
