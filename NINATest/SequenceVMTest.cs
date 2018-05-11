@@ -12,12 +12,15 @@ namespace NINATest {
 
     [TestClass]
     public class SequenceVMTest {
+        public TestContext TestContext { get; set; }
+
         private SequenceProfileService profileService;
 
         [TestInitialize]
         public void SequenceVM_TestInit() {
             profileService = new SequenceProfileService();
             profileService.ActiveProfile = new SequenceProfile();
+            profileService.ActiveProfile.ImageFileSettings.FilePath = TestContext.TestDir;
         }
 
         [TestMethod]
@@ -28,6 +31,9 @@ namespace NINATest {
             await vm.StartSequenceCommand.ExecuteAsync(null);
 
             //Assert
+            Assert.AreEqual(0, vm.SelectedSequenceIdx);
+            Assert.AreEqual(vm.IsPaused, false);
+            Assert.AreEqual(vm.Sequence.IsRunning, false);
         }
     }
 
