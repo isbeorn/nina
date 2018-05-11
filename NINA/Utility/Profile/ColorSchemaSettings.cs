@@ -17,7 +17,7 @@ namespace NINA.Utility.Profile {
         private void Initialize() {
             ColorSchemas = ColorSchemas.ReadColorSchemas();
             ColorSchemas.Items.Add(new ColorSchema {
-                Name = "Custom",
+                Name = (ColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") ? "Alternative Custom" : "Custom",
                 PrimaryColor = primaryColor,
                 SecondaryColor = secondaryColor,
                 BorderColor = borderColor,
@@ -33,7 +33,7 @@ namespace NINA.Utility.Profile {
             });
 
             ColorSchemas.Items.Add(new ColorSchema {
-                Name = "Alternative Custom",
+                Name = AltColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom" ? "Custom" : "Alternative Custom",
                 PrimaryColor = altPrimaryColor,
                 SecondaryColor = altSecondaryColor,
                 BorderColor = altBorderColor,
