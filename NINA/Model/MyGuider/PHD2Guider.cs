@@ -753,7 +753,11 @@ namespace NINA.Model.MyGuider {
 
             public double RADuration {
                 get {
-                    return -rADuration;
+                    if(RADirection == "East") {
+                        return -rADuration;
+                    } else {
+                        return rADuration;
+                    }
                 }
 
                 set {
@@ -773,7 +777,11 @@ namespace NINA.Model.MyGuider {
 
             public double DECDuration {
                 get {
-                    return dECDuration;
+                    if (DecDirection == "South") {
+                        return -dECDuration;
+                    } else {
+                        return dECDuration;
+                    }
                 }
 
                 set {

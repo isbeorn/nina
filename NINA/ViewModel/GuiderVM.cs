@@ -31,6 +31,7 @@ namespace NINA.ViewModel {
             /*SetUpPlotModels();*/
 
             MaxY = 4;
+            MaxDurationY = 1;
 
             GuideStepsHistory = new AsyncObservableLimitedSizedStack<IGuideStep>(HistorySize);
             GuideStepsHistoryMinimal = new AsyncObservableLimitedSizedStack<IGuideStep>(MinimalHistorySize);
@@ -154,19 +155,22 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private async Task<bool> Connect() {
+        private void ResetGraphValues() {
             GuideStepsHistory.Clear();
             GuideStepsHistoryMinimal.Clear();
             RMS.Clear();
+            MaxDurationY = 1;
+        }
+
+        private async Task<bool> Connect() {
+            ResetGraphValues();
             Guider = new PHD2Guider(profileService);
             Guider.PropertyChanged += Guider_PropertyChanged;
             return await Guider.Connect();
         }
 
         private bool Disconnect() {
-            GuideStepsHistory.Clear();
-            GuideStepsHistoryMinimal.Clear();
-            RMS.Clear();
+            ResetGraphValues();
             var discon = Guider.Disconnect();
             Guider = null;
             return discon;
@@ -184,6 +188,10 @@ namespace NINA.ViewModel {
                 GuideStepsHistoryMinimal.Add(step);
                 GuideStepsHistory.Add(step);
                 RMS.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
+
+                if(Math.Abs(step.DECDuration) > MaxDurationY || Math.Abs(step.RADuration) > MaxDurationY) {
+                    MaxDurationY = Math.Max(Math.Abs(step.RADuration), Math.Abs(step.DECDuration));
+                }
             }            
         }       
 
@@ -313,12 +321,33 @@ namespace NINA.ViewModel {
                 _maxY = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(MinY));
+                RaisePropertyChanged(nameof(Interval));
             }
         }
 
         public double MinY {
             get {
                 return -MaxY;
+            }
+        }
+
+        private double _maxDurationY;
+
+        public double MaxDurationY {
+            get {
+                return _maxDurationY;
+            }
+
+            set {
+                _maxDurationY = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MinDurationY));
+            }
+        }
+
+        public double MinDurationY {
+            get {
+                return -MaxDurationY;
             }
         }
 
