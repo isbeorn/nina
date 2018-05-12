@@ -49,9 +49,21 @@ namespace NINA.ViewModel {
             dialog.Filter = "XML documents|*.xml";
 
             if (dialog.ShowDialog() == true) {
-                var l = CaptureSequenceList.Load(dialog.FileName, profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters);
-                l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
-                Sequence = l;                
+
+                using (var s = new FileStream(dialog.FileName, FileMode.Open)) { 
+                    //var s = System.Xml.XmlReader.Create(dialog.FileName);
+                    //var listXml = XElement.Load(path);
+
+                    //System.IO.StringReader reader = new System.IO.StringReader(listXml.ToString());
+
+                    var l = CaptureSequenceList.Load(
+                        s, 
+                        profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters, 
+                        profileService.ActiveProfile.AstrometrySettings.Latitude, 
+                        profileService.ActiveProfile.AstrometrySettings.Longitude
+                    );                    
+                    Sequence = l;
+                }
             }
         }
 
@@ -401,8 +413,14 @@ namespace NINA.ViewModel {
             get {
                 if (_sequence == null) {
                     if (File.Exists(profileService.ActiveProfile.SequenceSettings.TemplatePath)) {
-                        _sequence = CaptureSequenceList.Load(profileService.ActiveProfile.SequenceSettings.TemplatePath, profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters);
-                        _sequence.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
+                        using (var s = new FileStream(profileService.ActiveProfile.SequenceSettings.TemplatePath, FileMode.Open)) {
+                            _sequence = CaptureSequenceList.Load(
+                                s, 
+                                profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
+                                profileService.ActiveProfile.AstrometrySettings.Latitude,
+                                profileService.ActiveProfile.AstrometrySettings.Longitude
+                            );                            
+                        }   
                     }
                     if (_sequence == null) {
                         /* Fallback when no template is set or load failed */

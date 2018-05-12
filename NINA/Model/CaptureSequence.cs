@@ -81,15 +81,13 @@ namespace NINA.Model {
             }
         }
 
-        public static CaptureSequenceList Load(string path, ICollection<MyFilterWheel.FilterInfo> filters) {
+        public static CaptureSequenceList Load(Stream stream, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude) {
             CaptureSequenceList l = null;
             try {
-                var listXml = XElement.Load(path);
-
-                System.IO.StringReader reader = new System.IO.StringReader(listXml.ToString());
+                
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CaptureSequenceList));
 
-                l = (CaptureSequenceList)xmlSerializer.Deserialize(reader);
+                l = (CaptureSequenceList)xmlSerializer.Deserialize(stream);
                 foreach (CaptureSequence s in l) {
                     //first try to match by name; otherwise match by position.
                     var filter = filters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
@@ -104,6 +102,7 @@ namespace NINA.Model {
                 if(l.ActiveSequence == null && l.Count > 0) {
                     l.ActiveSequence = l.Items.SkipWhile(x => x.TotalExposureCount - x.ProgressExposureCount == 0).FirstOrDefault();
                 }
+                l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), latitude, longitude);
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceFailed"] + Environment.NewLine + ex.Message);
