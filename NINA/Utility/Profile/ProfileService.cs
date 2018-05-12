@@ -5,14 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
-    internal class ProfileManager {
+    internal class ProfileService : IProfileService {
 
-        private ProfileManager() {
+        public ProfileService() {
             if (NINA.Properties.Settings.Default.UpdateSettings) {
                 NINA.Properties.Settings.Default.Upgrade();
                 NINA.Properties.Settings.Default.UpdateSettings = false;
@@ -27,11 +28,6 @@ namespace NINA.Utility.Profile {
                 })
             );
         }
-
-        private static readonly Lazy<ProfileManager> lazy =
-        new Lazy<ProfileManager>(() => new ProfileManager());
-
-        public static ProfileManager Instance { get { return lazy.Value; } }
 
         public static string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
 
@@ -51,10 +47,10 @@ namespace NINA.Utility.Profile {
 
         private void Save() {
             try {
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(Profiles));
+                var serializer = new DataContractSerializer(typeof(Profiles));
 
-                using (StreamWriter writer = new StreamWriter(PROFILEFILEPATH)) {
-                    xmlSerializer.Serialize(writer, Profiles);
+                using (FileStream writer = new FileStream(PROFILEFILEPATH, FileMode.Create)) {
+                    serializer.WriteObject(writer, Profiles);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -62,7 +58,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        public Profile ActiveProfile {
+        public IProfile ActiveProfile {
             get {
                 return Profiles.ActiveProfile;
             }
@@ -71,16 +67,17 @@ namespace NINA.Utility.Profile {
         private void Load() {
             if (File.Exists(PROFILEFILEPATH)) {
                 try {
-                    var profilesXml = XElement.Load(PROFILEFILEPATH);
+                    var serializer = new DataContractSerializer(typeof(Profiles));
 
-                    System.IO.StringReader reader = new System.IO.StringReader(profilesXml.ToString());
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Profiles));
+                    using (FileStream reader = new FileStream(PROFILEFILEPATH, FileMode.Open)) {
+                        var obj = serializer.ReadObject(reader);
 
-                    Profiles = (Profiles)xmlSerializer.Deserialize(reader);
-                    foreach (Profile p in Profiles.ProfileList) {
-                        p.MatchFilterSettingsWithFilterList();
+                        Profiles = (Profiles)obj;
+                        foreach (Profile p in Profiles.ProfileList) {
+                            p.MatchFilterSettingsWithFilterList();
+                        }
+                        Profiles.SelectActiveProfile();
                     }
-                    Profiles.SelectActiveProfile();
                 } catch (Exception ex) {
                     LoadDefaultProfile();
                     Logger.Error(ex);
@@ -102,7 +99,7 @@ namespace NINA.Utility.Profile {
             SelectProfile(Profiles.ProfileList[0].Id);
         }
 
-        internal void RemoveProfile(Guid id) {
+        public void RemoveProfile(Guid id) {
             if (id != ActiveProfile.Id) {
                 var p = Profiles.ProfileList.Where((x) => x.Id == id).FirstOrDefault();
                 if (p != null) {
@@ -112,7 +109,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        public IEnumerable<Profile> GetProfiles() {
+        public IEnumerable<IProfile> GetProfiles() {
             return Profiles.ProfileList;
         }
 

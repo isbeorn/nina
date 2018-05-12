@@ -10,7 +10,7 @@ namespace NINA.ViewModel {
 
     internal class WeatherDataVM : DockableVM {
 
-        public WeatherDataVM() {
+        public WeatherDataVM(IProfileService profileService) : base(profileService) {
             this.Title = "LblWeather";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CloudSVG"];
 
@@ -58,8 +58,8 @@ namespace NINA.ViewModel {
         public IWeatherData WeatherData {
             get {
                 if (_weatherData == null) {
-                    if (ProfileManager.Instance.ActiveProfile.WeatherDataSettings.WeatherDataType == WeatherDataEnum.OPENWEATHERMAP) {
-                        WeatherData = new OpenWeatherMapData();
+                    if (profileService.ActiveProfile.WeatherDataSettings.WeatherDataType == WeatherDataEnum.OPENWEATHERMAP) {
+                        WeatherData = new OpenWeatherMapData(profileService);
                     }
                 }
 

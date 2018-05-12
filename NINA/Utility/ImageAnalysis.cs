@@ -20,9 +20,12 @@ namespace NINA.Utility {
 
     internal class BahtinovAnalysis {
 
-        public BahtinovAnalysis(BitmapSource source) {
+        public BahtinovAnalysis(BitmapSource source, System.Windows.Media.Color backgroundColor) {
             originalSource = source;
+            this.backgroundColor = backgroundColor;
         }
+
+        private System.Windows.Media.Color backgroundColor;
 
         private BitmapSource originalSource;
         private Bitmap convertedSource;
@@ -54,7 +57,7 @@ namespace NINA.Utility {
 
             var focusEllipsePen = new System.Drawing.Pen(System.Drawing.Brushes.Green, 1);
             var intersectEllipsePen = new System.Drawing.Pen(System.Drawing.Brushes.Red, 1);
-            var mediaColor = Profile.ProfileManager.Instance.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor;
+            var mediaColor = backgroundColor;
             var drawingColor = System.Drawing.Color.FromArgb(mediaColor.A, mediaColor.R, mediaColor.G, mediaColor.B);
             var linePen = new System.Drawing.Pen(drawingColor, 1);
 

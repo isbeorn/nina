@@ -1,16 +1,17 @@
 ﻿using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(ApplicationSettings))]
-    public class GuiderSettings {
+    [DataContract]
+    public class GuiderSettings : IGuiderSettings {
         private double ditherPixels = 5;
 
-        [XmlElement(nameof(DitherPixels))]
+        [DataMember]
         public double DitherPixels {
             get {
                 return ditherPixels;
@@ -23,7 +24,7 @@ namespace NINA.Utility.Profile {
 
         private bool ditherRAOnly = false;
 
-        [XmlElement(nameof(DitherRAOnly))]
+        [DataMember]
         public bool DitherRAOnly {
             get {
                 return ditherRAOnly;
@@ -36,7 +37,7 @@ namespace NINA.Utility.Profile {
 
         private int settleTime = 10;
 
-        [XmlElement(nameof(SettleTime))]
+        [DataMember]
         public int SettleTime {
             get {
                 return settleTime;
@@ -49,7 +50,7 @@ namespace NINA.Utility.Profile {
 
         private string pHD2ServerUrl = "localhost";
 
-        [XmlElement(nameof(PHD2ServerUrl))]
+        [DataMember]
         public string PHD2ServerUrl {
             get {
                 return pHD2ServerUrl;
@@ -62,7 +63,7 @@ namespace NINA.Utility.Profile {
 
         private int pHD2ServerPort = 4400;
 
-        [XmlElement(nameof(PHD2ServerPort))]
+        [DataMember]
         public int PHD2ServerPort {
             get {
                 return pHD2ServerPort;
@@ -75,7 +76,7 @@ namespace NINA.Utility.Profile {
 
         private int pHD2LargeHistorySize = 100;
 
-        [XmlElement(nameof(PHD2HistorySize))]
+        [DataMember]
         public int PHD2HistorySize {
             get {
                 return pHD2LargeHistorySize;
@@ -92,7 +93,7 @@ namespace NINA.Utility.Profile {
 
         private int pHD2MinimalHistorySize = 10;
 
-        [XmlElement(nameof(PHD2MinimalHistorySize))]
+        [DataMember]
         public int PHD2MinimalHistorySize {
             get {
                 return pHD2MinimalHistorySize;
@@ -109,7 +110,7 @@ namespace NINA.Utility.Profile {
 
         private GuiderScaleEnum pHD2GuiderScale = GuiderScaleEnum.PIXELS;
 
-        [XmlElement(nameof(PHD2GuiderScale))]
+        [DataMember]
         public GuiderScaleEnum PHD2GuiderScale {
             get {
                 return pHD2GuiderScale;

@@ -13,19 +13,22 @@ namespace NINA.Locale {
 
         public void ReloadLocale(string culture) {
             try {
-                _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + culture + ".xaml", UriKind.Relative) };
-            } catch (System.IO.IOException) {
-                // Fallback to default locale if setting is invalid
-                _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };
-            }
+                try {
+                    _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + culture + ".xaml", UriKind.Relative) };
+                } catch (System.IO.IOException) {
+                    // Fallback to default locale if setting is invalid
+                    _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };
+                }
 #if DEBUG
-            var tmp = new ResourceDictionary();
-            foreach (System.Collections.DictionaryEntry l in _locale) {
-                tmp.Add(l.Key, "##" + l.Value + "##");
-            }
-            _locale = tmp;
+                var tmp = new ResourceDictionary();
+                foreach (System.Collections.DictionaryEntry l in _locale) {
+                    tmp.Add(l.Key, "##" + l.Value + "##");
+                }
+                _locale = tmp;
 #endif
-
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
             RaiseAllPropertiesChanged();
             Mediator.Instance.Notify(MediatorMessages.LocaleChanged, null);
         }
@@ -39,10 +42,7 @@ namespace NINA.Locale {
 
         public string this[string key] {
             get {
-                if (_locale == null) {
-                    ReloadLocale("en-GB");
-                }
-                return _locale[key]?.ToString() ?? "MISSING LABEL " + key;
+                return _locale?[key]?.ToString() ?? "MISSING LABEL " + key;
             }
         }
     }

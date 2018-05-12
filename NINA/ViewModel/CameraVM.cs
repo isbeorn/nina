@@ -17,7 +17,7 @@ namespace NINA.ViewModel {
 
     internal class CameraVM : DockableVM {
 
-        public CameraVM() : base() {
+        public CameraVM(IProfileService profileService) : base(profileService) {
             Title = "LblCamera";
             ContentId = nameof(CameraVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
@@ -43,7 +43,7 @@ namespace NINA.ViewModel {
 
             Mediator.Instance.RegisterAsyncRequest(
                 new InitiateLiveViewMessageHandle(async (InitiateLiveViewMessage msg) => {
-                    return await LiveView(msg.Token);                    
+                    return await LiveView(msg.Token);
                 })
             );
 
@@ -84,7 +84,7 @@ namespace NINA.ViewModel {
         public CameraChooserVM CameraChooserVM {
             get {
                 if (_cameraChooserVM == null) {
-                    _cameraChooserVM = new CameraChooserVM();
+                    _cameraChooserVM = new CameraChooserVM(profileService);
                 }
                 return _cameraChooserVM;
             }
@@ -240,7 +240,7 @@ namespace NINA.ViewModel {
                 _cancelUpdateCameraValues?.Cancel();
 
                 if (CameraChooserVM.SelectedDevice.Id == "No_Device") {
-                    ProfileManager.Instance.ActiveProfile.CameraSettings.Id = CameraChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.CameraSettings.Id = CameraChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
@@ -272,9 +272,9 @@ namespace NINA.ViewModel {
                             _cancelUpdateCameraValues = new CancellationTokenSource();
                             _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
 
-                            ProfileManager.Instance.ActiveProfile.CameraSettings.Id = this.Cam.Id;
+                            profileService.ActiveProfile.CameraSettings.Id = this.Cam.Id;
                             if (Cam.PixelSizeX > 0) {
-                                ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize = Cam.PixelSizeX;
+                                profileService.ActiveProfile.CameraSettings.PixelSize = Cam.PixelSizeX;
                                 Mediator.Instance.Notify(MediatorMessages.CameraPixelSizeChanged, Cam.PixelSizeX);
                             }
 
@@ -351,7 +351,7 @@ namespace NINA.ViewModel {
                     token.ThrowIfCancellationRequested();
 
                     //Update after one second + the time it takes to read the values
-                    Thread.Sleep((int)(ProfileManager.Instance.ActiveProfile.ApplicationSettings.DevicePollingInterval * 1000));
+                    Thread.Sleep((int)(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval * 1000));
                 } while (Connected == true);
             } catch (OperationCanceledException) {
             } finally {
@@ -466,11 +466,11 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> LiveView(CancellationToken ct) {
-            if(Connected && _cam.CanShowLiveView) {
-                try { 
+            if (Connected && _cam.CanShowLiveView) {
+                try {
                     _cam.StartLiveView();
 
-                    while(true) {
+                    while (true) {
                         var iarr = await _cam.DownloadLiveView(ct);
                         await Mediator.Instance.RequestAsync(new SetImageMessage() {
                             ImageArray = iarr
@@ -478,9 +478,8 @@ namespace NINA.ViewModel {
 
                         ct.ThrowIfCancellationRequested();
                     }
-                } catch(OperationCanceledException) {
-
-                } catch(Exception ex) {
+                } catch (OperationCanceledException) {
+                } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 } finally {
@@ -507,7 +506,7 @@ namespace NINA.ViewModel {
 
     internal class CameraChooserVM : EquipmentChooserVM {
 
-        public CameraChooserVM() : base(typeof(CameraChooserVM)) {
+        public CameraChooserVM(IProfileService profileService) : base(typeof(CameraChooserVM), profileService) {
         }
 
         public override void GetEquipment() {
@@ -519,7 +518,7 @@ namespace NINA.ViewModel {
             try {
                 Logger.Trace("Adding ASI Cameras");
                 for (int i = 0; i < ASICameras.Count; i++) {
-                    var cam = ASICameras.GetCamera(i);
+                    var cam = ASICameras.GetCamera(i, profileService);
                     if (!string.IsNullOrEmpty(cam.Name)) {
                         Logger.Trace(string.Format("Adding {0}", cam.Name));
                         Devices.Add(cam);
@@ -535,7 +534,7 @@ namespace NINA.ViewModel {
                 var atikDevices = AtikCameraDll.RefreshDevicesCount();
                 for (int i = 0; i < atikDevices; i++) {
                     if (AtikCameraDll.ArtemisDeviceIsCamera(i)) {
-                        var cam = new AtikCamera(i);
+                        var cam = new AtikCamera(i, profileService);
                         Devices.Add(cam);
                     }
                 }
@@ -548,7 +547,7 @@ namespace NINA.ViewModel {
                 var ascomDevices = new ASCOM.Utilities.Profile();
                 foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
                     try {
-                        AscomCamera cam = new AscomCamera(device.Key, device.Value + " (ASCOM)");
+                        AscomCamera cam = new AscomCamera(device.Key, device.Value + " (ASCOM)", profileService);
                         Logger.Trace(string.Format("Adding {0}", cam.Name));
                         Devices.Add(cam);
                     } catch (Exception) {
@@ -575,7 +574,7 @@ namespace NINA.ViewModel {
                         err = EDSDK.EdsGetDeviceInfo(cam, out info);
 
                         Logger.Trace(string.Format("Adding {0}", info.szDeviceDescription));
-                        Devices.Add(new EDCamera(cam, info));
+                        Devices.Add(new EDCamera(cam, info, profileService));
                     }
                 }
             } catch (Exception ex) {
@@ -584,12 +583,12 @@ namespace NINA.ViewModel {
 
             /* NIKON */
             try {
-                Devices.Add(new NikonCamera());
+                Devices.Add(new NikonCamera(profileService));
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
 
-            DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.CameraSettings.Id);
+            DetermineSelectedDevice(profileService.ActiveProfile.CameraSettings.Id);
         }
     }
 }

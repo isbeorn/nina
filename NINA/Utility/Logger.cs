@@ -75,6 +75,12 @@ namespace NINA.Utility {
             Append(EnrichLogMessage(LogLevelEnum.ERROR, message, memberName, sourceFilePath));
         }
 
+        public static LogLevelEnum LogLevel { get; private set; }
+
+        public static void SetLogLevel(LogLevelEnum logLevel) {
+            LogLevel = logLevel;
+        }
+
         public static void Error(
                 string customMsg,
                 Exception ex,
@@ -93,7 +99,7 @@ namespace NINA.Utility {
         public static void Info(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 1) {
+            if ((int)LogLevel >= 1) {
                 Append(EnrichLogMessage(LogLevelEnum.INFO, message, memberName, sourceFilePath));
             }
         }
@@ -101,7 +107,7 @@ namespace NINA.Utility {
         public static void Warning(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 2) {
+            if ((int)LogLevel >= 2) {
                 Append(EnrichLogMessage(LogLevelEnum.WARNING, message, memberName, sourceFilePath));
             }
         }
@@ -109,7 +115,7 @@ namespace NINA.Utility {
         public static void Debug(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 3) {
+            if ((int)LogLevel >= 3) {
                 Append(EnrichLogMessage(LogLevelEnum.DEBUG, message, memberName, sourceFilePath));
             }
         }
@@ -117,7 +123,7 @@ namespace NINA.Utility {
         public static void Trace(string message,
                              [CallerMemberName] string memberName = "",
                              [CallerFilePath] string sourceFilePath = "") {
-            if ((int)ProfileManager.Instance.ActiveProfile.ApplicationSettings.LogLevel >= 4) {
+            if ((int)LogLevel >= 4) {
                 Append(EnrichLogMessage(LogLevelEnum.TRACE, message, memberName, sourceFilePath));
             }
         }

@@ -1,15 +1,16 @@
 ﻿using NINA.Utility.Mediator;
 using System;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(Profile))]
-    public class ImageSettings {
+    [DataContract]
+    public class ImageSettings : IImageSettings {
         private double autoStretchFactor = 0.2;
 
-        [XmlElement(nameof(AutoStretchFactor))]
+        [DataMember]
         public double AutoStretchFactor {
             get {
                 return autoStretchFactor;
@@ -22,7 +23,7 @@ namespace NINA.Utility.Profile {
 
         private int histogramResolution = 300;
 
-        [XmlElement(nameof(HistogramResolution))]
+        [DataMember]
         public int HistogramResolution {
             get {
                 return histogramResolution;
@@ -35,7 +36,7 @@ namespace NINA.Utility.Profile {
 
         private bool annotateImage = false;
 
-        [XmlElement(nameof(AnnotateImage))]
+        [DataMember]
         public bool AnnotateImage {
             get {
                 return annotateImage;

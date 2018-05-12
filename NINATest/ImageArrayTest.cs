@@ -1,13 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NINA.Model.MyCamera;
+﻿using NINA.Model.MyCamera;
+using NUnit.Framework;
+using System;
 using System.Threading.Tasks;
 
 namespace NINATest {
 
-    [TestClass]
+    [TestFixture]
     public class ImageArrayTest {
 
-        [TestMethod]
+        [Test]
         public async Task CreateInstance2dArray() {
             //Arrange
             int[,] arr = new int[4, 5];
@@ -22,7 +23,7 @@ namespace NINATest {
             ushort[] expFlatArr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr);
+            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
 
             //Assert
             Assert.AreEqual(expX, result.Statistics.Width);
@@ -30,7 +31,7 @@ namespace NINATest {
             CollectionAssert.AreEqual(expFlatArr, result.FlatArray);
         }
 
-        [TestMethod]
+        [Test]
         public async Task CreateInstanceFlatArrArray() {
             //Arrange
             ushort[] arr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
@@ -42,7 +43,7 @@ namespace NINATest {
             ushort[] expFlatArr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr, width, height);
+            ImageArray result = await ImageArray.CreateInstance(arr, width, height, false, true, 100);
 
             //Assert
             Assert.AreEqual(expX, result.Statistics.Width);
@@ -50,7 +51,20 @@ namespace NINATest {
             CollectionAssert.AreEqual(expFlatArr, result.FlatArray);
         }
 
-        [TestMethod]
+        [Test]
+        public void CreateInstance3dArray_ExceptionThrown() {
+            Assert.ThrowsAsync<NotSupportedException>(async () => { 
+                //Arrange
+                var arr = new Int32[5, 5, 5];
+                //Act
+                ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
+            }
+            );
+            
+        }
+    
+
+        [Test]
         public async Task StDevTest() {
             //Arrange
             int[,] arr = new int[4, 5];
@@ -80,14 +94,14 @@ namespace NINATest {
             double mean = 4116;
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr);
+            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
 
             //Assert
             Assert.AreEqual(stdev, result.Statistics.StDev);
             Assert.AreEqual(mean, result.Statistics.Mean);
         }
 
-        [TestMethod]
+        [Test]
         public async Task StDevTest_ExtremeDistribution() {
             //Arrange
             int[,] arr = new int[4, 5];
@@ -117,32 +131,69 @@ namespace NINATest {
             double mean = 32767.5;
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr);
+            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
 
             //Assert
             Assert.AreEqual(stdev, result.Statistics.StDev);
             Assert.AreEqual(mean, result.Statistics.Mean);
         }
 
-        [TestMethod]
-        public async Task StDevTest_LargeDataSetTest() {
+        [Test]
+        [TestCase(4, 3, 12345, 35483, 23914, 11569)]
+        [TestCase(46, 35, 12345,35483, 23914, 11569)]
+        [TestCase(460, 350, 12345, 35483, 23914, 11569)]
+        public async Task StDevTest_LargeDataSetTest(int width, int height, int value1, int value2, double mean, double stdev) {
             //Arrange
-            int[,] arr = new int[4656, 3520];
+            int[,] arr = new int[width, height];
             for (int x = 0; x < arr.GetLength(0); x += 1) {
                 for (int y = 0; y < arr.GetLength(1); y += 1) {
-                    arr[x, y] = 65535;
+                    arr[x, y] = (x+y)%2 == 0? value1 : value2;
                 }
             }
-
-            double stdev = 0;
-            double mean = 65535;
-
+            
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr);
+            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
 
             //Assert
-            Assert.AreEqual(stdev, result.Statistics.StDev);
+            Assert.AreEqual(stdev, result.Statistics.StDev, 0.000001);
             Assert.AreEqual(mean, result.Statistics.Mean);
+        }
+
+        [Test]
+        public async Task MinMaxTest() {
+            //Arrange
+            int[,] arr = new int[4, 5];
+
+            arr[0, 0] = 10;
+            arr[0, 1] = 10;
+            arr[0, 2] = 20;
+            arr[0, 3] = 20;
+            arr[0, 4] = 30;
+            arr[1, 0] = 30;
+            arr[1, 1] = 50;
+            arr[1, 2] = 50;
+            arr[1, 3] = 50;
+            arr[1, 4] = 50;
+            arr[2, 0] = 80;
+            arr[2, 1] = 80;
+            arr[2, 2] = 80;
+            arr[2, 3] = 10;
+            arr[2, 4] = 10;
+            arr[3, 0] = 10;
+            arr[3, 1] = 7;
+            arr[3, 2] = 7;
+            arr[3, 3] = 5;
+            arr[3, 4] = 5;
+                        
+
+            //Act
+            ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
+
+            //Assert
+            Assert.AreEqual(5, result.Statistics.Min);
+            Assert.AreEqual(2, result.Statistics.MinOccurrences);
+            Assert.AreEqual(80, result.Statistics.Max);
+            Assert.AreEqual(3, result.Statistics.MaxOccurrences);
         }
     }
 }

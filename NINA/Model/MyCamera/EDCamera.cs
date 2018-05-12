@@ -5,6 +5,7 @@ using FreeImageAPI.Metadata;
 using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using NINA.Utility.RawConverter;
 using System;
 using System.Collections;
@@ -22,11 +23,14 @@ namespace NINA.Model.MyCamera {
 
     internal class EDCamera : BaseINPC, ICamera {
 
-        public EDCamera(IntPtr cam, EDSDK.EdsDeviceInfo info) {
+        public EDCamera(IntPtr cam, EDSDK.EdsDeviceInfo info, IProfileService profileService) {
+            this.profileService = profileService;
             _cam = cam;
             Id = info.szDeviceDescription;
             Name = info.szDeviceDescription;
         }
+
+        private IProfileService profileService;
 
         private IntPtr _cam;
 
@@ -334,7 +338,7 @@ namespace NINA.Model.MyCamera {
                 return true;
             }
         }
-        
+
         private bool Initialize() {
             ValidateMode();
             GetISOSpeeds();
@@ -489,8 +493,8 @@ namespace NINA.Model.MyCamera {
 
                 System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
 
-                var converter = RawConverter.CreateInstance();
-                var iarr = await converter.ConvertToImageArray(memoryStream, token);
+                var converter = RawConverter.CreateInstance(profileService.Profiles.ActiveProfile.CameraSettings.RawConverter);
+                var iarr = await converter.ConvertToImageArray(memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
 
                 if (pointer != IntPtr.Zero) {
                     EDSDK.EdsRelease(pointer);
@@ -741,11 +745,10 @@ namespace NINA.Model.MyCamera {
             ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
             bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false);
+            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
 
             memoryStream.Close();
             memoryStream.Dispose();
-                       
 
             EDSDK.EdsRelease(stream);
             EDSDK.EdsRelease(imageRef);

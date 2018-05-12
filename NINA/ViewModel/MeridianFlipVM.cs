@@ -31,7 +31,7 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _tokensource;
 
-        public MeridianFlipVM() {
+        public MeridianFlipVM(IProfileService profileService) : base(profileService) {
             CancelCommand = new RelayCommand(Cancel);
             RegisterMediatorMessages();
         }
@@ -110,7 +110,7 @@ namespace NINA.ViewModel {
 
                 Steps.Add(new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(token, _progress)));
                 Steps.Add(new WorkflowStep("Flip", Locale.Loc.Instance["LblFlip"], () => DoFilp(token, _progress)));
-                if (ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.Recenter) {
+                if (profileService.ActiveProfile.MeridianFlipSettings.Recenter) {
                     Steps.Add(new WorkflowStep("Recenter", Locale.Loc.Instance["LblRecenter"], () => Recenter(token, _progress)));
                 }
 
@@ -158,7 +158,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Recenter(CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.Recenter) {
+            if (profileService.ActiveProfile.MeridianFlipSettings.Recenter) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblInitiatePlatesolve"] });
                 await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = token, Silent = true });
             }
@@ -190,7 +190,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Settle(CancellationToken token, IProgress<ApplicationStatus> progress) {
-            RemainingTime = TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.SettleTime);
+            RemainingTime = TimeSpan.FromSeconds(profileService.ActiveProfile.MeridianFlipSettings.SettleTime);
             do {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSettle"] + " " + RemainingTime.ToString(@"hh\:mm\:ss") });
 
@@ -202,9 +202,9 @@ namespace NINA.ViewModel {
         }
 
         private bool ShouldFlip(double exposureTime) {
-            if (ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.Enabled) {
+            if (profileService.ActiveProfile.MeridianFlipSettings.Enabled) {
                 if (Telescope?.Connected == true) {
-                    if ((Telescope.TimeToMeridianFlip - (ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian / 60)) < (exposureTime / 60 / 60)) {
+                    if ((Telescope.TimeToMeridianFlip - (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian / 60)) < (exposureTime / 60 / 60)) {
                         return true;
                     }
                 }

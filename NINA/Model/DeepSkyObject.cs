@@ -15,14 +15,15 @@ namespace NINA.Model {
 
     public class DeepSkyObject : BaseINPC {
 
-        private DeepSkyObject() {
+        private DeepSkyObject(string imageRepository) {
+            this.imageRepository = imageRepository;
         }
 
-        public DeepSkyObject(string name) : this() {
+        public DeepSkyObject(string name, string imageRepository) : this(imageRepository) {
             Name = name;
         }
 
-        public DeepSkyObject(string name, Coordinates coords) : this(name) {
+        public DeepSkyObject(string name, Coordinates coords, string imageRepository) : this(name, imageRepository) {
             Coordinates = coords;
         }
 
@@ -128,7 +129,7 @@ namespace NINA.Model {
             get {
                 if (_altitudes == null) {
                     _altitudes = new List<DataPoint>();
-                    CalculateAltitude(_referenceDate, _latitude, _longitude);
+                    CalculateAltitude(_referenceDate);
                 }
                 return _altitudes;
             }
@@ -161,22 +162,23 @@ namespace NINA.Model {
             this._referenceDate = start;
             this._latitude = latitude;
             this._longitude = longitude;
+            this._altitudes = null;
         }
 
-        private void CalculateAltitude(DateTime start, double latitude, double longitude) {
-            var siderealTime = Astrometry.GetLocalSiderealTime(start, longitude);
+        private void CalculateAltitude(DateTime start) {
+            var siderealTime = Astrometry.GetLocalSiderealTime(start, _longitude);
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
 
             for (double angle = hourAngle; angle < hourAngle + 24; angle += 0.1) {
                 var degAngle = Astrometry.HoursToDegrees(angle);
-                var altitude = Astrometry.GetAltitude(degAngle, latitude, this.Coordinates.Dec);
+                var altitude = Astrometry.GetAltitude(degAngle, _latitude, this.Coordinates.Dec);
                 Altitudes.Add(new DataPoint(DateTimeAxis.ToDouble(start), altitude));
                 start = start.AddHours(0.1);
             }
 
             MaxAltitude = Altitudes.OrderByDescending((x) => x.Y).FirstOrDefault();
 
-            CalculateTransit(latitude);
+            CalculateTransit(_latitude);
         }
 
         private void CalculateTransit(double latitude) {
@@ -208,6 +210,7 @@ namespace NINA.Model {
         private Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
         private BitmapSource _image;
+        private string imageRepository;
 
         public BitmapSource Image {
             get {
@@ -222,7 +225,7 @@ namespace NINA.Model {
                         this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
                         (size * 9.0 / 16.0).ToString(CultureInfo.InvariantCulture),
                         size.ToString(CultureInfo.InvariantCulture));*/
-                    var file = Path.Combine(ProfileManager.Instance.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, this.Name + ".gif");
+                    var file = Path.Combine(imageRepository, this.Name + ".gif");
                     if (File.Exists(file)) {
                         _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                             //var img = new BitmapImage(new Uri(file));

@@ -14,10 +14,13 @@ namespace NINA.Model.MyTelescope {
 
     internal class AscomTelescope : BaseINPC, ITelescope, IDisposable {
 
-        public AscomTelescope(string telescopeId, string name) {
+        public AscomTelescope(string telescopeId, string name, IProfileService profileService) {
+            this.profileService = profileService;
             Id = telescopeId;
             Name = name;
         }
+
+        private IProfileService profileService;
 
         private void init() {
             _canGetAlignmentMode = true;
@@ -333,7 +336,7 @@ namespace NINA.Model.MyTelescope {
 
         public Coordinates Coordinates {
             get {
-                return new Coordinates(RightAscension, Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                return new Coordinates(RightAscension, Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
             }
         }
 
@@ -1102,7 +1105,7 @@ namespace NINA.Model.MyTelescope {
             get {
                 var hourstomed = double.MaxValue;
                 try {
-                    hourstomed = RightAscension + (ProfileManager.Instance.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian / 60) - SiderealTime;
+                    hourstomed = RightAscension + (profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian / 60) - SiderealTime;
                     if (hourstomed < 0) {
                         hourstomed += 24;
                     }

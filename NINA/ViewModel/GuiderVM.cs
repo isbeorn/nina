@@ -1,4 +1,5 @@
 ﻿using NINA.Model.MyGuider;
+using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
@@ -15,7 +16,7 @@ namespace NINA.ViewModel {
 
     internal class GuiderVM : DockableVM {
 
-        public GuiderVM() : base() {
+        public GuiderVM(IProfileService profileService) : base(profileService) {
             Title = "LblGuider";
             ContentId = nameof(GuiderVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
@@ -30,9 +31,11 @@ namespace NINA.ViewModel {
             /*SetUpPlotModels();*/
 
             MaxY = 4;
+            MaxDurationY = 1;
 
             GuideStepsHistory = new AsyncObservableLimitedSizedStack<IGuideStep>(HistorySize);
             GuideStepsHistoryMinimal = new AsyncObservableLimitedSizedStack<IGuideStep>(MinimalHistorySize);
+            RMS = new RMS();
 
             RegisterMediatorMessages();
         }
@@ -105,7 +108,7 @@ namespace NINA.ViewModel {
         private async Task<bool> Resume(CancellationToken token) {
             if (Guider?.Connected == true) {
                 await Guider?.Pause(false, token);
-                await Utility.Utility.Wait(TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.GuiderSettings.SettleTime), token);
+                await Utility.Utility.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTime), token);
                 return true;
             } else {
                 return false;
@@ -114,20 +117,20 @@ namespace NINA.ViewModel {
 
         public int HistorySize {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize;
+                return profileService.ActiveProfile.GuiderSettings.PHD2HistorySize;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize = value;
+                profileService.ActiveProfile.GuiderSettings.PHD2HistorySize = value;
                 RaisePropertyChanged();
             }
         }
 
         public int MinimalHistorySize {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2HistorySize;
+                return profileService.ActiveProfile.GuiderSettings.PHD2HistorySize;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize = value;
+                profileService.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize = value;
                 RaisePropertyChanged();
             }
         }
@@ -152,17 +155,22 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private async Task<bool> Connect() {
+        private void ResetGraphValues() {
             GuideStepsHistory.Clear();
             GuideStepsHistoryMinimal.Clear();
-            Guider = new PHD2Guider();
+            RMS.Clear();
+            MaxDurationY = 1;
+        }
+
+        private async Task<bool> Connect() {
+            ResetGraphValues();
+            Guider = new PHD2Guider(profileService);
             Guider.PropertyChanged += Guider_PropertyChanged;
             return await Guider.Connect();
         }
 
         private bool Disconnect() {
-            GuideStepsHistory.Clear();
-            GuideStepsHistoryMinimal.Clear();
+            ResetGraphValues();
             var discon = Guider.Disconnect();
             Guider = null;
             return discon;
@@ -179,83 +187,24 @@ namespace NINA.ViewModel {
                 }
                 GuideStepsHistoryMinimal.Add(step);
                 GuideStepsHistory.Add(step);
-            }
+                RMS.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
 
-            // really, that's how phd2 does it and I don't want to change it
-            int n = GuideStepsHistory.Count;
-            var items = GuideStepsHistory.Select(item => new Tuple<double, double>(item.RADistanceRaw, item.DecDistanceRaw));
-            var itemsRa = items.Select(item => item.Item1);
-            var itemsDec = items.Select(item => item.Item2);
+                if(Math.Abs(step.DECDuration) > MaxDurationY || Math.Abs(step.RADuration) > MaxDurationY) {
+                    MaxDurationY = Math.Max(Math.Abs(step.RADuration), Math.Abs(step.DECDuration));
+                }
+            }            
+        }       
 
-            double sum_y2 = itemsRa.Sum(y => y * y);
-            double sum_y = itemsRa.Sum(y => y);
-
-            RMSRA = Math.Sqrt(n * sum_y2 - sum_y * sum_y) / n;
-
-            sum_y2 = itemsDec.Sum(y => y * y);
-            sum_y = itemsDec.Sum(y => y);
-
-            RMSDec = Math.Sqrt(n * sum_y2 - sum_y * sum_y) / n;
-            RMSTotal = Math.Sqrt((Math.Pow(RMSRA, 2) + Math.Pow(RMSDec, 2)));
-
-            if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {
-                RMSRA *= PixelScale;
-                RMSDec *= PixelScale;
-                RMSTotal *= PixelScale;
-            }
-        }
-
-        public double RMSRA {
+        private RMS rms;
+        public RMS RMS {
             get {
-                return _rmsRA;
+                return rms;
             }
             set {
-                _rmsRA = value;
+                rms = value;
                 RaisePropertyChanged();
             }
-        }
-
-        public double RMSDec {
-            get {
-                return _rmsDec;
-            }
-            set {
-                _rmsDec = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double RMSTotal {
-            get {
-                return _rmsTotal;
-            }
-            set {
-                _rmsTotal = value;
-                RaiseAllPropertiesChanged();
-            }
-        }
-
-        public string RMSRAText {
-            get {
-                return string.Format(Locale.Loc.Instance["LblPHD2RARMS"], RMSRA.ToString("0.00"));
-            }
-        }
-
-        public string RMSDecText {
-            get {
-                return string.Format(Locale.Loc.Instance["LblPHD2DecRMS"], RMSDec.ToString("0.00"));
-            }
-        }
-
-        public string RMSTotalText {
-            get {
-                return string.Format(Locale.Loc.Instance["LblPHD2TotalRMS"], RMSTotal.ToString("0.00"));
-            }
-        }
-
-        private double _rmsTotal;
-        private double _rmsRA;
-        private double _rmsDec;
+        }        
 
         private void ConvertStepToArcSec(IGuideStep pixelStep) {
             // only displayed values are changed, not the raw ones
@@ -274,10 +223,10 @@ namespace NINA.ViewModel {
 
         public GuiderScaleEnum GuiderScale {
             get {
-                return ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2GuiderScale;
+                return profileService.ActiveProfile.GuiderSettings.PHD2GuiderScale;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.GuiderSettings.PHD2GuiderScale = value;
+                profileService.ActiveProfile.GuiderSettings.PHD2GuiderScale = value;
                 RaisePropertyChanged();
                 foreach (IGuideStep s in GuideStepsHistory) {
                     if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {
@@ -293,6 +242,9 @@ namespace NINA.ViewModel {
                         ConvertStepToPixels(s);
                     }
                 }
+
+                RMS.SetScale(GuiderScale == GuiderScaleEnum.ARCSECONDS ? PixelScale : 1);
+
                 RaisePropertyChanged(nameof(GuideStepsHistory));
                 RaisePropertyChanged(nameof(GuideStepsHistoryMinimal));
             }
@@ -369,12 +321,33 @@ namespace NINA.ViewModel {
                 _maxY = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(MinY));
+                RaisePropertyChanged(nameof(Interval));
             }
         }
 
         public double MinY {
             get {
                 return -MaxY;
+            }
+        }
+
+        private double _maxDurationY;
+
+        public double MaxDurationY {
+            get {
+                return _maxDurationY;
+            }
+
+            set {
+                _maxDurationY = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MinDurationY));
+            }
+        }
+
+        public double MinDurationY {
+            get {
+                return -MaxDurationY;
             }
         }
 

@@ -3,6 +3,7 @@ using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using nom.tam.fits;
 using System;
 using System.IO;
@@ -16,7 +17,7 @@ namespace NINA.ViewModel {
 
     internal class ThumbnailVM : DockableVM {
 
-        public ThumbnailVM() : base() {
+        public ThumbnailVM(IProfileService profileService) : base(profileService) {
             Title = "LblImageHistory";
             ContentId = nameof(ThumbnailVM);
             CanClose = false;
@@ -39,7 +40,7 @@ namespace NINA.ViewModel {
                 scaledBitmap.Freeze();
 
                 await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    var thumbnail = new Thumbnail() {
+                    var thumbnail = new Thumbnail(profileService.ActiveProfile.ImageSettings.HistogramResolution) {
                         ThumbnailImage = scaledBitmap,
                         ImagePath = msg.PathToImage,
                         FileType = msg.FileType,
@@ -87,7 +88,8 @@ namespace NINA.ViewModel {
 
     public class Thumbnail : BaseINPC {
 
-        public Thumbnail() {
+        public Thumbnail(int histogramResolution) {
+            this.histogramResolution = histogramResolution;
             SelectCommand = new AsyncCommand<bool>(() => {
                 return SelectImage();
             });
@@ -127,7 +129,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<ImageArray> LoadXisf() {
-            var iarr = await XISF.LoadImageArrayFromFile(ImagePath, IsBayered);
+            var iarr = await XISF.LoadImageArrayFromFile(ImagePath, IsBayered, histogramResolution);
             return iarr;
         }
 
@@ -138,7 +140,7 @@ namespace NINA.ViewModel {
             int arraySize = stride * bmp.PixelHeight;
             ushort[] pixels = new ushort[(int)(bmp.Width * bmp.Height)];
             bmp.CopyPixels(pixels, stride, 0);
-            var imgArr = await ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, IsBayered);
+            var imgArr = await ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, IsBayered, true, histogramResolution);
             return imgArr;
         }
 
@@ -156,7 +158,7 @@ namespace NINA.ViewModel {
                     pixels[i++] = (ushort)(val + short.MaxValue);
                 }
             }
-            var imgArr = await ImageArray.CreateInstance(pixels, width, height, IsBayered);
+            var imgArr = await ImageArray.CreateInstance(pixels, width, height, IsBayered, true, histogramResolution);
             return imgArr;
         }
 
@@ -171,6 +173,8 @@ namespace NINA.ViewModel {
         public Uri ImagePath { get; set; }
 
         public FileTypeEnum FileType { get; set; }
+
+        private int histogramResolution;
 
         public ICommand SelectCommand { get; set; }
 

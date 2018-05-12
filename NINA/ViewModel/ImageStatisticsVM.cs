@@ -15,7 +15,7 @@ namespace NINA.ViewModel {
 
         private ImageStatistics _statistics;
 
-        public ImageStatisticsVM() {
+        public ImageStatisticsVM(IProfileService profileService) : base(profileService) {
             Title = "LblStatistics";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistogramSVG"];
 
@@ -86,7 +86,7 @@ namespace NINA.ViewModel {
         }
 
         private double ConvertToOutputBitDepth(double input) {
-            if (Statistics.IsBayered && ProfileManager.Instance.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW
+            if (Statistics.IsBayered && profileService.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW
                 || !Statistics.IsBayered) {
                 return input * (Math.Pow(2, 16) / Math.Pow(2, _bitDepth));
             }
@@ -96,19 +96,19 @@ namespace NINA.ViewModel {
 
         private double _bitDepth {
             get {
-                return ProfileManager.Instance.ActiveProfile.CameraSettings.BitDepth;
+                return profileService.ActiveProfile.CameraSettings.BitDepth;
             }
         }
 
         private double _offset {
             get {
-                return ConvertToOutputBitDepth(ProfileManager.Instance.ActiveProfile.CameraSettings.Offset);
+                return ConvertToOutputBitDepth(profileService.ActiveProfile.CameraSettings.Offset);
             }
         }
 
         private double _squaredReadNoise {
             get {
-                return ConvertToOutputBitDepth(Math.Pow(ProfileManager.Instance.ActiveProfile.CameraSettings.ReadNoise / (ProfileManager.Instance.ActiveProfile.CameraSettings.FullWellCapacity / Math.Pow(2, _bitDepth)), 2));
+                return ConvertToOutputBitDepth(Math.Pow(profileService.ActiveProfile.CameraSettings.ReadNoise / (profileService.ActiveProfile.CameraSettings.FullWellCapacity / Math.Pow(2, _bitDepth)), 2));
             }
         }
 
@@ -123,9 +123,9 @@ namespace NINA.ViewModel {
         private void CalculateRecommendedExposureTime(double mean, double exposureTime) {
             MinimumRecommendedExposureTime = ((MinExposureADU - _offset) / (mean - _offset)) * exposureTime;
             MaximumRecommendedExposureTime = ((MaxExposureADU - _offset) / (mean - _offset)) * exposureTime;
-            var downloadTime = ProfileManager.Instance.ActiveProfile.SequenceSettings.EstimatedDownloadTime.TotalSeconds;
+            var downloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime.TotalSeconds;
 
-            var optimalRatioExposureTime = ProfileManager.Instance.ActiveProfile.CameraSettings.DownloadToDataRatio * downloadTime;
+            var optimalRatioExposureTime = profileService.ActiveProfile.CameraSettings.DownloadToDataRatio * downloadTime;
 
             CurrentDownloadToDataRatio = (exposureTime / downloadTime).ToString("0.000");
 

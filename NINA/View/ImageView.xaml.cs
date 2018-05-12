@@ -17,9 +17,6 @@ namespace NINA.View {
 
         private double fittingScale = 1;
 
-        //0: 100%; 1: fit to screen; 2: custom
-        private int mode = 0;
-
         public ImageView() {
             InitializeComponent();
 
@@ -92,7 +89,6 @@ namespace NINA.View {
         }
 
         private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
-            mode = 2;
             lastMousePositionOnTarget = Mouse.GetPosition(PART_Canvas);
 
             var val = PART_ScaleTransform.ScaleX;
@@ -201,7 +197,6 @@ namespace NINA.View {
         }
 
         private void ButtonZoomIn_Click(object sender, RoutedEventArgs e) {
-            mode = 2;
             Zoom(PART_ScaleTransform.ScaleX + PART_ScaleTransform.ScaleX * 0.25);
             var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
                                                          PART_ScrollViewer.ViewportHeight / 2);
@@ -210,7 +205,6 @@ namespace NINA.View {
         }
 
         private void ButtonZoomOut_Click(object sender, RoutedEventArgs e) {
-            mode = 2;
             Zoom(PART_ScaleTransform.ScaleX - PART_ScaleTransform.ScaleX * 0.25);
             var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
                                                          PART_ScrollViewer.ViewportHeight / 2);
@@ -220,13 +214,11 @@ namespace NINA.View {
 
         private void ButtonZoomReset_Click(object sender, RoutedEventArgs e) {
             RecalculateScalingFactors();
-            mode = 1;
             Zoom(fittingScale * 0.9);
             Zoom(fittingScale);
         }
 
         private void ButtonZoomOneToOne_Click(object sender, RoutedEventArgs e) {
-            mode = 0;
             Zoom(1);
         }
     }

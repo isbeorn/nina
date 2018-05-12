@@ -20,32 +20,57 @@
             PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
             <oxy:Plot.Axes>
                 <oxy:LinearAxis
+                    Key="DistanceAxis"
                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    IntervalLength="50"
-                    IsAxisVisible="true"
                     IsPanEnabled="False"
                     IsZoomEnabled="False"
                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                     MajorGridlineStyle="LongDash"
+                    MajorStep="{Binding Interval}"
                     Maximum="{Binding MaxY}"
                     Minimum="{Binding MinY}"
-                    MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
-                    MinorGridlineStyle="Dash"
                     Position="Left"
                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
-                <oxy:LinearAxis IsAxisVisible="False" Position="Bottom" />
+                <oxy:LinearAxis
+                    Key="DurationAxis"
+                    IsAxisVisible="False"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    Maximum="{Binding MaxDurationY}"
+                    Minimum="{Binding MinDurationY}"
+                    Position="Right" />
+                <oxy:LinearAxis
+                    Key="TextAxisX"
+                    IsAxisVisible="False"
+                    Maximum="1"
+                    Minimum="0"
+                    Position="Bottom" />
+                <oxy:LinearAxis
+                    Key="TextAxisY"
+                    IsAxisVisible="False"
+                    Maximum="1"
+                    Minimum="0"
+                    Position="Right" />
+                <oxy:LinearAxis
+                    Key="DataAxisX"
+                    IsAxisVisible="False"
+                    Position="Bottom" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries
                     DataFieldX="Time"
                     DataFieldY="RADistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
+                    XAxisKey="DataAxisX"
+                    YAxisKey="DistanceAxis"
                     Color="Blue" />
                 <oxy:LineSeries
                     DataFieldX="Time"
                     DataFieldY="DecDistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
+                    XAxisKey="DataAxisX"
+                    YAxisKey="DistanceAxis"
                     Color="Red" />
                 <oxy:LinearBarSeries
                     BarWidth="3"
@@ -55,18 +80,41 @@
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
                     StrokeColor="Blue"
                     StrokeThickness="1"
+                    XAxisKey="DataAxisX"
+                    YAxisKey="DurationAxis"
                     Color="Blue" />
                 <oxy:LinearBarSeries
                     BarWidth="3"
                     DataFieldX="TimeDec"
                     DataFieldY="DECDuration"
-                    DisplayMemberPath="DecDistanceGuide"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideStepsHistoryMinimal}"
                     StrokeColor="Red"
                     StrokeThickness="1"
+                    XAxisKey="DataAxisX"
+                    YAxisKey="DurationAxis"
                     Color="Red" />
             </oxy:Plot.Series>
+            <oxy:Plot.Annotations>
+                <oxy:LineAnnotation
+                    Text="GuideNorth"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TextVerticalAlignment="Top"
+                    Type="Horizontal"
+                    XAxisKey="TextAxisX"
+                    Y="1"
+                    YAxisKey="TextAxisY"
+                    Color="Transparent" />
+                <oxy:LineAnnotation
+                    Text="GuideEast"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TextVerticalAlignment="Bottom"
+                    Type="Horizontal"
+                    XAxisKey="TextAxisX"
+                    Y="0"
+                    YAxisKey="TextAxisY"
+                    Color="Transparent" />
+            </oxy:Plot.Annotations>
         </oxy:Plot>
     </Grid>
 </UserControl>

@@ -14,7 +14,7 @@ namespace NINA.ViewModel {
 
     internal class FocuserVM : DockableVM {
 
-        public FocuserVM() {
+        public FocuserVM(IProfileService profileService) : base(profileService) {
             Title = "LblFocuser";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
 
@@ -98,7 +98,7 @@ namespace NINA.ViewModel {
                 _cancelUpdateFocuserValues?.Cancel();
 
                 if (FocuserChooserVM.SelectedDevice.Id == "No_Device") {
-                    ProfileManager.Instance.ActiveProfile.FocuserSettings.Id = FocuserChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.FocuserSettings.Id = FocuserChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
@@ -124,7 +124,7 @@ namespace NINA.ViewModel {
                             _updateFocuserValuesTask = Task.Run(() => GetFocuserValues(_updateFocuserValuesProgress, _cancelUpdateFocuserValues.Token));
 
                             TargetPosition = Focuser.Position;
-                            ProfileManager.Instance.ActiveProfile.FocuserSettings.Id = Focuser.Id;
+                            profileService.ActiveProfile.FocuserSettings.Id = Focuser.Id;
                             return true;
                         } else {
                             Connected = false;
@@ -170,7 +170,7 @@ namespace NINA.ViewModel {
 
                     token.ThrowIfCancellationRequested();
 
-                    Thread.Sleep((int)(ProfileManager.Instance.ActiveProfile.ApplicationSettings.DevicePollingInterval * 1000));
+                    Thread.Sleep((int)(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval * 1000));
                 } while (Connected == true);
             } catch (OperationCanceledException) {
             } finally {
@@ -315,7 +315,7 @@ namespace NINA.ViewModel {
         public FocuserChooserVM FocuserChooserVM {
             get {
                 if (_focuserChooserVM == null) {
-                    _focuserChooserVM = new FocuserChooserVM();
+                    _focuserChooserVM = new FocuserChooserVM(profileService);
                 }
                 return _focuserChooserVM;
             }
@@ -341,7 +341,7 @@ namespace NINA.ViewModel {
 
     internal class FocuserChooserVM : EquipmentChooserVM {
 
-        public FocuserChooserVM() : base(typeof(FocuserChooserVM)) {
+        public FocuserChooserVM(IProfileService profileService) : base(typeof(FocuserChooserVM), profileService) {
         }
 
         public override void GetEquipment() {
@@ -360,7 +360,7 @@ namespace NINA.ViewModel {
                 }
             }
 
-            DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.FocuserSettings.Id);
+            DetermineSelectedDevice(profileService.ActiveProfile.FocuserSettings.Id);
         }
     }
 }

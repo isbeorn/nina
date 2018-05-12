@@ -48,9 +48,9 @@
                 ItemStringFormat="unit: {0}"
                 ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}"
                 SelectedItem="{Binding GuiderScale}" />
-            <TextBlock Text="{Binding RMSRAText}" />
-            <TextBlock Text="{Binding RMSDecText}" />
-            <TextBlock Text="{Binding RMSTotalText}" />
+            <TextBlock Text="{Binding RMS.RAText}" />
+            <TextBlock Text="{Binding RMS.DecText}" />
+            <TextBlock Text="{Binding RMS.TotalText}" />
         </StackPanel>
 
         <oxy:Plot
@@ -65,20 +65,42 @@
             PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
             <oxy:Plot.Axes>
                 <oxy:LinearAxis
+                    Key="DistanceAxis"
                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    IntervalLength="50"
                     IsPanEnabled="False"
                     IsZoomEnabled="False"
                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                     MajorGridlineStyle="LongDash"
+                    MajorStep="{Binding Interval}"
                     Maximum="{Binding MaxY}"
                     Minimum="{Binding MinY}"
-                    MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
-                    MinorGridlineStyle="Dash"
                     Position="Left"
                     TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
-                <oxy:LinearAxis IsAxisVisible="False" Position="Bottom" />
+                <oxy:LinearAxis
+                    Key="DurationAxis"
+                    IsAxisVisible="False"
+                    IsPanEnabled="False"
+                    IsZoomEnabled="False"
+                    Maximum="{Binding MaxDurationY}"
+                    Minimum="{Binding MinDurationY}"
+                    Position="Right" />
+                <oxy:LinearAxis
+                    Key="TextAxisX"
+                    IsAxisVisible="False"
+                    Maximum="1"
+                    Minimum="0"
+                    Position="Bottom" />
+                <oxy:LinearAxis
+                    Key="TextAxisY"
+                    IsAxisVisible="False"
+                    Maximum="1"
+                    Minimum="0"
+                    Position="Right" />
+                <oxy:LinearAxis
+                    Key="DataAxisX"
+                    IsAxisVisible="False"
+                    Position="Bottom" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries
@@ -86,12 +108,16 @@
                     DataFieldX="Time"
                     DataFieldY="RADistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistory}"
+                    XAxisKey="DataAxisX"
+                    YAxisKey="DistanceAxis"
                     Color="Blue" />
                 <oxy:LineSeries
                     Title="{ns:Loc LblDec}"
                     DataFieldX="Time"
                     DataFieldY="DecDistanceRawDisplay"
                     ItemsSource="{Binding GuideStepsHistory}"
+                    XAxisKey="DataAxisX"
+                    YAxisKey="DistanceAxis"
                     Color="Red" />
                 <oxy:LinearBarSeries
                     Title="{ns:Loc LblRACorrections}"
@@ -102,19 +128,42 @@
                     ItemsSource="{Binding GuideStepsHistory}"
                     StrokeColor="Blue"
                     StrokeThickness="1"
+                    XAxisKey="DataAxisX"
+                    YAxisKey="DurationAxis"
                     Color="Blue" />
                 <oxy:LinearBarSeries
                     Title="{ns:Loc LblDecCorrections}"
                     BarWidth="3"
                     DataFieldX="TimeDec"
                     DataFieldY="DECDuration"
-                    DisplayMemberPath="DecDistanceGuideDisplay"
                     FillColor="Transparent"
                     ItemsSource="{Binding GuideStepsHistory}"
                     StrokeColor="Red"
                     StrokeThickness="1"
+                    XAxisKey="DataAxisX"
+                    YAxisKey="DurationAxis"
                     Color="Red" />
             </oxy:Plot.Series>
+            <oxy:Plot.Annotations>
+                <oxy:LineAnnotation
+                    Text="GuideNorth"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TextVerticalAlignment="Top"
+                    Type="Horizontal"
+                    XAxisKey="TextAxisX"
+                    Y="1"
+                    YAxisKey="TextAxisY"
+                    Color="Transparent" />
+                <oxy:LineAnnotation
+                    Text="GuideEast"
+                    TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                    TextVerticalAlignment="Bottom"
+                    Type="Horizontal"
+                    XAxisKey="TextAxisX"
+                    Y="0"
+                    YAxisKey="TextAxisY"
+                    Color="Transparent" />
+            </oxy:Plot.Annotations>
         </oxy:Plot>
     </Grid>
 </UserControl>

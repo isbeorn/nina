@@ -1,11 +1,12 @@
 ﻿using NINA.Model.MyCamera;
 using NINA.Utility;
+using NINA.Utility.Profile;
 
 namespace NINA.ViewModel {
 
     public class ImageHistoryVM : DockableVM {
 
-        public ImageHistoryVM() {
+        public ImageHistoryVM(IProfileService profileService) : base(profileService) {
             Title = "LblHFRHistory";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HFRHistorySVG"];
 

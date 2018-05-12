@@ -1,16 +1,17 @@
 ﻿using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(CameraSettings))]
-    public class CameraSettings {
+    [DataContract]
+    public class CameraSettings : ICameraSettings {
         private string id = "No_Device";
 
-        [XmlElement(nameof(Id))]
+        [DataMember]
         public string Id {
             get {
                 return id;
@@ -23,7 +24,7 @@ namespace NINA.Utility.Profile {
 
         private double pixelSize = 3.8;
 
-        [XmlElement(nameof(PixelSize))]
+        [DataMember]
         public double PixelSize {
             get {
                 return pixelSize;
@@ -36,7 +37,7 @@ namespace NINA.Utility.Profile {
 
         private CameraBulbModeEnum bulbMode = CameraBulbModeEnum.NATIVE;
 
-        [XmlElement(nameof(BulbMode))]
+        [DataMember]
         public CameraBulbModeEnum BulbMode {
             get {
                 return bulbMode;
@@ -49,7 +50,7 @@ namespace NINA.Utility.Profile {
 
         private string serialPort = "COM1";
 
-        [XmlElement(nameof(SerialPort))]
+        [DataMember]
         public string SerialPort {
             get {
                 return serialPort;
@@ -62,7 +63,7 @@ namespace NINA.Utility.Profile {
 
         private double _readNoise = 0.0;
 
-        [XmlElement(nameof(ReadNoise))]
+        [DataMember]
         public double ReadNoise {
             get {
                 return _readNoise;
@@ -75,7 +76,7 @@ namespace NINA.Utility.Profile {
 
         private double _bitDepth = 16;
 
-        [XmlElement(nameof(BitDepth))]
+        [DataMember]
         public double BitDepth {
             get {
                 return _bitDepth;
@@ -88,7 +89,7 @@ namespace NINA.Utility.Profile {
 
         private double _offset = 0;
 
-        [XmlElement(nameof(Offset))]
+        [DataMember]
         public double Offset {
             get {
                 return _offset;
@@ -101,7 +102,7 @@ namespace NINA.Utility.Profile {
 
         private double _fullWellCapacity = 20000;
 
-        [XmlElement(nameof(FullWellCapacity))]
+        [DataMember]
         public double FullWellCapacity {
             get {
                 return _fullWellCapacity;
@@ -114,7 +115,7 @@ namespace NINA.Utility.Profile {
 
         private double _downloadToDataRatio = 9;
 
-        [XmlElement(nameof(DownloadToDataRatio))]
+        [DataMember]
         public double DownloadToDataRatio {
             get {
                 return _downloadToDataRatio;
@@ -126,7 +127,8 @@ namespace NINA.Utility.Profile {
         }
 
         private RawConverterEnum _rawConverter = RawConverterEnum.DCRAW;
-        [XmlElement(nameof(RawConverter))]
+
+        [DataMember]
         public RawConverterEnum RawConverter {
             get {
                 return _rawConverter;

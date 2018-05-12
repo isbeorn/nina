@@ -54,7 +54,7 @@ namespace SetupCygwinInstallAction {
                     }
 
                     RebaseCygwinDLLs();
-                } catch (Exception ex) {
+                } catch (Exception) {
                 }
             }
             base.Install(stateSaver);

@@ -1,15 +1,16 @@
 ﻿using NINA.Utility.Mediator;
 using System;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(Profile))]
-    public class SequenceSettings {
+    [DataContract]
+    public class SequenceSettings : ISequenceSettings {
         private string templatePath = string.Empty;
 
-        [XmlElement(nameof(TemplatePath))]
+        [DataMember]
         public string TemplatePath {
             get {
                 return templatePath;
@@ -22,7 +23,6 @@ namespace NINA.Utility.Profile {
 
         private TimeSpan estimatedDownloadTime = TimeSpan.FromSeconds(0);
 
-        [XmlIgnore]
         public TimeSpan EstimatedDownloadTime {
             get {
                 return estimatedDownloadTime;
@@ -33,7 +33,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        [XmlElement(nameof(EstimatedDownloadTime))]
+        [DataMember]
         public long TimeSpanInTicks {
             get {
                 return estimatedDownloadTime.Ticks;

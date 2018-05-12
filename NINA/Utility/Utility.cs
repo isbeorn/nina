@@ -37,8 +37,8 @@ namespace NINA.Utility {
         /// </summary>
         /// <param name="patterns">KeyValue Collection of Makro -&gt; Makrovalue</param>
         /// <returns></returns>
-        public static string GetImageFileString(ICollection<ViewModel.OptionsVM.ImagePattern> patterns) {
-            string s = ProfileManager.Instance.ActiveProfile.ImageFileSettings.FilePattern;
+        public static string GetImageFileString(string filePatternMacro, ICollection<ViewModel.OptionsVM.ImagePattern> patterns) {
+            string s = filePatternMacro;
             foreach (ViewModel.OptionsVM.ImagePattern p in patterns) {
                 s = s.Replace(p.Key, p.Value);
             }
