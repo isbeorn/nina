@@ -101,6 +101,9 @@ namespace NINA.Model {
                     }
                     s.FilterType = filter;
                 }
+                if(l.ActiveSequence == null && l.Count > 0) {
+                    l.ActiveSequence = l.Items.SkipWhile(x => x.TotalExposureCount - x.ProgressExposureCount == 0).FirstOrDefault();
+                }
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceFailed"] + Environment.NewLine + ex.Message);
