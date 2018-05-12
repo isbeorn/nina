@@ -50,7 +50,8 @@ namespace NINA.ViewModel {
 
             if (dialog.ShowDialog() == true) {
                 var l = CaptureSequenceList.Load(dialog.FileName, profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters);
-                Sequence = l;
+                l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
+                Sequence = l;                
             }
         }
 
