@@ -8,6 +8,7 @@ using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -270,7 +271,7 @@ namespace NINA.ViewModel {
 
                             _updateCameraValuesProgress = new Progress<Dictionary<string, object>>(UpdateCameraValues);
                             _cancelUpdateCameraValues = new CancellationTokenSource();
-                            _updateCameraValuesTask = Task.Run(() => GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
+                            _updateCameraValuesTask = Task.Run(async () => await GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
 
                             profileService.ActiveProfile.CameraSettings.Id = this.Cam.Id;
                             if (Cam.PixelSizeX > 0) {
@@ -329,11 +330,13 @@ namespace NINA.ViewModel {
             CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, Temperature));
         }
 
-        private void GetCameraValues(IProgress<Dictionary<string, object>> progress, CancellationToken token) {
+        private async Task GetCameraValues(IProgress<Dictionary<string, object>> progress, CancellationToken token) {
             Dictionary<string, object> cameraValues = new Dictionary<string, object>();
             try {
                 do {
                     token.ThrowIfCancellationRequested();
+
+                    var sw = Stopwatch.StartNew();
 
                     cameraValues.Clear();
                     cameraValues.Add(nameof(Connected), _cam?.Connected ?? false);
@@ -350,8 +353,11 @@ namespace NINA.ViewModel {
 
                     token.ThrowIfCancellationRequested();
 
-                    //Update after one second + the time it takes to read the values
-                    Thread.Sleep((int)(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval * 1000));
+                    await Utility.Utility.Delay(
+                        TimeSpan.FromSeconds(
+                            Math.Max(0.5, profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval - sw.Elapsed.TotalSeconds)
+                        ), token
+                    );
                 } while (Connected == true);
             } catch (OperationCanceledException) {
             } finally {

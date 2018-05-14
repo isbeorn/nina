@@ -6,6 +6,8 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -33,10 +35,6 @@ namespace NINA.ViewModel {
             MoveCommand = new RelayCommand(Move);
             StopMoveCommand = new RelayCommand(StopMove);
             StopSlewCommand = new RelayCommand(StopSlew);
-
-            _updateTelescope = new DispatcherTimer();
-            _updateTelescope.Interval = TimeSpan.FromMilliseconds((int)(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval * 1000));
-            _updateTelescope.Tick += UpdateTelescope_Tick;
 
             Mediator.Instance.RegisterRequest(
                 new SetTelescopeTrackingMessageHandle((SetTelescopeTrackingMessage msg) => {
@@ -105,7 +103,7 @@ namespace NINA.ViewModel {
             Telescope.Unpark();
         }
 
-        private DispatcherTimer _updateTelescope;
+        //private DispatcherTimer _updateTelescope;
 
         private ITelescope _telescope;
 
@@ -140,7 +138,7 @@ namespace NINA.ViewModel {
             await ss.WaitAsync();
             try {
                 Disconnect();
-                _updateTelescope.Stop();
+                _cancelUpdateTelescopeValues?.Cancel();
 
                 if (TelescopeChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.TelescopeSettings.Id = TelescopeChooserVM.SelectedDevice.Id;
@@ -170,8 +168,11 @@ namespace NINA.ViewModel {
                                 }
                             }
 
+                            _updateTelescopeValuesProgress = new Progress<Dictionary<string, object>>(UpdateTelescopeValues);
+                            _cancelUpdateTelescopeValues = new CancellationTokenSource();
+                            _updateTelescopeValuesTask = Task.Run(async () => await GetTelescopeValues(_updateTelescopeValuesProgress, _cancelUpdateTelescopeValues.Token));
+
                             Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
-                            _updateTelescope.Start();
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
                             return true;
                         } else {
@@ -196,6 +197,189 @@ namespace NINA.ViewModel {
             }
         }
 
+        private bool _connected;
+
+        public bool Connected {
+            get {
+                return _connected;
+            }
+            private set {
+                var prevVal = _connected;
+                _connected = value;
+                RaisePropertyChanged();
+                if (prevVal != _connected) {
+                    Mediator.Instance.Notify(MediatorMessages.TelescopeConnectedChanged, _connected);
+                }
+            }
+        }
+
+        private string _altitudeString;
+
+        public string AltitudeString {
+            get {
+                return _altitudeString;
+            }
+            private set {
+                _altitudeString = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _azimuthString;
+
+        public string AzimuthString {
+            get {
+                return _azimuthString;
+            }
+            private set {
+                _azimuthString = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _declinationString;
+
+        public string DeclinationString {
+            get {
+                return _declinationString;
+            }
+            private set {
+                _declinationString = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _rightAscensionString;
+
+        public string RightAscensionString {
+            get {
+                return _rightAscensionString;
+            }
+            private set {
+                _rightAscensionString = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _siderealTimeString;
+
+        public string SiderealTimeString {
+            get {
+                return _siderealTimeString;
+            }
+            private set {
+                _siderealTimeString = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _hoursToMeridianString;
+
+        public string HoursToMeridianString {
+            get {
+                return _hoursToMeridianString;
+            }
+            private set {
+                _hoursToMeridianString = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _tracking;
+
+        public bool Tracking {
+            get {
+                return _tracking;
+            }
+            private set {
+                _tracking = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _atPark;
+
+        public bool AtPark {
+            get {
+                return _atPark;
+            }
+            private set {
+                _atPark = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private IProgress<Dictionary<string, object>> _updateTelescopeValuesProgress;
+        private CancellationTokenSource _cancelUpdateTelescopeValues;
+        private Task _updateTelescopeValuesTask;
+
+        private void UpdateTelescopeValues(Dictionary<string, object> telescopeValues) {
+            object o = null;
+            telescopeValues.TryGetValue(nameof(Connected), out o);
+            Connected = (bool)(o ?? false);
+
+            telescopeValues.TryGetValue(nameof(AltitudeString), out o);
+            AltitudeString = (string)(o ?? string.Empty);
+
+            telescopeValues.TryGetValue(nameof(AzimuthString), out o);
+            AzimuthString = (string)(o ?? string.Empty);
+
+            telescopeValues.TryGetValue(nameof(DeclinationString), out o);
+            DeclinationString = (string)(o ?? string.Empty);
+
+            telescopeValues.TryGetValue(nameof(RightAscensionString), out o);
+            RightAscensionString = (string)(o ?? string.Empty);
+
+            telescopeValues.TryGetValue(nameof(SiderealTimeString), out o);
+            SiderealTimeString = (string)(o ?? string.Empty);
+
+            telescopeValues.TryGetValue(nameof(HoursToMeridianString), out o);
+            HoursToMeridianString = (string)(o ?? string.Empty);
+
+            telescopeValues.TryGetValue(nameof(AtPark), out o);
+            AtPark = (bool)(o ?? false);
+
+            telescopeValues.TryGetValue(nameof(Tracking), out o);
+            Tracking = (bool)(o ?? false);
+        }
+
+        private async Task GetTelescopeValues(IProgress<Dictionary<string, object>> progress, CancellationToken token) {
+            Dictionary<string, object> telescopeValues = new Dictionary<string, object>();
+            try {
+                do {
+                    token.ThrowIfCancellationRequested();
+
+                    var sw = Stopwatch.StartNew();
+
+                    telescopeValues.Clear();
+                    telescopeValues.Add(nameof(Connected), _telescope?.Connected ?? false);
+                    telescopeValues.Add(nameof(AtPark), _telescope?.AtPark ?? false);
+                    telescopeValues.Add(nameof(Tracking), _telescope?.Tracking ?? false);
+
+                    telescopeValues.Add(nameof(AltitudeString), _telescope?.AltitudeString ?? string.Empty);
+                    telescopeValues.Add(nameof(AzimuthString), _telescope?.AzimuthString ?? string.Empty);
+                    telescopeValues.Add(nameof(DeclinationString), _telescope?.DeclinationString ?? string.Empty);
+                    telescopeValues.Add(nameof(RightAscensionString), _telescope?.RightAscensionString ?? string.Empty);
+                    telescopeValues.Add(nameof(SiderealTimeString), _telescope?.SiderealTimeString ?? string.Empty);
+                    telescopeValues.Add(nameof(HoursToMeridianString), _telescope?.HoursToMeridianString ?? string.Empty);
+
+                    progress.Report(telescopeValues);
+
+                    token.ThrowIfCancellationRequested();
+                    await Utility.Utility.Delay(
+                        TimeSpan.FromSeconds(
+                            Math.Max(0.5, profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval - sw.Elapsed.TotalSeconds)
+                        ), token
+                    );
+                } while (Connected == true);
+            } catch (OperationCanceledException) {
+            } finally {
+                telescopeValues.Clear();
+                telescopeValues.Add(nameof(Connected), false);
+                progress.Report(telescopeValues);
+            }
+        }
+
         private void CancelChooseTelescope(object o) {
             _cancelChooseTelescopeSource?.Cancel();
         }
@@ -210,7 +394,7 @@ namespace NINA.ViewModel {
         }
 
         public void Disconnect() {
-            _updateTelescope.Stop();
+            _cancelUpdateTelescopeValues?.Cancel();
             Telescope?.Disconnect();
             Telescope = null;
         }

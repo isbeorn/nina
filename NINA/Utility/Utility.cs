@@ -330,7 +330,7 @@ namespace NINA.Utility {
         public static async Task<TimeSpan> Wait(TimeSpan t, CancellationToken token = new CancellationToken()) {
             TimeSpan elapsed = new TimeSpan(0);
             do {
-                var delta = await Delay(100, new CancellationToken());
+                var delta = await Delay(100, token);
                 elapsed += delta;
             } while (elapsed < t);
             return elapsed;

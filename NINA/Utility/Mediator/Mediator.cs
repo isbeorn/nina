@@ -184,5 +184,6 @@ namespace NINA.Utility.Mediator {
         CameraConnectedChanged = 29,
         CameraPixelSizeChanged = 30,
         ProfileChanged = 31,
+        TelescopeConnectedChanged = 32,
     };
 }
