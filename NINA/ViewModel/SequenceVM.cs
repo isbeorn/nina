@@ -116,6 +116,19 @@ namespace NINA.ViewModel {
             set {
                 _status = value;
                 _status.Source = Title;
+
+                if(Sequence.ActiveSequence != null) {
+                    _status.Status2 = Locale.Loc.Instance["LblSequence"];
+                    _status.ProgressType2 = ApplicationStatus.StatusProgressType.ValueOfMaxValue;
+                    _status.Progress2 = Sequence.ActiveSequenceIndex;
+                    _status.MaxProgress2 = Sequence.Count;
+
+                    _status.Status3 = Locale.Loc.Instance["LblExposures"];
+                    _status.ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue;
+                    _status.Progress3 = Sequence.ActiveSequence.ProgressExposureCount;
+                    _status.MaxProgress3 = Sequence.ActiveSequence.TotalExposureCount;
+                }
+
                 RaisePropertyChanged();
 
                 Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });

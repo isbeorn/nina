@@ -54,8 +54,16 @@ namespace NINA.ViewModel {
                             if (!string.IsNullOrEmpty(status.Status)) {
                                 item.Status = status.Status;
                                 item.Progress = status.Progress;
-                                item.ProgressType = status.ProgressType;
                                 item.MaxProgress = status.MaxProgress;
+                                item.ProgressType = status.ProgressType;
+                                item.Status2 = status.Status2;
+                                item.Progress2 = status.Progress2;
+                                item.MaxProgress2 = status.MaxProgress2;
+                                item.ProgressType2 = status.ProgressType2;
+                                item.Status3 = status.Status3;
+                                item.Progress3 = status.Progress3;
+                                item.MaxProgress3 = status.MaxProgress3;
+                                item.ProgressType3 = status.ProgressType3;
                             } else {
                                 ApplicationStatus.Remove(item);
                             }
@@ -66,7 +74,15 @@ namespace NINA.ViewModel {
                                     Status = status.Status,
                                     Progress = status.Progress,
                                     MaxProgress = status.MaxProgress,
-                                    ProgressType = status.ProgressType
+                                    ProgressType = status.ProgressType,
+                                    Status2 = status.Status2,
+                                    Progress2 = status.Progress2,
+                                    MaxProgress2 = status.MaxProgress2,
+                                    ProgressType2 = status.ProgressType2,                                    
+                                    Status3 = status.Status3,
+                                    Progress3 = status.Progress3,
+                                    MaxProgress3 = status.MaxProgress3,
+                                    ProgressType3 = status.ProgressType3
                                 });
                             }
                         }
