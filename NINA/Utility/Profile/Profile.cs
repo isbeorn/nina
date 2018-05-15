@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
@@ -59,10 +58,10 @@ namespace NINA.Utility.Profile {
 
         public static IProfile Clone(IProfile profileToClone) {
             using (MemoryStream stream = new MemoryStream()) {
-                DataContractSerializer xmlS = new DataContractSerializer(typeof(Profile));
-                xmlS.WriteObject(stream, profileToClone);
+                DataContractSerializer dcs = new DataContractSerializer(typeof(Profile));
+                dcs.WriteObject(stream, profileToClone);
                 stream.Position = 0;
-                var newProfile = (Profile)xmlS.ReadObject(stream);
+                var newProfile = (Profile)dcs.ReadObject(stream);
                 newProfile.Name = newProfile.Name + " Copy";
                 newProfile.Id = Guid.NewGuid();
                 return newProfile;

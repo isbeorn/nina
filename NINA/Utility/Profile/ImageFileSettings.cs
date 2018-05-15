@@ -2,7 +2,6 @@
 using NINA.Utility.Mediator;
 using System;
 using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
@@ -11,7 +10,7 @@ namespace NINA.Utility.Profile {
     public class ImageFileSettings : IImageFileSettings {
         private string filePath = string.Empty;
 
-        [XmlElement(nameof(FilePath))]
+        [DataMember]
         public string FilePath {
             get {
                 return filePath;

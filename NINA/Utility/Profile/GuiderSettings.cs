@@ -2,7 +2,6 @@
 using NINA.Utility.Mediator;
 using System;
 using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
