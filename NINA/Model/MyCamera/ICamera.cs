@@ -53,8 +53,6 @@ namespace NINA.Model.MyCamera {
 
         AsyncObservableCollection<BinningMode> BinningModes { get; }
 
-        void UpdateValues();
-
         void SetBinning(short x, short y);
 
         void StartExposure(double exposureTime, bool isLightFrame);

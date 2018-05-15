@@ -17,7 +17,5 @@
         void Move(int position);
 
         void Halt();
-
-        void UpdateValues();
     }
 }

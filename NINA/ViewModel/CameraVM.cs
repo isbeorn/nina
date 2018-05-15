@@ -35,6 +35,12 @@ namespace NINA.ViewModel {
             CoolerPowerHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
 
+            updateTimer = new DeviceUpdateTimer(
+                GetCameraValues,
+                UpdateCameraValues,
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+            );
+
             Mediator.Instance.RegisterAsyncRequest(
                 new ConnectCameraMessageHandle(async (ConnectCameraMessage msg) => {
                     await ChooseCameraCommand.ExecuteAsync(null);
@@ -238,7 +244,7 @@ namespace NINA.ViewModel {
             await ss.WaitAsync();
             try {
                 Disconnect();
-                _cancelUpdateCameraValues?.Cancel();
+                updateTimer?.Stop();
 
                 if (CameraChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.CameraSettings.Id = CameraChooserVM.SelectedDevice.Id;
@@ -269,9 +275,8 @@ namespace NINA.ViewModel {
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
 
-                            _updateCameraValuesProgress = new Progress<Dictionary<string, object>>(UpdateCameraValues);
-                            _cancelUpdateCameraValues = new CancellationTokenSource();
-                            _updateCameraValuesTask = Task.Run(async () => await GetCameraValues(_updateCameraValuesProgress, _cancelUpdateCameraValues.Token));
+                            updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
+                            updateTimer.Start();                            
 
                             profileService.ActiveProfile.CameraSettings.Id = this.Cam.Id;
                             if (Cam.PixelSizeX > 0) {
@@ -330,41 +335,19 @@ namespace NINA.ViewModel {
             CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, Temperature));
         }
 
-        private async Task GetCameraValues(IProgress<Dictionary<string, object>> progress, CancellationToken token) {
+
+        Dictionary<string, object> GetCameraValues() {
             Dictionary<string, object> cameraValues = new Dictionary<string, object>();
-            try {
-                do {
-                    token.ThrowIfCancellationRequested();
+            cameraValues.Add(nameof(Connected), _cam?.Connected ?? false);
+            cameraValues.Add(nameof(CoolerOn), _cam?.CoolerOn ?? false);
+            cameraValues.Add(nameof(Temperature), _cam?.Temperature ?? double.NaN);
+            cameraValues.Add(nameof(CoolerPower), _cam?.CoolerPower ?? double.NaN);
+            cameraValues.Add(nameof(CameraState), _cam?.CameraState ?? string.Empty);
 
-                    var sw = Stopwatch.StartNew();
-
-                    cameraValues.Clear();
-                    cameraValues.Add(nameof(Connected), _cam?.Connected ?? false);
-                    cameraValues.Add(nameof(CoolerOn), _cam?.CoolerOn ?? false);
-                    cameraValues.Add(nameof(Temperature), _cam?.Temperature ?? double.NaN);
-                    cameraValues.Add(nameof(CoolerPower), _cam?.CoolerPower ?? double.NaN);
-                    cameraValues.Add(nameof(CameraState), _cam?.CameraState ?? string.Empty);
-
-                    //cameraValues.Add(nameof(FullWellCapacity),_cam?.FullWellCapacity ?? double.NaN);
-                    //cameraValues.Add(nameof(HeatSinkTemperature),_cam?.HeatSinkTemperature ?? false);
-                    //cameraValues.Add(nameof(IsPulseGuiding),_cam?.IsPulseGuiding ?? false);
-
-                    progress.Report(cameraValues);
-
-                    token.ThrowIfCancellationRequested();
-
-                    await Utility.Utility.Delay(
-                        TimeSpan.FromSeconds(
-                            Math.Max(0.5, profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval - sw.Elapsed.TotalSeconds)
-                        ), token
-                    );
-                } while (Connected == true);
-            } catch (OperationCanceledException) {
-            } finally {
-                cameraValues.Clear();
-                cameraValues.Add(nameof(Connected), false);
-                progress.Report(cameraValues);
-            }
+            //cameraValues.Add(nameof(FullWellCapacity),_cam?.FullWellCapacity ?? double.NaN);
+            //cameraValues.Add(nameof(HeatSinkTemperature),_cam?.HeatSinkTemperature ?? false);
+            //cameraValues.Add(nameof(IsPulseGuiding),_cam?.IsPulseGuiding ?? false);
+            return cameraValues;
         }
 
         private bool _connected;
@@ -432,9 +415,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _coolerOn;
-        private IProgress<Dictionary<string, object>> _updateCameraValuesProgress;
-        private CancellationTokenSource _cancelUpdateCameraValues;
-        private Task _updateCameraValuesTask;
+        DeviceUpdateTimer updateTimer;
         private CancellationTokenSource _cancelConnectCameraSource;
 
         public bool CoolerOn {
@@ -459,11 +440,8 @@ namespace NINA.ViewModel {
         }
 
         public void Disconnect() {
-            _cancelUpdateCameraValues?.Cancel();
-            _cancelCoolCameraSource?.Cancel();
-            do {
-                Task.Delay(100);
-            } while (!_updateCameraValuesTask?.IsCompleted == true);
+            updateTimer?.Stop();
+            _cancelCoolCameraSource?.Cancel();            
             CoolingRunning = false;
             Cam?.Disconnect();
             Cam = null;

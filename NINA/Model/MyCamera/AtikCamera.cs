@@ -420,14 +420,6 @@ namespace NINA.Model.MyCamera {
             AtikCameraDll.StopExposure(_cameraP);
         }
 
-        public void UpdateValues() {
-            RaisePropertyChanged(nameof(Temperature));
-            RaisePropertyChanged(nameof(CoolerPower));
-            RaisePropertyChanged(nameof(CoolerOn));
-            RaisePropertyChanged(nameof(TemperatureSetPoint));
-            RaisePropertyChanged(nameof(CameraState));
-        }
-
         public void StartLiveView() {
             throw new NotImplementedException();
         }

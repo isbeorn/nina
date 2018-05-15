@@ -647,11 +647,7 @@ namespace NINA.Model.MyCamera {
         public void StopExposure() {
             var err = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
         }
-
-        public void UpdateValues() {
-            //throw new NotImplementedException();
-        }
-
+        
         private uint SetProperty(uint property, object value) {
             int propsize;
             EDSDK.EdsDataType proptype;

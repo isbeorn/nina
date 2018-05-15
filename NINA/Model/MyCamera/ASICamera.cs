@@ -427,15 +427,7 @@ namespace NINA.Model.MyCamera {
         public void StopExposure() {
             ASICameraDll.StopExposure(_cameraId);
         }
-
-        public void UpdateValues() {
-            RaisePropertyChanged(nameof(Temperature));
-            RaisePropertyChanged(nameof(CoolerPower));
-            RaisePropertyChanged(nameof(CoolerOn));
-            RaisePropertyChanged(nameof(TemperatureSetPoint));
-            RaisePropertyChanged(nameof(CameraState));
-        }
-
+        
         private CameraControl GetControl(ASICameraDll.ASI_CONTROL_TYPE controlType) {
             return Controls.FirstOrDefault(x => x.ControlType == controlType);
         }

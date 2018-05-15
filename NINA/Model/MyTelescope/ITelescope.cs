@@ -52,8 +52,6 @@ namespace NINA.Model.MyTelescope {
 
         void Unpark();
 
-        void UpdateValues();
-
         void SendCommandString(string command);
     }
 }

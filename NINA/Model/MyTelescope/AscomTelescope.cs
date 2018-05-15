@@ -1070,17 +1070,6 @@ namespace NINA.Model.MyTelescope {
             }
         }
 
-        public void UpdateValues() {
-            RaisePropertyChanged(nameof(AltitudeString));
-            RaisePropertyChanged(nameof(AzimuthString));
-            RaisePropertyChanged(nameof(DeclinationString));
-            RaisePropertyChanged(nameof(RightAscensionString));
-            RaisePropertyChanged(nameof(SiderealTimeString));
-            RaisePropertyChanged(nameof(HoursToMeridianString));
-            RaisePropertyChanged(nameof(AtPark));
-            RaisePropertyChanged(nameof(Tracking));
-        }
-
         public void Dispose() {
             _telescope.Dispose();
         }

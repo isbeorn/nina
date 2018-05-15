@@ -983,14 +983,6 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void UpdateValues() {
-            RaisePropertyChanged(nameof(Temperature));
-            RaisePropertyChanged(nameof(FullWellCapacity));
-            RaisePropertyChanged(nameof(HeatSinkTemperature));
-            RaisePropertyChanged(nameof(CoolerPower));
-            RaisePropertyChanged(nameof(IsPulseGuiding));
-        }
-
         public void SetBinning(short x, short y) {
             BinX = x;
             BinY = y;

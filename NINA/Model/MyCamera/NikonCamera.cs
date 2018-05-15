@@ -747,9 +747,6 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void UpdateValues() {
-        }
-
         public async Task<bool> Connect(CancellationToken token) {
             return await Task.Run(() => {
                 var connected = false;

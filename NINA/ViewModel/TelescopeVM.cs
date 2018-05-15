@@ -36,6 +36,12 @@ namespace NINA.ViewModel {
             StopMoveCommand = new RelayCommand(StopMove);
             StopSlewCommand = new RelayCommand(StopSlew);
 
+            updateTimer = new DeviceUpdateTimer(
+                GetTelescopeValues,
+                UpdateTelescopeValues,
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+            );
+
             Mediator.Instance.RegisterRequest(
                 new SetTelescopeTrackingMessageHandle((SetTelescopeTrackingMessage msg) => {
                     if (Telescope?.Connected == true) {
@@ -89,12 +95,6 @@ namespace NINA.ViewModel {
             TelescopeChooserVM.GetEquipment();
         }
 
-        private void UpdateTelescope_Tick(object sender, EventArgs e) {
-            if (Telescope?.Connected == true) {
-                Telescope.UpdateValues();
-            }
-        }
-
         private async Task<bool> ParkTelescope() {
             return await Task.Run<bool>(() => { Telescope.Park(); return true; });
         }
@@ -138,7 +138,7 @@ namespace NINA.ViewModel {
             await ss.WaitAsync();
             try {
                 Disconnect();
-                _cancelUpdateTelescopeValues?.Cancel();
+                updateTimer?.Stop();
 
                 if (TelescopeChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.TelescopeSettings.Id = TelescopeChooserVM.SelectedDevice.Id;
@@ -168,9 +168,8 @@ namespace NINA.ViewModel {
                                 }
                             }
 
-                            _updateTelescopeValuesProgress = new Progress<Dictionary<string, object>>(UpdateTelescopeValues);
-                            _cancelUpdateTelescopeValues = new CancellationTokenSource();
-                            _updateTelescopeValuesTask = Task.Run(async () => await GetTelescopeValues(_updateTelescopeValuesProgress, _cancelUpdateTelescopeValues.Token));
+                            updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
+                            updateTimer.Start();
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
@@ -309,9 +308,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private IProgress<Dictionary<string, object>> _updateTelescopeValuesProgress;
-        private CancellationTokenSource _cancelUpdateTelescopeValues;
-        private Task _updateTelescopeValuesTask;
+        DeviceUpdateTimer updateTimer;
 
         private void UpdateTelescopeValues(Dictionary<string, object> telescopeValues) {
             object o = null;
@@ -343,41 +340,21 @@ namespace NINA.ViewModel {
             Tracking = (bool)(o ?? false);
         }
 
-        private async Task GetTelescopeValues(IProgress<Dictionary<string, object>> progress, CancellationToken token) {
+        private Dictionary<string,object> GetTelescopeValues() {
             Dictionary<string, object> telescopeValues = new Dictionary<string, object>();
-            try {
-                do {
-                    token.ThrowIfCancellationRequested();
+            
+            telescopeValues.Add(nameof(Connected), _telescope?.Connected ?? false);
+            telescopeValues.Add(nameof(AtPark), _telescope?.AtPark ?? false);
+            telescopeValues.Add(nameof(Tracking), _telescope?.Tracking ?? false);
 
-                    var sw = Stopwatch.StartNew();
+            telescopeValues.Add(nameof(AltitudeString), _telescope?.AltitudeString ?? string.Empty);
+            telescopeValues.Add(nameof(AzimuthString), _telescope?.AzimuthString ?? string.Empty);
+            telescopeValues.Add(nameof(DeclinationString), _telescope?.DeclinationString ?? string.Empty);
+            telescopeValues.Add(nameof(RightAscensionString), _telescope?.RightAscensionString ?? string.Empty);
+            telescopeValues.Add(nameof(SiderealTimeString), _telescope?.SiderealTimeString ?? string.Empty);
+            telescopeValues.Add(nameof(HoursToMeridianString), _telescope?.HoursToMeridianString ?? string.Empty);
 
-                    telescopeValues.Clear();
-                    telescopeValues.Add(nameof(Connected), _telescope?.Connected ?? false);
-                    telescopeValues.Add(nameof(AtPark), _telescope?.AtPark ?? false);
-                    telescopeValues.Add(nameof(Tracking), _telescope?.Tracking ?? false);
-
-                    telescopeValues.Add(nameof(AltitudeString), _telescope?.AltitudeString ?? string.Empty);
-                    telescopeValues.Add(nameof(AzimuthString), _telescope?.AzimuthString ?? string.Empty);
-                    telescopeValues.Add(nameof(DeclinationString), _telescope?.DeclinationString ?? string.Empty);
-                    telescopeValues.Add(nameof(RightAscensionString), _telescope?.RightAscensionString ?? string.Empty);
-                    telescopeValues.Add(nameof(SiderealTimeString), _telescope?.SiderealTimeString ?? string.Empty);
-                    telescopeValues.Add(nameof(HoursToMeridianString), _telescope?.HoursToMeridianString ?? string.Empty);
-
-                    progress.Report(telescopeValues);
-
-                    token.ThrowIfCancellationRequested();
-                    await Utility.Utility.Delay(
-                        TimeSpan.FromSeconds(
-                            Math.Max(0.5, profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval - sw.Elapsed.TotalSeconds)
-                        ), token
-                    );
-                } while (Connected == true);
-            } catch (OperationCanceledException) {
-            } finally {
-                telescopeValues.Clear();
-                telescopeValues.Add(nameof(Connected), false);
-                progress.Report(telescopeValues);
-            }
+            return telescopeValues;
         }
 
         private void CancelChooseTelescope(object o) {
@@ -394,7 +371,7 @@ namespace NINA.ViewModel {
         }
 
         public void Disconnect() {
-            _cancelUpdateTelescopeValues?.Cancel();
+            updateTimer?.Stop();
             Telescope?.Disconnect();
             Telescope = null;
         }
