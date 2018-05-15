@@ -658,4 +658,8 @@ Calculated HFR: {2}
     <s:String x:Key="LblAutoFocusAfterTemperatureChange">After temperature change</s:String>
     <s:String x:Key="LblAfter">After</s:String>
     <s:String x:Key="LblExposures">Exposures</s:String>
+    <s:String x:Key="LblCheckMeridianFlip">Check Meridian Flip</s:String>
+    <s:String x:Key="LblPrepareExposure">Prepare Exposure</s:String>
+    <s:String x:Key="LblPaused">Paused</s:String>
+    <s:String x:Key="LblResuming">Resuming</s:String>
 </ResourceDictionary>

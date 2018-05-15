@@ -251,11 +251,14 @@ namespace NINA.ViewModel {
 
                         //Check if autofocus should be done
                         if (ShouldAutoFocus(seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
+                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocus"] });
                             await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
                             lastAutoFocusTime = DateTime.UtcNow;
                             lastAutoFocusTemperature = _currentTemperature;
+                            progress.Report(new ApplicationStatus() { Status = string.Empty });
                         }
 
+                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPrepareExposure"] });
                         await Mediator.Instance.RequestAsync(
                             new CapturePrepareAndSaveImageMessage() {
                                 Sequence = seq,
@@ -265,6 +268,7 @@ namespace NINA.ViewModel {
                                 Token = ct
                             }
                         );
+                        progress.Report(new ApplicationStatus() { Status = string.Empty });
 
                         seqDuration.Stop();
 
@@ -273,9 +277,9 @@ namespace NINA.ViewModel {
                         if (pt.IsPaused) {
                             Sequence.IsRunning = false;
                             semaphoreSlim.Release();
-                            progress.Report(new ApplicationStatus() { Status = "Paused" });
+                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPaused"] });
                             await pt.WaitWhilePausedAsync(ct);
-                            progress.Report(new ApplicationStatus() { Status = "Resume sequence" });
+                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblResuming"] });
                             await semaphoreSlim.WaitAsync(ct);
                             Sequence.IsRunning = true;
                         }
@@ -338,8 +342,9 @@ namespace NINA.ViewModel {
         /// <param name="progress">   progress reporter</param>
         /// <returns></returns>
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            progress.Report(new ApplicationStatus() { Status = "Check Meridian Flip" });
-            await Mediator.Instance.RequestAsync(new CheckMeridianFlipMessage() { Sequence = seq, Token = token }); ;
+            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCheckMeridianFlip"] });
+            await Mediator.Instance.RequestAsync(new CheckMeridianFlipMessage() { Sequence = seq, Token = token });
+            progress.Report(new ApplicationStatus() { Status = string.Empty });
         }
 
         private bool CheckPreconditions() {
