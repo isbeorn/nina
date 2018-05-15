@@ -49,19 +49,18 @@ namespace NINA.ViewModel {
             dialog.Filter = "XML documents|*.xml";
 
             if (dialog.ShowDialog() == true) {
-
-                using (var s = new FileStream(dialog.FileName, FileMode.Open)) { 
+                using (var s = new FileStream(dialog.FileName, FileMode.Open)) {
                     //var s = System.Xml.XmlReader.Create(dialog.FileName);
                     //var listXml = XElement.Load(path);
 
                     //System.IO.StringReader reader = new System.IO.StringReader(listXml.ToString());
 
                     var l = CaptureSequenceList.Load(
-                        s, 
-                        profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters, 
-                        profileService.ActiveProfile.AstrometrySettings.Latitude, 
+                        s,
+                        profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
+                        profileService.ActiveProfile.AstrometrySettings.Latitude,
                         profileService.ActiveProfile.AstrometrySettings.Longitude
-                    );                    
+                    );
                     Sequence = l;
                 }
             }
@@ -117,7 +116,7 @@ namespace NINA.ViewModel {
                 _status = value;
                 _status.Source = Title;
 
-                if(Sequence.ActiveSequence != null) {
+                if (Sequence.ActiveSequence != null) {
                     _status.Status2 = Locale.Loc.Instance["LblSequence"];
                     _status.ProgressType2 = ApplicationStatus.StatusProgressType.ValueOfMaxValue;
                     _status.Progress2 = Sequence.ActiveSequenceIndex;
@@ -187,50 +186,54 @@ namespace NINA.ViewModel {
         private double _currentTemperature = double.NaN;
 
         private async Task<bool> StartSequence(IProgress<ApplicationStatus> progress) {
-            if (Sequence.Count <= 0) {
-                return false;
-            }
-            _actualDownloadTimes.Clear();
-            _canceltoken = new CancellationTokenSource();
-            _pauseTokenSource = new PauseTokenSource();
-            RaisePropertyChanged(nameof(IsPaused));
+            try {
+                if (Sequence.Count <= 0) {
+                    return false;
+                }
+                _actualDownloadTimes.Clear();
+                _canceltoken = new CancellationTokenSource();
+                _pauseTokenSource = new PauseTokenSource();
+                RaisePropertyChanged(nameof(IsPaused));
 
-            CalculateETA();
+                CalculateETA();
 
-            if (Sequence.SlewToTarget) {
-                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSlewToTarget"] });
-                await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = Sequence.Coordinates, Token = _canceltoken.Token });
-                if (Sequence.CenterTarget) {
-                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
-                    var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });
-                    if (result == null || !result.Success) {
-                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlatesolveFailed"] });
-                        return false;
+                if (Sequence.SlewToTarget) {
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSlewToTarget"] });
+                    await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = Sequence.Coordinates, Token = _canceltoken.Token });
+                    if (Sequence.CenterTarget) {
+                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
+                        var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });
+                        if (result == null || !result.Success) {
+                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlatesolveFailed"] });
+                            return false;
+                        }
                     }
                 }
-            }
 
-            /* delay sequence start by given amount */
-            var delay = Sequence.Delay;
-            while (delay > 0) {
-                await Task.Delay(TimeSpan.FromSeconds(1), _canceltoken.Token);
-                delay--;
-                progress.Report(new ApplicationStatus() { Status = string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay) });
-            }
-
-            if (Sequence.AutoFocusOnStart) {
-                await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = Sequence.Items[0].FilterType, Token = _canceltoken.Token, Progress = progress });
-            }
-
-            if (Sequence.StartGuiding) {
-                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartGuiding"] });
-                var guiderStarted = await Mediator.Instance.RequestAsync(new StartGuiderMessage() { Token = _canceltoken.Token });
-                if (!guiderStarted) {
-                    Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
+                /* delay sequence start by given amount */
+                var delay = Sequence.Delay;
+                while (delay > 0) {
+                    await Task.Delay(TimeSpan.FromSeconds(1), _canceltoken.Token);
+                    delay--;
+                    progress.Report(new ApplicationStatus() { Status = string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay) });
                 }
-            }
 
-            return await ProcessSequence(_canceltoken.Token, _pauseTokenSource.Token, progress);
+                if (Sequence.AutoFocusOnStart) {
+                    await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = Sequence.Items[0].FilterType, Token = _canceltoken.Token, Progress = progress });
+                }
+
+                if (Sequence.StartGuiding) {
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartGuiding"] });
+                    var guiderStarted = await Mediator.Instance.RequestAsync(new StartGuiderMessage() { Token = _canceltoken.Token });
+                    if (!guiderStarted) {
+                        Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
+                    }
+                }
+
+                return await ProcessSequence(_canceltoken.Token, _pauseTokenSource.Token, progress);
+            } finally {
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
+            }
         }
 
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
@@ -433,12 +436,12 @@ namespace NINA.ViewModel {
                     if (File.Exists(profileService.ActiveProfile.SequenceSettings.TemplatePath)) {
                         using (var s = new FileStream(profileService.ActiveProfile.SequenceSettings.TemplatePath, FileMode.Open)) {
                             _sequence = CaptureSequenceList.Load(
-                                s, 
+                                s,
                                 profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
                                 profileService.ActiveProfile.AstrometrySettings.Latitude,
                                 profileService.ActiveProfile.AstrometrySettings.Longitude
-                            );                            
-                        }   
+                            );
+                        }
                     }
                     if (_sequence == null) {
                         /* Fallback when no template is set or load failed */
