@@ -28,6 +28,7 @@ namespace NINA.Utility.Profile {
         }
 
         public static string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
+        public static string PROFILETEMPFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings.bkp");
 
         public Profiles Profiles { get; set; }
 
@@ -47,12 +48,25 @@ namespace NINA.Utility.Profile {
             try {
                 var serializer = new DataContractSerializer(typeof(Profiles));
 
+                //Copy profile to temp file, to be able to roll back in case of error
+                if(File.Exists(PROFILEFILEPATH)) {
+                    File.Copy(PROFILEFILEPATH, PROFILETEMPFILEPATH, true);
+                }
+
                 using (FileStream writer = new FileStream(PROFILEFILEPATH, FileMode.Create)) {
                     serializer.WriteObject(writer, Profiles);
                 }
+
+                //Delete Temp file
+                File.Delete(PROFILETEMPFILEPATH);
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.Notification.ShowError(ex.Message);
+
+                if(File.Exists(PROFILETEMPFILEPATH)) {
+                    //Restore temp file
+                    File.Copy(PROFILETEMPFILEPATH, PROFILEFILEPATH, true);
+                }
             }
         }
 
@@ -63,10 +77,14 @@ namespace NINA.Utility.Profile {
         }
 
         private void Load() {
+            if(File.Exists(PROFILETEMPFILEPATH)) {
+                File.Copy(PROFILETEMPFILEPATH, PROFILEFILEPATH, true);
+            }
+
             if (File.Exists(PROFILEFILEPATH)) {
                 try {
                     var serializer = new DataContractSerializer(typeof(Profiles));
-
+                                        
                     using (FileStream reader = new FileStream(PROFILEFILEPATH, FileMode.Open)) {
                         var obj = serializer.ReadObject(reader);
 
@@ -76,6 +94,10 @@ namespace NINA.Utility.Profile {
                         }
                         Profiles.SelectActiveProfile();
                     }
+                } catch (UnauthorizedAccessException ex) {
+                    Logger.Error(ex);
+                    System.Windows.MessageBox.Show("Unable to open profile file. " + ex.Message);
+                    System.Windows.Application.Current.Shutdown();
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     System.Windows.MessageBox.Show("Unable to load profile file. Please restart the application \n" + ex.Message);
@@ -113,10 +135,9 @@ namespace NINA.Utility.Profile {
 
         private void MigrateSettings() {
             Profiles = new Profiles();
-            Profile p;
             Object updateSettings = Properties.Settings.Default.GetPreviousVersion("UpdateSettings");
             if (updateSettings != null) {
-                p = new Profile("Migrated");
+                var p = new Profile("Migrated");
                 Profiles.Add(p);
 
                 p.ColorSchemaSettings.ColorSchemaName = Properties.Settings.Default.ColorSchemaType;
@@ -219,11 +240,12 @@ namespace NINA.Utility.Profile {
                 p.WeatherDataSettings.WeatherDataType = (WeatherDataEnum)Properties.Settings.Default.WeatherDataType;
                 p.WeatherDataSettings.OpenWeatherMapAPIKey = Properties.Settings.Default.OpenWeatherMapAPIKey;
                 p.WeatherDataSettings.OpenWeatherMapUrl = Properties.Settings.Default.OpenWeatherMapUrl;
+
+                SelectProfile(p.Id);
             } else {
                 LoadDefaultProfile();
             }
 
-            SelectProfile(p.Id);
         }
     }
 }
