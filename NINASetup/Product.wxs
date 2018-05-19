@@ -1,178 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"><?define NINA_TargetDir=$(var.NINA.TargetDir)?><?define nikoncswrapper_TargetDir=$(var.nikoncswrapper.TargetDir)?><?define NINACustomControlLibrary_TargetDir=$(var.NINACustomControlLibrary.TargetDir)?>
-	<Product 
-      Id="B27345D7-0763-474B-874C-D3603B919084" 
-      Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" 
-      Language="1033" 
-      Version="1.5.2.0" 
-      Manufacturer="NINA" 
-      UpgradeCode="9518fd2c-322c-4b16-9078-7a094c4385f5">
-		<Package 
-        InstallerVersion="200" 
-        Compressed="yes"
-        InstallScope="perMachine" />
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define NINA_TargetDir=$(var.NINA.TargetDir)?>
+  <?define nikoncswrapper_TargetDir=$(var.nikoncswrapper.TargetDir)?>
+  <?define NINACustomControlLibrary_TargetDir=$(var.NINACustomControlLibrary.TargetDir)?>
+  <Product Id="B27345D7-0763-474B-874C-D3603B919084" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="1.5.2.0" Manufacturer="NINA" UpgradeCode="9518fd2c-322c-4b16-9078-7a094c4385f5">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <!--Todo does not find file-->
-    <!--<Icon Id="observatory.ico" SourceFile="${var.NINA.ProjectDir}\observatory.ico"/>-->
+    <Icon Id="observatory.ico" SourceFile="observatory.ico" />
     <Property Id="ARPPRODUCTICON" Value="observatory.ico" />
 
-    <WixVariable Id="WixUIDialogBmp" Value="Images\ninasplash.png"/>
+    <WixVariable Id="WixUIBannerBmp" Value="Images\WixUIBannerBmp.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Images\WixUIDialogBmp.bmp" />
 
-    <WixVariable Id="WixUILicenseRtf" Value="$(var.NINA.ProjectDir)\license.rtf"/>
-    
-    <UIRef Id="WixUI_InstallDir"/>
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.NINA.ProjectDir)\license.rtf" />
+
+    <UIRef Id="WixUI_InstallDir" />
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
-    
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate EmbedCab="yes" />
 
-		<Feature Id="ProductFeature" Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Level="1">
-			<ComponentGroupRef Id="ProductComponents" />
-      <ComponentRef Id="ApplicationShortcut"/>
-      <ComponentRef Id="ApplicationShortcutDesktop"/>
-      
-			<ComponentGroupRef Id="Documentation_images_files" />
-			<ComponentGroupRef Id="Documentation_files" />
-			<ComponentGroupRef Id="External_x64_ASI_files" />
-			<ComponentGroupRef Id="External_x64_Atik_files" />
-			<ComponentGroupRef Id="External_x64_FreeImage_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0001_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0002_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0003_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0005_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0004_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0006_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0008_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0007_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0009_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0010_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0011_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0012_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0013_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0014_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0015_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0016_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0017_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0018_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0019_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0020_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0021_files" />
-			<ComponentGroupRef Id="External_x64_Nikon_Type0022_files" />
-			<ComponentGroupRef Id="External_x86_ASI_files" />
-			<ComponentGroupRef Id="External_x86_Atik_files" />
-			<ComponentGroupRef Id="External_x86_Canon_files" />
-			<ComponentGroupRef Id="External_x86_FreeImage_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0001_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0002_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0003_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0004_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0005_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0006_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0008_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0009_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0007_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0010_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0011_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0012_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0013_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0014_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0015_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0016_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0017_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0018_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0019_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0020_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0021_files" />
-			<ComponentGroupRef Id="External_x86_Nikon_Type0022_files" />
-			<ComponentGroupRef Id="Utility_ColorSchema_files" />
-			<ComponentGroupRef Id="Utility_DCRaw_files" />
-			<ComponentGroupRef Id="External_x64_Canon_files" />
-		</Feature>
-	</Product>
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
 
-	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy">
-				  <Directory Id="Documentation" Name="Documentation">
-				    <Directory Id="Documentation_images" Name="images" />
-				  </Directory>
-				  <Directory Id="External" Name="External">
-				    <Directory Id="External_x64" Name="x64">
-				      <Directory Id="External_x64_ASI" Name="ASI" />
-				      <Directory Id="External_x64_Atik" Name="Atik" />
-				      <Directory Id="External_x64_Canon" Name="Canon" />
-				      <Directory Id="External_x64_FreeImage" Name="FreeImage" />
-				      <Directory Id="External_x64_Nikon" Name="Nikon">
-				        <Directory Id="External_x64_Nikon_Type0001" Name="Type0001" />
-				        <Directory Id="External_x64_Nikon_Type0002" Name="Type0002" />
-				        <Directory Id="External_x64_Nikon_Type0022" Name="Type0022" />
-				        <Directory Id="External_x64_Nikon_Type0021" Name="Type0021" />
-				        <Directory Id="External_x64_Nikon_Type0020" Name="Type0020" />
-				        <Directory Id="External_x64_Nikon_Type0019" Name="Type0019" />
-				        <Directory Id="External_x64_Nikon_Type0018" Name="Type0018" />
-				        <Directory Id="External_x64_Nikon_Type0017" Name="Type0017" />
-				        <Directory Id="External_x64_Nikon_Type0015" Name="Type0015" />
-				        <Directory Id="External_x64_Nikon_Type0016" Name="Type0016" />
-				        <Directory Id="External_x64_Nikon_Type0014" Name="Type0014" />
-				        <Directory Id="External_x64_Nikon_Type0013" Name="Type0013" />
-				        <Directory Id="External_x64_Nikon_Type0012" Name="Type0012" />
-				        <Directory Id="External_x64_Nikon_Type0011" Name="Type0011" />
-				        <Directory Id="External_x64_Nikon_Type0009" Name="Type0009" />
-				        <Directory Id="External_x64_Nikon_Type0010" Name="Type0010" />
-				        <Directory Id="External_x64_Nikon_Type0008" Name="Type0008" />
-				        <Directory Id="External_x64_Nikon_Type0007" Name="Type0007" />
-				        <Directory Id="External_x64_Nikon_Type0006" Name="Type0006" />
-				        <Directory Id="External_x64_Nikon_Type0005" Name="Type0005" />
-				        <Directory Id="External_x64_Nikon_Type0004" Name="Type0004" />
-				        <Directory Id="External_x64_Nikon_Type0003" Name="Type0003" />
-				      </Directory>
-				    </Directory>
-				    <Directory Id="External_x86" Name="x86">
-				      <Directory Id="External_x86_Nikon" Name="Nikon">
-				        <Directory Id="External_x86_Nikon_Type0022" Name="Type0022" />
-				        <Directory Id="External_x86_Nikon_Type0021" Name="Type0021" />
-				        <Directory Id="External_x86_Nikon_Type0020" Name="Type0020" />
-				        <Directory Id="External_x86_Nikon_Type0019" Name="Type0019" />
-				        <Directory Id="External_x86_Nikon_Type0018" Name="Type0018" />
-				        <Directory Id="External_x86_Nikon_Type0017" Name="Type0017" />
-				        <Directory Id="External_x86_Nikon_Type0016" Name="Type0016" />
-				        <Directory Id="External_x86_Nikon_Type0015" Name="Type0015" />
-				        <Directory Id="External_x86_Nikon_Type0014" Name="Type0014" />
-				        <Directory Id="External_x86_Nikon_Type0013" Name="Type0013" />
-				        <Directory Id="External_x86_Nikon_Type0012" Name="Type0012" />
-				        <Directory Id="External_x86_Nikon_Type0011" Name="Type0011" />
-				        <Directory Id="External_x86_Nikon_Type0010" Name="Type0010" />
-				        <Directory Id="External_x86_Nikon_Type0009" Name="Type0009" />
-				        <Directory Id="External_x86_Nikon_Type0008" Name="Type0008" />
-				        <Directory Id="External_x86_Nikon_Type0007" Name="Type0007" />
-				        <Directory Id="External_x86_Nikon_Type0006" Name="Type0006" />
-				        <Directory Id="External_x86_Nikon_Type0004" Name="Type0004" />
-				        <Directory Id="External_x86_Nikon_Type0005" Name="Type0005" />
-				        <Directory Id="External_x86_Nikon_Type0003" Name="Type0003" />
-				        <Directory Id="External_x86_Nikon_Type0002" Name="Type0002" />
-				        <Directory Id="External_x86_Nikon_Type0001" Name="Type0001" />
-				      </Directory>
-				      <Directory Id="External_x86_FreeImage" Name="FreeImage" />
-				      <Directory Id="External_x86_Canon" Name="Canon" />
-				      <Directory Id="External_x86_Atik" Name="Atik" />
-				      <Directory Id="External_x86_ASI" Name="ASI" />
-				    </Directory>
-				  </Directory>
-				  <Directory Id="Utility" Name="Utility">
-				    <Directory Id="Utility_DCRaw" Name="DCRaw" />
-				    <Directory Id="Utility_ColorSchema" Name="ColorSchema" />
-				  </Directory>
-          <Directory Id="x86_dir" Name="x86" />
-          <Directory Id="x64_dir" Name="x64" />
-				</Directory>
-			</Directory>
+    <Feature Id="ProductFeature" Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
+
+      <ComponentGroupRef Id="Documentation_images_files" />
+      <ComponentGroupRef Id="Documentation_files" />
+      <ComponentGroupRef Id="External_x64_ASI_files" />
+      <ComponentGroupRef Id="External_x64_Atik_files" />
+      <ComponentGroupRef Id="External_x64_FreeImage_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0001_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0002_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0003_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0005_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0004_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0006_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0008_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0007_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0009_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0010_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0011_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0012_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0013_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0014_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0015_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0016_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0017_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0018_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0019_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0020_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0021_files" />
+      <ComponentGroupRef Id="External_x64_Nikon_Type0022_files" />
+      <ComponentGroupRef Id="External_x86_ASI_files" />
+      <ComponentGroupRef Id="External_x86_Atik_files" />
+      <ComponentGroupRef Id="External_x86_Canon_files" />
+      <ComponentGroupRef Id="External_x86_FreeImage_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0001_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0002_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0003_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0004_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0005_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0006_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0008_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0009_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0007_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0010_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0011_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0012_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0013_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0014_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0015_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0016_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0017_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0018_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0019_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0020_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0021_files" />
+      <ComponentGroupRef Id="External_x86_Nikon_Type0022_files" />
+      <ComponentGroupRef Id="Utility_ColorSchema_files" />
+      <ComponentGroupRef Id="Utility_DCRaw_files" />
+      <ComponentGroupRef Id="External_x64_Canon_files" />
+      <ComponentGroupRef Id="External_x86_SQLite_files" />
+      <ComponentGroupRef Id="External_x64_SQLite_files" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy">
+          <Directory Id="Documentation" Name="Documentation">
+            <Directory Id="Documentation_images" Name="images" />
+          </Directory>
+          <Directory Id="External" Name="External">
+            <Directory Id="External_x64" Name="x64">
+              <Directory Id="External_x64_ASI" Name="ASI" />
+              <Directory Id="External_x64_Atik" Name="Atik" />
+              <Directory Id="External_x64_Canon" Name="Canon" />
+              <Directory Id="External_x64_FreeImage" Name="FreeImage" />
+              <Directory Id="External_x64_Nikon" Name="Nikon">
+                <Directory Id="External_x64_Nikon_Type0001" Name="Type0001" />
+                <Directory Id="External_x64_Nikon_Type0002" Name="Type0002" />
+                <Directory Id="External_x64_Nikon_Type0022" Name="Type0022" />
+                <Directory Id="External_x64_Nikon_Type0021" Name="Type0021" />
+                <Directory Id="External_x64_Nikon_Type0020" Name="Type0020" />
+                <Directory Id="External_x64_Nikon_Type0019" Name="Type0019" />
+                <Directory Id="External_x64_Nikon_Type0018" Name="Type0018" />
+                <Directory Id="External_x64_Nikon_Type0017" Name="Type0017" />
+                <Directory Id="External_x64_Nikon_Type0015" Name="Type0015" />
+                <Directory Id="External_x64_Nikon_Type0016" Name="Type0016" />
+                <Directory Id="External_x64_Nikon_Type0014" Name="Type0014" />
+                <Directory Id="External_x64_Nikon_Type0013" Name="Type0013" />
+                <Directory Id="External_x64_Nikon_Type0012" Name="Type0012" />
+                <Directory Id="External_x64_Nikon_Type0011" Name="Type0011" />
+                <Directory Id="External_x64_Nikon_Type0009" Name="Type0009" />
+                <Directory Id="External_x64_Nikon_Type0010" Name="Type0010" />
+                <Directory Id="External_x64_Nikon_Type0008" Name="Type0008" />
+                <Directory Id="External_x64_Nikon_Type0007" Name="Type0007" />
+                <Directory Id="External_x64_Nikon_Type0006" Name="Type0006" />
+                <Directory Id="External_x64_Nikon_Type0005" Name="Type0005" />
+                <Directory Id="External_x64_Nikon_Type0004" Name="Type0004" />
+                <Directory Id="External_x64_Nikon_Type0003" Name="Type0003" />
+              </Directory>
+              <Directory Id="External_x64_SQLite" Name="SQLite" />
+            </Directory>
+            <Directory Id="External_x86" Name="x86">
+              <Directory Id="External_x86_Nikon" Name="Nikon">
+                <Directory Id="External_x86_Nikon_Type0022" Name="Type0022" />
+                <Directory Id="External_x86_Nikon_Type0021" Name="Type0021" />
+                <Directory Id="External_x86_Nikon_Type0020" Name="Type0020" />
+                <Directory Id="External_x86_Nikon_Type0019" Name="Type0019" />
+                <Directory Id="External_x86_Nikon_Type0018" Name="Type0018" />
+                <Directory Id="External_x86_Nikon_Type0017" Name="Type0017" />
+                <Directory Id="External_x86_Nikon_Type0016" Name="Type0016" />
+                <Directory Id="External_x86_Nikon_Type0015" Name="Type0015" />
+                <Directory Id="External_x86_Nikon_Type0014" Name="Type0014" />
+                <Directory Id="External_x86_Nikon_Type0013" Name="Type0013" />
+                <Directory Id="External_x86_Nikon_Type0012" Name="Type0012" />
+                <Directory Id="External_x86_Nikon_Type0011" Name="Type0011" />
+                <Directory Id="External_x86_Nikon_Type0010" Name="Type0010" />
+                <Directory Id="External_x86_Nikon_Type0009" Name="Type0009" />
+                <Directory Id="External_x86_Nikon_Type0008" Name="Type0008" />
+                <Directory Id="External_x86_Nikon_Type0007" Name="Type0007" />
+                <Directory Id="External_x86_Nikon_Type0006" Name="Type0006" />
+                <Directory Id="External_x86_Nikon_Type0004" Name="Type0004" />
+                <Directory Id="External_x86_Nikon_Type0005" Name="Type0005" />
+                <Directory Id="External_x86_Nikon_Type0003" Name="Type0003" />
+                <Directory Id="External_x86_Nikon_Type0002" Name="Type0002" />
+                <Directory Id="External_x86_Nikon_Type0001" Name="Type0001" />
+              </Directory>
+              <Directory Id="External_x86_FreeImage" Name="FreeImage" />
+              <Directory Id="External_x86_Canon" Name="Canon" />
+              <Directory Id="External_x86_Atik" Name="Atik" />
+              <Directory Id="External_x86_ASI" Name="ASI" />
+              <Directory Id="External_x86_SQLite" Name="SQLite" />
+            </Directory>
+          </Directory>
+          <Directory Id="Utility" Name="Utility">
+            <Directory Id="Utility_DCRaw" Name="DCRaw" />
+            <Directory Id="Utility_ColorSchema" Name="ColorSchema" />
+          </Directory>
+        </Directory>
+      </Directory>
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" />
       </Directory>
       <Directory Id="DesktopFolder" />
     </Directory>
-	</Fragment>
+  </Fragment>
 
   <Fragment>
     <DirectoryRef Id="ApplicationProgramsFolder">
@@ -192,306 +189,290 @@
   </Fragment>
 
   <Fragment>
-    <!--Todo doesn't create the folders or doesn't find the files?-->
-    <ComponentGroup Id="x86_files" Directory="x86">
-      <Component Id="SQLite_x86.Interop.dll" Guid="8A698414-863E-4234-8E95-C385B3F91665">
-        <File Id="SQLite_x86.Interop.dll" Name="SQLite.Interop.dll" Source="$(var.SolutionDir)packages\System.Data.SQLite.Core.1.0.108.0\build\net46\x86\SQLite.Interop.dll" />
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+      <!-- <Component Id="ProductComponent"> -->
+      <!-- TODO: Insert files, registry keys, and other resources here. -->
+      <!-- </Component> -->
+      <Component Id="LICENCE.txt" Guid="0a6ae791-4e08-46de-933a-843e8977a0f0">
+        <File Id="LICENCE.txt" Name="LICENCE.txt" Source="$(var.NINA_TargetDir)LICENCE.txt" />
+      </Component>
+      <Component Id="NINA.exe" Guid="b4545676-e377-4900-85f6-3bdc93962a45">
+        <File Id="NINA.exe" Name="NINA.exe" Source="$(var.NINA_TargetDir)NINA.exe" />
+      </Component>
+      <Component Id="NINA.exe.config" Guid="0057b8fb-16be-40f1-b598-b1ad0efbee4f">
+        <File Id="NINA.exe.config" Name="NINA.exe.config" Source="$(var.NINA_TargetDir)NINA.exe.config" />
+      </Component>
+      <Component Id="AForge.dll" Guid="706c7e79-29e6-4d22-b2a7-d5afd09dbc25">
+        <File Id="AForge.dll" Name="AForge.dll" Source="$(var.NINA_TargetDir)AForge.dll" />
+      </Component>
+      <Component Id="AForge.Imaging.dll" Guid="006eb888-f59b-4519-9b77-0232b16119e1">
+        <File Id="AForge.Imaging.dll" Name="AForge.Imaging.dll" Source="$(var.NINA_TargetDir)AForge.Imaging.dll" />
+      </Component>
+      <Component Id="CSharpFITS_v1.1.dll" Guid="f4a90435-8f39-400d-b009-e9ed6d4489ad">
+        <File Id="CSharpFITS_v1.1.dll" Name="CSharpFITS_v1.1.dll" Source="$(var.NINA_TargetDir)CSharpFITS_v1.1.dll" />
+      </Component>
+      <Component Id="AForge.Math.dll" Guid="cfd8dc8f-738d-45d8-9a0e-f4ea1f1dfb7d">
+        <File Id="AForge.Math.dll" Name="AForge.Math.dll" Source="$(var.NINA_TargetDir)AForge.Math.dll" />
+      </Component>
+      <Component Id="EntityFramework.dll" Guid="a74e801b-f1d0-4a4e-bfa2-971705dd40aa">
+        <File Id="EntityFramework.dll" Name="EntityFramework.dll" Source="$(var.NINA_TargetDir)EntityFramework.dll" />
+      </Component>
+      <Component Id="EntityFramework.SqlServer.dll" Guid="18df716e-b515-49c3-a315-23c5a943a404">
+        <File Id="EntityFramework.SqlServer.dll" Name="EntityFramework.SqlServer.dll" Source="$(var.NINA_TargetDir)EntityFramework.SqlServer.dll" />
+      </Component>
+      <Component Id="Microsoft.Expression.Interactions.dll" Guid="910f12b3-7310-493b-8ccd-0332a42f3a7c">
+        <File Id="Microsoft.Expression.Interactions.dll" Name="Microsoft.Expression.Interactions.dll" Source="$(var.NINA_TargetDir)Microsoft.Expression.Interactions.dll" />
+      </Component>
+      <Component Id="Microsoft.Threading.Tasks.dll" Guid="a09131a8-9914-48ec-b5c8-42f9813e4998">
+        <File Id="Microsoft.Threading.Tasks.dll" Name="Microsoft.Threading.Tasks.dll" Source="$(var.NINA_TargetDir)Microsoft.Threading.Tasks.dll" />
+      </Component>
+      <Component Id="Microsoft.Threading.Tasks.Extensions.Desktop.dll" Guid="21375689-8e93-4b9c-a10b-00b648375ecd">
+        <File Id="Microsoft.Threading.Tasks.Extensions.Desktop.dll" Name="Microsoft.Threading.Tasks.Extensions.Desktop.dll" Source="$(var.NINA_TargetDir)Microsoft.Threading.Tasks.Extensions.Desktop.dll" />
+      </Component>
+      <Component Id="Microsoft.Threading.Tasks.Extensions.dll" Guid="1f5fc081-8989-486e-9613-c833861332e1">
+        <File Id="Microsoft.Threading.Tasks.Extensions.dll" Name="Microsoft.Threading.Tasks.Extensions.dll" Source="$(var.NINA_TargetDir)Microsoft.Threading.Tasks.Extensions.dll" />
+      </Component>
+      <Component Id="Newtonsoft.Json.dll" Guid="d5f1d68a-daa3-46fe-af3a-db698064bb12">
+        <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.NINA_TargetDir)Newtonsoft.Json.dll" />
+      </Component>
+      <Component Id="Nito.AsyncEx.Concurrent.dll" Guid="9bbeb87e-2996-49e6-9705-60b525876a1b">
+        <File Id="Nito.AsyncEx.Concurrent.dll" Name="Nito.AsyncEx.Concurrent.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Concurrent.dll" />
+      </Component>
+      <Component Id="Nito.AsyncEx.dll" Guid="29a41e20-2489-444b-972b-43f52fab8b2f">
+        <File Id="Nito.AsyncEx.dll" Name="Nito.AsyncEx.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.dll" />
+      </Component>
+      <Component Id="Nito.AsyncEx.Enlightenment.dll" Guid="2986bb8f-59af-4b6c-85d4-f77fc993d4fb">
+        <File Id="Nito.AsyncEx.Enlightenment.dll" Name="Nito.AsyncEx.Enlightenment.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Enlightenment.dll" />
+      </Component>
+      <Component Id="OxyPlot.Wpf.dll" Guid="0da70938-063f-489f-a562-ec3c949f8484">
+        <File Id="OxyPlot.Wpf.dll" Name="OxyPlot.Wpf.dll" Source="$(var.NINA_TargetDir)OxyPlot.Wpf.dll" />
+      </Component>
+      <Component Id="OxyPlot.dll" Guid="b319b1c5-05a3-4e7f-946e-fdd424a4bd35">
+        <File Id="OxyPlot.dll" Name="OxyPlot.dll" Source="$(var.NINA_TargetDir)OxyPlot.dll" />
+      </Component>
+      <Component Id="System.Data.SQLite.dll" Guid="eb9db954-aaef-4c84-8401-91b12688b243">
+        <File Id="System.Data.SQLite.dll" Name="System.Data.SQLite.dll" Source="$(var.NINA_TargetDir)System.Data.SQLite.dll" />
+      </Component>
+      <Component Id="System.Data.SQLite.EF6.dll" Guid="d4cb4e71-0820-45de-9ce7-ae682bb70840">
+        <File Id="System.Data.SQLite.EF6.dll" Name="System.Data.SQLite.EF6.dll" Source="$(var.NINA_TargetDir)System.Data.SQLite.EF6.dll" />
+      </Component>
+      <Component Id="ToastNotifications.dll" Guid="640b6c3c-5a8d-47c8-9478-9ebbb876d2fc">
+        <File Id="ToastNotifications.dll" Name="ToastNotifications.dll" Source="$(var.NINA_TargetDir)ToastNotifications.dll" />
+      </Component>
+      <Component Id="System.Data.SQLite.Linq.dll" Guid="8c51b841-3f92-4f6e-a221-fd92f4bae9d7">
+        <File Id="System.Data.SQLite.Linq.dll" Name="System.Data.SQLite.Linq.dll" Source="$(var.NINA_TargetDir)System.Data.SQLite.Linq.dll" />
+      </Component>
+      <Component Id="System.Windows.Interactivity.dll" Guid="4ec34246-3c17-4858-96cc-fdfb840ea7ef">
+        <File Id="System.Windows.Interactivity.dll" Name="System.Windows.Interactivity.dll" Source="$(var.NINA_TargetDir)System.Windows.Interactivity.dll" />
+      </Component>
+      <Component Id="ToastNotifications.Messages.dll" Guid="74b98fb4-f2a9-44d8-8c8b-988b83bf09d4">
+        <File Id="ToastNotifications.Messages.dll" Name="ToastNotifications.Messages.dll" Source="$(var.NINA_TargetDir)ToastNotifications.Messages.dll" />
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.dll" Guid="c38bd7a3-e97a-48c6-a51b-fca2b76d5d2a">
+        <File Id="Xceed.Wpf.AvalonDock.dll" Name="Xceed.Wpf.AvalonDock.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.dll" />
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Guid="cbfe40b3-e9cf-4a2f-9556-3adbf62da0fc">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Name="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.Expression.dll" Guid="3f97e93a-3dac-4aeb-94b5-47831326cfa6">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.Expression.dll" Name="Xceed.Wpf.AvalonDock.Themes.Expression.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.Themes.Expression.dll" />
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Guid="391de18b-a586-4c09-a397-e2f01e13683c">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Name="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
+      </Component>
+      <Component Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Guid="aba4cd95-7ee0-40db-9514-aaebdc6fcdec">
+        <File Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Name="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
+      </Component>
+      <Component Id="FreeImageNET.dll" Guid="65499493-d525-4075-b136-c37e5713dd5b">
+        <File Id="FreeImageNET.dll" Name="FreeImageNET.dll" Source="$(var.NINA_TargetDir)FreeImageNET.dll" />
+      </Component>
+      <Component Id="nikoncswrapper.dll" Guid="2153f113-e26c-4195-a71e-5afcf9eba0b5">
+        <File Id="nikoncswrapper.dll" Name="nikoncswrapper.dll" Source="$(var.nikoncswrapper_TargetDir)nikoncswrapper.dll" />
+      </Component>
+      <Component Id="NINACustomControlLibrary.dll" Guid="f6c5c2f4-cd1b-4243-a976-2b3b886263b2">
+        <File Id="NINACustomControlLibrary.dll" Name="NINACustomControlLibrary.dll" Source="$(var.NINACustomControlLibrary_TargetDir)NINACustomControlLibrary.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="x64_files" Directory="x64">
-      <Component Id="SQLite_x64.Interop.dll" Guid="865F3B73-00D7-447B-9421-7F11E37A1C48">
-        <File Id="SQLite_x64.Interop.dll" Name="SQLite.Interop.dll" Source="$(var.NINA_TargetDir)x64\SQLite.Interop.dll" />
+    <ComponentGroup Id="Documentation_images_files" Directory="Documentation_images">
+      <Component Id="Documentation_images_nina_logo.png" Guid="6442988e-c67a-4438-ba88-8dc6d333f6aa">
+        <File Id="Documentation_images_nina_logo.png" Name="nina-logo.png" Source="$(var.NINA_TargetDir)Documentation\images\nina-logo.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_autofocus.png" Guid="3213b831-f2b8-480f-98d8-4d2d523f638b">
+        <File Id="Documentation_images_panel_autofocus.png" Name="panel-autofocus.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-autofocus.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_camera.png" Guid="2ff727ee-3846-44c8-adb8-e5d239144e2e">
+        <File Id="Documentation_images_panel_camera.png" Name="panel-camera.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-camera.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_customization_1.png" Guid="63006f9a-3a18-4778-ac74-41bddecfdf7a">
+        <File Id="Documentation_images_panel_customization_1.png" Name="panel-customization_1.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-customization_1.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_customization_2.png" Guid="691bab4b-e0b3-483b-bb4d-a754b2bef38d">
+        <File Id="Documentation_images_panel_customization_2.png" Name="panel-customization_2.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-customization_2.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_customization_3.png" Guid="d5341b8b-7e32-41a2-8464-40f028cd2134">
+        <File Id="Documentation_images_panel_customization_3.png" Name="panel-customization_3.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-customization_3.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_customization_4.png" Guid="4087e75e-a7bf-4240-a07e-b6765a5b283e">
+        <File Id="Documentation_images_panel_customization_4.png" Name="panel-customization_4.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-customization_4.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_filterwheel.png" Guid="6f886977-1677-4ad3-a45e-20ae72d4453b">
+        <File Id="Documentation_images_panel_filterwheel.png" Name="panel-filterwheel.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-filterwheel.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_focuser.png" Guid="48000d26-905d-4779-807c-9e3bb8039941">
+        <File Id="Documentation_images_panel_focuser.png" Name="panel-focuser.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-focuser.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_guiding.png" Guid="0788ed25-05aa-4547-8dee-ca51b4476cc4">
+        <File Id="Documentation_images_panel_guiding.png" Name="panel-guiding.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-guiding.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_hfrhistory.png" Guid="39c946b1-4e12-48e1-a54b-1945be4dd1bd">
+        <File Id="Documentation_images_panel_hfrhistory.png" Name="panel-hfrhistory.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-hfrhistory.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_image.png" Guid="1bf96364-5e0b-4cd4-9f84-2b9cda4bcfe5">
+        <File Id="Documentation_images_panel_image.png" Name="panel-image.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-image.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_imagehistory.png" Guid="e95b78d8-fcef-47f8-ba68-baacff2c5c4d">
+        <File Id="Documentation_images_panel_imagehistory.png" Name="panel-imagehistory.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-imagehistory.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_imaging.png" Guid="6eeeb68c-b3f2-4a91-b645-3457bef764a7">
+        <File Id="Documentation_images_panel_imaging.png" Name="panel-imaging.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-imaging.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_platesolving.png" Guid="74177c73-b83f-4ee6-87a3-88a7e15dc331">
+        <File Id="Documentation_images_panel_platesolving.png" Name="panel-platesolving.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-platesolving.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_polaralignment.png" Guid="9da8d957-be17-4fbb-b26c-1bf353f87306">
+        <File Id="Documentation_images_panel_polaralignment.png" Name="panel-polaralignment.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-polaralignment.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_sequence_running.png" Guid="d85d0d7e-53fc-41fb-b4d3-4887e8a2f14b">
+        <File Id="Documentation_images_panel_sequence_running.png" Name="panel-sequence-running.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-sequence-running.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_sequence.png" Guid="923ed34d-07af-41d0-8f04-2763e388edde">
+        <File Id="Documentation_images_panel_sequence.png" Name="panel-sequence.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-sequence.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_statistics.png" Guid="b6b674f4-f6a7-416f-afd9-05131c6bc7e3">
+        <File Id="Documentation_images_panel_statistics.png" Name="panel-statistics.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-statistics.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_telescope.png" Guid="3b051340-f0f8-48e0-a654-c0f76f5da2b3">
+        <File Id="Documentation_images_panel_telescope.png" Name="panel-telescope.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-telescope.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_weather.png" Guid="3af8b6a3-ce6e-4811-ac57-832b8c714210">
+        <File Id="Documentation_images_panel_weather.png" Name="panel-weather.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-weather.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_camera.png" Guid="89c0495d-c4d3-48cf-97fc-545ea6dc2cc6">
+        <File Id="Documentation_images_quickstart_camera.png" Name="quickstart-camera.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-camera.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_defocusedstarfield.png" Guid="69b4e432-7ef8-4637-8061-4058aabad364">
+        <File Id="Documentation_images_quickstart_defocusedstarfield.png" Name="quickstart-defocusedstarfield.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-defocusedstarfield.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_disablepanels.png" Guid="a9e7a39f-961f-4c97-b8dc-cdbc89ff2118">
+        <File Id="Documentation_images_quickstart_disablepanels.png" Name="quickstart-disablepanels.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-disablepanels.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_focusedstarfield.png" Guid="0cb1b00c-66d8-42e9-a631-6a6ab8f26502">
+        <File Id="Documentation_images_quickstart_focusedstarfield.png" Name="quickstart-focusedstarfield.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-focusedstarfield.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_focusing.png" Guid="26c15a31-040b-4241-ba2d-ef9a82a5ac76">
+        <File Id="Documentation_images_quickstart_focusing.png" Name="quickstart-focusing.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-focusing.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_imaging.png" Guid="8cacd339-5f37-46d8-80d2-57981287fe67">
+        <File Id="Documentation_images_quickstart_imaging.png" Name="quickstart-imaging.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-imaging.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_running_sequence.png" Guid="e489120b-ccff-44b5-9c5f-aa3c9b2dcb19">
+        <File Id="Documentation_images_quickstart_running_sequence.png" Name="quickstart-running-sequence.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-running-sequence.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_sequence.png" Guid="c8eb4d0d-cb0d-412b-9d89-3e0661fc4231">
+        <File Id="Documentation_images_quickstart_sequence.png" Name="quickstart-sequence.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-sequence.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_settings_equipment.png" Guid="8c679337-120f-4510-98dd-a6d649215491">
+        <File Id="Documentation_images_quickstart_settings_equipment.png" Name="quickstart-settings-equipment.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-settings-equipment.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_settings_imaging.png" Guid="c91dc0d3-1df4-45f5-8651-7020b7acb85e">
+        <File Id="Documentation_images_quickstart_settings_imaging.png" Name="quickstart-settings-imaging.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-settings-imaging.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_telescope.png" Guid="713ca114-2330-488d-a8cb-10a8ec0a8970">
+        <File Id="Documentation_images_quickstart_telescope.png" Name="quickstart-telescope.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-telescope.png" />
+      </Component>
+      <Component Id="Documentation_images_quickstart_ui_overview.png" Guid="14b20e54-22fd-45d3-940c-04820bbcbcfe">
+        <File Id="Documentation_images_quickstart_ui_overview.png" Name="quickstart-ui-overview.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-ui-overview.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_camera.png" Guid="fd14f0b2-0243-40ab-ad22-93d7a4f7fab1">
+        <File Id="Documentation_images_tab_camera.png" Name="tab-camera.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-camera.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_framingassistant.png" Guid="c72fcbcd-70ce-489b-8b65-5a4e521f1f70">
+        <File Id="Documentation_images_tab_framingassistant.png" Name="tab-framingassistant.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-framingassistant.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_filterwheelfocuser.png" Guid="18329909-39c1-4cdc-ab26-72560604e767">
+        <File Id="Documentation_images_tab_filterwheelfocuser.png" Name="tab-filterwheelfocuser.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-filterwheelfocuser.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_imaging.png" Guid="777f1c7f-603b-42e1-a772-69017e73f2f6">
+        <File Id="Documentation_images_tab_imaging.png" Name="tab-imaging.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-imaging.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_objectbrowser.png" Guid="926b8d18-8274-4d14-9ada-ca49a3cbfd2c">
+        <File Id="Documentation_images_tab_objectbrowser.png" Name="tab-objectbrowser.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-objectbrowser.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_phd2.png" Guid="a4ad8676-17f1-4be7-86b8-25925ebecac6">
+        <File Id="Documentation_images_tab_phd2.png" Name="tab-phd2.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-phd2.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_sequencing.png" Guid="c6e4dcff-79ee-469f-90ba-4a425759c2b6">
+        <File Id="Documentation_images_tab_sequencing.png" Name="tab-sequencing.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-sequencing.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_settings_equipment.png" Guid="4a2f7421-88fb-4559-821d-92470bc07fba">
+        <File Id="Documentation_images_tab_settings_equipment.png" Name="tab-settings-equipment.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-equipment.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_settings_general.png" Guid="c1d8bb03-73ba-4067-9c7c-ad93eb734a33">
+        <File Id="Documentation_images_tab_settings_general.png" Name="tab-settings-general.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-general.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_settings_imaging.png" Guid="67985e06-14d3-4e46-8910-73485dac1e3b">
+        <File Id="Documentation_images_tab_settings_imaging.png" Name="tab-settings-imaging.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-imaging.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_settings_platesolving_astrometry.png" Guid="4cf47b5f-4bce-4019-ac59-6c173b76a3e3">
+        <File Id="Documentation_images_tab_settings_platesolving_astrometry.png" Name="tab-settings-platesolving-astrometry.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-platesolving-astrometry.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_settings_platesolving_localplatesolver_indexfiles.png" Guid="80e4c10c-ce12-424d-850c-baff8348bd5e">
+        <File Id="Documentation_images_tab_settings_platesolving_localplatesolver_indexfiles.png" Name="tab-settings-platesolving-localplatesolver-indexfiles.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-platesolving-localplatesolver-indexfiles.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_settings_platesolving_localplatesolver.png" Guid="af2e4c50-9533-4ce1-9ad0-c01fb0eb3e81">
+        <File Id="Documentation_images_tab_settings_platesolving_localplatesolver.png" Name="tab-settings-platesolving-localplatesolver.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-platesolving-localplatesolver.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_settings_platesolving_platesolve2.png" Guid="b00cb66d-7bdd-4953-bf39-de8a4cdff4f5">
+        <File Id="Documentation_images_tab_settings_platesolving_platesolve2.png" Name="tab-settings-platesolving-platesolve2.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-platesolving-platesolve2.png" />
+      </Component>
+      <Component Id="Documentation_images_tab_telescope.png" Guid="df869bcd-59f6-4c00-b263-2a6ad8a3e288">
+        <File Id="Documentation_images_tab_telescope.png" Name="tab-telescope.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-telescope.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_image_bahtinov.png" Guid="f6063c5a-152c-443b-9a6e-9bcc01dd809d">
+        <File Id="Documentation_images_panel_image_bahtinov.png" Name="panel-image-bahtinov.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-image-bahtinov.png" />
+      </Component>
+      <Component Id="Documentation_images_panel_image_subsampling.png" Guid="270d3562-1258-45d7-9bc3-015aaaafe6ef">
+        <File Id="Documentation_images_panel_image_subsampling.png" Name="panel-image-subsampling.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-image-subsampling.png" />
+      </Component>
+      <Component Id="Documentation_images_usage_autoflip_settings.png" Guid="e9780c24-49ed-4354-a1b2-c44b60f42003">
+        <File Id="Documentation_images_usage_autoflip_settings.png" Name="usage-autoflip-settings.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-autoflip-settings.png" />
+      </Component>
+      <Component Id="Documentation_images_usage_bulbshutter_mountsnapport.png" Guid="88c9ab54-7a1e-4cbd-be75-127fb5dee7d6">
+        <File Id="Documentation_images_usage_bulbshutter_mountsnapport.png" Name="usage-bulbshutter-mountsnapport.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-bulbshutter-mountsnapport.png" />
+      </Component>
+      <Component Id="Documentation_images_usage_bulbshutter_serial.png" Guid="dbd21ace-47d5-40ca-9a2d-ab55d74450cf">
+        <File Id="Documentation_images_usage_bulbshutter_serial.png" Name="usage-bulbshutter-serial.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-bulbshutter-serial.png" />
+      </Component>
+      <Component Id="Documentation_images_usage_bulbshutter_settings.png" Guid="a7ce7649-3a0d-4461-9b1e-39eed576c71e">
+        <File Id="Documentation_images_usage_bulbshutter_settings.png" Name="usage-bulbshutter-settings.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-bulbshutter-settings.png" />
+      </Component>
+      <Component Id="Documentation_images_usage_bulbshutter_snapport.png" Guid="bd65402e-3898-4d69-b70f-429140e70fad">
+        <File Id="Documentation_images_usage_bulbshutter_snapport.png" Name="usage-bulbshutter-snapport.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-bulbshutter-snapport.png" />
+      </Component>
+      <Component Id="Documentation_images_usage_dithering_sequence.png" Guid="515333ed-1140-424d-977d-273288e1c82f">
+        <File Id="Documentation_images_usage_dithering_sequence.png" Name="usage-dithering-sequence.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-dithering-sequence.png" />
+      </Component>
+      <Component Id="Documentation_images_usage_dithering_settings_phd2.png" Guid="53aa368b-f3cb-4cf3-b461-bcde913cdb7d">
+        <File Id="Documentation_images_usage_dithering_settings_phd2.png" Name="usage-dithering-settings-phd2.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-dithering-settings-phd2.png" />
+      </Component>
+      <Component Id="Documentation_images_usage_objectbrowser_object.png" Guid="68aaa389-0df3-46db-8361-3131af86a154">
+        <File Id="Documentation_images_usage_objectbrowser_object.png" Name="usage-objectbrowser-object.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-objectbrowser-object.png" />
       </Component>
     </ComponentGroup>
   </Fragment>
-
-	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-			<!-- <Component Id="ProductComponent"> -->
-				<!-- TODO: Insert files, registry keys, and other resources here. -->
-			<!-- </Component> -->
-			<Component Id="LICENCE.txt" Guid="0a6ae791-4e08-46de-933a-843e8977a0f0">
-			  <File Id="LICENCE.txt" Name="LICENCE.txt" Source="$(var.NINA_TargetDir)LICENCE.txt" />
-			</Component>
-			<Component Id="NINA.exe" Guid="b4545676-e377-4900-85f6-3bdc93962a45">
-			  <File Id="NINA.exe" Name="NINA.exe" Source="$(var.NINA_TargetDir)NINA.exe" />
-			</Component>
-			<Component Id="NINA.exe.config" Guid="0057b8fb-16be-40f1-b598-b1ad0efbee4f">
-			  <File Id="NINA.exe.config" Name="NINA.exe.config" Source="$(var.NINA_TargetDir)NINA.exe.config" />
-			</Component>
-			<Component Id="AForge.dll" Guid="706c7e79-29e6-4d22-b2a7-d5afd09dbc25">
-			  <File Id="AForge.dll" Name="AForge.dll" Source="$(var.NINA_TargetDir)AForge.dll" />
-			</Component>
-			<Component Id="AForge.Imaging.dll" Guid="006eb888-f59b-4519-9b77-0232b16119e1">
-			  <File Id="AForge.Imaging.dll" Name="AForge.Imaging.dll" Source="$(var.NINA_TargetDir)AForge.Imaging.dll" />
-			</Component>
-			<Component Id="CSharpFITS_v1.1.dll" Guid="f4a90435-8f39-400d-b009-e9ed6d4489ad">
-			  <File Id="CSharpFITS_v1.1.dll" Name="CSharpFITS_v1.1.dll" Source="$(var.NINA_TargetDir)CSharpFITS_v1.1.dll" />
-			</Component>
-			<Component Id="AForge.Math.dll" Guid="cfd8dc8f-738d-45d8-9a0e-f4ea1f1dfb7d">
-			  <File Id="AForge.Math.dll" Name="AForge.Math.dll" Source="$(var.NINA_TargetDir)AForge.Math.dll" />
-			</Component>
-			<Component Id="EntityFramework.dll" Guid="a74e801b-f1d0-4a4e-bfa2-971705dd40aa">
-			  <File Id="EntityFramework.dll" Name="EntityFramework.dll" Source="$(var.NINA_TargetDir)EntityFramework.dll" />
-			</Component>
-			<Component Id="EntityFramework.SqlServer.dll" Guid="18df716e-b515-49c3-a315-23c5a943a404">
-			  <File Id="EntityFramework.SqlServer.dll" Name="EntityFramework.SqlServer.dll" Source="$(var.NINA_TargetDir)EntityFramework.SqlServer.dll" />
-			</Component>
-			<Component Id="Microsoft.Expression.Interactions.dll" Guid="910f12b3-7310-493b-8ccd-0332a42f3a7c">
-			  <File Id="Microsoft.Expression.Interactions.dll" Name="Microsoft.Expression.Interactions.dll" Source="$(var.NINA_TargetDir)Microsoft.Expression.Interactions.dll" />
-			</Component>
-			<Component Id="Microsoft.Threading.Tasks.dll" Guid="a09131a8-9914-48ec-b5c8-42f9813e4998">
-			  <File Id="Microsoft.Threading.Tasks.dll" Name="Microsoft.Threading.Tasks.dll" Source="$(var.NINA_TargetDir)Microsoft.Threading.Tasks.dll" />
-			</Component>
-			<Component Id="Microsoft.Threading.Tasks.Extensions.Desktop.dll" Guid="21375689-8e93-4b9c-a10b-00b648375ecd">
-			  <File Id="Microsoft.Threading.Tasks.Extensions.Desktop.dll" Name="Microsoft.Threading.Tasks.Extensions.Desktop.dll" Source="$(var.NINA_TargetDir)Microsoft.Threading.Tasks.Extensions.Desktop.dll" />
-			</Component>
-			<Component Id="Microsoft.Threading.Tasks.Extensions.dll" Guid="1f5fc081-8989-486e-9613-c833861332e1">
-			  <File Id="Microsoft.Threading.Tasks.Extensions.dll" Name="Microsoft.Threading.Tasks.Extensions.dll" Source="$(var.NINA_TargetDir)Microsoft.Threading.Tasks.Extensions.dll" />
-			</Component>
-			<Component Id="Newtonsoft.Json.dll" Guid="d5f1d68a-daa3-46fe-af3a-db698064bb12">
-			  <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.NINA_TargetDir)Newtonsoft.Json.dll" />
-			</Component>
-			<Component Id="Nito.AsyncEx.Concurrent.dll" Guid="9bbeb87e-2996-49e6-9705-60b525876a1b">
-			  <File Id="Nito.AsyncEx.Concurrent.dll" Name="Nito.AsyncEx.Concurrent.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Concurrent.dll" />
-			</Component>
-			<Component Id="Nito.AsyncEx.dll" Guid="29a41e20-2489-444b-972b-43f52fab8b2f">
-			  <File Id="Nito.AsyncEx.dll" Name="Nito.AsyncEx.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.dll" />
-			</Component>
-			<Component Id="Nito.AsyncEx.Enlightenment.dll" Guid="2986bb8f-59af-4b6c-85d4-f77fc993d4fb">
-			  <File Id="Nito.AsyncEx.Enlightenment.dll" Name="Nito.AsyncEx.Enlightenment.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Enlightenment.dll" />
-			</Component>
-			<Component Id="OxyPlot.Wpf.dll" Guid="0da70938-063f-489f-a562-ec3c949f8484">
-			  <File Id="OxyPlot.Wpf.dll" Name="OxyPlot.Wpf.dll" Source="$(var.NINA_TargetDir)OxyPlot.Wpf.dll" />
-			</Component>
-			<Component Id="OxyPlot.dll" Guid="b319b1c5-05a3-4e7f-946e-fdd424a4bd35">
-			  <File Id="OxyPlot.dll" Name="OxyPlot.dll" Source="$(var.NINA_TargetDir)OxyPlot.dll" />
-			</Component>
-			<Component Id="System.Data.SQLite.dll" Guid="eb9db954-aaef-4c84-8401-91b12688b243">
-			  <File Id="System.Data.SQLite.dll" Name="System.Data.SQLite.dll" Source="$(var.NINA_TargetDir)System.Data.SQLite.dll" />
-			</Component>
-			<Component Id="System.Data.SQLite.EF6.dll" Guid="d4cb4e71-0820-45de-9ce7-ae682bb70840">
-			  <File Id="System.Data.SQLite.EF6.dll" Name="System.Data.SQLite.EF6.dll" Source="$(var.NINA_TargetDir)System.Data.SQLite.EF6.dll" />
-			</Component>
-			<Component Id="ToastNotifications.dll" Guid="640b6c3c-5a8d-47c8-9478-9ebbb876d2fc">
-			  <File Id="ToastNotifications.dll" Name="ToastNotifications.dll" Source="$(var.NINA_TargetDir)ToastNotifications.dll" />
-			</Component>
-			<Component Id="System.Data.SQLite.Linq.dll" Guid="8c51b841-3f92-4f6e-a221-fd92f4bae9d7">
-			  <File Id="System.Data.SQLite.Linq.dll" Name="System.Data.SQLite.Linq.dll" Source="$(var.NINA_TargetDir)System.Data.SQLite.Linq.dll" />
-			</Component>
-			<Component Id="System.Windows.Interactivity.dll" Guid="4ec34246-3c17-4858-96cc-fdfb840ea7ef">
-			  <File Id="System.Windows.Interactivity.dll" Name="System.Windows.Interactivity.dll" Source="$(var.NINA_TargetDir)System.Windows.Interactivity.dll" />
-			</Component>
-			<Component Id="ToastNotifications.Messages.dll" Guid="74b98fb4-f2a9-44d8-8c8b-988b83bf09d4">
-			  <File Id="ToastNotifications.Messages.dll" Name="ToastNotifications.Messages.dll" Source="$(var.NINA_TargetDir)ToastNotifications.Messages.dll" />
-			</Component>
-			<Component Id="Xceed.Wpf.AvalonDock.dll" Guid="c38bd7a3-e97a-48c6-a51b-fca2b76d5d2a">
-			  <File Id="Xceed.Wpf.AvalonDock.dll" Name="Xceed.Wpf.AvalonDock.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.dll" />
-			</Component>
-			<Component Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Guid="cbfe40b3-e9cf-4a2f-9556-3adbf62da0fc">
-			  <File Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Name="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
-			</Component>
-			<Component Id="Xceed.Wpf.AvalonDock.Themes.Expression.dll" Guid="3f97e93a-3dac-4aeb-94b5-47831326cfa6">
-			  <File Id="Xceed.Wpf.AvalonDock.Themes.Expression.dll" Name="Xceed.Wpf.AvalonDock.Themes.Expression.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.Themes.Expression.dll" />
-			</Component>
-			<Component Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Guid="391de18b-a586-4c09-a397-e2f01e13683c">
-			  <File Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Name="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
-			</Component>
-			<Component Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Guid="aba4cd95-7ee0-40db-9514-aaebdc6fcdec">
-			  <File Id="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Name="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
-			</Component>
-			<Component Id="FreeImageNET.dll" Guid="65499493-d525-4075-b136-c37e5713dd5b">
-			  <File Id="FreeImageNET.dll" Name="FreeImageNET.dll" Source="$(var.NINA_TargetDir)FreeImageNET.dll" />
-			</Component>
-			<Component Id="nikoncswrapper.dll" Guid="2153f113-e26c-4195-a71e-5afcf9eba0b5">
-			  <File Id="nikoncswrapper.dll" Name="nikoncswrapper.dll" Source="$(var.nikoncswrapper_TargetDir)nikoncswrapper.dll" />
-			</Component>
-			<Component Id="NINACustomControlLibrary.dll" Guid="f6c5c2f4-cd1b-4243-a976-2b3b886263b2">
-			  <File Id="NINACustomControlLibrary.dll" Name="NINACustomControlLibrary.dll" Source="$(var.NINACustomControlLibrary_TargetDir)NINACustomControlLibrary.dll" />
-			</Component>
-		</ComponentGroup>
-	</Fragment>
-	<Fragment>
-	  <ComponentGroup Id="Documentation_images_files" Directory="Documentation_images">
-	    <Component Id="Documentation_images_nina_logo.png" Guid="6442988e-c67a-4438-ba88-8dc6d333f6aa">
-	      <File Id="Documentation_images_nina_logo.png" Name="nina-logo.png" Source="$(var.NINA_TargetDir)Documentation\images\nina-logo.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_autofocus.png" Guid="3213b831-f2b8-480f-98d8-4d2d523f638b">
-	      <File Id="Documentation_images_panel_autofocus.png" Name="panel-autofocus.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-autofocus.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_camera.png" Guid="2ff727ee-3846-44c8-adb8-e5d239144e2e">
-	      <File Id="Documentation_images_panel_camera.png" Name="panel-camera.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-camera.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_customization_1.png" Guid="63006f9a-3a18-4778-ac74-41bddecfdf7a">
-	      <File Id="Documentation_images_panel_customization_1.png" Name="panel-customization_1.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-customization_1.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_customization_2.png" Guid="691bab4b-e0b3-483b-bb4d-a754b2bef38d">
-	      <File Id="Documentation_images_panel_customization_2.png" Name="panel-customization_2.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-customization_2.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_customization_3.png" Guid="d5341b8b-7e32-41a2-8464-40f028cd2134">
-	      <File Id="Documentation_images_panel_customization_3.png" Name="panel-customization_3.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-customization_3.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_customization_4.png" Guid="4087e75e-a7bf-4240-a07e-b6765a5b283e">
-	      <File Id="Documentation_images_panel_customization_4.png" Name="panel-customization_4.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-customization_4.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_filterwheel.png" Guid="6f886977-1677-4ad3-a45e-20ae72d4453b">
-	      <File Id="Documentation_images_panel_filterwheel.png" Name="panel-filterwheel.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-filterwheel.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_focuser.png" Guid="48000d26-905d-4779-807c-9e3bb8039941">
-	      <File Id="Documentation_images_panel_focuser.png" Name="panel-focuser.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-focuser.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_guiding.png" Guid="0788ed25-05aa-4547-8dee-ca51b4476cc4">
-	      <File Id="Documentation_images_panel_guiding.png" Name="panel-guiding.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-guiding.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_hfrhistory.png" Guid="39c946b1-4e12-48e1-a54b-1945be4dd1bd">
-	      <File Id="Documentation_images_panel_hfrhistory.png" Name="panel-hfrhistory.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-hfrhistory.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_image.png" Guid="1bf96364-5e0b-4cd4-9f84-2b9cda4bcfe5">
-	      <File Id="Documentation_images_panel_image.png" Name="panel-image.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-image.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_imagehistory.png" Guid="e95b78d8-fcef-47f8-ba68-baacff2c5c4d">
-	      <File Id="Documentation_images_panel_imagehistory.png" Name="panel-imagehistory.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-imagehistory.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_imaging.png" Guid="6eeeb68c-b3f2-4a91-b645-3457bef764a7">
-	      <File Id="Documentation_images_panel_imaging.png" Name="panel-imaging.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-imaging.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_platesolving.png" Guid="74177c73-b83f-4ee6-87a3-88a7e15dc331">
-	      <File Id="Documentation_images_panel_platesolving.png" Name="panel-platesolving.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-platesolving.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_polaralignment.png" Guid="9da8d957-be17-4fbb-b26c-1bf353f87306">
-	      <File Id="Documentation_images_panel_polaralignment.png" Name="panel-polaralignment.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-polaralignment.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_sequence_running.png" Guid="d85d0d7e-53fc-41fb-b4d3-4887e8a2f14b">
-	      <File Id="Documentation_images_panel_sequence_running.png" Name="panel-sequence-running.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-sequence-running.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_sequence.png" Guid="923ed34d-07af-41d0-8f04-2763e388edde">
-	      <File Id="Documentation_images_panel_sequence.png" Name="panel-sequence.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-sequence.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_statistics.png" Guid="b6b674f4-f6a7-416f-afd9-05131c6bc7e3">
-	      <File Id="Documentation_images_panel_statistics.png" Name="panel-statistics.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-statistics.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_telescope.png" Guid="3b051340-f0f8-48e0-a654-c0f76f5da2b3">
-	      <File Id="Documentation_images_panel_telescope.png" Name="panel-telescope.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-telescope.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_weather.png" Guid="3af8b6a3-ce6e-4811-ac57-832b8c714210">
-	      <File Id="Documentation_images_panel_weather.png" Name="panel-weather.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-weather.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_camera.png" Guid="89c0495d-c4d3-48cf-97fc-545ea6dc2cc6">
-	      <File Id="Documentation_images_quickstart_camera.png" Name="quickstart-camera.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-camera.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_defocusedstarfield.png" Guid="69b4e432-7ef8-4637-8061-4058aabad364">
-	      <File Id="Documentation_images_quickstart_defocusedstarfield.png" Name="quickstart-defocusedstarfield.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-defocusedstarfield.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_disablepanels.png" Guid="a9e7a39f-961f-4c97-b8dc-cdbc89ff2118">
-	      <File Id="Documentation_images_quickstart_disablepanels.png" Name="quickstart-disablepanels.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-disablepanels.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_focusedstarfield.png" Guid="0cb1b00c-66d8-42e9-a631-6a6ab8f26502">
-	      <File Id="Documentation_images_quickstart_focusedstarfield.png" Name="quickstart-focusedstarfield.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-focusedstarfield.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_focusing.png" Guid="26c15a31-040b-4241-ba2d-ef9a82a5ac76">
-	      <File Id="Documentation_images_quickstart_focusing.png" Name="quickstart-focusing.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-focusing.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_imaging.png" Guid="8cacd339-5f37-46d8-80d2-57981287fe67">
-	      <File Id="Documentation_images_quickstart_imaging.png" Name="quickstart-imaging.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-imaging.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_running_sequence.png" Guid="e489120b-ccff-44b5-9c5f-aa3c9b2dcb19">
-	      <File Id="Documentation_images_quickstart_running_sequence.png" Name="quickstart-running-sequence.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-running-sequence.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_sequence.png" Guid="c8eb4d0d-cb0d-412b-9d89-3e0661fc4231">
-	      <File Id="Documentation_images_quickstart_sequence.png" Name="quickstart-sequence.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-sequence.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_settings_equipment.png" Guid="8c679337-120f-4510-98dd-a6d649215491">
-	      <File Id="Documentation_images_quickstart_settings_equipment.png" Name="quickstart-settings-equipment.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-settings-equipment.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_settings_imaging.png" Guid="c91dc0d3-1df4-45f5-8651-7020b7acb85e">
-	      <File Id="Documentation_images_quickstart_settings_imaging.png" Name="quickstart-settings-imaging.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-settings-imaging.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_telescope.png" Guid="713ca114-2330-488d-a8cb-10a8ec0a8970">
-	      <File Id="Documentation_images_quickstart_telescope.png" Name="quickstart-telescope.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-telescope.png" />
-	    </Component>
-	    <Component Id="Documentation_images_quickstart_ui_overview.png" Guid="14b20e54-22fd-45d3-940c-04820bbcbcfe">
-	      <File Id="Documentation_images_quickstart_ui_overview.png" Name="quickstart-ui-overview.png" Source="$(var.NINA_TargetDir)Documentation\images\quickstart-ui-overview.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_camera.png" Guid="fd14f0b2-0243-40ab-ad22-93d7a4f7fab1">
-	      <File Id="Documentation_images_tab_camera.png" Name="tab-camera.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-camera.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_framingassistant.png" Guid="c72fcbcd-70ce-489b-8b65-5a4e521f1f70">
-	      <File Id="Documentation_images_tab_framingassistant.png" Name="tab-framingassistant.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-framingassistant.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_filterwheelfocuser.png" Guid="18329909-39c1-4cdc-ab26-72560604e767">
-	      <File Id="Documentation_images_tab_filterwheelfocuser.png" Name="tab-filterwheelfocuser.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-filterwheelfocuser.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_imaging.png" Guid="777f1c7f-603b-42e1-a772-69017e73f2f6">
-	      <File Id="Documentation_images_tab_imaging.png" Name="tab-imaging.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-imaging.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_objectbrowser.png" Guid="926b8d18-8274-4d14-9ada-ca49a3cbfd2c">
-	      <File Id="Documentation_images_tab_objectbrowser.png" Name="tab-objectbrowser.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-objectbrowser.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_phd2.png" Guid="a4ad8676-17f1-4be7-86b8-25925ebecac6">
-	      <File Id="Documentation_images_tab_phd2.png" Name="tab-phd2.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-phd2.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_sequencing.png" Guid="c6e4dcff-79ee-469f-90ba-4a425759c2b6">
-	      <File Id="Documentation_images_tab_sequencing.png" Name="tab-sequencing.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-sequencing.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_settings_equipment.png" Guid="4a2f7421-88fb-4559-821d-92470bc07fba">
-	      <File Id="Documentation_images_tab_settings_equipment.png" Name="tab-settings-equipment.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-equipment.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_settings_general.png" Guid="c1d8bb03-73ba-4067-9c7c-ad93eb734a33">
-	      <File Id="Documentation_images_tab_settings_general.png" Name="tab-settings-general.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-general.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_settings_imaging.png" Guid="67985e06-14d3-4e46-8910-73485dac1e3b">
-	      <File Id="Documentation_images_tab_settings_imaging.png" Name="tab-settings-imaging.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-imaging.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_settings_platesolving_astrometry.png" Guid="4cf47b5f-4bce-4019-ac59-6c173b76a3e3">
-	      <File Id="Documentation_images_tab_settings_platesolving_astrometry.png" Name="tab-settings-platesolving-astrometry.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-platesolving-astrometry.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_settings_platesolving_localplatesolver_indexfiles.png" Guid="80e4c10c-ce12-424d-850c-baff8348bd5e">
-	      <File Id="Documentation_images_tab_settings_platesolving_localplatesolver_indexfiles.png" Name="tab-settings-platesolving-localplatesolver-indexfiles.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-platesolving-localplatesolver-indexfiles.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_settings_platesolving_localplatesolver.png" Guid="af2e4c50-9533-4ce1-9ad0-c01fb0eb3e81">
-	      <File Id="Documentation_images_tab_settings_platesolving_localplatesolver.png" Name="tab-settings-platesolving-localplatesolver.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-platesolving-localplatesolver.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_settings_platesolving_platesolve2.png" Guid="b00cb66d-7bdd-4953-bf39-de8a4cdff4f5">
-	      <File Id="Documentation_images_tab_settings_platesolving_platesolve2.png" Name="tab-settings-platesolving-platesolve2.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-settings-platesolving-platesolve2.png" />
-	    </Component>
-	    <Component Id="Documentation_images_tab_telescope.png" Guid="df869bcd-59f6-4c00-b263-2a6ad8a3e288">
-	      <File Id="Documentation_images_tab_telescope.png" Name="tab-telescope.png" Source="$(var.NINA_TargetDir)Documentation\images\tab-telescope.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_image_bahtinov.png" Guid="f6063c5a-152c-443b-9a6e-9bcc01dd809d">
-	      <File Id="Documentation_images_panel_image_bahtinov.png" Name="panel-image-bahtinov.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-image-bahtinov.png" />
-	    </Component>
-	    <Component Id="Documentation_images_panel_image_subsampling.png" Guid="270d3562-1258-45d7-9bc3-015aaaafe6ef">
-	      <File Id="Documentation_images_panel_image_subsampling.png" Name="panel-image-subsampling.png" Source="$(var.NINA_TargetDir)Documentation\images\panel-image-subsampling.png" />
-	    </Component>
-	    <Component Id="Documentation_images_usage_autoflip_settings.png" Guid="e9780c24-49ed-4354-a1b2-c44b60f42003">
-	      <File Id="Documentation_images_usage_autoflip_settings.png" Name="usage-autoflip-settings.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-autoflip-settings.png" />
-	    </Component>
-	    <Component Id="Documentation_images_usage_bulbshutter_mountsnapport.png" Guid="88c9ab54-7a1e-4cbd-be75-127fb5dee7d6">
-	      <File Id="Documentation_images_usage_bulbshutter_mountsnapport.png" Name="usage-bulbshutter-mountsnapport.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-bulbshutter-mountsnapport.png" />
-	    </Component>
-	    <Component Id="Documentation_images_usage_bulbshutter_serial.png" Guid="dbd21ace-47d5-40ca-9a2d-ab55d74450cf">
-	      <File Id="Documentation_images_usage_bulbshutter_serial.png" Name="usage-bulbshutter-serial.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-bulbshutter-serial.png" />
-	    </Component>
-	    <Component Id="Documentation_images_usage_bulbshutter_settings.png" Guid="a7ce7649-3a0d-4461-9b1e-39eed576c71e">
-	      <File Id="Documentation_images_usage_bulbshutter_settings.png" Name="usage-bulbshutter-settings.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-bulbshutter-settings.png" />
-	    </Component>
-	    <Component Id="Documentation_images_usage_bulbshutter_snapport.png" Guid="bd65402e-3898-4d69-b70f-429140e70fad">
-	      <File Id="Documentation_images_usage_bulbshutter_snapport.png" Name="usage-bulbshutter-snapport.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-bulbshutter-snapport.png" />
-	    </Component>
-	    <Component Id="Documentation_images_usage_dithering_sequence.png" Guid="515333ed-1140-424d-977d-273288e1c82f">
-	      <File Id="Documentation_images_usage_dithering_sequence.png" Name="usage-dithering-sequence.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-dithering-sequence.png" />
-	    </Component>
-	    <Component Id="Documentation_images_usage_dithering_settings_phd2.png" Guid="53aa368b-f3cb-4cf3-b461-bcde913cdb7d">
-	      <File Id="Documentation_images_usage_dithering_settings_phd2.png" Name="usage-dithering-settings-phd2.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-dithering-settings-phd2.png" />
-	    </Component>
-	    <Component Id="Documentation_images_usage_objectbrowser_object.png" Guid="68aaa389-0df3-46db-8361-3131af86a154">
-	      <File Id="Documentation_images_usage_objectbrowser_object.png" Name="usage-objectbrowser-object.png" Source="$(var.NINA_TargetDir)Documentation\images\usage-objectbrowser-object.png" />
-	    </Component>
-	  </ComponentGroup>
-	</Fragment>
 
   <Fragment>
     <ComponentGroup Id="Documentation_files" Directory="Documentation">
@@ -1082,6 +1063,20 @@
     <ComponentGroup Id="External_x64_Canon_files" Directory="External_x64_Canon">
       <Component Id="External_x64_Canon_EDSDK.dll" Guid="1443f55a-0434-4941-84c4-fab014e42a8e">
         <File Id="External_x64_Canon_EDSDK.dll" Name="EDSDK.dll" Source="$(var.NINA_TargetDir)External\x64\Canon\EDSDK.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x86_SQLite_files" Directory="External_x86_SQLite">
+      <Component Id="External_x86_SQLite_SQLite.Interop.dll" Guid="28344711-a224-4ebe-a286-67b583207993">
+        <File Id="External_x86_SQLite_SQLite.Interop.dll" Name="SQLite.Interop.dll" Source="$(var.NINA_TargetDir)External\x86\SQLite\SQLite.Interop.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_SQLite_files" Directory="External_x64_SQLite">
+      <Component Id="External_x64_SQLite_SQLite.Interop.dll" Guid="59cdc259-d28f-40e9-b277-4a512e4ad3d1">
+        <File Id="External_x64_SQLite_SQLite.Interop.dll" Name="SQLite.Interop.dll" Source="$(var.NINA_TargetDir)External\x64\SQLite\SQLite.Interop.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

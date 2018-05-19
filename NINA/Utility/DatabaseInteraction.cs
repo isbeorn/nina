@@ -10,6 +10,11 @@ using System.Threading.Tasks;
 namespace NINA.Utility {
 
     internal class DatabaseInteraction {
+
+        static DatabaseInteraction() {
+            DllLoader.LoadDll("SQLite\\SQLite.Interop.dll");
+        }
+
         private string _connectionString;
 
         public DatabaseInteraction(string dbLocation) {
