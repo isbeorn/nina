@@ -25,7 +25,12 @@
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ApplicationShortcutDesktop" />
+      <ComponentRef Id="NinaAppDataFolderComponent" />
+      <ComponentRef Id="FramingAssistantCacheFolderComponent" />
+      <ComponentRef Id="LogsFolderComponent" />
 
+      <ComponentGroupRef Id="AvalonDock" />
+      <ComponentGroupRef Id="Database" />
       <ComponentGroupRef Id="Documentation_images_files" />
       <ComponentGroupRef Id="Documentation_files" />
       <ComponentGroupRef Id="External_x64_ASI_files" />
@@ -168,6 +173,28 @@
         <Directory Id="ApplicationProgramsFolder" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" />
       </Directory>
       <Directory Id="DesktopFolder" />
+      <Directory Id="LocalAppDataFolder">
+        <Directory Id="NinaAppDataFolder" Name="NINA">
+          <Component Id="NinaAppDataFolderComponent" Guid="0004E14E-8B9D-4F52-8D2A-3E7DC2B28EC2">
+            <RemoveFolder Id="NinaAppDataFolderRemove" Directory="NinaAppDataFolder" On="uninstall" />
+            <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+          </Component>
+          <Directory Id="LogsFolder" Name="Logs">
+            <Component Id="LogsFolderComponent" Guid="5FE211B5-C7A1-4A31-87CD-F4352E771A50">
+              <CreateFolder Directory="LogsFolder" />
+              <RemoveFolder Id="LogsFolderRemove" Directory="LogsFolder" On="uninstall" />
+              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+            </Component>
+          </Directory>
+          <Directory Id="FramingAssistantCacheFolder" Name="FramingAssistantCache">
+            <Component Id="FramingAssistantCacheFolderComponent" Guid="55D46CF1-5758-4913-86DA-19285F41C2C9">
+              <CreateFolder Directory="FramingAssistantCacheFolder" />
+              <RemoveFolder Id="FramingAssistantCacheFolderRemove" Directory="FramingAssistantCacheFolder" On="uninstall" />
+              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
     </Directory>
   </Fragment>
 
@@ -189,6 +216,24 @@
   </Fragment>
 
   <Fragment>
+    <ComponentGroup Id="Database" Directory="NinaAppDataFolder">
+      <Component Id="NINA.sqlite" Guid="59C5D8EB-EECB-4CA7-B7E6-739371DC0679">
+        <File Id="NINA.sqlite" Name="NINA.sqlite" Source="$(var.SolutionDir)NINA\Database\NINA.sqlite" />
+        <RemoveFile Id="NINA.sqlite" Name="NINA.sqlite" Directory="NinaAppDataFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="AvalonDock" Directory="NinaAppDataFolder">
+      <Component Id="avalondock.config" Guid="18AB9F1E-B75A-4071-B00F-BE34DBD0AA5B">
+        <File Id="avalondock.config" Name="avalondock.config" Source="$(var.SolutionDir)NINA\Resources\avalondock.config" />
+        <RemoveFile Id="avalondock.config" Name="avalondock.config" Directory="NinaAppDataFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
       <!-- <Component Id="ProductComponent"> -->
