@@ -77,9 +77,9 @@ namespace NINA.Utility.Profile {
                         Profiles.SelectActiveProfile();
                     }
                 } catch (Exception ex) {
-                    LoadDefaultProfile();
                     Logger.Error(ex);
-                    System.Windows.MessageBox.Show("Profile file is corrupt. Loading default profile. \n" + ex.Message);
+                    System.Windows.MessageBox.Show("Unable to load profile file. Please restart the application \n" + ex.Message);
+                    System.Windows.Application.Current.Shutdown();
                 }
             } else {
                 MigrateSettings();
@@ -220,8 +220,7 @@ namespace NINA.Utility.Profile {
                 p.WeatherDataSettings.OpenWeatherMapAPIKey = Properties.Settings.Default.OpenWeatherMapAPIKey;
                 p.WeatherDataSettings.OpenWeatherMapUrl = Properties.Settings.Default.OpenWeatherMapUrl;
             } else {
-                p = new Profile("Default");
-                Profiles.Add(p);
+                LoadDefaultProfile();
             }
 
             SelectProfile(p.Id);
