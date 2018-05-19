@@ -22,7 +22,6 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\ninasplash.png" />
     <Content Include="Images\WixUIBannerBmp.bmp" />
     <Content Include="Images\WixUIDialogBmp.bmp" />
     <Content Include="LICENSE.rtf" />
