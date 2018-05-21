@@ -941,7 +941,8 @@ namespace NINA.Model.MyCamera {
                             return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         }
                     } catch (OperationCanceledException) {
-                    } catch {
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
                     }
                     return null;
                 });

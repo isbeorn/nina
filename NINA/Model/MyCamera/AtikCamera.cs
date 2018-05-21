@@ -390,6 +390,7 @@ namespace NINA.Model.MyCamera {
                         return await AtikCameraDll.DownloadExposure(_cameraP, SensorType != SensorType.Monochrome, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
+                        Logger.Error(ex);
                         Notification.ShowError(ex.Message);
                     }
                     return null;

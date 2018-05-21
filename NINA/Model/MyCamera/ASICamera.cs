@@ -332,10 +332,8 @@ namespace NINA.Model.MyCamera {
 
         public CaptureAreaInfo CaptureAreaInfo {
             get {
-                int bin;
-                ASICameraDll.ASI_IMG_TYPE imageType;
                 var p = ASICameraDll.GetStartPos(_cameraId);
-                var res = ASICameraDll.GetROIFormat(_cameraId, out bin, out imageType);
+                var res = ASICameraDll.GetROIFormat(_cameraId, out var bin, out var imageType);
                 return new CaptureAreaInfo(p, res, bin, imageType);
             }
             set {
@@ -360,41 +358,43 @@ namespace NINA.Model.MyCamera {
         public async Task<ImageArray> DownloadExposure(CancellationToken token) {
             return await Task.Run<ImageArray>(async () => {
                 try {
-                    ASICameraDll.ASI_EXPOSURE_STATUS status;
-                    do {
-                        await Task.Delay(100, token);
+                    var status = ExposureStatus;
+                    while (status == ASICameraDll.ASI_EXPOSURE_STATUS.ASI_EXP_WORKING) {
+                        await Task.Delay(10, token);
                         status = ExposureStatus;
-                    } while (status == ASICameraDll.ASI_EXPOSURE_STATUS.ASI_EXP_WORKING);
+                    }
 
                     var width = CaptureAreaInfo.Size.Width;
                     var height = CaptureAreaInfo.Size.Height;
 
                     int size = width * height * 2;
-                    IntPtr pointer = Marshal.AllocHGlobal(size);
+                    var pointer = Marshal.AllocHGlobal(size);
                     int buffersize = (width * height * 16 + 7) / 8;
                     if (GetExposureData(pointer, buffersize)) {
-                        ushort[] arr = new ushort[size / 2];
-                        CopyToUShort(pointer, arr, 0, size / 2);
+                        ushort[] arr = CopyToUShort(pointer, size / 2);
                         Marshal.FreeHGlobal(pointer);
                         return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                     } else {
-                        Notification.ShowError("Error retrieving image data from camera!");
+                        Notification.ShowError(Locale.Loc.Instance["LblASIImageDownloadError"]);
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
                 return null;
             });
         }
 
-        private void CopyToUShort(IntPtr source, ushort[] destination, int startIndex, int length) {
+        private ushort[] CopyToUShort(IntPtr source, int length) {
+            var destination = new ushort[length];
             unsafe {
                 var sourcePtr = (ushort*)source;
-                for (int i = startIndex; i < startIndex + length; ++i) {
+                for (int i = 0; i < length; ++i) {
                     destination[i] = *sourcePtr++;
                 }
             }
+            return destination;
         }
 
         private bool GetExposureData(IntPtr buffer, int bufferSize) {
@@ -613,8 +613,7 @@ namespace NINA.Model.MyCamera {
             int buffersize = (width * height * 16 + 7) / 8;
             ASICameraDll.GetVideoData(_cameraId, pointer, buffersize, -1);
 
-            ushort[] arr = new ushort[size / 2];
-            CopyToUShort(pointer, arr, 0, size / 2);
+            ushort[] arr = CopyToUShort(pointer, size / 2);
             Marshal.FreeHGlobal(pointer);
             return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
         }
@@ -673,8 +672,7 @@ namespace NINA.Model.MyCamera {
 
         public int Value {
             get {
-                bool isAuto;
-                return ASICameraDll.GetControlValue(_cameraId, _props.ControlType, out isAuto);
+                return ASICameraDll.GetControlValue(_cameraId, _props.ControlType, out var isAuto);
             }
             set {
                 ASICameraDll.SetControlValue(_cameraId, _props.ControlType, value, IsAuto);
@@ -692,8 +690,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool GetAutoSetting() {
-            bool isAuto;
-            ASICameraDll.GetControlValue(_cameraId, _props.ControlType, out isAuto);
+            ASICameraDll.GetControlValue(_cameraId, _props.ControlType, out var isAuto);
             return isAuto;
         }
     }
