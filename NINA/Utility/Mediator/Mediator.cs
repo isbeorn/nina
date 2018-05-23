@@ -22,6 +22,12 @@ namespace NINA.Utility.Mediator {
         private Dictionary<MediatorMessages, List<Action<Object>>> _internalList
             = new Dictionary<MediatorMessages, List<Action<Object>>>();
 
+        public void ClearAll() {
+            _internalList.Clear();
+            _handlers.Clear();
+            _asyncHandlers.Clear();
+        }
+
         public void Register(Action<Object> callback,
               MediatorMessages message) {
             if (!_internalList.ContainsKey(message)) {

@@ -1,4 +1,7 @@
-﻿using NINA.Utility.Enum;
+﻿using NINA.Model;
+using NINA.PlateSolving;
+using NINA.Utility.Enum;
+using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
 using NINA.ViewModel;
 using NUnit.Framework;
@@ -23,6 +26,11 @@ namespace NINATest {
             profileService.ActiveProfile.ImageFileSettings.FilePath = TestContext.CurrentContext.TestDirectory;
         }
 
+        [TearDown]
+        public void Cleanup() {
+            Mediator.Instance.ClearAll();
+        }
+
         [Test]
         public async Task ProcessSequence_Default() {
             var vm = new SequenceVM(profileService);
@@ -34,6 +42,206 @@ namespace NINATest {
             Assert.AreEqual(0, vm.SelectedSequenceIdx);
             Assert.AreEqual(vm.IsPaused, false);
             Assert.AreEqual(vm.Sequence.IsRunning, false);
+        }
+
+        private CaptureSequenceList CreateDummySequenceList() {
+            var l = new CaptureSequenceList();
+            l.Add(new CaptureSequence() { TotalExposureCount = 10 });
+            return l;
+        }
+
+        [Test]
+        public async Task ProcessSequence_StartOptions_SlewToTargetTest() {
+            var vm = new SequenceVM(profileService);
+            var l = CreateDummySequenceList();
+            l.SlewToTarget = true;
+            vm.Sequence = l;
+
+            var called = false;
+            Mediator.Instance.RegisterAsyncRequest(
+                new SlewTocoordinatesMessageHandle(async (SlewToCoordinatesMessage msg) => {
+                    called = true;
+                    return true;
+                })
+            );
+
+            //Act
+            await vm.StartSequenceCommand.ExecuteAsync(null);
+
+            //Assert
+            Assert.AreEqual(true, called);
+        }
+
+        [Test]
+        public async Task ProcessSequence_StartOptions_DontSlewToTargetTest() {
+            var vm = new SequenceVM(profileService);
+            var l = CreateDummySequenceList();
+            l.SlewToTarget = false;
+            vm.Sequence = l;
+
+            var called = false;
+            Mediator.Instance.RegisterAsyncRequest(
+                new SlewTocoordinatesMessageHandle(async  (SlewToCoordinatesMessage msg) => {
+                    called = true;
+                    return true;
+                })
+            );
+
+            //Act
+            await vm.StartSequenceCommand.ExecuteAsync(null);
+
+            //Assert
+            Assert.AreEqual(false, called);
+        }
+
+        [Test]
+        public async Task ProcessSequence_StartOptions_CenterTargetTest() {
+            var vm = new SequenceVM(profileService);
+            var l = CreateDummySequenceList();
+            l.CenterTarget = true;
+            vm.Sequence = l;
+
+            var slewCalled = false;
+            Mediator.Instance.RegisterAsyncRequest(
+                new SlewTocoordinatesMessageHandle(async (SlewToCoordinatesMessage msg) => {
+                    slewCalled = true;
+                    return true;
+                })
+            );
+
+            var centerCalled = false;
+            Mediator.Instance.RegisterAsyncRequest(
+                new PlateSolveMessageHandle(async (PlateSolveMessage msg) => {
+                    centerCalled = true;
+                    return new PlateSolveResult();
+                })
+            );
+
+            //Act
+            await vm.StartSequenceCommand.ExecuteAsync(null);
+
+            //Assert
+            Assert.AreEqual(true, slewCalled);
+            Assert.AreEqual(true, centerCalled);
+        }
+
+        [Test]
+        public async Task ProcessSequence_StartOptions_DontCenterTargetTest() {
+            var vm = new SequenceVM(profileService);
+            var l = CreateDummySequenceList();
+            l.CenterTarget = false;
+            vm.Sequence = l;
+
+            var slewCalled = false;
+            Mediator.Instance.RegisterAsyncRequest(
+                new SlewTocoordinatesMessageHandle((SlewToCoordinatesMessage msg) => {
+                    slewCalled = true;
+                    return null;
+                })
+            );
+
+            var centerCalled = false;
+            Mediator.Instance.RegisterAsyncRequest(
+                new PlateSolveMessageHandle((PlateSolveMessage msg) => {
+                    centerCalled = true;
+                    return null;
+                })
+            );
+
+            //Act
+            await vm.StartSequenceCommand.ExecuteAsync(null);
+
+            //Assert
+            Assert.AreEqual(false, slewCalled);
+            Assert.AreEqual(false, centerCalled);
+        }
+
+        [Test]
+        public async Task ProcessSequence_StartOptions_AutoFocusTest() {
+            var vm = new SequenceVM(profileService);
+            var l = CreateDummySequenceList();
+            l.AutoFocusOnStart = true;
+            vm.Sequence = l;
+
+            var called = false;
+            Mediator.Instance.RegisterAsyncRequest(
+                new StartAutoFocusMessageHandle(async (StartAutoFocusMessage msg) => {
+                    called = true;
+                    return true;
+                })
+            );
+
+            //Act
+            await vm.StartSequenceCommand.ExecuteAsync(null);
+
+            //Assert
+            Assert.AreEqual(true, called);
+        }
+
+        [Test]
+        public async Task ProcessSequence_StartOptions_DontAutoFocusTest() {
+            var vm = new SequenceVM(profileService);
+            var l = CreateDummySequenceList();
+            l.AutoFocusOnStart = false;
+            vm.Sequence = l;
+
+            var called = false;
+            Mediator.Instance.RegisterAsyncRequest(
+                new StartAutoFocusMessageHandle(async (StartAutoFocusMessage msg) => {
+                    called = true;
+                    return true;
+                })
+            );
+
+            //Act
+            await vm.StartSequenceCommand.ExecuteAsync(null);
+
+            //Assert
+            Assert.AreEqual(false, called);
+        }
+
+        [Test]
+        public async Task ProcessSequence_StartOptions_StartGuidingTest() {
+            var vm = new SequenceVM(profileService);
+            var l = CreateDummySequenceList();
+            l.StartGuiding = true;
+            vm.Sequence = l;
+
+            var called = false;
+            Mediator.Instance.RegisterAsyncRequest(
+                new StartGuiderMessageHandle(async (StartGuiderMessage msg) => {
+                    called = true;
+                    return true;
+                })
+            );
+
+            //Act
+            await vm.StartSequenceCommand.ExecuteAsync(null);
+
+            //Assert
+            Assert.AreEqual(true, called);
+        }
+
+        [Test]
+        public async Task ProcessSequence_StartOptions_DontStartGuidingTest() {
+            var vm = new SequenceVM(profileService);
+            var l = CreateDummySequenceList();
+            l.StartGuiding = false;
+            vm.Sequence = l;
+
+            var called = false;
+            Mediator.Instance.RegisterAsyncRequest(
+                new StartGuiderMessageHandle(async (StartGuiderMessage msg) => {
+                    called = true;
+                    return true;
+                })
+            );
+
+            //Act
+            await vm.StartSequenceCommand.ExecuteAsync(null);
+
+            //Assert
+            Assert.AreEqual(false, called);
         }
     }
 
