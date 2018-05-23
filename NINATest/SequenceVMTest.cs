@@ -1,5 +1,6 @@
 ﻿using NINA.Model;
 using NINA.PlateSolving;
+using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
@@ -47,6 +48,8 @@ namespace NINATest {
         private CaptureSequenceList CreateDummySequenceList() {
             var l = new CaptureSequenceList();
             l.Add(new CaptureSequence() { TotalExposureCount = 10 });
+            l.Add(new CaptureSequence() { TotalExposureCount = 20 });
+            l.Add(new CaptureSequence() { TotalExposureCount = 5 });
             return l;
         }
 
@@ -70,6 +73,30 @@ namespace NINATest {
 
             //Assert
             Assert.AreEqual(true, called);
+        }
+
+        [Test]
+        public async Task ProcessSequence_StartOptions_SlewToTargetParameterTest() {
+            var vm = new SequenceVM(profileService);
+            var l = CreateDummySequenceList();
+            l.SlewToTarget = true;
+            var coords = new Coordinates(10, 10, Epoch.J2000, Coordinates.RAType.Degrees);
+            l.Coordinates = coords;
+            vm.Sequence = l;
+
+            Coordinates actualcoords = null;
+            Mediator.Instance.RegisterAsyncRequest(
+                new SlewTocoordinatesMessageHandle(async (SlewToCoordinatesMessage msg) => {
+                    actualcoords = msg.Coordinates;
+                    return true;
+                })
+            );
+
+            //Act
+            await vm.StartSequenceCommand.ExecuteAsync(null);
+
+            //Assert
+            Assert.AreSame(coords, actualcoords);
         }
 
         [Test]
@@ -126,6 +153,28 @@ namespace NINATest {
         }
 
         [Test]
+        public async Task ProcessSequence_StartOptions_CenterTargetParameterTest() {
+            var vm = new SequenceVM(profileService);
+            var l = CreateDummySequenceList();
+            l.CenterTarget = true;
+            vm.Sequence = l;
+
+            var actualSyncSlewRepeat = false;
+            Mediator.Instance.RegisterAsyncRequest(
+                new PlateSolveMessageHandle(async (PlateSolveMessage msg) => {
+                    actualSyncSlewRepeat = msg.SyncReslewRepeat;
+                    return new PlateSolveResult();
+                })
+            );
+
+            //Act
+            await vm.StartSequenceCommand.ExecuteAsync(null);
+
+            //Assert
+            Assert.AreEqual(true, actualSyncSlewRepeat);
+        }
+
+        [Test]
         public async Task ProcessSequence_StartOptions_DontCenterTargetTest() {
             var vm = new SequenceVM(profileService);
             var l = CreateDummySequenceList();
@@ -176,6 +225,31 @@ namespace NINATest {
 
             //Assert
             Assert.AreEqual(true, called);
+        }
+
+        [Test]
+        public async Task ProcessSequence_StartOptions_AutoFocusParameterTest() {
+            var vm = new SequenceVM(profileService);
+            var l = CreateDummySequenceList();
+            var filter = new NINA.Model.MyFilterWheel.FilterInfo("TestFilter", 0, 100);
+            l.Items[0].FilterType = filter;
+            l.Items[1].FilterType = new NINA.Model.MyFilterWheel.FilterInfo("TestFilter2", 2, 100);
+            l.AutoFocusOnStart = true;
+            vm.Sequence = l;
+
+            NINA.Model.MyFilterWheel.FilterInfo actualFilter = null;
+            Mediator.Instance.RegisterAsyncRequest(
+                new StartAutoFocusMessageHandle(async (StartAutoFocusMessage msg) => {
+                    actualFilter = msg.Filter;
+                    return true;
+                })
+            );
+
+            //Act
+            await vm.StartSequenceCommand.ExecuteAsync(null);
+
+            //Assert
+            Assert.AreSame(filter, actualFilter);
         }
 
         [Test]
