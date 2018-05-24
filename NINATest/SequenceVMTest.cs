@@ -62,9 +62,9 @@ namespace NINATest {
 
             var called = false;
             Mediator.Instance.RegisterAsyncRequest(
-                new SlewTocoordinatesMessageHandle(async (SlewToCoordinatesMessage msg) => {
+                new SlewTocoordinatesMessageHandle((SlewToCoordinatesMessage msg) => {
                     called = true;
-                    return true;
+                    return Task.FromResult(true);
                 })
             );
 
@@ -86,9 +86,9 @@ namespace NINATest {
 
             Coordinates actualcoords = null;
             Mediator.Instance.RegisterAsyncRequest(
-                new SlewTocoordinatesMessageHandle(async (SlewToCoordinatesMessage msg) => {
+                new SlewTocoordinatesMessageHandle((SlewToCoordinatesMessage msg) => {
                     actualcoords = msg.Coordinates;
-                    return true;
+                    return Task.FromResult(true);
                 })
             );
 
@@ -108,9 +108,9 @@ namespace NINATest {
 
             var called = false;
             Mediator.Instance.RegisterAsyncRequest(
-                new SlewTocoordinatesMessageHandle(async  (SlewToCoordinatesMessage msg) => {
+                new SlewTocoordinatesMessageHandle((SlewToCoordinatesMessage msg) => {
                     called = true;
-                    return true;
+                    return Task.FromResult(true);
                 })
             );
 
@@ -130,17 +130,17 @@ namespace NINATest {
 
             var slewCalled = false;
             Mediator.Instance.RegisterAsyncRequest(
-                new SlewTocoordinatesMessageHandle(async (SlewToCoordinatesMessage msg) => {
+                new SlewTocoordinatesMessageHandle((SlewToCoordinatesMessage msg) => {
                     slewCalled = true;
-                    return true;
+                    return Task.FromResult(true);
                 })
             );
 
             var centerCalled = false;
             Mediator.Instance.RegisterAsyncRequest(
-                new PlateSolveMessageHandle(async (PlateSolveMessage msg) => {
+                new PlateSolveMessageHandle((PlateSolveMessage msg) => {
                     centerCalled = true;
-                    return new PlateSolveResult();
+                    return Task.FromResult(new PlateSolveResult());
                 })
             );
 
@@ -161,9 +161,9 @@ namespace NINATest {
 
             var actualSyncSlewRepeat = false;
             Mediator.Instance.RegisterAsyncRequest(
-                new PlateSolveMessageHandle(async (PlateSolveMessage msg) => {
+                new PlateSolveMessageHandle((PlateSolveMessage msg) => {
                     actualSyncSlewRepeat = msg.SyncReslewRepeat;
-                    return new PlateSolveResult();
+                    return Task.FromResult(new PlateSolveResult());
                 })
             );
 
@@ -214,9 +214,9 @@ namespace NINATest {
 
             var called = false;
             Mediator.Instance.RegisterAsyncRequest(
-                new StartAutoFocusMessageHandle(async (StartAutoFocusMessage msg) => {
+                new StartAutoFocusMessageHandle((StartAutoFocusMessage msg) => {
                     called = true;
-                    return true;
+                    return Task.FromResult(true);
                 })
             );
 
@@ -239,9 +239,9 @@ namespace NINATest {
 
             NINA.Model.MyFilterWheel.FilterInfo actualFilter = null;
             Mediator.Instance.RegisterAsyncRequest(
-                new StartAutoFocusMessageHandle(async (StartAutoFocusMessage msg) => {
+                new StartAutoFocusMessageHandle((StartAutoFocusMessage msg) => {
                     actualFilter = msg.Filter;
-                    return true;
+                    return Task.FromResult(true);
                 })
             );
 
@@ -261,9 +261,9 @@ namespace NINATest {
 
             var called = false;
             Mediator.Instance.RegisterAsyncRequest(
-                new StartAutoFocusMessageHandle(async (StartAutoFocusMessage msg) => {
+                new StartAutoFocusMessageHandle((StartAutoFocusMessage msg) => {
                     called = true;
-                    return true;
+                    return Task.FromResult(true);
                 })
             );
 
@@ -283,9 +283,9 @@ namespace NINATest {
 
             var called = false;
             Mediator.Instance.RegisterAsyncRequest(
-                new StartGuiderMessageHandle(async (StartGuiderMessage msg) => {
+                new StartGuiderMessageHandle((StartGuiderMessage msg) => {
                     called = true;
-                    return true;
+                    return Task.FromResult(true);
                 })
             );
 
@@ -305,9 +305,9 @@ namespace NINATest {
 
             var called = false;
             Mediator.Instance.RegisterAsyncRequest(
-                new StartGuiderMessageHandle(async (StartGuiderMessage msg) => {
+                new StartGuiderMessageHandle((StartGuiderMessage msg) => {
                     called = true;
-                    return true;
+                    return Task.FromResult(true);
                 })
             );
 
