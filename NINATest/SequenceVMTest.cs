@@ -317,6 +317,60 @@ namespace NINATest {
             //Assert
             Assert.AreEqual(false, called);
         }
+
+        [Test]
+        public void ProcessSequence_AddSequenceCommand() {
+            //Arrange
+            var vm = new SequenceVM(profileService);            
+
+            //Act
+            vm.AddSequenceCommand.Execute(null);
+
+            //Assert
+            Assert.AreEqual(1, vm.SelectedSequenceIdx);
+            Assert.AreEqual(2, vm.Sequence.Count);
+        }
+
+        [Test]
+        public void ProcessSequence_OnEmptySequence_AddSequenceCommand() {
+            //Arrange
+            var vm = new SequenceVM(profileService);
+            vm.Sequence = new CaptureSequenceList();
+
+            //Act
+            vm.AddSequenceCommand.Execute(null);
+
+            //Assert
+            Assert.AreEqual(0, vm.SelectedSequenceIdx);
+            Assert.AreEqual(1, vm.Sequence.Count);
+        }
+
+        [Test]
+        public void ProcessSequence_RemoveSequenceCommand() {
+            //Arrange
+            var vm = new SequenceVM(profileService);
+
+            //Act
+            vm.RemoveSequenceCommand.Execute(null);
+
+            //Assert
+            Assert.AreEqual(-1, vm.SelectedSequenceIdx);
+            Assert.AreEqual(0, vm.Sequence.Count);
+        }
+
+        [Test]
+        public void ProcessSequence_OnEmptySequence_RemoveSequenceCommand() {
+            //Arrange
+            var vm = new SequenceVM(profileService);
+
+            //Act
+            vm.RemoveSequenceCommand.Execute(null);
+            vm.RemoveSequenceCommand.Execute(null);
+
+            //Assert
+            Assert.AreEqual(-1, vm.SelectedSequenceIdx);
+            Assert.AreEqual(0, vm.Sequence.Count);
+        }
     }
 
     internal class SequenceSettings : ISequenceSettings {
