@@ -314,7 +314,8 @@ namespace NINA.Model {
             RaisePropertyChanged(nameof(DecMinutes));
             RaisePropertyChanged(nameof(DecSeconds));
             AltitudeVisible = true;
-            DSO = new DeepSkyObject(this.TargetName, Coordinates, string.Empty);
+            DSO.Name = this.TargetName;
+            DSO.Coordinates = Coordinates;
         }
 
         private DeepSkyObject _dso;
@@ -322,6 +323,9 @@ namespace NINA.Model {
         [XmlIgnore]
         public DeepSkyObject DSO {
             get {
+                if (_dso == null) {
+                    _dso = new DeepSkyObject(string.Empty, Coordinates, string.Empty);
+                }
                 return _dso;
             }
             private set {

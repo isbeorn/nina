@@ -447,6 +447,11 @@ namespace NINA.ViewModel {
                         /* Fallback when no template is set or load failed */
                         var seq = new CaptureSequence();
                         _sequence = new CaptureSequenceList(seq);
+                        _sequence.DSO?.SetDateAndPosition(
+                            SkyAtlasVM.GetReferenceDate(DateTime.Now),
+                            profileService.ActiveProfile.AstrometrySettings.Latitude,
+                            profileService.ActiveProfile.AstrometrySettings.Longitude
+                        );
                         SelectedSequenceIdx = _sequence.Count - 1;
                     }
                 }

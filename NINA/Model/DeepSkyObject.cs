@@ -24,7 +24,7 @@ namespace NINA.Model {
         }
 
         public DeepSkyObject(string name, Coordinates coords, string imageRepository) : this(name, imageRepository) {
-            Coordinates = coords;
+            _coordinates = coords;
         }
 
         private string _name;
@@ -47,6 +47,7 @@ namespace NINA.Model {
             }
             set {
                 _coordinates = value;
+                CalculateAltitude(this._referenceDate);
                 RaisePropertyChanged();
             }
         }
@@ -166,6 +167,7 @@ namespace NINA.Model {
         }
 
         private void CalculateAltitude(DateTime start) {
+            Altitudes.Clear();
             var siderealTime = Astrometry.GetLocalSiderealTime(start, _longitude);
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
 

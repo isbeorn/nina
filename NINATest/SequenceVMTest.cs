@@ -321,7 +321,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_AddSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService);            
+            var vm = new SequenceVM(profileService);
 
             //Act
             vm.AddSequenceCommand.Execute(null);
@@ -401,15 +401,7 @@ namespace NINATest {
             }
         }
 
-        public IAstrometrySettings AstrometrySettings {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public IAstrometrySettings AstrometrySettings { get; set; } = new AstrometrySettings();
 
         public ICameraSettings CameraSettings {
             get {
