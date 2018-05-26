@@ -2,6 +2,7 @@
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NUnit.Framework;
+using System;
 using System.Linq;
 
 namespace NINATest {
@@ -341,8 +342,8 @@ namespace NINATest {
             Assert.AreEqual(coordinates.Dec, l.DecDegrees + l.DecMinutes + l.DecSeconds);
         }
 
-        [TestCase(5,10,15, 5.17083333333333)]
-        [TestCase(0, 0, 0,  0)]
+        [TestCase(5, 10, 15, 5.17083333333333)]
+        [TestCase(0, 0, 0, 0)]
         [TestCase(15, 01, 01, 15.01694444444444)]
         [TestCase(0, 0, 1, 0.00027777777)]  //Lower bound
         [TestCase(23, 59, 59, 23.99972222222222)]   //upper bound
@@ -385,8 +386,8 @@ namespace NINATest {
 
             Assert.AreEqual(expected, l.Coordinates.Dec, 0.000001, "Coordinates failed");
             Assert.AreEqual(decDegrees, l.DecDegrees, 0.000001, "Degrees failed");
-            Assert.AreEqual(decMinutes, l.DecMinutes, 0.000001, "Minutes failed");
-            Assert.AreEqual(decSeconds, l.DecSeconds, 0.000001, "Seconds failed");
+            Assert.AreEqual(Math.Abs(decMinutes), l.DecMinutes, 0.000001, "Minutes failed");
+            Assert.AreEqual(Math.Abs(decSeconds), l.DecSeconds, 0.000001, "Seconds failed");
         }
     }
 

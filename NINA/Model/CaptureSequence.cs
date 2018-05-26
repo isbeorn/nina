@@ -84,7 +84,6 @@ namespace NINA.Model {
         public static CaptureSequenceList Load(Stream stream, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude) {
             CaptureSequenceList l = null;
             try {
-                
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CaptureSequenceList));
 
                 l = (CaptureSequenceList)xmlSerializer.Deserialize(stream);
@@ -99,7 +98,7 @@ namespace NINA.Model {
                     }
                     s.FilterType = filter;
                 }
-                if(l.ActiveSequence == null && l.Count > 0) {
+                if (l.ActiveSequence == null && l.Count > 0) {
                     l.ActiveSequence = l.Items.SkipWhile(x => x.TotalExposureCount - x.ProgressExposureCount == 0).FirstOrDefault();
                 }
                 l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), latitude, longitude);
@@ -176,7 +175,6 @@ namespace NINA.Model {
                     } else {
                         seq = null;
                     }
-                    
                 }
             } else if (Mode == SequenceMode.ROTATE) {
                 //Check if all sequences are done
@@ -294,7 +292,7 @@ namespace NINA.Model {
         [XmlAttribute(nameof(DecSeconds))]
         public int DecSeconds {
             get {
-                return (int)Math.Floor((Math.Abs(_coordinates.Dec * 60.0d * 60.0d) % 60));
+                return (int)Math.Round((Math.Abs(_coordinates.Dec * 60.0d * 60.0d) % 60));
             }
             set {
                 if (_coordinates.Dec < 0) {
@@ -495,6 +493,7 @@ namespace NINA.Model {
         }
 
         private bool _autoFocusAfterTemperatureChange = false;
+
         [XmlAttribute(nameof(AutoFocusAfterTemperatureChange))]
         public bool AutoFocusAfterTemperatureChange {
             get {
