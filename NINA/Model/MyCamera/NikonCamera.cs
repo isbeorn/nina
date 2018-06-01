@@ -5,6 +5,7 @@ using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.Utility.RawConverter;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,8 +15,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using NINA.Utility.RawConverter;
-using System.Timers;
 
 namespace NINA.Model.MyCamera {
 
@@ -37,22 +36,22 @@ namespace NINA.Model.MyCamera {
         }
 
         private void Mgr_DeviceAdded(NikonManager sender, NikonDevice device) {
+            var connected = false;
             try {
                 _activeNikonManager = sender;
                 _activeNikonManager.DeviceRemoved += Mgr_DeviceRemoved;
 
-                CleanupUnusedManagers(_activeNikonManager);
-
                 Init(device);
 
-                Connected = true;
+                connected = true;
                 Name = _camera.Name;
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
             } finally {
-                RaiseAllPropertiesChanged();
-                _cameraConnected.TrySetResult(null);
+                Connected = connected;
+                RaiseAllPropertiesChanged();                
+                _cameraConnected.TrySetResult(connected);
             }
         }
 
@@ -193,7 +192,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private TaskCompletionSource<object> _downloadExposure;
-        private TaskCompletionSource<object> _cameraConnected;
+        private TaskCompletionSource<bool> _cameraConnected;
 
         private void _camera_CaptureComplete(NikonDevice sender, int data) {
             Logger.Debug("Capture complete");
@@ -765,16 +764,19 @@ namespace NINA.Model.MyCamera {
                         _nikonManagers.Add(mgr);
                     }
 
-                    _cameraConnected = new TaskCompletionSource<object>();
+                    _cameraConnected = new TaskCompletionSource<bool>();
                     var d = DateTime.Now;
 
                     do {
                         token.ThrowIfCancellationRequested();
                         Thread.Sleep(500);
                     } while (!_cameraConnected.Task.IsCompleted);
-                    connected = true;
+
+                    connected = _cameraConnected.Task.Result;
                 } catch (OperationCanceledException) {
-                    CleanupUnusedManagers(null);
+                    _activeNikonManager = null;
+                } finally {
+                    CleanupUnusedManagers(_activeNikonManager);
                 }
                 return connected;
             });
