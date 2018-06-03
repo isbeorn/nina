@@ -178,6 +178,8 @@ namespace NINA.Model.MyCamera {
                         Logger.Debug("Bulb index: " + i);
                         _bulbShutterSpeedIndex = i;
                         bulbFound = true;
+                    } else if (val.ToLower() == "time") {
+                        //currently unused
                     } else {
                         _shutterSpeeds.Add(i, double.Parse(val));
                     }
