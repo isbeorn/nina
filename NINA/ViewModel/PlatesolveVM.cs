@@ -22,7 +22,7 @@ namespace NINA.ViewModel {
     internal class PlatesolveVM : DockableVM {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
-        public PlatesolveVM() : base() {
+        public PlatesolveVM(IProfileService profileService) : base(profileService) {
             Title = "LblPlateSolving";
             ContentId = nameof(PlatesolveVM);
             SyncScope = false;
@@ -32,10 +32,10 @@ namespace NINA.ViewModel {
             SolveCommand = new AsyncCommand<bool>(() => CaptureSolveSyncAndReslew(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSolveCommand = new RelayCommand(CancelSolve);
 
-            SnapExposureDuration = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime;
-            SnapFilter = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter;
+            SnapExposureDuration = profileService.ActiveProfile.PlateSolveSettings.ExposureTime;
+            SnapFilter = profileService.ActiveProfile.PlateSolveSettings.Filter;
             Repeat = false;
-            RepeatThreshold = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold;
+            RepeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold;
 
             RegisterMediatorMessages();
         }
@@ -57,9 +57,9 @@ namespace NINA.ViewModel {
             }, MediatorMessages.DetectStarsChanged);
 
             Mediator.Instance.Register((object o) => {
-                SnapExposureDuration = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime;
-                SnapFilter = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter;
-                RepeatThreshold = ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold;
+                SnapExposureDuration = profileService.ActiveProfile.PlateSolveSettings.ExposureTime;
+                SnapFilter = profileService.ActiveProfile.PlateSolveSettings.Filter;
+                RepeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold;
             }, MediatorMessages.ProfileChanged);
 
             Mediator.Instance.RegisterAsyncRequest(
@@ -69,9 +69,9 @@ namespace NINA.ViewModel {
                     } else {
                         if (msg.SyncReslewRepeat) {
                             var seq = new CaptureSequence(
-                                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.ExposureTime,
+                                profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
                                 CaptureSequence.ImageTypes.SNAP,
-                                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Filter,
+                                profileService.ActiveProfile.PlateSolveSettings.Filter,
                                 new BinningMode(1, 1),
                                 1);
                             seq.Gain = SnapGain;
@@ -83,7 +83,7 @@ namespace NINA.ViewModel {
                                 msg.Token,
                                 msg.Progress,
                                 msg.Silent,
-                                ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Threshold);
+                                profileService.ActiveProfile.PlateSolveSettings.Threshold);
                         } else {
                             if (msg.Blind) {
                                 return await BlindSolve(msg.Image ?? Image, msg.Progress, msg.Token);
@@ -241,7 +241,7 @@ namespace NINA.ViewModel {
 
             if (PlateSolveResult != null && PlateSolveResult.Success) {
                 Coordinates solved = PlateSolveResult.Coordinates;
-                solved = solved.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);  //Transform to JNow if required
+                solved = solved.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);  //Transform to JNow if required
 
                 if (Telescope.Sync(solved.RA, solved.Dec) == true) {
                     Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeSynced"]);
@@ -327,7 +327,7 @@ namespace NINA.ViewModel {
                             Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
                             return null;
                         }
-                        var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                        var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                         if (SyncronizeTelescope() && slewToTarget) {
                             await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = coords, Token = token });
                         }
@@ -338,7 +338,7 @@ namespace NINA.ViewModel {
                     repeatPlateSolve = true;
                     progress.Report(new ApplicationStatus() { Status = "Telescope not inside tolerance. Repeating..." });
                     //Let the scope settle
-                    await Task.Delay(TimeSpan.FromSeconds(ProfileManager.Instance.ActiveProfile.TelescopeSettings.SettleTime));
+                    await Task.Delay(TimeSpan.FromSeconds(profileService.ActiveProfile.TelescopeSettings.SettleTime));
                 } else {
                     repeatPlateSolve = false;
                 }
@@ -355,9 +355,9 @@ namespace NINA.ViewModel {
         private void CalculateError() {
             if (Telescope?.Connected == true) {
                 Coordinates solved = PlateSolveResult.Coordinates;
-                solved = solved.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
+                solved = solved.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
 
-                var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
 
                 PlateSolveResult.RaError = coords.RADegrees - solved.RADegrees;
                 PlateSolveResult.DecError = coords.Dec - solved.Dec;
@@ -442,11 +442,11 @@ namespace NINA.ViewModel {
             if (img != null) {
                 Coordinates coords = null;
                 if (Telescope?.Connected == true) {
-                    coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                    coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 }
                 var binning = Cam?.BinX ?? 1;
 
-                solver = PlateSolverFactory.CreateInstance(ProfileManager.Instance.ActiveProfile.PlateSolveSettings.PlateSolverType, binning, img.Width, img.Height, coords);
+                solver = PlateSolverFactory.CreateInstance(profileService, profileService.ActiveProfile.PlateSolveSettings.PlateSolverType, binning, img.Width, img.Height, coords);
             }
 
             return solver;
@@ -458,13 +458,13 @@ namespace NINA.ViewModel {
                 var binning = Cam?.BinX ?? 1;
 
                 PlateSolverEnum type;
-                if (ProfileManager.Instance.ActiveProfile.PlateSolveSettings.BlindSolverType == BlindSolverEnum.LOCAL) {
+                if (profileService.ActiveProfile.PlateSolveSettings.BlindSolverType == BlindSolverEnum.LOCAL) {
                     type = PlateSolverEnum.LOCAL;
                 } else {
                     type = PlateSolverEnum.ASTROMETRY_NET;
                 }
 
-                solver = PlateSolverFactory.CreateInstance(type, binning, img.Width, img.Height);
+                solver = PlateSolverFactory.CreateInstance(profileService, type, binning, img.Width, img.Height);
             }
 
             return solver;

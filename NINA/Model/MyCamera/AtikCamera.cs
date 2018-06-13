@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,12 +11,14 @@ using ASCOM.DeviceInterface;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 
 namespace NINA.Model.MyCamera {
 
     internal class AtikCamera : BaseINPC, ICamera {
 
-        public AtikCamera(int id) {
+        public AtikCamera(int id, IProfileService profileService) {
+            this.profileService = profileService;
             _cameraId = id;
             _info = AtikCameraDll.GetCameraProperties(_cameraId);
         }
@@ -48,6 +51,12 @@ namespace NINA.Model.MyCamera {
         public double Temperature {
             get {
                 return AtikCameraDll.GetTemperature(_cameraP);
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return false;
             }
         }
 
@@ -378,9 +387,10 @@ namespace NINA.Model.MyCamera {
                             await Task.Delay(100, token);
                         } while (!AtikCameraDll.ImageReady(_cameraP));
 
-                        return await AtikCameraDll.DownloadExposure(_cameraP, SensorType != SensorType.Monochrome);
+                        return await AtikCameraDll.DownloadExposure(_cameraP, SensorType != SensorType.Monochrome, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
+                        Logger.Error(ex);
                         Notification.ShowError(ex.Message);
                     }
                     return null;
@@ -411,12 +421,28 @@ namespace NINA.Model.MyCamera {
             AtikCameraDll.StopExposure(_cameraP);
         }
 
-        public void UpdateValues() {
-            RaisePropertyChanged(nameof(Temperature));
-            RaisePropertyChanged(nameof(CoolerPower));
-            RaisePropertyChanged(nameof(CoolerOn));
-            RaisePropertyChanged(nameof(TemperatureSetPoint));
-            RaisePropertyChanged(nameof(CameraState));
+        public void StartLiveView() {
+            throw new NotImplementedException();
+        }
+
+        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            throw new NotImplementedException();
+        }
+
+        public void StopLiveView() {
+            throw new NotImplementedException();
+        }
+
+        private bool _liveViewEnabled;
+        private IProfileService profileService;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+            }
         }
     }
 }

@@ -1,16 +1,16 @@
 ﻿using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
 using System;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(AstrometrySettings))]
-    public class AstrometrySettings {
+    [DataContract]
+    public class AstrometrySettings : IAstrometrySettings {
         private Epoch epochType = Epoch.JNOW;
 
-        [XmlElement(nameof(EpochType))]
+        [DataMember]
         public Epoch EpochType {
             get {
                 return epochType;
@@ -23,7 +23,7 @@ namespace NINA.Utility.Profile {
 
         private Hemisphere hemisphereType = Hemisphere.NORTHERN;
 
-        [XmlElement(nameof(HemisphereType))]
+        [DataMember]
         public Hemisphere HemisphereType {
             get {
                 return hemisphereType;
@@ -36,7 +36,7 @@ namespace NINA.Utility.Profile {
 
         private double latitude = 0;
 
-        [XmlElement(nameof(Latitude))]
+        [DataMember]
         public double Latitude {
             get {
                 return latitude;
@@ -49,7 +49,7 @@ namespace NINA.Utility.Profile {
 
         private double longitude = 0;
 
-        [XmlElement(nameof(Longitude))]
+        [DataMember]
         public double Longitude {
             get {
                 return longitude;

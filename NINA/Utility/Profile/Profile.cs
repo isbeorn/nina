@@ -1,20 +1,36 @@
 ﻿using NINA.Model.MyFilterWheel;
 using System;
+using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(Profile))]
-    public class Profile : BaseINPC {
+    [DataContract]
+    [KnownType(typeof(ApplicationSettings))]
+    [KnownType(typeof(AstrometrySettings))]
+    [KnownType(typeof(CameraSettings))]
+    [KnownType(typeof(ColorSchemaSettings))]
+    [KnownType(typeof(FilterWheelSettings))]
+    [KnownType(typeof(FocuserSettings))]
+    [KnownType(typeof(FramingAssistantSettings))]
+    [KnownType(typeof(GuiderSettings))]
+    [KnownType(typeof(ImageFileSettings))]
+    [KnownType(typeof(ImageSettings))]
+    [KnownType(typeof(MeridianFlipSettings))]
+    [KnownType(typeof(PlateSolveSettings))]
+    [KnownType(typeof(PolarAlignmentSettings))]
+    [KnownType(typeof(SequenceSettings))]
+    [KnownType(typeof(TelescopeSettings))]
+    [KnownType(typeof(WeatherDataSettings))]
+    public class Profile : BaseINPC, IProfile {
 
         public Profile() {
-            this.name = "Default";
         }
 
         public Profile(string name) : this() {
-            this.name = name;
+            this.Name = name;
         }
 
         /// <summary>
@@ -37,33 +53,26 @@ namespace NINA.Utility.Profile {
             return filter;
         }
 
-        private Guid id = Guid.NewGuid();
+        [DataMember]
+        public Guid Id { get; set; } = Guid.NewGuid();
 
-        [XmlElement(nameof(Id))]
-        public Guid Id {
-            get {
-                return id;
-            }
-            set {
-                id = value;
+        public static IProfile Clone(IProfile profileToClone) {
+            using (MemoryStream stream = new MemoryStream()) {
+                DataContractSerializer dcs = new DataContractSerializer(typeof(Profile));
+                dcs.WriteObject(stream, profileToClone);
+                stream.Position = 0;
+                var newProfile = (Profile)dcs.ReadObject(stream);
+                newProfile.Name = newProfile.Name + " Copy";
+                newProfile.Id = Guid.NewGuid();
+                return newProfile;
             }
         }
 
-        private string name;
-
-        [XmlElement(nameof(Name))]
-        public string Name {
-            get {
-                return name;
-            }
-            set {
-                name = value;
-            }
-        }
+        [DataMember]
+        public string Name { get; set; } = "Default";
 
         private bool isActive;
 
-        [XmlIgnore()]
         public bool IsActive {
             get {
                 return isActive;
@@ -74,196 +83,52 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private ApplicationSettings applicationSettings = new ApplicationSettings();
+        [DataMember]
+        public IApplicationSettings ApplicationSettings { get; set; } = new ApplicationSettings();
 
-        [XmlElement(nameof(ApplicationSettings))]
-        public ApplicationSettings ApplicationSettings {
-            get {
-                return applicationSettings;
-            }
-            set {
-                applicationSettings = value;
-            }
-        }
+        [DataMember]
+        public IAstrometrySettings AstrometrySettings { get; set; } = new AstrometrySettings();
 
-        private AstrometrySettings astrometrySettings = new AstrometrySettings();
+        [DataMember]
+        public ICameraSettings CameraSettings { get; set; } = new CameraSettings();
 
-        [XmlElement(nameof(AstrometrySettings))]
-        public AstrometrySettings AstrometrySettings {
-            get {
-                return astrometrySettings;
-            }
-            set {
-                astrometrySettings = value;
-            }
-        }
+        [DataMember]
+        public IColorSchemaSettings ColorSchemaSettings { get; set; } = new ColorSchemaSettings();
 
-        private CameraSettings cameraSettings = new CameraSettings();
+        [DataMember]
+        public IFilterWheelSettings FilterWheelSettings { get; set; } = new FilterWheelSettings();
 
-        [XmlElement(nameof(CameraSettings))]
-        public CameraSettings CameraSettings {
-            get {
-                return cameraSettings;
-            }
-            set {
-                cameraSettings = value;
-            }
-        }
+        [DataMember]
+        public IFocuserSettings FocuserSettings { get; set; } = new FocuserSettings();
 
-        private ColorSchemaSettings colorSchemaSettings = new ColorSchemaSettings();
+        [DataMember]
+        public IFramingAssistantSettings FramingAssistantSettings { get; set; } = new FramingAssistantSettings();
 
-        [XmlElement(nameof(ColorSchemaSettings))]
-        public ColorSchemaSettings ColorSchemaSettings {
-            get {
-                return colorSchemaSettings;
-            }
-            set {
-                colorSchemaSettings = value;
-            }
-        }
+        [DataMember]
+        public IGuiderSettings GuiderSettings { get; set; } = new GuiderSettings();
 
-        private FilterWheelSettings filterWheelSettings = new FilterWheelSettings();
+        [DataMember]
+        public IImageFileSettings ImageFileSettings { get; set; } = new ImageFileSettings();
 
-        [XmlElement(nameof(FilterWheelSettings))]
-        public FilterWheelSettings FilterWheelSettings {
-            get {
-                return filterWheelSettings;
-            }
-            set {
-                filterWheelSettings = value;
-            }
-        }
+        [DataMember]
+        public IImageSettings ImageSettings { get; set; } = new ImageSettings();
 
-        private FocuserSettings focuserSettings = new FocuserSettings();
+        [DataMember]
+        public IMeridianFlipSettings MeridianFlipSettings { get; set; } = new MeridianFlipSettings();
 
-        [XmlElement(nameof(FocuserSettings))]
-        public FocuserSettings FocuserSettings {
-            get {
-                return focuserSettings;
-            }
-            set {
-                focuserSettings = value;
-            }
-        }
+        [DataMember]
+        public IPlateSolveSettings PlateSolveSettings { get; set; } = new PlateSolveSettings();
 
-        private FramingAssistantSettings framingAssistantSettings = new FramingAssistantSettings();
+        [DataMember]
+        public IPolarAlignmentSettings PolarAlignmentSettings { get; set; } = new PolarAlignmentSettings();
 
-        [XmlElement(nameof(FramingAssistantSettings))]
-        public FramingAssistantSettings FramingAssistantSettings {
-            get {
-                return framingAssistantSettings;
-            }
-            set {
-                framingAssistantSettings = value;
-            }
-        }
+        [DataMember]
+        public ISequenceSettings SequenceSettings { get; set; } = new SequenceSettings();
 
-        private GuiderSettings guiderSettings = new GuiderSettings();
+        [DataMember]
+        public ITelescopeSettings TelescopeSettings { get; set; } = new TelescopeSettings();
 
-        [XmlElement(nameof(GuiderSettings))]
-        public GuiderSettings GuiderSettings {
-            get {
-                return guiderSettings;
-            }
-            set {
-                guiderSettings = value;
-            }
-        }
-
-        private ImageFileSettings imageFileSettings = new ImageFileSettings();
-
-        [XmlElement(nameof(ImageFileSettings))]
-        public ImageFileSettings ImageFileSettings {
-            get {
-                return imageFileSettings;
-            }
-            set {
-                imageFileSettings = value;
-            }
-        }
-
-        private ImageSettings imageSettings = new ImageSettings();
-
-        [XmlElement(nameof(ImageSettings))]
-        public ImageSettings ImageSettings {
-            get {
-                return imageSettings;
-            }
-            set {
-                imageSettings = value;
-            }
-        }
-
-        private MeridianFlipSettings meridianFlipSettings = new MeridianFlipSettings();
-
-        [XmlElement(nameof(MeridianFlipSettings))]
-        public MeridianFlipSettings MeridianFlipSettings {
-            get {
-                return meridianFlipSettings;
-            }
-            set {
-                meridianFlipSettings = value;
-            }
-        }
-
-        private PlateSolveSettings plateSolveSettings = new PlateSolveSettings();
-
-        [XmlElement(nameof(PlateSolveSettings))]
-        public PlateSolveSettings PlateSolveSettings {
-            get {
-                return plateSolveSettings;
-            }
-            set {
-                plateSolveSettings = value;
-            }
-        }
-
-        private PolarAlignmentSettings polarAlignmentSettings = new PolarAlignmentSettings();
-
-        [XmlElement(nameof(PolarAlignmentSettings))]
-        public PolarAlignmentSettings PolarAlignmentSettings {
-            get {
-                return polarAlignmentSettings;
-            }
-            set {
-                polarAlignmentSettings = value;
-            }
-        }
-
-        private SequenceSettings sequenceSettings = new SequenceSettings();
-
-        [XmlElement(nameof(SequenceSettings))]
-        public SequenceSettings SequenceSettings {
-            get {
-                return sequenceSettings;
-            }
-            set {
-                sequenceSettings = value;
-            }
-        }
-
-        private TelescopeSettings telescopeSettings = new TelescopeSettings();
-
-        [XmlElement(nameof(TelescopeSettings))]
-        public TelescopeSettings TelescopeSettings {
-            get {
-                return telescopeSettings;
-            }
-            set {
-                telescopeSettings = value;
-            }
-        }
-
-        private WeatherDataSettings weatherDataSettings = new WeatherDataSettings();
-
-        [XmlElement(nameof(WeatherDataSettings))]
-        public WeatherDataSettings WeatherDataSettings {
-            get {
-                return weatherDataSettings;
-            }
-            set {
-                weatherDataSettings = value;
-            }
-        }
+        [DataMember]
+        public IWeatherDataSettings WeatherDataSettings { get; set; } = new WeatherDataSettings();
     }
 }

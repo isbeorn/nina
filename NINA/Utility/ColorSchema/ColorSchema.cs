@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Windows.Media;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -72,52 +73,66 @@ namespace NINA.Utility {
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
-                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFFFF")
+                NotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF")
             };
         }
     }
 
     [Serializable()]
     [XmlRoot(ElementName = "ColorSchema")]
+    [DataContract]
     public class ColorSchema {
 
         [XmlAttribute(nameof(Name))]
+        [DataMember]
         public String Name { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color PrimaryColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color SecondaryColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color BorderColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color BackgroundColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color ButtonBackgroundColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color ButtonBackgroundSelectedColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color ButtonForegroundColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color ButtonForegroundDisabledColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color NotificationWarningColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color NotificationErrorColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color NotificationWarningTextColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
         public Color NotificationErrorTextColor { get; set; }
 
         public ColorSchema() {

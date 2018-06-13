@@ -81,26 +81,27 @@ namespace NINA.Model {
             }
         }
 
-        public static CaptureSequenceList Load(string path) {
+        public static CaptureSequenceList Load(Stream stream, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude) {
             CaptureSequenceList l = null;
             try {
-                var listXml = XElement.Load(path);
-
-                System.IO.StringReader reader = new System.IO.StringReader(listXml.ToString());
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CaptureSequenceList));
 
-                l = (CaptureSequenceList)xmlSerializer.Deserialize(reader);
+                l = (CaptureSequenceList)xmlSerializer.Deserialize(stream);
                 foreach (CaptureSequence s in l) {
                     //first try to match by name; otherwise match by position.
-                    var filter = ProfileManager.Instance.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
+                    var filter = filters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
                     if (filter == null) {
-                        filter = ProfileManager.Instance.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
+                        filter = filters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
                         if (filter == null) {
                             Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (s.FilterType.Position + 1)));
                         }
                     }
                     s.FilterType = filter;
                 }
+                if (l.ActiveSequence == null && l.Count > 0) {
+                    l.ActiveSequence = l.Items.SkipWhile(x => x.TotalExposureCount - x.ProgressExposureCount == 0).FirstOrDefault();
+                }
+                l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), latitude, longitude);
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceFailed"] + Environment.NewLine + ex.Message);
@@ -115,6 +116,7 @@ namespace NINA.Model {
         public void SetSequenceTarget(DeepSkyObject dso) {
             TargetName = dso.Name;
             Coordinates = dso.Coordinates;
+            this.DSO = dso;
         }
 
         private string _targetName;
@@ -163,12 +165,13 @@ namespace NINA.Model {
 
             if (Mode == SequenceMode.STANDARD) {
                 seq = ActiveSequence ?? Items.First();
-                if (seq.ProgressExposureCount < seq.TotalExposureCount) {
-                } else {
+                if (seq.ProgressExposureCount == seq.TotalExposureCount) {
                     //No exposures remaining. Get next Sequence
                     var idx = Items.IndexOf(seq) + 1;
                     if (idx < Items.Count) {
                         seq = Items[idx];
+                        ActiveSequence = seq;
+                        return this.Next();
                     } else {
                         seq = null;
                     }
@@ -289,7 +292,7 @@ namespace NINA.Model {
         [XmlAttribute(nameof(DecSeconds))]
         public int DecSeconds {
             get {
-                return (int)Math.Floor((Math.Abs(_coordinates.Dec * 60.0d * 60.0d) % 60));
+                return (int)Math.Round((Math.Abs(_coordinates.Dec * 60.0d * 60.0d) % 60));
             }
             set {
                 if (_coordinates.Dec < 0) {
@@ -311,7 +314,8 @@ namespace NINA.Model {
             RaisePropertyChanged(nameof(DecMinutes));
             RaisePropertyChanged(nameof(DecSeconds));
             AltitudeVisible = true;
-            DSO = new DeepSkyObject(this.TargetName, Coordinates);
+            DSO.Name = this.TargetName;
+            DSO.Coordinates = Coordinates;
         }
 
         private DeepSkyObject _dso;
@@ -319,15 +323,18 @@ namespace NINA.Model {
         [XmlIgnore]
         public DeepSkyObject DSO {
             get {
+                if (_dso == null) {
+                    _dso = new DeepSkyObject(string.Empty, Coordinates, string.Empty);
+                }
                 return _dso;
             }
-            set {
+            private set {
                 _dso = value;
-                _dso.SetDateAndPosition(
+                /*_dso.SetDateAndPosition(
                     SkyAtlasVM.GetReferenceDate(DateTime.Now),
-                    ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude,
-                    ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude
-                );
+                    profileService.ActiveProfile.AstrometrySettings.Latitude,
+                    profileService.ActiveProfile.AstrometrySettings.Longitude
+                );*/
                 RaisePropertyChanged();
             }
         }
@@ -433,6 +440,84 @@ namespace NINA.Model {
             }
             set {
                 _autoFocusOnFilterChange = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _autoFocusAfterSetTime;
+
+        [XmlAttribute(nameof(AutoFocusAfterSetTime))]
+        public bool AutoFocusAfterSetTime {
+            get {
+                return _autoFocusAfterSetTime;
+            }
+            set {
+                _autoFocusAfterSetTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _autoFocusSetTime = 30;
+
+        [XmlAttribute(nameof(AutoFocusSetTime))]
+        public double AutoFocusSetTime {
+            get {
+                return _autoFocusSetTime;
+            }
+            set {
+                _autoFocusSetTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _autoFocusAfterSetExposures;
+
+        [XmlAttribute(nameof(AutoFocusAfterSetExposures))]
+        public bool AutoFocusAfterSetExposures {
+            get {
+                return _autoFocusAfterSetExposures;
+            }
+            set {
+                _autoFocusAfterSetExposures = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _autoFocusSetExposures = 10;
+
+        [XmlAttribute(nameof(AutoFocusSetExposures))]
+        public double AutoFocusSetExposures {
+            get {
+                return _autoFocusSetExposures;
+            }
+            set {
+                _autoFocusSetExposures = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _autoFocusAfterTemperatureChange = false;
+
+        [XmlAttribute(nameof(AutoFocusAfterTemperatureChange))]
+        public bool AutoFocusAfterTemperatureChange {
+            get {
+                return _autoFocusAfterTemperatureChange;
+            }
+            set {
+                _autoFocusAfterTemperatureChange = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _autoFocusAfterTemperatureChangeAmount = 5;
+
+        [XmlAttribute(nameof(AutoFocusAfterTemperatureChangeAmount))]
+        public double AutoFocusAfterTemperatureChangeAmount {
+            get {
+                return _autoFocusAfterTemperatureChangeAmount;
+            }
+            set {
+                _autoFocusAfterTemperatureChangeAmount = value;
                 RaisePropertyChanged();
             }
         }

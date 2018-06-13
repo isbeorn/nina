@@ -1,4 +1,5 @@
 ﻿using NINA.Utility;
+using System;
 
 namespace NINA.Model {
 
@@ -59,6 +60,100 @@ namespace NINA.Model {
             }
             set {
                 _progressType = value;
+                RaisePropertyChanged();
+            }
+        }
+        private string _status2;
+
+        public string Status2 {
+            get {
+                return _status2;
+            }
+            set {
+                _status2 = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _progress2 = -1;
+
+        public double Progress2 {
+            get {
+                return _progress2;
+            }
+            set {
+                _progress2 = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _maxProgress2 = 1;
+
+        public int MaxProgress2 {
+            get {
+                return _maxProgress2;
+            }
+            set {
+                _maxProgress2 = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private StatusProgressType _progressType2 = StatusProgressType.Percent;
+
+        public StatusProgressType ProgressType2 {
+            get {
+                return _progressType2;
+            }
+            set {
+                _progressType2 = value;
+                RaisePropertyChanged();
+            }
+        }
+        private string _status3;
+
+        public string Status3 {
+            get {
+                return _status3;
+            }
+            set {
+                _status3 = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _progress3 = -1;
+
+        public double Progress3 {
+            get {
+                return _progress3;
+            }
+            set {
+                _progress3 = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _maxProgress3 = 1;
+
+        public int MaxProgress3 {
+            get {
+                return _maxProgress3;
+            }
+            set {
+                _maxProgress3 = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private StatusProgressType _progressType3 = StatusProgressType.Percent;
+
+        public StatusProgressType ProgressType3 {
+            get {
+                return _progressType3;
+            }
+            set {
+                _progressType3 = value;
                 RaisePropertyChanged();
             }
         }

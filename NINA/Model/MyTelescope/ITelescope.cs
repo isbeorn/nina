@@ -26,6 +26,7 @@ namespace NINA.Model.MyTelescope {
         double SiteLongitude { get; set; }
         double SiteElevation { get; }
         bool CanSetSiteLatLong { get; }
+        bool AtPark { get; }
 
         bool MeridianFlip(Coordinates targetCoordinates);
 
@@ -50,8 +51,6 @@ namespace NINA.Model.MyTelescope {
         bool Sync(double ra, double dec);
 
         void Unpark();
-
-        void UpdateValues();
 
         void SendCommandString(string command);
     }

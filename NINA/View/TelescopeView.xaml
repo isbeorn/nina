@@ -53,7 +53,7 @@
                                 Grid.Column="1"
                                 MinHeight="40"
                                 DisplayMemberPath="Name"
-                                IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
                                 ItemsSource="{Binding TelescopeChooserVM.Devices}"
                                 SelectedItem="{Binding TelescopeChooserVM.SelectedDevice}"
                                 SelectedValuePath="Name" />
@@ -104,14 +104,14 @@
                                     CancelButtonImage="{StaticResource CancelSVG}"
                                     CancelCommand="{Binding CancelChooseTelescopeCommand}"
                                     Command="{Binding ChooseTelescopeCommand}"
-                                    IsEnabled="{Binding Telescope.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                    IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
                                     ToolTip="{ns:Loc LblConnect}"
-                                    Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                                    Visibility="{Binding Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
                                 <Grid Visibility="{Binding Telescope, Converter={StaticResource NullToVisibilityConverter}}">
                                     <Button
                                         Command="{Binding DisconnectCommand}"
-                                        IsEnabled="{Binding Telescope.Connected}"
-                                        Visibility="{Binding Telescope.Connected, Converter={StaticResource VisibilityConverter}}">
+                                        IsEnabled="{Binding Connected}"
+                                        Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}">
                                         <Button.ToolTip>
                                             <ToolTip ToolTipService.ShowOnDisabled="False">
                                                 <TextBlock Text="{ns:Loc LblDisconnect}" />
@@ -217,14 +217,14 @@
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblSiderealTime}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.SiderealTimeString}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding SiderealTimeString}" />
                                 </UniformGrid>
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblMeridianIn}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.HoursToMeridianString}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding HoursToMeridianString}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -235,14 +235,14 @@
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblRightAscension}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.RightAscensionString}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding RightAscensionString}" />
                                 </UniformGrid>
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblDeclination}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.DeclinationString}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding DeclinationString}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -253,14 +253,14 @@
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblAltitude}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.AltitudeString}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding AltitudeString}" />
                                 </UniformGrid>
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblAzimuth}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.AzimuthString}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding AzimuthString}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -270,7 +270,7 @@
         </Grid>
 
         <Grid Grid.Row="1" IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <Grid IsEnabled="{Binding Telescope.Connected}">
+            <Grid IsEnabled="{Binding Connected}">
                 <GroupBox Header="{ns:Loc LblManualCoordinates}">
                     <StackPanel>
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
@@ -378,7 +378,7 @@
             Grid.Row="1"
             Grid.Column="1"
             IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <Grid IsEnabled="{Binding Telescope.Connected}">
+            <Grid IsEnabled="{Binding Connected}">
                 <GroupBox
                     Grid.Row="1"
                     Header="{ns:Loc LblManualControl}"
@@ -553,7 +553,7 @@
                             Height="80"
                             HorizontalAlignment="Right"
                             Command="{Binding ParkCommand}"
-                            Visibility="{Binding Telescope.AtPark, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                            Visibility="{Binding AtPark, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                             <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblPark}" />
                         </Button>
                         <Grid
@@ -563,7 +563,7 @@
                             Height="80"
                             HorizontalAlignment="Right"
                             Visibility="{Binding Telescope, Converter={StaticResource NullToVisibilityConverter}}">
-                            <Button Command="{Binding UnparkCommand}" Visibility="{Binding Telescope.AtPark, Converter={StaticResource VisibilityConverter}}">
+                            <Button Command="{Binding UnparkCommand}" Visibility="{Binding AtPark, Converter={StaticResource VisibilityConverter}}">
                                 <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblUnpark}" />
                             </Button>
                         </Grid>

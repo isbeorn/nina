@@ -1,24 +1,25 @@
 ﻿using NINA.Utility.Mediator;
 using System;
 using System.Linq;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(Profiles))]
+    [DataContract]
+    [KnownType(typeof(Profile))]
     public class Profiles : BaseINPC {
 
         public Profiles() {
-            ProfileList = new ObserveAllCollection<Profile>();
+            ProfileList = new ObserveAllCollection<IProfile>();
         }
 
-        [XmlElement(nameof(Profile))]
-        public ObserveAllCollection<Profile> ProfileList { get; set; }
+        [DataMember(Name = nameof(Profile))]
+        public ObserveAllCollection<IProfile> ProfileList { get; set; }
 
         private Guid activeProfileId;
 
-        [XmlAttribute(nameof(ActiveProfileId))]
+        [DataMember]
         public Guid ActiveProfileId {
             get {
                 return activeProfileId;
@@ -28,19 +29,9 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private Profile activeProfile;
+        public IProfile ActiveProfile { get; private set; }
 
-        [XmlIgnore]
-        public Profile ActiveProfile {
-            get {
-                return activeProfile;
-            }
-            private set {
-                activeProfile = value;
-            }
-        }
-
-        public void Add(Profile p) {
+        public void Add(IProfile p) {
             ProfileList.Add(p);
         }
 

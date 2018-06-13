@@ -30,12 +30,13 @@
                                 x:Name="icon"
                                 Width="15"
                                 Height="15"
-                                Margin="2"
+                                Margin="0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Fill="{StaticResource ButtonBackgroundBrush}"
                                 Points="0,0 12,7.5, 0,15"
-                                RenderTransformOrigin="0.5,0.5" />
+                                RenderTransformOrigin="0.5,0.5"
+                                Stroke="{StaticResource BorderBrush}" />
                             <ContentPresenter
                                 Grid.Column="1"
                                 Margin="4,0,0,0"
@@ -74,7 +75,8 @@
                             <Ellipse
                                 Width="15"
                                 Height="15"
-                                Fill="{StaticResource ButtonBackgroundBrush}" />
+                                Fill="{StaticResource ButtonBackgroundBrush}"
+                                Stroke="{StaticResource BorderBrush}" />
                             <Path
                                 x:Name="icon"
                                 Width="15"

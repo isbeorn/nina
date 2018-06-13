@@ -9,6 +9,13 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyWeatherData {
 
     internal class OpenWeatherMapData : BaseINPC, IWeatherData {
+
+        public OpenWeatherMapData(IProfileService profileService) {
+            this.profileService = profileService;
+        }
+
+        private IProfileService profileService;
+
         public double Latitude { get; private set; }
 
         public double Longitude { get; private set; }
@@ -36,16 +43,16 @@ namespace NINA.Model.MyWeatherData {
         }
 
         public async Task<bool> Update() {
-            var apikey = ProfileManager.Instance.ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey;
-            var latitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude;
-            var longitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude;
+            var apikey = profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey;
+            var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
+            var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
 
             if (string.IsNullOrEmpty(apikey)) {
                 Notification.ShowError("Unable to get weather data! No API Key set");
                 return false;
             }
 
-            var url = ProfileManager.Instance.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl + "?appid={0}&lat={1}&lon={2}";
+            var url = profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl + "?appid={0}&lat={1}&lon={2}";
             string result = await Utility.Utility.HttpGetRequest(new CancellationToken(), url, apikey, latitude, longitude);
 
             JObject o = JObject.Parse(result);

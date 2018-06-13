@@ -14,7 +14,7 @@ namespace NINA.ViewModel {
 
     internal class FocuserVM : DockableVM {
 
-        public FocuserVM() {
+        public FocuserVM(IProfileService profileService) : base(profileService) {
             Title = "LblFocuser";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
 
@@ -25,6 +25,12 @@ namespace NINA.ViewModel {
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList);
             MoveFocuserCommand = new AsyncCommand<int>(() => MoveFocuser(TargetPosition), (p) => Connected && TempComp == false);
             HaltFocuserCommand = new RelayCommand(HaltFocuser);
+
+            updateTimer = new DeviceUpdateTimer(
+                GetFocuserValues,
+                UpdateFocuserValues,
+                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
+            );
 
             Mediator.Instance.RegisterAsyncRequest(
                 new MoveFocuserMessageHandle(async (MoveFocuserMessage msg) => {
@@ -80,13 +86,6 @@ namespace NINA.ViewModel {
             return pos;
         }
 
-        private void UpdateFocuser_Tick(object sender, EventArgs e) {
-            if (Focuser?.Connected == true) {
-                Focuser.UpdateValues();
-                this.Position = Focuser.Position;
-            }
-        }
-
         private CancellationTokenSource _cancelChooseFocuserSource;
 
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
@@ -95,10 +94,10 @@ namespace NINA.ViewModel {
             await ss.WaitAsync();
             try {
                 Disconnect();
-                _cancelUpdateFocuserValues?.Cancel();
+                updateTimer?.Stop();
 
                 if (FocuserChooserVM.SelectedDevice.Id == "No_Device") {
-                    ProfileManager.Instance.ActiveProfile.FocuserSettings.Id = FocuserChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.FocuserSettings.Id = FocuserChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
@@ -119,12 +118,13 @@ namespace NINA.ViewModel {
                             this.Focuser = focuser;
                             Connected = true;
                             Notification.ShowSuccess(Locale.Loc.Instance["LblFocuserConnected"]);
-                            _updateFocuserValuesProgress = new Progress<Dictionary<string, object>>(UpdateFocuserValues);
-                            _cancelUpdateFocuserValues = new CancellationTokenSource();
-                            _updateFocuserValuesTask = Task.Run(() => GetFocuserValues(_updateFocuserValuesProgress, _cancelUpdateFocuserValues.Token));
+
+
+                            updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
+                            updateTimer.Start();
 
                             TargetPosition = Focuser.Position;
-                            ProfileManager.Instance.ActiveProfile.FocuserSettings.Id = Focuser.Id;
+                            profileService.ActiveProfile.FocuserSettings.Id = Focuser.Id;
                             return true;
                         } else {
                             Connected = false;
@@ -153,31 +153,14 @@ namespace NINA.ViewModel {
             _cancelChooseFocuserSource?.Cancel();
         }
 
-        private void GetFocuserValues(IProgress<Dictionary<string, object>> p, CancellationToken token) {
+        private Dictionary<string, object> GetFocuserValues() {
             Dictionary<string, object> focuserValues = new Dictionary<string, object>();
-            try {
-                do {
-                    token.ThrowIfCancellationRequested();
-
-                    focuserValues.Clear();
-                    focuserValues.Add(nameof(Connected), _focuser?.Connected ?? false);
-                    focuserValues.Add(nameof(Position), _focuser?.Position ?? 0);
-                    focuserValues.Add(nameof(Temperature), _focuser?.Temperature ?? double.NaN);
-                    focuserValues.Add(nameof(IsMoving), _focuser?.IsMoving ?? false);
-                    focuserValues.Add(nameof(TempComp), _focuser?.TempComp ?? false);
-
-                    p.Report(focuserValues);
-
-                    token.ThrowIfCancellationRequested();
-
-                    Thread.Sleep((int)(ProfileManager.Instance.ActiveProfile.ApplicationSettings.DevicePollingInterval * 1000));
-                } while (Connected == true);
-            } catch (OperationCanceledException) {
-            } finally {
-                focuserValues.Clear();
-                focuserValues.Add(nameof(Connected), false);
-                p.Report(focuserValues);
-            }
+            focuserValues.Add(nameof(Connected), _focuser?.Connected ?? false);
+            focuserValues.Add(nameof(Position), _focuser?.Position ?? 0);
+            focuserValues.Add(nameof(Temperature), _focuser?.Temperature ?? double.NaN);
+            focuserValues.Add(nameof(IsMoving), _focuser?.IsMoving ?? false);
+            focuserValues.Add(nameof(TempComp), _focuser?.TempComp ?? false);
+            return focuserValues;
         }
 
         private void UpdateFocuserValues(Dictionary<string, object> focuserValues) {
@@ -285,10 +268,7 @@ namespace NINA.ViewModel {
 
         public void Disconnect() {
             Connected = false;
-            _cancelUpdateFocuserValues?.Cancel();
-            do {
-                Task.Delay(100);
-            } while (!_updateFocuserValuesTask?.IsCompleted == true);
+            updateTimer?.Stop();
             Focuser?.Disconnect();
             Focuser = null;
             RaisePropertyChanged(nameof(Focuser));
@@ -315,7 +295,7 @@ namespace NINA.ViewModel {
         public FocuserChooserVM FocuserChooserVM {
             get {
                 if (_focuserChooserVM == null) {
-                    _focuserChooserVM = new FocuserChooserVM();
+                    _focuserChooserVM = new FocuserChooserVM(profileService);
                 }
                 return _focuserChooserVM;
             }
@@ -324,9 +304,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private IProgress<Dictionary<string, object>> _updateFocuserValuesProgress;
-        private CancellationTokenSource _cancelUpdateFocuserValues;
-        private Task _updateFocuserValuesTask;
+        DeviceUpdateTimer updateTimer;
 
         public ICommand RefreshFocuserListCommand { get; private set; }
 
@@ -341,7 +319,7 @@ namespace NINA.ViewModel {
 
     internal class FocuserChooserVM : EquipmentChooserVM {
 
-        public FocuserChooserVM() : base(typeof(FocuserChooserVM)) {
+        public FocuserChooserVM(IProfileService profileService) : base(typeof(FocuserChooserVM), profileService) {
         }
 
         public override void GetEquipment() {
@@ -360,7 +338,7 @@ namespace NINA.ViewModel {
                 }
             }
 
-            DetermineSelectedDevice(ProfileManager.Instance.ActiveProfile.FocuserSettings.Id);
+            DetermineSelectedDevice(profileService.ActiveProfile.FocuserSettings.Id);
         }
     }
 }

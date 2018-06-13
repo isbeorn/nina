@@ -1,15 +1,15 @@
 ﻿using NINA.Utility.Mediator;
 using System;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(WeatherDataSettings))]
-    public class FramingAssistantSettings {
+    [DataContract]
+    public class FramingAssistantSettings : IFramingAssistantSettings {
         private int cameraHeight = 3500;
 
-        [XmlElement(nameof(CameraHeight))]
+        [DataMember]
         public int CameraHeight {
             get {
                 return cameraHeight;
@@ -22,7 +22,7 @@ namespace NINA.Utility.Profile {
 
         private int cameraWidth = 4500;
 
-        [XmlElement(nameof(CameraWidth))]
+        [DataMember]
         public int CameraWidth {
             get {
                 return cameraWidth;
@@ -35,7 +35,7 @@ namespace NINA.Utility.Profile {
 
         private double fieldOfView = 3;
 
-        [XmlElement(nameof(FieldOfView))]
+        [DataMember]
         public double FieldOfView {
             get {
                 return fieldOfView;

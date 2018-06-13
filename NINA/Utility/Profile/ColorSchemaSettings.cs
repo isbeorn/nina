@@ -1,126 +1,116 @@
 ﻿using NINA.Utility.Mediator;
 using System;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows.Media;
-using System.Xml.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(ColorSchemaSettings))]
-    public class ColorSchemaSettings {
+    [DataContract]
+    public class ColorSchemaSettings : IColorSchemaSettings {
 
         public ColorSchemaSettings() {
+            Initialize();
+        }
+
+        private void Initialize() {
             ColorSchemas = ColorSchemas.ReadColorSchemas();
             ColorSchemas.Items.Add(new ColorSchema {
-                Name = "Custom",
-                PrimaryColor = PrimaryColor,
-                SecondaryColor = SecondaryColor,
-                BorderColor = BorderColor,
-                BackgroundColor = BackgroundColor,
-                ButtonBackgroundColor = ButtonBackgroundColor,
-                ButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor,
-                ButtonForegroundColor = ButtonForegroundColor,
-                ButtonForegroundDisabledColor = ButtonForegroundDisabledColor,
-                NotificationWarningColor = NotificationWarningColor,
-                NotificationErrorColor = NotificationErrorColor,
-                NotificationWarningTextColor = NotificationWarningTextColor,
-                NotificationErrorTextColor = NotificationErrorTextColor
+                Name = (ColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") ? "Alternative Custom" : "Custom",
+                PrimaryColor = primaryColor,
+                SecondaryColor = secondaryColor,
+                BorderColor = borderColor,
+                BackgroundColor = backgroundColor,
+                ButtonBackgroundColor = buttonBackgroundColor,
+                ButtonBackgroundSelectedColor = buttonBackgroundSelectedColor,
+                ButtonForegroundColor = buttonForegroundColor,
+                ButtonForegroundDisabledColor = buttonForegroundDisabledColor,
+                NotificationWarningColor = notificationWarningColor,
+                NotificationErrorColor = notificationErrorColor,
+                NotificationWarningTextColor = notificationWarningTextColor,
+                NotificationErrorTextColor = notificationErrorTextColor
             });
 
             ColorSchemas.Items.Add(new ColorSchema {
-                Name = "Alternative Custom",
-                PrimaryColor = AltPrimaryColor,
-                SecondaryColor = AltSecondaryColor,
-                BorderColor = AltBorderColor,
-                BackgroundColor = AltBackgroundColor,
-                ButtonBackgroundColor = AltButtonBackgroundColor,
-                ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor,
-                ButtonForegroundColor = AltButtonForegroundColor,
-                ButtonForegroundDisabledColor = AltButtonForegroundDisabledColor,
-                NotificationWarningColor = AltNotificationWarningColor,
-                NotificationErrorColor = AltNotificationErrorColor,
-                NotificationWarningTextColor = AltNotificationWarningTextColor,
-                NotificationErrorTextColor = AltNotificationErrorTextColor
+                Name = AltColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom" ? "Custom" : "Alternative Custom",
+                PrimaryColor = altPrimaryColor,
+                SecondaryColor = altSecondaryColor,
+                BorderColor = altBorderColor,
+                BackgroundColor = altBackgroundColor,
+                ButtonBackgroundColor = altButtonBackgroundColor,
+                ButtonBackgroundSelectedColor = altButtonBackgroundSelectedColor,
+                ButtonForegroundColor = altButtonForegroundColor,
+                ButtonForegroundDisabledColor = altButtonForegroundDisabledColor,
+                NotificationWarningColor = altNotificationWarningColor,
+                NotificationErrorColor = altNotificationErrorColor,
+                NotificationWarningTextColor = altNotificationWarningTextColor,
+                NotificationErrorTextColor = altNotificationErrorTextColor
             });
+            ColorSchemas = ColorSchemas;
+
+            ColorSchema = ColorSchemas.Items.Where(x => x.Name == ColorSchemaName).FirstOrDefault();
+            if (ColorSchema == null) {
+                ColorSchema = ColorSchemas.CreateDefaultSchema();
+            }
+
+            AltColorSchema = ColorSchemas.Items.Where(x => x.Name == AltColorSchemaName).FirstOrDefault();
+            if (AltColorSchema == null) {
+                AltColorSchema = ColorSchemas.CreateDefaultAltSchema();
+            }
         }
 
-        [XmlIgnore]
+        [OnDeserialized]
+        private void SetValuesOnDeserialized(StreamingContext context) {
+            Initialize();
+        }
+
         public ColorSchemas ColorSchemas { get; set; }
 
-        private ColorSchema colorSchema;
+        [DataMember]
+        public ColorSchema ColorSchema { get; set; }
 
-        [XmlElement(nameof(ColorSchema))]
-        public ColorSchema ColorSchema {
-            get {
-                if (colorSchema == null) {
-                    colorSchema = ColorSchemas.Items.Where(x => x.Name == ColorSchemaName).FirstOrDefault();
-                    if (colorSchema == null) {
-                        colorSchema = ColorSchemas.CreateDefaultSchema();
-                    }
-                }
-                return colorSchema;
-            }
-            set {
-                colorSchema = value;
-            }
-        }
-
-        private ColorSchema altColorSchema;
-
-        [XmlElement(nameof(AltColorSchema))]
-        public ColorSchema AltColorSchema {
-            get {
-                if (altColorSchema == null) {
-                    altColorSchema = ColorSchemas.Items.Where(x => x.Name == AltColorSchemaName).FirstOrDefault();
-                    if (altColorSchema == null) {
-                        altColorSchema = ColorSchemas.CreateDefaultAltSchema();
-                    }
-                }
-                return altColorSchema;
-            }
-            set {
-                altColorSchema = value;
-            }
-        }
+        [DataMember]
+        public ColorSchema AltColorSchema { get; set; }
 
         private string colorSchemaName = "Light";
 
-        [XmlElement(nameof(ColorSchemaName))]
+        [DataMember]
         public string ColorSchemaName {
             get {
                 return colorSchemaName;
             }
             set {
                 colorSchemaName = value;
-                ColorSchema = ColorSchemas.Items.Where(x => x.Name == value).FirstOrDefault();
+                ColorSchema = ColorSchemas?.Items.Where(x => x.Name == value).FirstOrDefault();
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
         private string altColorSchemaName = "Dark";
 
-        [XmlElement(nameof(AltColorSchemaName))]
+        [DataMember]
         public string AltColorSchemaName {
             get {
                 return altColorSchemaName;
             }
             set {
                 altColorSchemaName = value;
-                AltColorSchema = ColorSchemas.Items.Where(x => x.Name == value).FirstOrDefault();
+                AltColorSchema = ColorSchemas?.Items.Where(x => x.Name == value).FirstOrDefault();
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
 
+        [DataMember]
         private Color primaryColor = (Color)ColorConverter.ConvertFromString("#FF000000");
 
-        [XmlElement(nameof(PrimaryColor))]
+        [DataMember]
         public Color PrimaryColor {
             get {
                 return ColorSchema.PrimaryColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.PrimaryColor = value;
                     primaryColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -128,15 +118,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color secondaryColor = (Color)ColorConverter.ConvertFromString("#FF54748C");
 
-        [XmlElement(nameof(SecondaryColor))]
+        [DataMember]
         public Color SecondaryColor {
             get {
                 return ColorSchema.SecondaryColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.SecondaryColor = value;
                     secondaryColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -144,15 +135,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color borderColor = (Color)ColorConverter.ConvertFromString("#AABCBCBC");
 
-        [XmlElement(nameof(BorderColor))]
+        [DataMember]
         public Color BorderColor {
             get {
                 return ColorSchema.BorderColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.BorderColor = value;
                     borderColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -160,15 +152,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color backgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
 
-        [XmlElement(nameof(BackgroundColor))]
+        [DataMember]
         public Color BackgroundColor {
             get {
                 return ColorSchema.BackgroundColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.BackgroundColor = value;
                     backgroundColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -176,15 +169,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color buttonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0B3C5D");
 
-        [XmlElement(nameof(ButtonBackgroundColor))]
+        [DataMember]
         public Color ButtonBackgroundColor {
             get {
                 return ColorSchema.ButtonBackgroundColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.ButtonBackgroundColor = value;
                     buttonBackgroundColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -192,15 +186,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color buttonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF2190DB");
 
-        [XmlElement(nameof(ButtonBackgroundSelectedColor))]
+        [DataMember]
         public Color ButtonBackgroundSelectedColor {
             get {
                 return ColorSchema.ButtonBackgroundSelectedColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.ButtonBackgroundSelectedColor = value;
                     buttonBackgroundSelectedColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -208,15 +203,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color buttonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF1D2731");
 
-        [XmlElement(nameof(ButtonForegroundDisabledColor))]
+        [DataMember]
         public Color ButtonForegroundDisabledColor {
             get {
                 return ColorSchema.ButtonForegroundDisabledColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.ButtonForegroundDisabledColor = value;
                     buttonForegroundDisabledColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -224,15 +220,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color buttonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
 
-        [XmlElement(nameof(ButtonForegroundColor))]
+        [DataMember]
         public Color ButtonForegroundColor {
             get {
                 return ColorSchema.ButtonForegroundColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.ButtonForegroundColor = value;
                     buttonForegroundColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -240,15 +237,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color notificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300");
 
-        [XmlElement(nameof(NotificationWarningColor))]
+        [DataMember]
         public Color NotificationWarningColor {
             get {
                 return ColorSchema.NotificationWarningColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.NotificationWarningColor = value;
                     notificationWarningColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -256,15 +254,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color notificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606");
 
-        [XmlElement(nameof(NotificationErrorColor))]
+        [DataMember]
         public Color NotificationErrorColor {
             get {
                 return ColorSchema.NotificationErrorColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.NotificationErrorColor = value;
                     notificationErrorColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -272,15 +271,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color notificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
 
-        [XmlElement(nameof(NotificationWarningTextColor))]
+        [DataMember]
         public Color NotificationWarningTextColor {
             get {
                 return ColorSchema.NotificationWarningTextColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.NotificationWarningTextColor = value;
                     notificationWarningTextColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -288,15 +288,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color notificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
 
-        [XmlElement(nameof(NotificationErrorTextColor))]
+        [DataMember]
         public Color NotificationErrorTextColor {
             get {
                 return ColorSchema.NotificationErrorTextColor;
             }
             set {
-                if (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom") {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
                     ColorSchema.NotificationErrorTextColor = value;
                     notificationErrorTextColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -304,15 +305,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altPrimaryColor = (Color)ColorConverter.ConvertFromString("#FF550C18");
 
-        [XmlElement(nameof(AltPrimaryColor))]
+        [DataMember]
         public Color AltPrimaryColor {
             get {
                 return AltColorSchema.PrimaryColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.PrimaryColor = value;
                     altPrimaryColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -320,15 +322,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altSecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1B2A41");
 
-        [XmlElement(nameof(AltSecondaryColor))]
+        [DataMember]
         public Color AltSecondaryColor {
             get {
                 return AltColorSchema.SecondaryColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.SecondaryColor = value;
                     altSecondaryColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -336,15 +339,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altBorderColor = (Color)ColorConverter.ConvertFromString("#FF550C18");
 
-        [XmlElement(nameof(AltBorderColor))]
+        [DataMember]
         public Color AltBorderColor {
             get {
                 return AltColorSchema.BorderColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.BorderColor = value;
                     altBorderColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -352,15 +356,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A");
 
-        [XmlElement(nameof(AltBackgroundColor))]
+        [DataMember]
         public Color AltBackgroundColor {
             get {
                 return AltColorSchema.BackgroundColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.BackgroundColor = value;
                     altBackgroundColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -368,15 +373,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF550C18");
 
-        [XmlElement(nameof(AltButtonBackgroundColor))]
+        [DataMember]
         public Color AltButtonBackgroundColor {
             get {
                 return AltColorSchema.ButtonBackgroundColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.ButtonBackgroundColor = value;
                     altButtonBackgroundColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -384,15 +390,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF96031A");
 
-        [XmlElement(nameof(AltButtonBackgroundSelectedColor))]
+        [DataMember]
         public Color AltButtonBackgroundSelectedColor {
             get {
                 return AltColorSchema.ButtonBackgroundSelectedColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.ButtonBackgroundSelectedColor = value;
                     altButtonBackgroundSelectedColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -400,15 +407,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF443730");
 
-        [XmlElement(nameof(AltButtonForegroundDisabledColor))]
+        [DataMember]
         public Color AltButtonForegroundDisabledColor {
             get {
                 return AltColorSchema.ButtonForegroundDisabledColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.ButtonForegroundDisabledColor = value;
                     altButtonForegroundDisabledColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -416,15 +424,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A");
 
-        [XmlElement(nameof(AltButtonForegroundColor))]
+        [DataMember]
         public Color AltButtonForegroundColor {
             get {
                 return AltColorSchema.ButtonForegroundColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.ButtonForegroundColor = value;
                     altButtonForegroundColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -432,15 +441,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altNotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300");
 
-        [XmlElement(nameof(AltNotificationWarningColor))]
+        [DataMember]
         public Color AltNotificationWarningColor {
             get {
                 return AltColorSchema.NotificationWarningColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.NotificationWarningColor = value;
                     altNotificationWarningColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -448,15 +458,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altNotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFF5A300");
 
-        [XmlElement(nameof(AltNotificationErrorColor))]
+        [DataMember]
         public Color AltNotificationErrorColor {
             get {
                 return AltColorSchema.NotificationErrorColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.NotificationErrorColor = value;
                     altNotificationErrorColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -464,15 +475,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altNotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A");
 
-        [XmlElement(nameof(AltNotificationWarningTextColor))]
+        [DataMember]
         public Color AltNotificationWarningTextColor {
             get {
                 return AltColorSchema.NotificationWarningTextColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.NotificationWarningTextColor = value;
                     altNotificationWarningTextColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
@@ -480,15 +492,16 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [DataMember]
         private Color altNotificationErrorTextColor = (Color)ColorConverter.ConvertFromString("#FF02010A");
 
-        [XmlElement(nameof(AltNotificationErrorTextColor))]
+        [DataMember]
         public Color AltNotificationErrorTextColor {
             get {
                 return AltColorSchema.NotificationErrorTextColor;
             }
             set {
-                if (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom") {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.NotificationErrorTextColor = value;
                     altNotificationErrorTextColor = value;
                     Mediator.Mediator.Instance.Request(new SaveProfilesMessage());

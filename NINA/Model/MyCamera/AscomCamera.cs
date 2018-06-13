@@ -3,9 +3,11 @@ using ASCOM.DeviceInterface;
 using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using System;
 using System.Collections;
 using System.Globalization;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,12 +16,14 @@ namespace NINA.Model.MyCamera {
 
     internal class AscomCamera : BaseINPC, ICamera, IDisposable {
 
-        public AscomCamera(string cameraId, string name) {
+        public AscomCamera(string cameraId, string name, IProfileService profileService) {
+            this.profileService = profileService;
             Id = cameraId;
             Name = name;
         }
 
         private string _id;
+        private IProfileService profileService;
 
         public string Id {
             get {
@@ -68,7 +72,7 @@ namespace NINA.Model.MyCamera {
 
         public bool CanSubSample {
             get {
-                return false;
+                return true;
             }
         }
 
@@ -192,6 +196,12 @@ namespace NINA.Model.MyCamera {
                 } else {
                     return false;
                 }
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return false;
             }
         }
 
@@ -926,12 +936,13 @@ namespace NINA.Model.MyCamera {
                         }
 
                         if (SensorType != SensorType.Color) {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, SensorType != SensorType.Monochrome);
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         } else {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, false);
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         }
                     } catch (OperationCanceledException) {
-                    } catch {
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
                     }
                     return null;
                 });
@@ -939,6 +950,17 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
+            if (EnableSubSample) {
+                StartX = SubSampleX;
+                StartY = SubSampleY;
+                NumX = SubSampleWidth / BinX;
+                NumY = SubSampleHeight / BinY;
+            } else {
+                StartX = 0;
+                StartY = 0;
+                NumX = CameraXSize / BinX;
+                NumY = CameraYSize / BinY;
+            }
             _camera.StartExposure(exposureTime, isLightFrame);
         }
 
@@ -960,14 +982,6 @@ namespace NINA.Model.MyCamera {
                     Notification.ShowError(e.Message);
                 }
             }
-        }
-
-        public void UpdateValues() {
-            RaisePropertyChanged(nameof(Temperature));
-            RaisePropertyChanged(nameof(FullWellCapacity));
-            RaisePropertyChanged(nameof(HeatSinkTemperature));
-            RaisePropertyChanged(nameof(CoolerPower));
-            RaisePropertyChanged(nameof(IsPulseGuiding));
         }
 
         public void SetBinning(short x, short y) {
@@ -1054,6 +1068,30 @@ namespace NINA.Model.MyCamera {
                 }
                 return Connected;
             });
+        }
+
+        public void StartLiveView() {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            throw new System.NotImplementedException();
+        }
+
+        public void StopLiveView() {
+            throw new System.NotImplementedException();
+        }
+
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                // todo: code to start liveview if possible
+            }
         }
     }
 }

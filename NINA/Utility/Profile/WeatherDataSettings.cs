@@ -1,16 +1,16 @@
 ﻿using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(WeatherDataSettings))]
-    public class WeatherDataSettings {
+    [DataContract]
+    public class WeatherDataSettings : IWeatherDataSettings {
         private WeatherDataEnum weatherDataType = WeatherDataEnum.OPENWEATHERMAP;
 
-        [XmlElement(nameof(WeatherDataType))]
+        [DataMember]
         public WeatherDataEnum WeatherDataType {
             get {
                 return weatherDataType;
@@ -23,7 +23,7 @@ namespace NINA.Utility.Profile {
 
         private string openWeatherMapAPIKey = string.Empty;
 
-        [XmlElement(nameof(OpenWeatherMapAPIKey))]
+        [DataMember]
         public string OpenWeatherMapAPIKey {
             get {
                 return openWeatherMapAPIKey;
@@ -36,7 +36,7 @@ namespace NINA.Utility.Profile {
 
         private string openWeatherMapUrl = "http://api.openweathermap.org/data/2.5/weather";
 
-        [XmlElement(nameof(OpenWeatherMapUrl))]
+        [DataMember]
         public string OpenWeatherMapUrl {
             get {
                 return openWeatherMapUrl;

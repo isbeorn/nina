@@ -1,15 +1,15 @@
 ﻿using NINA.Utility.Mediator;
 using System;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(TelescopeSettings))]
-    public class TelescopeSettings {
+    [DataContract]
+    public class TelescopeSettings : ITelescopeSettings {
         private string id = "No_Device";
 
-        [XmlElement(nameof(Id))]
+        [DataMember]
         public string Id {
             get {
                 return id;
@@ -22,7 +22,7 @@ namespace NINA.Utility.Profile {
 
         private int focalLength = 800;
 
-        [XmlElement(nameof(FocalLength))]
+        [DataMember]
         public int FocalLength {
             get {
                 return focalLength;
@@ -35,7 +35,7 @@ namespace NINA.Utility.Profile {
 
         private string snapPortStart = ":SNAP1,1#";
 
-        [XmlElement(nameof(SnapPortStart))]
+        [DataMember]
         public string SnapPortStart {
             get {
                 return snapPortStart;
@@ -48,7 +48,7 @@ namespace NINA.Utility.Profile {
 
         private string snapPortStop = "SNAP1,0#";
 
-        [XmlElement(nameof(SnapPortStop))]
+        [DataMember]
         public string SnapPortStop {
             get {
                 return snapPortStop;
@@ -61,7 +61,7 @@ namespace NINA.Utility.Profile {
 
         private int settleTime = 5;
 
-        [XmlElement(nameof(SettleTime))]
+        [DataMember]
         public int SettleTime {
             get {
                 return settleTime;

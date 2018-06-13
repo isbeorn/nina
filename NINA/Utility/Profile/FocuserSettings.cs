@@ -1,15 +1,15 @@
 ﻿using NINA.Utility.Mediator;
 using System;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(FocuserSettings))]
-    public class FocuserSettings {
+    [DataContract]
+    public class FocuserSettings : IFocuserSettings {
         private string id = "No_Device";
 
-        [XmlElement(nameof(Id))]
+        [DataMember]
         public string Id {
             get {
                 return id;
@@ -22,7 +22,7 @@ namespace NINA.Utility.Profile {
 
         private bool useFilterWheelOffsets = false;
 
-        [XmlElement(nameof(UseFilterWheelOffsets))]
+        [DataMember]
         public bool UseFilterWheelOffsets {
             get {
                 return useFilterWheelOffsets;
@@ -35,7 +35,7 @@ namespace NINA.Utility.Profile {
 
         private int autoFocusStepSize = 10;
 
-        [XmlElement(nameof(AutoFocusStepSize))]
+        [DataMember]
         public int AutoFocusStepSize {
             get {
                 return autoFocusStepSize;
@@ -48,7 +48,7 @@ namespace NINA.Utility.Profile {
 
         private int autoFocusInitialOffsetSteps = 4;
 
-        [XmlElement(nameof(AutoFocusInitialOffsetSteps))]
+        [DataMember]
         public int AutoFocusInitialOffsetSteps {
             get {
                 return autoFocusInitialOffsetSteps;
@@ -61,7 +61,7 @@ namespace NINA.Utility.Profile {
 
         private int autoFocusExposureTime = 6;
 
-        [XmlElement(nameof(AutoFocusExposureTime))]
+        [DataMember]
         public int AutoFocusExposureTime {
             get {
                 return autoFocusExposureTime;

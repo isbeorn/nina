@@ -5,8 +5,8 @@ using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.Utility.RawConverter;
 using System;
-using FreeImageAPI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,20 +14,20 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FreeImageAPI.Metadata;
 using System.Windows.Media.Imaging;
-using NINA.Utility.RawConverter;
 
 namespace NINA.Model.MyCamera {
 
     public class NikonCamera : BaseINPC, ICamera {
 
-        public NikonCamera() {
+        public NikonCamera(IProfileService profileService) {
+            this.profileService = profileService;
             /* NIKON */
             Name = "Nikon";
             _nikonManagers = new List<NikonManager>();
         }
 
+        private IProfileService profileService;
         private List<NikonManager> _nikonManagers;
         private NikonManager _activeNikonManager;
 
@@ -36,23 +36,69 @@ namespace NINA.Model.MyCamera {
         }
 
         private void Mgr_DeviceAdded(NikonManager sender, NikonDevice device) {
+            var connected = false;
             try {
                 _activeNikonManager = sender;
                 _activeNikonManager.DeviceRemoved += Mgr_DeviceRemoved;
 
-                CleanupUnusedManagers(_activeNikonManager);
-
                 Init(device);
 
-                Connected = true;
+                connected = true;
                 Name = _camera.Name;
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
             } finally {
-                RaiseAllPropertiesChanged();
-                _cameraConnected.TrySetResult(null);
+                Connected = connected;
+                RaiseAllPropertiesChanged();                
+                _cameraConnected.TrySetResult(connected);
             }
+        }
+
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public void StartLiveView() {
+            _camera.LiveViewEnabled = true;
+            LiveViewEnabled = true;
+        }
+
+        public void StopLiveView() {
+            _camera.LiveViewEnabled = false;
+            LiveViewEnabled = false;
+        }
+
+        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            byte[] buffer = _camera.GetLiveViewImage().JpegBuffer;
+            var memStream = new MemoryStream(buffer);
+            memStream.Position = 0;
+
+            JpegBitmapDecoder decoder = new JpegBitmapDecoder(memStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+
+            FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
+            bitmap.BeginInit();
+            bitmap.Source = decoder.Frames[0];
+            bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+            bitmap.EndInit();
+
+            ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
+            bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
+
+            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+
+            memStream.Close();
+            memStream.Dispose();
+
+            return iarr;
         }
 
         private void CleanupUnusedManagers(NikonManager activeManager) {
@@ -132,6 +178,8 @@ namespace NINA.Model.MyCamera {
                         Logger.Debug("Bulb index: " + i);
                         _bulbShutterSpeedIndex = i;
                         bulbFound = true;
+                    } else if (val.ToLower() == "time") {
+                        //currently unused
                     } else {
                         _shutterSpeeds.Add(i, double.Parse(val));
                     }
@@ -146,13 +194,11 @@ namespace NINA.Model.MyCamera {
         }
 
         private TaskCompletionSource<object> _downloadExposure;
-        private TaskCompletionSource<object> _cameraConnected;
+        private TaskCompletionSource<bool> _cameraConnected;
 
         private void _camera_CaptureComplete(NikonDevice sender, int data) {
             Logger.Debug("Capture complete");
         }
-
-        private string _fileExtension;
 
         private void Camera_ImageReady(NikonDevice sender, NikonImage image) {
             Logger.Debug("Image ready");
@@ -178,6 +224,12 @@ namespace NINA.Model.MyCamera {
             private set {
                 _name = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return _camera.SupportsCapability(eNkMAIDCapability.kNkMAIDCapability_GetLiveViewImage);
             }
         }
 
@@ -514,8 +566,8 @@ namespace NINA.Model.MyCamera {
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
-            var converter = RawConverter.CreateInstance();
-            var iarr = await converter.ConvertToImageArray(_memoryStream, token);
+            var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
+            var iarr = await converter.ConvertToImageArray(_memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
             _memoryStream.Dispose();
             _memoryStream = null;
             return iarr;
@@ -543,11 +595,11 @@ namespace NINA.Model.MyCamera {
                     Logger.Debug("Start capture");
                     _camera.Capture();
                 } else {
-                    if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
+                    if (profileService.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
                         Logger.Debug("Use Telescope Snap Port");
 
                         BulbCapture(exposureTime, RequestSnapPortCaptureStart, RequestSnapPortCaptureStop);
-                    } else if (ProfileManager.Instance.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.SERIALPORT) {
+                    } else if (profileService.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.SERIALPORT) {
                         Logger.Debug("Use Serial Port for camera");
 
                         BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
@@ -574,11 +626,11 @@ namespace NINA.Model.MyCamera {
         }
 
         private void OpenSerialPort() {
-            if (serialPortInteraction?.PortName != ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort) {
-                serialPortInteraction = new SerialPortInteraction(ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort);
+            if (serialPortInteraction?.PortName != profileService.ActiveProfile.CameraSettings.SerialPort) {
+                serialPortInteraction = new SerialPortInteraction(profileService.ActiveProfile.CameraSettings.SerialPort);
             }
             if (!serialPortInteraction.Open()) {
-                throw new Exception("Unable to open SerialPort " + ProfileManager.Instance.ActiveProfile.CameraSettings.SerialPort);
+                throw new Exception("Unable to open SerialPort " + profileService.ActiveProfile.CameraSettings.SerialPort);
             }
         }
 
@@ -696,9 +748,6 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void UpdateValues() {
-        }
-
         public async Task<bool> Connect(CancellationToken token) {
             return await Task.Run(() => {
                 var connected = false;
@@ -717,16 +766,19 @@ namespace NINA.Model.MyCamera {
                         _nikonManagers.Add(mgr);
                     }
 
-                    _cameraConnected = new TaskCompletionSource<object>();
+                    _cameraConnected = new TaskCompletionSource<bool>();
                     var d = DateTime.Now;
 
                     do {
                         token.ThrowIfCancellationRequested();
                         Thread.Sleep(500);
                     } while (!_cameraConnected.Task.IsCompleted);
-                    connected = true;
+
+                    connected = _cameraConnected.Task.Result;
                 } catch (OperationCanceledException) {
-                    CleanupUnusedManagers(null);
+                    _activeNikonManager = null;
+                } finally {
+                    CleanupUnusedManagers(_activeNikonManager);
                 }
                 return connected;
             });

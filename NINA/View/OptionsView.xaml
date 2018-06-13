@@ -117,6 +117,16 @@
                             <Button
                                 Width="40"
                                 Margin="0,5,0,5"
+                                Command="{Binding CloneProfileCommand}">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource CopySVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                            </Button>
+                            <Button
+                                Width="40"
+                                Margin="0,5,0,5"
                                 Command="{Binding RemoveProfileCommand}">
                                 <Path
                                     Margin="5"

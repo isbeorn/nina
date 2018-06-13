@@ -16,7 +16,7 @@ namespace NINA.ViewModel {
 
     internal class PolarAlignmentVM : DockableVM {
 
-        public PolarAlignmentVM() : base() {
+        public PolarAlignmentVM(IProfileService profileService) : base(profileService) {
             Title = "LblPolarAlignment";
             ContentId = nameof(PolarAlignmentVM);
 
@@ -191,44 +191,44 @@ namespace NINA.ViewModel {
 
         public double AzimuthMeridianOffset {
             get {
-                return ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AzimuthMeridianOffset;
+                return profileService.ActiveProfile.PolarAlignmentSettings.AzimuthMeridianOffset;
             }
 
             set {
-                ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AzimuthMeridianOffset = value;
+                profileService.ActiveProfile.PolarAlignmentSettings.AzimuthMeridianOffset = value;
                 RaisePropertyChanged();
             }
         }
 
         public double AzimuthDeclination {
             get {
-                return ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AzimuthDeclination;
+                return profileService.ActiveProfile.PolarAlignmentSettings.AzimuthDeclination;
             }
 
             set {
-                ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AzimuthDeclination = value;
+                profileService.ActiveProfile.PolarAlignmentSettings.AzimuthDeclination = value;
                 RaisePropertyChanged();
             }
         }
 
         public double AltitudeMeridianOffset {
             get {
-                return ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AltitudeMeridianOffset;
+                return profileService.ActiveProfile.PolarAlignmentSettings.AltitudeMeridianOffset;
             }
 
             set {
-                ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AltitudeMeridianOffset = value;
+                profileService.ActiveProfile.PolarAlignmentSettings.AltitudeMeridianOffset = value;
                 RaisePropertyChanged();
             }
         }
 
         public double AltitudeDeclination {
             get {
-                return ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AltitudeDeclination;
+                return profileService.ActiveProfile.PolarAlignmentSettings.AltitudeDeclination;
             }
 
             set {
-                ProfileManager.Instance.ActiveProfile.PolarAlignmentSettings.AltitudeDeclination = value;
+                profileService.ActiveProfile.PolarAlignmentSettings.AltitudeDeclination = value;
                 RaisePropertyChanged();
             }
         }
@@ -355,7 +355,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> DarvTelescopeSlew(IProgress<string> progress, CancellationToken canceltoken) {
             return await Task.Run<bool>(async () => {
-                Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 try {
                     //wait 5 seconds for camera to have a starting indicator
                     await Task.Delay(TimeSpan.FromSeconds(5), canceltoken);
@@ -460,7 +460,7 @@ namespace NINA.ViewModel {
                     string msg = "";
 
                     if (direction == Direction.ALTITUDE) {
-                        if (ProfileManager.Instance.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.NORTHERN) {
+                        if (profileService.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.NORTHERN) {
                             if (AltitudeSiteType == AltitudeSite.EAST) {
                                 if (poleErr < 0) {
                                     msg = poleErrString + " too low";
@@ -491,7 +491,7 @@ namespace NINA.ViewModel {
                         }
                     } else if (direction == Direction.AZIMUTH) {
                         //if northern
-                        if (ProfileManager.Instance.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.NORTHERN) {
+                        if (profileService.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.NORTHERN) {
                             if (poleErr < 0) {
                                 msg = poleErrString + " too east";
                             } else {
@@ -529,7 +529,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<double> CalculatePoleError(IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
-            Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+            Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
             double poleError = double.NaN;
             try {
                 double movementdeg = 0.5d;
@@ -549,9 +549,9 @@ namespace NINA.ViewModel {
                 }
 
                 Coordinates startSolve = PlateSolveResult.Coordinates;
-                startSolve = startSolve.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
+                startSolve = startSolve.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
 
-                Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 progress.Report(new ApplicationStatus() { Status = "Slewing..." });
                 await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = targetPosition, Token = canceltoken });
 
@@ -576,7 +576,7 @@ namespace NINA.ViewModel {
                 }
 
                 Coordinates targetSolve = PlateSolveResult.Coordinates;
-                targetSolve = targetSolve.Transform(ProfileManager.Instance.ActiveProfile.AstrometrySettings.EpochType);
+                targetSolve = targetSolve.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
 
                 var decError = startSolve.Dec - targetSolve.Dec;
                 // Calculate pole error
@@ -614,7 +614,7 @@ namespace NINA.ViewModel {
                 var polaris = new Coordinates(ascomutil.HMSToHours("02:31:49.09456"), ascomutil.DMSToDegrees("89:15:50.7923"), Epoch.J2000, Coordinates.RAType.Hours);
                 polaris = polaris.Transform(Epoch.JNOW);
 
-                var lst = Astrometry.GetLocalSiderealTimeNow(ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude);
+                var lst = Astrometry.GetLocalSiderealTimeNow(profileService.ActiveProfile.AstrometrySettings.Longitude);
                 var hour_angle = Astrometry.GetHourAngle(lst, polaris.RA);
 
                 Rotation = -Astrometry.HoursToDegrees(hour_angle);

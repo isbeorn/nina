@@ -19,18 +19,10 @@
         <local:ImageView Image="{Binding Image}">
             <local:ImageView.ButtonHeaderContent>
                 <StackPanel Orientation="Horizontal">
-                    <!--<Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                    </Grid.ColumnDefinitions>-->
                     <ninactrl:CancellableButton
+                        Grid.Column="0"
                         Width="35"
                         Margin="2.5"
-                        Grid.Column="0"
                         ButtonImage="{StaticResource PlatesolveSVG}"
                         CancelButtonImage="{StaticResource CancelSVG}"
                         CancelCommand="{Binding CancelPlateSolveImageCommand}"
@@ -256,12 +248,13 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Rectangle
-                            Width="{Binding Rectangle.Width}"
-                            Height="{Binding Rectangle.Height}"
+                            Width="{Binding BahtinovRectangle.Width}"
+                            Height="{Binding BahtinovRectangle.Height}"
                             behaviors:DragCommandBehavior.Drag="True"
                             behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
                             behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
                             behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
+                            behaviors:DragCommandBehavior.ResizeBoundary="{Binding DragResizeBoundary}"
                             RenderTransformOrigin="0.5,0.5"
                             Stroke="{StaticResource ButtonForegroundBrush}"
                             StrokeThickness="5">
@@ -270,8 +263,8 @@
                             </Rectangle.Fill>
                             <Rectangle.Margin>
                                 <MultiBinding Converter="{StaticResource MultiMarginConverter}">
-                                    <Binding Path="Rectangle.X" />
-                                    <Binding Path="Rectangle.Y" />
+                                    <Binding Path="BahtinovRectangle.X" />
+                                    <Binding Path="BahtinovRectangle.Y" />
                                     <Binding Source="{StaticResource zero}" />
                                     <Binding Source="{StaticResource zero}" />
                                 </MultiBinding>
@@ -293,11 +286,11 @@
                                 <StackPanel VerticalAlignment="Top" Orientation="Vertical">
                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
-                                        <TextBox Margin="5,0,0,0" Text="{Binding Rectangle.Width}" />
+                                        <TextBox Margin="5,0,0,0" Text="{Binding BahtinovRectangle.Width}" />
                                     </UniformGrid>
                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
-                                        <TextBox Margin="5,0,0,0" Text="{Binding Rectangle.Height}" />
+                                        <TextBox Margin="5,0,0,0" Text="{Binding BahtinovRectangle.Height}" />
                                     </UniformGrid>
                                 </StackPanel>
                                 <StackPanel
@@ -316,7 +309,7 @@
                             <Border.Margin>
                                 <MultiBinding Converter="{StaticResource MultiMarginConverter}">
                                     <Binding Source="{StaticResource zero}" />
-                                    <Binding Path="Rectangle.Y" />
+                                    <Binding Path="BahtinovRectangle.Y" />
                                     <Binding Source="{StaticResource zero}" />
                                     <Binding Source="{StaticResource zero}" />
                                 </MultiBinding>
@@ -336,11 +329,12 @@
                             behaviors:DragCommandBehavior.DragMoveCommand="{Binding SubSampleDragMoveCommand}"
                             behaviors:DragCommandBehavior.DragStartCommand="{Binding SubSampleDragStartCommand}"
                             behaviors:DragCommandBehavior.DragStopCommand="{Binding SubSampleDragStopCommand}"
+                            behaviors:DragCommandBehavior.ResizeBoundary="{Binding DragResizeBoundary}"
                             RenderTransformOrigin="0.5,0.5"
                             Stroke="{StaticResource ButtonForegroundBrush}"
                             StrokeThickness="5">
                             <Rectangle.Fill>
-                                <SolidColorBrush Color="Red" Opacity=".2" />
+                                <SolidColorBrush Opacity=".2" Color="Red" />
                             </Rectangle.Fill>
                             <Rectangle.Margin>
                                 <MultiBinding Converter="{StaticResource MultiMarginConverter}">
@@ -360,10 +354,6 @@
                                 <SolidColorBrush Opacity=".5" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                             </Border.Background>
                             <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
                                 <StackPanel VerticalAlignment="Top" Orientation="Vertical">
                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
@@ -372,18 +362,6 @@
                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
                                         <TextBox Margin="5,0,0,0" Text="{Binding SubSampleRectangle.Height}" />
-                                    </UniformGrid>
-                                </StackPanel>
-                                <StackPanel
-                                    Grid.Row="1"
-                                    VerticalAlignment="Bottom"
-                                    Orientation="Vertical">
-                                    <UniformGrid VerticalAlignment="Center" Columns="2">
-                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDistance}" />
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Margin="5,0,0,0" Text="{Binding SubSampleRectangle.Distance, StringFormat=\{0:#.00\}}" />
-                                            <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblPx}" />
-                                        </StackPanel>
                                     </UniformGrid>
                                 </StackPanel>
                             </Grid>

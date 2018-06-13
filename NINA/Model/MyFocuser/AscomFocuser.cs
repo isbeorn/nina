@@ -225,9 +225,6 @@ namespace NINA.Model.MyFocuser {
             }
         }
 
-        public void UpdateValues() {
-        }
-
         public void Dispose() {
             _focuser?.Dispose();
         }

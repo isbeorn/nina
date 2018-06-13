@@ -3,12 +3,14 @@ using System.Runtime.CompilerServices;
 
 namespace NINA.Utility {
 
+    [System.Serializable()]
     public abstract class BaseINPC : INotifyPropertyChanged {
 
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        [field: System.NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void ChildChanged(object sender, PropertyChangedEventArgs e) {

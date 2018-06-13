@@ -26,3 +26,8 @@ NINA/External/x64/Nikon/
 /.vs/NINA/v15/sqlite3/storage.ide
 /.vs/NINA/v15
 /.vs
+/.axoCover/runs
+/.axoCover
+/TestResults
+/NINASetup_x86/obj
+/NINASetup/obj

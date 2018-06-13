@@ -42,8 +42,8 @@
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:AreaSeries
-                    Color="Black"
-                    Color2="Black"
+                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
+                    Color2="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
                     DataFieldX="X"
                     DataFieldY="Y"
                     ItemsSource="{Binding Histogram}" />

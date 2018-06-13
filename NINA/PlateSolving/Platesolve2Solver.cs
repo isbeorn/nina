@@ -19,8 +19,10 @@ namespace NINA.PlateSolving {
 
         private static string TMPIMGFILEPATH = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.jpg");
         private static string TMPSOLUTIONFILEPATH = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.apm");
+        private string _ps2Location;
 
-        public Platesolve2Solver(int focallength, double pixelsize, double width, double height, int regions, Coordinates target) {
+        public Platesolve2Solver(int focallength, double pixelsize, double width, double height, int regions, Coordinates target, string ps2Location) {
+            this._ps2Location = ps2Location;
             double arcsecperpixel = (pixelsize / focallength) * 206.3;
 
             _arcdegwidth = Astrometry.ArcsecToDegree(arcsecperpixel * width);
@@ -52,7 +54,7 @@ namespace NINA.PlateSolving {
         /// </summary>
         /// <returns>true: ran successfully; false: not found</returns>
         private bool StartPlatesolve2Process() {
-            var ps2locaction = Path.GetFullPath(ProfileManager.Instance.ActiveProfile.PlateSolveSettings.PS2Location);
+            var ps2locaction = Path.GetFullPath(this._ps2Location);
 
             if (!File.Exists(ps2locaction)) {
                 Notification.ShowError(Locale.Loc.Instance["LblPlatesolve2NotFound"] + Environment.NewLine + ps2locaction);

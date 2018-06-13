@@ -168,4 +168,18 @@
     <NotificationWarningTextColor Color="#FFECF0F1" />
     <NotificationErrorTextColor Color="#FFECF0F1" />
   </ColorSchema>
+  <ColorSchema Name="Navy">
+    <PrimaryColor Color="#FF6FC3DF" />
+    <SecondaryColor Color="#FFE93B19" />
+    <BorderColor Color="#AA1F3B53" />
+    <BackgroundColor Color="#FF0C141F" />
+    <ButtonBackgroundColor Color="#FF0C141F" />
+    <ButtonBackgroundSelectedColor Color="#FF488093" />
+    <ButtonForegroundColor Color="#FFBFEEFF" />
+    <ButtonForegroundDisabledColor Color="#FF1D2731" />
+    <NotificationWarningColor Color="#FFE93B19" />
+    <NotificationErrorColor Color="#FFDB0606" />
+    <NotificationWarningTextColor Color="#FF6FC3DF" />
+    <NotificationErrorTextColor Color="#FF6FC3DF" />
+  </ColorSchema>
 </ColorSchemas>

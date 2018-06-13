@@ -14,26 +14,33 @@ namespace NINA.Model.MyCamera {
 
         public bool IsBayered { get; private set; }
 
-        private ImageArray() {
+        private ImageArray(int histogramResolution) {
+            this.histogramResolution = histogramResolution;
             Statistics = new ImageStatistics { };
         }
 
-        public static async Task<ImageArray> CreateInstance(Array input, bool isBayered = false) {
-            ImageArray imgArray = new ImageArray();
+        private int histogramResolution;
+
+        public static async Task<ImageArray> CreateInstance(Array input, bool isBayered, bool calculateStatistics, int histogramResolution) {
+            ImageArray imgArray = new ImageArray(histogramResolution);
             imgArray.IsBayered = isBayered;
             await Task.Run(() => imgArray.FlipAndConvert(input));
-            await Task.Run(() => imgArray.CalculateStatistics());
+            if (calculateStatistics) {
+                await Task.Run(() => imgArray.CalculateStatistics());
+            }
 
             return imgArray;
         }
 
-        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, bool isBayered = false) {
-            ImageArray imgArray = new ImageArray();
+        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, bool isBayered, bool calculateStatistics, int histogramResolution) {
+            ImageArray imgArray = new ImageArray(histogramResolution);
             imgArray.IsBayered = isBayered;
             imgArray.FlatArray = input;
             imgArray.Statistics.Width = width;
             imgArray.Statistics.Height = height;
-            await Task.Run(() => imgArray.CalculateStatistics());
+            if (calculateStatistics) {
+                await Task.Run(() => imgArray.CalculateStatistics());
+            }
 
             return imgArray;
         }
@@ -50,7 +57,7 @@ namespace NINA.Model.MyCamera {
                 ushort oldmin = min;
                 long minOccurrences = 0;
 
-                double resolution = ProfileManager.Instance.ActiveProfile.ImageSettings.HistogramResolution;
+                double resolution = histogramResolution;
                 Dictionary<double, int> histogram = new Dictionary<double, int>();
 
                 for (var i = 0; i < this.FlatArray.Length; i++) {
@@ -83,7 +90,7 @@ namespace NINA.Model.MyCamera {
                     oldmax = max;
                 }
 
-                double mean = sum / count;
+                double mean = sum / (double)count;
                 double variance = (squareSum - count * mean * mean) / (count);
                 double stdev = Math.Sqrt(variance);
 
@@ -95,6 +102,7 @@ namespace NINA.Model.MyCamera {
                 this.Statistics.Mean = mean;
                 this.Statistics.Histogram = histogram.Select(g => new OxyPlot.DataPoint(g.Key, g.Value))
                     .OrderBy(item => item.X).ToList();
+                this.Statistics.IsBayered = IsBayered;
             }
         }
 

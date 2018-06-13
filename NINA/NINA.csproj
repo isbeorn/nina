@@ -220,6 +220,7 @@
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -309,6 +310,7 @@
     <Compile Include="Utility\ButtonHelper.cs" />
     <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
     <Compile Include="Utility\Converters\ArcsecToLabelConverter.cs" />
+    <Compile Include="Utility\Converters\BooleanAndConverter.cs" />
     <Compile Include="Utility\Converters\BooleanToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Converters\BooleanToVisibilityHiddenConverter.cs" />
     <Compile Include="Utility\Converters\BoolToLabelConverter.cs" />
@@ -331,7 +333,26 @@
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
     <Compile Include="Utility\Converters\ValueToLocaleConverter.cs" />
     <Compile Include="Utility\DatabaseInteraction.cs" />
+    <Compile Include="Utility\DeviceUpdateTimer.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
+    <Compile Include="Utility\Profile\IApplicationSettings.cs" />
+    <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
+    <Compile Include="Utility\Profile\ICameraSettings.cs" />
+    <Compile Include="Utility\Profile\IColorSchemaSettings.cs" />
+    <Compile Include="Utility\Profile\IFilterWheelSettings.cs" />
+    <Compile Include="Utility\Profile\IFocuserSettings.cs" />
+    <Compile Include="Utility\Profile\IFramingAssistantSettings.cs" />
+    <Compile Include="Utility\Profile\IGuiderSettings.cs" />
+    <Compile Include="Utility\Profile\IImageFileSettings.cs" />
+    <Compile Include="Utility\Profile\IImageSettings.cs" />
+    <Compile Include="Utility\Profile\IMeridianFlipSettings.cs" />
+    <Compile Include="Utility\Profile\IPlateSolveSettings.cs" />
+    <Compile Include="Utility\Profile\IPolarAlignmentSettings.cs" />
+    <Compile Include="Utility\Profile\IProfile.cs" />
+    <Compile Include="Utility\Profile\IProfileService.cs" />
+    <Compile Include="Utility\Profile\ISequenceSettings.cs" />
+    <Compile Include="Utility\Profile\ITelescopeSettings.cs" />
+    <Compile Include="Utility\Profile\IWeatherDataSettings.cs" />
     <Compile Include="Utility\RawConverter\DCRaw.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
@@ -372,7 +393,7 @@
     <Compile Include="Utility\Profile\PlateSolveSettings.cs" />
     <Compile Include="Utility\Profile\PolarAlignmentSettings.cs" />
     <Compile Include="Utility\Profile\Profile.cs" />
-    <Compile Include="Utility\Profile\ProfileManager.cs" />
+    <Compile Include="Utility\Profile\ProfileService.cs" />
     <Compile Include="Utility\Profile\Profiles.cs" />
     <Compile Include="Utility\Profile\SequenceSettings.cs" />
     <Compile Include="Utility\Profile\TelescopeSettings.cs" />
@@ -437,6 +458,7 @@
     <Compile Include="ViewModel\PlatesolveVM.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
+    <Compile Include="Model\RMS.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
     <Compile Include="ViewModel\SkyAtlasVM.cs" />
     <Compile Include="ViewModel\TelescopeVM.cs" />
@@ -925,54 +947,190 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Resource Include="Documentation\images\nina-logo.png" />
-    <Resource Include="Documentation\images\panel-autofocus.png" />
-    <Resource Include="Documentation\images\panel-camera.png" />
-    <Resource Include="Documentation\images\panel-customization_1.png" />
-    <Resource Include="Documentation\images\panel-customization_2.png" />
-    <Resource Include="Documentation\images\panel-customization_3.png" />
-    <Resource Include="Documentation\images\panel-customization_4.png" />
-    <Resource Include="Documentation\images\panel-filterwheel.png" />
-    <Resource Include="Documentation\images\panel-focuser.png" />
-    <Resource Include="Documentation\images\panel-guiding.png" />
-    <Resource Include="Documentation\images\panel-hfrhistory.png" />
-    <Resource Include="Documentation\images\panel-image.png" />
-    <Resource Include="Documentation\images\panel-imagehistory.png" />
-    <Resource Include="Documentation\images\panel-imaging.png" />
-    <Resource Include="Documentation\images\panel-platesolving.png" />
-    <Resource Include="Documentation\images\panel-polaralignment.png" />
-    <Resource Include="Documentation\images\panel-sequence-running.png" />
-    <Resource Include="Documentation\images\panel-sequence.png" />
-    <Resource Include="Documentation\images\panel-statistics.png" />
-    <Resource Include="Documentation\images\panel-telescope.png" />
-    <Resource Include="Documentation\images\panel-weather.png" />
-    <Resource Include="Documentation\images\quickstart-camera.png" />
-    <Resource Include="Documentation\images\quickstart-defocusedstarfield.png" />
-    <Resource Include="Documentation\images\quickstart-disablepanels.png" />
-    <Resource Include="Documentation\images\quickstart-focusedstarfield.png" />
-    <Resource Include="Documentation\images\quickstart-focusing.png" />
-    <Resource Include="Documentation\images\quickstart-imaging.png" />
-    <Resource Include="Documentation\images\quickstart-running-sequence.png" />
-    <Resource Include="Documentation\images\quickstart-sequence.png" />
-    <Resource Include="Documentation\images\quickstart-settings-equipment.png" />
-    <Resource Include="Documentation\images\quickstart-settings-imaging.png" />
-    <Resource Include="Documentation\images\quickstart-telescope.png" />
-    <Resource Include="Documentation\images\quickstart-ui-overview.png" />
-    <Resource Include="Documentation\images\tab-camera.png" />
-    <Resource Include="Documentation\images\tab-filterwheelfocuser.png" />
-    <Resource Include="Documentation\images\tab-framingassistant.png" />
-    <Resource Include="Documentation\images\tab-imaging.png" />
-    <Resource Include="Documentation\images\tab-objectbrowser.png" />
-    <Resource Include="Documentation\images\tab-phd2.png" />
-    <Resource Include="Documentation\images\tab-sequencing.png" />
-    <Resource Include="Documentation\images\tab-settings-equipment.png" />
-    <Resource Include="Documentation\images\tab-settings-general.png" />
-    <Resource Include="Documentation\images\tab-settings-imaging.png" />
-    <Resource Include="Documentation\images\tab-settings-platesolving-astrometry.png" />
-    <Resource Include="Documentation\images\tab-settings-platesolving-localplatesolver-indexfiles.png" />
-    <Resource Include="Documentation\images\tab-settings-platesolving-localplatesolver.png" />
-    <Resource Include="Documentation\images\tab-settings-platesolving-platesolve2.png" />
-    <Resource Include="Documentation\images\tab-telescope.png" />
+    <Content Include="Documentation\images\nina-logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-autofocus.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-camera.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-customization_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-customization_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-customization_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-customization_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-filterwheel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-focuser.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-guiding.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-hfrhistory.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-image.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-imagehistory.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-imaging.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-platesolving.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-polaralignment.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-sequence-running.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-sequence.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-statistics.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-telescope.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-weather.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-camera.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-defocusedstarfield.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-disablepanels.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-focusedstarfield.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-focusing.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-imaging.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-running-sequence.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-sequence.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-settings-equipment.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-settings-imaging.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-telescope.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\quickstart-ui-overview.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-camera.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-filterwheelfocuser.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-framingassistant.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-imaging.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-objectbrowser.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-phd2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-sequencing.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-settings-equipment.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-settings-general.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-settings-imaging.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-settings-platesolving-astrometry.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-settings-platesolving-localplatesolver-indexfiles.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-settings-platesolving-localplatesolver.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-settings-platesolving-platesolve2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\tab-telescope.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-image-bahtinov.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\panel-image-subsampling.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\usage-autoflip-settings.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\usage-bulbshutter-mountsnapport.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\usage-bulbshutter-serial.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\usage-bulbshutter-settings.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\usage-bulbshutter-snapport.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\usage-dithering-sequence.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\usage-dithering-settings-phd2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\images\usage-objectbrowser-object.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\modest.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\NINA.html">
+      <DependentUpon>NINA.md</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Documentation\table-of-contents.html">
+      <DependentUpon>table-of-contents.md</DependentUpon>
+    </Content>
     <Content Include="External\x64\ASI\ASICamera2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1053,6 +1211,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\Nikon\Type0022\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\SQLite\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\ASI\ASICamera2.dll">
@@ -1139,6 +1300,9 @@
     <Content Include="External\x86\Nikon\Type0022\NkdPTP.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x86\SQLite\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Utility\ColorSchema\ColorSchemas.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1219,6 +1383,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Documentation\NINA.md" />
+    <None Include="Documentation\table-of-contents.md" />
     <None Include="External\x86\ASI\ASICamera2.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

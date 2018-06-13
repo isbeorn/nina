@@ -5,14 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
 
-    internal class ProfileManager {
+    internal class ProfileService : IProfileService {
 
-        private ProfileManager() {
+        public ProfileService() {
             if (NINA.Properties.Settings.Default.UpdateSettings) {
                 NINA.Properties.Settings.Default.Upgrade();
                 NINA.Properties.Settings.Default.UpdateSettings = false;
@@ -28,12 +27,8 @@ namespace NINA.Utility.Profile {
             );
         }
 
-        private static readonly Lazy<ProfileManager> lazy =
-        new Lazy<ProfileManager>(() => new ProfileManager());
-
-        public static ProfileManager Instance { get { return lazy.Value; } }
-
         public static string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
+        public static string PROFILETEMPFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings.bkp");
 
         public Profiles Profiles { get; set; }
 
@@ -41,42 +36,72 @@ namespace NINA.Utility.Profile {
             Profiles.Add(new Profile("Profile" + (Profiles.ProfileList.Count + 1)));
         }
 
-        private void Save() {
-            try {
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(Profiles));
-
-                using (StreamWriter writer = new StreamWriter(PROFILEFILEPATH)) {
-                    xmlSerializer.Serialize(writer, Profiles);
-                }
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.Notification.ShowError(ex.Message);
+        public void Clone(Guid id) {
+            var p = Profiles.ProfileList.Where((x) => x.Id == id).FirstOrDefault();
+            if (p != null) {
+                var newProfile = Profile.Clone(p);
+                Profiles.Add(newProfile);
             }
         }
 
-        public Profile ActiveProfile {
+        private void Save() {
+            try {
+                var serializer = new DataContractSerializer(typeof(Profiles));
+
+                //Copy profile to temp file, to be able to roll back in case of error
+                if(File.Exists(PROFILEFILEPATH)) {
+                    File.Copy(PROFILEFILEPATH, PROFILETEMPFILEPATH, true);
+                }
+
+                using (FileStream writer = new FileStream(PROFILEFILEPATH, FileMode.Create)) {
+                    serializer.WriteObject(writer, Profiles);
+                }
+
+                //Delete Temp file
+                File.Delete(PROFILETEMPFILEPATH);
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.Notification.ShowError(ex.Message);
+
+                if(File.Exists(PROFILETEMPFILEPATH)) {
+                    //Restore temp file
+                    File.Copy(PROFILETEMPFILEPATH, PROFILEFILEPATH, true);
+                }
+            }
+        }
+
+        public IProfile ActiveProfile {
             get {
                 return Profiles.ActiveProfile;
             }
         }
 
         private void Load() {
+            if(File.Exists(PROFILETEMPFILEPATH)) {
+                File.Copy(PROFILETEMPFILEPATH, PROFILEFILEPATH, true);
+            }
+
             if (File.Exists(PROFILEFILEPATH)) {
                 try {
-                    var profilesXml = XElement.Load(PROFILEFILEPATH);
+                    var serializer = new DataContractSerializer(typeof(Profiles));
+                                        
+                    using (FileStream reader = new FileStream(PROFILEFILEPATH, FileMode.Open)) {
+                        var obj = serializer.ReadObject(reader);
 
-                    System.IO.StringReader reader = new System.IO.StringReader(profilesXml.ToString());
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Profiles));
-
-                    Profiles = (Profiles)xmlSerializer.Deserialize(reader);
-                    foreach (Profile p in Profiles.ProfileList) {
-                        p.MatchFilterSettingsWithFilterList();
+                        Profiles = (Profiles)obj;
+                        foreach (Profile p in Profiles.ProfileList) {
+                            p.MatchFilterSettingsWithFilterList();
+                        }
+                        Profiles.SelectActiveProfile();
                     }
-                    Profiles.SelectActiveProfile();
-                } catch (Exception ex) {
-                    LoadDefaultProfile();
+                } catch (UnauthorizedAccessException ex) {
                     Logger.Error(ex);
-                    System.Windows.MessageBox.Show("Profile file is corrupt. Loading default profile. \n" + ex.Message);
+                    System.Windows.MessageBox.Show("Unable to open profile file. " + ex.Message);
+                    System.Windows.Application.Current.Shutdown();
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    System.Windows.MessageBox.Show("Unable to load profile file. Please restart the application \n" + ex.Message);
+                    System.Windows.Application.Current.Shutdown();
                 }
             } else {
                 MigrateSettings();
@@ -94,7 +119,7 @@ namespace NINA.Utility.Profile {
             SelectProfile(Profiles.ProfileList[0].Id);
         }
 
-        internal void RemoveProfile(Guid id) {
+        public void RemoveProfile(Guid id) {
             if (id != ActiveProfile.Id) {
                 var p = Profiles.ProfileList.Where((x) => x.Id == id).FirstOrDefault();
                 if (p != null) {
@@ -104,16 +129,15 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        public IEnumerable<Profile> GetProfiles() {
+        public IEnumerable<IProfile> GetProfiles() {
             return Profiles.ProfileList;
         }
 
         private void MigrateSettings() {
             Profiles = new Profiles();
-            Profile p;
             Object updateSettings = Properties.Settings.Default.GetPreviousVersion("UpdateSettings");
             if (updateSettings != null) {
-                p = new Profile("Migrated");
+                var p = new Profile("Migrated");
                 Profiles.Add(p);
 
                 p.ColorSchemaSettings.ColorSchemaName = Properties.Settings.Default.ColorSchemaType;
@@ -216,12 +240,12 @@ namespace NINA.Utility.Profile {
                 p.WeatherDataSettings.WeatherDataType = (WeatherDataEnum)Properties.Settings.Default.WeatherDataType;
                 p.WeatherDataSettings.OpenWeatherMapAPIKey = Properties.Settings.Default.OpenWeatherMapAPIKey;
                 p.WeatherDataSettings.OpenWeatherMapUrl = Properties.Settings.Default.OpenWeatherMapUrl;
+
+                SelectProfile(p.Id);
             } else {
-                p = new Profile("Default");
-                Profiles.Add(p);
+                LoadDefaultProfile();
             }
 
-            SelectProfile(p.Id);
         }
     }
 }

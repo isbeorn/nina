@@ -2,16 +2,16 @@
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
-    [XmlRoot(nameof(Profile))]
-    public class PlateSolveSettings {
+    [DataContract]
+    public class PlateSolveSettings : IPlateSolveSettings {
         private PlateSolverEnum plateSolverType = PlateSolverEnum.PLATESOLVE2;
 
-        [XmlElement(nameof(PlateSolverType))]
+        [DataMember]
         public PlateSolverEnum PlateSolverType {
             get {
                 return plateSolverType;
@@ -24,7 +24,7 @@ namespace NINA.Utility.Profile {
 
         private BlindSolverEnum blindSolverType = BlindSolverEnum.ASTROMETRY_NET;
 
-        [XmlElement(nameof(BlindSolverType))]
+        [DataMember]
         public BlindSolverEnum BlindSolverType {
             get {
                 return blindSolverType;
@@ -37,7 +37,7 @@ namespace NINA.Utility.Profile {
 
         private string astrometryAPIKey = string.Empty;
 
-        [XmlElement(nameof(AstrometryAPIKey))]
+        [DataMember]
         public string AstrometryAPIKey {
             get {
                 return astrometryAPIKey;
@@ -50,7 +50,7 @@ namespace NINA.Utility.Profile {
 
         private string cygwinLocation = @"%localappdata%\NINA\cygwin";
 
-        [XmlElement(nameof(CygwinLocation))]
+        [DataMember]
         public string CygwinLocation {
             get {
                 return Environment.ExpandEnvironmentVariables(cygwinLocation);
@@ -63,7 +63,7 @@ namespace NINA.Utility.Profile {
 
         private double searchRadius = 30;
 
-        [XmlElement(nameof(SearchRadius))]
+        [DataMember]
         public double SearchRadius {
             get {
                 return searchRadius;
@@ -76,7 +76,7 @@ namespace NINA.Utility.Profile {
 
         private string pS2Location = string.Empty;
 
-        [XmlElement(nameof(PS2Location))]
+        [DataMember]
         public string PS2Location {
             get {
                 return Environment.ExpandEnvironmentVariables(pS2Location);
@@ -89,7 +89,7 @@ namespace NINA.Utility.Profile {
 
         private int regions = 5000;
 
-        [XmlElement(nameof(Regions))]
+        [DataMember]
         public int Regions {
             get {
                 return regions;
@@ -102,7 +102,7 @@ namespace NINA.Utility.Profile {
 
         private double exposureTime = 2.0d;
 
-        [XmlElement(nameof(ExposureTime))]
+        [DataMember]
         public double ExposureTime {
             get {
                 return exposureTime;
@@ -115,7 +115,7 @@ namespace NINA.Utility.Profile {
 
         private double threshold = 1.0d;
 
-        [XmlElement(nameof(Threshold))]
+        [DataMember]
         public double Threshold {
             get {
                 return threshold;
@@ -128,7 +128,7 @@ namespace NINA.Utility.Profile {
 
         private FilterInfo filter = null;
 
-        [XmlElement(nameof(Filter))]
+        [DataMember]
         public FilterInfo Filter {
             get {
                 return filter;

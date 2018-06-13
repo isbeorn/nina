@@ -2,6 +2,7 @@
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Behaviors;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -21,14 +22,14 @@ namespace NINA.ViewModel {
 
     internal class FramingAssistantVM : BaseVM {
 
-        public FramingAssistantVM() {
+        public FramingAssistantVM(IProfileService profileService) : base(profileService) {
             Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
-            DSO = new DeepSkyObject(string.Empty, Coordinates);
+            DSO = new DeepSkyObject(string.Empty, Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             //Coordinates = new Coordinates(073.2920, -07.6335, Epoch.J2000, Coordinates.RAType.Degrees);
             //Coordinates = new Coordinates(10.6833, 41.2686, Epoch.J2000, Coordinates.RAType.Degrees);
 
-            CameraPixelSize = ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize;
-            FocalLength = ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength;
+            CameraPixelSize = profileService.ActiveProfile.CameraSettings.PixelSize;
+            FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength;
 
             _statusUpdate = new Progress<ApplicationStatus>(p => Status = p);
 
@@ -41,7 +42,7 @@ namespace NINA.ViewModel {
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache);
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async () => {
-                var msgResult = await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = new DeepSkyObject(DSO?.Name, SelectedCoordinates) });
+                var msgResult = await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = new DeepSkyObject(DSO?.Name, SelectedCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository) });
                 ImageParameter = null;
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -191,7 +192,7 @@ namespace NINA.ViewModel {
         private void RegisterMediatorMessages() {
             Mediator.Instance.RegisterAsyncRequest(new SetFramingAssistantCoordinatesMessageHandle(async (SetFramingAssistantCoordinatesMessage m) => {
                 Mediator.Instance.Request(new ChangeApplicationTabMessage() { Tab = ApplicationTab.FRAMINGASSISTANT });
-                this.DSO = new DeepSkyObject(m.DSO.Name, m.DSO.Coordinates);
+                this.DSO = new DeepSkyObject(m.DSO.Name, m.DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
                 this.Coordinates = m.DSO.Coordinates;
                 FramingAssistantSource = FramingAssistantSource.DSS;
                 await LoadImageCommand.ExecuteAsync(null);
@@ -205,7 +206,7 @@ namespace NINA.ViewModel {
             }, MediatorMessages.CameraChanged);
 
             Mediator.Instance.Register((object o) => {
-                DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates);
+                DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             }, MediatorMessages.LocationChanged);
 
             Mediator.Instance.Register((object o) => {
@@ -227,7 +228,7 @@ namespace NINA.ViewModel {
             }
             set {
                 _dSO = value;
-                _dSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude, ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude);
+                _dSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                 RaisePropertyChanged();
             }
         }
@@ -332,7 +333,7 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(DecDegrees));
             RaisePropertyChanged(nameof(DecMinutes));
             RaisePropertyChanged(nameof(DecSeconds));
-            DSO = new DeepSkyObject(DSO?.Name ?? string.Empty, Coordinates);
+            DSO = new DeepSkyObject(DSO?.Name ?? string.Empty, Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
         }
 
         private int _downloadProgressValue;
@@ -361,20 +362,20 @@ namespace NINA.ViewModel {
 
         public double FieldOfView {
             get {
-                return ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.FieldOfView;
+                return profileService.ActiveProfile.FramingAssistantSettings.FieldOfView;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.FieldOfView = value;
+                profileService.ActiveProfile.FramingAssistantSettings.FieldOfView = value;
                 RaisePropertyChanged();
             }
         }
 
         public int CameraWidth {
             get {
-                return ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.CameraWidth;
+                return profileService.ActiveProfile.FramingAssistantSettings.CameraWidth;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.CameraWidth = value;
+                profileService.ActiveProfile.FramingAssistantSettings.CameraWidth = value;
                 RaisePropertyChanged();
                 CalculateRectangle(ImageParameter);
             }
@@ -382,10 +383,10 @@ namespace NINA.ViewModel {
 
         public int CameraHeight {
             get {
-                return ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.CameraHeight;
+                return profileService.ActiveProfile.FramingAssistantSettings.CameraHeight;
             }
             set {
-                ProfileManager.Instance.ActiveProfile.FramingAssistantSettings.CameraHeight = value;
+                profileService.ActiveProfile.FramingAssistantSettings.CameraHeight = value;
                 RaisePropertyChanged();
                 CalculateRectangle(ImageParameter);
             }
@@ -637,7 +638,7 @@ namespace NINA.ViewModel {
         }
 
         private void DragMove(object obj) {
-            var delta = (Vector)obj;
+            var delta = ((DragResult)obj).Delta;
             this.Rectangle.X += delta.X;
             this.Rectangle.Y += delta.Y;
 

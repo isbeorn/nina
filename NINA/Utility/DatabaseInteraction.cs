@@ -10,10 +10,15 @@ using System.Threading.Tasks;
 namespace NINA.Utility {
 
     internal class DatabaseInteraction {
+
+        static DatabaseInteraction() {
+            DllLoader.LoadDll("SQLite\\SQLite.Interop.dll");
+        }
+
         private string _connectionString;
 
-        public DatabaseInteraction() {
-            _connectionString = string.Format(@"Data Source={0};foreign keys=true;", ProfileManager.Instance.ActiveProfile.ApplicationSettings.DatabaseLocation);
+        public DatabaseInteraction(string dbLocation) {
+            _connectionString = string.Format(@"Data Source={0};foreign keys=true;", dbLocation);
         }
 
         public async Task<ICollection<string>> GetConstellations(CancellationToken token) {
@@ -66,6 +71,7 @@ namespace NINA.Utility {
         }
 
         public async Task<List<DeepSkyObject>> GetDeepSkyObjects(
+            string imageRepository,
             CancellationToken token,
             string constellation = "",
             double? rafrom = null,
@@ -178,7 +184,7 @@ namespace NINA.Utility {
                         var reader = await command.ExecuteReaderAsync(token);
 
                         while (reader.Read()) {
-                            var dso = new DeepSkyObject(reader.GetString(0));
+                            var dso = new DeepSkyObject(reader.GetString(0), imageRepository);
 
                             var coords = new Coordinates(reader.GetDouble(1), reader.GetDouble(2), Epoch.J2000, Coordinates.RAType.Degrees);
                             dso.Coordinates = coords;

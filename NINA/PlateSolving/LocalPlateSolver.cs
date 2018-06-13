@@ -18,14 +18,19 @@ namespace NINA.PlateSolving {
         private double _searchradius;
 
         private Coordinates _target;
+        private string cygwinLocation;
 
-        public LocalPlateSolver(int focallength, double pixelsize) {
+        private LocalPlateSolver(string cygwinLocation) {
+            this.cygwinLocation = cygwinLocation;
+        }
+
+        public LocalPlateSolver(int focallength, double pixelsize, string cygwinLocation) : this(cygwinLocation) {
             double arcsecperpixel = (pixelsize / focallength) * 206.3;
             _lowarcsecperpixel = arcsecperpixel - 0.2;
             _higharcsecperpixel = arcsecperpixel + 0.2;
         }
 
-        public LocalPlateSolver(int focallength, double pixelsize, double searchradius, Coordinates target) : this(focallength, pixelsize) {
+        public LocalPlateSolver(int focallength, double pixelsize, double searchradius, Coordinates target, string cygwinLocation) : this(focallength, pixelsize, cygwinLocation) {
             _searchradius = searchradius;
             _target = target;
         }
@@ -67,7 +72,7 @@ namespace NINA.PlateSolving {
                     image.CopyTo(fs);
                 }
 
-                var cygwinbashpath = Path.GetFullPath(Path.Combine(ProfileManager.Instance.ActiveProfile.PlateSolveSettings.CygwinLocation, "bin", "bash.exe"));
+                var cygwinbashpath = Path.GetFullPath(Path.Combine(cygwinLocation, "bin", "bash.exe"));
 
                 if (!File.Exists(cygwinbashpath)) {
                     Logger.Error(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + cygwinbashpath, null);

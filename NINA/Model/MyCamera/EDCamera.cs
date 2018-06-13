@@ -1,27 +1,31 @@
 ﻿using ASCOM.DeviceInterface;
 using EDSDKLib;
-using FreeImageAPI;
-using FreeImageAPI.Metadata;
 using NINA.Utility;
 using NINA.Utility.Notification;
+using NINA.Utility.Profile;
 using NINA.Utility.RawConverter;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Model.MyCamera {
+
     internal class EDCamera : BaseINPC, ICamera {
-        public EDCamera(IntPtr cam, EDSDK.EdsDeviceInfo info) {
+
+        public EDCamera(IntPtr cam, EDSDK.EdsDeviceInfo info, IProfileService profileService) {
+            this.profileService = profileService;
             _cam = cam;
             Id = info.szDeviceDescription;
             Name = info.szDeviceDescription;
         }
+
+        private IProfileService profileService;
 
         private IntPtr _cam;
 
@@ -118,6 +122,12 @@ namespace NINA.Model.MyCamera {
                     }
                 }
                 return property;
+            }
+        }
+
+        public bool CanShowLiveView {
+            get {
+                return true;
             }
         }
 
@@ -327,8 +337,10 @@ namespace NINA.Model.MyCamera {
         private bool Initialize() {
             ValidateMode();
             GetISOSpeeds();
+            SetRawFormat();
             SetSaveLocation();
             SubscribeEvents();
+
             return true;
         }
 
@@ -351,7 +363,7 @@ namespace NINA.Model.MyCamera {
         private void SetSaveLocation() {
             /* 1: memory card; 2: pc; 3: both */
             if (HasError(SetProperty(EDSDK.PropID_SaveTo, 2))) {
-                return;
+                throw new Exception("Unable to set save location to PC");
             }
 
             EDSDK.EdsCapacity capacity = new EDSDK.EdsCapacity();
@@ -359,6 +371,12 @@ namespace NINA.Model.MyCamera {
             capacity.BytesPerSector = 0x1000;
             capacity.Reset = 1;
             EDSDK.EdsSetCapacity(_cam, capacity);
+        }
+
+        private void SetRawFormat() {
+            if (HasError(SetProperty(EDSDK.PropID_ImageQuality, (uint)EDSDK.ImageQuality.EdsImageQuality_LR))) {
+                throw new Exception("Error setting Canon image quality to RAW");
+            }
         }
 
         private Dictionary<double, int> ShutterSpeeds = new Dictionary<double, int>();
@@ -418,79 +436,76 @@ namespace NINA.Model.MyCamera {
 
         public async Task<ImageArray> DownloadExposure(CancellationToken token) {
             return await Task<ImageArray>.Run(async () => {
-                while (!DownloadReady) {
-                    await Task.Delay(100);
+                var stream = IntPtr.Zero;
+                var pointer = IntPtr.Zero;
+                try {
+                    while (!DownloadReady) {
+                        await Task.Delay(100);
+                        token.ThrowIfCancellationRequested();
+                    }
+
+                    var sw = Stopwatch.StartNew();
+                    
+                    if (HasError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo))) {                        
+                        return null;
+                    }
+
+                    //create a file stream to accept the image
+
+                    if (HasError(EDSDK.EdsCreateMemoryStream(directoryItemInfo.Size, out stream))) {
+                        return null;
+                    }
+
+                    //download image
+
+                    if (HasError(EDSDK.EdsDownload(this.DirectoryItem, directoryItemInfo.Size, stream))) {
+                        return null;
+                    }
+
+                    //complete download
+
+                    if (HasError(EDSDK.EdsDownloadComplete(this.DirectoryItem))) {
+                        return null;
+                    }
                     token.ThrowIfCancellationRequested();
+
+                    Debug.Print("Download from Camera: " + sw.Elapsed);
+                    sw.Restart();
+
+                    //convert to memory stream
+
+                    EDSDK.EdsGetPointer(stream, out pointer);
+                    EDSDK.EdsGetLength(stream, out var length);
+
+                    byte[] bytes = new byte[length];
+
+                    //Move from unmanaged to managed code.
+                    Marshal.Copy(pointer, bytes, 0, bytes.Length);
+
+                    Debug.Print("Getting pixels to managed code : " + sw.Elapsed);
+                    sw.Restart();
+
+                    using (var memoryStream = new System.IO.MemoryStream(bytes)) {
+                        var converter = RawConverter.CreateInstance(profileService.Profiles.ActiveProfile.CameraSettings.RawConverter);
+                        var iarr = await converter.ConvertToImageArray(memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                        return iarr;
+                    }
+                } finally {
+                    if (pointer != IntPtr.Zero) {
+                        EDSDK.EdsRelease(pointer);
+                        pointer = IntPtr.Zero;
+                    }
+
+                    if (this.DirectoryItem != IntPtr.Zero) {
+                        EDSDK.EdsRelease(this.DirectoryItem);
+                        this.DirectoryItem = IntPtr.Zero;
+                    }
+
+                    if (stream != IntPtr.Zero) {
+                        EDSDK.EdsRelease(stream);
+                        stream = IntPtr.Zero;
+                    }
                 }
-
-                var sw = Stopwatch.StartNew();
-
-                IntPtr stream = IntPtr.Zero;
-
-                EDSDK.EdsDirectoryItemInfo directoryItemInfo;
-
-                if (HasError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out directoryItemInfo))) {
-                    return null;
-                }
-
-                //create a file stream to accept the image
-
-                if (HasError(EDSDK.EdsCreateMemoryStream(directoryItemInfo.Size, out stream))) {
-                    return null;
-                }
-
-                //download image
-
-                if (HasError(EDSDK.EdsDownload(this.DirectoryItem, directoryItemInfo.Size, stream))) {
-                    return null;
-                }
-
-                //complete download
-
-                if (HasError(EDSDK.EdsDownloadComplete(this.DirectoryItem))) {
-                    return null;
-                }
-                token.ThrowIfCancellationRequested();
-
-                Debug.Print("Download from Camera: " + sw.Elapsed);
-                sw.Restart();
-
-                //convert to memory stream
-
-                EDSDK.EdsGetPointer(stream, out var pointer);
-                EDSDK.EdsGetLength(stream, out var length);
-
-                byte[] bytes = new byte[length];
-
-                //Move from unmanaged to managed code.
-                Marshal.Copy(pointer, bytes, 0, bytes.Length);
-
-                Debug.Print("Getting pixels to managed code : " + sw.Elapsed);
-                sw.Restart();
-
-                System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
-                
-                var converter = RawConverter.CreateInstance();
-                var iarr = await converter.ConvertToImageArray(memoryStream, token);
-
-                if (pointer != IntPtr.Zero) {
-                    EDSDK.EdsRelease(pointer);
-                    pointer = IntPtr.Zero;
-                }
-
-                if (this.DirectoryItem != IntPtr.Zero) {
-                    EDSDK.EdsRelease(this.DirectoryItem);
-                    this.DirectoryItem = IntPtr.Zero;
-                }
-
-                if (stream != IntPtr.Zero) {
-                    EDSDK.EdsRelease(stream);
-                    stream = IntPtr.Zero;
-                }
-
-                memoryStream.Dispose();
-
-                return iarr;                
             });
         }
 
@@ -625,10 +640,6 @@ namespace NINA.Model.MyCamera {
             var err = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
         }
 
-        public void UpdateValues() {
-            //throw new NotImplementedException();
-        }
-
         private uint SetProperty(uint property, object value) {
             int propsize;
             EDSDK.EdsDataType proptype;
@@ -664,6 +675,73 @@ namespace NINA.Model.MyCamera {
                     return true;
                 }
             });
+        }
+
+        private bool _liveViewEnabled;
+
+        public bool LiveViewEnabled {
+            get {
+                return _liveViewEnabled;
+            }
+            set {
+                _liveViewEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public void StartLiveView() {
+            SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_PC);
+            LiveViewEnabled = true;
+        }
+
+        public void StopLiveView() {
+            SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_OFF);
+            LiveViewEnabled = false;
+        }
+
+        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            if (HasError(EDSDK.EdsCreateMemoryStream(0, out var stream))) {
+                return null;
+            }
+
+            if (HasError(EDSDK.EdsCreateEvfImageRef(stream, out var imageRef))) {
+                return null;
+            }
+
+            if (HasError(EDSDK.EdsDownloadEvfImage(_cam, imageRef))) {
+                return null;
+            }
+
+            EDSDK.EdsGetPointer(stream, out var pointer);
+            EDSDK.EdsGetLength(stream, out var length);
+
+            byte[] bytes = new byte[length];
+
+            //Move from unmanaged to managed code.
+            Marshal.Copy(pointer, bytes, 0, bytes.Length);
+
+            System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
+
+            JpegBitmapDecoder decoder = new JpegBitmapDecoder(memoryStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+
+            FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
+            bitmap.BeginInit();
+            bitmap.Source = decoder.Frames[0];
+            bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+            bitmap.EndInit();
+
+            ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
+            bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
+
+            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+
+            memoryStream.Close();
+            memoryStream.Dispose();
+
+            EDSDK.EdsRelease(stream);
+            EDSDK.EdsRelease(imageRef);
+
+            return iarr;
         }
     }
 }

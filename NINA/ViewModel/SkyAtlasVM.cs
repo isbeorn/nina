@@ -17,7 +17,7 @@ namespace NINA.ViewModel {
 
     public class SkyAtlasVM : BaseVM {
 
-        public SkyAtlasVM() {
+        public SkyAtlasVM(IProfileService profileService) : base(profileService) {
             SelectedDate = DateTime.Now;
 
             SearchCommand = new AsyncCommand<bool>(() => Search());
@@ -131,7 +131,7 @@ namespace NINA.ViewModel {
             get {
                 if (_twilightRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
-                    _twilightRiseAndSet = Astrometry.GetNightTimes(d);
+                    _twilightRiseAndSet = Astrometry.GetNightTimes(d, profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                 }
                 return _twilightRiseAndSet;
             }
@@ -147,7 +147,7 @@ namespace NINA.ViewModel {
             get {
                 if (_moonRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
-                    _moonRiseAndSet = Astrometry.GetMoonRiseAndSet(d);
+                    _moonRiseAndSet = Astrometry.GetMoonRiseAndSet(d, profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                 }
                 return _moonRiseAndSet;
             }
@@ -195,7 +195,7 @@ namespace NINA.ViewModel {
             get {
                 if (_sunRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
-                    _sunRiseAndSet = Astrometry.GetSunRiseAndSet(d);
+                    _sunRiseAndSet = Astrometry.GetSunRiseAndSet(d, profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                 }
                 return _sunRiseAndSet;
             }
@@ -235,9 +235,11 @@ namespace NINA.ViewModel {
             return await Task.Run(async () => {
                 try {
                     SearchResult = null;
-                    var db = new DatabaseInteraction();
+                    var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
                     var types = ObjectTypes.Where((x) => x.Selected).Select((x) => x.Name).ToList();
-                    var result = await db.GetDeepSkyObjects(_searchTokenSource.Token,
+                    var result = await db.GetDeepSkyObjects(
+                        profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository,
+                        _searchTokenSource.Token,
                         SelectedConstellation,
                         SelectedRAFrom,
                         SelectedRAThrough,
@@ -254,8 +256,8 @@ namespace NINA.ViewModel {
                         OrderByField.ToString().ToLower(),
                         OrderByDirection.ToString());
 
-                    var longitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Longitude;
-                    var latitude = ProfileManager.Instance.ActiveProfile.AstrometrySettings.Latitude;
+                    var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
+                    var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
 
                     DateTime d = GetReferenceDate(SelectedDate);
 
@@ -357,12 +359,12 @@ namespace NINA.ViewModel {
         }
 
         private void InitializeConstellationFilters() {
-            var l = new DatabaseInteraction().GetConstellations(new System.Threading.CancellationToken());
+            var l = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetConstellations(new System.Threading.CancellationToken());
             Constellations = new AsyncObservableCollection<string>(l.Result);
         }
 
         private void InitializeObjectTypeFilters() {
-            var l = new DatabaseInteraction().GetObjectTypes(new System.Threading.CancellationToken());
+            var l = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetObjectTypes(new System.Threading.CancellationToken());
             ObjectTypes = new AsyncObservableCollection<DSOObjectType>();
             foreach (var t in l.Result) {
                 ObjectTypes.Add(new DSOObjectType(t));

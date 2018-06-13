@@ -1,7 +1,9 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -10,13 +12,16 @@ namespace NINA.ViewModel {
 
     internal class ApplicationVM : BaseVM {
 
-        public ApplicationVM() {
-            var i = ProfileManager.Instance; //i.Save();
+        public ApplicationVM() : this(new ProfileService()) {
+        }
+
+        public ApplicationVM(IProfileService profileService) : base(profileService) {
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
             CheckProfileCommand = new RelayCommand(LoadProfile);
             CheckUpdateCommand = new AsyncCommand<bool>(() => CheckUpdate());
+            OpenManualCommand = new RelayCommand(OpenManual);
             ConnectAllDevicesCommand = new AsyncCommand<bool>(async () => {
                 var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblReconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag == MessageBoxResult.OK) {
@@ -43,17 +48,27 @@ namespace NINA.ViewModel {
 
             InitAvalonDockLayout();
 
-            MeridianFlipVM = new MeridianFlipVM();
+            MeridianFlipVM = new MeridianFlipVM(profileService);
         }
 
         private void LoadProfile(object obj) {
-            if (ProfileManager.Instance.Profiles.ProfileList.Count > 1) {
-                new ProfileSelectVM().SelectProfile();
+            if (profileService.Profiles.ProfileList.Count > 1) {
+                new ProfileSelectVM(profileService).SelectProfile();
             }
         }
 
         private async Task<bool> CheckUpdate() {
             return await new VersionCheckVM().CheckUpdate();
+        }
+
+        private static string NINAMANUAL = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Documentation", "NINA.html");
+
+        private void OpenManual(object o) {
+            if (File.Exists(NINAMANUAL)) {
+                System.Diagnostics.Process.Start(NINAMANUAL);
+            } else {
+                Notification.ShowError(Locale.Loc.Instance["LblManualNotFound"]);
+            }
         }
 
         public void InitAvalonDockLayout() {
@@ -104,7 +119,7 @@ namespace NINA.ViewModel {
         public ApplicationStatusVM ApplicationStatusVM {
             get {
                 if (_applicationStatusVM == null) {
-                    _applicationStatusVM = new ApplicationStatusVM();
+                    _applicationStatusVM = new ApplicationStatusVM(profileService);
                 }
                 return _applicationStatusVM;
             }
@@ -177,7 +192,7 @@ namespace NINA.ViewModel {
         public DockManagerVM DockManagerVM {
             get {
                 if (_dockManagerVM == null) {
-                    _dockManagerVM = new DockManagerVM();
+                    _dockManagerVM = new DockManagerVM(profileService);
                 }
                 return _dockManagerVM;
             }
@@ -204,7 +219,7 @@ namespace NINA.ViewModel {
         public ThumbnailVM ThumbnailVM {
             get {
                 if (_thumbnailVM == null) {
-                    _thumbnailVM = new ThumbnailVM();
+                    _thumbnailVM = new ThumbnailVM(profileService);
                 }
                 return _thumbnailVM;
             }
@@ -219,7 +234,7 @@ namespace NINA.ViewModel {
         public CameraVM CameraVM {
             get {
                 if (_cameraVM == null) {
-                    _cameraVM = new CameraVM();
+                    _cameraVM = new CameraVM(profileService);
                 }
                 return _cameraVM;
             }
@@ -234,7 +249,7 @@ namespace NINA.ViewModel {
         public FilterWheelVM FilterWheelVM {
             get {
                 if (_filterWheelVM == null) {
-                    _filterWheelVM = new FilterWheelVM();
+                    _filterWheelVM = new FilterWheelVM(profileService);
                 }
                 return _filterWheelVM;
             }
@@ -249,7 +264,7 @@ namespace NINA.ViewModel {
         public FocuserVM FocuserVM {
             get {
                 if (_focuserVM == null) {
-                    _focuserVM = new FocuserVM();
+                    _focuserVM = new FocuserVM(profileService);
                 }
                 return _focuserVM;
             }
@@ -264,7 +279,7 @@ namespace NINA.ViewModel {
         public WeatherDataVM WeatherDataVM {
             get {
                 if (_weatherDataVM == null) {
-                    _weatherDataVM = new WeatherDataVM();
+                    _weatherDataVM = new WeatherDataVM(profileService);
                 }
                 return _weatherDataVM;
             }
@@ -279,7 +294,7 @@ namespace NINA.ViewModel {
         public SequenceVM SeqVM {
             get {
                 if (_seqVM == null) {
-                    _seqVM = new SequenceVM();
+                    _seqVM = new SequenceVM(profileService);
                 }
                 return _seqVM;
             }
@@ -294,7 +309,7 @@ namespace NINA.ViewModel {
         public ImagingVM ImagingVM {
             get {
                 if (_imagingVM == null) {
-                    _imagingVM = new ImagingVM();
+                    _imagingVM = new ImagingVM(profileService);
                 }
                 return _imagingVM;
             }
@@ -309,7 +324,7 @@ namespace NINA.ViewModel {
         public PolarAlignmentVM PolarAlignVM {
             get {
                 if (_polarAlignVM == null) {
-                    _polarAlignVM = new PolarAlignmentVM();
+                    _polarAlignVM = new PolarAlignmentVM(profileService);
                 }
                 return _polarAlignVM;
             }
@@ -324,7 +339,7 @@ namespace NINA.ViewModel {
         public PlatesolveVM PlatesolveVM {
             get {
                 if (_platesolveVM == null) {
-                    _platesolveVM = new PlatesolveVM();
+                    _platesolveVM = new PlatesolveVM(profileService);
                 }
                 return _platesolveVM;
             }
@@ -339,7 +354,7 @@ namespace NINA.ViewModel {
         public TelescopeVM TelescopeVM {
             get {
                 if (_telescopeVM == null) {
-                    _telescopeVM = new TelescopeVM();
+                    _telescopeVM = new TelescopeVM(profileService);
                 }
                 return _telescopeVM;
             }
@@ -354,7 +369,7 @@ namespace NINA.ViewModel {
         public GuiderVM GuiderVM {
             get {
                 if (_guiderVM == null) {
-                    _guiderVM = new GuiderVM();
+                    _guiderVM = new GuiderVM(profileService);
                 }
                 return _guiderVM;
             }
@@ -369,7 +384,7 @@ namespace NINA.ViewModel {
         public OptionsVM OptionsVM {
             get {
                 if (_optionsVM == null) {
-                    _optionsVM = new OptionsVM();
+                    _optionsVM = new OptionsVM(profileService);
                 }
                 return _optionsVM;
             }
@@ -384,7 +399,7 @@ namespace NINA.ViewModel {
         public AutoFocusVM AutoFocusVM {
             get {
                 if (_autoFocusVM == null) {
-                    _autoFocusVM = new AutoFocusVM();
+                    _autoFocusVM = new AutoFocusVM(profileService);
                 }
                 return _autoFocusVM;
             }
@@ -399,7 +414,7 @@ namespace NINA.ViewModel {
         public FramingAssistantVM FramingAssistantVM {
             get {
                 if (_framingAssistantVM == null) {
-                    _framingAssistantVM = new FramingAssistantVM();
+                    _framingAssistantVM = new FramingAssistantVM(profileService);
                 }
                 return _framingAssistantVM;
             }
@@ -414,7 +429,7 @@ namespace NINA.ViewModel {
         public SkyAtlasVM SkyAtlasVM {
             get {
                 if (_skyAtlasVM == null) {
-                    _skyAtlasVM = new SkyAtlasVM();
+                    _skyAtlasVM = new SkyAtlasVM(profileService);
                 }
                 return _skyAtlasVM;
             }
@@ -429,6 +444,7 @@ namespace NINA.ViewModel {
         public ICommand MaximizeWindowCommand { get; private set; }
         public ICommand CheckProfileCommand { get; }
         public ICommand CheckUpdateCommand { get; private set; }
+        public ICommand OpenManualCommand { get; private set; }
         public ICommand ExitCommand { get; private set; }
         public ICommand ConnectAllDevicesCommand { get; private set; }
         public ICommand DisconnectAllDevicesCommand { get; private set; }

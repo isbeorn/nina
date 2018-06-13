@@ -17,22 +17,40 @@ namespace NINA.PlateSolving {
         /// <param name="height"> Height of the image</param>
         /// <param name="coords"> Expected Coordinates of the image center</param>
         /// <returns></returns>
-        public static IPlateSolver CreateInstance(PlateSolverEnum solver, int binning, double width, double height, Coordinates coords = null) {
+        public static IPlateSolver CreateInstance(IProfileService profileService, PlateSolverEnum solver, int binning, double width, double height, Coordinates coords = null) {
             IPlateSolver Platesolver = null;
 
             if (solver == PlateSolverEnum.ASTROMETRY_NET) {
-                Platesolver = new AstrometryPlateSolver(ASTROMETRYNETURL, ProfileManager.Instance.ActiveProfile.PlateSolveSettings.AstrometryAPIKey);
+                Platesolver = new AstrometryPlateSolver(ASTROMETRYNETURL, profileService.ActiveProfile.PlateSolveSettings.AstrometryAPIKey);
             } else if (solver == PlateSolverEnum.LOCAL) {
-                if (ProfileManager.Instance.ActiveProfile.PlateSolveSettings.SearchRadius > 0 && coords != null) {
-                    Platesolver = new LocalPlateSolver(ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength, ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize * binning, ProfileManager.Instance.ActiveProfile.PlateSolveSettings.SearchRadius, coords);
+                if (profileService.ActiveProfile.PlateSolveSettings.SearchRadius > 0 && coords != null) {
+                    Platesolver = new LocalPlateSolver(
+                        profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                        profileService.ActiveProfile.CameraSettings.PixelSize * binning,
+                        profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                        coords,
+                        profileService.ActiveProfile.PlateSolveSettings.CygwinLocation
+                    );
                 } else {
-                    Platesolver = new LocalPlateSolver(ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength, ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize * binning);
+                    Platesolver = new LocalPlateSolver(
+                        profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                        profileService.ActiveProfile.CameraSettings.PixelSize * binning,
+                        profileService.ActiveProfile.PlateSolveSettings.CygwinLocation
+                    );
                 }
             } else if (solver == PlateSolverEnum.PLATESOLVE2) {
                 if (coords == null) {
                     Notification.ShowWarning(Locale.Loc.Instance["LblPlatesolve2NoCoordinates"]);
                 }
-                Platesolver = new Platesolve2Solver(ProfileManager.Instance.ActiveProfile.TelescopeSettings.FocalLength, ProfileManager.Instance.ActiveProfile.CameraSettings.PixelSize * binning, width, height, ProfileManager.Instance.ActiveProfile.PlateSolveSettings.Regions, coords);
+                Platesolver = new Platesolve2Solver(
+                    profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                    profileService.ActiveProfile.CameraSettings.PixelSize * binning,
+                    width,
+                    height,
+                    profileService.ActiveProfile.PlateSolveSettings.Regions,
+                    coords,
+                    profileService.ActiveProfile.PlateSolveSettings.PS2Location
+                );
             }
 
             return Platesolver;

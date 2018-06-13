@@ -15,7 +15,7 @@ namespace NINA.EquipmentChooser {
 
     internal class EquipmentChooserVM : BaseVM {
 
-        private EquipmentChooserVM(EquipmentType equipment) {
+        private EquipmentChooserVM(EquipmentType equipment, IProfileService profileService) : base(profileService) {
             if (equipment == EquipmentType.Camera) {
                 GetCameras();
             } else if (equipment == EquipmentType.Telescope) {
@@ -58,7 +58,7 @@ namespace NINA.EquipmentChooser {
             }
 
             if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.FilterWheelSettings.Id select device).First();
+                var selected = (from device in Devices where device.Id == profileService.ActiveProfile.FilterWheelSettings.Id select device).First();
                 SelectedDevice = selected;
             }
         }
@@ -68,7 +68,7 @@ namespace NINA.EquipmentChooser {
 
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Telescope")) {
                 try {
-                    AscomTelescope cam = new AscomTelescope(device.Key, device.Value);
+                    AscomTelescope cam = new AscomTelescope(device.Key, device.Value, profileService);
                     Devices.Add(cam);
                 } catch (Exception) {
                     //only add telescopes which are supported. e.g. x86 drivers will not work in x64
@@ -76,13 +76,13 @@ namespace NINA.EquipmentChooser {
             }
 
             if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.TelescopeSettings.Id select device).First();
+                var selected = (from device in Devices where device.Id == profileService.ActiveProfile.TelescopeSettings.Id select device).First();
                 SelectedDevice = selected;
             }
         }
 
-        public static Model.IDevice Show(EquipmentType equipment) {
-            var chooser = new EquipmentChooserVM(equipment);
+        public static Model.IDevice Show(EquipmentType equipment, IProfileService profileService) {
+            var chooser = new EquipmentChooserVM(equipment, profileService);
 
             System.Windows.Window win = new EquipmentChooser {
                 Title = "Choose Equipment",
@@ -133,7 +133,7 @@ namespace NINA.EquipmentChooser {
             var ascomDevices = new ASCOM.Utilities.Profile();
 
             for (int i = 0; i < ASICameras.Count; i++) {
-                var cam = ASICameras.GetCamera(i);
+                var cam = ASICameras.GetCamera(i, profileService);
                 if (!string.IsNullOrEmpty(cam.Name)) {
                     Devices.Add(cam);
                 }
@@ -141,7 +141,7 @@ namespace NINA.EquipmentChooser {
 
             foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
                 try {
-                    AscomCamera cam = new AscomCamera(device.Key, "ASCOM --- " + device.Value);
+                    AscomCamera cam = new AscomCamera(device.Key, "ASCOM --- " + device.Value, profileService);
                     Devices.Add(cam);
                 } catch (Exception) {
                     //only add cameras which are supported. e.g. x86 drivers will not work in x64
@@ -180,7 +180,7 @@ namespace NINA.EquipmentChooser {
          }*/
 
             if (Devices.Count > 0) {
-                var items = (from device in Devices where device.Id == ProfileManager.Instance.ActiveProfile.CameraSettings.Id select device);
+                var items = (from device in Devices where device.Id == profileService.ActiveProfile.CameraSettings.Id select device);
                 if (items.Count() > 0) {
                     SelectedDevice = items.First();
                 } else {
