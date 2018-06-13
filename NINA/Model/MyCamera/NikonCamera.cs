@@ -50,7 +50,7 @@ namespace NINA.Model.MyCamera {
                 Logger.Error(ex);
             } finally {
                 Connected = connected;
-                RaiseAllPropertiesChanged();                
+                RaiseAllPropertiesChanged();
                 _cameraConnected.TrySetResult(connected);
             }
         }
@@ -651,52 +651,22 @@ namespace NINA.Model.MyCamera {
         }
 
         private void BulbCapture(double exposureTime, Action capture, Action stopCapture) {
-            SetCameraToManual();
-
-            SetCameraShutterSpeed(_bulbShutterSpeedIndex);
-
-            try {
-                Logger.Debug("Starting bulb capture");
-                capture();
-            } catch (NikonException ex) {
-                if (ex.ErrorCode != eNkMAIDResult.kNkMAIDResult_BulbReleaseBusy) {
-                    throw;
-                }
-            }
+            capture();
 
             /*Stop Exposure after exposure time */
             Task.Run(async () => {
                 await Utility.Utility.Wait(TimeSpan.FromSeconds(exposureTime));
 
                 stopCapture();
-
-                Logger.Debug("Restore previous shutter speed");
-                // Restore original shutter speed
-                SetCameraShutterSpeed(_prevShutterSpeed);
             });
         }
 
         private void StartBulbCapture() {
-            LockCamera(true);
-            _camera.Capture();
+            _camera.StartBulbCapture();
         }
 
         private void StopBulbCapture() {
-            LockCamera(false);
-            Logger.Debug("Stopping Bulb Capture");
-            // Terminate capture
-            NkMAIDTerminateCapture terminate = new NkMAIDTerminateCapture();
-            terminate.ulParameter1 = 0;
-            terminate.ulParameter2 = 0;
-
-            unsafe {
-                IntPtr terminatePointer = new IntPtr(&terminate);
-
-                _camera.Start(
-                    eNkMAIDCapability.kNkMAIDCapability_TerminateCapture,
-                    eNkMAIDDataType.kNkMAIDDataType_GenericPtr,
-                    terminatePointer);
-            }
+            _camera.StopBulbCapture();
         }
 
         private void LockCamera(bool lockIt) {
