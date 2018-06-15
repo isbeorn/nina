@@ -449,6 +449,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        public bool DebayerImage {
+            get {
+                return profileService.ActiveProfile.ImageSettings.DebayerImage;
+            }
+            set {
+                profileService.ActiveProfile.ImageSettings.DebayerImage = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public PlateSolverEnum PlateSolverType {
             get {
                 return profileService.ActiveProfile.PlateSolveSettings.PlateSolverType;

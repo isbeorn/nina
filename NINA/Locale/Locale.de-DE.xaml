@@ -647,7 +647,7 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
     <s:String x:Key="LblExposing">Belichten</s:String>
     <s:String x:Key="LblPrepareImage">Bereite Bild vor</s:String>
     <s:String x:Key="LblStretchImage">Strecke Bild</s:String>
-    <s:String x:Key="LblDebayerImage">Debayere Bild</s:String>
+    <s:String x:Key="LblDebayeringImage">Debayere Bild</s:String>
     <s:String x:Key="LblToolTipLiveView">Live Vorschau</s:String>
     <s:String x:Key="LblFocusPointValidationFailed" xml:space="preserve">Berechneter HFR an position {0} weicht um mehr als 25% vom aktuellen HFR ab.
 Aktueller HFR : {1}
@@ -668,4 +668,6 @@ Berechneter HFR: {2}
     <s:String x:Key="LblPaused">Pausiert</s:String>
     <s:String x:Key="LblResuming">Wiederaufnehmen</s:String>
     <s:String x:Key="LblASIImageDownloadError">Fehler beim Erhalten der Bilddaten!</s:String>
+    <s:String x:Key="LblDebayerImage">Bild debayern</s:String>
+    <s:String x:Key="LblDebayerImageTooltip">Bild in der Vorschau debayern (gespeichertes Bild ist davon nicht betroffen)</s:String>
 </ResourceDictionary>
