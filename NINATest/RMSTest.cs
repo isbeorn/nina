@@ -74,9 +74,9 @@ namespace NINATest {
             var scale = 1.59;
             rms.SetScale(scale);
 
-            Assert.AreEqual(300 * scale, rms.RA);
-            Assert.AreEqual(630 * scale, rms.Dec);
-            var total = Math.Sqrt((Math.Pow(300, 2) + Math.Pow(630, 2))) * scale;
+            Assert.AreEqual(300, rms.RA);
+            Assert.AreEqual(630, rms.Dec);
+            var total = Math.Sqrt((Math.Pow(300, 2) + Math.Pow(630, 2)));
             Assert.AreEqual(total, rms.Total);
         }
 
