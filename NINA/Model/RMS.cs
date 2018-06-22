@@ -15,7 +15,7 @@ namespace NINA.Model {
 
         public double RA {
             get {
-                return Scale * ra;
+                return ra;
             }
 
             set {
@@ -27,7 +27,7 @@ namespace NINA.Model {
 
         public double Dec {
             get {
-                return Scale * dec;
+                return dec;
             }
 
             set {
@@ -39,7 +39,7 @@ namespace NINA.Model {
 
         public double Total {
             get {
-                return Scale * total;
+                return total;
             }
 
             set {
@@ -51,19 +51,19 @@ namespace NINA.Model {
 
         public string RAText {
             get {
-                return string.Format(Locale.Loc.Instance["LblPHD2RARMS"], RA.ToString("0.00"));
+                return string.Format(Locale.Loc.Instance["LblPHD2RARMS"], RA.ToString("0.00"), (RA * Scale).ToString("0.00"));
             }
         }
 
         public string DecText {
             get {
-                return string.Format(Locale.Loc.Instance["LblPHD2DecRMS"], Dec.ToString("0.00"));
+                return string.Format(Locale.Loc.Instance["LblPHD2DecRMS"], Dec.ToString("0.00"), (Dec * Scale).ToString("0.00"));
             }
         }
 
         public string TotalText {
             get {
-                return string.Format(Locale.Loc.Instance["LblPHD2TotalRMS"], Total.ToString("0.00"));
+                return string.Format(Locale.Loc.Instance["LblPHD2TotalRMS"], Total.ToString("0.00"), (Total * Scale).ToString("0.00"));
             }
         }
 

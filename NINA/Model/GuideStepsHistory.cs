@@ -101,20 +101,27 @@ namespace NINA.Model {
             }
             set {
                 historySize = value;
-                if (overallGuideSteps.Count > 0) {
-                    var collection = new LinkedList<IGuideStep>();
-                    var startIndex = overallGuideSteps.Count - historySize - 1;
-                    if (startIndex < 0) startIndex = 0;
-                    RMS.Clear();
-                    for (int i = startIndex; i < overallGuideSteps.Count - 1; i++) {
-                        var p = overallGuideSteps.ElementAt(i);
-                        collection.AddLast(p);
-                        RMS.AddDataPoint(p.RADistanceRaw, p.DecDistanceRaw);
-                    }
-
-                    GuideSteps = new AsyncObservableLimitedSizedStack<IGuideStep>(historySize, collection);
-                }
+                RebuildGuideScaleList();
                 RaisePropertyChanged();
+            }
+        }
+
+        private void RebuildGuideScaleList() {
+            if (overallGuideSteps.Count > 0) {
+                var collection = new LinkedList<IGuideStep>();
+                var startIndex = overallGuideSteps.Count - historySize;
+                if (startIndex < 0) startIndex = 0;
+                RMS.Clear();
+                for (int i = startIndex; i < overallGuideSteps.Count; i++) {
+                    var p = overallGuideSteps.ElementAt(i);
+                    RMS.AddDataPoint(p.RADistanceRaw, p.DecDistanceRaw);
+                    if (Scale == GuiderScaleEnum.ARCSECONDS) {
+                        p = ConvertStepToArcSec(p);
+                    }
+                    collection.AddLast(p);
+                }
+
+                GuideSteps = new AsyncObservableLimitedSizedStack<IGuideStep>(historySize, collection);
             }
         }
 
@@ -126,6 +133,7 @@ namespace NINA.Model {
             }
             set {
                 pixelScale = value;
+                RMS.SetScale(pixelScale);
                 RaisePropertyChanged();
             }
         }
@@ -138,28 +146,19 @@ namespace NINA.Model {
             }
             set {
                 scale = value;
-                if (scale == GuiderScaleEnum.ARCSECONDS) {
-                    RMS.SetScale(pixelScale);
-                } else {
-                    RMS.SetScale(1);
-                }
+                RebuildGuideScaleList();
                 RaisePropertyChanged();
             }
         }
 
-        private void ConvertStepToArcSec(IGuideStep pixelStep) {
+        private IGuideStep ConvertStepToArcSec(IGuideStep step) {
+            var newStep = step.Clone();
             // only displayed values are changed, not the raw ones
-            pixelStep.RADistanceRawDisplay = pixelStep.RADistanceRaw * PixelScale;
-            pixelStep.DecDistanceRawDisplay = pixelStep.DecDistanceRaw * PixelScale;
-            pixelStep.RADistanceGuideDisplay = pixelStep.RADistanceGuide * PixelScale;
-            pixelStep.DecDistanceGuideDisplay = pixelStep.DecDistanceGuide * PixelScale;
-        }
-
-        private void ConvertStepToPixels(IGuideStep arcsecStep) {
-            arcsecStep.RADistanceRawDisplay = arcsecStep.RADistanceRaw / PixelScale;
-            arcsecStep.DecDistanceRawDisplay = arcsecStep.DecDistanceRaw / PixelScale;
-            arcsecStep.RADistanceGuideDisplay = arcsecStep.RADistanceGuide / PixelScale;
-            arcsecStep.DecDistanceGuideDisplay = arcsecStep.DecDistanceGuide / PixelScale;
+            newStep.RADistanceRawDisplay = newStep.RADistanceRaw * PixelScale;
+            newStep.DecDistanceRawDisplay = newStep.DecDistanceRaw * PixelScale;
+            newStep.RADistanceGuideDisplay = newStep.RADistanceGuide * PixelScale;
+            newStep.DecDistanceGuideDisplay = newStep.DecDistanceGuide * PixelScale;
+            return newStep;
         }
 
         public void Clear() {
@@ -170,23 +169,26 @@ namespace NINA.Model {
         }
 
         public void AddGuideStep(IGuideStep step) {
-            if (Scale == GuiderScaleEnum.ARCSECONDS) {
-                ConvertStepToArcSec(step);
-            }
-
             overallGuideSteps.AddLast(step);
 
             if (GuideSteps.Count == HistorySize) {
-                var stepToRemove = GuideSteps.FirstOrDefault();
-                RMS.RemoveDataPoint(stepToRemove.RADistanceRaw, stepToRemove.DecDistanceRaw);
+                var elementIdx = overallGuideSteps.Count - HistorySize;
+                if (elementIdx >= 0) {
+                    var stepToRemove = overallGuideSteps.ElementAt(elementIdx);
+                    RMS.RemoveDataPoint(stepToRemove.RADistanceRaw, stepToRemove.DecDistanceRaw);
+                }
             }
 
-            GuideSteps.Add(step);
             RMS.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
 
             if (Math.Abs(step.DECDuration) > MaxDurationY || Math.Abs(step.RADuration) > MaxDurationY) {
                 MaxDurationY = Math.Max(Math.Abs(step.RADuration), Math.Abs(step.DECDuration));
             }
+
+            if (Scale == GuiderScaleEnum.ARCSECONDS) {
+                step = ConvertStepToArcSec(step);
+            }
+            GuideSteps.Add(step);
         }
     }
 }

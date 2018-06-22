@@ -615,9 +615,9 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio">Current Download:Data ratio</s:String>
     <s:String x:Key="LblPHD2HistorySize">PHD2 History Size</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize">PHD2 History Size (Imaging)</s:String>
-    <s:String x:Key="LblPHD2RARMS">RA: {0}&quot;</s:String>
-    <s:String x:Key="LblPHD2DecRMS">Dec: {0}&quot;</s:String>
-    <s:String x:Key="LblPHD2TotalRMS">Tot: {0}&quot;</s:String>
+    <s:String x:Key="LblPHD2RARMS">RA: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2DecRMS">Dec: {0}({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2TotalRMS">Tot: {0}({1}&quot;)</s:String>
     <s:String x:Key="LblTiff">TIFF</s:String>
     <s:String x:Key="LblFits">FITS</s:String>
     <s:String x:Key="LblXisf">XISF</s:String>
