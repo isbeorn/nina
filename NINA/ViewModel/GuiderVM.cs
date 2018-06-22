@@ -30,12 +30,7 @@ namespace NINA.ViewModel {
 
             /*SetUpPlotModels();*/
 
-            MaxY = 4;
-            MaxDurationY = 1;
-
-            GuideStepsHistory = new AsyncObservableLimitedSizedStack<IGuideStep>(HistorySize);
-            GuideStepsHistoryMinimal = new AsyncObservableLimitedSizedStack<IGuideStep>(MinimalHistorySize);
-            RMS = new RMS();
+            GuideStepsHistory = new GuideStepsHistory(HistorySize);
 
             RegisterMediatorMessages();
         }
@@ -49,12 +44,6 @@ namespace NINA.ViewModel {
             Mediator.Instance.RegisterAsyncRequest(
                 new DitherGuiderMessageHandle(async (DitherGuiderMessage msg) => {
                     return await Dither(msg.Token);
-                })
-            );
-
-            Mediator.Instance.RegisterRequest(
-                new GuideStepHistoryCountMessageHandle((GuideStepHistoryCountMessage msg) => {
-                    return ChangeGuideSteps(msg.GuideSteps, msg.HistoryType);
                 })
             );
 
@@ -121,45 +110,15 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.GuiderSettings.PHD2HistorySize = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int MinimalHistorySize {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.PHD2HistorySize;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize = value;
+                GuideStepsHistory.HistorySize = value;
                 RaisePropertyChanged();
             }
         }
 
         private static Dispatcher Dispatcher = Dispatcher.CurrentDispatcher;
 
-        private bool ChangeGuideSteps(int historySize, GuideStepsHistoryType historyType) {
-            AsyncObservableLimitedSizedStack<IGuideStep> collectionToChange = new AsyncObservableLimitedSizedStack<IGuideStep>(0);
-
-            switch (historyType) {
-                case GuideStepsHistoryType.GuideStepsLarge:
-                    collectionToChange = GuideStepsHistory;
-                    break;
-
-                case GuideStepsHistoryType.GuideStepsMinimal:
-                    collectionToChange = GuideStepsHistoryMinimal;
-                    break;
-            }
-
-            collectionToChange.MaxSize = historySize;
-
-            return true;
-        }
-
         private void ResetGraphValues() {
             GuideStepsHistory.Clear();
-            GuideStepsHistoryMinimal.Clear();
-            RMS.Clear();
-            MaxDurationY = 1;
         }
 
         private async Task<bool> Connect() {
@@ -178,47 +137,13 @@ namespace NINA.ViewModel {
 
         private void Guider_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == "PixelScale") {
-                PixelScale = Guider.PixelScale;
+                GuideStepsHistory.PixelScale = Guider.PixelScale;
             }
             if (e.PropertyName == "GuideStep") {
                 var step = Guider.GuideStep;
-                if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {
-                    ConvertStepToArcSec(step);
-                }
-                GuideStepsHistoryMinimal.Add(step);
-                GuideStepsHistory.Add(step);
-                RMS.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
 
-                if(Math.Abs(step.DECDuration) > MaxDurationY || Math.Abs(step.RADuration) > MaxDurationY) {
-                    MaxDurationY = Math.Max(Math.Abs(step.RADuration), Math.Abs(step.DECDuration));
-                }
-            }            
-        }       
-
-        private RMS rms;
-        public RMS RMS {
-            get {
-                return rms;
+                GuideStepsHistory.AddGuideStep(step);
             }
-            set {
-                rms = value;
-                RaisePropertyChanged();
-            }
-        }        
-
-        private void ConvertStepToArcSec(IGuideStep pixelStep) {
-            // only displayed values are changed, not the raw ones
-            pixelStep.RADistanceRawDisplay = pixelStep.RADistanceRaw * PixelScale;
-            pixelStep.DecDistanceRawDisplay = pixelStep.DecDistanceRaw * PixelScale;
-            pixelStep.RADistanceGuideDisplay = pixelStep.RADistanceGuide * PixelScale;
-            pixelStep.DecDistanceGuideDisplay = pixelStep.DecDistanceGuide * PixelScale;
-        }
-
-        private void ConvertStepToPixels(IGuideStep arcsecStep) {
-            arcsecStep.RADistanceRawDisplay = arcsecStep.RADistanceRaw / PixelScale;
-            arcsecStep.DecDistanceRawDisplay = arcsecStep.DecDistanceRaw / PixelScale;
-            arcsecStep.RADistanceGuideDisplay = arcsecStep.RADistanceGuide / PixelScale;
-            arcsecStep.DecDistanceGuideDisplay = arcsecStep.DecDistanceGuide / PixelScale;
         }
 
         public GuiderScaleEnum GuiderScale {
@@ -227,38 +152,7 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.GuiderSettings.PHD2GuiderScale = value;
-                RaisePropertyChanged();
-                foreach (IGuideStep s in GuideStepsHistory) {
-                    if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {
-                        ConvertStepToArcSec(s);
-                    } else {
-                        ConvertStepToPixels(s);
-                    }
-                }
-                foreach (IGuideStep s in GuideStepsHistoryMinimal) {
-                    if (GuiderScale == GuiderScaleEnum.ARCSECONDS) {
-                        ConvertStepToArcSec(s);
-                    } else {
-                        ConvertStepToPixels(s);
-                    }
-                }
-
-                RMS.SetScale(GuiderScale == GuiderScaleEnum.ARCSECONDS ? PixelScale : 1);
-
-                RaisePropertyChanged(nameof(GuideStepsHistory));
-                RaisePropertyChanged(nameof(GuideStepsHistoryMinimal));
-            }
-        }
-
-        private double _pixelScale;
-
-        public double PixelScale {
-            get {
-                return _pixelScale;
-            }
-            set {
-                _pixelScale = value;
-                RaisePropertyChanged();
+                GuideStepsHistory.Scale = value;
             }
         }
 
@@ -289,8 +183,17 @@ namespace NINA.ViewModel {
             }
         }
 
-        public AsyncObservableLimitedSizedStack<IGuideStep> GuideStepsHistory { get; set; }
-        public AsyncObservableLimitedSizedStack<IGuideStep> GuideStepsHistoryMinimal { get; set; }
+        private GuideStepsHistory guideStepsHistory;
+
+        public GuideStepsHistory GuideStepsHistory {
+            get {
+                return guideStepsHistory;
+            }
+            private set {
+                guideStepsHistory = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private IGuider _guider;
 
@@ -301,53 +204,6 @@ namespace NINA.ViewModel {
             set {
                 _guider = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        public double Interval {
-            get {
-                return MaxY / 4;
-            }
-        }
-
-        private double _maxY;
-
-        public double MaxY {
-            get {
-                return _maxY;
-            }
-
-            set {
-                _maxY = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(MinY));
-                RaisePropertyChanged(nameof(Interval));
-            }
-        }
-
-        public double MinY {
-            get {
-                return -MaxY;
-            }
-        }
-
-        private double _maxDurationY;
-
-        public double MaxDurationY {
-            get {
-                return _maxDurationY;
-            }
-
-            set {
-                _maxDurationY = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(MinDurationY));
-            }
-        }
-
-        public double MinDurationY {
-            get {
-                return -MaxDurationY;
             }
         }
 

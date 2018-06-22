@@ -1428,32 +1428,6 @@
                                     </TextBox.Text>
                                 </TextBox>
                             </UniformGrid>
-                            <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                                <TextBlock
-                                    MinWidth="200"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblPHD2HistorySize}" />
-                                <TextBox
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding PHD2HistorySize}" />
-                            </UniformGrid>
-                            <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                                <TextBlock
-                                    MinWidth="200"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblPHD2MinimalHistorySize}" />
-                                <TextBox
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding PHD2MinimalHistorySize}" />
-                            </UniformGrid>
                         </UniformGrid>
                     </StackPanel>
                 </GroupBox>

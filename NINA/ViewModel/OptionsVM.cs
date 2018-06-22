@@ -409,26 +409,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public int PHD2HistorySize {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.PHD2HistorySize;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.PHD2HistorySize = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int PHD2MinimalHistorySize {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public double AutoStretchFactor {
             get {
                 return profileService.ActiveProfile.ImageSettings.AutoStretchFactor;
