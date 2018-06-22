@@ -122,7 +122,12 @@ namespace NINA.Model {
                 }
 
                 GuideSteps = new AsyncObservableLimitedSizedStack<IGuideStep>(historySize, collection);
+                CalculateMaximumDurationY();
             }
+        }
+
+        private void CalculateMaximumDurationY() {
+            MaxDurationY = Math.Abs(GuideSteps.Max((x) => Math.Max(Math.Abs(x.RADuration), Math.Abs(x.DECDuration))));
         }
 
         private double pixelScale;
@@ -181,14 +186,11 @@ namespace NINA.Model {
 
             RMS.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
 
-            if (Math.Abs(step.DECDuration) > MaxDurationY || Math.Abs(step.RADuration) > MaxDurationY) {
-                MaxDurationY = Math.Max(Math.Abs(step.RADuration), Math.Abs(step.DECDuration));
-            }
-
             if (Scale == GuiderScaleEnum.ARCSECONDS) {
                 step = ConvertStepToArcSec(step);
             }
             GuideSteps.Add(step);
+            CalculateMaximumDurationY();
         }
     }
 }
