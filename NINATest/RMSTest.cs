@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINATest {
+
     [TestFixture]
     public class RMSTest {
 
@@ -34,7 +35,7 @@ namespace NINATest {
         [Test]
         public void RMS_AddMultipleDataPoints_CalculateCorrect() {
             RMS rms = new RMS();
-            
+
             rms.AddDataPoint(25, 1296);
             rms.AddDataPoint(625, 36);
             rms.AddDataPoint(25, 1296);
@@ -92,6 +93,27 @@ namespace NINATest {
             rms.SetScale(scale);
 
             rms.Clear();
+
+            Assert.AreEqual(scale, rms.Scale);
+            Assert.AreEqual(0, rms.RA);
+            Assert.AreEqual(0, rms.Dec);
+            Assert.AreEqual(0, rms.Total);
+        }
+
+        [Test]
+        public void RMS_AddValuesClearAndAddOneAgain_ValuesAppliedCorrectly() {
+            RMS rms = new RMS();
+
+            rms.AddDataPoint(-25, -36);
+            rms.AddDataPoint(-625, -1296);
+            rms.AddDataPoint(-25, -36);
+            rms.AddDataPoint(-625, -1296);
+
+            var scale = 1.59;
+            rms.SetScale(scale);
+
+            rms.Clear();
+            rms.AddDataPoint(-25, -36);
 
             Assert.AreEqual(scale, rms.Scale);
             Assert.AreEqual(0, rms.RA);
