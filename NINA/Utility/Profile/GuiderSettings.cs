@@ -83,27 +83,6 @@ namespace NINA.Utility.Profile {
             set {
                 pHD2LargeHistorySize = value;
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
-                Mediator.Mediator.Instance.Request(new GuideStepHistoryCountMessage() {
-                    GuideSteps = pHD2LargeHistorySize,
-                    HistoryType = ViewModel.GuiderVM.GuideStepsHistoryType.GuideStepsLarge
-                });
-            }
-        }
-
-        private int pHD2MinimalHistorySize = 10;
-
-        [DataMember]
-        public int PHD2MinimalHistorySize {
-            get {
-                return pHD2MinimalHistorySize;
-            }
-            set {
-                pHD2MinimalHistorySize = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
-                Mediator.Mediator.Instance.Request(new GuideStepHistoryCountMessage() {
-                    GuideSteps = pHD2MinimalHistorySize,
-                    HistoryType = ViewModel.GuiderVM.GuideStepsHistoryType.GuideStepsMinimal
-                });
             }
         }
 

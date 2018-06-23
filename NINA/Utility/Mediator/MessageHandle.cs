@@ -126,6 +126,24 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(GetDoublePropertyFromClassMessage).Name; } }
     }
 
+    internal class StartRMSRecordingMessageHandle : MessageHandle<bool> {
+
+        public StartRMSRecordingMessageHandle(Func<StartRMSRecordingMessage, bool> callback) {
+            Callback = (f) => callback((StartRMSRecordingMessage)f);
+        }
+
+        public override string MessageType { get { return typeof(StartRMSRecordingMessage).Name; } }
+    }
+
+    internal class StopRMSRecordingMessageHandle : MessageHandle<RMS> {
+
+        public StopRMSRecordingMessageHandle(Func<StopRMSRecordingMessage, RMS> callback) {
+            Callback = (f) => callback((StopRMSRecordingMessage)f);
+        }
+
+        public override string MessageType { get { return typeof(StopRMSRecordingMessage).Name; } }
+    }
+
     /* Message definition */
 
     internal class GuideStepHistoryCountMessage : MediatorMessage<bool> {
@@ -173,5 +191,11 @@ namespace NINA.Utility.Mediator {
 
     internal class GetDoublePropertyFromClassMessage : MediatorMessage<double> {
         public string Property { get; set; }
+    }
+
+    internal class StartRMSRecordingMessage : MediatorMessage<bool> {
+    }
+
+    internal class StopRMSRecordingMessage : MediatorMessage<RMS> {
     }
 }

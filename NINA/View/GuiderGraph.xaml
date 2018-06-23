@@ -18,7 +18,7 @@
             <ColumnDefinition Width="120" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <StackPanel>
+        <StackPanel DataContext="{Binding GuideStepsHistory}">
             <!--<TextBlock Text="{ns:Loc LblYAxisScale}" />-->
             <ComboBox
                 ItemStringFormat="y: +/-{0}&quot;"
@@ -47,7 +47,7 @@
             <ComboBox
                 ItemStringFormat="unit: {0}"
                 ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}"
-                SelectedItem="{Binding GuiderScale}" />
+                SelectedItem="{Binding Scale}" />
             <TextBlock Text="{Binding RMS.RAText}" />
             <TextBlock Text="{Binding RMS.DecText}" />
             <TextBlock Text="{Binding RMS.TotalText}" />
@@ -56,6 +56,7 @@
         <oxy:Plot
             Grid.Column="1"
             Background="{StaticResource BackgroundBrush}"
+            DataContext="{Binding GuideStepsHistory}"
             LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
             LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
             LegendOrientation="Vertical"
@@ -107,7 +108,7 @@
                     Title="{ns:Loc LblRA}"
                     DataFieldX="Time"
                     DataFieldY="RADistanceRawDisplay"
-                    ItemsSource="{Binding GuideStepsHistory}"
+                    ItemsSource="{Binding GuideSteps}"
                     XAxisKey="DataAxisX"
                     YAxisKey="DistanceAxis"
                     Color="Blue" />
@@ -115,7 +116,7 @@
                     Title="{ns:Loc LblDec}"
                     DataFieldX="Time"
                     DataFieldY="DecDistanceRawDisplay"
-                    ItemsSource="{Binding GuideStepsHistory}"
+                    ItemsSource="{Binding GuideSteps}"
                     XAxisKey="DataAxisX"
                     YAxisKey="DistanceAxis"
                     Color="Red" />
@@ -125,7 +126,7 @@
                     DataFieldX="TimeRA"
                     DataFieldY="RADuration"
                     FillColor="Transparent"
-                    ItemsSource="{Binding GuideStepsHistory}"
+                    ItemsSource="{Binding GuideSteps}"
                     StrokeColor="Blue"
                     StrokeThickness="1"
                     XAxisKey="DataAxisX"
@@ -137,7 +138,7 @@
                     DataFieldX="TimeDec"
                     DataFieldY="DECDuration"
                     FillColor="Transparent"
-                    ItemsSource="{Binding GuideStepsHistory}"
+                    ItemsSource="{Binding GuideSteps}"
                     StrokeColor="Red"
                     StrokeThickness="1"
                     XAxisKey="DataAxisX"

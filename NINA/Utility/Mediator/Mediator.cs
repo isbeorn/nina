@@ -1,4 +1,5 @@
-﻿using NINA.Model.MyCamera;
+﻿using NINA.Model;
+using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.PlateSolving;
 using System;
@@ -105,6 +106,10 @@ namespace NINA.Utility.Mediator {
 
         public FilterInfo Request(MediatorMessage<FilterInfo> msg) {
             return Request<FilterInfo>(msg, null);
+        }
+
+        public RMS Request(MediatorMessage<RMS> msg) {
+            return Request<RMS>(msg, null);
         }
 
         public ICollection<FilterInfo> Request(MediatorMessage<ICollection<FilterInfo>> msg) {

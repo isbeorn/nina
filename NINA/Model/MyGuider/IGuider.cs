@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -62,5 +63,7 @@ namespace NINA.Model.MyGuider {
         bool RALimited { get; }
         bool DecLimited { get; }
         double ErrorCode { get; }
+
+        IGuideStep Clone();
     }
 }
