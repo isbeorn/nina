@@ -172,6 +172,7 @@ namespace NINA.ViewModel {
             p.Add(new ImagePattern("$$EXPOSURETIME$$", Locale.Loc.Instance["LblExposureTimeDescription"], string.Format("{0:0.00}", 10.21234)));
             p.Add(new ImagePattern("$$TARGETNAME$$", Locale.Loc.Instance["LblTargetNameDescription"], "M33"));
             p.Add(new ImagePattern("$$GAIN$$", Locale.Loc.Instance["LblGainDescription"], "1600"));
+            p.Add(new ImagePattern("$$RMS$$", Locale.Loc.Instance["LblGuidingRMSDescription"], string.Format("{0:0.00}", 0.35)));
             return p;
         }
 

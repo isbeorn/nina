@@ -74,6 +74,23 @@ namespace NINA.ViewModel {
                     return await StopGuiding(msg.Token);
                 })
             );
+
+            Mediator.Instance.RegisterRequest(
+                new StartRMSRecordingMessageHandle((StartRMSRecordingMessage msg) => {
+                    var rms = new RMS();
+                    rms.SetScale(GuideStepsHistory.PixelScale);
+                    recordedRMS = rms;
+                    return true;
+                })
+            );
+
+            Mediator.Instance.RegisterRequest(
+                new StopRMSRecordingMessageHandle((StopRMSRecordingMessage msg) => {
+                    var rms = recordedRMS;
+                    recordedRMS = null;
+                    return rms;
+                })
+            );
         }
 
         private async Task<bool> AutoSelectGuideStar(CancellationToken token) {
@@ -143,6 +160,10 @@ namespace NINA.ViewModel {
                 var step = Guider.GuideStep;
 
                 GuideStepsHistory.AddGuideStep(step);
+
+                if (recordedRMS != null) {
+                    recordedRMS.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
+                }
             }
         }
 
@@ -194,6 +215,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        private RMS recordedRMS;
 
         private IGuider _guider;
 
