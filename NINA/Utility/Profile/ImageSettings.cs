@@ -45,5 +45,18 @@ namespace NINA.Utility.Profile {
                 Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
             }
         }
+
+        private bool debayerImage = false;
+
+        [DataMember]
+        public bool DebayerImage {
+            get {
+                return debayerImage;
+            }
+            set {
+                debayerImage = value;
+                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+            }
+        }
     }
 }
