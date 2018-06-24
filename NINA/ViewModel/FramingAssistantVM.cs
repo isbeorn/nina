@@ -461,6 +461,7 @@ namespace NINA.ViewModel {
         private IProgress<ApplicationStatus> _statusUpdate;
 
         private async Task<bool> LoadImageFromDSS() {
+            var success = true;
             try {
                 _statusUpdate.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
 
@@ -485,13 +486,15 @@ namespace NINA.ViewModel {
                     ImageParameter = parameter;
                 }));
             } catch (OperationCanceledException) {
+                success = false;
             } catch (Exception ex) {
+                success = false;
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);
             } finally {
                 _statusUpdate.Report(new ApplicationStatus() { Status = "" });
             }
-            return true;
+            return success;
         }
 
         private async Task<bool> LoadImage() {
