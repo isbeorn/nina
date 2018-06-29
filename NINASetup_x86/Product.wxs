@@ -323,9 +323,6 @@
       <Component  Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Guid="cbfe40b3-e9cf-4a2f-9556-3adbf62da0fc">
         <File Id="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Name="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
       </Component>
-      <Component  Id="Xceed.Wpf.AvalonDock.Themes.Expression.dll" Guid="3f97e93a-3dac-4aeb-94b5-47831326cfa6">
-        <File Id="Xceed.Wpf.AvalonDock.Themes.Expression.dll" Name="Xceed.Wpf.AvalonDock.Themes.Expression.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.Themes.Expression.dll" />
-      </Component>
       <Component  Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Guid="391de18b-a586-4c09-a397-e2f01e13683c">
         <File Id="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Name="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
       </Component>
