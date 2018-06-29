@@ -12,6 +12,7 @@
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:util="clr-namespace:NINA.Utility"
+    xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
     d:DesignHeight="300"
     d:DesignWidth="300"
     Background="{StaticResource BackgroundBrush}"
@@ -252,225 +253,141 @@
                         <Grid />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblPrimary}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding PrimaryColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource PrimaryBrush}" />
+                                SelectedColor="{Binding PrimaryColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblSecondary}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding SecondaryColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource SecondaryBrush}" />
+                                SelectedColor="{Binding SecondaryColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblBorder}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding BorderColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource BorderBrush}" />
+                                SelectedColor="{Binding BorderColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblBackground}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding BackgroundColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource BackgroundBrush}" />
+                                SelectedColor="{Binding BackgroundColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonBackground}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding ButtonBackgroundColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource ButtonBackgroundBrush}" />
+                                SelectedColor="{Binding ButtonBackgroundColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonHighlight}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding ButtonBackgroundSelectedColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                SelectedColor="{Binding ButtonBackgroundSelectedColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonForeground}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding ButtonForegroundColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource ButtonForegroundBrush}" />
+                                SelectedColor="{Binding ButtonForegroundColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonForegroundDisabled}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding ButtonForegroundDisabledColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource ButtonForegroundDisabledBrush}" />
+                                SelectedColor="{Binding ButtonForegroundDisabledColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationWarning}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding NotificationWarningColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource NotificationWarningBrush}" />
+                                SelectedColor="{Binding NotificationWarningColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationError}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding NotificationErrorColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource NotificationErrorBrush}" />
+                                SelectedColor="{Binding NotificationErrorColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationWarningText}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding NotificationWarningTextColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource NotificationWarningTextBrush}" />
+                                SelectedColor="{Binding NotificationWarningTextColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationErrorText}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding NotificationErrorTextColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource NotificationErrorTextBrush}" />
+                                SelectedColor="{Binding NotificationErrorTextColor}" />
                         </StackPanel>
                     </UniformGrid>
                 </GroupBox>
@@ -486,225 +403,141 @@
                         <Grid />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblPrimary}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltPrimaryColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltPrimaryBrush}" />
+                                SelectedColor="{Binding AltPrimaryColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblSecondary}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltSecondaryColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltSecondaryBrush}" />
+                                SelectedColor="{Binding AltSecondaryColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblBorder}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltBorderColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltBorderBrush}" />
+                                SelectedColor="{Binding AltBorderColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblBackground}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltBackgroundColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltBackgroundBrush}" />
+                                SelectedColor="{Binding AltBackgroundColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonBackground}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltButtonBackgroundColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltButtonBackgroundBrush}" />
+                                SelectedColor="{Binding AltButtonBackgroundColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonHighlight}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltButtonBackgroundSelectedColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltButtonBackgroundSelectedBrush}" />
+                                SelectedColor="{Binding AltButtonBackgroundSelectedColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonForeground}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltButtonForegroundColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltButtonForegroundBrush}" />
+                                SelectedColor="{Binding AltButtonForegroundColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonForegroundDisabled}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltButtonForegroundDisabledColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltButtonForegroundDisabledBrush}" />
+                                SelectedColor="{Binding AltButtonForegroundDisabledColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationWarning}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltNotificationWarningColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltNotificationWarningBrush}" />
+                                SelectedColor="{Binding AltNotificationWarningColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationError}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltNotificationErrorColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltNotificationErrorBrush}" />
+                                SelectedColor="{Binding AltNotificationErrorColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationWarningText}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltNotificationWarningTextColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltNotificationWarningTextBrush}" />
+                                SelectedColor="{Binding AltNotificationWarningTextColor}" />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationErrorText}" />
-                            <TextBox
-                                Width="70"
-                                HorizontalAlignment="Center"
+                            <xceed:ColorPicker
+                                Width="80"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding AltNotificationErrorTextColor}" />
-                            <Button
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{StaticResource AltNotificationErrorTextBrush}" />
+                                SelectedColor="{Binding AltNotificationErrorTextColor}" />
                         </StackPanel>
                     </UniformGrid>
                 </GroupBox>
