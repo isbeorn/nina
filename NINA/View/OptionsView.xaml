@@ -253,66 +253,66 @@
                         <Grid />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblPrimary}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding PrimaryColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblSecondary}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding SecondaryColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblBorder}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding BorderColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblBackground}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding BackgroundColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonBackground}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding ButtonBackgroundColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonHighlight}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding ButtonBackgroundSelectedColor}" />
@@ -320,11 +320,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonForeground}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding ButtonForegroundColor}" />
@@ -332,11 +332,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonForegroundDisabled}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding ButtonForegroundDisabledColor}" />
@@ -344,11 +344,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationWarning}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding NotificationWarningColor}" />
@@ -356,11 +356,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationError}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding NotificationErrorColor}" />
@@ -368,11 +368,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationWarningText}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding NotificationWarningTextColor}" />
@@ -380,11 +380,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationErrorText}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding NotificationErrorTextColor}" />
@@ -403,66 +403,66 @@
                         <Grid />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblPrimary}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltPrimaryColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblSecondary}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltSecondaryColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblBorder}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltBorderColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblBackground}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltBackgroundColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonBackground}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltButtonBackgroundColor}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonHighlight}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltButtonBackgroundSelectedColor}" />
@@ -470,11 +470,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonForeground}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltButtonForegroundColor}" />
@@ -482,11 +482,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblButtonForegroundDisabled}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltButtonForegroundDisabledColor}" />
@@ -494,11 +494,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationWarning}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltNotificationWarningColor}" />
@@ -506,11 +506,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationError}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltNotificationErrorColor}" />
@@ -518,11 +518,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationWarningText}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltNotificationWarningTextColor}" />
@@ -530,11 +530,11 @@
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                Width="155"
+                                Width="170"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblNotificationErrorText}" />
                             <xceed:ColorPicker
-                                Width="120"
+                                Width="80"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 SelectedColor="{Binding AltNotificationErrorTextColor}" />
