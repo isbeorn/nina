@@ -50,7 +50,7 @@ namespace NINA.Model.MyCamera {
                 Logger.Error(ex);
             } finally {
                 Connected = connected;
-                RaiseAllPropertiesChanged();                
+                RaiseAllPropertiesChanged();
                 _cameraConnected.TrySetResult(connected);
             }
         }
@@ -677,26 +677,11 @@ namespace NINA.Model.MyCamera {
         }
 
         private void StartBulbCapture() {
-            LockCamera(true);
-            _camera.Capture();
+            _camera.StartBulbCapture();
         }
 
         private void StopBulbCapture() {
-            LockCamera(false);
-            Logger.Debug("Stopping Bulb Capture");
-            // Terminate capture
-            NkMAIDTerminateCapture terminate = new NkMAIDTerminateCapture();
-            terminate.ulParameter1 = 0;
-            terminate.ulParameter2 = 0;
-
-            unsafe {
-                IntPtr terminatePointer = new IntPtr(&terminate);
-
-                _camera.Start(
-                    eNkMAIDCapability.kNkMAIDCapability_TerminateCapture,
-                    eNkMAIDDataType.kNkMAIDDataType_GenericPtr,
-                    terminatePointer);
-            }
+            _camera.StopBulbCapture();
         }
 
         private void LockCamera(bool lockIt) {
