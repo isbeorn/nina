@@ -279,6 +279,7 @@
     <Compile Include="Model\ApplicationStatus.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
     <Compile Include="Model\DummyDevice.cs" />
+    <Compile Include="Model\GuideStepsHistory.cs" />
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\MyCamera\AtikCamera.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
