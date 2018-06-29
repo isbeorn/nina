@@ -220,8 +220,10 @@ namespace NINA.Utility {
                     }
                 }
             } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.Notification.ShowError(ex.Message);
+                if (!ex.Message.Contains("Execution was aborted by the user")) {
+                    Logger.Error(ex);
+                    Notification.Notification.ShowError(ex.Message);
+                }
             }
 
             return dsos;

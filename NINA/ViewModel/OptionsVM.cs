@@ -172,6 +172,7 @@ namespace NINA.ViewModel {
             p.Add(new ImagePattern("$$EXPOSURETIME$$", Locale.Loc.Instance["LblExposureTimeDescription"], string.Format("{0:0.00}", 10.21234)));
             p.Add(new ImagePattern("$$TARGETNAME$$", Locale.Loc.Instance["LblTargetNameDescription"], "M33"));
             p.Add(new ImagePattern("$$GAIN$$", Locale.Loc.Instance["LblGainDescription"], "1600"));
+            p.Add(new ImagePattern("$$RMS$$", Locale.Loc.Instance["LblGuidingRMSDescription"], string.Format("{0:0.00}", 0.35)));
             return p;
         }
 
@@ -409,26 +410,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public int PHD2HistorySize {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.PHD2HistorySize;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.PHD2HistorySize = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int PHD2MinimalHistorySize {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.PHD2MinimalHistorySize = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public double AutoStretchFactor {
             get {
                 return profileService.ActiveProfile.ImageSettings.AutoStretchFactor;
@@ -445,6 +426,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ImageSettings.AnnotateImage = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool DebayerImage {
+            get {
+                return profileService.ActiveProfile.ImageSettings.DebayerImage;
+            }
+            set {
+                profileService.ActiveProfile.ImageSettings.DebayerImage = value;
                 RaisePropertyChanged();
             }
         }

@@ -522,8 +522,8 @@ namespace NINA.ViewModel {
                         iarr.Statistics.DetectedStars = analysis.DetectedStars;
                     }
 
-                    if (iarr.IsBayered) {
-                        _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayerImage"] });
+                    if (iarr.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
+                        _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
                     }
 
@@ -631,6 +631,8 @@ namespace NINA.ViewModel {
                 p.Add(new OptionsVM.ImagePattern("$$TARGETNAME$$", "Target Name if available", parameters.TargetName));
 
                 p.Add(new OptionsVM.ImagePattern("$$GAIN$$", "Camera Gain", Cam?.Gain.ToString() ?? string.Empty));
+
+                p.Add(new OptionsVM.ImagePattern("$$RMS$$", "Guiding RMS during Exposure", string.Format("{0:0.00}", parameters.RecordedRMS.Total)));
 
                 string path = Path.GetFullPath(profileService.ActiveProfile.ImageFileSettings.FilePath);
                 string filename = Utility.Utility.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern, p);
@@ -930,5 +932,6 @@ namespace NINA.ViewModel {
         public string Binning { get; internal set; }
         public double ExposureTime { get; internal set; }
         public string TargetName { get; internal set; }
+        public RMS RecordedRMS { get; internal set; }
     }
 }

@@ -615,9 +615,9 @@ Should NINA's values be synced to the telescope?</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio">Current Download:Data ratio</s:String>
     <s:String x:Key="LblPHD2HistorySize">PHD2 History Size</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize">PHD2 History Size (Imaging)</s:String>
-    <s:String x:Key="LblPHD2RARMS">RA: {0}&quot;</s:String>
-    <s:String x:Key="LblPHD2DecRMS">Dec: {0}&quot;</s:String>
-    <s:String x:Key="LblPHD2TotalRMS">Tot: {0}&quot;</s:String>
+    <s:String x:Key="LblPHD2RARMS">RA: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2DecRMS">Dec: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2TotalRMS">Tot: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblTiff">TIFF</s:String>
     <s:String x:Key="LblFits">FITS</s:String>
     <s:String x:Key="LblXisf">XISF</s:String>
@@ -642,7 +642,7 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <s:String x:Key="LblExposing">Exposing</s:String>
     <s:String x:Key="LblPrepareImage">Preparing image</s:String>
     <s:String x:Key="LblStretchImage">Stretching image</s:String>
-    <s:String x:Key="LblDebayerImage">Debayering image</s:String>
+    <s:String x:Key="LblDebayeringImage">Debayering image</s:String>
     <s:String x:Key="LblToolTipLiveView">Live View</s:String>
     <s:String x:Key="LblFocusPointValidationFailed" xml:space="preserve">Calculated HFR for focus at position {0} differs more than 25% from actual HFR
 Actual HFR : {1}
@@ -663,4 +663,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblPaused">Paused</s:String>
     <s:String x:Key="LblResuming">Resuming</s:String>
     <s:String x:Key="LblASIImageDownloadError">Error retrieving image data from camera!</s:String>
+    <s:String x:Key="LblDebayerImage">Debayer Image</s:String>
+    <s:String x:Key="LblDebayerImageTooltip">Debayer Image on preview (won't affect saved file)</s:String>
+    <s:String x:Key="LblGuidingRMSDescription">Root mean square error of guiding during exposure</s:String>
 </ResourceDictionary>

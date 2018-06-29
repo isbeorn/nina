@@ -335,8 +335,14 @@ namespace NINA.ViewModel {
                         throw new CameraConnectionLostException();
                     }
 
+                    /* Start RMS Recording */
+                    Mediator.Instance.Request(new StartRMSRecordingMessage());
+
                     /*Capture*/
                     await Capture(sequence, token, progress);
+
+                    /* Stop RMS Recording */
+                    var rms = Mediator.Instance.Request(new StopRMSRecordingMessage());
 
                     token.ThrowIfCancellationRequested();
 
@@ -369,7 +375,8 @@ namespace NINA.ViewModel {
                         ExposureTime = sequence.ExposureTime,
                         FilterName = sequence.FilterType?.Name ?? string.Empty,
                         ImageType = sequence.ImageType,
-                        TargetName = targetname
+                        TargetName = targetname,
+                        RecordedRMS = rms
                     };
                     _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters);
 

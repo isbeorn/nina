@@ -175,7 +175,7 @@ namespace NINA.Model.MyGuider {
             connected = await _tcs.Task;
 
             var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
-            PixelScale = double.Parse(resp.result.ToString().Replace(",","."), CultureInfo.InvariantCulture);
+            PixelScale = double.Parse(resp.result.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
 
             Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
 
@@ -753,7 +753,7 @@ namespace NINA.Model.MyGuider {
 
             public double RADuration {
                 get {
-                    if(RADirection == "East") {
+                    if (RADirection == "East") {
                         return -rADuration;
                     } else {
                         return rADuration;
@@ -857,6 +857,10 @@ namespace NINA.Model.MyGuider {
                 set {
                     errorCode = value;
                 }
+            }
+
+            public IGuideStep Clone() {
+                return (PhdEventGuideStep)this.MemberwiseClone();
             }
         }
 
