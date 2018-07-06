@@ -427,7 +427,7 @@ namespace NINA.Model.MyCamera {
         public void StopExposure() {
             ASICameraDll.StopExposure(_cameraId);
         }
-        
+
         private CameraControl GetControl(ASICameraDll.ASI_CONTROL_TYPE controlType) {
             return Controls.FirstOrDefault(x => x.ControlType == controlType);
         }
@@ -527,25 +527,26 @@ namespace NINA.Model.MyCamera {
 
         private int GetControlValue(ASICameraDll.ASI_CONTROL_TYPE type) {
             var control = GetControl(type);
-            return control.Value;
+            return control?.Value ?? 0;
         }
 
         private int GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE type) {
             var control = GetControl(type);
-            return control.MaxValue;
+            return control?.MaxValue ?? 0;
         }
 
         private int GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE type) {
             var control = GetControl(type);
-            return control.MinValue;
+            return control?.MinValue ?? 0;
         }
 
         private bool SetControlValue(ASICameraDll.ASI_CONTROL_TYPE type, int value) {
             var control = GetControl(type);
-            if (value <= control.MaxValue && value >= control.MinValue) {
+            if (control != null && value <= control.MaxValue && value >= control.MinValue) {
                 control.Value = value;
                 return true;
             } else {
+                Logger.Warning(string.Format("Failed to set ASI Control Value {0} with value {1}", type, value));
                 return false;
             }
         }
