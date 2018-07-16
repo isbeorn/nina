@@ -47,7 +47,7 @@ namespace NINA.Model {
             }
             set {
                 _coordinates = value;
-                CalculateAltitude(this._referenceDate);
+                CalculateAltitude();
                 RaisePropertyChanged();
             }
         }
@@ -130,7 +130,7 @@ namespace NINA.Model {
             get {
                 if (_altitudes == null) {
                     _altitudes = new List<DataPoint>();
-                    CalculateAltitude(_referenceDate);
+                    CalculateAltitude();
                 }
                 return _altitudes;
             }
@@ -155,7 +155,7 @@ namespace NINA.Model {
             }
         }
 
-        private DateTime _referenceDate;
+        private DateTime _referenceDate = DateTime.UtcNow;
         private double _latitude;
         private double _longitude;
 
@@ -166,7 +166,8 @@ namespace NINA.Model {
             this._altitudes = null;
         }
 
-        private void CalculateAltitude(DateTime start) {
+        private void CalculateAltitude() {
+            var start = this._referenceDate;
             Altitudes.Clear();
             var siderealTime = Astrometry.GetLocalSiderealTime(start, _longitude);
             var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
