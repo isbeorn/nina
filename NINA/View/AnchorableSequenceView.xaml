@@ -11,7 +11,7 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel IsEnabled="{Binding Cam.Connected}" Orientation="Vertical">
+        <StackPanel IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Connected}" Orientation="Vertical">
 
             <Grid Height="25" Margin="5">
                 <ProgressBar
@@ -113,13 +113,13 @@
                 CancelButtonImage="{StaticResource CancelSVG}"
                 CancelCommand="{Binding CancelSequenceCommand}"
                 Command="{Binding StartSequenceCommand}"
+                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
                 IsPaused="{Binding IsPaused}"
                 LoadingImageBrush="{StaticResource PrimaryBrush}"
                 PauseButtonImage="{StaticResource PauseSVG}"
                 PauseCommand="{Binding PauseSequenceCommand}"
                 ResumeButtonImage="{StaticResource PlaySVG}"
                 ResumeCommand="{Binding ResumeSequenceCommand}"
-                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
                 ToolTip="{ns:Loc LblTooltipStartSequence}" />
         </StackPanel>
     </ScrollViewer>

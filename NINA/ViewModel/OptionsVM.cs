@@ -48,9 +48,9 @@ namespace NINA.ViewModel {
                 ImagePatterns = CreateImagePatternList();
             }, MediatorMessages.LocaleChanged);
 
-            Mediator.Instance.Register((object o) => {
-                CameraPixelSize = (double)o;
-            }, MediatorMessages.CameraPixelSizeChanged);
+            /*Mediator.Instance.Register((object o) => {
+                CameraPixelSize = (double)o;  // todo options mediator?
+            }, MediatorMessages.CameraPixelSizeChanged);*/
 
             Mediator.Instance.RegisterRequest(new SetProfileByIdMessageHandle((SetProfileByIdMessage msg) => {
                 SelectedProfile = profileService.Profiles.ProfileList.Single(p => p.Id == msg.Id);

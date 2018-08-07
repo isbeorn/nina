@@ -15,12 +15,15 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    public class AutoFocusVM : DockableVM {
+    internal class AutoFocusVM : DockableVM, ICameraConsumer {
 
-        public AutoFocusVM(IProfileService profileService) : base(profileService) {
+        public AutoFocusVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
             Title = "LblAutoFocus";
             ContentId = nameof(AutoFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["AutoFocusSVG"];
+
+            this.cameraMediator = cameraMediator;
+            this.cameraMediator.RegisterConsumer(this);
 
             FocusPoints = new AsyncObservableCollection<DataPoint>();
 
@@ -33,12 +36,11 @@ namespace NINA.ViewModel {
                             return await StartAutoFocus(null, _autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
                         }
                     ),
-                (p) => { return _focuserConnected && _cameraConnected; }
+                (p) => { return _focuserConnected && cameraInfo.Connected; }
             );
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
 
             Mediator.Instance.Register((object o) => _focuserConnected = (bool)o, MediatorMessages.FocuserConnectedChanged);
-            Mediator.Instance.Register((object o) => _cameraConnected = (bool)o, MediatorMessages.CameraConnectedChanged);
             Mediator.Instance.Register((object o) => _temperature = (double)o, MediatorMessages.FocuserTemperatureChanged);
 
             Mediator.Instance.RegisterAsyncRequest(
@@ -50,6 +52,7 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _autoFocusCancelToken;
         private AsyncObservableCollection<DataPoint> _focusPoints;
+        private CameraMediator cameraMediator;
 
         public AsyncObservableCollection<DataPoint> FocusPoints {
             get {
@@ -104,7 +107,6 @@ namespace NINA.ViewModel {
 
         private int _focusPosition;
         private bool _focuserConnected;
-        private bool _cameraConnected;
         private double _temperature;
 
         private async Task GetFocusPoints(FilterInfo filter, int nrOfSteps, IProgress<ApplicationStatus> progress, CancellationToken token, int offset = 0) {
@@ -179,7 +181,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (!(_focuserConnected && _cameraConnected)) {
+            if (!(_focuserConnected && cameraInfo.Connected)) {
                 Notification.ShowError(Locale.Loc.Instance["LblAutoFocusGearNotConnected"]);
                 return false;
             }
@@ -261,6 +263,7 @@ namespace NINA.ViewModel {
         }
 
         private AutoFocusPoint _lastAutoFocusPoint;
+        private CameraInfo cameraInfo;
 
         public AutoFocusPoint LastAutoFocusPoint {
             get {
@@ -274,6 +277,10 @@ namespace NINA.ViewModel {
 
         private void CancelAutoFocus(object obj) {
             _autoFocusCancelToken?.Cancel();
+        }
+
+        public void UpdateCameraInfo(CameraInfo cameraInfo) {
+            this.cameraInfo = cameraInfo;
         }
 
         public ICommand StartAutoFocusCommand { get; private set; }

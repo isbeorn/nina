@@ -16,12 +16,15 @@ using ZWOptical.ASISDK;
 
 namespace NINA.ViewModel {
 
-    internal class CameraVM : DockableVM {
+    internal class CameraVM : DockableVM, ICameraVM {
 
-        public CameraVM(IProfileService profileService) : base(profileService) {
+        public CameraVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
             Title = "LblCamera";
             ContentId = nameof(CameraVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
+
+            this.cameraMediator = cameraMediator;
+            this.cameraMediator.RegisterCameraVM(this);
 
             //ConnectCameraCommand = new RelayCommand(connectCamera);
             ChooseCameraCommand = new AsyncCommand<bool>(ChooseCamera);
@@ -39,19 +42,6 @@ namespace NINA.ViewModel {
                 GetCameraValues,
                 UpdateCameraValues,
                 profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
-            );
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new ConnectCameraMessageHandle(async (ConnectCameraMessage msg) => {
-                    await ChooseCameraCommand.ExecuteAsync(null);
-                    return true;
-                })
-            );
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new InitiateLiveViewMessageHandle(async (InitiateLiveViewMessage msg) => {
-                    return await LiveView(msg.Token);
-                })
             );
 
             Mediator.Instance.Register((o) => { RefreshCameraList(o); }, MediatorMessages.ProfileChanged);
@@ -85,6 +75,8 @@ namespace NINA.ViewModel {
                 }
             });
         }
+
+        private CameraMediator cameraMediator;
 
         private CameraChooserVM _cameraChooserVM;
 
@@ -240,7 +232,7 @@ namespace NINA.ViewModel {
 
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
 
-        private async Task<bool> ChooseCamera() {
+        public async Task<bool> ChooseCamera() {
             await ss.WaitAsync();
             try {
                 Disconnect();
@@ -276,15 +268,15 @@ namespace NINA.ViewModel {
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
 
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                            updateTimer.Start();                            
+                            updateTimer.Start();
 
                             profileService.ActiveProfile.CameraSettings.Id = this.Cam.Id;
                             if (Cam.PixelSizeX > 0) {
                                 profileService.ActiveProfile.CameraSettings.PixelSize = Cam.PixelSizeX;
-                                Mediator.Instance.Notify(MediatorMessages.CameraPixelSizeChanged, Cam.PixelSizeX);
                             }
 
-                            Mediator.Instance.Notify(MediatorMessages.CameraChanged, Cam);
+                            UpdateCameraInfo();
+
                             return true;
                         } else {
                             this.Cam = null;
@@ -307,6 +299,35 @@ namespace NINA.ViewModel {
                     }
                 });
             }
+        }
+
+        public CameraInfo GetCameraInfo() {
+            if (Connected == true) {
+                return new CameraInfo {
+                    Connected = Connected,
+                    HasShutter = Cam.HasShutter,
+                    Temperature = Temperature,
+                    Gain = Cam.Gain,
+                    BinX = Cam.BinX,
+                    BinY = Cam.BinY,
+                    Offset = Cam.Offset,
+                    Name = Cam.Name,
+                    IsSubSampleEnabled = Cam.EnableSubSample,
+                    CameraState = CameraState,
+                    XSize = Cam.CameraXSize,
+                    YSize = Cam.CameraYSize,
+                    PixelSize = Cam.PixelSizeX
+                };
+            } else {
+                return new CameraInfo {
+                    Connected = false
+                };
+            }
+        }
+
+        private void UpdateCameraInfo() {
+            var info = GetCameraInfo();
+            cameraMediator.UpdateCameraInfo(info);
         }
 
         private void CancelConnectCamera(object o) {
@@ -335,8 +356,7 @@ namespace NINA.ViewModel {
             CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, Temperature));
         }
 
-
-        Dictionary<string, object> GetCameraValues() {
+        private Dictionary<string, object> GetCameraValues() {
             Dictionary<string, object> cameraValues = new Dictionary<string, object>();
             cameraValues.Add(nameof(Connected), _cam?.Connected ?? false);
             cameraValues.Add(nameof(CoolerOn), _cam?.CoolerOn ?? false);
@@ -361,7 +381,7 @@ namespace NINA.ViewModel {
                 _connected = value;
                 RaisePropertyChanged();
                 if (prevVal != _connected) {
-                    Mediator.Instance.Notify(MediatorMessages.CameraConnectedChanged, _connected);
+                    UpdateCameraInfo(); // todo
                 }
             }
         }
@@ -415,7 +435,7 @@ namespace NINA.ViewModel {
         }
 
         private bool _coolerOn;
-        DeviceUpdateTimer updateTimer;
+        private DeviceUpdateTimer updateTimer;
         private CancellationTokenSource _cancelConnectCameraSource;
 
         public bool CoolerOn {
@@ -432,7 +452,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void DisconnectDiag(object obj) {
+        private void DisconnectDiag(object o) {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
                 Disconnect();
@@ -441,15 +461,14 @@ namespace NINA.ViewModel {
 
         public void Disconnect() {
             updateTimer?.Stop();
-            _cancelCoolCameraSource?.Cancel();            
+            _cancelCoolCameraSource?.Cancel();
             CoolingRunning = false;
             Cam?.Disconnect();
             Cam = null;
-
-            Mediator.Instance.Notify(MediatorMessages.CameraChanged, null);
+            UpdateCameraInfo();
         }
 
-        private async Task<bool> LiveView(CancellationToken ct) {
+        public async Task LiveView(CancellationToken ct) {
             if (Connected && _cam.CanShowLiveView) {
                 try {
                     _cam.StartLiveView();
@@ -470,7 +489,84 @@ namespace NINA.ViewModel {
                     _cam.StopLiveView();
                 }
             }
-            return true;
+        }
+
+        public async Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            if (Connected == true) {
+                Cam.StartExposure(exposureTime, isLightFrame);
+
+                var start = DateTime.Now;
+                var elapsed = 0.0d;
+                var exposureSeconds = 0;
+                progress.Report(new ApplicationStatus() {
+                    Status = Locale.Loc.Instance["LblExposing"],
+                    Progress = exposureSeconds,
+                    MaxProgress = (int)exposureTime,
+                    ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
+                });
+                /* Wait for Capture */
+                if (exposureTime >= 1) {
+                    await Task.Run(async () => {
+                        do {
+                            var delta = await Utility.Utility.Delay(500, token);
+                            elapsed += delta.TotalSeconds;
+                            exposureSeconds = (int)elapsed;
+                            token.ThrowIfCancellationRequested();
+
+                            progress.Report(new ApplicationStatus() {
+                                Status = Locale.Loc.Instance["LblExposing"],
+                                Progress = exposureSeconds,
+                                MaxProgress = (int)exposureTime,
+                                ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
+                            });
+                        } while ((elapsed < exposureTime) && Connected == true);
+                    });
+                }
+                token.ThrowIfCancellationRequested();
+            }
+        }
+
+        public void SetBinning(short x, short y) {
+            Cam.SetBinning(x, y);
+            UpdateCameraInfo();
+        }
+
+        public void AbortExposure() {
+            if (Connected == true) {
+                Cam?.AbortExposure();
+                UpdateCameraInfo();
+            }
+        }
+
+        public void SetGain(short gain) {
+            if (Connected == true) {
+                Cam.Gain = gain;
+                UpdateCameraInfo();
+            }
+        }
+
+        public void SetSubSample(bool subSample) {
+            if (Connected == true) {
+                Cam.EnableSubSample = subSample;
+                UpdateCameraInfo();
+            }
+        }
+
+        public Task<ImageArray> Download(CancellationToken token) {
+            if (Connected == true) {
+                return Cam.DownloadExposure(token);
+            } else {
+                return null;
+            }
+        }
+
+        public void SetSubSampleArea(int x, int y, int width, int height) {
+            if (Connected == true && Cam.CanSubSample) {
+                Cam.SubSampleX = x;
+                Cam.SubSampleY = y;
+                Cam.SubSampleWidth = width;
+                Cam.SubSampleHeight = height;
+            }
         }
 
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }

@@ -143,15 +143,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(StartAutoFocusMessage).Name; } }
     }
 
-    internal class ConnectCameraMessageHandle : AsyncMessageHandle<bool> {
-
-        public ConnectCameraMessageHandle(Func<ConnectCameraMessage, Task<bool>> callback) {
-            Callback = (f) => callback((ConnectCameraMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(ConnectCameraMessage).Name; } }
-    }
-
     internal class ConnectFilterWheelMessageHandle : AsyncMessageHandle<bool> {
 
         public ConnectFilterWheelMessageHandle(Func<ConnectFilterWheelMessage, Task<bool>> callback) {
@@ -233,15 +224,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(SetImageMessage).Name; } }
     }
 
-    internal class InitiateLiveViewMessageHandle : AsyncMessageHandle<bool> {
-
-        public InitiateLiveViewMessageHandle(Func<InitiateLiveViewMessage, Task<bool>> callback) {
-            Callback = (f) => callback((InitiateLiveViewMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(InitiateLiveViewMessage).Name; } }
-    }
-
     /* Message definition */
 
     internal abstract class AsyncMediatorMessage<TMessageResult> {
@@ -300,8 +282,6 @@ namespace NINA.Utility.Mediator {
         public FilterInfo Filter { get; set; }
     }
 
-    internal class ConnectCameraMessage : AsyncMediatorMessage<bool> { }
-
     internal class ConnectFilterWheelMessage : AsyncMediatorMessage<bool> { }
 
     internal class ConnectFocuserMessage : AsyncMediatorMessage<bool> { }
@@ -343,8 +323,5 @@ namespace NINA.Utility.Mediator {
         public ImageArray ImageArray { get; set; }
         public double Mean { get; set; }
         public Double ExposureTime { get; set; }
-    }
-
-    internal class InitiateLiveViewMessage : AsyncMediatorMessage<bool> {
     }
 }

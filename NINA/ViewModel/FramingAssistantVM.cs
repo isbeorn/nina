@@ -20,9 +20,12 @@ using System.Xml.Linq;
 
 namespace NINA.ViewModel {
 
-    internal class FramingAssistantVM : BaseVM {
+    internal class FramingAssistantVM : BaseVM, ICameraConsumer {
 
-        public FramingAssistantVM(IProfileService profileService) : base(profileService) {
+        public FramingAssistantVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
+            this.cameraMediator = cameraMediator;
+            this.cameraMediator.RegisterConsumer(this);
+
             Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             //Coordinates = new Coordinates(073.2920, -07.6335, Epoch.J2000, Coordinates.RAType.Degrees);
@@ -200,18 +203,8 @@ namespace NINA.ViewModel {
             }));
 
             Mediator.Instance.Register((object o) => {
-                var cam = (ICamera)o;
-                this.CameraWidth = cam?.CameraXSize ?? this.CameraWidth;
-                this.CameraHeight = cam?.CameraYSize ?? this.CameraHeight;
-            }, MediatorMessages.CameraChanged);
-
-            Mediator.Instance.Register((object o) => {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             }, MediatorMessages.LocationChanged);
-
-            Mediator.Instance.Register((object o) => {
-                CameraPixelSize = (double)o;
-            }, MediatorMessages.CameraPixelSizeChanged);
         }
 
         private void CancelLoadImage() {
@@ -234,6 +227,7 @@ namespace NINA.ViewModel {
         }
 
         private Coordinates _coordinates;
+        private CameraMediator cameraMediator;
 
         public Coordinates Coordinates {
             get {
@@ -658,6 +652,17 @@ namespace NINA.ViewModel {
                 Epoch.J2000,
                 Coordinates.RAType.Degrees
             );
+        }
+
+        public void UpdateCameraInfo(CameraInfo cameraInfo) {
+            if (cameraInfo.XSize > 0) {
+                this.CameraWidth = cameraInfo.XSize;
+            }
+            if (cameraInfo.YSize > 0) {
+                this.CameraHeight = cameraInfo.YSize;
+            }
+
+            CameraPixelSize = cameraInfo.PixelSize;
         }
 
         public ICommand DragStartCommand { get; private set; }

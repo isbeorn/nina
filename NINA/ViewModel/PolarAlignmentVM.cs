@@ -14,13 +14,16 @@ using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
-    internal class PolarAlignmentVM : DockableVM {
+    internal class PolarAlignmentVM : DockableVM, ICameraConsumer {
 
-        public PolarAlignmentVM(IProfileService profileService) : base(profileService) {
+        public PolarAlignmentVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
             Title = "LblPolarAlignment";
             ContentId = nameof(PolarAlignmentVM);
 
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PolarAlignSVG"];
+
+            this.cameraMediator = cameraMediator;
+            this.cameraMediator.RegisterConsumer(this);
 
             _updateValues = new DispatcherTimer();
             _updateValues.Interval = TimeSpan.FromSeconds(10);
@@ -29,10 +32,10 @@ namespace NINA.ViewModel {
 
             MeasureAzimuthErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<ApplicationStatus>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH),
-                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
+                (p) => (Telescope?.Connected == true && CameraInfo.Connected == true));
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<ApplicationStatus>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE),
-                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
+                (p) => (Telescope?.Connected == true && CameraInfo.Connected == true));
             SlewToAltitudeMeridianOffsetCommand = new AsyncCommand<bool>(
                 () => SlewToMeridianOffset(AltitudeMeridianOffset, AltitudeDeclination),
                 (p) => (Telescope?.Connected == true));
@@ -41,7 +44,7 @@ namespace NINA.ViewModel {
                 (p) => (Telescope?.Connected == true));
             DARVSlewCommand = new AsyncCommand<bool>(
                 () => Darvslew(new Progress<ApplicationStatus>(p => Status = p), new Progress<string>(p => DarvStatus = p)),
-                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
+                (p) => (Telescope?.Connected == true && CameraInfo.Connected == true));
             CancelDARVSlewCommand = new RelayCommand(
                 Canceldarvslew,
                 (p) => _cancelDARVSlewToken != null);
@@ -60,10 +63,6 @@ namespace NINA.ViewModel {
         }
 
         private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((object o) => {
-                Cam = (ICamera)o;
-            }, MediatorMessages.CameraChanged);
-
             Mediator.Instance.Register((object o) => {
                 Telescope = (ITelescope)o;
             }, MediatorMessages.TelescopeChanged);
@@ -107,18 +106,6 @@ namespace NINA.ViewModel {
             }
             set {
                 _telescope = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICamera _cam;
-
-        public ICamera Cam {
-            get {
-                return _cam;
-            }
-            set {
-                _cam = value;
                 RaisePropertyChanged();
             }
         }
@@ -246,7 +233,7 @@ namespace NINA.ViewModel {
         }
 
         private string _hourAngleTime;
-
+        private CameraMediator cameraMediator;
         private DispatcherTimer _updateValues;
 
         private BinningMode _snapBin;
@@ -399,7 +386,7 @@ namespace NINA.ViewModel {
         private bool _detectStars;
 
         private async Task<bool> Darvslew(IProgress<ApplicationStatus> cameraprogress, IProgress<string> slewprogress) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo.Connected == true) {
                 _cancelDARVSlewToken = new CancellationTokenSource();
                 try {
                     var oldAutoStretch = _autoStretch;
@@ -434,6 +421,18 @@ namespace NINA.ViewModel {
 
         private AltitudeSite _altitudeSiteType;
 
+        private CameraInfo cameraInfo;
+
+        public CameraInfo CameraInfo {
+            get {
+                return cameraInfo;
+            }
+            set {
+                cameraInfo = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public AltitudeSite AltitudeSiteType {
             get {
                 return _altitudeSiteType;
@@ -445,7 +444,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> MeasurePolarError(IProgress<ApplicationStatus> progress, Direction direction) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo.Connected == true) {
                 _cancelMeasureErrorToken = new CancellationTokenSource();
                 try {
                     double poleErr = await CalculatePoleError(progress, _cancelMeasureErrorToken.Token);
@@ -622,6 +621,10 @@ namespace NINA.ViewModel {
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
+        }
+
+        public void UpdateCameraInfo(CameraInfo cameraInfo) {
+            this.CameraInfo = cameraInfo;
         }
     }
 }

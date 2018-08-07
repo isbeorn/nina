@@ -282,6 +282,7 @@
     <Compile Include="Model\GuideStepsHistory.cs" />
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\MyCamera\AtikCamera.cs" />
+    <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
     <Compile Include="Model\MyCamera\ImageArray.cs" />
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
@@ -339,6 +340,8 @@
     <Compile Include="Utility\DatabaseInteraction.cs" />
     <Compile Include="Utility\DeviceUpdateTimer.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
+    <Compile Include="Utility\Mediator\CameraMediator.cs" />
+    <Compile Include="Utility\Mediator\ICameraConsumer.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
     <Compile Include="Utility\Profile\ICameraSettings.cs" />
@@ -423,6 +426,7 @@
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
+    <Compile Include="ViewModel\ICameraVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />

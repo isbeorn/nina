@@ -19,15 +19,18 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel {
 
-    internal class PlatesolveVM : DockableVM {
+    internal class PlatesolveVM : DockableVM, ICameraConsumer {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
-        public PlatesolveVM(IProfileService profileService) : base(profileService) {
+        public PlatesolveVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
             Title = "LblPlateSolving";
             ContentId = nameof(PlatesolveVM);
             SyncScope = false;
             SlewToTarget = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
+
+            this.cameraMediator = cameraMediator;
+            this.cameraMediator.RegisterConsumer(this);
 
             SolveCommand = new AsyncCommand<bool>(() => CaptureSolveSyncAndReslew(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSolveCommand = new RelayCommand(CancelSolve);
@@ -44,10 +47,6 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 Telescope = (ITelescope)o;
             }, MediatorMessages.TelescopeChanged);
-
-            Mediator.Instance.Register((object o) => {
-                Cam = (ICamera)o;
-            }, MediatorMessages.CameraChanged);
 
             Mediator.Instance.Register((object o) => {
                 _autoStretch = (bool)o;
@@ -444,7 +443,8 @@ namespace NINA.ViewModel {
                 if (Telescope?.Connected == true) {
                     coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 }
-                var binning = Cam?.BinX ?? 1;
+                var binning = CameraInfo.BinX;
+                if (binning < 1) { binning = 1; }
 
                 solver = PlateSolverFactory.CreateInstance(profileService, profileService.ActiveProfile.PlateSolveSettings.PlateSolverType, binning, img.Width, img.Height, coords);
             }
@@ -455,7 +455,8 @@ namespace NINA.ViewModel {
         private IPlateSolver GetBlindSolver(BitmapSource img) {
             IPlateSolver solver = null;
             if (img != null) {
-                var binning = Cam?.BinX ?? 1;
+                var binning = CameraInfo.BinX;
+                if (binning < 1) { binning = 1; }
 
                 PlateSolverEnum type;
                 if (profileService.ActiveProfile.PlateSolveSettings.BlindSolverType == BlindSolverEnum.LOCAL) {
@@ -470,6 +471,10 @@ namespace NINA.ViewModel {
             return solver;
         }
 
+        public void UpdateCameraInfo(CameraInfo cameraInfo) {
+            this.CameraInfo = cameraInfo;
+        }
+
         private ITelescope _telescope;
 
         public ITelescope Telescope {
@@ -482,17 +487,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ICamera _cam;
-
-        public ICamera Cam {
-            get {
-                return _cam;
-            }
-            set {
-                _cam = value;
-                RaisePropertyChanged();
-            }
-        }
+        private CameraMediator cameraMediator;
 
         public IAsyncCommand SolveCommand { get; private set; }
 
@@ -514,6 +509,17 @@ namespace NINA.ViewModel {
         }
 
         private PlateSolveResult _plateSolveResult;
+        private CameraInfo cameraInfo;
+
+        public CameraInfo CameraInfo {
+            get {
+                return cameraInfo;
+            }
+            set {
+                cameraInfo = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public PlateSolveResult PlateSolveResult {
             get {

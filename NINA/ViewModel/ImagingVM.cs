@@ -15,12 +15,15 @@ using static NINA.Model.CaptureSequence;
 
 namespace NINA.ViewModel {
 
-    internal class ImagingVM : DockableVM {
+    internal class ImagingVM : DockableVM, ICameraConsumer {
 
-        public ImagingVM(IProfileService profileService) : base(profileService) {
+        public ImagingVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
             Title = "LblImaging";
             ContentId = nameof(ImagingVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
+
+            this.cameraMediator = cameraMediator;
+            this.cameraMediator.RegisterConsumer(this);
 
             SnapExposureDuration = 1;
             SnapCommand = new AsyncCommand<bool>(() => SnapImage(new Progress<ApplicationStatus>(p => Status = p)));
@@ -28,7 +31,7 @@ namespace NINA.ViewModel {
             StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
             StopLiveViewCommand = new RelayCommand(StopLiveView);
 
-            ImageControl = new ImageControlVM(profileService);
+            ImageControl = new ImageControlVM(profileService, cameraMediator);
 
             RegisterMediatorMessages();
         }
@@ -51,11 +54,6 @@ namespace NINA.ViewModel {
                     return await CaptureAndPrepareImage(msg.Sequence, msg.Token, msg.Progress);
                 })
             );
-
-            Mediator.Instance.Register((object o) => _cameraConnected = (bool)o, MediatorMessages.CameraConnectedChanged);
-            Mediator.Instance.Register((object o) => {
-                Cam = (ICamera)o;
-            }, MediatorMessages.CameraChanged);
         }
 
         private ImageControlVM _imageControl;
@@ -65,11 +63,15 @@ namespace NINA.ViewModel {
             set { _imageControl = value; RaisePropertyChanged(); }
         }
 
-        private bool _cameraConnected;
+        private CameraInfo cameraInfo;
 
-        private bool CameraConnected {
+        public CameraInfo CameraInfo {
             get {
-                return Cam != null && _cameraConnected;
+                return cameraInfo;
+            }
+            set {
+                cameraInfo = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -102,9 +104,8 @@ namespace NINA.ViewModel {
         private async Task<bool> StartLiveView() {
             ImageControl.IsLiveViewEnabled = true;
             _liveViewCts = new CancellationTokenSource();
-            return await Task.Run(async () => {
-                return await Mediator.Instance.RequestAsync(new InitiateLiveViewMessage() { Token = _liveViewCts.Token });
-            });
+            await cameraMediator.LiveView(_liveViewCts.Token);
+            return true;
         }
 
         private void StopLiveView(object o) {
@@ -149,18 +150,6 @@ namespace NINA.ViewModel {
             }
             set {
                 _snapSave = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICamera _cam;
-
-        public ICamera Cam {
-            get {
-                return _cam;
-            }
-            set {
-                _cam = value;
                 RaisePropertyChanged();
             }
         }
@@ -223,56 +212,29 @@ namespace NINA.ViewModel {
 
         private void SetBinning(CaptureSequence seq) {
             if (seq.Binning == null) {
-                Cam.SetBinning(1, 1);
+                cameraMediator.SetBinning(1, 1);
             } else {
-                Cam.SetBinning(seq.Binning.X, seq.Binning.Y);
+                cameraMediator.SetBinning(seq.Binning.X, seq.Binning.Y);
             }
         }
 
         private void SetSubSample(CaptureSequence seq) {
-            Cam.EnableSubSample = seq.EnableSubSample;
+            cameraMediator.SetSubSample(seq.EnableSubSample);
         }
 
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             double duration = seq.ExposureTime;
             bool isLight = false;
-            if (Cam.HasShutter) {
+            if (cameraInfo.HasShutter) {
                 isLight = true;
             }
-            Cam.StartExposure(duration, isLight);
-            var start = DateTime.Now;
-            var elapsed = 0.0d;
-            ExposureSeconds = 0;
-            progress.Report(new ApplicationStatus() {
-                Status = Locale.Loc.Instance["LblExposing"],
-                Progress = ExposureSeconds,
-                MaxProgress = (int)duration,
-                ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
-            });
-            /* Wait for Capture */
-            if (duration >= 1) {
-                await Task.Run(async () => {
-                    do {
-                        var delta = await Utility.Utility.Delay(500, token);
-                        elapsed += delta.TotalSeconds;
-                        ExposureSeconds = (int)elapsed;
-                        token.ThrowIfCancellationRequested();
 
-                        progress.Report(new ApplicationStatus() {
-                            Status = Locale.Loc.Instance["LblExposing"],
-                            Progress = ExposureSeconds,
-                            MaxProgress = (int)duration,
-                            ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
-                        });
-                    } while ((elapsed < duration) && Cam?.Connected == true);
-                });
-            }
-            token.ThrowIfCancellationRequested();
+            await cameraMediator.Capture(duration, isLight, token, progress);
         }
 
-        private async Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
-            return await Cam.DownloadExposure(token);
+            return cameraMediator.Download(token);
         }
 
         private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
@@ -300,7 +262,7 @@ namespace NINA.ViewModel {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
             await semaphoreSlim.WaitAsync(token);
 
-            if (CameraConnected != true) {
+            if (cameraInfo.Connected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
                 semaphoreSlim.Release();
                 return null;
@@ -310,14 +272,14 @@ namespace NINA.ViewModel {
                 ImageArray arr = null;
 
                 try {
-                    if (CameraConnected != true) {
+                    if (cameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
                     /*Change Filter*/
                     await ChangeFilter(sequence, token, progress);
 
-                    if (CameraConnected != true) {
+                    if (cameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
@@ -331,7 +293,7 @@ namespace NINA.ViewModel {
 
                     SetSubSample(sequence);
 
-                    if (CameraConnected != true) {
+                    if (cameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
@@ -346,7 +308,7 @@ namespace NINA.ViewModel {
 
                     token.ThrowIfCancellationRequested();
 
-                    if (CameraConnected != true) {
+                    if (cameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
@@ -359,7 +321,7 @@ namespace NINA.ViewModel {
                         throw new OperationCanceledException();
                     }
 
-                    if (CameraConnected != true) {
+                    if (cameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
@@ -384,9 +346,7 @@ namespace NINA.ViewModel {
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
                     await ditherTask;
                 } catch (System.OperationCanceledException ex) {
-                    if (Cam == null || _cameraConnected == true) {
-                        Cam?.AbortExposure();
-                    }
+                    cameraMediator.AbortExposure();
                     throw ex;
                 } catch (CameraConnectionLostException ex) {
                     Logger.Error(ex);
@@ -395,9 +355,7 @@ namespace NINA.ViewModel {
                 } catch (Exception ex) {
                     Notification.ShowError(Locale.Loc.Instance["LblUnexpectedError"]);
                     Logger.Error(ex);
-                    if (_cameraConnected == true) {
-                        Cam.AbortExposure();
-                    }
+                    cameraMediator.AbortExposure();
                     throw ex;
                 } finally {
                     progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -411,8 +369,7 @@ namespace NINA.ViewModel {
 
         private void SetGain(CaptureSequence seq) {
             if (seq.Gain != -1) {
-                Cam.Gain = seq.Gain;
-            } else {
+                cameraMediator.SetGain(seq.Gain);
             }
         }
 
@@ -444,6 +401,7 @@ namespace NINA.ViewModel {
         }
 
         private short _snapGain = -1;
+        private CameraMediator cameraMediator;
 
         public short SnapGain {
             get {
@@ -479,6 +437,10 @@ namespace NINA.ViewModel {
         public async Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
             await CaptureImage(seq, ct, progress, bsave, targetname);
             return true;
+        }
+
+        public void UpdateCameraInfo(CameraInfo cameraStatus) {
+            CameraInfo = cameraStatus;
         }
     }
 }

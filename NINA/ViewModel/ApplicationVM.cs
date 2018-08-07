@@ -16,6 +16,8 @@ namespace NINA.ViewModel {
         }
 
         public ApplicationVM(IProfileService profileService) : base(profileService) {
+            cameraMediator = new CameraMediator();
+
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
@@ -26,7 +28,7 @@ namespace NINA.ViewModel {
                 var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblReconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag == MessageBoxResult.OK) {
                     return await Task<bool>.Run(async () => {
-                        var cam = Mediator.Instance.RequestAsync(new ConnectCameraMessage());
+                        var cam = cameraMediator.Connect();
                         var fw = Mediator.Instance.RequestAsync(new ConnectFilterWheelMessage());
                         var telescope = Mediator.Instance.RequestAsync(new ConnectTelescopeMessage());
                         var focuser = Mediator.Instance.RequestAsync(new ConnectFocuserMessage());
@@ -50,6 +52,8 @@ namespace NINA.ViewModel {
 
             MeridianFlipVM = new MeridianFlipVM(profileService);
         }
+
+        private CameraMediator cameraMediator;
 
         private void LoadProfile(object obj) {
             if (profileService.Profiles.ProfileList.Count > 1) {
@@ -157,7 +161,7 @@ namespace NINA.ViewModel {
 
         public void DisconnectEquipment() {
             try {
-                CameraVM?.Disconnect();
+                cameraMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
@@ -234,7 +238,7 @@ namespace NINA.ViewModel {
         public CameraVM CameraVM {
             get {
                 if (_cameraVM == null) {
-                    _cameraVM = new CameraVM(profileService);
+                    _cameraVM = new CameraVM(profileService, cameraMediator);
                 }
                 return _cameraVM;
             }
@@ -309,7 +313,7 @@ namespace NINA.ViewModel {
         public ImagingVM ImagingVM {
             get {
                 if (_imagingVM == null) {
-                    _imagingVM = new ImagingVM(profileService);
+                    _imagingVM = new ImagingVM(profileService, cameraMediator);
                 }
                 return _imagingVM;
             }
@@ -324,7 +328,7 @@ namespace NINA.ViewModel {
         public PolarAlignmentVM PolarAlignVM {
             get {
                 if (_polarAlignVM == null) {
-                    _polarAlignVM = new PolarAlignmentVM(profileService);
+                    _polarAlignVM = new PolarAlignmentVM(profileService, cameraMediator);
                 }
                 return _polarAlignVM;
             }
@@ -339,7 +343,7 @@ namespace NINA.ViewModel {
         public PlatesolveVM PlatesolveVM {
             get {
                 if (_platesolveVM == null) {
-                    _platesolveVM = new PlatesolveVM(profileService);
+                    _platesolveVM = new PlatesolveVM(profileService, cameraMediator);
                 }
                 return _platesolveVM;
             }
@@ -399,7 +403,7 @@ namespace NINA.ViewModel {
         public AutoFocusVM AutoFocusVM {
             get {
                 if (_autoFocusVM == null) {
-                    _autoFocusVM = new AutoFocusVM(profileService);
+                    _autoFocusVM = new AutoFocusVM(profileService, cameraMediator);
                 }
                 return _autoFocusVM;
             }
@@ -414,7 +418,7 @@ namespace NINA.ViewModel {
         public FramingAssistantVM FramingAssistantVM {
             get {
                 if (_framingAssistantVM == null) {
-                    _framingAssistantVM = new FramingAssistantVM(profileService);
+                    _framingAssistantVM = new FramingAssistantVM(profileService, cameraMediator);
                 }
                 return _framingAssistantVM;
             }

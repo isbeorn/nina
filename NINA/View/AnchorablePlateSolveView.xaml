@@ -23,8 +23,8 @@
         x:Name="grid"
         HorizontalScrollBarVisibility="Auto"
         VerticalScrollBarVisibility="Auto">
-        <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <Grid IsEnabled="{Binding Cam.Connected}">
+        <Grid IsEnabled="{Binding CameraInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <Grid IsEnabled="{Binding CameraInfo.Connected}">
                 <StackPanel Orientation="Vertical">
                     <Border
                         MinHeight="30"
