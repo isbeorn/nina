@@ -18,9 +18,10 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    public class SequenceVM : DockableVM {
+    internal class SequenceVM : DockableVM {
 
-        public SequenceVM(IProfileService profileService) : base(profileService) {
+        public SequenceVM(IProfileService profileService, TelescopeMediator telescopeMediator) : base(profileService) {
+            this.telescopeMediator = telescopeMediator;
             this.profileService = profileService;
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current?.Resources["SequenceSVG"];
@@ -199,7 +200,7 @@ namespace NINA.ViewModel {
 
                 if (Sequence.SlewToTarget) {
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSlewToTarget"] });
-                    await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = Sequence.Coordinates, Token = _canceltoken.Token });
+                    await telescopeMediator.SlewToCoordinatesAsync(Sequence.Coordinates);
                     if (Sequence.CenterTarget) {
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
                         var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });
@@ -476,6 +477,7 @@ namespace NINA.ViewModel {
         }
 
         private ObservableCollection<string> _imageTypes;
+        private TelescopeMediator telescopeMediator;
 
         public ObservableCollection<string> ImageTypes {
             get {

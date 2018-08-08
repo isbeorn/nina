@@ -2,13 +2,9 @@
 
 namespace NINA.Model.MyCamera {
 
-    internal class CameraInfo : BaseINPC {
-        private bool connected;
-        public bool Connected { get { return connected; } set { connected = value; RaisePropertyChanged(); } }
+    internal class CameraInfo : DeviceInfo {
         private bool hasShutter;
         public bool HasShutter { get { return hasShutter; } set { hasShutter = value; RaisePropertyChanged(); } }
-        private string name;
-        public string Name { get { return name; } set { name = value; RaisePropertyChanged(); } }
         private double temperature;
         public double Temperature { get { return temperature; } set { temperature = value; RaisePropertyChanged(); } }
         private short gain;

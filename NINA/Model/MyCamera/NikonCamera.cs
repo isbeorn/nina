@@ -18,15 +18,17 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.Model.MyCamera {
 
-    public class NikonCamera : BaseINPC, ICamera {
+    internal class NikonCamera : BaseINPC, ICamera {
 
-        public NikonCamera(IProfileService profileService) {
+        public NikonCamera(IProfileService profileService, TelescopeMediator telescopeMediator) {
+            this.telescopeMediator = telescopeMediator;
             this.profileService = profileService;
             /* NIKON */
             Name = "Nikon";
             _nikonManagers = new List<NikonManager>();
         }
 
+        private TelescopeMediator telescopeMediator;
         private IProfileService profileService;
         private List<NikonManager> _nikonManagers;
         private NikonManager _activeNikonManager;
@@ -636,7 +638,7 @@ namespace NINA.Model.MyCamera {
 
         private void RequestSnapPortCaptureStart() {
             Logger.Debug("Request start of exposure");
-            var success = Mediator.Instance.Request(new SendSnapPortMessage() { Start = true });
+            var success = telescopeMediator.SendToSnapPort(true);
             if (!success) {
                 throw new Exception("Request to telescope snap port failed");
             }
@@ -644,7 +646,7 @@ namespace NINA.Model.MyCamera {
 
         private void RequestSnapPortCaptureStop() {
             Logger.Debug("Request stop of exposure");
-            var success = Mediator.Instance.Request(new SendSnapPortMessage() { Start = false });
+            var success = telescopeMediator.SendToSnapPort(false);
             if (!success) {
                 throw new Exception("Request to telescope snap port failed");
             }

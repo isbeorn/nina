@@ -17,7 +17,7 @@ namespace NINA.ViewModel {
 
     internal class ImagingVM : DockableVM, ICameraConsumer {
 
-        public ImagingVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
+        public ImagingVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator) : base(profileService) {
             Title = "LblImaging";
             ContentId = nameof(ImagingVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
@@ -31,7 +31,7 @@ namespace NINA.ViewModel {
             StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
             StopLiveViewCommand = new RelayCommand(StopLiveView);
 
-            ImageControl = new ImageControlVM(profileService, cameraMediator);
+            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator);
 
             RegisterMediatorMessages();
         }

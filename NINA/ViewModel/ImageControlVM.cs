@@ -24,13 +24,16 @@ using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
-    internal class ImageControlVM : DockableVM, ICameraConsumer {
+    internal class ImageControlVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
 
-        public ImageControlVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
+        public ImageControlVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator) : base(profileService) {
             Title = "LblImage";
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
+
+            this.telescopeMediator = telescopeMediator;
+            this.telescopeMediator.RegisterConsumer(this);
 
             ContentId = nameof(ImageControlVM);
             CanClose = false;
@@ -300,10 +303,6 @@ namespace NINA.ViewModel {
                 DetectStars = (bool)o;
             }, MediatorMessages.ChangeDetectStars);
 
-            Mediator.Instance.Register((object o) => {
-                Telescope = (ITelescope)o;
-            }, MediatorMessages.TelescopeChanged);
-
             Mediator.Instance.RegisterAsyncRequest(
                 new SetImageMessageHandle(async (SetImageMessage msg) => {
                     ImgArr = msg.ImageArray;
@@ -465,8 +464,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ITelescope Telescope { get; set; }
-
         public IAsyncCommand PlateSolveImageCommand { get; private set; }
 
         public ICommand CancelPlateSolveImageCommand { get; private set; }
@@ -493,6 +490,8 @@ namespace NINA.ViewModel {
         public static SemaphoreSlim ss = new SemaphoreSlim(1, 1);
         private CameraMediator cameraMediator;
         private CameraInfo cameraInfo;
+        private TelescopeMediator telescopeMediator;
+        private TelescopeInfo telescopeInfo;
 
         public async Task<BitmapSource> PrepareImage(
                 ImageArray iarr,
@@ -730,9 +729,9 @@ namespace NINA.ViewModel {
                 }
                 f.AddHeaderCard("EGAIN", cameraInfo.Gain, "");
 
-                if (Telescope != null) {
-                    f.AddHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(Telescope.RightAscension), "");
-                    f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(Telescope.Declination), "");
+                if (telescopeInfo != null) {
+                    f.AddHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension), "");
+                    f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(telescopeInfo.Declination), "");
                 }
 
                 var temp = cameraInfo.Temperature;
@@ -782,11 +781,11 @@ namespace NINA.ViewModel {
                 }
                 h.AddValue("EGAIN", cameraInfo.Gain, "");
 
-                if (Telescope != null) {
-                    h.AddValue("SITELAT", Telescope.SiteLatitude.ToString(CultureInfo.InvariantCulture), "");
-                    h.AddValue("SITELONG", Telescope.SiteLongitude.ToString(CultureInfo.InvariantCulture), "");
-                    h.AddValue("OBJCTRA", Telescope.RightAscensionString, "");
-                    h.AddValue("OBJCTDEC", Telescope.DeclinationString, "");
+                if (telescopeInfo != null) {
+                    h.AddValue("SITELAT", telescopeInfo.SiteLatitude.ToString(CultureInfo.InvariantCulture), "");
+                    h.AddValue("SITELONG", telescopeInfo.SiteLongitude.ToString(CultureInfo.InvariantCulture), "");
+                    h.AddValue("OBJCTRA", telescopeInfo.RightAscensionString, "");
+                    h.AddValue("OBJCTDEC", telescopeInfo.DeclinationString, "");
                 }
 
                 var temp = cameraInfo.Temperature;
@@ -861,18 +860,18 @@ namespace NINA.ViewModel {
                 header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
                 header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
 
-                if (Telescope != null) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, Telescope.Name);
+                if (telescopeInfo != null) {
+                    header.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, telescopeInfo.Name);
 
                     /* Location */
-                    header.AddImageProperty(XISFImageProperty.Observation.Location.Elevation, Telescope.SiteElevation.ToString(CultureInfo.InvariantCulture));
+                    header.AddImageProperty(XISFImageProperty.Observation.Location.Elevation, telescopeInfo.SiteElevation.ToString(CultureInfo.InvariantCulture));
                     /* convert to degrees */
-                    var RA = Telescope.RightAscension * 360 / 24;
+                    var RA = telescopeInfo.RightAscension * 360 / 24;
                     header.AddImageProperty(XISFImageProperty.Observation.Center.RA, RA.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToFitsHMS(Telescope.RightAscension));
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension));
 
-                    header.AddImageProperty(XISFImageProperty.Observation.Center.Dec, Telescope.Declination.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.DegreesToFitsDMS(Telescope.Declination));
+                    header.AddImageProperty(XISFImageProperty.Observation.Center.Dec, telescopeInfo.Declination.ToString(CultureInfo.InvariantCulture), string.Empty, false);
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.DegreesToFitsDMS(telescopeInfo.Declination));
                 }
 
                 header.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, cameraInfo.Name);
@@ -922,6 +921,10 @@ namespace NINA.ViewModel {
 
         public void UpdateCameraInfo(CameraInfo cameraInfo) {
             this.cameraInfo = cameraInfo;
+        }
+
+        public void UpdateTelescopeInfo(TelescopeInfo telescopeInfo) {
+            this.telescopeInfo = telescopeInfo;
         }
     }
 

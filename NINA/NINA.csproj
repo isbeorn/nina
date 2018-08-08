@@ -278,6 +278,7 @@
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
+    <Compile Include="Model\DeviceInfo.cs" />
     <Compile Include="Model\DummyDevice.cs" />
     <Compile Include="Model\GuideStepsHistory.cs" />
     <Compile Include="Model\IDevice.cs" />
@@ -291,6 +292,7 @@
     <Compile Include="Model\MyFocuser\IFocuser.cs" />
     <Compile Include="Model\MyGuider\IGuider.cs" />
     <Compile Include="Model\MyGuider\PHD2Guider.cs" />
+    <Compile Include="Model\MyTelescope\TelescopeInfo.cs" />
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
@@ -342,6 +344,8 @@
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
     <Compile Include="Utility\Mediator\CameraMediator.cs" />
     <Compile Include="Utility\Mediator\ICameraConsumer.cs" />
+    <Compile Include="Utility\Mediator\ITelescopeConsumer.cs" />
+    <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
     <Compile Include="Utility\Profile\ICameraSettings.cs" />
@@ -460,6 +464,7 @@
     <Compile Include="ViewModel\ImageHistoryVM.cs" />
     <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
+    <Compile Include="ViewModel\ITelescopeVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\GuiderVM.cs" />

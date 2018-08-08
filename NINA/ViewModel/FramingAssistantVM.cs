@@ -22,9 +22,11 @@ namespace NINA.ViewModel {
 
     internal class FramingAssistantVM : BaseVM, ICameraConsumer {
 
-        public FramingAssistantVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
+        public FramingAssistantVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator) : base(profileService) {
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
+            this.telescopeMediator = telescopeMediator;
+            // no need for telescope consumer
 
             Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
@@ -60,7 +62,7 @@ namespace NINA.ViewModel {
 
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => {
                 if (SelectedCoordinates != null) {
-                    return await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = SelectedCoordinates });
+                    return await telescopeMediator.SlewToCoordinatesAsync(SelectedCoordinates);
                 }
                 return false;
             }, (object o) => SelectedCoordinates != null);
@@ -228,6 +230,7 @@ namespace NINA.ViewModel {
 
         private Coordinates _coordinates;
         private CameraMediator cameraMediator;
+        private TelescopeMediator telescopeMediator;
 
         public Coordinates Coordinates {
             get {

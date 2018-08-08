@@ -18,10 +18,12 @@ namespace NINA.ViewModel {
 
     internal class CameraVM : DockableVM, ICameraVM {
 
-        public CameraVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
+        public CameraVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator) : base(profileService) {
             Title = "LblCamera";
             ContentId = nameof(CameraVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
+
+            _cameraChooserVM = new CameraChooserVM(profileService, telescopeMediator);
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterCameraVM(this);
@@ -82,9 +84,6 @@ namespace NINA.ViewModel {
 
         public CameraChooserVM CameraChooserVM {
             get {
-                if (_cameraChooserVM == null) {
-                    _cameraChooserVM = new CameraChooserVM(profileService);
-                }
                 return _cameraChooserVM;
             }
             set {
@@ -275,7 +274,7 @@ namespace NINA.ViewModel {
                                 profileService.ActiveProfile.CameraSettings.PixelSize = Cam.PixelSizeX;
                             }
 
-                            UpdateCameraInfo();
+                            BroadcastCameraInfo();
 
                             return true;
                         } else {
@@ -325,7 +324,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void UpdateCameraInfo() {
+        private void BroadcastCameraInfo() {
             var info = GetCameraInfo();
             cameraMediator.UpdateCameraInfo(info);
         }
@@ -354,6 +353,8 @@ namespace NINA.ViewModel {
             DateTime x = DateTime.Now;
             CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CoolerPower));
             CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, Temperature));
+
+            BroadcastCameraInfo();
         }
 
         private Dictionary<string, object> GetCameraValues() {
@@ -381,7 +382,7 @@ namespace NINA.ViewModel {
                 _connected = value;
                 RaisePropertyChanged();
                 if (prevVal != _connected) {
-                    UpdateCameraInfo(); // todo
+                    BroadcastCameraInfo(); // todo
                 }
             }
         }
@@ -465,7 +466,7 @@ namespace NINA.ViewModel {
             CoolingRunning = false;
             Cam?.Disconnect();
             Cam = null;
-            UpdateCameraInfo();
+            BroadcastCameraInfo();
         }
 
         public async Task LiveView(CancellationToken ct) {
@@ -528,27 +529,27 @@ namespace NINA.ViewModel {
 
         public void SetBinning(short x, short y) {
             Cam.SetBinning(x, y);
-            UpdateCameraInfo();
+            BroadcastCameraInfo();
         }
 
         public void AbortExposure() {
             if (Connected == true) {
                 Cam?.AbortExposure();
-                UpdateCameraInfo();
+                BroadcastCameraInfo();
             }
         }
 
         public void SetGain(short gain) {
             if (Connected == true) {
                 Cam.Gain = gain;
-                UpdateCameraInfo();
+                BroadcastCameraInfo();
             }
         }
 
         public void SetSubSample(bool subSample) {
             if (Connected == true) {
                 Cam.EnableSubSample = subSample;
-                UpdateCameraInfo();
+                BroadcastCameraInfo();
             }
         }
 
@@ -585,8 +586,10 @@ namespace NINA.ViewModel {
     }
 
     internal class CameraChooserVM : EquipmentChooserVM {
+        private TelescopeMediator telescopeMediator;
 
-        public CameraChooserVM(IProfileService profileService) : base(typeof(CameraChooserVM), profileService) {
+        public CameraChooserVM(IProfileService profileService, TelescopeMediator telescopeMediator) : base(typeof(CameraChooserVM), profileService) {
+            this.telescopeMediator = telescopeMediator;
         }
 
         public override void GetEquipment() {
@@ -663,7 +666,7 @@ namespace NINA.ViewModel {
 
             /* NIKON */
             try {
-                Devices.Add(new NikonCamera(profileService));
+                Devices.Add(new NikonCamera(profileService, telescopeMediator));
             } catch (Exception ex) {
                 Logger.Error(ex);
             }

@@ -36,24 +36,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(StatusUpdateMessage).Name; } }
     }
 
-    internal class SetTelescopeTrackingMessageHandle : MessageHandle<bool> {
-
-        public SetTelescopeTrackingMessageHandle(Func<SetTelescopeTrackingMessage, bool> callback) {
-            Callback = (f) => callback((SetTelescopeTrackingMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(SetTelescopeTrackingMessage).Name; } }
-    }
-
-    internal class SendSnapPortMessageHandle : MessageHandle<bool> {
-
-        public SendSnapPortMessageHandle(Func<SendSnapPortMessage, bool> callback) {
-            Callback = (f) => callback((SendSnapPortMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(SendSnapPortMessage).Name; } }
-    }
-
     internal class GuideStepHistoryCountMessageHandle : MessageHandle<bool> {
 
         public GuideStepHistoryCountMessageHandle(Func<GuideStepHistoryCountMessage, bool> callback) {
@@ -162,17 +144,9 @@ namespace NINA.Utility.Mediator {
         private string Id { get; set; }
     }
 
-    internal class SetTelescopeTrackingMessage : MediatorMessage<bool> {
-        public bool Tracking { get; set; }
-    }
-
     internal class GetAllFiltersMessage : MediatorMessage<ICollection<FilterInfo>> { }
 
     internal class GetCurrentFilterInfoMessage : MediatorMessage<FilterInfo> { }
-
-    internal class SendSnapPortMessage : MediatorMessage<bool> {
-        public bool Start { get; set; }
-    }
 
     internal class ChangeApplicationTabMessage : MediatorMessage<bool> {
         public ViewModel.ApplicationTab Tab { get; set; }

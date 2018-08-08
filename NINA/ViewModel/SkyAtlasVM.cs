@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
@@ -15,16 +16,19 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    public class SkyAtlasVM : BaseVM {
+    internal class SkyAtlasVM : BaseVM {
 
-        public SkyAtlasVM(IProfileService profileService) : base(profileService) {
+        public SkyAtlasVM(IProfileService profileService, TelescopeMediator telescopeMediator) : base(profileService) {
+            // Not required to register to the mediator, as we don't need updates
+            this.telescopeMediator = telescopeMediator;
+
             SelectedDate = DateTime.Now;
 
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(() => SetSequenceCoordinates());
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => {
-                return await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = SearchResult.SelectedItem.Coordinates });
+                return await telescopeMediator.SlewToCoordinatesAsync(SearchResult.SelectedItem.Coordinates);
             });
             SetFramingAssistantCoordinatesCommand = new AsyncCommand<bool>(() => SetFramingAssistantCoordinates());
 
@@ -206,6 +210,7 @@ namespace NINA.ViewModel {
         }
 
         private DateTime _selectedDate;
+        private TelescopeMediator telescopeMediator;
 
         public DateTime SelectedDate {
             get {

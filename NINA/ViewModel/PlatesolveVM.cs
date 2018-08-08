@@ -19,10 +19,10 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel {
 
-    internal class PlatesolveVM : DockableVM, ICameraConsumer {
+    internal class PlatesolveVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
-        public PlatesolveVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
+        public PlatesolveVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator) : base(profileService) {
             Title = "LblPlateSolving";
             ContentId = nameof(PlatesolveVM);
             SyncScope = false;
@@ -31,6 +31,8 @@ namespace NINA.ViewModel {
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
+            this.telescopeMediator = telescopeMediator;
+            this.telescopeMediator.RegisterConsumer(this);
 
             SolveCommand = new AsyncCommand<bool>(() => CaptureSolveSyncAndReslew(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSolveCommand = new RelayCommand(CancelSolve);
@@ -44,10 +46,6 @@ namespace NINA.ViewModel {
         }
 
         private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((object o) => {
-                Telescope = (ITelescope)o;
-            }, MediatorMessages.TelescopeChanged);
-
             Mediator.Instance.Register((object o) => {
                 _autoStretch = (bool)o;
             }, MediatorMessages.AutoStrechChanged);
@@ -233,7 +231,7 @@ namespace NINA.ViewModel {
         private bool SyncronizeTelescope() {
             var success = false;
 
-            if (Telescope?.Connected != true) {
+            if (telescopeInfo.Connected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
                 return false;
             }
@@ -242,7 +240,7 @@ namespace NINA.ViewModel {
                 Coordinates solved = PlateSolveResult.Coordinates;
                 solved = solved.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);  //Transform to JNow if required
 
-                if (Telescope.Sync(solved.RA, solved.Dec) == true) {
+                if (telescopeMediator.Sync(solved.RA, solved.Dec) == true) {
                     Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeSynced"]);
                     success = true;
                 } else {
@@ -322,13 +320,13 @@ namespace NINA.ViewModel {
 
                 if (solveresult != null && solveresult.Success) {
                     if (syncScope) {
-                        if (Telescope?.Connected != true) {
+                        if (telescopeInfo.Connected != true) {
                             Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
                             return null;
                         }
-                        var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                        var coords = new Coordinates(telescopeInfo.RightAscension, telescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                         if (SyncronizeTelescope() && slewToTarget) {
-                            await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = coords, Token = token });
+                            await telescopeMediator.SlewToCoordinatesAsync(coords);
                         }
                     }
                 }
@@ -352,11 +350,11 @@ namespace NINA.ViewModel {
         /// and puts them into the PlateSolveResult
         /// </summary>
         private void CalculateError() {
-            if (Telescope?.Connected == true) {
+            if (telescopeInfo.Connected == true) {
                 Coordinates solved = PlateSolveResult.Coordinates;
                 solved = solved.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
 
-                var coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                var coords = new Coordinates(telescopeInfo.RightAscension, telescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
 
                 PlateSolveResult.RaError = coords.RADegrees - solved.RADegrees;
                 PlateSolveResult.DecError = coords.Dec - solved.Dec;
@@ -440,8 +438,8 @@ namespace NINA.ViewModel {
             IPlateSolver solver = null;
             if (img != null) {
                 Coordinates coords = null;
-                if (Telescope?.Connected == true) {
-                    coords = new Coordinates(Telescope.RightAscension, Telescope.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                if (telescopeInfo.Connected == true) {
+                    coords = new Coordinates(telescopeInfo.RightAscension, telescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 }
                 var binning = CameraInfo.BinX;
                 if (binning < 1) { binning = 1; }
@@ -475,19 +473,12 @@ namespace NINA.ViewModel {
             this.CameraInfo = cameraInfo;
         }
 
-        private ITelescope _telescope;
-
-        public ITelescope Telescope {
-            get {
-                return _telescope;
-            }
-            set {
-                _telescope = value;
-                RaisePropertyChanged();
-            }
+        public void UpdateTelescopeInfo(TelescopeInfo telescopeInfo) {
+            this.TelescopeInfo = telescopeInfo;
         }
 
         private CameraMediator cameraMediator;
+        private TelescopeMediator telescopeMediator;
 
         public IAsyncCommand SolveCommand { get; private set; }
 
@@ -510,12 +501,23 @@ namespace NINA.ViewModel {
 
         private PlateSolveResult _plateSolveResult;
         private CameraInfo cameraInfo;
+        private TelescopeInfo telescopeInfo;
+
+        public TelescopeInfo TelescopeInfo {
+            get {
+                return telescopeInfo;
+            }
+            private set {
+                telescopeInfo = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public CameraInfo CameraInfo {
             get {
                 return cameraInfo;
             }
-            set {
+            private set {
                 cameraInfo = value;
                 RaisePropertyChanged();
             }

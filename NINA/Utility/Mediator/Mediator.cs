@@ -182,7 +182,6 @@ namespace NINA.Utility.Mediator {
     }
 
     public enum MediatorMessages {
-        TelescopeChanged = 3,
         AutoStrechChanged = 7,
         DetectStarsChanged = 8,
         ChangeAutoStretch = 14,
@@ -192,6 +191,5 @@ namespace NINA.Utility.Mediator {
         FocuserTemperatureChanged = 26,
         FocuserConnectedChanged = 28,
         ProfileChanged = 31,
-        TelescopeConnectedChanged = 32,
     };
 }

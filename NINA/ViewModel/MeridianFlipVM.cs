@@ -14,7 +14,13 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    internal class MeridianFlipVM : BaseVM {
+    internal class MeridianFlipVM : BaseVM, ITelescopeConsumer {
+
+        public MeridianFlipVM(IProfileService profileService, TelescopeMediator telescopeMediator) : base(profileService) {
+            this.telescopeMediator = telescopeMediator;
+            this.telescopeMediator.RegisterConsumer(this);
+        }
+
         private ICommand _cancelCommand;
 
         private IProgress<ApplicationStatus> _progress;
@@ -30,6 +36,8 @@ namespace NINA.ViewModel {
         private ITelescope _telescope;
 
         private CancellationTokenSource _tokensource;
+        private TelescopeInfo telescopeInfo;
+        private TelescopeMediator telescopeMediator;
 
         public MeridianFlipVM(IProfileService profileService) : base(profileService) {
             CancelCommand = new RelayCommand(Cancel);
@@ -78,23 +86,13 @@ namespace NINA.ViewModel {
             }
         }
 
-        public ITelescope Telescope {
-            get {
-                return _telescope;
-            }
-            private set {
-                _telescope = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private void Cancel(object obj) {
             _tokensource?.Cancel();
         }
 
         private async Task<bool> DoFilp(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblFlippingScope"] });
-            var flipsuccess = Telescope.MeridianFlip(_targetCoordinates);
+            var flipsuccess = telescopeMediator.MeridianFlip(_targetCoordinates);
 
             await Settle(token, progress);
 
@@ -130,7 +128,7 @@ namespace NINA.ViewModel {
                     Notification.ShowError(Locale.Loc.Instance["GuiderResumeFailed"]);
                 }
 
-                Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = true });
+                telescopeMediator.SetTracking(true);
                 return false;
             } finally {
                 _progress.Report(new ApplicationStatus() { Status = "" });
@@ -139,10 +137,10 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> PassMeridian(CancellationToken token, IProgress<ApplicationStatus> progress) {
-            var timeToFlip = Telescope.TimeToMeridianFlip * 60 * 60;
+            var timeToFlip = telescopeInfo.TimeToMeridianFlip * 60 * 60;
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStopTracking"] });
-            _targetCoordinates = Telescope.Coordinates;
-            Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = false });
+            _targetCoordinates = telescopeInfo.Coordinates;
+            telescopeMediator.SetTracking(false);
             do {
                 RemainingTime = TimeSpan.FromSeconds(timeToFlip);
                 progress.Report(new ApplicationStatus() { Status = RemainingTime.ToString(@"hh\:mm\:ss") });
@@ -153,7 +151,7 @@ namespace NINA.ViewModel {
                 timeToFlip -= delta.TotalSeconds;
             } while (RemainingTime.TotalSeconds >= 1);
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblResumeTracking"] });
-            Mediator.Instance.Request(new SetTelescopeTrackingMessage() { Tracking = true });
+            telescopeMediator.SetTracking(true);
             return true;
         }
 
@@ -166,10 +164,6 @@ namespace NINA.ViewModel {
         }
 
         private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((object o) => {
-                Telescope = (ITelescope)o;
-            }, MediatorMessages.TelescopeChanged);
-
             Mediator.Instance.RegisterAsyncRequest(
                 new CheckMeridianFlipMessageHandle(async (CheckMeridianFlipMessage msg) => {
                     return await CheckMeridianFlip(msg.Sequence);
@@ -203,8 +197,8 @@ namespace NINA.ViewModel {
 
         private bool ShouldFlip(double exposureTime) {
             if (profileService.ActiveProfile.MeridianFlipSettings.Enabled) {
-                if (Telescope?.Connected == true) {
-                    if ((Telescope.TimeToMeridianFlip - (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian / 60)) < (exposureTime / 60 / 60)) {
+                if (telescopeInfo.Connected == true) {
+                    if ((telescopeInfo.TimeToMeridianFlip - (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian / 60)) < (exposureTime / 60 / 60)) {
                         return true;
                     }
                 }
@@ -247,6 +241,10 @@ namespace NINA.ViewModel {
             } else {
                 return false;
             }
+        }
+
+        public void UpdateTelescopeInfo(TelescopeInfo telescopeInfo) {
+            this.telescopeInfo = telescopeInfo;
         }
     }
 

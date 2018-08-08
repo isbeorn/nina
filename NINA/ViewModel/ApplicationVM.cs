@@ -17,6 +17,7 @@ namespace NINA.ViewModel {
 
         public ApplicationVM(IProfileService profileService) : base(profileService) {
             cameraMediator = new CameraMediator();
+            telescopeMediator = new TelescopeMediator();
 
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
@@ -30,7 +31,7 @@ namespace NINA.ViewModel {
                     return await Task<bool>.Run(async () => {
                         var cam = cameraMediator.Connect();
                         var fw = Mediator.Instance.RequestAsync(new ConnectFilterWheelMessage());
-                        var telescope = Mediator.Instance.RequestAsync(new ConnectTelescopeMessage());
+                        var telescope = telescopeMediator.Connect();
                         var focuser = Mediator.Instance.RequestAsync(new ConnectFocuserMessage());
                         await Task.WhenAll(cam, fw, telescope, focuser);
                         return true;
@@ -54,6 +55,7 @@ namespace NINA.ViewModel {
         }
 
         private CameraMediator cameraMediator;
+        private TelescopeMediator telescopeMediator;
 
         private void LoadProfile(object obj) {
             if (profileService.Profiles.ProfileList.Count > 1) {
@@ -238,7 +240,7 @@ namespace NINA.ViewModel {
         public CameraVM CameraVM {
             get {
                 if (_cameraVM == null) {
-                    _cameraVM = new CameraVM(profileService, cameraMediator);
+                    _cameraVM = new CameraVM(profileService, cameraMediator, telescopeMediator);
                 }
                 return _cameraVM;
             }
@@ -298,7 +300,7 @@ namespace NINA.ViewModel {
         public SequenceVM SeqVM {
             get {
                 if (_seqVM == null) {
-                    _seqVM = new SequenceVM(profileService);
+                    _seqVM = new SequenceVM(profileService, telescopeMediator);
                 }
                 return _seqVM;
             }
@@ -313,7 +315,7 @@ namespace NINA.ViewModel {
         public ImagingVM ImagingVM {
             get {
                 if (_imagingVM == null) {
-                    _imagingVM = new ImagingVM(profileService, cameraMediator);
+                    _imagingVM = new ImagingVM(profileService, cameraMediator, telescopeMediator);
                 }
                 return _imagingVM;
             }
@@ -328,7 +330,7 @@ namespace NINA.ViewModel {
         public PolarAlignmentVM PolarAlignVM {
             get {
                 if (_polarAlignVM == null) {
-                    _polarAlignVM = new PolarAlignmentVM(profileService, cameraMediator);
+                    _polarAlignVM = new PolarAlignmentVM(profileService, cameraMediator, telescopeMediator);
                 }
                 return _polarAlignVM;
             }
@@ -343,7 +345,7 @@ namespace NINA.ViewModel {
         public PlatesolveVM PlatesolveVM {
             get {
                 if (_platesolveVM == null) {
-                    _platesolveVM = new PlatesolveVM(profileService, cameraMediator);
+                    _platesolveVM = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
                 }
                 return _platesolveVM;
             }
@@ -358,7 +360,7 @@ namespace NINA.ViewModel {
         public TelescopeVM TelescopeVM {
             get {
                 if (_telescopeVM == null) {
-                    _telescopeVM = new TelescopeVM(profileService);
+                    _telescopeVM = new TelescopeVM(profileService, telescopeMediator);
                 }
                 return _telescopeVM;
             }
@@ -418,7 +420,7 @@ namespace NINA.ViewModel {
         public FramingAssistantVM FramingAssistantVM {
             get {
                 if (_framingAssistantVM == null) {
-                    _framingAssistantVM = new FramingAssistantVM(profileService, cameraMediator);
+                    _framingAssistantVM = new FramingAssistantVM(profileService, cameraMediator, telescopeMediator);
                 }
                 return _framingAssistantVM;
             }
@@ -433,7 +435,7 @@ namespace NINA.ViewModel {
         public SkyAtlasVM SkyAtlasVM {
             get {
                 if (_skyAtlasVM == null) {
-                    _skyAtlasVM = new SkyAtlasVM(profileService);
+                    _skyAtlasVM = new SkyAtlasVM(profileService, telescopeMediator);
                 }
                 return _skyAtlasVM;
             }
