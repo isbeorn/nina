@@ -60,7 +60,7 @@ namespace NINA.Utility.Mediator {
         /// <summary>
         /// Updates all consumers with the current camera info
         /// </summary>
-        /// <param name="cameraInfo"></param>
+        /// <param name="telescopeInfo"></param>
         internal void UpdateTelescopeInfo(TelescopeInfo telescopeInfo) {
             foreach (ITelescopeConsumer vm in vms) {
                 vm.UpdateTelescopeInfo(telescopeInfo);

@@ -35,19 +35,19 @@ namespace NINA.ViewModel {
 
             MeasureAzimuthErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<ApplicationStatus>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH),
-                (p) => (TelescopeInfo.Connected == true && CameraInfo.Connected == true));
+                (p) => (TelescopeInfo?.Connected == true && CameraInfo?.Connected == true));
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<ApplicationStatus>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE),
-                (p) => (TelescopeInfo.Connected == true && CameraInfo.Connected == true));
+                (p) => (TelescopeInfo?.Connected == true && CameraInfo?.Connected == true));
             SlewToAltitudeMeridianOffsetCommand = new AsyncCommand<bool>(
                 () => SlewToMeridianOffset(AltitudeMeridianOffset, AltitudeDeclination),
-                (p) => (TelescopeInfo.Connected == true));
+                (p) => (TelescopeInfo?.Connected == true));
             SlewToAzimuthMeridianOffsetCommand = new AsyncCommand<bool>(
                 () => SlewToMeridianOffset(AzimuthMeridianOffset, AzimuthDeclination),
-                (p) => (TelescopeInfo.Connected == true));
+                (p) => (TelescopeInfo?.Connected == true));
             DARVSlewCommand = new AsyncCommand<bool>(
                 () => Darvslew(new Progress<ApplicationStatus>(p => Status = p), new Progress<string>(p => DarvStatus = p)),
-                (p) => (TelescopeInfo.Connected == true && CameraInfo.Connected == true));
+                (p) => (TelescopeInfo?.Connected == true && CameraInfo?.Connected == true));
             CancelDARVSlewCommand = new RelayCommand(
                 Canceldarvslew,
                 (p) => _cancelDARVSlewToken != null);
@@ -373,7 +373,7 @@ namespace NINA.ViewModel {
         private bool _detectStars;
 
         private async Task<bool> Darvslew(IProgress<ApplicationStatus> cameraprogress, IProgress<string> slewprogress) {
-            if (CameraInfo.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 _cancelDARVSlewToken = new CancellationTokenSource();
                 try {
                     var oldAutoStretch = _autoStretch;
@@ -444,7 +444,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> MeasurePolarError(IProgress<ApplicationStatus> progress, Direction direction) {
-            if (CameraInfo.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 _cancelMeasureErrorToken = new CancellationTokenSource();
                 try {
                     double poleErr = await CalculatePoleError(progress, _cancelMeasureErrorToken.Token);

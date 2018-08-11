@@ -890,7 +890,7 @@
                 MinWidth="300"
                 HorizontalAlignment="Right"
                 DockPanel.Dock="Right"
-                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Connected, FallbackValue=False}">
+                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.CameraInfo.Connected, FallbackValue=False}">
                 <ninactrl:AsyncProcessButton
                     ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
                     ButtonImage="{StaticResource PlaySVG}"

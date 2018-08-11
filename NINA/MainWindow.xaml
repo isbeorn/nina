@@ -55,7 +55,7 @@
                                         Data="{StaticResource PowerSVG}"
                                         Stretch="Uniform"
                                         Style="{StaticResource TabItemPath}"
-                                        Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        Visibility="{Binding CameraVM.CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                 </Grid>
                             </Grid>
                         </TabItem.Header>

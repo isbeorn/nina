@@ -11,7 +11,7 @@
     mc:Ignorable="d">
     <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
 
-        <Grid IsEnabled="{Binding Cam.Connected}">
+        <Grid IsEnabled="{Binding CameraInfo.Connected}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="3*" />

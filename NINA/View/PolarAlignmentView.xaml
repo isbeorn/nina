@@ -81,7 +81,7 @@
                         HorizontalAlignment="Left"
                         IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
                         <local:CameraControlView
-                            IsEnabled="{Binding Cam.Connected}"
+                            IsEnabled="{Binding CameraInfo.Connected}"
                             MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes, Mode=TwoWay}"
                             MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}"
                             MyFilters="{Binding Source={StaticResource AppVM}, Path=OptionsVM.FilterWheelFilters}"

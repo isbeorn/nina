@@ -191,7 +191,7 @@
                         Grid.Column="5"
                         Margin="2.5"
                         IsChecked="{Binding ShowSubSampler}"
-                        Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.CanSubSample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.CameraInfo.CanSubSample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                         <ToggleButton.ToolTip>
                             <ToolTip ToolTipService.ShowOnDisabled="True">
                                 <TextBlock Text="{ns:Loc LblToolTipSubSample}" />

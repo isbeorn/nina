@@ -28,7 +28,6 @@ namespace NINA.ViewModel {
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterCameraVM(this);
 
-            //ConnectCameraCommand = new RelayCommand(connectCamera);
             ChooseCameraCommand = new AsyncCommand<bool>(ChooseCamera);
             CancelConnectCameraCommand = new RelayCommand(CancelConnectCamera);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
@@ -39,6 +38,7 @@ namespace NINA.ViewModel {
             CoolingRunning = false;
             CoolerPowerHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
+            ToggleCoolerOnCommand = new RelayCommand(ToggleCoolerOn);
 
             updateTimer = new DeviceUpdateTimer(
                 GetCameraValues,
@@ -257,12 +257,26 @@ namespace NINA.ViewModel {
                         _cancelConnectCameraSource.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             this.Cam = cam;
-                            Connected = true;
-                            if (Cam.CanSetTemperature) {
-                                TargetTemp = Cam.TemperatureSetPoint;
-                            }
 
-                            CanSubSample = Cam.CanSubSample;
+                            CameraInfo = new CameraInfo {
+                                BinX = Cam.BinX,
+                                BinY = Cam.BinY,
+                                CameraState = Cam.CameraState,
+                                CanSubSample = Cam.CanSubSample,
+                                Connected = true,
+                                CoolerOn = Cam.CoolerOn,
+                                CoolerPower = Cam.CoolerPower,
+                                Gain = Cam.Gain,
+                                HasShutter = Cam.HasShutter,
+                                IsSubSampleEnabled = Cam.EnableSubSample,
+                                Name = Cam.Name,
+                                Offset = Cam.Offset,
+                                PixelSize = Cam.PixelSizeX,
+                                Temperature = Cam.Temperature,
+                                TemperatureSetPoint = Cam.TemperatureSetPoint,
+                                XSize = Cam.CameraXSize,
+                                YSize = Cam.CameraYSize
+                            };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
 
@@ -282,8 +296,8 @@ namespace NINA.ViewModel {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (Connected) { Disconnect(); }
-                        Connected = false;
+                        if (CameraInfo.Connected) { Disconnect(); }
+                        CameraInfo.Connected = false;
                         return false;
                     }
                 } else {
@@ -300,33 +314,31 @@ namespace NINA.ViewModel {
             }
         }
 
-        public CameraInfo GetCameraInfo() {
-            if (Connected == true) {
-                return new CameraInfo {
-                    Connected = Connected,
-                    HasShutter = Cam.HasShutter,
-                    Temperature = Temperature,
-                    Gain = Cam.Gain,
-                    BinX = Cam.BinX,
-                    BinY = Cam.BinY,
-                    Offset = Cam.Offset,
-                    Name = Cam.Name,
-                    IsSubSampleEnabled = Cam.EnableSubSample,
-                    CameraState = CameraState,
-                    XSize = Cam.CameraXSize,
-                    YSize = Cam.CameraYSize,
-                    PixelSize = Cam.PixelSizeX
-                };
-            } else {
-                return new CameraInfo {
-                    Connected = false
-                };
+        private CameraInfo cameraInfo;
+
+        public CameraInfo CameraInfo {
+            get {
+                if (cameraInfo == null) {
+                    cameraInfo = new CameraInfo {
+                        Connected = false
+                    };
+                }
+                return cameraInfo;
+            }
+            set {
+                cameraInfo = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private void ToggleCoolerOn(object o) {
+            if (CameraInfo.Connected) {
+                Cam.CoolerOn = (bool)o;
             }
         }
 
         private void BroadcastCameraInfo() {
-            var info = GetCameraInfo();
-            cameraMediator.UpdateCameraInfo(info);
+            cameraMediator.UpdateCameraInfo(CameraInfo);
         }
 
         private void CancelConnectCamera(object o) {
@@ -335,35 +347,35 @@ namespace NINA.ViewModel {
 
         private void UpdateCameraValues(Dictionary<string, object> cameraValues) {
             object o = null;
-            cameraValues.TryGetValue(nameof(Connected), out o);
-            Connected = (bool)(o ?? false);
+            cameraValues.TryGetValue(nameof(CameraInfo.Connected), out o);
+            CameraInfo.Connected = (bool)(o ?? false);
 
-            cameraValues.TryGetValue(nameof(CoolerOn), out o);
-            CoolerOn = (bool)(o ?? false);
+            cameraValues.TryGetValue(nameof(CameraInfo.CoolerOn), out o);
+            CameraInfo.CoolerOn = (bool)(o ?? false);
 
-            cameraValues.TryGetValue(nameof(Temperature), out o);
-            Temperature = (double)(o ?? double.NaN);
+            cameraValues.TryGetValue(nameof(CameraInfo.Temperature), out o);
+            CameraInfo.Temperature = (double)(o ?? double.NaN);
 
-            cameraValues.TryGetValue(nameof(CoolerPower), out o);
-            CoolerPower = (double)(o ?? double.NaN);
+            cameraValues.TryGetValue(nameof(CameraInfo.CoolerPower), out o);
+            CameraInfo.CoolerPower = (double)(o ?? double.NaN);
 
-            cameraValues.TryGetValue(nameof(CameraState), out o);
-            CameraState = (string)(o ?? string.Empty);
+            cameraValues.TryGetValue(nameof(CameraInfo.CameraState), out o);
+            CameraInfo.CameraState = (string)(o ?? string.Empty);
 
             DateTime x = DateTime.Now;
-            CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CoolerPower));
-            CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, Temperature));
+            CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.CoolerPower));
+            CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.Temperature));
 
             BroadcastCameraInfo();
         }
 
         private Dictionary<string, object> GetCameraValues() {
             Dictionary<string, object> cameraValues = new Dictionary<string, object>();
-            cameraValues.Add(nameof(Connected), _cam?.Connected ?? false);
-            cameraValues.Add(nameof(CoolerOn), _cam?.CoolerOn ?? false);
-            cameraValues.Add(nameof(Temperature), _cam?.Temperature ?? double.NaN);
-            cameraValues.Add(nameof(CoolerPower), _cam?.CoolerPower ?? double.NaN);
-            cameraValues.Add(nameof(CameraState), _cam?.CameraState ?? string.Empty);
+            cameraValues.Add(nameof(CameraInfo.Connected), _cam?.Connected ?? false);
+            cameraValues.Add(nameof(CameraInfo.CoolerOn), _cam?.CoolerOn ?? false);
+            cameraValues.Add(nameof(CameraInfo.Temperature), _cam?.Temperature ?? double.NaN);
+            cameraValues.Add(nameof(CameraInfo.CoolerPower), _cam?.CoolerPower ?? double.NaN);
+            cameraValues.Add(nameof(CameraInfo.CameraState), _cam?.CameraState ?? string.Empty);
 
             //cameraValues.Add(nameof(FullWellCapacity),_cam?.FullWellCapacity ?? double.NaN);
             //cameraValues.Add(nameof(HeatSinkTemperature),_cam?.HeatSinkTemperature ?? false);
@@ -371,87 +383,9 @@ namespace NINA.ViewModel {
             return cameraValues;
         }
 
-        private bool _connected;
-
-        public bool Connected {
-            get {
-                return _connected;
-            }
-            private set {
-                var prevVal = _connected;
-                _connected = value;
-                RaisePropertyChanged();
-                if (prevVal != _connected) {
-                    BroadcastCameraInfo(); // todo
-                }
-            }
-        }
-
-        private string _cameraState;
-
-        public string CameraState {
-            get {
-                return _cameraState;
-            }
-            private set {
-                _cameraState = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _canSubSample;
-
-        public bool CanSubSample {
-            get {
-                return _canSubSample;
-            }
-            private set {
-                _canSubSample = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double _temperature;
-
-        public double Temperature {
-            get {
-                return _temperature;
-            }
-            private set {
-                _temperature = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double _coolerPower;
-
-        public double CoolerPower {
-            get {
-                return _coolerPower;
-            }
-            private set {
-                _coolerPower = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _coolerOn;
         private DeviceUpdateTimer updateTimer;
+
         private CancellationTokenSource _cancelConnectCameraSource;
-
-        public bool CoolerOn {
-            get {
-                return _coolerOn;
-            }
-            set {
-                _coolerOn = value;
-                if (Connected == true) {
-                    Cam.CoolerOn = value;
-                }
-
-                RaisePropertyChanged();
-            }
-        }
 
         private void DisconnectDiag(object o) {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
@@ -470,7 +404,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task LiveView(CancellationToken ct) {
-            if (Connected && _cam.CanShowLiveView) {
+            if (CameraInfo.Connected && _cam.CanShowLiveView) {
                 try {
                     _cam.StartLiveView();
 
@@ -493,7 +427,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (Connected == true) {
+            if (CameraInfo.Connected == true) {
                 Cam.StartExposure(exposureTime, isLightFrame);
 
                 var start = DateTime.Now;
@@ -520,7 +454,7 @@ namespace NINA.ViewModel {
                                 MaxProgress = (int)exposureTime,
                                 ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
                             });
-                        } while ((elapsed < exposureTime) && Connected == true);
+                        } while ((elapsed < exposureTime) && CameraInfo.Connected == true);
                     });
                 }
                 token.ThrowIfCancellationRequested();
@@ -533,28 +467,28 @@ namespace NINA.ViewModel {
         }
 
         public void AbortExposure() {
-            if (Connected == true) {
+            if (CameraInfo.Connected == true) {
                 Cam?.AbortExposure();
                 BroadcastCameraInfo();
             }
         }
 
         public void SetGain(short gain) {
-            if (Connected == true) {
+            if (CameraInfo.Connected == true) {
                 Cam.Gain = gain;
                 BroadcastCameraInfo();
             }
         }
 
         public void SetSubSample(bool subSample) {
-            if (Connected == true) {
+            if (CameraInfo.Connected == true) {
                 Cam.EnableSubSample = subSample;
                 BroadcastCameraInfo();
             }
         }
 
         public Task<ImageArray> Download(CancellationToken token) {
-            if (Connected == true) {
+            if (CameraInfo.Connected == true) {
                 return Cam.DownloadExposure(token);
             } else {
                 return null;
@@ -562,7 +496,7 @@ namespace NINA.ViewModel {
         }
 
         public void SetSubSampleArea(int x, int y, int width, int height) {
-            if (Connected == true && Cam.CanSubSample) {
+            if (CameraInfo.Connected == true && CameraInfo.CanSubSample) {
                 Cam.SubSampleX = x;
                 Cam.SubSampleY = y;
                 Cam.SubSampleWidth = width;
@@ -572,7 +506,7 @@ namespace NINA.ViewModel {
 
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
-
+        public ICommand ToggleCoolerOnCommand { get; private set; }
         public ICommand CoolCamCommand { get; private set; }
 
         public IAsyncCommand ChooseCameraCommand { get; private set; }
