@@ -19,13 +19,22 @@ namespace NINA.Utility.Profile {
                 NINA.Properties.Settings.Default.Save();
             }
             Load();
+        }
 
-            Mediator.Mediator.Instance.RegisterRequest(
-                new SaveProfilesMessageHandle((SaveProfilesMessage m) => {
-                    Save();
-                    return true;
-                })
-            );
+        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == "Settings") {
+                Save();
+            }
+        }
+
+        private void RegisterChangedEventHandlers() {
+            this.ActiveProfile.PropertyChanged += SettingsChanged;
+        }
+
+        private void UnregisterChangedEventHandlers() {
+            if (this.ActiveProfile != null) {
+                this.ActiveProfile.PropertyChanged -= SettingsChanged;
+            }
         }
 
         public static string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
@@ -108,7 +117,7 @@ namespace NINA.Utility.Profile {
 
         public IProfile ActiveProfile {
             get {
-                return Profiles.ActiveProfile;
+                return Profiles?.ActiveProfile;
             }
         }
 
@@ -119,6 +128,7 @@ namespace NINA.Utility.Profile {
 
             if (File.Exists(PROFILEFILEPATH)) {
                 try {
+                    UnregisterChangedEventHandlers();
                     var serializer = new DataContractSerializer(typeof(Profiles));
 
                     using (FileStream reader = new FileStream(PROFILEFILEPATH, FileMode.Open)) {
@@ -134,6 +144,8 @@ namespace NINA.Utility.Profile {
                         LocaleChanged?.Invoke(this, null);
                         ProfileChanged?.Invoke(this, null);
                         LocationChanged?.Invoke(this, null);
+
+                        RegisterChangedEventHandlers();
                     }
                 } catch (UnauthorizedAccessException ex) {
                     Logger.Error(ex);
@@ -150,12 +162,14 @@ namespace NINA.Utility.Profile {
         }
 
         public void SelectProfile(Guid guid) {
+            UnregisterChangedEventHandlers();
             Profiles.SelectProfile(guid);
             Save();
             Locale.Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
             LocaleChanged?.Invoke(this, null);
             ProfileChanged?.Invoke(this, null);
             LocationChanged?.Invoke(this, null);
+            RegisterChangedEventHandlers();
         }
 
         private void LoadDefaultProfile() {

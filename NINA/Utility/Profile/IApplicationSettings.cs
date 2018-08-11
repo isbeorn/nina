@@ -3,7 +3,7 @@ using NINA.Utility.Enum;
 
 namespace NINA.Utility.Profile {
 
-    public interface IApplicationSettings {
+    public interface IApplicationSettings : ISettings {
         string Culture { get; set; }
         string DatabaseLocation { get; set; }
         double DevicePollingInterval { get; set; }

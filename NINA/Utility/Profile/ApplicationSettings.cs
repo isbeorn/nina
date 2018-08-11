@@ -8,7 +8,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class ApplicationSettings : IApplicationSettings {
+    public class ApplicationSettings : Settings, IApplicationSettings {
 
         [DataMember]
         public string Culture {
@@ -17,7 +17,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 Language = new CultureInfo(value);
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -29,7 +29,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 language = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -42,7 +42,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 logLevel = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -55,7 +55,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 databaseLocation = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -68,7 +68,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 devicePollingInterval = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -81,7 +81,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 skyAtlasImageRepository = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

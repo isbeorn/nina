@@ -45,15 +45,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(ChangeApplicationTabMessage).Name; } }
     }
 
-    internal class SaveProfilesMessageHandle : MessageHandle<bool> {
-
-        public SaveProfilesMessageHandle(Func<SaveProfilesMessage, bool> callback) {
-            Callback = (f) => callback((SaveProfilesMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(SaveProfilesMessage).Name; } }
-    }
-
     internal class GetEquipmentNameByIdMessageHandle : MessageHandle<string> {
 
         public GetEquipmentNameByIdMessageHandle(Type registeredClass, Func<GetEquipmentNameByIdMessage, string> callback) : base(registeredClass) {
@@ -96,9 +87,6 @@ namespace NINA.Utility.Mediator {
 
     internal class ChangeApplicationTabMessage : MediatorMessage<bool> {
         public ViewModel.ApplicationTab Tab { get; set; }
-    }
-
-    internal class SaveProfilesMessage : MediatorMessage<bool> {
     }
 
     internal class GetEquipmentNameByIdMessage : MediatorMessage<string> {

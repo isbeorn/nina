@@ -8,7 +8,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class PlateSolveSettings : IPlateSolveSettings {
+    public class PlateSolveSettings : Settings, IPlateSolveSettings {
         private PlateSolverEnum plateSolverType = PlateSolverEnum.PLATESOLVE2;
 
         [DataMember]
@@ -18,7 +18,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 plateSolverType = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -31,7 +31,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 blindSolverType = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -44,7 +44,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 astrometryAPIKey = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -57,7 +57,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 cygwinLocation = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -70,7 +70,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 searchRadius = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -83,7 +83,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pS2Location = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -96,7 +96,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 regions = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -109,7 +109,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 exposureTime = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -122,7 +122,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 threshold = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -135,7 +135,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 filter = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }
