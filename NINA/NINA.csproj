@@ -292,6 +292,7 @@
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\FocuserInfo.cs" />
     <Compile Include="Model\MyFocuser\IFocuser.cs" />
+    <Compile Include="Model\MyGuider\GuiderInfo.cs" />
     <Compile Include="Model\MyGuider\IGuider.cs" />
     <Compile Include="Model\MyGuider\PHD2Guider.cs" />
     <Compile Include="Model\MyTelescope\TelescopeInfo.cs" />
@@ -348,9 +349,11 @@
     <Compile Include="Utility\Mediator\DeviceMediator.cs" />
     <Compile Include="Utility\Mediator\FilterWheelMediator.cs" />
     <Compile Include="Utility\Mediator\FocuserMediator.cs" />
+    <Compile Include="Utility\Mediator\GuiderMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ICameraConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IFilterWheelConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IFocuserConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IGuiderConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ITelescopeConsumer.cs" />
     <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
@@ -474,6 +477,7 @@
     <Compile Include="ViewModel\ImageHistoryVM.cs" />
     <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IGuiderVM.cs" />
     <Compile Include="ViewModel\Interfaces\ITelescopeVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />

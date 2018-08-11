@@ -26,51 +26,6 @@ namespace NINA.Utility.Mediator {
 
     /* Specific handler */
 
-    internal class PauseGuiderMessageHandle : AsyncMessageHandle<bool> {
-
-        public PauseGuiderMessageHandle(Func<PauseGuiderMessage, Task<bool>> callback) {
-            Callback = (f) => callback((PauseGuiderMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(PauseGuiderMessage).Name; } }
-    }
-
-    internal class StartGuiderMessageHandle : AsyncMessageHandle<bool> {
-
-        public StartGuiderMessageHandle(Func<StartGuiderMessage, Task<bool>> callback) {
-            Callback = (f) => callback((StartGuiderMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(StartGuiderMessage).Name; } }
-    }
-
-    internal class StopGuiderMessageHandle : AsyncMessageHandle<bool> {
-
-        public StopGuiderMessageHandle(Func<StopGuiderMessage, Task<bool>> callback) {
-            Callback = (f) => callback((StopGuiderMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(StopGuiderMessage).Name; } }
-    }
-
-    internal class DitherGuiderMessageHandle : AsyncMessageHandle<bool> {
-
-        public DitherGuiderMessageHandle(Func<DitherGuiderMessage, Task<bool>> callback) {
-            Callback = (f) => callback((DitherGuiderMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(DitherGuiderMessage).Name; } }
-    }
-
-    internal class AutoSelectGuideStarMessageHandle : AsyncMessageHandle<bool> {
-
-        public AutoSelectGuideStarMessageHandle(Func<AutoSelectGuideStarMessage, Task<bool>> callback) {
-            Callback = (f) => callback((AutoSelectGuideStarMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(AutoSelectGuideStarMessage).Name; } }
-    }
-
     internal class CheckMeridianFlipMessageHandle : AsyncMessageHandle<bool> {
 
         public CheckMeridianFlipMessageHandle(Func<CheckMeridianFlipMessage, Task<bool>> callback) {
@@ -178,18 +133,6 @@ namespace NINA.Utility.Mediator {
     }
 
     /* Specific message */
-
-    internal class PauseGuiderMessage : AsyncMediatorMessage<bool> {
-        public bool Pause { get; set; }
-    }
-
-    internal class StartGuiderMessage : AsyncMediatorMessage<bool> { }
-
-    internal class StopGuiderMessage : AsyncMediatorMessage<bool> { }
-
-    internal class DitherGuiderMessage : AsyncMediatorMessage<bool> { }
-
-    internal class AutoSelectGuideStarMessage : AsyncMediatorMessage<bool> { }
 
     internal class CheckMeridianFlipMessage : AsyncMediatorMessage<bool> {
         public CaptureSequence Sequence { get; set; }

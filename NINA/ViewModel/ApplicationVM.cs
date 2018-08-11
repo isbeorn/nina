@@ -20,6 +20,7 @@ namespace NINA.ViewModel {
             telescopeMediator = new TelescopeMediator();
             focuserMediator = new FocuserMediator();
             filterWheelMediator = new FilterWheelMediator();
+            guiderMediator = new GuiderMediator();
 
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
@@ -35,7 +36,8 @@ namespace NINA.ViewModel {
                         var fw = filterWheelMediator.Connect();
                         var telescope = telescopeMediator.Connect();
                         var focuser = focuserMediator.Connect();
-                        await Task.WhenAll(cam, fw, telescope, focuser);
+                        var guider = guiderMediator.Connect();
+                        await Task.WhenAll(cam, fw, telescope, focuser, guider);
                         return true;
                     });
                 } else {
@@ -53,13 +55,14 @@ namespace NINA.ViewModel {
 
             InitAvalonDockLayout();
 
-            MeridianFlipVM = new MeridianFlipVM(profileService);
+            MeridianFlipVM = new MeridianFlipVM(profileService, telescopeMediator, guiderMediator);
         }
 
         private CameraMediator cameraMediator;
         private TelescopeMediator telescopeMediator;
         private FocuserMediator focuserMediator;
         private FilterWheelMediator filterWheelMediator;
+        private GuiderMediator guiderMediator;
 
         private void LoadProfile(object obj) {
             if (profileService.Profiles.ProfileList.Count > 1) {
@@ -173,25 +176,25 @@ namespace NINA.ViewModel {
             }
 
             try {
-                TelescopeVM?.Disconnect();
+                telescopeMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
 
             try {
-                FilterWheelVM?.Disconnect();
+                filterWheelMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
 
             try {
-                FocuserVM?.Disconnect();
+                focuserMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
 
             try {
-                GuiderVM?.Guider?.Disconnect();
+                guiderMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
@@ -304,7 +307,7 @@ namespace NINA.ViewModel {
         public SequenceVM SeqVM {
             get {
                 if (_seqVM == null) {
-                    _seqVM = new SequenceVM(profileService, telescopeMediator, focuserMediator, filterWheelMediator);
+                    _seqVM = new SequenceVM(profileService, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator);
                 }
                 return _seqVM;
             }
@@ -319,7 +322,7 @@ namespace NINA.ViewModel {
         public ImagingVM ImagingVM {
             get {
                 if (_imagingVM == null) {
-                    _imagingVM = new ImagingVM(profileService, cameraMediator, telescopeMediator, filterWheelMediator);
+                    _imagingVM = new ImagingVM(profileService, cameraMediator, telescopeMediator, filterWheelMediator, guiderMediator);
                 }
                 return _imagingVM;
             }
@@ -379,7 +382,7 @@ namespace NINA.ViewModel {
         public GuiderVM GuiderVM {
             get {
                 if (_guiderVM == null) {
-                    _guiderVM = new GuiderVM(profileService);
+                    _guiderVM = new GuiderVM(profileService, guiderMediator);
                 }
                 return _guiderVM;
             }
@@ -409,7 +412,7 @@ namespace NINA.ViewModel {
         public AutoFocusVM AutoFocusVM {
             get {
                 if (_autoFocusVM == null) {
-                    _autoFocusVM = new AutoFocusVM(profileService, cameraMediator, focuserMediator);
+                    _autoFocusVM = new AutoFocusVM(profileService, cameraMediator, focuserMediator, guiderMediator);
                 }
                 return _autoFocusVM;
             }

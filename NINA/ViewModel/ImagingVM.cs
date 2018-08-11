@@ -18,7 +18,13 @@ namespace NINA.ViewModel {
 
     internal class ImagingVM : DockableVM, ICameraConsumer {
 
-        public ImagingVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, FilterWheelMediator filterWheelMediator) : base(profileService) {
+        public ImagingVM(
+                IProfileService profileService,
+                CameraMediator cameraMediator,
+                TelescopeMediator telescopeMediator,
+                FilterWheelMediator filterWheelMediator,
+                GuiderMediator guiderMediator
+        ) : base(profileService) {
             Title = "LblImaging";
             ContentId = nameof(ImagingVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
@@ -27,6 +33,7 @@ namespace NINA.ViewModel {
             this.cameraMediator.RegisterConsumer(this);
 
             this.filterWheelMediator = filterWheelMediator;
+            this.guiderMediator = guiderMediator;
 
             SnapExposureDuration = 1;
             SnapCommand = new AsyncCommand<bool>(() => SnapImage(new Progress<ApplicationStatus>(p => Status = p)));
@@ -159,6 +166,7 @@ namespace NINA.ViewModel {
 
         private double _snapExposureDuration;
         private FilterWheelMediator filterWheelMediator;
+        private GuiderMediator guiderMediator;
 
         public double SnapExposureDuration {
             get {
@@ -243,7 +251,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (seq.Dither && ((seq.ProgressExposureCount % seq.DitherAmount) == 0)) {
-                return await Mediator.Instance.RequestAsync(new DitherGuiderMessage() { Token = token });
+                return await this.guiderMediator.Dither(token);
             }
             token.ThrowIfCancellationRequested();
             return false;
@@ -302,13 +310,13 @@ namespace NINA.ViewModel {
                     }
 
                     /* Start RMS Recording */
-                    Mediator.Instance.Request(new StartRMSRecordingMessage());
+                    var rmsHandle = this.guiderMediator.StartRMSRecording();
 
                     /*Capture*/
                     await Capture(sequence, token, progress);
 
                     /* Stop RMS Recording */
-                    var rms = Mediator.Instance.Request(new StopRMSRecordingMessage());
+                    var rms = this.guiderMediator.StopRMSRecording(rmsHandle);;
 
                     token.ThrowIfCancellationRequested();
 

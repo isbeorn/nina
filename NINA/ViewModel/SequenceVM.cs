@@ -23,10 +23,20 @@ namespace NINA.ViewModel {
 
     internal class SequenceVM : DockableVM, IFocuserConsumer, IFilterWheelConsumer {
 
-        public SequenceVM(IProfileService profileService, TelescopeMediator telescopeMediator, FocuserMediator focuserMediator, FilterWheelMediator filterWheelMediator) : base(profileService) {
+        public SequenceVM(
+                IProfileService profileService,
+                TelescopeMediator telescopeMediator,
+                FocuserMediator focuserMediator,
+                FilterWheelMediator filterWheelMediator,
+                GuiderMediator guiderMediator
+        ) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
+
             this.filterWheelMediator = filterWheelMediator;
             this.filterWheelMediator.RegisterConsumer(this);
+
+            this.guiderMediator = guiderMediator;
+
             this.profileService = profileService;
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current?.Resources["SequenceSVG"];
@@ -228,7 +238,7 @@ namespace NINA.ViewModel {
 
                 if (Sequence.StartGuiding) {
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartGuiding"] });
-                    var guiderStarted = await Mediator.Instance.RequestAsync(new StartGuiderMessage() { Token = _canceltoken.Token });
+                    var guiderStarted = await this.guiderMediator.StartGuiding(_canceltoken.Token);
                     if (!guiderStarted) {
                         Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
                     }
@@ -482,6 +492,7 @@ namespace NINA.ViewModel {
         private FilterWheelMediator filterWheelMediator;
         private FocuserInfo focuserInfo;
         private FilterWheelInfo filterWheelInfo;
+        private GuiderMediator guiderMediator;
 
         public ObservableCollection<string> ImageTypes {
             get {

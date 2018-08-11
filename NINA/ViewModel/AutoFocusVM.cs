@@ -19,7 +19,12 @@ namespace NINA.ViewModel {
 
     internal class AutoFocusVM : DockableVM, ICameraConsumer, IFocuserConsumer {
 
-        public AutoFocusVM(IProfileService profileService, CameraMediator cameraMediator, FocuserMediator focuserMediator) : base(profileService) {
+        public AutoFocusVM(
+                IProfileService profileService,
+                CameraMediator cameraMediator,
+                FocuserMediator focuserMediator,
+                GuiderMediator guiderMediator
+        ) : base(profileService) {
             Title = "LblAutoFocus";
             ContentId = nameof(AutoFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["AutoFocusSVG"];
@@ -29,6 +34,8 @@ namespace NINA.ViewModel {
 
             this.focuserMediator = focuserMediator;
             this.focuserMediator.RegisterConsumer(this);
+
+            this.guiderMediator = guiderMediator;
 
             FocusPoints = new AsyncObservableCollection<DataPoint>();
 
@@ -55,6 +62,7 @@ namespace NINA.ViewModel {
         private CancellationTokenSource _autoFocusCancelToken;
         private AsyncObservableCollection<DataPoint> _focusPoints;
         private CameraMediator cameraMediator;
+        private GuiderMediator guiderMediator;
 
         public AsyncObservableCollection<DataPoint> FocusPoints {
             get {
@@ -192,7 +200,7 @@ namespace NINA.ViewModel {
             RightTrend = null;
             _minimum = new DataPoint(0, 0);
             try {
-                await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Pause = true });
+                await this.guiderMediator.PauseGuiding(token);
 
                 var offsetSteps = profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
                 var offset = offsetSteps;
@@ -256,7 +264,7 @@ namespace NINA.ViewModel {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
             } finally {
-                await Mediator.Instance.RequestAsync(new PauseGuiderMessage() { Pause = false });
+                await this.guiderMediator.ResumeGuiding(token);
             }
 
             return true;

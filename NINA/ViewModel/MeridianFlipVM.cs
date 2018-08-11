@@ -17,9 +17,13 @@ namespace NINA.ViewModel {
 
     internal class MeridianFlipVM : BaseVM, ITelescopeConsumer {
 
-        public MeridianFlipVM(IProfileService profileService, TelescopeMediator telescopeMediator) : base(profileService) {
+        public MeridianFlipVM(IProfileService profileService, TelescopeMediator telescopeMediator, GuiderMediator guiderMediator) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
+            this.guiderMediator = guiderMediator;
+
+            CancelCommand = new RelayCommand(Cancel);
+            RegisterMediatorMessages();
         }
 
         private ICommand _cancelCommand;
@@ -37,11 +41,7 @@ namespace NINA.ViewModel {
         private CancellationTokenSource _tokensource;
         private TelescopeInfo telescopeInfo;
         private TelescopeMediator telescopeMediator;
-
-        public MeridianFlipVM(IProfileService profileService) : base(profileService) {
-            CancelCommand = new RelayCommand(Cancel);
-            RegisterMediatorMessages();
-        }
+        private GuiderMediator guiderMediator;
 
         public ICommand CancelCommand {
             get {
@@ -172,14 +172,14 @@ namespace NINA.ViewModel {
 
         private async Task<bool> ResumeAutoguider(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblResumeGuiding"] });
-            var result = await Mediator.Instance.RequestAsync(new StartGuiderMessage() { Token = token });
+            var result = await this.guiderMediator.StartGuiding(token);
 
             return result;
         }
 
         private async Task<bool> SelectNewGuideStar(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSelectGuidestar"] });
-            return await Mediator.Instance.RequestAsync(new AutoSelectGuideStarMessage() { Token = token });
+            return await this.guiderMediator.AutoSelectGuideStar(token);
         }
 
         private async Task<bool> Settle(CancellationToken token, IProgress<ApplicationStatus> progress) {
@@ -207,7 +207,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StopAutoguider(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStopGuiding"] });
-            var result = await Mediator.Instance.RequestAsync(new StopGuiderMessage() { Token = token });
+            var result = await this.guiderMediator.StopGuiding(token);
             return result;
         }
 
