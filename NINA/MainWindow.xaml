@@ -137,7 +137,7 @@
                                         Data="{StaticResource PowerSVG}"
                                         Stretch="Uniform"
                                         Style="{StaticResource TabItemPath}"
-                                        Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        Visibility="{Binding TelescopeVM.TelescopeInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                 </Grid>
                             </Grid>
                         </TabItem.Header>

@@ -48,7 +48,7 @@ namespace NINA.ViewModel {
         }
 
         public bool SendToSnapPort(bool start) {
-            if (Connected) {
+            if (TelescopeInfo.Connected) {
                 string command = string.Empty;
                 if (start) {
                     command = profileService.ActiveProfile.TelescopeSettings.SnapPortStart;
@@ -139,6 +139,27 @@ namespace NINA.ViewModel {
                                 }
                             }
 
+                            TelescopeInfo = new TelescopeInfo {
+                                AltitudeString = Telescope.AltitudeString,
+                                AtPark = Telescope.AtPark,
+                                AzimuthString = Telescope.AzimuthString,
+                                Connected = true,
+                                Coordinates = Telescope.Coordinates,
+                                Declination = Telescope.Declination,
+                                DeclinationString = Telescope.DeclinationString,
+                                HoursToMeridianString = Telescope.HoursToMeridianString,
+                                Name = Telescope.Name,
+                                RightAscension = Telescope.RightAscension,
+                                RightAscensionString = Telescope.RightAscensionString,
+                                SiderealTime = Telescope.SiderealTime,
+                                SiderealTimeString = Telescope.SiderealTimeString,
+                                SiteElevation = Telescope.SiteElevation,
+                                SiteLatitude = Telescope.SiteLatitude,
+                                SiteLongitude = Telescope.SiteLongitude,
+                                TimeToMeridianFlip = Telescope.TimeToMeridianFlip,
+                                Tracking = Telescope.Tracking
+                            };
+
                             BroadcastTelescopeInfo();
 
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
@@ -170,237 +191,22 @@ namespace NINA.ViewModel {
         }
 
         private void BroadcastTelescopeInfo() {
-            var info = GetTelescopeInfo();
-            telescopeMediator.UpdateTelescopeInfo(info);
+            telescopeMediator.UpdateTelescopeInfo(TelescopeInfo);
         }
 
-        private TelescopeInfo GetTelescopeInfo() {
-            if (Connected == true) {
-                return new TelescopeInfo {
-                    Connected = Connected,
-                    Name = Telescope.Name,
-                    RightAscension = RightAscension,
-                    RightAscensionString = RightAscensionString,
-                    Declination = Declination,
-                    DeclinationString = DeclinationString,
-                    SiderealTime = SiderealTime,
-                    SiteLatitude = SiteLatitude,
-                    SiteLongitude = SiteLongitude,
-                    SiteElevation = SiteElevation,
-                    Coordinates = Coordinates,
-                    TimeToMeridianFlip = TimeToMeridianFlip
-                };
-            } else {
-                return new TelescopeInfo {
-                    Connected = false
-                };
-            }
-        }
+        private TelescopeInfo telescopeInfo;
 
-        private bool _connected;
-
-        public bool Connected {
+        public TelescopeInfo TelescopeInfo {
             get {
-                return _connected;
-            }
-            private set {
-                var prevVal = _connected;
-                _connected = value;
-                RaisePropertyChanged();
-                if (prevVal != _connected) {
-                    BroadcastTelescopeInfo(); // todo
+                if (telescopeInfo == null) {
+                    telescopeInfo = new TelescopeInfo {
+                        Connected = false
+                    };
                 }
-            }
-        }
-
-        private string _altitudeString;
-
-        public string AltitudeString {
-            get {
-                return _altitudeString;
-            }
-            private set {
-                _altitudeString = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string _azimuthString;
-
-        public string AzimuthString {
-            get {
-                return _azimuthString;
-            }
-            private set {
-                _azimuthString = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double _declination;
-
-        public double Declination {
-            get {
-                return _declination;
-            }
-            private set {
-                _declination = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double _rightAscension;
-
-        public double RightAscension {
-            get {
-                return _rightAscension;
-            }
-            private set {
-                _rightAscension = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double _siderealTime;
-
-        public double SiderealTime {
-            get {
-                return _siderealTime;
-            }
-            private set {
-                _siderealTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double siteLatitude;
-
-        public double SiteLatitude {
-            get {
-                return siteLatitude;
-            }
-            private set {
-                siteLatitude = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double siteLongitude;
-
-        public double SiteLongitude {
-            get {
-                return siteLongitude;
-            }
-            private set {
-                siteLongitude = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double siteElevation;
-
-        public double SiteElevation {
-            get {
-                return siteElevation;
-            }
-            private set {
-                siteElevation = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private Coordinates coordinates;
-
-        public Coordinates Coordinates {
-            get {
-                return coordinates;
+                return telescopeInfo;
             }
             set {
-                coordinates = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double timeToMeridianFlip;
-
-        public double TimeToMeridianFlip {
-            get {
-                return timeToMeridianFlip;
-            }
-            set {
-                timeToMeridianFlip = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string _declinationString;
-
-        public string DeclinationString {
-            get {
-                return _declinationString;
-            }
-            private set {
-                _declinationString = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string _rightAscensionString;
-
-        public string RightAscensionString {
-            get {
-                return _rightAscensionString;
-            }
-            private set {
-                _rightAscensionString = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string _siderealTimeString;
-
-        public string SiderealTimeString {
-            get {
-                return _siderealTimeString;
-            }
-            private set {
-                _siderealTimeString = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string _hoursToMeridianString;
-
-        public string HoursToMeridianString {
-            get {
-                return _hoursToMeridianString;
-            }
-            private set {
-                _hoursToMeridianString = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _tracking;
-
-        public bool Tracking {
-            get {
-                return _tracking;
-            }
-            private set {
-                _tracking = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _atPark;
-
-        public bool AtPark {
-            get {
-                return _atPark;
-            }
-            private set {
-                _atPark = value;
+                telescopeInfo = value;
                 RaisePropertyChanged();
             }
         }
@@ -409,56 +215,56 @@ namespace NINA.ViewModel {
 
         private void UpdateTelescopeValues(Dictionary<string, object> telescopeValues) {
             object o = null;
-            telescopeValues.TryGetValue(nameof(Connected), out o);
-            Connected = (bool)(o ?? false);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.Connected), out o);
+            TelescopeInfo.Connected = (bool)(o ?? false);
 
-            telescopeValues.TryGetValue(nameof(AltitudeString), out o);
-            AltitudeString = (string)(o ?? string.Empty);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.AltitudeString), out o);
+            TelescopeInfo.AltitudeString = (string)(o ?? string.Empty);
 
-            telescopeValues.TryGetValue(nameof(AzimuthString), out o);
-            AzimuthString = (string)(o ?? string.Empty);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.AzimuthString), out o);
+            TelescopeInfo.AzimuthString = (string)(o ?? string.Empty);
 
-            telescopeValues.TryGetValue(nameof(DeclinationString), out o);
-            DeclinationString = (string)(o ?? string.Empty);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.DeclinationString), out o);
+            TelescopeInfo.DeclinationString = (string)(o ?? string.Empty);
 
-            telescopeValues.TryGetValue(nameof(RightAscensionString), out o);
-            RightAscensionString = (string)(o ?? string.Empty);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.RightAscensionString), out o);
+            TelescopeInfo.RightAscensionString = (string)(o ?? string.Empty);
 
-            telescopeValues.TryGetValue(nameof(SiderealTimeString), out o);
-            SiderealTimeString = (string)(o ?? string.Empty);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.SiderealTimeString), out o);
+            TelescopeInfo.SiderealTimeString = (string)(o ?? string.Empty);
 
-            telescopeValues.TryGetValue(nameof(SiderealTime), out o);
-            SiderealTime = (double)(o ?? double.NaN);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.SiderealTime), out o);
+            TelescopeInfo.SiderealTime = (double)(o ?? double.NaN);
 
-            telescopeValues.TryGetValue(nameof(Declination), out o);
-            Declination = (double)(o ?? double.NaN);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.Declination), out o);
+            TelescopeInfo.Declination = (double)(o ?? double.NaN);
 
-            telescopeValues.TryGetValue(nameof(RightAscension), out o);
-            RightAscension = (double)(o ?? double.NaN);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.RightAscension), out o);
+            TelescopeInfo.RightAscension = (double)(o ?? double.NaN);
 
-            telescopeValues.TryGetValue(nameof(HoursToMeridianString), out o);
-            HoursToMeridianString = (string)(o ?? string.Empty);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.HoursToMeridianString), out o);
+            TelescopeInfo.HoursToMeridianString = (string)(o ?? string.Empty);
 
-            telescopeValues.TryGetValue(nameof(AtPark), out o);
-            AtPark = (bool)(o ?? false);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.AtPark), out o);
+            TelescopeInfo.AtPark = (bool)(o ?? false);
 
-            telescopeValues.TryGetValue(nameof(SiteLatitude), out o);
-            SiteLatitude = (double)(o ?? double.NaN);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.SiteLatitude), out o);
+            TelescopeInfo.SiteLatitude = (double)(o ?? double.NaN);
 
-            telescopeValues.TryGetValue(nameof(SiteLongitude), out o);
-            SiteLongitude = (double)(o ?? double.NaN);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.SiteLongitude), out o);
+            TelescopeInfo.SiteLongitude = (double)(o ?? double.NaN);
 
-            telescopeValues.TryGetValue(nameof(SiteElevation), out o);
-            SiteElevation = (double)(o ?? double.NaN);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.SiteElevation), out o);
+            TelescopeInfo.SiteElevation = (double)(o ?? double.NaN);
 
-            telescopeValues.TryGetValue(nameof(Tracking), out o);
-            Tracking = (bool)(o ?? false);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.Tracking), out o);
+            TelescopeInfo.Tracking = (bool)(o ?? false);
 
             telescopeValues.TryGetValue(nameof(Coordinates), out o);
-            Coordinates = (Coordinates)(o ?? null);
+            TelescopeInfo.Coordinates = (Coordinates)(o ?? null);
 
-            telescopeValues.TryGetValue(nameof(TimeToMeridianFlip), out o);
-            TimeToMeridianFlip = (double)(o ?? double.NaN);
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.TimeToMeridianFlip), out o);
+            TelescopeInfo.TimeToMeridianFlip = (double)(o ?? double.NaN);
 
             BroadcastTelescopeInfo();
         }
@@ -466,24 +272,24 @@ namespace NINA.ViewModel {
         private Dictionary<string, object> GetTelescopeValues() {
             Dictionary<string, object> telescopeValues = new Dictionary<string, object>();
 
-            telescopeValues.Add(nameof(Connected), _telescope?.Connected ?? false);
-            telescopeValues.Add(nameof(AtPark), _telescope?.AtPark ?? false);
-            telescopeValues.Add(nameof(Tracking), _telescope?.Tracking ?? false);
+            telescopeValues.Add(nameof(TelescopeInfo.Connected), _telescope?.Connected ?? false);
+            telescopeValues.Add(nameof(TelescopeInfo.AtPark), _telescope?.AtPark ?? false);
+            telescopeValues.Add(nameof(TelescopeInfo.Tracking), _telescope?.Tracking ?? false);
 
-            telescopeValues.Add(nameof(AltitudeString), _telescope?.AltitudeString ?? string.Empty);
-            telescopeValues.Add(nameof(AzimuthString), _telescope?.AzimuthString ?? string.Empty);
-            telescopeValues.Add(nameof(DeclinationString), _telescope?.DeclinationString ?? string.Empty);
-            telescopeValues.Add(nameof(RightAscensionString), _telescope?.RightAscensionString ?? string.Empty);
-            telescopeValues.Add(nameof(SiderealTimeString), _telescope?.SiderealTimeString ?? string.Empty);
-            telescopeValues.Add(nameof(RightAscension), _telescope?.RightAscension ?? double.NaN);
-            telescopeValues.Add(nameof(Declination), _telescope?.Declination ?? double.NaN);
-            telescopeValues.Add(nameof(SiderealTime), _telescope?.SiderealTime ?? double.NaN);
-            telescopeValues.Add(nameof(HoursToMeridianString), _telescope?.HoursToMeridianString ?? string.Empty);
-            telescopeValues.Add(nameof(SiteLongitude), _telescope?.SiteLongitude ?? double.NaN);
-            telescopeValues.Add(nameof(SiteLatitude), _telescope?.SiteLatitude ?? double.NaN);
-            telescopeValues.Add(nameof(SiteElevation), _telescope?.SiteElevation ?? double.NaN);
-            telescopeValues.Add(nameof(Coordinates), _telescope?.Coordinates ?? null);
-            telescopeValues.Add(nameof(TimeToMeridianFlip), _telescope?.TimeToMeridianFlip ?? double.NaN);
+            telescopeValues.Add(nameof(TelescopeInfo.AltitudeString), _telescope?.AltitudeString ?? string.Empty);
+            telescopeValues.Add(nameof(TelescopeInfo.AzimuthString), _telescope?.AzimuthString ?? string.Empty);
+            telescopeValues.Add(nameof(TelescopeInfo.DeclinationString), _telescope?.DeclinationString ?? string.Empty);
+            telescopeValues.Add(nameof(TelescopeInfo.RightAscensionString), _telescope?.RightAscensionString ?? string.Empty);
+            telescopeValues.Add(nameof(TelescopeInfo.SiderealTimeString), _telescope?.SiderealTimeString ?? string.Empty);
+            telescopeValues.Add(nameof(TelescopeInfo.RightAscension), _telescope?.RightAscension ?? double.NaN);
+            telescopeValues.Add(nameof(TelescopeInfo.Declination), _telescope?.Declination ?? double.NaN);
+            telescopeValues.Add(nameof(TelescopeInfo.SiderealTime), _telescope?.SiderealTime ?? double.NaN);
+            telescopeValues.Add(nameof(TelescopeInfo.HoursToMeridianString), _telescope?.HoursToMeridianString ?? string.Empty);
+            telescopeValues.Add(nameof(TelescopeInfo.SiteLongitude), _telescope?.SiteLongitude ?? double.NaN);
+            telescopeValues.Add(nameof(TelescopeInfo.SiteLatitude), _telescope?.SiteLatitude ?? double.NaN);
+            telescopeValues.Add(nameof(TelescopeInfo.SiteElevation), _telescope?.SiteElevation ?? double.NaN);
+            telescopeValues.Add(nameof(TelescopeInfo.Coordinates), _telescope?.Coordinates ?? null);
+            telescopeValues.Add(nameof(TelescopeInfo.TimeToMeridianFlip), _telescope?.TimeToMeridianFlip ?? double.NaN);
 
             return telescopeValues;
         }
@@ -517,13 +323,13 @@ namespace NINA.ViewModel {
         }
 
         public void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate) {
-            if (Connected) {
+            if (TelescopeInfo.Connected) {
                 Telescope.MoveAxis(axis, rate);
             }
         }
 
         public bool Sync(double ra, double dec) {
-            if (Connected) {
+            if (TelescopeInfo.Connected) {
                 return Telescope.Sync(ra, dec);
             } else {
                 return false;
@@ -674,7 +480,7 @@ namespace NINA.ViewModel {
         }
 
         public bool MeridianFlip(Coordinates targetCoordinates) {
-            if (Connected) {
+            if (TelescopeInfo.Connected) {
                 return Telescope.MeridianFlip(targetCoordinates);
             } else {
                 return false;
@@ -682,7 +488,7 @@ namespace NINA.ViewModel {
         }
 
         public bool SetTracking(bool tracking) {
-            if (Connected) {
+            if (TelescopeInfo.Connected) {
                 Telescope.Tracking = tracking;
                 return Telescope.Tracking;
             } else {

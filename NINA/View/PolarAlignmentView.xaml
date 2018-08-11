@@ -12,7 +12,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
-    <Grid IsEnabled="{Binding Telescope, Converter={StaticResource InverseNullToBooleanConverter}}">
+    <Grid IsEnabled="{Binding TelescopeInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
         <Border
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
@@ -20,12 +20,12 @@
             Background="{StaticResource BackgroundBrush}"
             BorderBrush="{StaticResource BorderBrush}"
             BorderThickness="1"
-            Visibility="{Binding Telescope.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+            Visibility="{Binding TelescopeInfo.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
             <TextBlock FontSize="40">
                 Please connect Telescope
             </TextBlock>
         </Border>
-        <Grid IsEnabled="{Binding Telescope.Connected}">
+        <Grid IsEnabled="{Binding TelescopeInfo.Connected}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />

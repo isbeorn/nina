@@ -128,5 +128,47 @@ namespace NINA.Model.MyTelescope {
                 RaisePropertyChanged();
             }
         }
+
+        private string altitudeString;
+
+        public string AltitudeString {
+            get { return altitudeString; }
+            set { altitudeString = value; RaisePropertyChanged(); }
+        }
+
+        private string azimuthString;
+
+        public string AzimuthString {
+            get { return azimuthString; }
+            set { azimuthString = value; RaisePropertyChanged(); }
+        }
+
+        private string siderealTimeString;
+
+        public string SiderealTimeString {
+            get { return siderealTimeString; }
+            set { siderealTimeString = value; RaisePropertyChanged(); }
+        }
+
+        private string hoursToMeridianString;
+
+        public string HoursToMeridianString {
+            get { return hoursToMeridianString; }
+            set { hoursToMeridianString = value; RaisePropertyChanged(); }
+        }
+
+        private bool atPark;
+
+        public bool AtPark {
+            get { return atPark; }
+            set { atPark = value; RaisePropertyChanged(); }
+        }
+
+        private bool tracking;
+
+        public bool Tracking {
+            get { return tracking; }
+            set { tracking = value; RaisePropertyChanged(); }
+        }
     }
 }

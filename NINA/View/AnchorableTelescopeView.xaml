@@ -23,7 +23,7 @@
                         Margin="5"
                         HorizontalAlignment="Left"
                         BorderBrush="Transparent"
-                        IsChecked="{Binding Connected, FallbackValue=False, Mode=OneWay}"
+                        IsChecked="{Binding TelescopeInfo.Connected, FallbackValue=False, Mode=OneWay}"
                         IsEnabled="False"
                         Style="{StaticResource CheckmarkCheckbox}" />
                 </UniformGrid>
@@ -40,7 +40,7 @@
                         Margin="5"
                         HorizontalAlignment="Left"
                         BorderBrush="Transparent"
-                        IsChecked="{Binding Tracking, FallbackValue=False, Mode=OneWay}"
+                        IsChecked="{Binding TelescopeInfo.Tracking, FallbackValue=False, Mode=OneWay}"
                         IsEnabled="False"
                         Style="{StaticResource CheckmarkCheckbox}" />
                 </UniformGrid>
@@ -52,7 +52,7 @@
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblSiderealTime}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding SiderealTimeString}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.SiderealTimeString}" />
                 </UniformGrid>
             </Border>
             <Border
@@ -62,7 +62,7 @@
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblMeridianIn}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding HoursToMeridianString}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.HoursToMeridianString}" />
                 </UniformGrid>
             </Border>
             <Border
@@ -72,7 +72,7 @@
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblRightAscension}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding RightAscensionString}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.RightAscensionString}" />
                 </UniformGrid>
             </Border>
             <Border
@@ -82,7 +82,7 @@
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblDeclination}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding DeclinationString}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.DeclinationString}" />
                 </UniformGrid>
             </Border>
             <Border
@@ -92,7 +92,7 @@
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblAltitude}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding AltitudeString}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.AltitudeString}" />
                 </UniformGrid>
             </Border>
             <Border
@@ -102,7 +102,7 @@
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblAzimuth}" />
 
-                    <TextBlock Margin="5,0,0,0" Text="{Binding AzimuthString}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.AzimuthString}" />
                 </UniformGrid>
             </Border>
         </StackPanel>
