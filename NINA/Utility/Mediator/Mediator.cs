@@ -186,8 +186,5 @@ namespace NINA.Utility.Mediator {
         DetectStarsChanged = 8,
         ChangeAutoStretch = 14,
         ChangeDetectStars = 15,
-        LocaleChanged = 18,
-        LocationChanged = 19,
-        ProfileChanged = 31,
     };
 }

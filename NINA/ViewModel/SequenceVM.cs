@@ -55,6 +55,12 @@ namespace NINA.ViewModel {
             UpdateETACommand = new RelayCommand((object o) => CalculateETA());
 
             RegisterMediatorMessages();
+
+            profileService.LocationChanged += (object sender, EventArgs e) => {
+                var dso = new DeepSkyObject(Sequence.DSO.Name, Sequence.DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+                dso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
+                Sequence.SetSequenceTarget(dso);
+            };
         }
 
         private void LoadSequence(object obj) {
@@ -432,12 +438,6 @@ namespace NINA.ViewModel {
                     return true;
                 })
             );
-
-            Mediator.Instance.Register((object o) => {
-                var dso = new DeepSkyObject(Sequence.DSO.Name, Sequence.DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-                dso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
-                Sequence.SetSequenceTarget(dso);
-            }, MediatorMessages.LocationChanged);
         }
 
         private CaptureSequenceList _sequence;

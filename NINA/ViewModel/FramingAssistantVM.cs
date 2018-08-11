@@ -71,13 +71,17 @@ namespace NINA.ViewModel {
             RegisterMediatorMessages();
             LoadImageCacheList();
 
-            Mediator.Instance.Register((o) => {
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
                 RaisePropertyChanged(nameof(CameraPixelSize));
                 RaisePropertyChanged(nameof(FocalLength));
                 RaisePropertyChanged(nameof(FieldOfView));
                 RaisePropertyChanged(nameof(CameraWidth));
                 RaisePropertyChanged(nameof(CameraHeight));
-            }, MediatorMessages.ProfileChanged);
+            };
+
+            profileService.LocationChanged += (object sender, EventArgs e) => {
+                DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+            };
         }
 
         private void ClearCache(object obj) {
@@ -204,10 +208,6 @@ namespace NINA.ViewModel {
                 await LoadImageCommand.ExecuteAsync(null);
                 return true;
             }));
-
-            Mediator.Instance.Register((object o) => {
-                DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-            }, MediatorMessages.LocationChanged);
         }
 
         private void CancelLoadImage() {

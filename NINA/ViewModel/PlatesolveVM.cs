@@ -43,6 +43,12 @@ namespace NINA.ViewModel {
             Repeat = false;
             RepeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold;
 
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                SnapExposureDuration = profileService.ActiveProfile.PlateSolveSettings.ExposureTime;
+                SnapFilter = profileService.ActiveProfile.PlateSolveSettings.Filter;
+                RepeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold;
+            };
+
             RegisterMediatorMessages();
         }
 
@@ -53,12 +59,6 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 _detectStars = (bool)o;
             }, MediatorMessages.DetectStarsChanged);
-
-            Mediator.Instance.Register((object o) => {
-                SnapExposureDuration = profileService.ActiveProfile.PlateSolveSettings.ExposureTime;
-                SnapFilter = profileService.ActiveProfile.PlateSolveSettings.Filter;
-                RepeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold;
-            }, MediatorMessages.ProfileChanged);
 
             Mediator.Instance.RegisterAsyncRequest(
                 new PlateSolveMessageHandle(async (PlateSolveMessage msg) => {

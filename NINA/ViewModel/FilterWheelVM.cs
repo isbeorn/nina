@@ -36,11 +36,9 @@ namespace NINA.ViewModel {
                 return true;
             }, (object o) => FilterWheelInfo.Connected && !FilterWheelInfo.IsMoving);
 
-            RegisterMediatorMessages();
-        }
-
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((o) => { RefreshFWList(o); }, MediatorMessages.ProfileChanged);
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                RefreshFWList(null);
+            };
         }
 
         private CancellationTokenSource _changeFilterCancellationSource;

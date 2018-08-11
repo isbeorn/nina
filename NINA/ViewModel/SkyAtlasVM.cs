@@ -35,16 +35,16 @@ namespace NINA.ViewModel {
             InitializeFilters();
             PageSize = 50;
 
-            Mediator.Instance.Register((object o) => {
+            profileService.LocationChanged += (object sender, EventArgs e) => {
                 _nightDuration = null; //Clear cache
                 SelectedDate = DateTime.Now;
                 InitializeElevationFilters();
                 ResetRiseAndSetTimes();
-            }, MediatorMessages.LocationChanged);
+            };
 
-            Mediator.Instance.Register((object o) => {
+            profileService.LocaleChanged += (object sender, EventArgs e) => {
                 InitializeFilters();
-            }, MediatorMessages.LocaleChanged);
+            };
         }
 
         private void ResetRiseAndSetTimes() {

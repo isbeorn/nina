@@ -2,6 +2,7 @@
 using NINA.Utility.Enum;
 
 namespace NINA.Utility.Profile {
+
     public interface IApplicationSettings {
         string Culture { get; set; }
         string DatabaseLocation { get; set; }

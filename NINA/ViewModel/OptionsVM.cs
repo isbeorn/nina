@@ -47,9 +47,9 @@ namespace NINA.ViewModel {
 
             ScanForIndexFiles();
 
-            Mediator.Instance.Register((object o) => {
+            profileService.LocaleChanged += (object sender, EventArgs e) => {
                 ImagePatterns = CreateImagePatternList();
-            }, MediatorMessages.LocaleChanged);
+            };
 
             /*Mediator.Instance.Register((object o) => {
                 CameraPixelSize = (double)o;  // todo options mediator?
@@ -314,11 +314,7 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.ApplicationSettings.Language;
             }
             set {
-                profileService.ActiveProfile.ApplicationSettings.Language = value;
-
-                System.Threading.Thread.CurrentThread.CurrentUICulture = Language;
-                System.Threading.Thread.CurrentThread.CurrentCulture = Language;
-                Locale.Loc.Instance.ReloadLocale(Language.Name);
+                profileService.ChangeLocale(value);
                 RaisePropertyChanged();
             }
         }
@@ -478,10 +474,10 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.AstrometrySettings.HemisphereType;
             }
             set {
-                profileService.ActiveProfile.AstrometrySettings.HemisphereType = value;
+                profileService.ChangeHemisphere(value);
+
                 RaisePropertyChanged();
                 Latitude = Latitude;
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 
@@ -997,12 +993,8 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.AstrometrySettings.Latitude;
             }
             set {
-                if ((HemisphereType == Hemisphere.SOUTHERN && value > 0) || (HemisphereType == Hemisphere.NORTHERN && value < 0)) {
-                    value = -value;
-                }
-                profileService.ActiveProfile.AstrometrySettings.Latitude = value;
+                profileService.ChangeLatitude(value);
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 
@@ -1011,9 +1003,8 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.AstrometrySettings.Longitude;
             }
             set {
-                profileService.ActiveProfile.AstrometrySettings.Longitude = value;
+                profileService.ChangeLongitude(value);
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 

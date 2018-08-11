@@ -47,7 +47,9 @@ namespace NINA.ViewModel {
                 profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
             );
 
-            Mediator.Instance.Register((o) => { RefreshCameraList(o); }, MediatorMessages.ProfileChanged);
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                RefreshCameraList(null);
+            };
         }
 
         private void RefreshCameraList(object obj) {

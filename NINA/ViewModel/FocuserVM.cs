@@ -37,7 +37,9 @@ namespace NINA.ViewModel {
                 profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
             );
 
-            Mediator.Instance.Register((o) => { RefreshFocuserList(o); }, MediatorMessages.ProfileChanged);
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                RefreshFocuserList(null);
+            };
         }
 
         private void ToggleTempComp(object obj) {

@@ -3,6 +3,7 @@ using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -30,6 +31,41 @@ namespace NINA.Utility.Profile {
         public static string PROFILEFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings");
         public static string PROFILETEMPFILEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "profiles.settings.bkp");
 
+        public event EventHandler LocaleChanged;
+
+        public void ChangeLocale(CultureInfo language) {
+            ActiveProfile.ApplicationSettings.Language = language;
+
+            System.Threading.Thread.CurrentThread.CurrentUICulture = language;
+            System.Threading.Thread.CurrentThread.CurrentCulture = language;
+
+            Locale.Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
+            LocaleChanged?.Invoke(this, null);
+        }
+
+        public void ChangeHemisphere(Hemisphere hemisphere) {
+            ActiveProfile.AstrometrySettings.HemisphereType = hemisphere;
+            LocationChanged?.Invoke(this, null);
+        }
+
+        public void ChangeLatitude(double latitude) {
+            var hemisphereType = ActiveProfile.AstrometrySettings.HemisphereType;
+            if ((hemisphereType == Hemisphere.SOUTHERN && latitude > 0) || (hemisphereType == Hemisphere.NORTHERN && latitude < 0)) {
+                latitude = -latitude;
+            }
+            ActiveProfile.AstrometrySettings.Latitude = latitude;
+            LocationChanged?.Invoke(this, null);
+        }
+
+        public void ChangeLongitude(double longitude) {
+            ActiveProfile.AstrometrySettings.Longitude = longitude;
+            LocationChanged?.Invoke(this, null);
+        }
+
+        public event EventHandler LocationChanged;
+
+        public event EventHandler ProfileChanged;
+
         public Profiles Profiles { get; set; }
 
         public void Add() {
@@ -49,7 +85,7 @@ namespace NINA.Utility.Profile {
                 var serializer = new DataContractSerializer(typeof(Profiles));
 
                 //Copy profile to temp file, to be able to roll back in case of error
-                if(File.Exists(PROFILEFILEPATH)) {
+                if (File.Exists(PROFILEFILEPATH)) {
                     File.Copy(PROFILEFILEPATH, PROFILETEMPFILEPATH, true);
                 }
 
@@ -63,7 +99,7 @@ namespace NINA.Utility.Profile {
                 Logger.Error(ex);
                 Notification.Notification.ShowError(ex.Message);
 
-                if(File.Exists(PROFILETEMPFILEPATH)) {
+                if (File.Exists(PROFILETEMPFILEPATH)) {
                     //Restore temp file
                     File.Copy(PROFILETEMPFILEPATH, PROFILEFILEPATH, true);
                 }
@@ -77,14 +113,14 @@ namespace NINA.Utility.Profile {
         }
 
         private void Load() {
-            if(File.Exists(PROFILETEMPFILEPATH)) {
+            if (File.Exists(PROFILETEMPFILEPATH)) {
                 File.Copy(PROFILETEMPFILEPATH, PROFILEFILEPATH, true);
             }
 
             if (File.Exists(PROFILEFILEPATH)) {
                 try {
                     var serializer = new DataContractSerializer(typeof(Profiles));
-                                        
+
                     using (FileStream reader = new FileStream(PROFILEFILEPATH, FileMode.Open)) {
                         var obj = serializer.ReadObject(reader);
 
@@ -93,6 +129,11 @@ namespace NINA.Utility.Profile {
                             p.MatchFilterSettingsWithFilterList();
                         }
                         Profiles.SelectActiveProfile();
+
+                        Locale.Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
+                        LocaleChanged?.Invoke(this, null);
+                        ProfileChanged?.Invoke(this, null);
+                        LocationChanged?.Invoke(this, null);
                     }
                 } catch (UnauthorizedAccessException ex) {
                     Logger.Error(ex);
@@ -111,6 +152,10 @@ namespace NINA.Utility.Profile {
         public void SelectProfile(Guid guid) {
             Profiles.SelectProfile(guid);
             Save();
+            Locale.Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
+            LocaleChanged?.Invoke(this, null);
+            ProfileChanged?.Invoke(this, null);
+            LocationChanged?.Invoke(this, null);
         }
 
         private void LoadDefaultProfile() {
@@ -245,7 +290,6 @@ namespace NINA.Utility.Profile {
             } else {
                 LoadDefaultProfile();
             }
-
         }
     }
 }

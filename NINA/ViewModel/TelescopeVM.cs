@@ -45,7 +45,9 @@ namespace NINA.ViewModel {
                 profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
             );
 
-            Mediator.Instance.Register((o) => { RefreshTelescopeList(o); }, MediatorMessages.ProfileChanged);
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                RefreshTelescopeList(null);
+            };
         }
 
         public bool SendToSnapPort(bool start) {
