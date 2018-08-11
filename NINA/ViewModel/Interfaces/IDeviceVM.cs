@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Interfaces {
 
-    internal interface IFocuserVM : IDeviceVM {
+    internal interface IDeviceVM {
 
-        Task<int> MoveFocuser(int position);
+        Task<bool> Connect();
 
-        Task<int> MoveFocuserRelative(int position);
+        void Disconnect();
     }
 }

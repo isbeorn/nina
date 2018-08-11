@@ -4,6 +4,7 @@ using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -19,7 +20,7 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
 
             this.focuserMediator = focuserMediator;
-            this.focuserMediator.RegisterFocuserVM(this);
+            this.focuserMediator.RegisterVM(this);
 
             ContentId = nameof(FocuserVM);
             ChooseFocuserCommand = new AsyncCommand<bool>(() => ChooseFocuser());
@@ -84,7 +85,7 @@ namespace NINA.ViewModel {
 
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
 
-        public async Task<bool> ChooseFocuser() {
+        private async Task<bool> ChooseFocuser() {
             await ss.WaitAsync();
             try {
                 Disconnect();
@@ -203,7 +204,7 @@ namespace NINA.ViewModel {
         }
 
         private void BroadcastFocuserInfo() {
-            this.focuserMediator.UpdateFocuserInfo(FocuserInfo);
+            this.focuserMediator.BroadcastInfo(FocuserInfo);
         }
 
         private int _targetPosition;
@@ -235,6 +236,10 @@ namespace NINA.ViewModel {
 
         public void RefreshFocuserList(object obj) {
             FocuserChooserVM.GetEquipment();
+        }
+
+        public Task<bool> Connect() {
+            return ChooseFocuser();
         }
 
         private IFocuser _focuser;

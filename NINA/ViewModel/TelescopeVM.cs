@@ -5,6 +5,7 @@ using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,7 +21,7 @@ namespace NINA.ViewModel {
         public TelescopeVM(IProfileService profileService, TelescopeMediator telescopeMediator) : base(profileService) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
-            this.telescopeMediator.RegisterTelescopeVM(this);
+            this.telescopeMediator.RegisterVM(this);
             Title = "LblTelescope";
             ContentId = nameof(TelescopeVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
@@ -105,7 +106,7 @@ namespace NINA.ViewModel {
 
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
 
-        public async Task<bool> ChooseTelescope() {
+        private async Task<bool> ChooseTelescope() {
             await ss.WaitAsync();
             try {
                 Disconnect();
@@ -191,7 +192,7 @@ namespace NINA.ViewModel {
         }
 
         private void BroadcastTelescopeInfo() {
-            telescopeMediator.UpdateTelescopeInfo(TelescopeInfo);
+            telescopeMediator.BroadcastInfo(TelescopeInfo);
         }
 
         private TelescopeInfo telescopeInfo;
@@ -494,6 +495,10 @@ namespace NINA.ViewModel {
             } else {
                 return false;
             }
+        }
+
+        public Task<bool> Connect() {
+            return ChooseTelescope();
         }
 
         public ICommand SlewToCoordinatesCommand { get; private set; }

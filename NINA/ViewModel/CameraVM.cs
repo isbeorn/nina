@@ -6,6 +6,7 @@ using NINA.Utility.AtikSDK;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,7 +27,7 @@ namespace NINA.ViewModel {
             _cameraChooserVM = new CameraChooserVM(profileService, telescopeMediator);
 
             this.cameraMediator = cameraMediator;
-            this.cameraMediator.RegisterCameraVM(this);
+            this.cameraMediator.RegisterVM(this);
 
             ChooseCameraCommand = new AsyncCommand<bool>(ChooseCamera);
             CancelConnectCameraCommand = new RelayCommand(CancelConnectCamera);
@@ -231,7 +232,7 @@ namespace NINA.ViewModel {
 
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
 
-        public async Task<bool> ChooseCamera() {
+        private async Task<bool> ChooseCamera() {
             await ss.WaitAsync();
             try {
                 Disconnect();
@@ -338,7 +339,7 @@ namespace NINA.ViewModel {
         }
 
         private void BroadcastCameraInfo() {
-            cameraMediator.UpdateCameraInfo(CameraInfo);
+            cameraMediator.BroadcastInfo(CameraInfo);
         }
 
         private void CancelConnectCamera(object o) {
@@ -502,6 +503,10 @@ namespace NINA.ViewModel {
                 Cam.SubSampleWidth = width;
                 Cam.SubSampleHeight = height;
             }
+        }
+
+        public Task<bool> Connect() {
+            return ChooseCamera();
         }
 
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }

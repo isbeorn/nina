@@ -21,7 +21,7 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FWSVG"];
 
             this.filterWheelMediator = filterWheelMediator;
-            this.filterWheelMediator.RegisterFilterWheelVM(this);
+            this.filterWheelMediator.RegisterVM(this);
 
             this.focuserMediator = focuserMediator;
 
@@ -128,7 +128,7 @@ namespace NINA.ViewModel {
 
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
 
-        public async Task<bool> ChooseFW() {
+        private async Task<bool> ChooseFW() {
             await ss.WaitAsync();
             try {
                 Disconnect();
@@ -239,7 +239,7 @@ namespace NINA.ViewModel {
         }
 
         private void BroadcastFilterWheelInfo() {
-            this.filterWheelMediator.UpdateFilterWheelInfo(FilterWheelInfo);
+            this.filterWheelMediator.BroadcastInfo(FilterWheelInfo);
         }
 
         public ICollection<FilterInfo> GetAllFilters() {
@@ -248,6 +248,10 @@ namespace NINA.ViewModel {
             } else {
                 return null;
             }
+        }
+
+        public Task<bool> Connect() {
+            return ChooseFW();
         }
 
         public FilterWheelChooserVM FilterWheelChooserVM {

@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NINA.ViewModel {
+namespace NINA.ViewModel.Interfaces {
 
-    internal interface ICameraVM {
+    internal interface ICameraVM : IDeviceVM {
 
         void SetBinning(short x, short y);
 
@@ -26,9 +26,5 @@ namespace NINA.ViewModel {
         Task LiveView(CancellationToken token);
 
         Task<ImageArray> Download(CancellationToken token);
-
-        Task<bool> ChooseCamera();
-
-        void Disconnect();
     }
 }

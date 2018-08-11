@@ -5,11 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NINA.ViewModel {
+namespace NINA.ViewModel.Interfaces {
 
-    internal interface ITelescopeVM {
-
-        Task<bool> ChooseTelescope();
+    internal interface ITelescopeVM : IDeviceVM {
 
         Task<bool> SlewToCoordinatesAsync(Coordinates coords);
 
@@ -22,7 +20,5 @@ namespace NINA.ViewModel {
         bool SetTracking(bool tracking);
 
         bool SendToSnapPort(bool start);
-
-        void Disconnect();
     }
 }

@@ -1,5 +1,7 @@
 ﻿using NINA.Model.MyFocuser;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel;
+using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,43 +10,21 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator {
 
-    internal class FocuserMediator {
-        private IFocuserVM focuserVM;
-        private List<IFocuserConsumer> vms = new List<IFocuserConsumer>();
-
-        internal void RegisterFocuserVM(IFocuserVM focuserVM) {
-            this.focuserVM = focuserVM;
-        }
-
-        internal void RegisterConsumer(IFocuserConsumer vm) {
-            vms.Add(vm);
-        }
-
-        internal void RemoveConsumer(IFocuserConsumer vm) {
-            vms.Remove(vm);
-        }
-
-        internal Task<bool> Connect() {
-            return focuserVM.ChooseFocuser();
-        }
-
-        internal void Disconnect() {
-            focuserVM.Disconnect();
-        }
+    internal class FocuserMediator : DeviceMediator<IFocuserVM, IFocuserConsumer, FocuserInfo> {
 
         internal Task<int> MoveFocuser(int position) {
-            return focuserVM.MoveFocuser(position);
+            return handlerVM.MoveFocuser(position);
         }
 
         internal Task<int> MoveFocuserRelative(int position) {
-            return focuserVM.MoveFocuserRelative(position);
+            return handlerVM.MoveFocuserRelative(position);
         }
 
         /// <summary>
         /// Updates all consumers with the current focuser info
         /// </summary>
         /// <param name="focuserInfo"></param>
-        internal void UpdateFocuserInfo(FocuserInfo focuserInfo) {
+        override internal void BroadcastInfo(FocuserInfo focuserInfo) {
             foreach (IFocuserConsumer vm in vms) {
                 vm.UpdateFocuserInfo(focuserInfo);
             }

@@ -9,14 +9,10 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Interfaces {
 
-    internal interface IFilterWheelVM {
+    internal interface IFilterWheelVM : IDeviceVM {
 
         Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null);
 
         ICollection<FilterInfo> GetAllFilters();
-
-        Task<bool> ChooseFW();
-
-        void Disconnect();
     }
 }

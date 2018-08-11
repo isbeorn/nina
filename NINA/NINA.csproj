@@ -345,6 +345,7 @@
     <Compile Include="Utility\DeviceUpdateTimer.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
     <Compile Include="Utility\Mediator\CameraMediator.cs" />
+    <Compile Include="Utility\Mediator\DeviceMediator.cs" />
     <Compile Include="Utility\Mediator\FilterWheelMediator.cs" />
     <Compile Include="Utility\Mediator\FocuserMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ICameraConsumer.cs" />
@@ -437,6 +438,7 @@
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
     <Compile Include="ViewModel\Interfaces\ICameraVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IDeviceVM.cs" />
     <Compile Include="ViewModel\Interfaces\IFilterWheelVM.cs" />
     <Compile Include="ViewModel\Interfaces\IFocuserVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
