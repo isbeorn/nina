@@ -33,8 +33,6 @@ namespace NINA.ViewModel {
 
         private Coordinates _targetCoordinates;
 
-        private ITelescope _telescope;
-
         private CancellationTokenSource _tokensource;
         private TelescopeInfo telescopeInfo;
         private TelescopeMediator telescopeMediator;
