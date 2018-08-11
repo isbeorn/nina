@@ -107,15 +107,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(PlateSolveMessage).Name; } }
     }
 
-    internal class ChangeFilterWheelPositionMessageHandle : AsyncMessageHandle<FilterInfo> {
-
-        public ChangeFilterWheelPositionMessageHandle(Func<ChangeFilterWheelPositionMessage, Task<FilterInfo>> callback) {
-            Callback = (f) => callback((ChangeFilterWheelPositionMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(ChangeFilterWheelPositionMessage).Name; } }
-    }
-
     internal class StartAutoFocusMessageHandle : AsyncMessageHandle<bool> {
 
         public StartAutoFocusMessageHandle(Func<StartAutoFocusMessage, Task<bool>> callback) {
@@ -123,15 +114,6 @@ namespace NINA.Utility.Mediator {
         }
 
         public override string MessageType { get { return typeof(StartAutoFocusMessage).Name; } }
-    }
-
-    internal class ConnectFilterWheelMessageHandle : AsyncMessageHandle<bool> {
-
-        public ConnectFilterWheelMessageHandle(Func<ConnectFilterWheelMessage, Task<bool>> callback) {
-            Callback = (f) => callback((ConnectFilterWheelMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(ConnectFilterWheelMessage).Name; } }
     }
 
     internal class CaptureImageMessageHandle : AsyncMessageHandle<ImageArray> {
@@ -229,15 +211,9 @@ namespace NINA.Utility.Mediator {
         public bool Blind { get; set; }
     }
 
-    internal class ChangeFilterWheelPositionMessage : AsyncMediatorMessage<FilterInfo> {
-        public FilterInfo Filter { get; set; }
-    }
-
     internal class StartAutoFocusMessage : AsyncMediatorMessage<bool> {
         public FilterInfo Filter { get; set; }
     }
-
-    internal class ConnectFilterWheelMessage : AsyncMediatorMessage<bool> { }
 
     internal class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {
         public CaptureSequence Sequence { get; set; }

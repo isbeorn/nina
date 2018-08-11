@@ -17,13 +17,15 @@ namespace NINA.ViewModel {
 
     internal class ImagingVM : DockableVM, ICameraConsumer {
 
-        public ImagingVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator) : base(profileService) {
+        public ImagingVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, FilterWheelMediator filterWheelMediator) : base(profileService) {
             Title = "LblImaging";
             ContentId = nameof(ImagingVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
+
+            this.filterWheelMediator = filterWheelMediator;
 
             SnapExposureDuration = 1;
             SnapCommand = new AsyncCommand<bool>(() => SnapImage(new Progress<ApplicationStatus>(p => Status = p)));
@@ -155,6 +157,7 @@ namespace NINA.ViewModel {
         }
 
         private double _snapExposureDuration;
+        private FilterWheelMediator filterWheelMediator;
 
         public double SnapExposureDuration {
             get {
@@ -206,7 +209,7 @@ namespace NINA.ViewModel {
 
         private async Task ChangeFilter(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (seq.FilterType != null) {
-                await Mediator.Instance.RequestAsync(new ChangeFilterWheelPositionMessage() { Filter = seq.FilterType, Token = token, Progress = progress });
+                await filterWheelMediator.ChangeFilter(seq.FilterType, token, progress);
             }
         }
 

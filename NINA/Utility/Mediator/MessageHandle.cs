@@ -45,24 +45,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(GuideStepHistoryCountMessage).Name; } }
     }
 
-    internal class GetCurrentFilterInfoMessageHandle : MessageHandle<FilterInfo> {
-
-        public GetCurrentFilterInfoMessageHandle(Func<GetCurrentFilterInfoMessage, FilterInfo> callback) {
-            Callback = (f) => callback((GetCurrentFilterInfoMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(GetCurrentFilterInfoMessage).Name; } }
-    }
-
-    internal class GetAllFiltersMessageHandle : MessageHandle<ICollection<FilterInfo>> {
-
-        public GetAllFiltersMessageHandle(Func<GetAllFiltersMessage, ICollection<FilterInfo>> callback) {
-            Callback = (f) => callback((GetAllFiltersMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(GetAllFiltersMessage).Name; } }
-    }
-
     internal class ChangeApplicationTabMessageHandle : MessageHandle<bool> {
 
         public ChangeApplicationTabMessageHandle(Func<ChangeApplicationTabMessage, bool> callback) {
@@ -143,10 +125,6 @@ namespace NINA.Utility.Mediator {
     internal class GetCameraNameById : MediatorMessage<string> {
         private string Id { get; set; }
     }
-
-    internal class GetAllFiltersMessage : MediatorMessage<ICollection<FilterInfo>> { }
-
-    internal class GetCurrentFilterInfoMessage : MediatorMessage<FilterInfo> { }
 
     internal class ChangeApplicationTabMessage : MediatorMessage<bool> {
         public ViewModel.ApplicationTab Tab { get; set; }

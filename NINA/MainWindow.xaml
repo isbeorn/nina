@@ -84,7 +84,7 @@
                                             Data="{StaticResource PowerSVG}"
                                             Stretch="Uniform"
                                             Style="{StaticResource TabItemPath}"
-                                            Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                            Visibility="{Binding FilterWheelVM.FilterWheelInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </Grid>
                                 </Grid>
                                 <Grid>

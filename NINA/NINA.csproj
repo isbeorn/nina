@@ -288,6 +288,7 @@
     <Compile Include="Model\MyCamera\ImageArray.cs" />
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
+    <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\FocuserInfo.cs" />
     <Compile Include="Model\MyFocuser\IFocuser.cs" />
@@ -344,8 +345,10 @@
     <Compile Include="Utility\DeviceUpdateTimer.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
     <Compile Include="Utility\Mediator\CameraMediator.cs" />
+    <Compile Include="Utility\Mediator\FilterWheelMediator.cs" />
     <Compile Include="Utility\Mediator\FocuserMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ICameraConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFilterWheelConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IFocuserConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ITelescopeConsumer.cs" />
     <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
@@ -434,6 +437,7 @@
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
     <Compile Include="ViewModel\Interfaces\ICameraVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IFilterWheelVM.cs" />
     <Compile Include="ViewModel\Interfaces\IFocuserVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />

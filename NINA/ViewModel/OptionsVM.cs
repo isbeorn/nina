@@ -15,13 +15,16 @@ using System.Windows.Media;
 
 namespace NINA.ViewModel {
 
-    public class OptionsVM : DockableVM {
+    internal class OptionsVM : DockableVM {
 
-        public OptionsVM(IProfileService profileService) : base(profileService) {
+        public OptionsVM(IProfileService profileService, FilterWheelMediator filterWheelMediator) : base(profileService) {
             Title = "LblOptions";
             ContentId = nameof(OptionsVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
+
+            this.filterWheelMediator = filterWheelMediator;
+
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
@@ -142,7 +145,7 @@ namespace NINA.ViewModel {
         }
 
         private void ImportFilters(object obj) {
-            var filters = Mediator.Instance.Request(new GetAllFiltersMessage());
+            var filters = filterWheelMediator.GetAllFilters();
             if (filters != null) {
                 FilterWheelFilters.Clear();
                 FilterWheelFilters.CollectionChanged -= FilterWheelFilters_CollectionChanged;
@@ -1304,6 +1307,7 @@ namespace NINA.ViewModel {
         }
 
         private IProfile _selectedProfile;
+        private FilterWheelMediator filterWheelMediator;
 
         public IProfile SelectedProfile {
             get {

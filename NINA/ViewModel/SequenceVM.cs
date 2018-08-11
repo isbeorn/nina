@@ -1,8 +1,10 @@
 ﻿using NINA.Model;
+using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Utility;
 using NINA.Utility.Exceptions;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using Nito.AsyncEx;
@@ -19,10 +21,12 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    internal class SequenceVM : DockableVM, IFocuserConsumer {
+    internal class SequenceVM : DockableVM, IFocuserConsumer, IFilterWheelConsumer {
 
-        public SequenceVM(IProfileService profileService, TelescopeMediator telescopeMediator, FocuserMediator focuserMediator) : base(profileService) {
+        public SequenceVM(IProfileService profileService, TelescopeMediator telescopeMediator, FocuserMediator focuserMediator, FilterWheelMediator filterWheelMediator) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
+            this.filterWheelMediator = filterWheelMediator;
+            this.filterWheelMediator.RegisterConsumer(this);
             this.profileService = profileService;
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current?.Resources["SequenceSVG"];
@@ -253,10 +257,10 @@ namespace NINA.ViewModel {
                     Sequence.IsRunning = true;
 
                     CaptureSequence seq;
-                    var actualFilter = Mediator.Instance.Request(new GetCurrentFilterInfoMessage());
+                    var actualFilter = filterWheelInfo.SelectedFilter;
                     short prevFilterPosition = actualFilter?.Position ?? -1;
                     var lastAutoFocusTime = DateTime.UtcNow;
-                    var lastAutoFocusTemperature = focuserInfo.Temperature;
+                    var lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
                     var exposureCount = 0;
                     while ((seq = Sequence.Next()) != null) {
                         exposureCount++;
@@ -270,7 +274,7 @@ namespace NINA.ViewModel {
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocus"] });
                             await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
                             lastAutoFocusTime = DateTime.UtcNow;
-                            lastAutoFocusTemperature = focuserInfo.Temperature;
+                            lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
                             progress.Report(new ApplicationStatus() { Status = string.Empty });
                         }
 
@@ -300,7 +304,7 @@ namespace NINA.ViewModel {
                             Sequence.IsRunning = true;
                         }
 
-                        actualFilter = Mediator.Instance.Request(new GetCurrentFilterInfoMessage());
+                        actualFilter = filterWheelInfo.SelectedFilter;
                         prevFilterPosition = actualFilter?.Position ?? -1;
                     }
                 } catch (OperationCanceledException) {
@@ -335,7 +339,7 @@ namespace NINA.ViewModel {
                 return true;
             }
 
-            if (Sequence.AutoFocusAfterTemperatureChange && !double.IsNaN(focuserInfo.Temperature) && Math.Abs(lastAutoFocusTemperature - focuserInfo.Temperature) > Sequence.AutoFocusAfterTemperatureChangeAmount) {
+            if (Sequence.AutoFocusAfterTemperatureChange && !double.IsNaN(focuserInfo?.Temperature ?? double.NaN) && Math.Abs(lastAutoFocusTemperature - focuserInfo.Temperature) > Sequence.AutoFocusAfterTemperatureChangeAmount) {
                 /* Trigger autofocus after temperature change*/
                 return true;
             }
@@ -475,7 +479,9 @@ namespace NINA.ViewModel {
 
         private ObservableCollection<string> _imageTypes;
         private TelescopeMediator telescopeMediator;
+        private FilterWheelMediator filterWheelMediator;
         private FocuserInfo focuserInfo;
+        private FilterWheelInfo filterWheelInfo;
 
         public ObservableCollection<string> ImageTypes {
             get {
@@ -515,6 +521,10 @@ namespace NINA.ViewModel {
 
         public void UpdateFocuserInfo(FocuserInfo focuserInfo) {
             this.focuserInfo = focuserInfo;
+        }
+
+        public void UpdateFilterWheelInfo(FilterWheelInfo filterWheelInfo) {
+            this.filterWheelInfo = filterWheelInfo;
         }
 
         public ICommand AddSequenceCommand { get; private set; }
