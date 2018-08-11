@@ -345,9 +345,9 @@
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
     <Compile Include="Utility\Mediator\CameraMediator.cs" />
     <Compile Include="Utility\Mediator\FocuserMediator.cs" />
-    <Compile Include="Utility\Mediator\ICameraConsumer.cs" />
-    <Compile Include="Utility\Mediator\IFocuserConsumer.cs" />
-    <Compile Include="Utility\Mediator\ITelescopeConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ICameraConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFocuserConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ITelescopeConsumer.cs" />
     <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
@@ -433,8 +433,8 @@
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
-    <Compile Include="ViewModel\ICameraVM.cs" />
-    <Compile Include="ViewModel\IFocuserVM.cs" />
+    <Compile Include="ViewModel\Interfaces\ICameraVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IFocuserVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
@@ -468,7 +468,7 @@
     <Compile Include="ViewModel\ImageHistoryVM.cs" />
     <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
-    <Compile Include="ViewModel\ITelescopeVM.cs" />
+    <Compile Include="ViewModel\Interfaces\ITelescopeVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\GuiderVM.cs" />
