@@ -320,9 +320,7 @@ namespace NINA.ViewModel {
         public CameraInfo CameraInfo {
             get {
                 if (cameraInfo == null) {
-                    cameraInfo = new CameraInfo {
-                        Connected = false
-                    };
+                    cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
                 }
                 return cameraInfo;
             }
@@ -401,6 +399,7 @@ namespace NINA.ViewModel {
             CoolingRunning = false;
             Cam?.Disconnect();
             Cam = null;
+            CameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
             BroadcastCameraInfo();
         }
 

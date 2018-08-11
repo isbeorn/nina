@@ -12,5 +12,11 @@ namespace NINA.Model {
         public bool Connected { get { return connected; } set { connected = value; RaisePropertyChanged(); } }
         private string name;
         public string Name { get { return name; } set { name = value; RaisePropertyChanged(); } }
+
+        public static T CreateDefaultInstance<T>() where T : DeviceInfo, new() {
+            return new T() {
+                Connected = false
+            };
+        }
     }
 }

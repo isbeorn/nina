@@ -200,9 +200,7 @@ namespace NINA.ViewModel {
         public TelescopeInfo TelescopeInfo {
             get {
                 if (telescopeInfo == null) {
-                    telescopeInfo = new TelescopeInfo {
-                        Connected = false
-                    };
+                    telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
                 }
                 return telescopeInfo;
             }
@@ -312,6 +310,8 @@ namespace NINA.ViewModel {
             updateTimer?.Stop();
             Telescope?.Disconnect();
             Telescope = null;
+            TelescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
+            BroadcastTelescopeInfo();
         }
 
         private void StepMoveRate(object obj) {

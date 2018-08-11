@@ -87,6 +87,8 @@ namespace NINA.ViewModel {
                         await changeFilter;
                     }
                     FilterWheelInfo.SelectedFilter = filter;
+                } else {
+                    Disconnect();
                 }
             } finally {
                 BroadcastFilterWheelInfo();
@@ -211,7 +213,7 @@ namespace NINA.ViewModel {
                 _changeFilterCancellationSource?.Cancel();
                 FW.Disconnect();
                 FW = null;
-                FilterWheelInfo.Connected = false;
+                FilterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
                 RaisePropertyChanged(nameof(FW));
                 BroadcastFilterWheelInfo();
             }
@@ -226,9 +228,7 @@ namespace NINA.ViewModel {
         public FilterWheelInfo FilterWheelInfo {
             get {
                 if (filterWheelInfo == null) {
-                    filterWheelInfo = new FilterWheelInfo {
-                        Connected = false
-                    };
+                    filterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
                 }
                 return filterWheelInfo;
             }

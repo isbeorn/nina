@@ -191,9 +191,7 @@ namespace NINA.ViewModel {
         public FocuserInfo FocuserInfo {
             get {
                 if (focuserInfo == null) {
-                    focuserInfo = new FocuserInfo {
-                        Connected = false
-                    };
+                    focuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
                 }
                 return focuserInfo;
             }
@@ -227,10 +225,11 @@ namespace NINA.ViewModel {
         }
 
         public void Disconnect() {
-            FocuserInfo.Connected = false;
             updateTimer?.Stop();
             Focuser?.Disconnect();
             Focuser = null;
+            FocuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
+            BroadcastFocuserInfo();
             RaisePropertyChanged(nameof(Focuser));
         }
 
