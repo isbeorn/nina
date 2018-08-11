@@ -39,7 +39,7 @@
                         Grid.Column="1"
                         MinHeight="40"
                         DisplayMemberPath="Name"
-                        IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
+                        IsEnabled="{Binding FocuserInfo.Connected, Converter={StaticResource InverseBooleanConverter}}"
                         ItemsSource="{Binding FocuserChooserVM.Devices}"
                         SelectedItem="{Binding FocuserChooserVM.SelectedDevice}"
                         SelectedValuePath="Name" />
@@ -92,14 +92,14 @@
                             CancelButtonImage="{StaticResource CancelSVG}"
                             CancelCommand="{Binding CancelChooseFocuserCommand}"
                             Command="{Binding ChooseFocuserCommand}"
-                            IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
+                            IsEnabled="{Binding FocuserInfo.Connected, Converter={StaticResource InverseBooleanConverter}}"
                             ToolTip="{ns:Loc LblConnect}"
-                            Visibility="{Binding Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                            Visibility="{Binding FocuserInfo.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
                         <Grid Visibility="{Binding Focuser, Converter={StaticResource NullToVisibilityConverter}}">
                             <Button
                                 Command="{Binding DisconnectCommand}"
-                                IsEnabled="{Binding Connected}"
-                                Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}">
+                                IsEnabled="{Binding FocuserInfo.Connected}"
+                                Visibility="{Binding FocuserInfo.Connected, Converter={StaticResource VisibilityConverter}}">
                                 <Button.ToolTip>
                                     <ToolTip ToolTipService.ShowOnDisabled="False">
                                         <TextBlock Text="{ns:Loc LblDisconnect}" />
@@ -130,7 +130,7 @@
                             <TextBlock Text="{ns:Loc LblName}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding Focuser.Name}"
+                                Text="{Binding FocuserInfo.Name}"
                                 TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
                     </UniformGrid>
@@ -179,7 +179,7 @@
                             <TextBlock Text="{ns:Loc LblIsMoving}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding IsMoving}"
+                                Text="{Binding FocuserInfo.IsMoving}"
                                 TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
                     </UniformGrid>
@@ -221,7 +221,7 @@
                             <TextBlock Text="{ns:Loc LblPosition}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding Position}"
+                                Text="{Binding FocuserInfo.Position}"
                                 TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
                     </UniformGrid>
@@ -241,7 +241,9 @@
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
-                                IsChecked="{Binding TempComp}" />
+                                Command="{Binding ToggleTempCompCommand}"
+                                CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                IsChecked="{Binding FocuserInfo.TempComp}" />
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
@@ -254,7 +256,7 @@
                             <TextBlock Text="{ns:Loc LblTemperature}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding Temperature, StringFormat=\{0:#.00\}}"
+                                Text="{Binding FocuserInfo.Temperature, StringFormat=\{0:#.00\}}"
                                 TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
                     </UniformGrid>

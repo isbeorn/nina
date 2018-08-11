@@ -147,7 +147,7 @@
                                     <MultiBinding Converter="{StaticResource InverseMultiBooleanANDConverter}" FallbackValue="True">
                                         <Binding Path="CameraVM.CameraInfo.Connected" Source="{StaticResource AppVM}" />
                                         <Binding Path="FilterWheelVM.FW.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="FocuserVM.Connected" Source="{StaticResource AppVM}" />
+                                        <Binding Path="FocuserVM.FocuserInfo.Connected" Source="{StaticResource AppVM}" />
                                         <Binding Path="TelescopeVM.TelescopeInfo.Connected" Source="{StaticResource AppVM}" />
                                         <Binding Path="GuiderVM.Guider.Connected" Source="{StaticResource AppVM}" />
                                     </MultiBinding>

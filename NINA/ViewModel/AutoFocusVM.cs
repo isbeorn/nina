@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
+using NINA.Model.MyFocuser;
 using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Notification;
@@ -15,15 +16,18 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    internal class AutoFocusVM : DockableVM, ICameraConsumer {
+    internal class AutoFocusVM : DockableVM, ICameraConsumer, IFocuserConsumer {
 
-        public AutoFocusVM(IProfileService profileService, CameraMediator cameraMediator) : base(profileService) {
+        public AutoFocusVM(IProfileService profileService, CameraMediator cameraMediator, FocuserMediator focuserMediator) : base(profileService) {
             Title = "LblAutoFocus";
             ContentId = nameof(AutoFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["AutoFocusSVG"];
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
+
+            this.focuserMediator = focuserMediator;
+            this.focuserMediator.RegisterConsumer(this);
 
             FocusPoints = new AsyncObservableCollection<DataPoint>();
 
@@ -36,12 +40,9 @@ namespace NINA.ViewModel {
                             return await StartAutoFocus(null, _autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
                         }
                     ),
-                (p) => { return _focuserConnected && cameraInfo.Connected; }
+                (p) => { return focuserInfo?.Connected == true && cameraInfo?.Connected == true; }
             );
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
-
-            Mediator.Instance.Register((object o) => _focuserConnected = (bool)o, MediatorMessages.FocuserConnectedChanged);
-            Mediator.Instance.Register((object o) => _temperature = (double)o, MediatorMessages.FocuserTemperatureChanged);
 
             Mediator.Instance.RegisterAsyncRequest(
                 new StartAutoFocusMessageHandle(async (StartAutoFocusMessage msg) => {
@@ -106,14 +107,12 @@ namespace NINA.ViewModel {
         }
 
         private int _focusPosition;
-        private bool _focuserConnected;
-        private double _temperature;
 
         private async Task GetFocusPoints(FilterInfo filter, int nrOfSteps, IProgress<ApplicationStatus> progress, CancellationToken token, int offset = 0) {
             var stepSize = profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize;
             if (offset != 0) {
                 //Move to initial position
-                _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset * stepSize, Absolute = false, Token = token });
+                _focusPosition = await focuserMediator.MoveFocuserRelative(offset * stepSize);
             }
 
             var comparer = new FocusPointComparer();
@@ -129,7 +128,7 @@ namespace NINA.ViewModel {
                 FocusPoints.AddSorted(new DataPoint(_focusPosition, hfr), comparer);
                 if (i < nrOfSteps - 1) {
                     Logger.Trace("Moving focuser to next autofocus position");
-                    _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = -stepSize, Absolute = false, Token = token });
+                    _focusPosition = await focuserMediator.MoveFocuserRelative(-stepSize);
                 }
 
                 token.ThrowIfCancellationRequested();
@@ -161,7 +160,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task ValidateCalculatedFocusPosition(DataPoint focusPoint, FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            _focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = (int)focusPoint.X, Absolute = true, Token = token });
+            _focusPosition = await focuserMediator.MoveFocuser((int)focusPoint.X);
 
             var iarr = await TakeExposure(filter, token, progress);
 
@@ -181,7 +180,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (!(_focuserConnected && cameraInfo.Connected)) {
+            if (!(focuserInfo.Connected && cameraInfo.Connected)) {
                 Notification.ShowError(Locale.Loc.Instance["LblAutoFocusGearNotConnected"]);
                 return false;
             }
@@ -244,7 +243,7 @@ namespace NINA.ViewModel {
 
                 progress.Report(new ApplicationStatus() { Status = string.Format("Ideal Position: {0}, Theoretical HFR: {1}", p.X, Math.Round(p.Y, 2)) });
 
-                LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = p, Temperature = _temperature, Timestamp = DateTime.Now };
+                LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = p, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
 
                 //Todo when data is too noisy for trend lines find something else
 
@@ -264,6 +263,8 @@ namespace NINA.ViewModel {
 
         private AutoFocusPoint _lastAutoFocusPoint;
         private CameraInfo cameraInfo;
+        private FocuserInfo focuserInfo;
+        private FocuserMediator focuserMediator;
 
         public AutoFocusPoint LastAutoFocusPoint {
             get {
@@ -281,6 +282,10 @@ namespace NINA.ViewModel {
 
         public void UpdateCameraInfo(CameraInfo cameraInfo) {
             this.cameraInfo = cameraInfo;
+        }
+
+        public void UpdateFocuserInfo(FocuserInfo focuserInfo) {
+            this.focuserInfo = focuserInfo;
         }
 
         public ICommand StartAutoFocusCommand { get; private set; }

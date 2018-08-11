@@ -105,7 +105,7 @@
                                             Data="{StaticResource PowerSVG}"
                                             Stretch="Uniform"
                                             Style="{StaticResource TabItemPath}"
-                                            Visibility="{Binding FocuserVM.Focuser.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                            Visibility="{Binding FocuserVM.FocuserInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </Grid>
                                 </Grid>
                             </UniformGrid>

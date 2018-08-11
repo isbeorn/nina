@@ -18,6 +18,7 @@ namespace NINA.ViewModel {
         public ApplicationVM(IProfileService profileService) : base(profileService) {
             cameraMediator = new CameraMediator();
             telescopeMediator = new TelescopeMediator();
+            focuserMediator = new FocuserMediator();
 
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
@@ -32,7 +33,7 @@ namespace NINA.ViewModel {
                         var cam = cameraMediator.Connect();
                         var fw = Mediator.Instance.RequestAsync(new ConnectFilterWheelMessage());
                         var telescope = telescopeMediator.Connect();
-                        var focuser = Mediator.Instance.RequestAsync(new ConnectFocuserMessage());
+                        var focuser = focuserMediator.Connect();
                         await Task.WhenAll(cam, fw, telescope, focuser);
                         return true;
                     });
@@ -56,6 +57,7 @@ namespace NINA.ViewModel {
 
         private CameraMediator cameraMediator;
         private TelescopeMediator telescopeMediator;
+        private FocuserMediator focuserMediator;
 
         private void LoadProfile(object obj) {
             if (profileService.Profiles.ProfileList.Count > 1) {
@@ -255,7 +257,7 @@ namespace NINA.ViewModel {
         public FilterWheelVM FilterWheelVM {
             get {
                 if (_filterWheelVM == null) {
-                    _filterWheelVM = new FilterWheelVM(profileService);
+                    _filterWheelVM = new FilterWheelVM(profileService, focuserMediator);
                 }
                 return _filterWheelVM;
             }
@@ -270,7 +272,7 @@ namespace NINA.ViewModel {
         public FocuserVM FocuserVM {
             get {
                 if (_focuserVM == null) {
-                    _focuserVM = new FocuserVM(profileService);
+                    _focuserVM = new FocuserVM(profileService, focuserMediator);
                 }
                 return _focuserVM;
             }
@@ -300,7 +302,7 @@ namespace NINA.ViewModel {
         public SequenceVM SeqVM {
             get {
                 if (_seqVM == null) {
-                    _seqVM = new SequenceVM(profileService, telescopeMediator);
+                    _seqVM = new SequenceVM(profileService, telescopeMediator, focuserMediator);
                 }
                 return _seqVM;
             }
@@ -405,7 +407,7 @@ namespace NINA.ViewModel {
         public AutoFocusVM AutoFocusVM {
             get {
                 if (_autoFocusVM == null) {
-                    _autoFocusVM = new AutoFocusVM(profileService, cameraMediator);
+                    _autoFocusVM = new AutoFocusVM(profileService, cameraMediator, focuserMediator);
                 }
                 return _autoFocusVM;
             }

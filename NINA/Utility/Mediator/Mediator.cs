@@ -188,8 +188,6 @@ namespace NINA.Utility.Mediator {
         ChangeDetectStars = 15,
         LocaleChanged = 18,
         LocationChanged = 19,
-        FocuserTemperatureChanged = 26,
-        FocuserConnectedChanged = 28,
         ProfileChanged = 31,
     };
 }

@@ -14,9 +14,11 @@ namespace NINA.ViewModel {
 
     internal class FilterWheelVM : DockableVM {
 
-        public FilterWheelVM(IProfileService profileService) : base(profileService) {
+        public FilterWheelVM(IProfileService profileService, FocuserMediator focuserMediator) : base(profileService) {
             Title = "LblFilterWheel";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FWSVG"];
+
+            this.focuserMediator = focuserMediator;
 
             ContentId = nameof(FilterWheelVM);
             ChooseFWCommand = new AsyncCommand<bool>(() => ChooseFW());
@@ -100,7 +102,7 @@ namespace NINA.ViewModel {
                         if (profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets) {
                             if (prevFilter != null) {
                                 int offset = filter.FocusOffset - prevFilter.FocusOffset;
-                                changeFocus = Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset, Absolute = false, Token = token });
+                                changeFocus = focuserMediator.MoveFocuserRelative(offset);
                             }
                         }
 
@@ -250,6 +252,7 @@ namespace NINA.ViewModel {
         }
 
         private FilterWheelChooserVM _filterWheelChooserVM;
+        private FocuserMediator focuserMediator;
 
         public FilterWheelChooserVM FilterWheelChooserVM {
             get {

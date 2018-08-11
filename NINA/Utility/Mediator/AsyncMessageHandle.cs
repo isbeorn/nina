@@ -98,15 +98,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(SetFramingAssistantCoordinatesMessage).Name; } }
     }
 
-    internal class MoveFocuserMessageHandle : AsyncMessageHandle<int> {
-
-        public MoveFocuserMessageHandle(Func<MoveFocuserMessage, Task<int>> callback) {
-            Callback = (f) => callback((MoveFocuserMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(MoveFocuserMessage).Name; } }
-    }
-
     internal class PlateSolveMessageHandle : AsyncMessageHandle<PlateSolveResult> {
 
         public PlateSolveMessageHandle(Func<PlateSolveMessage, Task<PlateSolveResult>> callback) {
@@ -141,15 +132,6 @@ namespace NINA.Utility.Mediator {
         }
 
         public override string MessageType { get { return typeof(ConnectFilterWheelMessage).Name; } }
-    }
-
-    internal class ConnectFocuserMessageHandle : AsyncMessageHandle<bool> {
-
-        public ConnectFocuserMessageHandle(Func<ConnectFocuserMessage, Task<bool>> callback) {
-            Callback = (f) => callback((ConnectFocuserMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(ConnectFocuserMessage).Name; } }
     }
 
     internal class CaptureImageMessageHandle : AsyncMessageHandle<ImageArray> {
@@ -239,11 +221,6 @@ namespace NINA.Utility.Mediator {
         public DeepSkyObject DSO { get; set; }
     }
 
-    internal class MoveFocuserMessage : AsyncMediatorMessage<int> {
-        public int Position { get; set; }
-        public bool Absolute { get; set; } = true;
-    }
-
     internal class PlateSolveMessage : AsyncMediatorMessage<PlateSolveResult> {
         public CaptureSequence Sequence { get; set; }
         public bool SyncReslewRepeat { get; set; }
@@ -261,8 +238,6 @@ namespace NINA.Utility.Mediator {
     }
 
     internal class ConnectFilterWheelMessage : AsyncMediatorMessage<bool> { }
-
-    internal class ConnectFocuserMessage : AsyncMediatorMessage<bool> { }
 
     internal class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {
         public CaptureSequence Sequence { get; set; }

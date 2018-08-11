@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyFocuser;
 using NINA.Utility;
 using NINA.Utility.Exceptions;
 using NINA.Utility.Mediator;
@@ -18,9 +19,9 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    internal class SequenceVM : DockableVM {
+    internal class SequenceVM : DockableVM, IFocuserConsumer {
 
-        public SequenceVM(IProfileService profileService, TelescopeMediator telescopeMediator) : base(profileService) {
+        public SequenceVM(IProfileService profileService, TelescopeMediator telescopeMediator, FocuserMediator focuserMediator) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
             this.profileService = profileService;
             Title = "LblSequence";
@@ -184,8 +185,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private double _currentTemperature = double.NaN;
-
         private async Task<bool> StartSequence(IProgress<ApplicationStatus> progress) {
             try {
                 if (Sequence.Count <= 0) {
@@ -257,7 +256,7 @@ namespace NINA.ViewModel {
                     var actualFilter = Mediator.Instance.Request(new GetCurrentFilterInfoMessage());
                     short prevFilterPosition = actualFilter?.Position ?? -1;
                     var lastAutoFocusTime = DateTime.UtcNow;
-                    var lastAutoFocusTemperature = _currentTemperature;
+                    var lastAutoFocusTemperature = focuserInfo.Temperature;
                     var exposureCount = 0;
                     while ((seq = Sequence.Next()) != null) {
                         exposureCount++;
@@ -271,7 +270,7 @@ namespace NINA.ViewModel {
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocus"] });
                             await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
                             lastAutoFocusTime = DateTime.UtcNow;
-                            lastAutoFocusTemperature = _currentTemperature;
+                            lastAutoFocusTemperature = focuserInfo.Temperature;
                             progress.Report(new ApplicationStatus() { Status = string.Empty });
                         }
 
@@ -336,7 +335,7 @@ namespace NINA.ViewModel {
                 return true;
             }
 
-            if (Sequence.AutoFocusAfterTemperatureChange && !double.IsNaN(_currentTemperature) && Math.Abs(lastAutoFocusTemperature - _currentTemperature) > Sequence.AutoFocusAfterTemperatureChangeAmount) {
+            if (Sequence.AutoFocusAfterTemperatureChange && !double.IsNaN(focuserInfo.Temperature) && Math.Abs(lastAutoFocusTemperature - focuserInfo.Temperature) > Sequence.AutoFocusAfterTemperatureChangeAmount) {
                 /* Trigger autofocus after temperature change*/
                 return true;
             }
@@ -420,8 +419,6 @@ namespace NINA.ViewModel {
                 })
             );
 
-            Mediator.Instance.Register((object o) => _currentTemperature = (double)o, MediatorMessages.FocuserTemperatureChanged);
-
             Mediator.Instance.Register((object o) => {
                 var dso = new DeepSkyObject(Sequence.DSO.Name, Sequence.DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
                 dso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
@@ -478,6 +475,7 @@ namespace NINA.ViewModel {
 
         private ObservableCollection<string> _imageTypes;
         private TelescopeMediator telescopeMediator;
+        private FocuserInfo focuserInfo;
 
         public ObservableCollection<string> ImageTypes {
             get {
@@ -513,6 +511,10 @@ namespace NINA.ViewModel {
                     SelectedSequenceIdx = Sequence.Count - 1;
                 }
             }
+        }
+
+        public void UpdateFocuserInfo(FocuserInfo focuserInfo) {
+            this.focuserInfo = focuserInfo;
         }
 
         public ICommand AddSequenceCommand { get; private set; }
