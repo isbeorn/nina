@@ -1,8 +1,10 @@
-﻿using NINA.Model.MyFilterWheel;
+﻿using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
@@ -51,26 +53,10 @@ namespace NINA.ViewModel {
                 ImagePatterns = CreateImagePatternList();
             };
 
-            /*Mediator.Instance.Register((object o) => {
-                CameraPixelSize = (double)o;  // todo options mediator?
-            }, MediatorMessages.CameraPixelSizeChanged);*/
-
             Mediator.Instance.RegisterRequest(new SetProfileByIdMessageHandle((SetProfileByIdMessage msg) => {
                 SelectedProfile = profileService.Profiles.ProfileList.Single(p => p.Id == msg.Id);
                 SelectProfile(null);
                 return true;
-            }));
-
-            Mediator.Instance.RegisterRequest(new GetDoublePropertyFromClassMessageHandle(typeof(OptionsVM), (GetDoublePropertyFromClassMessage msg) => {
-                try {
-                    object value = GetType().GetProperty(msg.Property).GetValue(this);
-                    if (value.GetType() == typeof(double))
-                        return (double)value;
-                } catch {
-                    return -1;
-                }
-
-                return -1;
             }));
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
@@ -1299,6 +1285,7 @@ namespace NINA.ViewModel {
 
         private IProfile _selectedProfile;
         private FilterWheelMediator filterWheelMediator;
+        private CameraMediator cameraMediator;
 
         public IProfile SelectedProfile {
             get {

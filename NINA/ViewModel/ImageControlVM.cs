@@ -656,6 +656,8 @@ namespace NINA.ViewModel {
                 } else {
                     completefilename = SaveTiff(completefilename, TiffCompressOption.None);
                 }
+
+                // todo: turn around dependency: Change this to imagecontrol broadcasting the image.
                 await Mediator.Instance.RequestAsync(
                     new AddThumbnailMessage() {
                         PathToImage = new Uri(completefilename),

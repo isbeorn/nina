@@ -63,15 +63,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(SetProfileByIdMessage).Name; } }
     }
 
-    internal class GetDoublePropertyFromClassMessageHandle : MessageHandle<double> {
-
-        public GetDoublePropertyFromClassMessageHandle(Type classType, Func<GetDoublePropertyFromClassMessage, double> callback) : base(classType) {
-            Callback = (f) => callback((GetDoublePropertyFromClassMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(GetDoublePropertyFromClassMessage).Name; } }
-    }
-
     /* Message definition */
 
     internal abstract class MediatorMessage<TMessageResult> {
@@ -95,9 +86,5 @@ namespace NINA.Utility.Mediator {
 
     internal class SetProfileByIdMessage : MediatorMessage<bool> {
         public Guid Id { get; set; }
-    }
-
-    internal class GetDoublePropertyFromClassMessage : MediatorMessage<double> {
-        public string Property { get; set; }
     }
 }

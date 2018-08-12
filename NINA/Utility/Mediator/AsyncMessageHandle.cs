@@ -80,15 +80,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(CaptureImageMessage).Name; } }
     }
 
-    internal class CalculateHFRMessageHandle : AsyncMessageHandle<double> {
-
-        public CalculateHFRMessageHandle(Func<CalculateHFRMessage, Task<double>> callback) {
-            Callback = (f) => callback((CalculateHFRMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(CalculateHFRMessage).Name; } }
-    }
-
     internal class CaptureAndPrepareImageMessageHandle : AsyncMessageHandle<BitmapSource> {
 
         public CaptureAndPrepareImageMessageHandle(Func<CaptureAndPrepareImageMessage, Task<BitmapSource>> callback) {
@@ -160,11 +151,6 @@ namespace NINA.Utility.Mediator {
 
     internal class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {
         public CaptureSequence Sequence { get; set; }
-    }
-
-    //todo
-    internal class CalculateHFRMessage : AsyncMediatorMessage<double> {
-        public ImageArray ImageArray { get; set; }
     }
 
     internal class CaptureAndPrepareImageMessage : AsyncMediatorMessage<BitmapSource> {
