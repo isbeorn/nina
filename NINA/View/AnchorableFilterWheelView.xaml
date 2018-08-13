@@ -55,7 +55,10 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button Margin="10" Command="{Binding ChangeFilterCommand}">
+                <Button
+                    Height="35"
+                    Margin="10"
+                    Command="{Binding ChangeFilterCommand}">
                     <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblChange}" />
                 </Button>
             </UniformGrid>
