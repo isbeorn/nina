@@ -54,8 +54,6 @@ namespace NINA.ViewModel {
             RegisterMediatorMessages();
 
             InitAvalonDockLayout();
-
-            MeridianFlipVM = new MeridianFlipVM(profileService, telescopeMediator, guiderMediator);
         }
 
         private CameraMediator cameraMediator;
@@ -211,18 +209,6 @@ namespace NINA.ViewModel {
             }
             set {
                 _dockManagerVM = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private MeridianFlipVM _meridianFlipVM;
-
-        public MeridianFlipVM MeridianFlipVM {
-            get {
-                return _meridianFlipVM;
-            }
-            set {
-                _meridianFlipVM = value;
                 RaisePropertyChanged();
             }
         }

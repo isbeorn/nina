@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
+using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Exceptions;
 using NINA.Utility.Mediator;
@@ -21,7 +22,7 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    internal class SequenceVM : DockableVM, IFocuserConsumer, IFilterWheelConsumer {
+    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer {
 
         public SequenceVM(
                 IProfileService profileService,
@@ -31,6 +32,7 @@ namespace NINA.ViewModel {
                 GuiderMediator guiderMediator
         ) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
+            this.telescopeMediator.RegisterConsumer(this);
 
             this.filterWheelMediator = filterWheelMediator;
             this.filterWheelMediator.RegisterConsumer(this);
@@ -59,7 +61,11 @@ namespace NINA.ViewModel {
                 dso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                 Sequence.SetSequenceTarget(dso);
             };
+
+            meridianFlipVM = new MeridianFlipVM(profileService, telescopeMediator, guiderMediator);
         }
+
+        private MeridianFlipVM meridianFlipVM;
 
         private void LoadSequence(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
@@ -160,12 +166,15 @@ namespace NINA.ViewModel {
             await Task.Run(() => {
                 var s = Stopwatch.StartNew();
                 mutex.WaitOne();
-                _actualDownloadTimes.Add(t);
+                try {
+                    _actualDownloadTimes.Add(t);
 
-                double doubleAverageTicks = _actualDownloadTimes.Average(timeSpan => timeSpan.Ticks);
-                long longAverageTicks = Convert.ToInt64(doubleAverageTicks);
-                EstimatedDownloadTime = new TimeSpan(longAverageTicks);
-                mutex.ReleaseMutex();
+                    double doubleAverageTicks = _actualDownloadTimes.Average(timeSpan => timeSpan.Ticks);
+                    long longAverageTicks = Convert.ToInt64(doubleAverageTicks);
+                    EstimatedDownloadTime = new TimeSpan(longAverageTicks);
+                } finally {
+                    mutex.ReleaseMutex();
+                }
             });
         }
 
@@ -271,7 +280,7 @@ namespace NINA.ViewModel {
                     Sequence.IsRunning = true;
 
                     CaptureSequence seq;
-                    var actualFilter = filterWheelInfo.SelectedFilter;
+                    var actualFilter = filterWheelInfo?.SelectedFilter;
                     short prevFilterPosition = actualFilter?.Position ?? -1;
                     var lastAutoFocusTime = DateTime.UtcNow;
                     var lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
@@ -318,7 +327,7 @@ namespace NINA.ViewModel {
                             Sequence.IsRunning = true;
                         }
 
-                        actualFilter = filterWheelInfo.SelectedFilter;
+                        actualFilter = filterWheelInfo?.SelectedFilter;
                         prevFilterPosition = actualFilter?.Position ?? -1;
                     }
                 } catch (OperationCanceledException) {
@@ -377,7 +386,9 @@ namespace NINA.ViewModel {
         /// <returns></returns>
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCheckMeridianFlip"] });
-            await Mediator.Instance.RequestAsync(new CheckMeridianFlipMessage() { Sequence = seq, Token = token });
+            if (telescopeInfo != null && MeridianFlipVM.ShouldFlip(profileService, seq.ExposureTime, telescopeInfo)) {
+                await new MeridianFlipVM(profileService, telescopeMediator, guiderMediator).MeridianFlip(seq, telescopeInfo);
+            }
             progress.Report(new ApplicationStatus() { Status = string.Empty });
         }
 
@@ -491,6 +502,7 @@ namespace NINA.ViewModel {
         private FocuserInfo focuserInfo;
         private FilterWheelInfo filterWheelInfo;
         private GuiderMediator guiderMediator;
+        private TelescopeInfo telescopeInfo;
 
         public ObservableCollection<string> ImageTypes {
             get {
@@ -534,6 +546,10 @@ namespace NINA.ViewModel {
 
         public void UpdateFilterWheelInfo(FilterWheelInfo filterWheelInfo) {
             this.filterWheelInfo = filterWheelInfo;
+        }
+
+        public void UpdateTelescopeInfo(TelescopeInfo telescopeInfo) {
+            this.telescopeInfo = telescopeInfo;
         }
 
         public ICommand AddSequenceCommand { get; private set; }

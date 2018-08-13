@@ -26,15 +26,6 @@ namespace NINA.Utility.Mediator {
 
     /* Specific handler */
 
-    internal class CheckMeridianFlipMessageHandle : AsyncMessageHandle<bool> {
-
-        public CheckMeridianFlipMessageHandle(Func<CheckMeridianFlipMessage, Task<bool>> callback) {
-            Callback = (f) => callback((CheckMeridianFlipMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(CheckMeridianFlipMessage).Name; } }
-    }
-
     internal class SetSequenceCoordinatesMessageHandle : AsyncMessageHandle<bool> {
 
         public SetSequenceCoordinatesMessageHandle(Func<SetSequenceCoordinatesMessage, Task<bool>> callback) {
@@ -124,10 +115,6 @@ namespace NINA.Utility.Mediator {
     }
 
     /* Specific message */
-
-    internal class CheckMeridianFlipMessage : AsyncMediatorMessage<bool> {
-        public CaptureSequence Sequence { get; set; }
-    }
 
     internal class SetSequenceCoordinatesMessage : AsyncMediatorMessage<bool> {
         public DeepSkyObject DSO { get; set; }

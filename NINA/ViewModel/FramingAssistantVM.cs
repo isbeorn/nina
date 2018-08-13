@@ -659,14 +659,15 @@ namespace NINA.ViewModel {
         }
 
         public void UpdateCameraInfo(CameraInfo cameraInfo) {
-            if (cameraInfo.XSize > 0) {
+            if (this.CameraWidth != cameraInfo.XSize && cameraInfo.XSize > 0) {
                 this.CameraWidth = cameraInfo.XSize;
             }
-            if (cameraInfo.YSize > 0) {
+            if (this.CameraHeight != cameraInfo.YSize && cameraInfo.YSize > 0) {
                 this.CameraHeight = cameraInfo.YSize;
             }
-
-            CameraPixelSize = cameraInfo.PixelSize;
+            if (this.CameraPixelSize != cameraInfo.PixelSize) {
+                CameraPixelSize = cameraInfo.PixelSize;
+            }
         }
 
         public ICommand DragStartCommand { get; private set; }
