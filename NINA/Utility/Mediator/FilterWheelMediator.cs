@@ -14,20 +14,20 @@ namespace NINA.Utility.Mediator {
     internal class FilterWheelMediator : DeviceMediator<IFilterWheelVM, IFilterWheelConsumer, FilterWheelInfo> {
 
         internal Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null) {
-            return handlerVM.ChangeFilter(inputFilter, token, progress);
+            return handler.ChangeFilter(inputFilter, token, progress);
         }
 
         internal ICollection<FilterInfo> GetAllFilters() {
-            return handlerVM.GetAllFilters();
+            return handler.GetAllFilters();
         }
 
         /// <summary>
         /// Updates all consumers with the current filterwheel info
         /// </summary>
         /// <param name="filterWheelInfo"></param>
-        override internal void BroadcastInfo(FilterWheelInfo filterWheelInfo) {
-            foreach (IFilterWheelConsumer vm in vms) {
-                vm.UpdateFilterWheelInfo(filterWheelInfo);
+        override internal void Broadcast(FilterWheelInfo filterWheelInfo) {
+            foreach (IFilterWheelConsumer consumer in consumers) {
+                consumer.UpdateFilterWheelInfo(filterWheelInfo);
             }
         }
     }

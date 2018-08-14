@@ -21,7 +21,7 @@ namespace NINA.ViewModel {
         public TelescopeVM(IProfileService profileService, TelescopeMediator telescopeMediator) : base(profileService) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
-            this.telescopeMediator.RegisterVM(this);
+            this.telescopeMediator.RegisterHandler(this);
             Title = "LblTelescope";
             ContentId = nameof(TelescopeVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
@@ -194,7 +194,7 @@ namespace NINA.ViewModel {
         }
 
         private void BroadcastTelescopeInfo() {
-            telescopeMediator.BroadcastInfo(TelescopeInfo);
+            telescopeMediator.Broadcast(TelescopeInfo);
         }
 
         private TelescopeInfo telescopeInfo;

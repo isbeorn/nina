@@ -28,7 +28,7 @@ namespace NINA.ViewModel {
             _cameraChooserVM = new CameraChooserVM(profileService, telescopeMediator);
 
             this.cameraMediator = cameraMediator;
-            this.cameraMediator.RegisterVM(this);
+            this.cameraMediator.RegisterHandler(this);
 
             ChooseCameraCommand = new AsyncCommand<bool>(ChooseCamera);
             CancelConnectCameraCommand = new RelayCommand(CancelConnectCamera);
@@ -340,7 +340,7 @@ namespace NINA.ViewModel {
         }
 
         private void BroadcastCameraInfo() {
-            cameraMediator.BroadcastInfo(CameraInfo);
+            cameraMediator.Broadcast(CameraInfo);
         }
 
         private void CancelConnectCamera(object o) {

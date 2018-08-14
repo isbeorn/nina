@@ -20,7 +20,7 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
 
             this.focuserMediator = focuserMediator;
-            this.focuserMediator.RegisterVM(this);
+            this.focuserMediator.RegisterHandler(this);
 
             ContentId = nameof(FocuserVM);
             ChooseFocuserCommand = new AsyncCommand<bool>(() => ChooseFocuser());
@@ -204,7 +204,7 @@ namespace NINA.ViewModel {
         }
 
         private void BroadcastFocuserInfo() {
-            this.focuserMediator.BroadcastInfo(FocuserInfo);
+            this.focuserMediator.Broadcast(FocuserInfo);
         }
 
         private int _targetPosition;

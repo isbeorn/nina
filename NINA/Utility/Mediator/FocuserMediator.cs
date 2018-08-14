@@ -13,20 +13,20 @@ namespace NINA.Utility.Mediator {
     internal class FocuserMediator : DeviceMediator<IFocuserVM, IFocuserConsumer, FocuserInfo> {
 
         internal Task<int> MoveFocuser(int position) {
-            return handlerVM.MoveFocuser(position);
+            return handler.MoveFocuser(position);
         }
 
         internal Task<int> MoveFocuserRelative(int position) {
-            return handlerVM.MoveFocuserRelative(position);
+            return handler.MoveFocuserRelative(position);
         }
 
         /// <summary>
         /// Updates all consumers with the current focuser info
         /// </summary>
         /// <param name="focuserInfo"></param>
-        override internal void BroadcastInfo(FocuserInfo focuserInfo) {
-            foreach (IFocuserConsumer vm in vms) {
-                vm.UpdateFocuserInfo(focuserInfo);
+        override internal void Broadcast(FocuserInfo focuserInfo) {
+            foreach (IFocuserConsumer consumer in consumers) {
+                consumer.UpdateFocuserInfo(focuserInfo);
             }
         }
     }

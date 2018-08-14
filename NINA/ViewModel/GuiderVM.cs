@@ -24,7 +24,7 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
 
             this.guiderMediator = guiderMediator;
-            this.guiderMediator.RegisterVM(this);
+            this.guiderMediator.RegisterHandler(this);
 
             ConnectGuiderCommand = new AsyncCommand<bool>(
                 async () =>
@@ -153,7 +153,7 @@ namespace NINA.ViewModel {
         }
 
         private void BroadcastGuiderInfo() {
-            this.guiderMediator.BroadcastInfo(GuiderInfo);
+            this.guiderMediator.Broadcast(GuiderInfo);
         }
 
         private void Guider_PropertyChanged(object sender, PropertyChangedEventArgs e) {

@@ -14,40 +14,40 @@ namespace NINA.Utility.Mediator {
     internal class GuiderMediator : DeviceMediator<IGuiderVM, IGuiderConsumer, GuiderInfo> {
 
         public Task<bool> Dither(CancellationToken token) {
-            return handlerVM.Dither(token);
+            return handler.Dither(token);
         }
 
         public Guid StartRMSRecording() {
-            return handlerVM.StartRMSRecording();
+            return handler.StartRMSRecording();
         }
 
         public RMS StopRMSRecording(Guid handle) {
-            return handlerVM.StopRMSRecording(handle);
+            return handler.StopRMSRecording(handle);
         }
 
         public Task<bool> StartGuiding(CancellationToken token) {
-            return handlerVM.StartGuiding(token);
+            return handler.StartGuiding(token);
         }
 
         public Task<bool> StopGuiding(CancellationToken token) {
-            return handlerVM.StopGuiding(token);
+            return handler.StopGuiding(token);
         }
 
         public Task<bool> ResumeGuiding(CancellationToken token) {
-            return handlerVM.ResumeGuiding(token);
+            return handler.ResumeGuiding(token);
         }
 
         public Task<bool> PauseGuiding(CancellationToken token) {
-            return handlerVM.PauseGuiding(token);
+            return handler.PauseGuiding(token);
         }
 
         public Task<bool> AutoSelectGuideStar(CancellationToken token) {
-            return handlerVM.AutoSelectGuideStar(token);
+            return handler.AutoSelectGuideStar(token);
         }
 
-        internal override void BroadcastInfo(GuiderInfo deviceInfo) {
-            foreach (IGuiderConsumer vm in vms) {
-                vm.UpdateGuiderInfo(deviceInfo);
+        internal override void Broadcast(GuiderInfo deviceInfo) {
+            foreach (IGuiderConsumer consumer in consumers) {
+                consumer.UpdateGuiderInfo(deviceInfo);
             }
         }
     }

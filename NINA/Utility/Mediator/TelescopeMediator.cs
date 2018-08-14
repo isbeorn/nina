@@ -14,36 +14,36 @@ namespace NINA.Utility.Mediator {
     internal class TelescopeMediator : DeviceMediator<ITelescopeVM, ITelescopeConsumer, TelescopeInfo> {
 
         internal void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate) {
-            handlerVM.MoveAxis(axis, rate);
+            handler.MoveAxis(axis, rate);
         }
 
         internal bool Sync(double ra, double dec) {
-            return handlerVM.Sync(ra, dec);
+            return handler.Sync(ra, dec);
         }
 
         internal Task<bool> SlewToCoordinatesAsync(Coordinates coords) {
-            return handlerVM.SlewToCoordinatesAsync(coords);
+            return handler.SlewToCoordinatesAsync(coords);
         }
 
         internal bool MeridianFlip(Coordinates targetCoordinates) {
-            return handlerVM.MeridianFlip(targetCoordinates);
+            return handler.MeridianFlip(targetCoordinates);
         }
 
         internal bool SetTracking(bool tracking) {
-            return handlerVM.SetTracking(tracking);
+            return handler.SetTracking(tracking);
         }
 
         internal bool SendToSnapPort(bool start) {
-            return handlerVM.SendToSnapPort(start);
+            return handler.SendToSnapPort(start);
         }
 
         /// <summary>
         /// Updates all consumers with the current telescope info
         /// </summary>
         /// <param name="telescopeInfo"></param>
-        override internal void BroadcastInfo(TelescopeInfo telescopeInfo) {
-            foreach (ITelescopeConsumer vm in vms) {
-                vm.UpdateTelescopeInfo(telescopeInfo);
+        override internal void Broadcast(TelescopeInfo telescopeInfo) {
+            foreach (ITelescopeConsumer consumer in consumers) {
+                consumer.UpdateTelescopeInfo(telescopeInfo);
             }
         }
     }

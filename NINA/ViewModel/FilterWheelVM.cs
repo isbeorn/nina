@@ -21,7 +21,7 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FWSVG"];
 
             this.filterWheelMediator = filterWheelMediator;
-            this.filterWheelMediator.RegisterVM(this);
+            this.filterWheelMediator.RegisterHandler(this);
 
             this.focuserMediator = focuserMediator;
 
@@ -237,7 +237,7 @@ namespace NINA.ViewModel {
         }
 
         private void BroadcastFilterWheelInfo() {
-            this.filterWheelMediator.BroadcastInfo(FilterWheelInfo);
+            this.filterWheelMediator.Broadcast(FilterWheelInfo);
         }
 
         public ICollection<FilterInfo> GetAllFilters() {
