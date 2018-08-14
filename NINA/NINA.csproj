@@ -542,6 +542,9 @@
     <Compile Include="View\ApplicationMenu.xaml.cs">
       <DependentUpon>ApplicationMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\AutoFocusChart.xaml.cs">
+      <DependentUpon>AutoFocusChart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\CameraControlView.xaml.cs">
       <DependentUpon>CameraControlView.xaml</DependentUpon>
     </Compile>
@@ -850,6 +853,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ApplicationMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AutoFocusChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

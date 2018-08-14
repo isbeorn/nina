@@ -19,6 +19,11 @@ namespace NINA.ViewModel {
 
     internal class AutoFocusVM : DockableVM, ICameraConsumer, IFocuserConsumer {
 
+        public AutoFocusVM(IProfileService profileService,
+            FocuserMediator focuserMediator,
+            GuiderMediator guiderMediator) : this(profileService, null, focuserMediator, guiderMediator) {
+        }
+
         public AutoFocusVM(
                 IProfileService profileService,
                 CameraMediator cameraMediator,
@@ -29,8 +34,10 @@ namespace NINA.ViewModel {
             ContentId = nameof(AutoFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["AutoFocusSVG"];
 
-            this.cameraMediator = cameraMediator;
-            this.cameraMediator.RegisterConsumer(this);
+            if (cameraMediator != null) {
+                this.cameraMediator = cameraMediator;
+                this.cameraMediator.RegisterConsumer(this);
+            }
 
             this.focuserMediator = focuserMediator;
             this.focuserMediator.RegisterConsumer(this);
@@ -51,12 +58,6 @@ namespace NINA.ViewModel {
                 (p) => { return focuserInfo?.Connected == true && cameraInfo?.Connected == true; }
             );
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new StartAutoFocusMessageHandle(async (StartAutoFocusMessage msg) => {
-                    return await StartAutoFocus(msg.Filter, msg.Token, msg.Progress);
-                })
-            );
         }
 
         private CancellationTokenSource _autoFocusCancelToken;
@@ -188,12 +189,7 @@ namespace NINA.ViewModel {
             RightTrend = new TrendLine(rightTrendPoints);
         }
 
-        private async Task<bool> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (!(focuserInfo.Connected && cameraInfo.Connected)) {
-                Notification.ShowError(Locale.Loc.Instance["LblAutoFocusGearNotConnected"]);
-                return false;
-            }
-
+        public async Task<bool> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Starting Autofocus");
             FocusPoints.Clear();
             LeftTrend = null;

@@ -12,4 +12,7 @@
     <DataTemplate DataType="{x:Type vm:ProfileSelectVM}">
         <view:ProfileSelectView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:AutoFocusVM}">
+        <view:AutoFocusChart />
+    </DataTemplate>
 </ResourceDictionary>

@@ -37,6 +37,7 @@ namespace NINA.ViewModel {
             this.filterWheelMediator = filterWheelMediator;
             this.filterWheelMediator.RegisterConsumer(this);
 
+            this.focuserMediator = focuserMediator;
             this.guiderMediator = guiderMediator;
 
             this.profileService = profileService;
@@ -246,7 +247,7 @@ namespace NINA.ViewModel {
                 }
 
                 if (Sequence.AutoFocusOnStart) {
-                    await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = Sequence.Items[0].FilterType, Token = _canceltoken.Token, Progress = progress });
+                    await AutoFocus(Sequence.Items[0].FilterType, _canceltoken.Token, progress);
                 }
 
                 if (Sequence.StartGuiding) {
@@ -261,6 +262,14 @@ namespace NINA.ViewModel {
             } finally {
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
+        }
+
+        private async Task AutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            var autoFocus = new AutoFocusVM(profileService, focuserMediator, guiderMediator);
+            var service = new WindowService();
+            service.ShowWindow(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+            await autoFocus.StartAutoFocus(filter, _canceltoken.Token, progress);
+            await service.Close();
         }
 
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
@@ -295,7 +304,7 @@ namespace NINA.ViewModel {
                         //Check if autofocus should be done
                         if (ShouldAutoFocus(seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocus"] });
-                            await Mediator.Instance.RequestAsync(new StartAutoFocusMessage() { Filter = seq.FilterType, Token = _canceltoken.Token, Progress = progress });
+                            await AutoFocus(seq.FilterType, _canceltoken.Token, progress);
                             lastAutoFocusTime = DateTime.UtcNow;
                             lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
                             progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -501,6 +510,7 @@ namespace NINA.ViewModel {
         private FilterWheelMediator filterWheelMediator;
         private FocuserInfo focuserInfo;
         private FilterWheelInfo filterWheelInfo;
+        private FocuserMediator focuserMediator;
         private GuiderMediator guiderMediator;
         private TelescopeInfo telescopeInfo;
 

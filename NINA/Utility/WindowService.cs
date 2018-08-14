@@ -11,10 +11,17 @@ namespace NINA.Utility {
     internal class WindowService : IWindowService {
         private Dispatcher dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
 
-        public void ShowWindow(object viewModel) {
-            var win = new Window();
-            win.Content = viewModel;
-            win.Show();
+        public void ShowWindow(object viewModel, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None) {
+            _win = new Window() {
+                SizeToContent = SizeToContent.WidthAndHeight,
+                Title = title,
+                ResizeMode = resizeMode,
+                WindowStyle = windowStyle,
+                MinHeight = 300,
+                MinWidth = 350
+            };
+            _win.Content = viewModel;
+            _win.Show();
         }
 
         private Window _win;
@@ -65,6 +72,8 @@ namespace NINA.Utility {
 
     internal interface IWindowService {
 
-        void ShowWindow(object dataContext);
+        void ShowWindow(object viewModel, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None);
+
+        void ShowDialog(object viewModel, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None);
     }
 }

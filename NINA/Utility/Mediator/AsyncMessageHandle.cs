@@ -53,15 +53,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(PlateSolveMessage).Name; } }
     }
 
-    internal class StartAutoFocusMessageHandle : AsyncMessageHandle<bool> {
-
-        public StartAutoFocusMessageHandle(Func<StartAutoFocusMessage, Task<bool>> callback) {
-            Callback = (f) => callback((StartAutoFocusMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(StartAutoFocusMessage).Name; } }
-    }
-
     internal class CaptureImageMessageHandle : AsyncMessageHandle<ImageArray> {
 
         public CaptureImageMessageHandle(Func<CaptureImageMessage, Task<ImageArray>> callback) {
@@ -130,10 +121,6 @@ namespace NINA.Utility.Mediator {
         public BitmapSource Image { get; internal set; }
         public bool Silent { get; set; }
         public bool Blind { get; set; }
-    }
-
-    internal class StartAutoFocusMessage : AsyncMediatorMessage<bool> {
-        public FilterInfo Filter { get; set; }
     }
 
     internal class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {
