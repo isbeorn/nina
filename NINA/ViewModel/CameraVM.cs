@@ -8,6 +8,7 @@ using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
 using System;
+using System.Collections.Async;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -405,27 +406,37 @@ namespace NINA.ViewModel {
             BroadcastCameraInfo();
         }
 
-        public async Task LiveView(CancellationToken ct) {
-            if (CameraInfo.Connected && _cam.CanShowLiveView) {
-                try {
-                    _cam.StartLiveView();
+        public IAsyncEnumerable<int> GetValues() {
+            return new AsyncEnumerable<int>(async yield => {
+                await _cam.DownloadLiveView(new CancellationToken()).ConfigureAwait(false);
 
-                    while (true) {
-                        var iarr = await _cam.DownloadLiveView(ct);
-                        await Mediator.Instance.RequestAsync(new SetImageMessage() {
-                            ImageArray = iarr
-                        });
+                // Yes, it's even needed for 'yield.ReturnAsync'
+                await yield.ReturnAsync(123).ConfigureAwait(false);
+            });
+        }
 
-                        ct.ThrowIfCancellationRequested();
+        public IAsyncEnumerable<ImageArray> LiveView(CancellationToken ct) {
+            return new AsyncEnumerable<ImageArray>(async yield => {
+                if (CameraInfo.Connected && _cam.CanShowLiveView) {
+                    try {
+                        _cam.StartLiveView();
+
+                        while (true) {
+                            var iarr = await _cam.DownloadLiveView(ct);
+
+                            await yield.ReturnAsync(iarr);
+
+                            ct.ThrowIfCancellationRequested();
+                        }
+                    } catch (OperationCanceledException) {
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.ShowError(ex.Message);
+                    } finally {
+                        _cam.StopLiveView();
                     }
-                } catch (OperationCanceledException) {
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                    Notification.ShowError(ex.Message);
-                } finally {
-                    _cam.StopLiveView();
                 }
-            }
+            });
         }
 
         public async Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {

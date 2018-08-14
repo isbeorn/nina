@@ -4,6 +4,7 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel;
 using NINA.ViewModel.Interfaces;
 using System;
+using System.Collections.Async;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace NINA.Utility.Mediator {
             return handlerVM.Capture(exposureTime, isLightFrame, token, progress);
         }
 
-        internal Task LiveView(CancellationToken token) {
+        internal IAsyncEnumerable<ImageArray> LiveView(CancellationToken token) {
             return handlerVM.LiveView(token);
         }
 

@@ -7,6 +7,7 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
+using System.Collections.Async;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -114,7 +115,10 @@ namespace NINA.ViewModel {
         private async Task<bool> StartLiveView() {
             ImageControl.IsLiveViewEnabled = true;
             _liveViewCts = new CancellationTokenSource();
-            await cameraMediator.LiveView(_liveViewCts.Token);
+            var liveViewEnumerable = cameraMediator.LiveView(_liveViewCts.Token);
+            await liveViewEnumerable.ForEachAsync(async iarr => {
+                await ImageControl.PrepareImage(iarr, _liveViewCts.Token, false);
+            });
             return true;
         }
 
@@ -316,7 +320,7 @@ namespace NINA.ViewModel {
                     await Capture(sequence, token, progress);
 
                     /* Stop RMS Recording */
-                    var rms = this.guiderMediator.StopRMSRecording(rmsHandle);;
+                    var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
 
                     token.ThrowIfCancellationRequested();
 

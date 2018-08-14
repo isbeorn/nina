@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Model.MyCamera;
 using System;
+using System.Collections.Async;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace NINA.ViewModel.Interfaces {
 
         Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress);
 
-        Task LiveView(CancellationToken token);
+        IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);
 
         Task<ImageArray> Download(CancellationToken token);
     }
