@@ -53,11 +53,9 @@ namespace NINA.ViewModel {
                 ImagePatterns = CreateImagePatternList();
             };
 
-            Mediator.Instance.RegisterRequest(new SetProfileByIdMessageHandle((SetProfileByIdMessage msg) => {
-                SelectedProfile = profileService.Profiles.ProfileList.Single(p => p.Id == msg.Id);
-                SelectProfile(null);
-                return true;
-            }));
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                ProfileChanged();
+            };
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
         }
@@ -72,8 +70,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SelectProfile(object obj) {
-            profileService.SelectProfile(SelectedProfile.Id);
+        private void ProfileChanged() {
             RaisePropertyChanged(nameof(ColorSchemaName));
             RaisePropertyChanged(nameof(PrimaryColor));
             RaisePropertyChanged(nameof(SecondaryColor));
@@ -107,6 +104,11 @@ namespace NINA.ViewModel {
                     RaisePropertyChanged(p.Name);
                 }
             }
+        }
+
+        private void SelectProfile(object obj) {
+            profileService.SelectProfile(SelectedProfile.Id);
+            ProfileChanged();
         }
 
         private void AddProfile(object obj) {

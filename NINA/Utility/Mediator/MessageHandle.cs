@@ -45,24 +45,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(ChangeApplicationTabMessage).Name; } }
     }
 
-    internal class GetEquipmentNameByIdMessageHandle : MessageHandle<string> {
-
-        public GetEquipmentNameByIdMessageHandle(Type registeredClass, Func<GetEquipmentNameByIdMessage, string> callback) : base(registeredClass) {
-            Callback = (f) => callback((GetEquipmentNameByIdMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(GetEquipmentNameByIdMessage).Name; } }
-    }
-
-    internal class SetProfileByIdMessageHandle : MessageHandle<bool> {
-
-        public SetProfileByIdMessageHandle(Func<SetProfileByIdMessage, bool> callback) {
-            Callback = (f) => callback((SetProfileByIdMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(SetProfileByIdMessage).Name; } }
-    }
-
     /* Message definition */
 
     internal abstract class MediatorMessage<TMessageResult> {
@@ -78,13 +60,5 @@ namespace NINA.Utility.Mediator {
 
     internal class ChangeApplicationTabMessage : MediatorMessage<bool> {
         public ViewModel.ApplicationTab Tab { get; set; }
-    }
-
-    internal class GetEquipmentNameByIdMessage : MediatorMessage<string> {
-        public string Id { get; set; }
-    }
-
-    internal class SetProfileByIdMessage : MediatorMessage<bool> {
-        public Guid Id { get; set; }
     }
 }

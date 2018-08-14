@@ -28,9 +28,7 @@ namespace NINA.ViewModel {
             set {
                 if (_tempProfile?.Id != value.Id || _tempProfile == null) {
                     _tempProfile = value;
-                    Mediator.Instance.Request(new SetProfileByIdMessage() {
-                        Id = value.Id
-                    });
+                    profileService.SelectProfile(value.Id);
                     RaiseAllPropertiesChanged();
                 }
             }
@@ -38,17 +36,13 @@ namespace NINA.ViewModel {
 
         public string Camera {
             get {
-                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage() {
-                    Id = ActiveProfile.CameraSettings.Id
-                }, typeof(CameraChooserVM));
+                return ActiveProfile.CameraSettings.Id;
             }
         }
 
         public string FilterWheel {
             get {
-                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage() {
-                    Id = ActiveProfile.FilterWheelSettings.Id
-                }, typeof(FilterWheelChooserVM));
+                return ActiveProfile.FilterWheelSettings.Id;
             }
         }
 
@@ -60,9 +54,7 @@ namespace NINA.ViewModel {
 
         public string Focuser {
             get {
-                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage() {
-                    Id = ActiveProfile.FocuserSettings.Id
-                }, typeof(FocuserChooserVM));
+                return ActiveProfile.FocuserSettings.Id;
             }
         }
 
@@ -70,9 +62,7 @@ namespace NINA.ViewModel {
 
         public string Telescope {
             get {
-                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage() {
-                    Id = ActiveProfile.TelescopeSettings.Id
-                }, typeof(TelescopeChooserVM));
+                return ActiveProfile.TelescopeSettings.Id;
             }
         }
 
@@ -87,9 +77,7 @@ namespace NINA.ViewModel {
                         var dialogResult = (WindowService.DialogResultEventArgs)e;
                         if (dialogResult.DialogResult != true) {
                             _cancelTokenSource.Cancel();
-                            Mediator.Instance.Request(new SetProfileByIdMessage() {
-                                Id = _defaultProfile.Id
-                            });
+                            profileService.SelectProfile(_defaultProfile.Id);
                         } else {
                             if (UseSavedProfile == true) {
                                 Properties.Settings.Default.UseSavedProfileSelection = true;
