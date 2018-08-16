@@ -15,15 +15,9 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition />
-                <RowDefinition Height="35" />
                 <RowDefinition Height="45" />
             </Grid.RowDefinitions>
             <view:AutoFocusChart />
-            <TextBlock
-                Grid.Row="1"
-                Margin="10,0,0,0"
-                VerticalAlignment="Center"
-                Text="{Binding Status.Status}" />
 
             <ninactrl:CancellableButton
                 Grid.Row="2"

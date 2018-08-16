@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace NINA.Utility {
@@ -15,6 +16,7 @@ namespace NINA.Utility {
             _win = new Window() {
                 SizeToContent = SizeToContent.WidthAndHeight,
                 Title = title,
+                Background = Application.Current.TryFindResource("BackgroundBrush") as Brush,
                 ResizeMode = resizeMode,
                 WindowStyle = windowStyle,
                 MinHeight = 300,
@@ -61,6 +63,13 @@ namespace NINA.Utility {
             }));
         }
 
+        public void DelayedClose(TimeSpan t) {
+            Task.Run(async () => {
+                await Utility.Wait(t);
+                await Close();
+            });
+        }
+
         private static void Win_SizeChanged(object sender, SizeChangedEventArgs e) {
             var mainwindow = System.Windows.Application.Current.MainWindow;
 
@@ -75,5 +84,9 @@ namespace NINA.Utility {
         void ShowWindow(object viewModel, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None);
 
         void ShowDialog(object viewModel, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None);
+
+        Task Close();
+
+        void DelayedClose(TimeSpan t);
     }
 }

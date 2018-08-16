@@ -246,8 +246,6 @@ namespace NINA.ViewModel {
                 //Get Trendline Intersection
                 var p = LeftTrend.Intersect(RightTrend);
 
-                progress.Report(new ApplicationStatus() { Status = string.Format("Ideal Position: {0}, Theoretical HFR: {1}", p.X, Math.Round(p.Y, 2)) });
-
                 LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = p, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
 
                 //Todo when data is too noisy for trend lines find something else
@@ -261,6 +259,7 @@ namespace NINA.ViewModel {
                 Logger.Error(ex);
             } finally {
                 await this.guiderMediator.ResumeGuiding(token);
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 
             return true;

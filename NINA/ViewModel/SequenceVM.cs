@@ -269,7 +269,7 @@ namespace NINA.ViewModel {
             var service = new WindowService();
             service.ShowWindow(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
             await autoFocus.StartAutoFocus(filter, _canceltoken.Token, progress);
-            await service.Close();
+            service.DelayedClose(TimeSpan.FromSeconds(10));
         }
 
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
