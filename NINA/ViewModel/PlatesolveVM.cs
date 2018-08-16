@@ -28,7 +28,8 @@ namespace NINA.ViewModel {
                 IProfileService profileService,
                 CameraMediator cameraMediator,
                 TelescopeMediator telescopeMediator,
-                ImagingMediator imagingMediator
+                ImagingMediator imagingMediator,
+                ApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblPlateSolving";
             ContentId = nameof(PlatesolveVM);
@@ -41,6 +42,7 @@ namespace NINA.ViewModel {
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
             this.imagingMediator = imagingMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
 
             SolveCommand = new AsyncCommand<bool>(() => CaptureSolveSyncAndReslew(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSolveCommand = new RelayCommand(CancelSolve);
@@ -68,7 +70,7 @@ namespace NINA.ViewModel {
                 _status.Source = Title;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+                applicationStatusMediator.StatusUpdate(_status);
             }
         }
 
@@ -461,6 +463,7 @@ namespace NINA.ViewModel {
         private CameraMediator cameraMediator;
         private TelescopeMediator telescopeMediator;
         private ImagingMediator imagingMediator;
+        private ApplicationStatusMediator applicationStatusMediator;
 
         public IAsyncCommand SolveCommand { get; private set; }
 

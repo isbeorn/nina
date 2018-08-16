@@ -348,6 +348,7 @@
     <Compile Include="Utility\DatabaseInteraction.cs" />
     <Compile Include="Utility\DeviceUpdateTimer.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
+    <Compile Include="Utility\Mediator\ApplicationStatusMediator.cs" />
     <Compile Include="Utility\Mediator\CameraMediator.cs" />
     <Compile Include="Utility\Mediator\DeviceMediator.cs" />
     <Compile Include="Utility\Mediator\FilterWheelMediator.cs" />
@@ -396,9 +397,6 @@
     <Compile Include="Utility\Enum\WeatherDataEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraConnectionLostException.cs" />
     <Compile Include="Utility\FITS.cs" />
-    <Compile Include="Utility\Mediator\Mediator.cs" />
-    <Compile Include="Utility\Mediator\AsyncMessageHandle.cs" />
-    <Compile Include="Utility\Mediator\MessageHandle.cs" />
     <Compile Include="Utility\MyStopWatch.cs" />
     <Compile Include="Utility\Notification\CustomDisplayPart.xaml.cs">
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
@@ -447,6 +445,7 @@
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IAplicationStatusVM.cs" />
     <Compile Include="ViewModel\Interfaces\ICameraVM.cs" />
     <Compile Include="ViewModel\Interfaces\IDeviceVM.cs" />
     <Compile Include="ViewModel\Interfaces\IFilterWheelVM.cs" />

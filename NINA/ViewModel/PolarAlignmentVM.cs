@@ -21,7 +21,8 @@ namespace NINA.ViewModel {
                 IProfileService profileService,
                 CameraMediator cameraMediator,
                 TelescopeMediator telescopeMediator,
-                ImagingMediator imagingMediator
+                ImagingMediator imagingMediator,
+                ApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblPolarAlignment";
             ContentId = nameof(PolarAlignmentVM);
@@ -35,6 +36,7 @@ namespace NINA.ViewModel {
 
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
+            this.applicationStatusMediator = applicationStatusMediator;
 
             _updateValues = new DispatcherTimer();
             _updateValues.Interval = TimeSpan.FromSeconds(10);
@@ -90,7 +92,7 @@ namespace NINA.ViewModel {
                 _status.Status = _status.Status + " " + _darvStatus;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+                this.applicationStatusMediator.StatusUpdate(_status);
             }
         }
 
@@ -218,6 +220,7 @@ namespace NINA.ViewModel {
 
         private string _hourAngleTime;
         private CameraMediator cameraMediator;
+        private ApplicationStatusMediator applicationStatusMediator;
         private DispatcherTimer _updateValues;
 
         private BinningMode _snapBin;
@@ -281,7 +284,7 @@ namespace NINA.ViewModel {
                 _altitudepolarErrorStatus = value;
                 _altitudepolarErrorStatus.Source = Title;
                 RaisePropertyChanged();
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _altitudepolarErrorStatus });
+                this.applicationStatusMediator.StatusUpdate(_altitudepolarErrorStatus);
             }
         }
 
@@ -296,7 +299,7 @@ namespace NINA.ViewModel {
                 _azimuthpolarErrorStatus = value;
                 _azimuthpolarErrorStatus.Source = Title;
                 RaisePropertyChanged();
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _azimuthpolarErrorStatus });
+                this.applicationStatusMediator.StatusUpdate(_azimuthpolarErrorStatus);
             }
         }
 
@@ -532,7 +535,7 @@ namespace NINA.ViewModel {
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
 
                 canceltoken.ThrowIfCancellationRequested();
@@ -561,7 +564,7 @@ namespace NINA.ViewModel {
                 seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
+                solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
 
                 canceltoken.ThrowIfCancellationRequested();

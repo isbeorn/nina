@@ -1287,7 +1287,6 @@ namespace NINA.ViewModel {
 
         private IProfile _selectedProfile;
         private FilterWheelMediator filterWheelMediator;
-        private CameraMediator cameraMediator;
 
         public IProfile SelectedProfile {
             get {

@@ -20,7 +20,7 @@ namespace NINA.ViewModel {
 
     internal class CameraVM : DockableVM, ICameraVM {
 
-        public CameraVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator) : base(profileService) {
+        public CameraVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblCamera";
             ContentId = nameof(CameraVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
@@ -29,6 +29,7 @@ namespace NINA.ViewModel {
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterHandler(this);
+            this.applicationStatusMediator = applicationStatusMediator;
 
             ChooseCameraCommand = new AsyncCommand<bool>(ChooseCamera);
             CancelConnectCameraCommand = new RelayCommand(CancelConnectCamera);
@@ -73,13 +74,13 @@ namespace NINA.ViewModel {
             var percentage = 1 - (Duration / _initalDuration);
             progress.Report(percentage);
 
-            Mediator.Instance.Request(new StatusUpdateMessage() {
-                Status = new ApplicationStatus() {
+            applicationStatusMediator.StatusUpdate(
+                new ApplicationStatus() {
                     Source = Title,
                     Status = Locale.Loc.Instance["LblCooling"],
                     Progress = percentage
                 }
-            });
+            );
         }
 
         private CameraMediator cameraMediator;
@@ -181,12 +182,12 @@ namespace NINA.ViewModel {
                         progress.Report(1);
                         Duration = 0;
                         CoolingRunning = false;
-                        Mediator.Instance.Request(new StatusUpdateMessage() {
-                            Status = new ApplicationStatus() {
+                        applicationStatusMediator.StatusUpdate(
+                            new ApplicationStatus() {
                                 Source = Title,
                                 Status = string.Empty
                             }
-                        });
+                        );
                     }
                 }
                 return true;
@@ -246,12 +247,12 @@ namespace NINA.ViewModel {
                     return false;
                 }
 
-                Mediator.Instance.Request(new StatusUpdateMessage() {
-                    Status = new ApplicationStatus() {
+                applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
                         Source = Title,
                         Status = Locale.Loc.Instance["LblConnecting"]
                     }
-                });
+                );
 
                 var cam = (ICamera)CameraChooserVM.SelectedDevice;
                 _cancelConnectCameraSource = new CancellationTokenSource();
@@ -309,12 +310,12 @@ namespace NINA.ViewModel {
                 }
             } finally {
                 ss.Release();
-                Mediator.Instance.Request(new StatusUpdateMessage() {
-                    Status = new ApplicationStatus() {
+                applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
                         Source = Title,
                         Status = string.Empty
                     }
-                });
+                );
             }
         }
 
@@ -529,6 +530,8 @@ namespace NINA.ViewModel {
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
         public ICommand ToggleCoolerOnCommand { get; private set; }
         public ICommand CoolCamCommand { get; private set; }
+
+        private ApplicationStatusMediator applicationStatusMediator;
 
         public IAsyncCommand ChooseCameraCommand { get; private set; }
 

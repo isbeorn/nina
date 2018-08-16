@@ -16,7 +16,7 @@ namespace NINA.ViewModel {
 
     internal class FilterWheelVM : DockableVM, IFilterWheelVM {
 
-        public FilterWheelVM(IProfileService profileService, FilterWheelMediator filterWheelMediator, FocuserMediator focuserMediator) : base(profileService) {
+        public FilterWheelVM(IProfileService profileService, FilterWheelMediator filterWheelMediator, FocuserMediator focuserMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFilterWheel";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FWSVG"];
 
@@ -24,6 +24,7 @@ namespace NINA.ViewModel {
             this.filterWheelMediator.RegisterHandler(this);
 
             this.focuserMediator = focuserMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
 
             ContentId = nameof(FilterWheelVM);
             ChooseFWCommand = new AsyncCommand<bool>(() => ChooseFW());
@@ -138,12 +139,12 @@ namespace NINA.ViewModel {
                     return false;
                 }
 
-                Mediator.Instance.Request(new StatusUpdateMessage() {
-                    Status = new ApplicationStatus() {
+                applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
                         Source = Title,
                         Status = Locale.Loc.Instance["LblConnecting"]
                     }
-                });
+                );
 
                 var fW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
                 _cancelChooseFilterWheelSource = new CancellationTokenSource();
@@ -184,12 +185,12 @@ namespace NINA.ViewModel {
                 }
             } finally {
                 ss.Release();
-                Mediator.Instance.Request(new StatusUpdateMessage() {
-                    Status = new ApplicationStatus() {
+                applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
                         Source = Title,
                         Status = string.Empty
                     }
-                });
+                );
             }
         }
 
@@ -220,7 +221,7 @@ namespace NINA.ViewModel {
         private FilterWheelChooserVM _filterWheelChooserVM;
         private FilterWheelMediator filterWheelMediator;
         private FocuserMediator focuserMediator;
-
+        private ApplicationStatusMediator applicationStatusMediator;
         private FilterWheelInfo filterWheelInfo;
 
         public FilterWheelInfo FilterWheelInfo {

@@ -22,7 +22,8 @@ namespace NINA.ViewModel {
         public AutoFocusVM(IProfileService profileService,
             FocuserMediator focuserMediator,
             GuiderMediator guiderMediator,
-            ImagingMediator imagingMediator) : this(profileService, null, focuserMediator, guiderMediator, imagingMediator) {
+            ImagingMediator imagingMediator,
+            ApplicationStatusMediator applicationStatusMediator) : this(profileService, null, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator) {
         }
 
         public AutoFocusVM(
@@ -30,7 +31,8 @@ namespace NINA.ViewModel {
                 CameraMediator cameraMediator,
                 FocuserMediator focuserMediator,
                 GuiderMediator guiderMediator,
-                ImagingMediator imagingMediator
+                ImagingMediator imagingMediator,
+                ApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblAutoFocus";
             ContentId = nameof(AutoFocusVM);
@@ -46,6 +48,7 @@ namespace NINA.ViewModel {
 
             this.imagingMediator = imagingMediator;
             this.guiderMediator = guiderMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
 
             FocusPoints = new AsyncObservableCollection<DataPoint>();
 
@@ -68,6 +71,7 @@ namespace NINA.ViewModel {
         private CameraMediator cameraMediator;
         private ImagingMediator imagingMediator;
         private GuiderMediator guiderMediator;
+        private ApplicationStatusMediator applicationStatusMediator;
 
         public AsyncObservableCollection<DataPoint> FocusPoints {
             get {
@@ -92,7 +96,7 @@ namespace NINA.ViewModel {
                 _status.Source = Title;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+                this.applicationStatusMediator.StatusUpdate(_status);
             }
         }
 

@@ -17,11 +17,12 @@ namespace NINA.ViewModel {
 
     internal class MeridianFlipVM : BaseVM {
 
-        public MeridianFlipVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, GuiderMediator guiderMediator, ImagingMediator imagingMediator) : base(profileService) {
+        public MeridianFlipVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, GuiderMediator guiderMediator, ImagingMediator imagingMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
             this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
 
             CancelCommand = new RelayCommand(Cancel);
         }
@@ -43,6 +44,7 @@ namespace NINA.ViewModel {
         private GuiderMediator guiderMediator;
         private CameraMediator cameraMediator;
         private ImagingMediator imagingMediator;
+        private ApplicationStatusMediator applicationStatusMediator;
 
         public ICommand CancelCommand {
             get {
@@ -72,7 +74,7 @@ namespace NINA.ViewModel {
                 _status.Source = "MeridianFlip";
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+                this.applicationStatusMediator.StatusUpdate(_status);
             }
         }
 
@@ -159,7 +161,7 @@ namespace NINA.ViewModel {
             if (profileService.ActiveProfile.MeridianFlipSettings.Recenter) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblInitiatePlatesolve"] });
 
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 var seq = new CaptureSequence(
                     profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
                     CaptureSequence.ImageTypes.SNAP,

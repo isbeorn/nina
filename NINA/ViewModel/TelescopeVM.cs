@@ -18,10 +18,11 @@ namespace NINA.ViewModel {
 
     internal class TelescopeVM : DockableVM, ITelescopeVM {
 
-        public TelescopeVM(IProfileService profileService, TelescopeMediator telescopeMediator) : base(profileService) {
+        public TelescopeVM(IProfileService profileService, TelescopeMediator telescopeMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterHandler(this);
+            this.applicationStatusMediator = applicationStatusMediator;
             Title = "LblTelescope";
             ContentId = nameof(TelescopeVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
@@ -119,12 +120,12 @@ namespace NINA.ViewModel {
                     return false;
                 }
 
-                Mediator.Instance.Request(new StatusUpdateMessage() {
-                    Status = new ApplicationStatus() {
+                this.applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
                         Source = Title,
                         Status = Locale.Loc.Instance["LblConnecting"]
                     }
-                });
+                );
 
                 var telescope = (ITelescope)TelescopeChooserVM.SelectedDevice;
                 _cancelChooseTelescopeSource = new CancellationTokenSource();
@@ -184,12 +185,12 @@ namespace NINA.ViewModel {
                 }
             } finally {
                 ss.Release();
-                Mediator.Instance.Request(new StatusUpdateMessage() {
-                    Status = new ApplicationStatus() {
+                this.applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
                         Source = Title,
                         Status = string.Empty
                     }
-                });
+                );
             }
         }
 
@@ -442,6 +443,7 @@ namespace NINA.ViewModel {
 
         private double _targetRightAscencionSeconds;
         private TelescopeMediator telescopeMediator;
+        private ApplicationStatusMediator applicationStatusMediator;
 
         public double TargetRightAscencionSeconds {
             get {

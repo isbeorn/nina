@@ -31,7 +31,8 @@ namespace NINA.ViewModel {
                 FocuserMediator focuserMediator,
                 FilterWheelMediator filterWheelMediator,
                 GuiderMediator guiderMediator,
-                ImagingMediator imagingMediator
+                ImagingMediator imagingMediator,
+                ApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
@@ -43,6 +44,7 @@ namespace NINA.ViewModel {
             this.guiderMediator = guiderMediator;
             this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
 
             this.profileService = profileService;
             Title = "LblSequence";
@@ -58,8 +60,6 @@ namespace NINA.ViewModel {
             PauseSequenceCommand = new RelayCommand(PauseSequence);
             ResumeSequenceCommand = new RelayCommand(ResumeSequence);
             UpdateETACommand = new RelayCommand((object o) => CalculateETA());
-
-            RegisterMediatorMessages();
 
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 var dso = new DeepSkyObject(Sequence.DSO.Name, Sequence.DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
@@ -157,7 +157,7 @@ namespace NINA.ViewModel {
 
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+                applicationStatusMediator.StatusUpdate(_status);
             }
         }
 
@@ -231,7 +231,7 @@ namespace NINA.ViewModel {
                     if (Sequence.CenterTarget) {
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
 
-                        var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
+                        var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                         var solveseq = new CaptureSequence() {
                             ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
                             FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
@@ -278,7 +278,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task AutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            var autoFocus = new AutoFocusVM(profileService, focuserMediator, guiderMediator, imagingMediator);
+            var autoFocus = new AutoFocusVM(profileService, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator);
             var service = new WindowService();
             service.ShowWindow(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
             await autoFocus.StartAutoFocus(filter, _canceltoken.Token, progress);
@@ -403,7 +403,7 @@ namespace NINA.ViewModel {
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCheckMeridianFlip"] });
             if (telescopeInfo != null && MeridianFlipVM.ShouldFlip(profileService, seq.ExposureTime, telescopeInfo)) {
-                await new MeridianFlipVM(profileService, cameraMediator, telescopeMediator, guiderMediator, imagingMediator).MeridianFlip(seq, telescopeInfo);
+                await new MeridianFlipVM(profileService, cameraMediator, telescopeMediator, guiderMediator, imagingMediator, applicationStatusMediator).MeridianFlip(seq, telescopeInfo);
             }
             progress.Report(new ApplicationStatus() { Status = string.Empty });
         }
@@ -450,19 +450,14 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterAsyncRequest(
-                new SetSequenceCoordinatesMessageHandle(async (SetSequenceCoordinatesMessage msg) => {
-                    Mediator.Instance.Request(new ChangeApplicationTabMessage() { Tab = ApplicationTab.SEQUENCE });
-                    var sequenceDso = new DeepSkyObject(msg.DSO.AlsoKnownAs.FirstOrDefault() ?? msg.DSO.Name ?? string.Empty, msg.DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-                    await Task.Run(() => {
-                        sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
-                    });
+        public async Task<bool> SetSequenceCoordiantes(DeepSkyObject dso) {
+            var sequenceDso = new DeepSkyObject(dso.AlsoKnownAs.FirstOrDefault() ?? dso.Name ?? string.Empty, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+            await Task.Run(() => {
+                sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
+            });
 
-                    Sequence.SetSequenceTarget(sequenceDso);
-                    return true;
-                })
-            );
+            Sequence.SetSequenceTarget(sequenceDso);
+            return true;
         }
 
         private CaptureSequenceList _sequence;
@@ -521,6 +516,7 @@ namespace NINA.ViewModel {
         private GuiderMediator guiderMediator;
         private CameraMediator cameraMediator;
         private ImagingMediator imagingMediator;
+        private ApplicationStatusMediator applicationStatusMediator;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
 
         public ObservableCollection<string> ImageTypes {

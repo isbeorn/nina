@@ -15,12 +15,13 @@ namespace NINA.ViewModel {
 
     internal class FocuserVM : DockableVM, IFocuserVM {
 
-        public FocuserVM(IProfileService profileService, FocuserMediator focuserMediator) : base(profileService) {
+        public FocuserVM(IProfileService profileService, FocuserMediator focuserMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFocuser";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
 
             this.focuserMediator = focuserMediator;
             this.focuserMediator.RegisterHandler(this);
+            this.applicationStatusMediator = applicationStatusMediator;
 
             ContentId = nameof(FocuserVM);
             ChooseFocuserCommand = new AsyncCommand<bool>(() => ChooseFocuser());
@@ -98,12 +99,12 @@ namespace NINA.ViewModel {
                     return false;
                 }
 
-                Mediator.Instance.Request(new StatusUpdateMessage() {
-                    Status = new ApplicationStatus() {
+                applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
                         Source = Title,
                         Status = Locale.Loc.Instance["LblConnecting"]
                     }
-                });
+                );
 
                 var focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
                 _cancelChooseFocuserSource = new CancellationTokenSource();
@@ -145,12 +146,12 @@ namespace NINA.ViewModel {
                 }
             } finally {
                 ss.Release();
-                Mediator.Instance.Request(new StatusUpdateMessage() {
-                    Status = new ApplicationStatus() {
+                applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
                         Source = Title,
                         Status = string.Empty
                     }
-                });
+                );
             }
         }
 
@@ -275,6 +276,7 @@ namespace NINA.ViewModel {
 
         private DeviceUpdateTimer updateTimer;
         private FocuserMediator focuserMediator;
+        private ApplicationStatusMediator applicationStatusMediator;
 
         public ICommand RefreshFocuserListCommand { get; private set; }
 

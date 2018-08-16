@@ -26,7 +26,8 @@ namespace NINA.ViewModel {
                 CameraMediator cameraMediator,
                 TelescopeMediator telescopeMediator,
                 FilterWheelMediator filterWheelMediator,
-                GuiderMediator guiderMediator
+                GuiderMediator guiderMediator,
+                ApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblImaging";
             ContentId = nameof(ImagingVM);
@@ -40,6 +41,7 @@ namespace NINA.ViewModel {
 
             this.filterWheelMediator = filterWheelMediator;
             this.guiderMediator = guiderMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
 
             SnapExposureDuration = 1;
             SnapCommand = new AsyncCommand<bool>(() => SnapImage(new Progress<ApplicationStatus>(p => Status = p)));
@@ -47,29 +49,7 @@ namespace NINA.ViewModel {
             StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
             StopLiveViewCommand = new RelayCommand(StopLiveView);
 
-            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
-
-            RegisterMediatorMessages();
-        }
-
-        private void RegisterMediatorMessages() {
-            /*Mediator.Instance.RegisterAsyncRequest(
-                new CaptureImageMessageHandle(async (CaptureImageMessage msg) => {
-                    return await CaptureImage(msg.Sequence, msg.Token, msg.Progress);
-                })
-            );
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new CapturePrepareAndSaveImageMessageHandle(async (CapturePrepareAndSaveImageMessage msg) => {
-                    return await CaptureAndSaveImage(msg.Sequence, msg.Save, msg.Token, msg.Progress, msg.TargetName);
-                })
-            );
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new CaptureAndPrepareImageMessageHandle(async (CaptureAndPrepareImageMessage msg) => {
-                    return await CaptureAndPrepareImage(msg.Sequence, msg.Token, msg.Progress);
-                })
-            );*/
+            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
         }
 
         private ImageControlVM _imageControl;
@@ -143,7 +123,7 @@ namespace NINA.ViewModel {
                 _status.Source = Title;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+                applicationStatusMediator.StatusUpdate(_status);
             }
         }
 
@@ -176,6 +156,7 @@ namespace NINA.ViewModel {
         private double _snapExposureDuration;
         private FilterWheelMediator filterWheelMediator;
         private GuiderMediator guiderMediator;
+        private ApplicationStatusMediator applicationStatusMediator;
 
         public double SnapExposureDuration {
             get {

@@ -18,13 +18,15 @@ namespace NINA.ViewModel {
 
     internal class GuiderVM : DockableVM, IGuiderVM {
 
-        public GuiderVM(IProfileService profileService, GuiderMediator guiderMediator) : base(profileService) {
+        public GuiderVM(IProfileService profileService, GuiderMediator guiderMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblGuider";
             ContentId = nameof(GuiderVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
 
             this.guiderMediator = guiderMediator;
             this.guiderMediator.RegisterHandler(this);
+
+            this.applicationStatusMediator = applicationStatusMediator;
 
             ConnectGuiderCommand = new AsyncCommand<bool>(
                 async () =>
@@ -199,9 +201,9 @@ namespace NINA.ViewModel {
 
         public async Task<bool> Dither(CancellationToken token) {
             if (Guider?.Connected == true) {
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new Model.ApplicationStatus() { Status = Locale.Loc.Instance["LblDither"], Source = Title } });
+                applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = Locale.Loc.Instance["LblDither"], Source = Title });
                 await Guider?.Dither(token);
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new Model.ApplicationStatus() { Status = string.Empty, Source = Title } });
+                applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = string.Empty, Source = Title });
                 return true;
             } else {
                 Disconnect();
@@ -240,6 +242,7 @@ namespace NINA.ViewModel {
         }
 
         private GuiderMediator guiderMediator;
+        private ApplicationStatusMediator applicationStatusMediator;
 
         public ICommand ConnectGuiderCommand { get; private set; }
 

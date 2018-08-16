@@ -27,7 +27,7 @@ namespace NINA.ViewModel {
 
     internal class ImageControlVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
 
-        public ImageControlVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, ImagingMediator imagingMediator) : base(profileService) {
+        public ImageControlVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, ImagingMediator imagingMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblImage";
 
             this.cameraMediator = cameraMediator;
@@ -37,6 +37,7 @@ namespace NINA.ViewModel {
             this.telescopeMediator.RegisterConsumer(this);
 
             this.imagingMediator = imagingMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
 
             ContentId = nameof(ImageControlVM);
             CanClose = false;
@@ -281,7 +282,7 @@ namespace NINA.ViewModel {
                     AutoStretch = true;
                 }
                 await PrepareImageHelper();
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 solver.Image = Image;
                 var service = new WindowService();
                 service.ShowWindow(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
@@ -445,7 +446,7 @@ namespace NINA.ViewModel {
                 _status.Source = Title;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+                applicationStatusMediator.StatusUpdate(_status);
             }
         }
 
@@ -478,6 +479,7 @@ namespace NINA.ViewModel {
         private TelescopeMediator telescopeMediator;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
         private ImagingMediator imagingMediator;
+        private ApplicationStatusMediator applicationStatusMediator;
 
         public async Task<BitmapSource> PrepareImage(
                 ImageArray iarr,

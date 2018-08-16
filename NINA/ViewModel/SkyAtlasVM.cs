@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
@@ -66,11 +67,17 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> SetSequenceCoordinates() {
-            return await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = SearchResult.SelectedItem });
+            // todo
+            var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
+            vm.ChangeTab(ApplicationTab.SEQUENCE);
+            return await vm.SeqVM.SetSequenceCoordiantes(SearchResult.SelectedItem);
         }
 
         private async Task<bool> SetFramingAssistantCoordinates() {
-            return await Mediator.Instance.RequestAsync(new SetFramingAssistantCoordinatesMessage() { DSO = SearchResult.SelectedItem });
+            // todo
+            var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
+            vm.ChangeTab(ApplicationTab.FRAMINGASSISTANT);
+            return await vm.FramingAssistantVM.SetCoordinates(SearchResult.SelectedItem);
         }
 
         private Ticker _ticker;

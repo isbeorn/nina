@@ -12,7 +12,7 @@ namespace NINA.ViewModel {
 
     internal class FrameFocusVM : DockableVM {
 
-        public FrameFocusVM(IProfileService profileService, ImagingMediator imagingMediator) : base(profileService) {
+        public FrameFocusVM(IProfileService profileService, ImagingMediator imagingMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFrameNFocus";
             ContentId = nameof(FrameFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
@@ -20,6 +20,7 @@ namespace NINA.ViewModel {
             SnapCommand = new AsyncCommand<bool>(() => Snap(new Progress<ApplicationStatus>(p => Status = p)));
 
             this.imagingMediator = imagingMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
 
             Zoom = 1;
             SnapExposureDuration = 1;
@@ -36,7 +37,7 @@ namespace NINA.ViewModel {
                 _status.Source = Title;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+                applicationStatusMediator.StatusUpdate(_status);
             }
         }
 
@@ -136,6 +137,7 @@ namespace NINA.ViewModel {
         public IAsyncCommand SnapCommand { get; private set; }
 
         private ImagingMediator imagingMediator;
+        private ApplicationStatusMediator applicationStatusMediator;
 
         public IAsyncCommand AutoStretchCommand { get; private set; }
 
