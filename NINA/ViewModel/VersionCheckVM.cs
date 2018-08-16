@@ -62,7 +62,7 @@ namespace NINA.ViewModel {
             ProcessStartInfo Info = new ProcessStartInfo();
             Info.WindowStyle = ProcessWindowStyle.Hidden;
             Info.CreateNoWindow = true;
-            Info.FileName = _setupLocation + "setup.exe";
+            Info.FileName = _setupLocation + "NINASetup.msi";
             Process.Start(Info);
             System.Windows.Application.Current.Shutdown();
         }
