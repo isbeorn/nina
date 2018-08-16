@@ -182,9 +182,5 @@ namespace NINA.Utility.Mediator {
     }
 
     public enum MediatorMessages {
-        AutoStrechChanged = 7,
-        DetectStarsChanged = 8,
-        ChangeAutoStretch = 14,
-        ChangeDetectStars = 15,
     };
 }

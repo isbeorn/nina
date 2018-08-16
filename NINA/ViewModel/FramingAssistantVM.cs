@@ -23,10 +23,11 @@ namespace NINA.ViewModel {
 
     internal class FramingAssistantVM : BaseVM, ICameraConsumer {
 
-        public FramingAssistantVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator) : base(profileService) {
+        public FramingAssistantVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, ImagingMediator imagingMediator) : base(profileService) {
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
             this.telescopeMediator = telescopeMediator;
+            this.imagingMediator = imagingMediator;
             // no need for telescope consumer
 
             Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
@@ -149,7 +150,7 @@ namespace NINA.ViewModel {
 
                 var dialogResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
                 if (dialogResult == MessageBoxResult.OK) {
-                    var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                    var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
                     var plateSolveResult = await solver.BlindSolve(img, _statusUpdate, _loadImageSource.Token);
 
                     if (plateSolveResult.Success) {
@@ -234,6 +235,7 @@ namespace NINA.ViewModel {
         private Coordinates _coordinates;
         private CameraMediator cameraMediator;
         private TelescopeMediator telescopeMediator;
+        private ImagingMediator imagingMediator;
 
         public Coordinates Coordinates {
             get {

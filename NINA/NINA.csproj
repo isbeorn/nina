@@ -353,6 +353,7 @@
     <Compile Include="Utility\Mediator\FilterWheelMediator.cs" />
     <Compile Include="Utility\Mediator\FocuserMediator.cs" />
     <Compile Include="Utility\Mediator\GuiderMediator.cs" />
+    <Compile Include="Utility\Mediator\ImagingMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ICameraConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IDeviceConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IFilterWheelConsumer.cs" />
@@ -484,6 +485,7 @@
     <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
     <Compile Include="ViewModel\Interfaces\IGuiderVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IImagingVM.cs" />
     <Compile Include="ViewModel\Interfaces\ITelescopeVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />

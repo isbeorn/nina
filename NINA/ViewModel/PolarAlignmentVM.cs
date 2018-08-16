@@ -17,7 +17,12 @@ namespace NINA.ViewModel {
 
     internal class PolarAlignmentVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
 
-        public PolarAlignmentVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator) : base(profileService) {
+        public PolarAlignmentVM(
+                IProfileService profileService,
+                CameraMediator cameraMediator,
+                TelescopeMediator telescopeMediator,
+                ImagingMediator imagingMediator
+        ) : base(profileService) {
             Title = "LblPolarAlignment";
             ContentId = nameof(PolarAlignmentVM);
 
@@ -25,6 +30,8 @@ namespace NINA.ViewModel {
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
+
+            this.imagingMediator = imagingMediator;
 
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
@@ -63,23 +70,12 @@ namespace NINA.ViewModel {
             DARVSlewRate = 0.01;
             SnapExposureDuration = 2;
 
-            RegisterMediatorMessages();
-
             profileService.ProfileChanged += (object sender, EventArgs e) => {
                 RaisePropertyChanged(nameof(AzimuthMeridianOffset));
                 RaisePropertyChanged(nameof(AzimuthDeclination));
                 RaisePropertyChanged(nameof(AltitudeMeridianOffset));
                 RaisePropertyChanged(nameof(AltitudeDeclination));
             };
-        }
-
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((object o) => {
-                _autoStretch = (bool)o;
-            }, MediatorMessages.AutoStrechChanged);
-            Mediator.Instance.Register((object o) => {
-                _detectStars = (bool)o;
-            }, MediatorMessages.DetectStarsChanged);
         }
 
         private ApplicationStatus _status;
@@ -370,26 +366,21 @@ namespace NINA.ViewModel {
             });
         }
 
-        private bool _autoStretch;
-        private bool _detectStars;
-
         private async Task<bool> Darvslew(IProgress<ApplicationStatus> cameraprogress, IProgress<string> slewprogress) {
             if (CameraInfo?.Connected == true) {
                 _cancelDARVSlewToken = new CancellationTokenSource();
                 try {
-                    var oldAutoStretch = _autoStretch;
-                    var oldDetectStars = _detectStars;
-                    Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
-                    Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
+                    var oldAutoStretch = imagingMediator.SetAutoStretch(true);
+                    var oldDetectStars = imagingMediator.SetDetectStars(false);
 
                     var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
-                    var capture = Mediator.Instance.RequestAsync(new CapturePrepareAndSaveImageMessage() { Sequence = seq, Save = false, Progress = cameraprogress, Token = _cancelDARVSlewToken.Token });
+                    var capture = imagingMediator.CaptureAndPrepareImage(seq, _cancelDARVSlewToken.Token, cameraprogress);
                     var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken.Token);
 
                     await Task.WhenAll(capture, slew);
 
-                    Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
-                    Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
+                    imagingMediator.SetAutoStretch(oldAutoStretch);
+                    imagingMediator.SetDetectStars(oldDetectStars);
                 } catch (OperationCanceledException) {
                 }
             } else {
@@ -432,6 +423,7 @@ namespace NINA.ViewModel {
         }
 
         private TelescopeInfo telescopeInfo;
+        private ImagingMediator imagingMediator;
         private TelescopeMediator telescopeMediator;
 
         public TelescopeInfo TelescopeInfo {
@@ -540,7 +532,7 @@ namespace NINA.ViewModel {
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
                 PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
 
                 canceltoken.ThrowIfCancellationRequested();
@@ -569,7 +561,7 @@ namespace NINA.ViewModel {
                 seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
                 PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
 
                 canceltoken.ThrowIfCancellationRequested();

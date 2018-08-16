@@ -12,12 +12,15 @@ namespace NINA.ViewModel {
 
     internal class FrameFocusVM : DockableVM {
 
-        public FrameFocusVM(IProfileService profileService) : base(profileService) {
+        public FrameFocusVM(IProfileService profileService, ImagingMediator imagingMediator) : base(profileService) {
             Title = "LblFrameNFocus";
             ContentId = nameof(FrameFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
             CancelSnapCommand = new RelayCommand(CancelCaptureImage);
             SnapCommand = new AsyncCommand<bool>(() => Snap(new Progress<ApplicationStatus>(p => Status = p)));
+
+            this.imagingMediator = imagingMediator;
+
             Zoom = 1;
             SnapExposureDuration = 1;
         }
@@ -117,7 +120,7 @@ namespace NINA.ViewModel {
                 _captureImageToken = new CancellationTokenSource();
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
 
-                await Mediator.Instance.RequestAsync(new CapturePrepareAndSaveImageMessage() { Sequence = seq, Save = false, Token = _captureImageToken.Token, Progress = progress });
+                await imagingMediator.CaptureAndPrepareImage(seq, _captureImageToken.Token, progress);
 
                 _captureImageToken.Token.ThrowIfCancellationRequested();
             } while (Loop);
@@ -131,6 +134,8 @@ namespace NINA.ViewModel {
         }
 
         public IAsyncCommand SnapCommand { get; private set; }
+
+        private ImagingMediator imagingMediator;
 
         public IAsyncCommand AutoStretchCommand { get; private set; }
 

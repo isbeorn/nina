@@ -30,7 +30,8 @@ namespace NINA.ViewModel {
                 TelescopeMediator telescopeMediator,
                 FocuserMediator focuserMediator,
                 FilterWheelMediator filterWheelMediator,
-                GuiderMediator guiderMediator
+                GuiderMediator guiderMediator,
+                ImagingMediator imagingMediator
         ) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
@@ -41,6 +42,7 @@ namespace NINA.ViewModel {
             this.focuserMediator = focuserMediator;
             this.guiderMediator = guiderMediator;
             this.cameraMediator = cameraMediator;
+            this.imagingMediator = imagingMediator;
 
             this.profileService = profileService;
             Title = "LblSequence";
@@ -229,7 +231,7 @@ namespace NINA.ViewModel {
                     if (Sequence.CenterTarget) {
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
 
-                        var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                        var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
                         var solveseq = new CaptureSequence() {
                             ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
                             FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
@@ -276,7 +278,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task AutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            var autoFocus = new AutoFocusVM(profileService, focuserMediator, guiderMediator);
+            var autoFocus = new AutoFocusVM(profileService, focuserMediator, guiderMediator, imagingMediator);
             var service = new WindowService();
             service.ShowWindow(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
             await autoFocus.StartAutoFocus(filter, _canceltoken.Token, progress);
@@ -322,15 +324,9 @@ namespace NINA.ViewModel {
                         }
 
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPrepareExposure"] });
-                        await Mediator.Instance.RequestAsync(
-                            new CapturePrepareAndSaveImageMessage() {
-                                Sequence = seq,
-                                Save = true,
-                                TargetName = Sequence.TargetName,
-                                Progress = progress,
-                                Token = ct
-                            }
-                        );
+
+                        await imagingMediator.CaptureAndSaveImage(seq, true, ct, progress, Sequence.TargetName);
+
                         progress.Report(new ApplicationStatus() { Status = string.Empty });
 
                         seqDuration.Stop();
@@ -407,7 +403,7 @@ namespace NINA.ViewModel {
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCheckMeridianFlip"] });
             if (telescopeInfo != null && MeridianFlipVM.ShouldFlip(profileService, seq.ExposureTime, telescopeInfo)) {
-                await new MeridianFlipVM(profileService, cameraMediator, telescopeMediator, guiderMediator).MeridianFlip(seq, telescopeInfo);
+                await new MeridianFlipVM(profileService, cameraMediator, telescopeMediator, guiderMediator, imagingMediator).MeridianFlip(seq, telescopeInfo);
             }
             progress.Report(new ApplicationStatus() { Status = string.Empty });
         }
@@ -524,6 +520,7 @@ namespace NINA.ViewModel {
         private FocuserMediator focuserMediator;
         private GuiderMediator guiderMediator;
         private CameraMediator cameraMediator;
+        private ImagingMediator imagingMediator;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
 
         public ObservableCollection<string> ImageTypes {

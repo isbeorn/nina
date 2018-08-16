@@ -6,6 +6,7 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Async;
 using System.Threading;
@@ -17,10 +18,11 @@ using static NINA.Model.CaptureSequence;
 
 namespace NINA.ViewModel {
 
-    internal class ImagingVM : DockableVM, ICameraConsumer {
+    internal class ImagingVM : DockableVM, ICameraConsumer, IImagingVM {
 
         public ImagingVM(
                 IProfileService profileService,
+                ImagingMediator imagingMediator,
                 CameraMediator cameraMediator,
                 TelescopeMediator telescopeMediator,
                 FilterWheelMediator filterWheelMediator,
@@ -29,6 +31,9 @@ namespace NINA.ViewModel {
             Title = "LblImaging";
             ContentId = nameof(ImagingVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
+
+            this.imagingMediator = imagingMediator;
+            this.imagingMediator.RegisterHandler(this);
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
@@ -42,13 +47,13 @@ namespace NINA.ViewModel {
             StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
             StopLiveViewCommand = new RelayCommand(StopLiveView);
 
-            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator);
+            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
 
             RegisterMediatorMessages();
         }
 
         private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterAsyncRequest(
+            /*Mediator.Instance.RegisterAsyncRequest(
                 new CaptureImageMessageHandle(async (CaptureImageMessage msg) => {
                     return await CaptureImage(msg.Sequence, msg.Token, msg.Progress);
                 })
@@ -64,7 +69,7 @@ namespace NINA.ViewModel {
                 new CaptureAndPrepareImageMessageHandle(async (CaptureAndPrepareImageMessage msg) => {
                     return await CaptureAndPrepareImage(msg.Sequence, msg.Token, msg.Progress);
                 })
-            );
+            );*/
         }
 
         private ImageControlVM _imageControl;
@@ -418,6 +423,7 @@ namespace NINA.ViewModel {
 
         private short _snapGain = -1;
         private CameraMediator cameraMediator;
+        private ImagingMediator imagingMediator;
 
         public short SnapGain {
             get {
@@ -457,6 +463,22 @@ namespace NINA.ViewModel {
 
         public void UpdateDeviceInfo(CameraInfo cameraStatus) {
             CameraInfo = cameraStatus;
+        }
+
+        public bool SetDetectStars(bool value) {
+            var oldval = ImageControl.DetectStars;
+            ImageControl.DetectStars = value;
+            return oldval;
+        }
+
+        public bool SetAutoStretch(bool value) {
+            var oldval = ImageControl.AutoStretch;
+            ImageControl.AutoStretch = value;
+            return oldval;
+        }
+
+        public Task<BitmapSource> PrepareImage(ImageArray iarr, CancellationToken token, bool bSave = false, ImageParameters parameters = null) {
+            return ImageControl.PrepareImage(iarr, token, bSave, parameters);
         }
     }
 }

@@ -21,14 +21,16 @@ namespace NINA.ViewModel {
 
         public AutoFocusVM(IProfileService profileService,
             FocuserMediator focuserMediator,
-            GuiderMediator guiderMediator) : this(profileService, null, focuserMediator, guiderMediator) {
+            GuiderMediator guiderMediator,
+            ImagingMediator imagingMediator) : this(profileService, null, focuserMediator, guiderMediator, imagingMediator) {
         }
 
         public AutoFocusVM(
                 IProfileService profileService,
                 CameraMediator cameraMediator,
                 FocuserMediator focuserMediator,
-                GuiderMediator guiderMediator
+                GuiderMediator guiderMediator,
+                ImagingMediator imagingMediator
         ) : base(profileService) {
             Title = "LblAutoFocus";
             ContentId = nameof(AutoFocusVM);
@@ -42,6 +44,7 @@ namespace NINA.ViewModel {
             this.focuserMediator = focuserMediator;
             this.focuserMediator.RegisterConsumer(this);
 
+            this.imagingMediator = imagingMediator;
             this.guiderMediator = guiderMediator;
 
             FocusPoints = new AsyncObservableCollection<DataPoint>();
@@ -63,6 +66,7 @@ namespace NINA.ViewModel {
         private CancellationTokenSource _autoFocusCancelToken;
         private AsyncObservableCollection<DataPoint> _focusPoints;
         private CameraMediator cameraMediator;
+        private ImagingMediator imagingMediator;
         private GuiderMediator guiderMediator;
 
         public AsyncObservableCollection<DataPoint> FocusPoints {
@@ -154,7 +158,7 @@ namespace NINA.ViewModel {
             }
             var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
 
-            return await Mediator.Instance.RequestAsync(new CaptureImageMessage() { Sequence = seq, Token = token, Progress = progress });
+            return await imagingMediator.CaptureImage(seq, token, progress);
         }
 
         private async Task<double> EvaluateExposure(ImageArray iarr, CancellationToken token, IProgress<ApplicationStatus> progress) {

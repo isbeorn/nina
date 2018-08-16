@@ -27,7 +27,7 @@ namespace NINA.ViewModel {
 
     internal class ImageControlVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
 
-        public ImageControlVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator) : base(profileService) {
+        public ImageControlVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, ImagingMediator imagingMediator) : base(profileService) {
             Title = "LblImage";
 
             this.cameraMediator = cameraMediator;
@@ -35,6 +35,8 @@ namespace NINA.ViewModel {
 
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
+
+            this.imagingMediator = imagingMediator;
 
             ContentId = nameof(ImageControlVM);
             CanClose = false;
@@ -55,8 +57,6 @@ namespace NINA.ViewModel {
             SubSampleDragStartCommand = new RelayCommand(SubSampleDragStart);
             SubSampleDragStopCommand = new RelayCommand(SubSampleDragStop);
             SubSampleDragMoveCommand = new RelayCommand(SubSampleDragMove);
-
-            RegisterMediatorMessages();
 
             BahtinovRectangle = new ObservableRectangle(-1, -1, 200, 200);
             SubSampleRectangle = new ObservableRectangle(-1, -1, 600, 600);
@@ -281,7 +281,7 @@ namespace NINA.ViewModel {
                     AutoStretch = true;
                 }
                 await PrepareImageHelper();
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
                 solver.Image = Image;
                 var service = new WindowService();
                 service.ShowWindow(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
@@ -299,24 +299,6 @@ namespace NINA.ViewModel {
         }
 
         private CancellationTokenSource _plateSolveToken;
-
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((object o) => {
-                AutoStretch = (bool)o;
-            }, MediatorMessages.ChangeAutoStretch);
-            Mediator.Instance.Register((object o) => {
-                DetectStars = (bool)o;
-            }, MediatorMessages.ChangeDetectStars);
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new SetImageMessageHandle(async (SetImageMessage msg) => {
-                    ImgArr = msg.ImageArray;
-
-                    await PrepareImage(ImgArr, msg.Token);
-                    return true;
-                })
-            );
-        }
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
@@ -403,7 +385,6 @@ namespace NINA.ViewModel {
                 _autoStretch = value;
                 if (!_autoStretch && _detectStars) { _detectStars = false; RaisePropertyChanged(nameof(DetectStars)); }
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.AutoStrechChanged, _autoStretch);
             }
         }
 
@@ -450,7 +431,6 @@ namespace NINA.ViewModel {
                 _detectStars = value;
                 if (_detectStars) { _autoStretch = true; RaisePropertyChanged(nameof(AutoStretch)); }
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.DetectStarsChanged, _detectStars);
             }
         }
 
@@ -497,6 +477,7 @@ namespace NINA.ViewModel {
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private TelescopeMediator telescopeMediator;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
+        private ImagingMediator imagingMediator;
 
         public async Task<BitmapSource> PrepareImage(
                 ImageArray iarr,
@@ -661,9 +642,8 @@ namespace NINA.ViewModel {
                     completefilename = SaveTiff(completefilename, TiffCompressOption.None);
                 }
 
-                // todo: turn around dependency: Change this to imagecontrol broadcasting the image.
-                await Mediator.Instance.RequestAsync(
-                    new AddThumbnailMessage() {
+                imagingMediator.OnImageSaved(
+                    new ImageSavedEventArgs() {
                         PathToImage = new Uri(completefilename),
                         Image = Image,
                         FileType = profileService.ActiveProfile.ImageFileSettings.FileType,

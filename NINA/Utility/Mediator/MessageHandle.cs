@@ -54,10 +54,6 @@ namespace NINA.Utility.Mediator {
         public ApplicationStatus Status { get; set; }
     }
 
-    internal class GetCameraNameById : MediatorMessage<string> {
-        private string Id { get; set; }
-    }
-
     internal class ChangeApplicationTabMessage : MediatorMessage<bool> {
         public ViewModel.ApplicationTab Tab { get; set; }
     }

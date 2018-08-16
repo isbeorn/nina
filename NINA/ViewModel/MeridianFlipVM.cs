@@ -17,10 +17,11 @@ namespace NINA.ViewModel {
 
     internal class MeridianFlipVM : BaseVM {
 
-        public MeridianFlipVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, GuiderMediator guiderMediator) : base(profileService) {
+        public MeridianFlipVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, GuiderMediator guiderMediator, ImagingMediator imagingMediator) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
             this.cameraMediator = cameraMediator;
+            this.imagingMediator = imagingMediator;
 
             CancelCommand = new RelayCommand(Cancel);
         }
@@ -41,6 +42,7 @@ namespace NINA.ViewModel {
         private TelescopeMediator telescopeMediator;
         private GuiderMediator guiderMediator;
         private CameraMediator cameraMediator;
+        private ImagingMediator imagingMediator;
 
         public ICommand CancelCommand {
             get {
@@ -157,7 +159,7 @@ namespace NINA.ViewModel {
             if (profileService.ActiveProfile.MeridianFlipSettings.Recenter) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblInitiatePlatesolve"] });
 
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator);
                 var seq = new CaptureSequence(
                     profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
                     CaptureSequence.ImageTypes.SNAP,

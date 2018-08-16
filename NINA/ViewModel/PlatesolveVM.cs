@@ -24,7 +24,12 @@ namespace NINA.ViewModel {
     internal class PlatesolveVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
-        public PlatesolveVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator) : base(profileService) {
+        public PlatesolveVM(
+                IProfileService profileService,
+                CameraMediator cameraMediator,
+                TelescopeMediator telescopeMediator,
+                ImagingMediator imagingMediator
+        ) : base(profileService) {
             Title = "LblPlateSolving";
             ContentId = nameof(PlatesolveVM);
             SyncScope = false;
@@ -35,6 +40,7 @@ namespace NINA.ViewModel {
             this.cameraMediator.RegisterConsumer(this);
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
+            this.imagingMediator = imagingMediator;
 
             SolveCommand = new AsyncCommand<bool>(() => CaptureSolveSyncAndReslew(new Progress<ApplicationStatus>(p => Status = p)));
             CancelSolveCommand = new RelayCommand(CancelSolve);
@@ -49,17 +55,6 @@ namespace NINA.ViewModel {
                 SnapFilter = profileService.ActiveProfile.PlateSolveSettings.Filter;
                 RepeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold;
             };
-
-            RegisterMediatorMessages();
-        }
-
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((object o) => {
-                _autoStretch = (bool)o;
-            }, MediatorMessages.AutoStrechChanged);
-            Mediator.Instance.Register((object o) => {
-                _detectStars = (bool)o;
-            }, MediatorMessages.DetectStarsChanged);
         }
 
         private ApplicationStatus _status;
@@ -253,9 +248,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private bool _autoStretch;
-        private bool _detectStars;
-
         /// <summary>
         /// Captures an image and solves it
         /// </summary>
@@ -266,15 +258,13 @@ namespace NINA.ViewModel {
         /// <param name="binning">    </param>
         /// <returns></returns>
         public async Task<PlateSolveResult> SolveWithCapture(CaptureSequence seq, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false) {
-            var oldAutoStretch = _autoStretch;
-            var oldDetectStars = _detectStars;
-            Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
-            Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
+            var oldAutoStretch = imagingMediator.SetAutoStretch(true);
+            var oldDetectStars = imagingMediator.SetDetectStars(false);
 
-            Image = await Mediator.Instance.RequestAsync(new CaptureAndPrepareImageMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
+            Image = await imagingMediator.CaptureAndPrepareImage(seq, canceltoken, progress);
 
-            Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
-            Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
+            imagingMediator.SetAutoStretch(oldAutoStretch);
+            imagingMediator.SetDetectStars(oldDetectStars);
 
             canceltoken.ThrowIfCancellationRequested();
 
@@ -470,6 +460,7 @@ namespace NINA.ViewModel {
 
         private CameraMediator cameraMediator;
         private TelescopeMediator telescopeMediator;
+        private ImagingMediator imagingMediator;
 
         public IAsyncCommand SolveCommand { get; private set; }
 
