@@ -490,9 +490,9 @@ namespace NINA.ViewModel {
 
         public static SemaphoreSlim ss = new SemaphoreSlim(1, 1);
         private CameraMediator cameraMediator;
-        private CameraInfo cameraInfo;
+        private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private TelescopeMediator telescopeMediator;
-        private TelescopeInfo telescopeInfo;
+        private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
 
         public async Task<BitmapSource> PrepareImage(
                 ImageArray iarr,
@@ -922,11 +922,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        public void UpdateCameraInfo(CameraInfo cameraInfo) {
+        public void UpdateDeviceInfo(CameraInfo cameraInfo) {
             this.cameraInfo = cameraInfo;
         }
 
-        public void UpdateTelescopeInfo(TelescopeInfo telescopeInfo) {
+        public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
             this.telescopeInfo = telescopeInfo;
         }
     }

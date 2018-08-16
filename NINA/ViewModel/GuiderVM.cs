@@ -209,6 +209,10 @@ namespace NINA.ViewModel {
             }
         }
 
+        public GuiderInfo GetDeviceInfo() {
+            return GuiderInfo;
+        }
+
         private GuideStepsHistory guideStepsHistory;
 
         public GuideStepsHistory GuideStepsHistory {

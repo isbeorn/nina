@@ -20,15 +20,5 @@ namespace NINA.Utility.Mediator {
         internal ICollection<FilterInfo> GetAllFilters() {
             return handler.GetAllFilters();
         }
-
-        /// <summary>
-        /// Updates all consumers with the current filterwheel info
-        /// </summary>
-        /// <param name="filterWheelInfo"></param>
-        override internal void Broadcast(FilterWheelInfo filterWheelInfo) {
-            foreach (IFilterWheelConsumer consumer in consumers) {
-                consumer.UpdateFilterWheelInfo(filterWheelInfo);
-            }
-        }
     }
 }

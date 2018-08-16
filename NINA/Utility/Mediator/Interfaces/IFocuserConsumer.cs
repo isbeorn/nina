@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IFocuserConsumer {
-
-        void UpdateFocuserInfo(FocuserInfo focuserInfo);
+    internal interface IFocuserConsumer : IDeviceConsumer<FocuserInfo> {
     }
 }

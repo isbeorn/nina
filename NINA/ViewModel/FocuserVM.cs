@@ -243,6 +243,10 @@ namespace NINA.ViewModel {
             return ChooseFocuser();
         }
 
+        public FocuserInfo GetDeviceInfo() {
+            return FocuserInfo;
+        }
+
         private IFocuser _focuser;
 
         public IFocuser Focuser {

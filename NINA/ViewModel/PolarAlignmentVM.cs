@@ -413,7 +413,7 @@ namespace NINA.ViewModel {
 
         public CameraInfo CameraInfo {
             get {
-                return cameraInfo;
+                return cameraInfo ?? DeviceInfo.CreateDefaultInstance<CameraInfo>();
             }
             private set {
                 cameraInfo = value;
@@ -436,7 +436,7 @@ namespace NINA.ViewModel {
 
         public TelescopeInfo TelescopeInfo {
             get {
-                return telescopeInfo;
+                return telescopeInfo ?? DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
             }
             private set {
                 telescopeInfo = value;
@@ -624,11 +624,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        public void UpdateCameraInfo(CameraInfo cameraInfo) {
+        public void UpdateDeviceInfo(CameraInfo cameraInfo) {
             this.CameraInfo = cameraInfo;
         }
 
-        public void UpdateTelescopeInfo(TelescopeInfo telescopeInfo) {
+        public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
             this.TelescopeInfo = telescopeInfo;
         }
     }

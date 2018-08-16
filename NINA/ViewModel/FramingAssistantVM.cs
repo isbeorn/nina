@@ -658,15 +658,17 @@ namespace NINA.ViewModel {
             );
         }
 
-        public void UpdateCameraInfo(CameraInfo cameraInfo) {
-            if (this.CameraWidth != cameraInfo.XSize && cameraInfo.XSize > 0) {
-                this.CameraWidth = cameraInfo.XSize;
-            }
-            if (this.CameraHeight != cameraInfo.YSize && cameraInfo.YSize > 0) {
-                this.CameraHeight = cameraInfo.YSize;
-            }
-            if (this.CameraPixelSize != cameraInfo.PixelSize) {
-                CameraPixelSize = cameraInfo.PixelSize;
+        public void UpdateDeviceInfo(CameraInfo cameraInfo) {
+            if (cameraInfo != null) {
+                if (this.CameraWidth != cameraInfo.XSize && cameraInfo.XSize > 0) {
+                    this.CameraWidth = cameraInfo.XSize;
+                }
+                if (this.CameraHeight != cameraInfo.YSize && cameraInfo.YSize > 0) {
+                    this.CameraHeight = cameraInfo.YSize;
+                }
+                if (this.CameraPixelSize != cameraInfo.PixelSize) {
+                    CameraPixelSize = cameraInfo.PixelSize;
+                }
             }
         }
 

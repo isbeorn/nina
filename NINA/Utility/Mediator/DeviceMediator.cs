@@ -1,4 +1,5 @@
-﻿using NINA.ViewModel.Interfaces;
+﻿using NINA.Utility.Mediator.Interfaces;
+using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +15,22 @@ namespace NINA.Utility.Mediator {
     /// <typeparam name="THandler"></typeparam>
     /// <typeparam name="TConsumer"></typeparam>
     /// <typeparam name="TInfo"></typeparam>
-    internal abstract class DeviceMediator<THandler, TConsumer, TInfo> where THandler : IDeviceVM {
+    internal abstract class DeviceMediator<THandler, TConsumer, TInfo> where THandler : IDeviceVM<TInfo> where TConsumer : IDeviceConsumer<TInfo> {
         protected THandler handler;
         protected List<TConsumer> consumers = new List<TConsumer>();
 
         internal void RegisterHandler(THandler handler) {
             this.handler = handler;
+            var info = handler.GetDeviceInfo();
+            Broadcast(info);
         }
 
         internal void RegisterConsumer(TConsumer consumer) {
             consumers.Add(consumer);
+            if (handler != null) {
+                var info = handler.GetDeviceInfo();
+                consumer.UpdateDeviceInfo(info);
+            }
         }
 
         internal void RemoveConsumer(TConsumer consumer) {
@@ -49,6 +56,10 @@ namespace NINA.Utility.Mediator {
         /// Broadcast device info updates to all consumers
         /// </summary>
         /// <param name="deviceInfo"></param>
-        abstract internal void Broadcast(TInfo deviceInfo);
+        internal void Broadcast(TInfo deviceInfo) {
+            foreach (TConsumer c in consumers) {
+                c.UpdateDeviceInfo(deviceInfo);
+            }
+        }
     }
 }

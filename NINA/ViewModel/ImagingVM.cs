@@ -78,7 +78,7 @@ namespace NINA.ViewModel {
 
         public CameraInfo CameraInfo {
             get {
-                return cameraInfo;
+                return cameraInfo ?? DeviceInfo.CreateDefaultInstance<CameraInfo>();
             }
             set {
                 cameraInfo = value;
@@ -241,7 +241,7 @@ namespace NINA.ViewModel {
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             double duration = seq.ExposureTime;
             bool isLight = false;
-            if (cameraInfo.HasShutter) {
+            if (CameraInfo.HasShutter) {
                 isLight = true;
             }
 
@@ -278,7 +278,7 @@ namespace NINA.ViewModel {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
             await semaphoreSlim.WaitAsync(token);
 
-            if (cameraInfo.Connected != true) {
+            if (CameraInfo.Connected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
                 semaphoreSlim.Release();
                 return null;
@@ -288,14 +288,14 @@ namespace NINA.ViewModel {
                 ImageArray arr = null;
 
                 try {
-                    if (cameraInfo.Connected != true) {
+                    if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
                     /*Change Filter*/
                     await ChangeFilter(sequence, token, progress);
 
-                    if (cameraInfo.Connected != true) {
+                    if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
@@ -309,7 +309,7 @@ namespace NINA.ViewModel {
 
                     SetSubSample(sequence);
 
-                    if (cameraInfo.Connected != true) {
+                    if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
@@ -324,7 +324,7 @@ namespace NINA.ViewModel {
 
                     token.ThrowIfCancellationRequested();
 
-                    if (cameraInfo.Connected != true) {
+                    if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
@@ -337,7 +337,7 @@ namespace NINA.ViewModel {
                         throw new OperationCanceledException();
                     }
 
-                    if (cameraInfo.Connected != true) {
+                    if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
@@ -455,7 +455,7 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        public void UpdateCameraInfo(CameraInfo cameraStatus) {
+        public void UpdateDeviceInfo(CameraInfo cameraStatus) {
             CameraInfo = cameraStatus;
         }
     }

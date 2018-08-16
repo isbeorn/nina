@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Interfaces {
 
-    internal interface ICameraVM : IDeviceVM {
+    internal interface ICameraVM : IDeviceVM<CameraInfo> {
 
         void SetBinning(short x, short y);
 

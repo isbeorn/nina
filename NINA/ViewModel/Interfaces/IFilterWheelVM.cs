@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Interfaces {
 
-    internal interface IFilterWheelVM : IDeviceVM {
+    internal interface IFilterWheelVM : IDeviceVM<FilterWheelInfo> {
 
         Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null);
 

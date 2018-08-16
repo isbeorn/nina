@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Model.MyGuider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Interfaces {
 
-    internal interface IGuiderVM : IDeviceVM {
+    internal interface IGuiderVM : IDeviceVM<GuiderInfo> {
 
         Task<bool> Dither(CancellationToken token);
 

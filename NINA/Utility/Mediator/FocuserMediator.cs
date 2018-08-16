@@ -19,15 +19,5 @@ namespace NINA.Utility.Mediator {
         internal Task<int> MoveFocuserRelative(int position) {
             return handler.MoveFocuserRelative(position);
         }
-
-        /// <summary>
-        /// Updates all consumers with the current focuser info
-        /// </summary>
-        /// <param name="focuserInfo"></param>
-        override internal void Broadcast(FocuserInfo focuserInfo) {
-            foreach (IFocuserConsumer consumer in consumers) {
-                consumer.UpdateFocuserInfo(focuserInfo);
-            }
-        }
     }
 }

@@ -44,11 +44,5 @@ namespace NINA.Utility.Mediator {
         public Task<bool> AutoSelectGuideStar(CancellationToken token) {
             return handler.AutoSelectGuideStar(token);
         }
-
-        internal override void Broadcast(GuiderInfo deviceInfo) {
-            foreach (IGuiderConsumer consumer in consumers) {
-                consumer.UpdateGuiderInfo(deviceInfo);
-            }
-        }
     }
 }

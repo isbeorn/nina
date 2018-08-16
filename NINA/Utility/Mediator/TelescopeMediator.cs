@@ -36,15 +36,5 @@ namespace NINA.Utility.Mediator {
         internal bool SendToSnapPort(bool start) {
             return handler.SendToSnapPort(start);
         }
-
-        /// <summary>
-        /// Updates all consumers with the current telescope info
-        /// </summary>
-        /// <param name="telescopeInfo"></param>
-        override internal void Broadcast(TelescopeInfo telescopeInfo) {
-            foreach (ITelescopeConsumer consumer in consumers) {
-                consumer.UpdateTelescopeInfo(telescopeInfo);
-            }
-        }
     }
 }

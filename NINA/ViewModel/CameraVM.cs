@@ -521,6 +521,10 @@ namespace NINA.ViewModel {
             return ChooseCamera();
         }
 
+        public CameraInfo GetDeviceInfo() {
+            return CameraInfo;
+        }
+
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
         public ICommand ToggleCoolerOnCommand { get; private set; }

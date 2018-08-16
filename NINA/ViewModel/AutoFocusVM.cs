@@ -267,8 +267,8 @@ namespace NINA.ViewModel {
         }
 
         private AutoFocusPoint _lastAutoFocusPoint;
-        private CameraInfo cameraInfo;
-        private FocuserInfo focuserInfo;
+        private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
+        private FocuserInfo focuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
         private FocuserMediator focuserMediator;
 
         public AutoFocusPoint LastAutoFocusPoint {
@@ -285,11 +285,11 @@ namespace NINA.ViewModel {
             _autoFocusCancelToken?.Cancel();
         }
 
-        public void UpdateCameraInfo(CameraInfo cameraInfo) {
+        public void UpdateDeviceInfo(CameraInfo cameraInfo) {
             this.cameraInfo = cameraInfo;
         }
 
-        public void UpdateFocuserInfo(FocuserInfo focuserInfo) {
+        public void UpdateDeviceInfo(FocuserInfo focuserInfo) {
             this.focuserInfo = focuserInfo;
         }
 

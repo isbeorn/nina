@@ -354,6 +354,7 @@
     <Compile Include="Utility\Mediator\FocuserMediator.cs" />
     <Compile Include="Utility\Mediator\GuiderMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ICameraConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IDeviceConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IFilterWheelConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IFocuserConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IGuiderConsumer.cs" />

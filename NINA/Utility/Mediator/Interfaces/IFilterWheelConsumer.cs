@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IFilterWheelConsumer {
-
-        void UpdateFilterWheelInfo(FilterWheelInfo filterWheelInfo);
+    internal interface IFilterWheelConsumer : IDeviceConsumer<FilterWheelInfo> {
     }
 }

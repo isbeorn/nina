@@ -508,11 +508,11 @@ namespace NINA.ViewModel {
         private ObservableCollection<string> _imageTypes;
         private TelescopeMediator telescopeMediator;
         private FilterWheelMediator filterWheelMediator;
-        private FocuserInfo focuserInfo;
-        private FilterWheelInfo filterWheelInfo;
+        private FocuserInfo focuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
+        private FilterWheelInfo filterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
         private FocuserMediator focuserMediator;
         private GuiderMediator guiderMediator;
-        private TelescopeInfo telescopeInfo;
+        private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
 
         public ObservableCollection<string> ImageTypes {
             get {
@@ -550,15 +550,15 @@ namespace NINA.ViewModel {
             }
         }
 
-        public void UpdateFocuserInfo(FocuserInfo focuserInfo) {
+        public void UpdateDeviceInfo(FocuserInfo focuserInfo) {
             this.focuserInfo = focuserInfo;
         }
 
-        public void UpdateFilterWheelInfo(FilterWheelInfo filterWheelInfo) {
+        public void UpdateDeviceInfo(FilterWheelInfo filterWheelInfo) {
             this.filterWheelInfo = filterWheelInfo;
         }
 
-        public void UpdateTelescopeInfo(TelescopeInfo telescopeInfo) {
+        public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
             this.telescopeInfo = telescopeInfo;
         }
 

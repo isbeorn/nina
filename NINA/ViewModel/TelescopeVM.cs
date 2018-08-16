@@ -503,6 +503,10 @@ namespace NINA.ViewModel {
             return ChooseTelescope();
         }
 
+        public TelescopeInfo GetDeviceInfo() {
+            return TelescopeInfo;
+        }
+
         public ICommand SlewToCoordinatesCommand { get; private set; }
 
         public IAsyncCommand ChooseTelescopeCommand { get; private set; }

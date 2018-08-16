@@ -232,7 +232,7 @@ namespace NINA.ViewModel {
         private bool SyncronizeTelescope() {
             var success = false;
 
-            if (telescopeInfo.Connected != true) {
+            if (TelescopeInfo.Connected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
                 return false;
             }
@@ -321,11 +321,11 @@ namespace NINA.ViewModel {
 
                 if (solveresult != null && solveresult.Success) {
                     if (syncScope) {
-                        if (telescopeInfo.Connected != true) {
+                        if (TelescopeInfo.Connected != true) {
                             Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
                             return null;
                         }
-                        var coords = new Coordinates(telescopeInfo.RightAscension, telescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                        var coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                         if (SyncronizeTelescope() && slewToTarget) {
                             await telescopeMediator.SlewToCoordinatesAsync(coords);
                         }
@@ -351,11 +351,11 @@ namespace NINA.ViewModel {
         /// and puts them into the PlateSolveResult
         /// </summary>
         private void CalculateError() {
-            if (telescopeInfo.Connected == true) {
+            if (TelescopeInfo.Connected == true) {
                 Coordinates solved = PlateSolveResult.Coordinates;
                 solved = solved.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
 
-                var coords = new Coordinates(telescopeInfo.RightAscension, telescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                var coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
 
                 PlateSolveResult.RaError = coords.RADegrees - solved.RADegrees;
                 PlateSolveResult.DecError = coords.Dec - solved.Dec;
@@ -439,8 +439,8 @@ namespace NINA.ViewModel {
             IPlateSolver solver = null;
             if (img != null) {
                 Coordinates coords = null;
-                if (telescopeInfo.Connected == true) {
-                    coords = new Coordinates(telescopeInfo.RightAscension, telescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                if (TelescopeInfo.Connected == true) {
+                    coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 }
                 var binning = CameraInfo.BinX;
                 if (binning < 1) { binning = 1; }
@@ -470,11 +470,11 @@ namespace NINA.ViewModel {
             return solver;
         }
 
-        public void UpdateCameraInfo(CameraInfo cameraInfo) {
+        public void UpdateDeviceInfo(CameraInfo cameraInfo) {
             this.CameraInfo = cameraInfo;
         }
 
-        public void UpdateTelescopeInfo(TelescopeInfo telescopeInfo) {
+        public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
             this.TelescopeInfo = telescopeInfo;
         }
 
@@ -506,7 +506,7 @@ namespace NINA.ViewModel {
 
         public TelescopeInfo TelescopeInfo {
             get {
-                return telescopeInfo;
+                return telescopeInfo ?? DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
             }
             private set {
                 telescopeInfo = value;
@@ -516,7 +516,7 @@ namespace NINA.ViewModel {
 
         public CameraInfo CameraInfo {
             get {
-                return cameraInfo;
+                return cameraInfo ?? DeviceInfo.CreateDefaultInstance<CameraInfo>();
             }
             private set {
                 cameraInfo = value;

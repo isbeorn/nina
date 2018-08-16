@@ -46,15 +46,5 @@ namespace NINA.Utility.Mediator {
         internal void SetSubSampleArea(int x, int y, int width, int height) {
             handler.SetSubSampleArea(x, y, width, height);
         }
-
-        /// <summary>
-        /// Updates all consumers with the current camera info
-        /// </summary>
-        /// <param name="cameraInfo"></param>
-        override internal void Broadcast(CameraInfo cameraInfo) {
-            foreach (ICameraConsumer consumer in consumers) {
-                consumer.UpdateCameraInfo(cameraInfo);
-            }
-        }
     }
 }

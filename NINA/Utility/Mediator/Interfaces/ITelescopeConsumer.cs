@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface ITelescopeConsumer {
-
-        void UpdateTelescopeInfo(TelescopeInfo telescopeInfo);
+    internal interface ITelescopeConsumer : IDeviceConsumer<TelescopeInfo> {
     }
 }

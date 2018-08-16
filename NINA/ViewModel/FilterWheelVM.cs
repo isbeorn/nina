@@ -252,6 +252,10 @@ namespace NINA.ViewModel {
             return ChooseFW();
         }
 
+        public FilterWheelInfo GetDeviceInfo() {
+            return FilterWheelInfo;
+        }
+
         public FilterWheelChooserVM FilterWheelChooserVM {
             get {
                 if (_filterWheelChooserVM == null) {
