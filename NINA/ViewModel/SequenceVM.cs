@@ -26,6 +26,7 @@ namespace NINA.ViewModel {
 
         public SequenceVM(
                 IProfileService profileService,
+                CameraMediator cameraMediator,
                 TelescopeMediator telescopeMediator,
                 FocuserMediator focuserMediator,
                 FilterWheelMediator filterWheelMediator,
@@ -39,6 +40,7 @@ namespace NINA.ViewModel {
 
             this.focuserMediator = focuserMediator;
             this.guiderMediator = guiderMediator;
+            this.cameraMediator = cameraMediator;
 
             this.profileService = profileService;
             Title = "LblSequence";
@@ -62,11 +64,7 @@ namespace NINA.ViewModel {
                 dso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                 Sequence.SetSequenceTarget(dso);
             };
-
-            meridianFlipVM = new MeridianFlipVM(profileService, telescopeMediator, guiderMediator);
         }
-
-        private MeridianFlipVM meridianFlipVM;
 
         private void LoadSequence(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
@@ -230,7 +228,20 @@ namespace NINA.ViewModel {
                     await telescopeMediator.SlewToCoordinatesAsync(Sequence.Coordinates);
                     if (Sequence.CenterTarget) {
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
-                        var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });
+
+                        var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                        var solveseq = new CaptureSequence() {
+                            ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                            FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
+                            ImageType = CaptureSequence.ImageTypes.SNAP,
+                            TotalExposureCount = 1
+                        };
+                        var service = new WindowService();
+                        service.ShowWindow(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                        var result = await solver.CaptureSolveSyncAndReslew(solveseq, true, true, true, _canceltoken.Token, progress, false, profileService.ActiveProfile.PlateSolveSettings.Threshold);
+                        service.DelayedClose(TimeSpan.FromSeconds(10));
+
+                        //var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });
                         if (result == null || !result.Success) {
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlatesolveFailed"] });
                             return false;
@@ -396,7 +407,7 @@ namespace NINA.ViewModel {
         private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCheckMeridianFlip"] });
             if (telescopeInfo != null && MeridianFlipVM.ShouldFlip(profileService, seq.ExposureTime, telescopeInfo)) {
-                await new MeridianFlipVM(profileService, telescopeMediator, guiderMediator).MeridianFlip(seq, telescopeInfo);
+                await new MeridianFlipVM(profileService, cameraMediator, telescopeMediator, guiderMediator).MeridianFlip(seq, telescopeInfo);
             }
             progress.Report(new ApplicationStatus() { Status = string.Empty });
         }
@@ -512,6 +523,7 @@ namespace NINA.ViewModel {
         private FilterWheelInfo filterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
         private FocuserMediator focuserMediator;
         private GuiderMediator guiderMediator;
+        private CameraMediator cameraMediator;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
 
         public ObservableCollection<string> ImageTypes {

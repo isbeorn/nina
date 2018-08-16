@@ -149,7 +149,9 @@ namespace NINA.ViewModel {
 
                 var dialogResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
                 if (dialogResult == MessageBoxResult.OK) {
-                    var plateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Image = img, Progress = _statusUpdate, Token = _loadImageSource.Token, Blind = true });
+                    var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                    var plateSolveResult = await solver.BlindSolve(img, _statusUpdate, _loadImageSource.Token);
+
                     if (plateSolveResult.Success) {
                         var rotation = 180 - plateSolveResult.Orientation;
                         if (rotation < 0) {

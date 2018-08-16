@@ -20,6 +20,9 @@ namespace NINA.Utility.Mediator {
         protected List<TConsumer> consumers = new List<TConsumer>();
 
         internal void RegisterHandler(THandler handler) {
+            if (this.handler != null) {
+                throw new Exception("Handler already registered!");
+            }
             this.handler = handler;
             var info = handler.GetDeviceInfo();
             Broadcast(info);

@@ -281,7 +281,11 @@ namespace NINA.ViewModel {
                     AutoStretch = true;
                 }
                 await PrepareImageHelper();
-                await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Progress = _progress, Token = _plateSolveToken.Token, Image = Image });
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                solver.Image = Image;
+                var service = new WindowService();
+                service.ShowWindow(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                await solver.Solve(Image, _progress, _plateSolveToken.Token);
                 return true;
             } else {
                 return false;

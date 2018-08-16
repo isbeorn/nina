@@ -539,7 +539,9 @@ namespace NINA.ViewModel {
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
-                PlateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
+
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
 
                 canceltoken.ThrowIfCancellationRequested();
 
@@ -566,7 +568,9 @@ namespace NINA.ViewModel {
 
                 seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
-                PlateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
+
+                solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
 
                 canceltoken.ThrowIfCancellationRequested();
 

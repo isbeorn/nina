@@ -44,15 +44,6 @@ namespace NINA.Utility.Mediator {
         public override string MessageType { get { return typeof(SetFramingAssistantCoordinatesMessage).Name; } }
     }
 
-    internal class PlateSolveMessageHandle : AsyncMessageHandle<PlateSolveResult> {
-
-        public PlateSolveMessageHandle(Func<PlateSolveMessage, Task<PlateSolveResult>> callback) {
-            Callback = (f) => callback((PlateSolveMessage)f);
-        }
-
-        public override string MessageType { get { return typeof(PlateSolveMessage).Name; } }
-    }
-
     internal class CaptureImageMessageHandle : AsyncMessageHandle<ImageArray> {
 
         public CaptureImageMessageHandle(Func<CaptureImageMessage, Task<ImageArray>> callback) {
@@ -113,14 +104,6 @@ namespace NINA.Utility.Mediator {
 
     internal class SetFramingAssistantCoordinatesMessage : AsyncMediatorMessage<bool> {
         public DeepSkyObject DSO { get; set; }
-    }
-
-    internal class PlateSolveMessage : AsyncMediatorMessage<PlateSolveResult> {
-        public CaptureSequence Sequence { get; set; }
-        public bool SyncReslewRepeat { get; set; }
-        public BitmapSource Image { get; internal set; }
-        public bool Silent { get; set; }
-        public bool Blind { get; set; }
     }
 
     internal class CaptureImageMessage : AsyncMediatorMessage<ImageArray> {

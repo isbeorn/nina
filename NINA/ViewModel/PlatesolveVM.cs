@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel {
@@ -59,39 +60,6 @@ namespace NINA.ViewModel {
             Mediator.Instance.Register((object o) => {
                 _detectStars = (bool)o;
             }, MediatorMessages.DetectStarsChanged);
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new PlateSolveMessageHandle(async (PlateSolveMessage msg) => {
-                    if (msg.Sequence != null) {
-                        return await SolveWithCapture(msg.Sequence, msg.Progress, msg.Token, msg.Silent);
-                    } else {
-                        if (msg.SyncReslewRepeat) {
-                            var seq = new CaptureSequence(
-                                profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
-                                CaptureSequence.ImageTypes.SNAP,
-                                profileService.ActiveProfile.PlateSolveSettings.Filter,
-                                new BinningMode(1, 1),
-                                1);
-                            seq.Gain = SnapGain;
-                            return await CaptureSolveSyncAndReslew(
-                                seq,
-                                true,
-                                true,
-                                true,
-                                msg.Token,
-                                msg.Progress,
-                                msg.Silent,
-                                profileService.ActiveProfile.PlateSolveSettings.Threshold);
-                        } else {
-                            if (msg.Blind) {
-                                return await BlindSolve(msg.Image ?? Image, msg.Progress, msg.Token);
-                            } else {
-                                return await Solve(msg.Image ?? Image, msg.Progress, msg.Token, msg.Silent);
-                            }
-                        }
-                    }
-                })
-            );
         }
 
         private ApplicationStatus _status;
@@ -261,6 +229,26 @@ namespace NINA.ViewModel {
             }
             set {
                 _image = value;
+                if (_image != null) {
+                    var factor = 300 / _image.Width;
+
+                    BitmapSource scaledBitmap = new WriteableBitmap(new TransformedBitmap(_image, new ScaleTransform(factor, factor)));
+                    scaledBitmap.Freeze();
+                    Thumbnail = scaledBitmap;
+                }
+
+                RaisePropertyChanged();
+            }
+        }
+
+        private BitmapSource thumbnail;
+
+        public BitmapSource Thumbnail {
+            get {
+                return thumbnail;
+            }
+            set {
+                thumbnail = value;
                 RaisePropertyChanged();
             }
         }
@@ -277,7 +265,7 @@ namespace NINA.ViewModel {
         /// <param name="filter">     </param>
         /// <param name="binning">    </param>
         /// <returns></returns>
-        private async Task<PlateSolveResult> SolveWithCapture(CaptureSequence seq, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false) {
+        public async Task<PlateSolveResult> SolveWithCapture(CaptureSequence seq, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false) {
             var oldAutoStretch = _autoStretch;
             var oldDetectStars = _detectStars;
             Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
@@ -290,7 +278,9 @@ namespace NINA.ViewModel {
 
             canceltoken.ThrowIfCancellationRequested();
 
-            return await Solve(Image, progress, canceltoken, silent); ;
+            var success = await Solve(Image, progress, canceltoken, silent); ;
+            Image = null;
+            return success;
         }
 
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<ApplicationStatus> progress) {
@@ -305,7 +295,7 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="progress"></param>
         /// <returns></returns>
-        private async Task<PlateSolveResult> CaptureSolveSyncAndReslew(
+        public async Task<PlateSolveResult> CaptureSolveSyncAndReslew(
                 CaptureSequence seq,
                 bool syncScope,
                 bool slewToTarget,

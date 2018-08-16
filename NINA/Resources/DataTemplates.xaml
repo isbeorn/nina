@@ -15,4 +15,8 @@
     <DataTemplate DataType="{x:Type vm:AutoFocusVM}">
         <view:AutoFocusChart />
     </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
+        <view:PlateSolveView />
+    </DataTemplate>
 </ResourceDictionary>

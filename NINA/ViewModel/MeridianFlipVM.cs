@@ -17,9 +17,10 @@ namespace NINA.ViewModel {
 
     internal class MeridianFlipVM : BaseVM {
 
-        public MeridianFlipVM(IProfileService profileService, TelescopeMediator telescopeMediator, GuiderMediator guiderMediator) : base(profileService) {
+        public MeridianFlipVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, GuiderMediator guiderMediator) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
+            this.cameraMediator = cameraMediator;
 
             CancelCommand = new RelayCommand(Cancel);
         }
@@ -39,6 +40,7 @@ namespace NINA.ViewModel {
         private CancellationTokenSource _tokensource;
         private TelescopeMediator telescopeMediator;
         private GuiderMediator guiderMediator;
+        private CameraMediator cameraMediator;
 
         public ICommand CancelCommand {
             get {
@@ -154,7 +156,16 @@ namespace NINA.ViewModel {
         private async Task<bool> Recenter(CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (profileService.ActiveProfile.MeridianFlipSettings.Recenter) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblInitiatePlatesolve"] });
-                await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = token, Silent = true });
+
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator);
+                var seq = new CaptureSequence(
+                    profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                    CaptureSequence.ImageTypes.SNAP,
+                    profileService.ActiveProfile.PlateSolveSettings.Filter,
+                    new Model.MyCamera.BinningMode(1, 1),
+                    1);
+
+                await solver.CaptureSolveSyncAndReslew(seq, true, true, true, token, progress, true, profileService.ActiveProfile.PlateSolveSettings.Threshold);
             }
             return true;
         }

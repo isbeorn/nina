@@ -89,21 +89,25 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        private static object lockobj = new object();
+
         private void Save() {
             try {
-                var serializer = new DataContractSerializer(typeof(Profiles));
+                lock (lockobj) {
+                    var serializer = new DataContractSerializer(typeof(Profiles));
 
-                //Copy profile to temp file, to be able to roll back in case of error
-                if (File.Exists(PROFILEFILEPATH)) {
-                    File.Copy(PROFILEFILEPATH, PROFILETEMPFILEPATH, true);
+                    //Copy profile to temp file, to be able to roll back in case of error
+                    if (File.Exists(PROFILEFILEPATH)) {
+                        File.Copy(PROFILEFILEPATH, PROFILETEMPFILEPATH, true);
+                    }
+
+                    using (FileStream writer = new FileStream(PROFILEFILEPATH, FileMode.Create)) {
+                        serializer.WriteObject(writer, Profiles);
+                    }
+
+                    //Delete Temp file
+                    File.Delete(PROFILETEMPFILEPATH);
                 }
-
-                using (FileStream writer = new FileStream(PROFILEFILEPATH, FileMode.Create)) {
-                    serializer.WriteObject(writer, Profiles);
-                }
-
-                //Delete Temp file
-                File.Delete(PROFILETEMPFILEPATH);
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.Notification.ShowError(ex.Message);
