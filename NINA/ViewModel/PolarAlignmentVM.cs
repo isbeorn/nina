@@ -19,10 +19,10 @@ namespace NINA.ViewModel {
 
         public PolarAlignmentVM(
                 IProfileService profileService,
-                CameraMediator cameraMediator,
-                TelescopeMediator telescopeMediator,
-                ImagingMediator imagingMediator,
-                ApplicationStatusMediator applicationStatusMediator
+                ICameraMediator cameraMediator,
+                ITelescopeMediator telescopeMediator,
+                IImagingMediator imagingMediator,
+                IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblPolarAlignment";
             ContentId = nameof(PolarAlignmentVM);
@@ -219,8 +219,8 @@ namespace NINA.ViewModel {
         }
 
         private string _hourAngleTime;
-        private CameraMediator cameraMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private ICameraMediator cameraMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
         private DispatcherTimer _updateValues;
 
         private BinningMode _snapBin;
@@ -426,8 +426,8 @@ namespace NINA.ViewModel {
         }
 
         private TelescopeInfo telescopeInfo;
-        private ImagingMediator imagingMediator;
-        private TelescopeMediator telescopeMediator;
+        private IImagingMediator imagingMediator;
+        private ITelescopeMediator telescopeMediator;
 
         public TelescopeInfo TelescopeInfo {
             get {

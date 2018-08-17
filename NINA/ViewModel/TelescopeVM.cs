@@ -3,6 +3,7 @@ using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
@@ -18,7 +19,7 @@ namespace NINA.ViewModel {
 
     internal class TelescopeVM : DockableVM, ITelescopeVM {
 
-        public TelescopeVM(IProfileService profileService, TelescopeMediator telescopeMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public TelescopeVM(IProfileService profileService, ITelescopeMediator telescopeMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterHandler(this);
@@ -442,8 +443,8 @@ namespace NINA.ViewModel {
         }
 
         private double _targetRightAscencionSeconds;
-        private TelescopeMediator telescopeMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private ITelescopeMediator telescopeMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public double TargetRightAscencionSeconds {
             get {

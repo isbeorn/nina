@@ -3,6 +3,7 @@ using Nikon;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.RawConverter;
@@ -20,7 +21,7 @@ namespace NINA.Model.MyCamera {
 
     internal class NikonCamera : BaseINPC, ICamera {
 
-        public NikonCamera(IProfileService profileService, TelescopeMediator telescopeMediator) {
+        public NikonCamera(IProfileService profileService, ITelescopeMediator telescopeMediator) {
             this.telescopeMediator = telescopeMediator;
             this.profileService = profileService;
             /* NIKON */
@@ -28,7 +29,7 @@ namespace NINA.Model.MyCamera {
             _nikonManagers = new List<NikonManager>();
         }
 
-        private TelescopeMediator telescopeMediator;
+        private ITelescopeMediator telescopeMediator;
         private IProfileService profileService;
         private List<NikonManager> _nikonManagers;
         private NikonManager _activeNikonManager;

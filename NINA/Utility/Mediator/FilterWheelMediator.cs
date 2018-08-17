@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator {
 
-    internal class FilterWheelMediator : DeviceMediator<IFilterWheelVM, IFilterWheelConsumer, FilterWheelInfo> {
+    internal class FilterWheelMediator : DeviceMediator<IFilterWheelVM, IFilterWheelConsumer, FilterWheelInfo>, IFilterWheelMediator {
 
-        internal Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null) {
+        public Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null) {
             return handler.ChangeFilter(inputFilter, token, progress);
         }
 
-        internal ICollection<FilterInfo> GetAllFilters() {
+        public ICollection<FilterInfo> GetAllFilters() {
             return handler.GetAllFilters();
         }
     }

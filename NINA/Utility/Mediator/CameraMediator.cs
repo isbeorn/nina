@@ -13,37 +13,37 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator {
 
-    internal class CameraMediator : DeviceMediator<ICameraVM, ICameraConsumer, CameraInfo> {
+    internal class CameraMediator : DeviceMediator<ICameraVM, ICameraConsumer, CameraInfo>, ICameraMediator {
 
-        internal Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {
             return handler.Capture(exposureTime, isLightFrame, token, progress);
         }
 
-        internal IAsyncEnumerable<ImageArray> LiveView(CancellationToken token) {
+        public IAsyncEnumerable<ImageArray> LiveView(CancellationToken token) {
             return handler.LiveView(token);
         }
 
-        internal Task<ImageArray> Download(CancellationToken token) {
+        public Task<ImageArray> Download(CancellationToken token) {
             return handler.Download(token);
         }
 
-        internal void AbortExposure() {
+        public void AbortExposure() {
             handler.AbortExposure();
         }
 
-        internal void SetBinning(short x, short y) {
+        public void SetBinning(short x, short y) {
             handler.SetBinning(x, y);
         }
 
-        internal void SetGain(short gain) {
+        public void SetGain(short gain) {
             handler.SetGain(gain);
         }
 
-        internal void SetSubSample(bool subSample) {
+        public void SetSubSample(bool subSample) {
             handler.SetSubSample(subSample);
         }
 
-        internal void SetSubSampleArea(int x, int y, int width, int height) {
+        public void SetSubSampleArea(int x, int y, int width, int height) {
             handler.SetSubSampleArea(x, y, width, height);
         }
     }

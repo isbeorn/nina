@@ -2,6 +2,7 @@
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
@@ -16,7 +17,7 @@ namespace NINA.ViewModel {
 
     internal class FilterWheelVM : DockableVM, IFilterWheelVM {
 
-        public FilterWheelVM(IProfileService profileService, FilterWheelMediator filterWheelMediator, FocuserMediator focuserMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public FilterWheelVM(IProfileService profileService, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFilterWheel";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FWSVG"];
 
@@ -219,9 +220,9 @@ namespace NINA.ViewModel {
         }
 
         private FilterWheelChooserVM _filterWheelChooserVM;
-        private FilterWheelMediator filterWheelMediator;
-        private FocuserMediator focuserMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private IFilterWheelMediator filterWheelMediator;
+        private IFocuserMediator focuserMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
         private FilterWheelInfo filterWheelInfo;
 
         public FilterWheelInfo FilterWheelInfo {

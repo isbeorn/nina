@@ -1,5 +1,6 @@
 ﻿using NINA.Model;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
 using System;
@@ -10,9 +11,9 @@ using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
-    internal class ApplicationStatusVM : DockableVM, IAplicationStatusVM {
+    internal class ApplicationStatusVM : DockableVM, IApplicationStatusVM {
 
-        public ApplicationStatusVM(IProfileService profileService, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public ApplicationStatusVM(IProfileService profileService, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblApplicationStatus";
             ContentId = nameof(ApplicationStatusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ApplicationStatusSVG"];
@@ -46,7 +47,7 @@ namespace NINA.ViewModel {
         }
 
         private static Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public void StatusUpdate(ApplicationStatus status) {
             _dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {

@@ -13,12 +13,13 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using NINA.ViewModel.Interfaces;
 using System.Collections.Generic;
+using NINA.Utility.Mediator.Interfaces;
 
 namespace NINA.ViewModel {
 
     internal class GuiderVM : DockableVM, IGuiderVM {
 
-        public GuiderVM(IProfileService profileService, GuiderMediator guiderMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public GuiderVM(IProfileService profileService, IGuiderMediator guiderMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblGuider";
             ContentId = nameof(GuiderVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
@@ -241,8 +242,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        private GuiderMediator guiderMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private IGuiderMediator guiderMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public ICommand ConnectGuiderCommand { get; private set; }
 

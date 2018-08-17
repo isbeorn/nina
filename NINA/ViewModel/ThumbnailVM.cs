@@ -2,6 +2,7 @@
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using nom.tam.fits;
@@ -17,7 +18,7 @@ namespace NINA.ViewModel {
 
     internal class ThumbnailVM : DockableVM {
 
-        public ThumbnailVM(IProfileService profileService, ImagingMediator imagingMediator) : base(profileService) {
+        public ThumbnailVM(IProfileService profileService, IImagingMediator imagingMediator) : base(profileService) {
             Title = "LblImageHistory";
             ContentId = nameof(ThumbnailVM);
             CanClose = false;
@@ -77,7 +78,7 @@ namespace NINA.ViewModel {
         }
 
         private ObservableLimitedSizedStack<Thumbnail> _thumbnails;
-        private ImagingMediator imagingMediator;
+        private IImagingMediator imagingMediator;
         public ICommand SelectCommand { get; set; }
 
         private async Task<bool> SelectImage(Thumbnail thumbnail) {

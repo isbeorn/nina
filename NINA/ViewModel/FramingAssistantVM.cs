@@ -23,7 +23,7 @@ namespace NINA.ViewModel {
 
     internal class FramingAssistantVM : BaseVM, ICameraConsumer {
 
-        public FramingAssistantVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, ImagingMediator imagingMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public FramingAssistantVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
             this.telescopeMediator = telescopeMediator;
@@ -234,10 +234,10 @@ namespace NINA.ViewModel {
         }
 
         private Coordinates _coordinates;
-        private CameraMediator cameraMediator;
-        private TelescopeMediator telescopeMediator;
-        private ImagingMediator imagingMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private ICameraMediator cameraMediator;
+        private ITelescopeMediator telescopeMediator;
+        private IImagingMediator imagingMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public Coordinates Coordinates {
             get {

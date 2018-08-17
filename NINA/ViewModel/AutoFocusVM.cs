@@ -20,19 +20,19 @@ namespace NINA.ViewModel {
     internal class AutoFocusVM : DockableVM, ICameraConsumer, IFocuserConsumer {
 
         public AutoFocusVM(IProfileService profileService,
-            FocuserMediator focuserMediator,
-            GuiderMediator guiderMediator,
-            ImagingMediator imagingMediator,
-            ApplicationStatusMediator applicationStatusMediator) : this(profileService, null, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator) {
+            IFocuserMediator focuserMediator,
+            IGuiderMediator guiderMediator,
+            IImagingMediator imagingMediator,
+            IApplicationStatusMediator applicationStatusMediator) : this(profileService, null, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator) {
         }
 
         public AutoFocusVM(
                 IProfileService profileService,
-                CameraMediator cameraMediator,
-                FocuserMediator focuserMediator,
-                GuiderMediator guiderMediator,
-                ImagingMediator imagingMediator,
-                ApplicationStatusMediator applicationStatusMediator
+                ICameraMediator cameraMediator,
+                IFocuserMediator focuserMediator,
+                IGuiderMediator guiderMediator,
+                IImagingMediator imagingMediator,
+                IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblAutoFocus";
             ContentId = nameof(AutoFocusVM);
@@ -68,10 +68,10 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _autoFocusCancelToken;
         private AsyncObservableCollection<DataPoint> _focusPoints;
-        private CameraMediator cameraMediator;
-        private ImagingMediator imagingMediator;
-        private GuiderMediator guiderMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private ICameraMediator cameraMediator;
+        private IImagingMediator imagingMediator;
+        private IGuiderMediator guiderMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public AsyncObservableCollection<DataPoint> FocusPoints {
             get {
@@ -276,7 +276,7 @@ namespace NINA.ViewModel {
         private AutoFocusPoint _lastAutoFocusPoint;
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private FocuserInfo focuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
-        private FocuserMediator focuserMediator;
+        private IFocuserMediator focuserMediator;
 
         public AutoFocusPoint LastAutoFocusPoint {
             get {

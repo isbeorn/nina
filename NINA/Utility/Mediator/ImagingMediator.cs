@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility.Enum;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel;
 using NINA.ViewModel.Interfaces;
 using System;
@@ -13,10 +14,10 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.Utility.Mediator {
 
-    internal class ImagingMediator {
+    internal class ImagingMediator : IImagingMediator {
         protected IImagingVM handler;
 
-        internal void RegisterHandler(IImagingVM handler) {
+        public void RegisterHandler(IImagingVM handler) {
             if (this.handler != null) {
                 throw new Exception("Handler already registered!");
             }
@@ -56,17 +57,5 @@ namespace NINA.Utility.Mediator {
         public void OnImageSaved(ImageSavedEventArgs e) {
             ImageSaved?.Invoke(handler, e);
         }
-    }
-
-    public class ImageSavedEventArgs : EventArgs {
-        public BitmapSource Image { get; set; }
-        public double Mean { get; set; }
-        public Uri PathToImage { get; set; }
-        public FileTypeEnum FileType { get; set; }
-        public double HFR { get; internal set; }
-        public bool IsBayered { get; internal set; }
-        public double Duration { get; internal set; }
-        public string Filter { get; internal set; }
-        public int StatisticsId { get; internal set; }
     }
 }

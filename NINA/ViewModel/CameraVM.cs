@@ -4,6 +4,7 @@ using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
@@ -20,7 +21,7 @@ namespace NINA.ViewModel {
 
     internal class CameraVM : DockableVM, ICameraVM {
 
-        public CameraVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public CameraVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblCamera";
             ContentId = nameof(CameraVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
@@ -83,7 +84,7 @@ namespace NINA.ViewModel {
             );
         }
 
-        private CameraMediator cameraMediator;
+        private ICameraMediator cameraMediator;
 
         private CameraChooserVM _cameraChooserVM;
 
@@ -531,7 +532,7 @@ namespace NINA.ViewModel {
         public ICommand ToggleCoolerOnCommand { get; private set; }
         public ICommand CoolCamCommand { get; private set; }
 
-        private ApplicationStatusMediator applicationStatusMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public IAsyncCommand ChooseCameraCommand { get; private set; }
 
@@ -544,9 +545,9 @@ namespace NINA.ViewModel {
     }
 
     internal class CameraChooserVM : EquipmentChooserVM {
-        private TelescopeMediator telescopeMediator;
+        private ITelescopeMediator telescopeMediator;
 
-        public CameraChooserVM(IProfileService profileService, TelescopeMediator telescopeMediator) : base(typeof(CameraChooserVM), profileService) {
+        public CameraChooserVM(IProfileService profileService, ITelescopeMediator telescopeMediator) : base(typeof(CameraChooserVM), profileService) {
             this.telescopeMediator = telescopeMediator;
         }
 

@@ -11,29 +11,29 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator {
 
-    internal class TelescopeMediator : DeviceMediator<ITelescopeVM, ITelescopeConsumer, TelescopeInfo> {
+    internal class TelescopeMediator : DeviceMediator<ITelescopeVM, ITelescopeConsumer, TelescopeInfo>, ITelescopeMediator {
 
-        internal void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate) {
+        public void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate) {
             handler.MoveAxis(axis, rate);
         }
 
-        internal bool Sync(double ra, double dec) {
+        public bool Sync(double ra, double dec) {
             return handler.Sync(ra, dec);
         }
 
-        internal Task<bool> SlewToCoordinatesAsync(Coordinates coords) {
+        public Task<bool> SlewToCoordinatesAsync(Coordinates coords) {
             return handler.SlewToCoordinatesAsync(coords);
         }
 
-        internal bool MeridianFlip(Coordinates targetCoordinates) {
+        public bool MeridianFlip(Coordinates targetCoordinates) {
             return handler.MeridianFlip(targetCoordinates);
         }
 
-        internal bool SetTracking(bool tracking) {
+        public bool SetTracking(bool tracking) {
             return handler.SetTracking(tracking);
         }
 
-        internal bool SendToSnapPort(bool start) {
+        public bool SendToSnapPort(bool start) {
             return handler.SendToSnapPort(start);
         }
     }

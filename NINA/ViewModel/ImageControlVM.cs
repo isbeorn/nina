@@ -27,7 +27,7 @@ namespace NINA.ViewModel {
 
     internal class ImageControlVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
 
-        public ImageControlVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, ImagingMediator imagingMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblImage";
 
             this.cameraMediator = cameraMediator;
@@ -474,12 +474,12 @@ namespace NINA.ViewModel {
         public bool IsLiveViewEnabled { get; internal set; }
 
         public static SemaphoreSlim ss = new SemaphoreSlim(1, 1);
-        private CameraMediator cameraMediator;
+        private ICameraMediator cameraMediator;
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
-        private TelescopeMediator telescopeMediator;
+        private ITelescopeMediator telescopeMediator;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
-        private ImagingMediator imagingMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private IImagingMediator imagingMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public async Task<BitmapSource> PrepareImage(
                 ImageArray iarr,

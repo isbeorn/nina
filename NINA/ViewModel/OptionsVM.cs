@@ -19,7 +19,7 @@ namespace NINA.ViewModel {
 
     internal class OptionsVM : DockableVM {
 
-        public OptionsVM(IProfileService profileService, FilterWheelMediator filterWheelMediator) : base(profileService) {
+        public OptionsVM(IProfileService profileService, IFilterWheelMediator filterWheelMediator) : base(profileService) {
             Title = "LblOptions";
             ContentId = nameof(OptionsVM);
             CanClose = false;
@@ -1286,7 +1286,7 @@ namespace NINA.ViewModel {
         }
 
         private IProfile _selectedProfile;
-        private FilterWheelMediator filterWheelMediator;
+        private IFilterWheelMediator filterWheelMediator;
 
         public IProfile SelectedProfile {
             get {

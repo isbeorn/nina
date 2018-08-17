@@ -2,6 +2,7 @@
 using NINA.Model.MyFocuser;
 using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
@@ -15,7 +16,7 @@ namespace NINA.ViewModel {
 
     internal class FocuserVM : DockableVM, IFocuserVM {
 
-        public FocuserVM(IProfileService profileService, FocuserMediator focuserMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public FocuserVM(IProfileService profileService, IFocuserMediator focuserMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFocuser";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FocusSVG"];
 
@@ -275,8 +276,8 @@ namespace NINA.ViewModel {
         }
 
         private DeviceUpdateTimer updateTimer;
-        private FocuserMediator focuserMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private IFocuserMediator focuserMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public ICommand RefreshFocuserListCommand { get; private set; }
 

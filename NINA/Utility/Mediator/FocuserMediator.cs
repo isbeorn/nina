@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator {
 
-    internal class FocuserMediator : DeviceMediator<IFocuserVM, IFocuserConsumer, FocuserInfo> {
+    internal class FocuserMediator : DeviceMediator<IFocuserVM, IFocuserConsumer, FocuserInfo>, IFocuserMediator {
 
-        internal Task<int> MoveFocuser(int position) {
+        public Task<int> MoveFocuser(int position) {
             return handler.MoveFocuser(position);
         }
 
-        internal Task<int> MoveFocuserRelative(int position) {
+        public Task<int> MoveFocuserRelative(int position) {
             return handler.MoveFocuserRelative(position);
         }
     }

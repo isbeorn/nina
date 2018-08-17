@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
@@ -56,13 +57,13 @@ namespace NINA.ViewModel {
             InitAvalonDockLayout();
         }
 
-        private CameraMediator cameraMediator;
-        private TelescopeMediator telescopeMediator;
-        private FocuserMediator focuserMediator;
-        private FilterWheelMediator filterWheelMediator;
-        private GuiderMediator guiderMediator;
-        private ImagingMediator imagingMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private ICameraMediator cameraMediator;
+        private ITelescopeMediator telescopeMediator;
+        private IFocuserMediator focuserMediator;
+        private IFilterWheelMediator filterWheelMediator;
+        private IGuiderMediator guiderMediator;
+        private IImagingMediator imagingMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         private void LoadProfile(object obj) {
             if (profileService.Profiles.ProfileList.Count > 1) {

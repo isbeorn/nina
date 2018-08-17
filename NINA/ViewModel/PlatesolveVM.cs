@@ -26,10 +26,10 @@ namespace NINA.ViewModel {
 
         public PlatesolveVM(
                 IProfileService profileService,
-                CameraMediator cameraMediator,
-                TelescopeMediator telescopeMediator,
-                ImagingMediator imagingMediator,
-                ApplicationStatusMediator applicationStatusMediator
+                ICameraMediator cameraMediator,
+                ITelescopeMediator telescopeMediator,
+                IImagingMediator imagingMediator,
+                IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblPlateSolving";
             ContentId = nameof(PlatesolveVM);
@@ -460,10 +460,10 @@ namespace NINA.ViewModel {
             this.TelescopeInfo = telescopeInfo;
         }
 
-        private CameraMediator cameraMediator;
-        private TelescopeMediator telescopeMediator;
-        private ImagingMediator imagingMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private ICameraMediator cameraMediator;
+        private ITelescopeMediator telescopeMediator;
+        private IImagingMediator imagingMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public IAsyncCommand SolveCommand { get; private set; }
 

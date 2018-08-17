@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator {
 
-    internal class ApplicationStatusMediator {
-        protected IAplicationStatusVM handler;
+    internal class ApplicationStatusMediator : IApplicationStatusMediator {
+        protected IApplicationStatusVM handler;
 
-        internal void RegisterHandler(IAplicationStatusVM handler) {
+        public void RegisterHandler(IApplicationStatusVM handler) {
             if (this.handler != null) {
                 throw new Exception("Handler already registered!");
             }

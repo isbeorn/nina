@@ -17,7 +17,7 @@ namespace NINA.ViewModel {
 
     internal class MeridianFlipVM : BaseVM {
 
-        public MeridianFlipVM(IProfileService profileService, CameraMediator cameraMediator, TelescopeMediator telescopeMediator, GuiderMediator guiderMediator, ImagingMediator imagingMediator, ApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public MeridianFlipVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
             this.cameraMediator = cameraMediator;
@@ -40,11 +40,11 @@ namespace NINA.ViewModel {
         private Coordinates _targetCoordinates;
 
         private CancellationTokenSource _tokensource;
-        private TelescopeMediator telescopeMediator;
-        private GuiderMediator guiderMediator;
-        private CameraMediator cameraMediator;
-        private ImagingMediator imagingMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private ITelescopeMediator telescopeMediator;
+        private IGuiderMediator guiderMediator;
+        private ICameraMediator cameraMediator;
+        private IImagingMediator imagingMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public ICommand CancelCommand {
             get {

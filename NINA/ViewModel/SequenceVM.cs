@@ -26,13 +26,13 @@ namespace NINA.ViewModel {
 
         public SequenceVM(
                 IProfileService profileService,
-                CameraMediator cameraMediator,
-                TelescopeMediator telescopeMediator,
-                FocuserMediator focuserMediator,
-                FilterWheelMediator filterWheelMediator,
-                GuiderMediator guiderMediator,
-                ImagingMediator imagingMediator,
-                ApplicationStatusMediator applicationStatusMediator
+                ICameraMediator cameraMediator,
+                ITelescopeMediator telescopeMediator,
+                IFocuserMediator focuserMediator,
+                IFilterWheelMediator filterWheelMediator,
+                IGuiderMediator guiderMediator,
+                IImagingMediator imagingMediator,
+                IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
@@ -508,15 +508,15 @@ namespace NINA.ViewModel {
         }
 
         private ObservableCollection<string> _imageTypes;
-        private TelescopeMediator telescopeMediator;
-        private FilterWheelMediator filterWheelMediator;
+        private ITelescopeMediator telescopeMediator;
+        private IFilterWheelMediator filterWheelMediator;
         private FocuserInfo focuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
         private FilterWheelInfo filterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
-        private FocuserMediator focuserMediator;
-        private GuiderMediator guiderMediator;
-        private CameraMediator cameraMediator;
-        private ImagingMediator imagingMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private IFocuserMediator focuserMediator;
+        private IGuiderMediator guiderMediator;
+        private ICameraMediator cameraMediator;
+        private IImagingMediator imagingMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
 
         public ObservableCollection<string> ImageTypes {

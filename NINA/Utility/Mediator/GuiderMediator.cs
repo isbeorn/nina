@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator {
 
-    internal class GuiderMediator : DeviceMediator<IGuiderVM, IGuiderConsumer, GuiderInfo> {
+    internal class GuiderMediator : DeviceMediator<IGuiderVM, IGuiderConsumer, GuiderInfo>, IGuiderMediator {
 
         public Task<bool> Dither(CancellationToken token) {
             return handler.Dither(token);

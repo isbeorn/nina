@@ -8,6 +8,7 @@ using NINA.ViewModel;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,6 @@ namespace NINATest {
 
         [TearDown]
         public void Cleanup() {
-            Mediator.Instance.ClearAll();
         }
 
         [Test]
@@ -572,8 +572,30 @@ namespace NINATest {
 
         public IProfile ActiveProfile { get; set; }
 
+        public event EventHandler LocaleChanged;
+
+        public event EventHandler LocationChanged;
+
+        public event EventHandler ProfileChanged;
+
         public void Add() {
             new SequenceProfile();
+        }
+
+        public void ChangeHemisphere(Hemisphere hemisphere) {
+            throw new NotImplementedException();
+        }
+
+        public void ChangeLatitude(double latitude) {
+            throw new NotImplementedException();
+        }
+
+        public void ChangeLocale(CultureInfo language) {
+            throw new NotImplementedException();
+        }
+
+        public void ChangeLongitude(double longitude) {
+            throw new NotImplementedException();
         }
 
         public void Clone(Guid guid) {

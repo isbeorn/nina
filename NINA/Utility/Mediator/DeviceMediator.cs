@@ -15,11 +15,11 @@ namespace NINA.Utility.Mediator {
     /// <typeparam name="THandler"></typeparam>
     /// <typeparam name="TConsumer"></typeparam>
     /// <typeparam name="TInfo"></typeparam>
-    internal abstract class DeviceMediator<THandler, TConsumer, TInfo> where THandler : IDeviceVM<TInfo> where TConsumer : IDeviceConsumer<TInfo> {
+    internal abstract class DeviceMediator<THandler, TConsumer, TInfo> : IDeviceMediator<THandler, TConsumer, TInfo> where THandler : IDeviceVM<TInfo> where TConsumer : IDeviceConsumer<TInfo> {
         protected THandler handler;
         protected List<TConsumer> consumers = new List<TConsumer>();
 
-        internal void RegisterHandler(THandler handler) {
+        public void RegisterHandler(THandler handler) {
             if (this.handler != null) {
                 throw new Exception("Handler already registered!");
             }
@@ -28,7 +28,7 @@ namespace NINA.Utility.Mediator {
             Broadcast(info);
         }
 
-        internal void RegisterConsumer(TConsumer consumer) {
+        public void RegisterConsumer(TConsumer consumer) {
             consumers.Add(consumer);
             if (handler != null) {
                 var info = handler.GetDeviceInfo();
@@ -36,7 +36,7 @@ namespace NINA.Utility.Mediator {
             }
         }
 
-        internal void RemoveConsumer(TConsumer consumer) {
+        public void RemoveConsumer(TConsumer consumer) {
             consumers.Remove(consumer);
         }
 
@@ -44,14 +44,14 @@ namespace NINA.Utility.Mediator {
         /// Connect the device
         /// </summary>
         /// <returns></returns>
-        internal Task<bool> Connect() {
+        public Task<bool> Connect() {
             return handler.Connect();
         }
 
         /// <summary>
         /// Disconnect the device
         /// </summary>
-        internal void Disconnect() {
+        public void Disconnect() {
             handler.Disconnect();
         }
 
@@ -59,7 +59,7 @@ namespace NINA.Utility.Mediator {
         /// Broadcast device info updates to all consumers
         /// </summary>
         /// <param name="deviceInfo"></param>
-        internal void Broadcast(TInfo deviceInfo) {
+        public void Broadcast(TInfo deviceInfo) {
             foreach (TConsumer c in consumers) {
                 c.UpdateDeviceInfo(deviceInfo);
             }

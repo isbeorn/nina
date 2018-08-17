@@ -22,12 +22,12 @@ namespace NINA.ViewModel {
 
         public ImagingVM(
                 IProfileService profileService,
-                ImagingMediator imagingMediator,
-                CameraMediator cameraMediator,
-                TelescopeMediator telescopeMediator,
-                FilterWheelMediator filterWheelMediator,
-                GuiderMediator guiderMediator,
-                ApplicationStatusMediator applicationStatusMediator
+                IImagingMediator imagingMediator,
+                ICameraMediator cameraMediator,
+                ITelescopeMediator telescopeMediator,
+                IFilterWheelMediator filterWheelMediator,
+                IGuiderMediator guiderMediator,
+                IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblImaging";
             ContentId = nameof(ImagingVM);
@@ -154,9 +154,9 @@ namespace NINA.ViewModel {
         }
 
         private double _snapExposureDuration;
-        private FilterWheelMediator filterWheelMediator;
-        private GuiderMediator guiderMediator;
-        private ApplicationStatusMediator applicationStatusMediator;
+        private IFilterWheelMediator filterWheelMediator;
+        private IGuiderMediator guiderMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public double SnapExposureDuration {
             get {
@@ -403,8 +403,8 @@ namespace NINA.ViewModel {
         }
 
         private short _snapGain = -1;
-        private CameraMediator cameraMediator;
-        private ImagingMediator imagingMediator;
+        private ICameraMediator cameraMediator;
+        private IImagingMediator imagingMediator;
 
         public short SnapGain {
             get {

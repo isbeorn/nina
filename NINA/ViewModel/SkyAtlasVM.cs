@@ -3,6 +3,7 @@ using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -19,7 +20,7 @@ namespace NINA.ViewModel {
 
     internal class SkyAtlasVM : BaseVM {
 
-        public SkyAtlasVM(IProfileService profileService, TelescopeMediator telescopeMediator) : base(profileService) {
+        public SkyAtlasVM(IProfileService profileService, ITelescopeMediator telescopeMediator) : base(profileService) {
             // Not required to register to the mediator, as we don't need updates
             this.telescopeMediator = telescopeMediator;
 
@@ -217,7 +218,7 @@ namespace NINA.ViewModel {
         }
 
         private DateTime _selectedDate;
-        private TelescopeMediator telescopeMediator;
+        private ITelescopeMediator telescopeMediator;
 
         public DateTime SelectedDate {
             get {
