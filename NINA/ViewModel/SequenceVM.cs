@@ -41,6 +41,8 @@ namespace NINA.ViewModel {
             this.filterWheelMediator.RegisterConsumer(this);
 
             this.focuserMediator = focuserMediator;
+            this.focuserMediator.RegisterConsumer(this);
+
             this.guiderMediator = guiderMediator;
             this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
