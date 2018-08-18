@@ -14,7 +14,7 @@ namespace NINA.Utility.SkySurvey {
     internal class StsciSkySurvey : ISkySurvey {
         private const string Url = "https://archive.stsci.edu/cgi-bin/dss_search?format=GIF&r={0}&d={1}&e=J2000&h={2}&w={3}&v=1";
 
-        public async Task<SkySurveyImage> GetImage(Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
+        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
             var degrees = Astrometry.Astrometry.ArcminToDegree(fieldOfView);
             var maxSingleDegrees = 1.5;
 
@@ -79,6 +79,7 @@ namespace NINA.Utility.SkySurvey {
                     bmp.Render(drawingVisual);
                     bmp.Freeze();
                     return new SkySurveyImage() {
+                        Name = nameof(StsciSkySurvey) + name,
                         Image = bmp,
                         FoVHeight = fieldOfView,
                         FoVWidth = fieldOfView,
@@ -96,6 +97,7 @@ namespace NINA.Utility.SkySurvey {
                 var image = await GetSingleImage(coordinates, fieldOfView, ct);
                 image.Freeze();
                 return new SkySurveyImage() {
+                    Name = nameof(StsciSkySurvey) + name,
                     Image = image,
                     FoVHeight = fieldOfView,
                     FoVWidth = fieldOfView,

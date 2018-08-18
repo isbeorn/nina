@@ -74,8 +74,8 @@ namespace NINA.Utility.SkySurvey {
 
                     XElement xml = new XElement("Image",
                         new XAttribute("Id", skySurveyImage.Id),
-                        new XAttribute("RA", skySurveyImage.Coordinates.RA),
-                        new XAttribute("Dec", skySurveyImage.Coordinates.Dec),
+                        new XAttribute("RA", Math.Round(skySurveyImage.Coordinates.RA, 4)),
+                        new XAttribute("Dec", Math.Round(skySurveyImage.Coordinates.Dec, 4)),
                         new XAttribute("Rotation", skySurveyImage.Rotation),
                         new XAttribute("FoVW", skySurveyImage.FoVWidth),
                         new XAttribute("FoVH", skySurveyImage.FoVHeight),
@@ -96,15 +96,16 @@ namespace NINA.Utility.SkySurvey {
 
         public object CulutureInfo { get; private set; }
 
-        public Task<SkySurveyImage> GetImage(Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
+        public Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
             return Task.Run(() => {
                 var element =
                     Cache
                     .Elements("Image")
                     .Where(
                         x =>
-                            x.Attribute("RA").Value == coordinates.RA.ToString(CultureInfo.InvariantCulture)
-                            && x.Attribute("Dec").Value == coordinates.Dec.ToString(CultureInfo.InvariantCulture)
+                            x.Attribute("Name").Value == name
+                            && x.Attribute("RA").Value == Math.Round(coordinates.RA, 4).ToString(CultureInfo.InvariantCulture)
+                            && x.Attribute("Dec").Value == Math.Round(coordinates.Dec, 4).ToString(CultureInfo.InvariantCulture)
                             && x.Attribute("FoVW").Value == fieldOfView.ToString(CultureInfo.InvariantCulture)
                             && x.Attribute("FoVH").Value == fieldOfView.ToString(CultureInfo.InvariantCulture)
                     ).FirstOrDefault();
@@ -115,7 +116,6 @@ namespace NINA.Utility.SkySurvey {
                     var fovW = double.Parse(element.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
                     var fovH = double.Parse(element.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
                     var rotation = double.Parse(element.Attribute("Rotation").Value, CultureInfo.InvariantCulture);
-                    var name = element.Attribute("Name").Value;
                     var ra = double.Parse(element.Attribute("RA").Value, CultureInfo.InvariantCulture);
                     var dec = double.Parse(element.Attribute("Dec").Value, CultureInfo.InvariantCulture);
 

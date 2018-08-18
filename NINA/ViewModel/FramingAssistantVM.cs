@@ -394,7 +394,7 @@ namespace NINA.ViewModel {
             try {
                 var skySurvey = SkySurveyFactory.Create(FramingAssistantSource, new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator));
 
-                var skySurveyImage = await skySurvey.GetImage(this.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
+                var skySurveyImage = await skySurvey.GetImage(DSO?.Name, this.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
 
                 if (skySurveyImage != null) {
                     CalculateRectangle(skySurveyImage);
@@ -413,7 +413,7 @@ namespace NINA.ViewModel {
             }
             return true;
         }
-        
+
         public XElement ImageCacheInfo {
             get {
                 return CacheSkySurvey.Cache; ;
@@ -431,8 +431,11 @@ namespace NINA.ViewModel {
                 if (_selectedImageCacheInfo != null) {
                     var ra = double.Parse(_selectedImageCacheInfo.Attribute("RA").Value, CultureInfo.InvariantCulture);
                     var dec = double.Parse(_selectedImageCacheInfo.Attribute("Dec").Value, CultureInfo.InvariantCulture);
+                    var name = _selectedImageCacheInfo.Attribute("Name").Value;
                     Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours);
                     FieldOfView = Astrometry.ArcminToDegree(double.Parse(_selectedImageCacheInfo.Attribute("FoVW").Value, CultureInfo.InvariantCulture));
+                    DSO = new DeepSkyObject(name, string.Empty);
+                    DSO.Coordinates = Coordinates;
                 }
                 RaisePropertyChanged();
             }

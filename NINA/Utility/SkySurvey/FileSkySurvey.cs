@@ -22,7 +22,7 @@ namespace NINA.Utility.SkySurvey {
             this.platesolver = platesolver;
         }
 
-        public async Task<SkySurveyImage> GetImage(Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
+        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Title = Locale.Loc.Instance["LblLoadImage"];
             dialog.FileName = "";
