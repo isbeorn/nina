@@ -400,6 +400,8 @@ namespace NINA.ViewModel {
                     CalculateRectangle(skySurveyImage);
 
                     await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                        ImageParameter = null;
+                        GC.Collect();
                         ImageParameter = skySurveyImage;
                     }));
 
