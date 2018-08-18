@@ -13,10 +13,6 @@ namespace NINA.ViewModel {
             this.profileService = profileService;
             SetupDialogCommand = new RelayCommand(OpenSetupDialog);
             GetEquipment();
-            Mediator.Instance.RegisterRequest(new GetEquipmentNameByIdMessageHandle(equipmentType, (GetEquipmentNameByIdMessage msg) => {
-                var name = Devices.SingleOrDefault(dev => dev.Id == msg.Id).Name;
-                return name;
-            }));
         }
 
         private AsyncObservableCollection<Model.IDevice> _devices;

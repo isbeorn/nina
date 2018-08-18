@@ -6,7 +6,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class ImageSettings : IImageSettings {
+    public class ImageSettings : Settings, IImageSettings {
         private double autoStretchFactor = 0.2;
 
         [DataMember]
@@ -16,7 +16,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 autoStretchFactor = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -29,7 +29,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 histogramResolution = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -42,7 +42,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 annotateImage = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -55,7 +55,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 debayerImage = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

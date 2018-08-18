@@ -2,7 +2,7 @@
 
 namespace NINA.Utility.Profile {
 
-    public interface IGuiderSettings {
+    public interface IGuiderSettings : ISettings {
         double DitherPixels { get; set; }
         bool DitherRAOnly { get; set; }
         GuiderScaleEnum PHD2GuiderScale { get; set; }

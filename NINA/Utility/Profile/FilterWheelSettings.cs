@@ -7,7 +7,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class FilterWheelSettings : IFilterWheelSettings {
+    public class FilterWheelSettings : Settings, IFilterWheelSettings {
         private string id = "No_Device";
 
         [DataMember]
@@ -17,7 +17,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 id = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -36,7 +36,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 filterWheelFilters = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

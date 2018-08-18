@@ -26,7 +26,8 @@
                         <Button
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            Command="{Binding SelectCommand}">
+                            Command="{Binding Path=DataContext.SelectCommand, ElementName=ScrollViewer}"
+                            CommandParameter="{Binding}">
                             <Grid Margin="2">
                                 <Grid.ToolTip>
                                     <TextBlock Text="{Binding ImagePath}" />

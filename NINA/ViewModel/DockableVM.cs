@@ -1,6 +1,7 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
+using System;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -15,9 +16,9 @@ namespace NINA.ViewModel {
 
             HideCommand = new RelayCommand(Hide);
 
-            Mediator.Instance.Register((object o) => {
+            profileService.LocationChanged += (object sender, EventArgs e) => {
                 RaisePropertyChanged(nameof(Title));
-            }, MediatorMessages.LocaleChanged);
+            };
         }
 
         private bool _isClosed;

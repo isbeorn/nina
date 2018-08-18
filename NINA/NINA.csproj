@@ -161,6 +161,9 @@
     <Reference Include="ASCOM.Utilities.Video, Version=6.1.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
+    <Reference Include="AsyncEnumerable, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0426b068161bd1d1, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncEnumerator.2.2.1\lib\net45\AsyncEnumerable.dll</HintPath>
+    </Reference>
     <Reference Include="CSharpFITS_v1.1, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CSharpFITS.1.1\lib\Net20\CSharpFITS_v1.1.dll</HintPath>
     </Reference>
@@ -278,18 +281,24 @@
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
+    <Compile Include="Model\DeviceInfo.cs" />
     <Compile Include="Model\DummyDevice.cs" />
     <Compile Include="Model\GuideStepsHistory.cs" />
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\MyCamera\AtikCamera.cs" />
+    <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
     <Compile Include="Model\MyCamera\ImageArray.cs" />
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
+    <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
+    <Compile Include="Model\MyFocuser\FocuserInfo.cs" />
     <Compile Include="Model\MyFocuser\IFocuser.cs" />
+    <Compile Include="Model\MyGuider\GuiderInfo.cs" />
     <Compile Include="Model\MyGuider\IGuider.cs" />
     <Compile Include="Model\MyGuider\PHD2Guider.cs" />
+    <Compile Include="Model\MyTelescope\TelescopeInfo.cs" />
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
@@ -339,6 +348,29 @@
     <Compile Include="Utility\DatabaseInteraction.cs" />
     <Compile Include="Utility\DeviceUpdateTimer.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
+    <Compile Include="Utility\Mediator\ApplicationStatusMediator.cs" />
+    <Compile Include="Utility\Mediator\CameraMediator.cs" />
+    <Compile Include="Utility\Mediator\DeviceMediator.cs" />
+    <Compile Include="Utility\Mediator\FilterWheelMediator.cs" />
+    <Compile Include="Utility\Mediator\FocuserMediator.cs" />
+    <Compile Include="Utility\Mediator\GuiderMediator.cs" />
+    <Compile Include="Utility\Mediator\ImagingMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IApplicationStatusMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ICameraConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ICameraMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IDeviceConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IDeviceMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFilterWheelConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFilterWheelMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFocuserConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFocuserMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IGuiderConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IGuiderMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IImagingMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ITelescopeConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ITelescopeMediator.cs" />
+    <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
     <Compile Include="Utility\Profile\ICameraSettings.cs" />
@@ -355,8 +387,10 @@
     <Compile Include="Utility\Profile\IProfile.cs" />
     <Compile Include="Utility\Profile\IProfileService.cs" />
     <Compile Include="Utility\Profile\ISequenceSettings.cs" />
+    <Compile Include="Utility\Profile\ISettings.cs" />
     <Compile Include="Utility\Profile\ITelescopeSettings.cs" />
     <Compile Include="Utility\Profile\IWeatherDataSettings.cs" />
+    <Compile Include="Utility\Profile\Settings.cs" />
     <Compile Include="Utility\RawConverter\DCRaw.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
@@ -372,9 +406,6 @@
     <Compile Include="Utility\Enum\WeatherDataEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraConnectionLostException.cs" />
     <Compile Include="Utility\FITS.cs" />
-    <Compile Include="Utility\Mediator\Mediator.cs" />
-    <Compile Include="Utility\Mediator\AsyncMessageHandle.cs" />
-    <Compile Include="Utility\Mediator\MessageHandle.cs" />
     <Compile Include="Utility\MyStopWatch.cs" />
     <Compile Include="Utility\Notification\CustomDisplayPart.xaml.cs">
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
@@ -421,7 +452,8 @@
     <Compile Include="Utility\ValidationRules\MinutesRule.cs" />
     <Compile Include="Utility\ValidationRules\SecondsRule.cs" />
     <Compile Include="Utility\ValidationRules\ShortRangeRule.cs" />
-    <Compile Include="Utility\WindowService.cs" />
+    <Compile Include="Utility\WindowService\WindowService.cs" />
+    <Compile Include="Utility\WindowService\WindowServiceFactory.cs" />
     <Compile Include="Utility\XISF.cs" />
     <Compile Include="ViewModel\ApplicationStatusVM.cs" />
     <Compile Include="ViewModel\AutoFocusVM.cs" />
@@ -430,6 +462,11 @@
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />
+    <Compile Include="ViewModel\Interfaces\ICameraVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IDeviceVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IFilterWheelVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IFocuserVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
@@ -463,6 +500,9 @@
     <Compile Include="ViewModel\ImageHistoryVM.cs" />
     <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IGuiderVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IImagingVM.cs" />
+    <Compile Include="ViewModel\Interfaces\ITelescopeVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\GuiderVM.cs" />
@@ -520,6 +560,9 @@
     </Compile>
     <Compile Include="View\ApplicationMenu.xaml.cs">
       <DependentUpon>ApplicationMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AutoFocusChart.xaml.cs">
+      <DependentUpon>AutoFocusChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CameraControlView.xaml.cs">
       <DependentUpon>CameraControlView.xaml</DependentUpon>
@@ -829,6 +872,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ApplicationMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AutoFocusChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

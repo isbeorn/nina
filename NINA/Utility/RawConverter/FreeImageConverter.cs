@@ -12,7 +12,6 @@ using NINA.Model.MyCamera;
 
 namespace NINA.Utility.RawConverter {
 
-    // IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Connected, FallbackValue=False}"
     internal class FreeImageConverter : IRawConverter {
 
         public FreeImageConverter() {

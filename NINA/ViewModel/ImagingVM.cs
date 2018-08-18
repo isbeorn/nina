@@ -3,9 +3,12 @@ using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Exceptions;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.ViewModel.Interfaces;
 using System;
+using System.Collections.Async;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -15,12 +18,30 @@ using static NINA.Model.CaptureSequence;
 
 namespace NINA.ViewModel {
 
-    internal class ImagingVM : DockableVM {
+    internal class ImagingVM : DockableVM, ICameraConsumer, IImagingVM {
 
-        public ImagingVM(IProfileService profileService) : base(profileService) {
+        public ImagingVM(
+                IProfileService profileService,
+                IImagingMediator imagingMediator,
+                ICameraMediator cameraMediator,
+                ITelescopeMediator telescopeMediator,
+                IFilterWheelMediator filterWheelMediator,
+                IGuiderMediator guiderMediator,
+                IApplicationStatusMediator applicationStatusMediator
+        ) : base(profileService) {
             Title = "LblImaging";
             ContentId = nameof(ImagingVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
+
+            this.imagingMediator = imagingMediator;
+            this.imagingMediator.RegisterHandler(this);
+
+            this.cameraMediator = cameraMediator;
+            this.cameraMediator.RegisterConsumer(this);
+
+            this.filterWheelMediator = filterWheelMediator;
+            this.guiderMediator = guiderMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
 
             SnapExposureDuration = 1;
             SnapCommand = new AsyncCommand<bool>(() => SnapImage(new Progress<ApplicationStatus>(p => Status = p)));
@@ -28,34 +49,7 @@ namespace NINA.ViewModel {
             StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
             StopLiveViewCommand = new RelayCommand(StopLiveView);
 
-            ImageControl = new ImageControlVM(profileService);
-
-            RegisterMediatorMessages();
-        }
-
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterAsyncRequest(
-                new CaptureImageMessageHandle(async (CaptureImageMessage msg) => {
-                    return await CaptureImage(msg.Sequence, msg.Token, msg.Progress);
-                })
-            );
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new CapturePrepareAndSaveImageMessageHandle(async (CapturePrepareAndSaveImageMessage msg) => {
-                    return await CaptureAndSaveImage(msg.Sequence, msg.Save, msg.Token, msg.Progress, msg.TargetName);
-                })
-            );
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new CaptureAndPrepareImageMessageHandle(async (CaptureAndPrepareImageMessage msg) => {
-                    return await CaptureAndPrepareImage(msg.Sequence, msg.Token, msg.Progress);
-                })
-            );
-
-            Mediator.Instance.Register((object o) => _cameraConnected = (bool)o, MediatorMessages.CameraConnectedChanged);
-            Mediator.Instance.Register((object o) => {
-                Cam = (ICamera)o;
-            }, MediatorMessages.CameraChanged);
+            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
         }
 
         private ImageControlVM _imageControl;
@@ -65,11 +59,15 @@ namespace NINA.ViewModel {
             set { _imageControl = value; RaisePropertyChanged(); }
         }
 
-        private bool _cameraConnected;
+        private CameraInfo cameraInfo;
 
-        private bool CameraConnected {
+        public CameraInfo CameraInfo {
             get {
-                return Cam != null && _cameraConnected;
+                return cameraInfo ?? DeviceInfo.CreateDefaultInstance<CameraInfo>();
+            }
+            set {
+                cameraInfo = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -102,9 +100,11 @@ namespace NINA.ViewModel {
         private async Task<bool> StartLiveView() {
             ImageControl.IsLiveViewEnabled = true;
             _liveViewCts = new CancellationTokenSource();
-            return await Task.Run(async () => {
-                return await Mediator.Instance.RequestAsync(new InitiateLiveViewMessage() { Token = _liveViewCts.Token });
+            var liveViewEnumerable = cameraMediator.LiveView(_liveViewCts.Token);
+            await liveViewEnumerable.ForEachAsync(async iarr => {
+                await ImageControl.PrepareImage(iarr, _liveViewCts.Token, false);
             });
+            return true;
         }
 
         private void StopLiveView(object o) {
@@ -123,7 +123,7 @@ namespace NINA.ViewModel {
                 _status.Source = Title;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+                applicationStatusMediator.StatusUpdate(_status);
             }
         }
 
@@ -153,19 +153,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ICamera _cam;
-
-        public ICamera Cam {
-            get {
-                return _cam;
-            }
-            set {
-                _cam = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private double _snapExposureDuration;
+        private IFilterWheelMediator filterWheelMediator;
+        private IGuiderMediator guiderMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public double SnapExposureDuration {
             get {
@@ -217,67 +208,40 @@ namespace NINA.ViewModel {
 
         private async Task ChangeFilter(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (seq.FilterType != null) {
-                await Mediator.Instance.RequestAsync(new ChangeFilterWheelPositionMessage() { Filter = seq.FilterType, Token = token, Progress = progress });
+                await filterWheelMediator.ChangeFilter(seq.FilterType, token, progress);
             }
         }
 
         private void SetBinning(CaptureSequence seq) {
             if (seq.Binning == null) {
-                Cam.SetBinning(1, 1);
+                cameraMediator.SetBinning(1, 1);
             } else {
-                Cam.SetBinning(seq.Binning.X, seq.Binning.Y);
+                cameraMediator.SetBinning(seq.Binning.X, seq.Binning.Y);
             }
         }
 
         private void SetSubSample(CaptureSequence seq) {
-            Cam.EnableSubSample = seq.EnableSubSample;
+            cameraMediator.SetSubSample(seq.EnableSubSample);
         }
 
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             double duration = seq.ExposureTime;
             bool isLight = false;
-            if (Cam.HasShutter) {
+            if (CameraInfo.HasShutter) {
                 isLight = true;
             }
-            Cam.StartExposure(duration, isLight);
-            var start = DateTime.Now;
-            var elapsed = 0.0d;
-            ExposureSeconds = 0;
-            progress.Report(new ApplicationStatus() {
-                Status = Locale.Loc.Instance["LblExposing"],
-                Progress = ExposureSeconds,
-                MaxProgress = (int)duration,
-                ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
-            });
-            /* Wait for Capture */
-            if (duration >= 1) {
-                await Task.Run(async () => {
-                    do {
-                        var delta = await Utility.Utility.Delay(500, token);
-                        elapsed += delta.TotalSeconds;
-                        ExposureSeconds = (int)elapsed;
-                        token.ThrowIfCancellationRequested();
 
-                        progress.Report(new ApplicationStatus() {
-                            Status = Locale.Loc.Instance["LblExposing"],
-                            Progress = ExposureSeconds,
-                            MaxProgress = (int)duration,
-                            ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
-                        });
-                    } while ((elapsed < duration) && Cam?.Connected == true);
-                });
-            }
-            token.ThrowIfCancellationRequested();
+            await cameraMediator.Capture(duration, isLight, token, progress);
         }
 
-        private async Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
-            return await Cam.DownloadExposure(token);
+            return cameraMediator.Download(token);
         }
 
         private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (seq.Dither && ((seq.ProgressExposureCount % seq.DitherAmount) == 0)) {
-                return await Mediator.Instance.RequestAsync(new DitherGuiderMessage() { Token = token });
+                return await this.guiderMediator.Dither(token);
             }
             token.ThrowIfCancellationRequested();
             return false;
@@ -300,7 +264,7 @@ namespace NINA.ViewModel {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
             await semaphoreSlim.WaitAsync(token);
 
-            if (CameraConnected != true) {
+            if (CameraInfo.Connected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
                 semaphoreSlim.Release();
                 return null;
@@ -310,14 +274,14 @@ namespace NINA.ViewModel {
                 ImageArray arr = null;
 
                 try {
-                    if (CameraConnected != true) {
+                    if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
                     /*Change Filter*/
                     await ChangeFilter(sequence, token, progress);
 
-                    if (CameraConnected != true) {
+                    if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
@@ -331,22 +295,22 @@ namespace NINA.ViewModel {
 
                     SetSubSample(sequence);
 
-                    if (CameraConnected != true) {
+                    if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
                     /* Start RMS Recording */
-                    Mediator.Instance.Request(new StartRMSRecordingMessage());
+                    var rmsHandle = this.guiderMediator.StartRMSRecording();
 
                     /*Capture*/
                     await Capture(sequence, token, progress);
 
                     /* Stop RMS Recording */
-                    var rms = Mediator.Instance.Request(new StopRMSRecordingMessage());
+                    var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
 
                     token.ThrowIfCancellationRequested();
 
-                    if (CameraConnected != true) {
+                    if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
@@ -359,7 +323,7 @@ namespace NINA.ViewModel {
                         throw new OperationCanceledException();
                     }
 
-                    if (CameraConnected != true) {
+                    if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
 
@@ -384,9 +348,7 @@ namespace NINA.ViewModel {
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
                     await ditherTask;
                 } catch (System.OperationCanceledException ex) {
-                    if (Cam == null || _cameraConnected == true) {
-                        Cam?.AbortExposure();
-                    }
+                    cameraMediator.AbortExposure();
                     throw ex;
                 } catch (CameraConnectionLostException ex) {
                     Logger.Error(ex);
@@ -395,9 +357,7 @@ namespace NINA.ViewModel {
                 } catch (Exception ex) {
                     Notification.ShowError(Locale.Loc.Instance["LblUnexpectedError"]);
                     Logger.Error(ex);
-                    if (_cameraConnected == true) {
-                        Cam.AbortExposure();
-                    }
+                    cameraMediator.AbortExposure();
                     throw ex;
                 } finally {
                     progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -411,8 +371,7 @@ namespace NINA.ViewModel {
 
         private void SetGain(CaptureSequence seq) {
             if (seq.Gain != -1) {
-                Cam.Gain = seq.Gain;
-            } else {
+                cameraMediator.SetGain(seq.Gain);
             }
         }
 
@@ -444,6 +403,8 @@ namespace NINA.ViewModel {
         }
 
         private short _snapGain = -1;
+        private ICameraMediator cameraMediator;
+        private IImagingMediator imagingMediator;
 
         public short SnapGain {
             get {
@@ -479,6 +440,26 @@ namespace NINA.ViewModel {
         public async Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
             await CaptureImage(seq, ct, progress, bsave, targetname);
             return true;
+        }
+
+        public void UpdateDeviceInfo(CameraInfo cameraStatus) {
+            CameraInfo = cameraStatus;
+        }
+
+        public bool SetDetectStars(bool value) {
+            var oldval = ImageControl.DetectStars;
+            ImageControl.DetectStars = value;
+            return oldval;
+        }
+
+        public bool SetAutoStretch(bool value) {
+            var oldval = ImageControl.AutoStretch;
+            ImageControl.AutoStretch = value;
+            return oldval;
+        }
+
+        public Task<BitmapSource> PrepareImage(ImageArray iarr, CancellationToken token, bool bSave = false, ImageParameters parameters = null) {
+            return ImageControl.PrepareImage(iarr, token, bSave, parameters);
         }
     }
 }

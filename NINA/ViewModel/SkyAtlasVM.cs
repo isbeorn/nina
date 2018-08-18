@@ -1,7 +1,9 @@
 ﻿using NINA.Model;
+using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -11,36 +13,40 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    public class SkyAtlasVM : BaseVM {
+    internal class SkyAtlasVM : BaseVM {
 
-        public SkyAtlasVM(IProfileService profileService) : base(profileService) {
+        public SkyAtlasVM(IProfileService profileService, ITelescopeMediator telescopeMediator) : base(profileService) {
+            // Not required to register to the mediator, as we don't need updates
+            this.telescopeMediator = telescopeMediator;
+
             SelectedDate = DateTime.Now;
 
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(() => SetSequenceCoordinates());
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => {
-                return await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = SearchResult.SelectedItem.Coordinates });
+                return await telescopeMediator.SlewToCoordinatesAsync(SearchResult.SelectedItem.Coordinates);
             });
             SetFramingAssistantCoordinatesCommand = new AsyncCommand<bool>(() => SetFramingAssistantCoordinates());
 
             InitializeFilters();
             PageSize = 50;
 
-            Mediator.Instance.Register((object o) => {
+            profileService.LocationChanged += (object sender, EventArgs e) => {
                 _nightDuration = null; //Clear cache
                 SelectedDate = DateTime.Now;
                 InitializeElevationFilters();
                 ResetRiseAndSetTimes();
-            }, MediatorMessages.LocationChanged);
+            };
 
-            Mediator.Instance.Register((object o) => {
+            profileService.LocaleChanged += (object sender, EventArgs e) => {
                 InitializeFilters();
-            }, MediatorMessages.LocaleChanged);
+            };
         }
 
         private void ResetRiseAndSetTimes() {
@@ -62,11 +68,17 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> SetSequenceCoordinates() {
-            return await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = SearchResult.SelectedItem });
+            // todo
+            var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
+            vm.ChangeTab(ApplicationTab.SEQUENCE);
+            return await vm.SeqVM.SetSequenceCoordiantes(SearchResult.SelectedItem);
         }
 
         private async Task<bool> SetFramingAssistantCoordinates() {
-            return await Mediator.Instance.RequestAsync(new SetFramingAssistantCoordinatesMessage() { DSO = SearchResult.SelectedItem });
+            // todo
+            var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
+            vm.ChangeTab(ApplicationTab.FRAMINGASSISTANT);
+            return await vm.FramingAssistantVM.SetCoordinates(SearchResult.SelectedItem);
         }
 
         private Ticker _ticker;
@@ -206,6 +218,7 @@ namespace NINA.ViewModel {
         }
 
         private DateTime _selectedDate;
+        private ITelescopeMediator telescopeMediator;
 
         public DateTime SelectedDate {
             get {

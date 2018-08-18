@@ -6,7 +6,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class TelescopeSettings : ITelescopeSettings {
+    public class TelescopeSettings : Settings, ITelescopeSettings {
         private string id = "No_Device";
 
         [DataMember]
@@ -16,7 +16,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 id = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -29,7 +29,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 focalLength = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -42,7 +42,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 snapPortStart = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -55,7 +55,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 snapPortStop = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -68,7 +68,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 settleTime = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

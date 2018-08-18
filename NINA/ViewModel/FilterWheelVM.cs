@@ -2,9 +2,12 @@
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.ViewModel.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,82 +15,47 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    internal class FilterWheelVM : DockableVM {
+    internal class FilterWheelVM : DockableVM, IFilterWheelVM {
 
-        public FilterWheelVM(IProfileService profileService) : base(profileService) {
+        public FilterWheelVM(IProfileService profileService, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFilterWheel";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FWSVG"];
+
+            this.filterWheelMediator = filterWheelMediator;
+            this.filterWheelMediator.RegisterHandler(this);
+
+            this.focuserMediator = focuserMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
 
             ContentId = nameof(FilterWheelVM);
             ChooseFWCommand = new AsyncCommand<bool>(() => ChooseFW());
             CancelChooseFWCommand = new RelayCommand(CancelChooseFW);
             DisconnectCommand = new RelayCommand(DisconnectFW);
             RefreshFWListCommand = new RelayCommand(RefreshFWList);
+            ChangeFilterCommand = new AsyncCommand<bool>(async () => {
+                _changeFilterCancellationSource = new CancellationTokenSource();
+                await ChangeFilter(TargetFilter, _changeFilterCancellationSource.Token);
+                return true;
+            }, (object o) => FilterWheelInfo.Connected && !FilterWheelInfo.IsMoving);
 
-            RegisterMediatorMessages();
-        }
-
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterAsyncRequest(
-                new ChangeFilterWheelPositionMessageHandle(async (ChangeFilterWheelPositionMessage msg) => {
-                    return await ChangeFilter(msg.Filter, msg.Token, msg.Progress);
-                })
-            );
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new ConnectFilterWheelMessageHandle(async (ConnectFilterWheelMessage msg) => {
-                    await ChooseFWCommand.ExecuteAsync(null);
-                    return true;
-                })
-            );
-
-            Mediator.Instance.RegisterRequest(
-                new GetCurrentFilterInfoMessageHandle((GetCurrentFilterInfoMessage msg) => {
-                    return SelectedFilter;
-                })
-            );
-
-            Mediator.Instance.RegisterRequest(
-                new GetAllFiltersMessageHandle((GetAllFiltersMessage msg) => {
-                    if (FW?.Connected == true) {
-                        return FW?.Filters;
-                    } else {
-                        return null;
-                    }
-                })
-            );
-
-            Mediator.Instance.Register((o) => { RefreshFWList(o); }, MediatorMessages.ProfileChanged);
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                RefreshFWList(null);
+            };
         }
 
         private CancellationTokenSource _changeFilterCancellationSource;
-        private Task _changeFilterTask;
-
-        private bool ChangeFilterHelper(FilterInfo filter) {
-            _changeFilterCancellationSource?.Cancel();
-            try {
-                if (_changeFilterCancellationSource != null) {
-                    _changeFilterTask?.Wait(_changeFilterCancellationSource.Token);
-                }
-            } catch (OperationCanceledException) {
-            }
-            _changeFilterCancellationSource = new CancellationTokenSource();
-            _changeFilterTask = ChangeFilter(filter, _changeFilterCancellationSource.Token);
-
-            return true;
-        }
 
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        private async Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null) {
+        public async Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null) {
             progress?.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSwitchingFilter"] });
 
             //Lock access so only one instance can change the filter
             await semaphoreSlim.WaitAsync(token);
             try {
                 if (FW?.Connected == true) {
-                    var prevFilter = SelectedFilter;
+                    var prevFilter = FilterWheelInfo.SelectedFilter;
                     var filter = FW.Filters.Where((x) => x.Position == inputFilter.Position).FirstOrDefault();
                     if (filter == null) {
                         Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (inputFilter.Position + 1)));
@@ -95,12 +63,12 @@ namespace NINA.ViewModel {
                     }
 
                     if (FW?.Position != filter.Position) {
-                        IsMoving = true;
+                        FilterWheelInfo.IsMoving = true;
                         Task changeFocus = null;
                         if (profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets) {
                             if (prevFilter != null) {
                                 int offset = filter.FocusOffset - prevFilter.FocusOffset;
-                                changeFocus = Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = offset, Absolute = false, Token = token });
+                                changeFocus = focuserMediator.MoveFocuserRelative(offset);
                             }
                         }
 
@@ -118,32 +86,22 @@ namespace NINA.ViewModel {
 
                         await changeFilter;
                     }
-                    _selectedFilter = filter;
-                    RaisePropertyChanged(nameof(SelectedFilter));
+                    FilterWheelInfo.SelectedFilter = filter;
+                } else {
+                    Disconnect();
                 }
             } finally {
+                BroadcastFilterWheelInfo();
                 //unlock access
-                IsMoving = false;
+                FilterWheelInfo.IsMoving = false;
                 semaphoreSlim.Release();
             }
             progress?.Report(new ApplicationStatus() { Status = string.Empty });
-            return SelectedFilter;
+            return FilterWheelInfo.SelectedFilter;
         }
 
         private void RefreshFWList(object obj) {
             FilterWheelChooserVM.GetEquipment();
-        }
-
-        private bool _isMoving;
-
-        public bool IsMoving {
-            get {
-                return _isMoving;
-            }
-            set {
-                _isMoving = value;
-                RaisePropertyChanged();
-            }
         }
 
         private IFilterWheel _fW;
@@ -158,17 +116,15 @@ namespace NINA.ViewModel {
             }
         }
 
-        private FilterInfo _selectedFilter;
+        private FilterInfo targetFilter;
 
-        public FilterInfo SelectedFilter {
+        public FilterInfo TargetFilter {
             get {
-                return _selectedFilter;
+                return targetFilter;
             }
             set {
-                if (value != null) {
-                    ChangeFilterHelper(value);
-                    RaisePropertyChanged();
-                }
+                targetFilter = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -184,12 +140,12 @@ namespace NINA.ViewModel {
                     return false;
                 }
 
-                Mediator.Instance.Request(new StatusUpdateMessage() {
-                    Status = new ApplicationStatus() {
+                applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
                         Source = Title,
                         Status = Locale.Loc.Instance["LblConnecting"]
                     }
-                });
+                );
 
                 var fW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
                 _cancelChooseFilterWheelSource = new CancellationTokenSource();
@@ -199,11 +155,23 @@ namespace NINA.ViewModel {
                         _cancelChooseFilterWheelSource.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             this.FW = fW;
+
+                            FilterWheelInfo = new FilterWheelInfo {
+                                Connected = true,
+                                IsMoving = false,
+                                Name = FW.Name
+                            };
+
                             Notification.ShowSuccess(Locale.Loc.Instance["LblFilterwheelConnected"]);
                             profileService.ActiveProfile.FilterWheelSettings.Id = FW.Id;
                             if (FW.Position > -1) {
-                                SelectedFilter = FW.Filters[FW.Position];
+                                FilterWheelInfo.SelectedFilter = FW.Filters[FW.Position];
                             }
+
+                            TargetFilter = FilterWheelInfo.SelectedFilter;
+
+                            BroadcastFilterWheelInfo();
+
                             return true;
                         } else {
                             this.FW = null;
@@ -218,12 +186,12 @@ namespace NINA.ViewModel {
                 }
             } finally {
                 ss.Release();
-                Mediator.Instance.Request(new StatusUpdateMessage() {
-                    Status = new ApplicationStatus() {
+                applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
                         Source = Title,
                         Status = string.Empty
                     }
-                });
+                );
             }
         }
 
@@ -245,11 +213,50 @@ namespace NINA.ViewModel {
                 _changeFilterCancellationSource?.Cancel();
                 FW.Disconnect();
                 FW = null;
+                FilterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
                 RaisePropertyChanged(nameof(FW));
+                BroadcastFilterWheelInfo();
             }
         }
 
         private FilterWheelChooserVM _filterWheelChooserVM;
+        private IFilterWheelMediator filterWheelMediator;
+        private IFocuserMediator focuserMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
+        private FilterWheelInfo filterWheelInfo;
+
+        public FilterWheelInfo FilterWheelInfo {
+            get {
+                if (filterWheelInfo == null) {
+                    filterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
+                }
+                return filterWheelInfo;
+            }
+            set {
+                filterWheelInfo = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private void BroadcastFilterWheelInfo() {
+            this.filterWheelMediator.Broadcast(FilterWheelInfo);
+        }
+
+        public ICollection<FilterInfo> GetAllFilters() {
+            if (FilterWheelInfo.Connected) {
+                return FW?.Filters;
+            } else {
+                return null;
+            }
+        }
+
+        public Task<bool> Connect() {
+            return ChooseFW();
+        }
+
+        public FilterWheelInfo GetDeviceInfo() {
+            return FilterWheelInfo;
+        }
 
         public FilterWheelChooserVM FilterWheelChooserVM {
             get {
@@ -267,6 +274,7 @@ namespace NINA.ViewModel {
         public ICommand CancelChooseFWCommand { get; private set; }
         public ICommand DisconnectCommand { get; private set; }
         public ICommand RefreshFWListCommand { get; private set; }
+        public IAsyncCommand ChangeFilterCommand { get; private set; }
     }
 
     internal class FilterWheelChooserVM : EquipmentChooserVM {

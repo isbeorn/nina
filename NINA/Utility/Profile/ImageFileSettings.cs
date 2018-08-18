@@ -7,7 +7,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class ImageFileSettings : IImageFileSettings {
+    public class ImageFileSettings : Settings, IImageFileSettings {
         private string filePath = string.Empty;
 
         [DataMember]
@@ -17,7 +17,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 filePath = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -30,7 +30,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 filePattern = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -43,7 +43,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 fileType = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

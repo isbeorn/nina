@@ -6,7 +6,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class SequenceSettings : ISequenceSettings {
+    public class SequenceSettings : Settings, ISequenceSettings {
         private string templatePath = string.Empty;
 
         [DataMember]
@@ -16,7 +16,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 templatePath = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -28,7 +28,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 estimatedDownloadTime = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
