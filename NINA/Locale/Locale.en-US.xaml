@@ -668,4 +668,8 @@ Calculated HFR: {2}
     <s:String x:Key="LblGuidingRMSDescription">Root mean square error of guiding during exposure</s:String>
     <s:String x:Key="LblChange">Change</s:String>
     <s:String x:Key="LblActiveFilter">Active filter</s:String>
+    <s:String x:Key="LblNASASkySurvey">NASA Sky Survey</s:String>
+    <s:String x:Key="LblSkyServerSkySurvey">SkyServer Sky Survey</s:String>
+    <s:String x:Key="LblStsciSkySurvey">Stsci Sky Survey</s:String>
+    <s:String x:Key="LblEsoSkySurvey">ESO Sky Survey</s:String>
 </ResourceDictionary>

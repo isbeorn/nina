@@ -673,4 +673,8 @@ Berechneter HFR: {2}
     <s:String x:Key="LblGuidingRMSDescription">Wurzel der mittleren Fehlerquadratsumme der Nachführung während der Aufnahme</s:String>
     <s:String x:Key="LblChange">Wechseln</s:String>
     <s:String x:Key="LblActiveFilter">Aktiver Filter</s:String>
+    <s:String x:Key="LblNASASkySurvey">NASA Sky Survey</s:String>
+    <s:String x:Key="LblSkyServerSkySurvey">SkyServer Sky Survey</s:String>
+    <s:String x:Key="LblStsciSkySurvey">Stsci Sky Survey</s:String>
+    <s:String x:Key="LblEsoSkySurvey">ESO Sky Survey</s:String>
 </ResourceDictionary>
