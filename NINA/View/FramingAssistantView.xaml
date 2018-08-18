@@ -39,6 +39,7 @@
                                     Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblImageSource}" />
                                     <ComboBox
+                                        x:Name="PART_FramingAssistantSource"
                                         Margin="10,0,0,0"
                                         ItemsSource="{Binding Source={util:EnumBindingSource {x:Type survey:SkySurveySource}}}"
                                         SelectedItem="{Binding FramingAssistantSource}" />
@@ -82,6 +83,27 @@
                                         Text="{ns:Loc LblClearCache}"
                                         TextWrapping="Wrap" />
                                 </Button>
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="0">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="1">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="2">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="3">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="4">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
                             </Grid>
                         </StackPanel>
                     </GroupBox>
