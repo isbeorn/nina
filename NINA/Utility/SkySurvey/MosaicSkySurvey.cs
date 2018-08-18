@@ -11,16 +11,16 @@ using NINA.Utility.Astrometry;
 namespace NINA.Utility.SkySurvey {
 
     internal abstract class MosaicSkySurvey : ISkySurvey {
-        protected const double MAXFOVSINGLEIMAGE = 60;
+        protected double MaxFoVPerImage = 60;
         private const string Url = "https://archive.stsci.edu/cgi-bin/dss_search?format=GIF&r={0}&d={1}&e=J2000&h={2}&w={3}&v=1";
 
         public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
             return await Task.Run(async () => {
-                if (fieldOfView > MAXFOVSINGLEIMAGE * 3) {
-                    throw new Exception(string.Format("Sky Survey only supports up to {0} arcmin", MAXFOVSINGLEIMAGE));
+                if (fieldOfView > MaxFoVPerImage * 3) {
+                    throw new Exception(string.Format("Sky Survey only supports up to {0} arcmin", MaxFoVPerImage));
                 } else {
                     BitmapSource image;
-                    if (fieldOfView <= MAXFOVSINGLEIMAGE) {
+                    if (fieldOfView <= MaxFoVPerImage) {
                         image = await GetSingleImage(coordinates, fieldOfView, fieldOfView, ct);
                     } else {
                         image = await GetMosaicImage(name, coordinates, fieldOfView, ct, progress);
@@ -40,10 +40,10 @@ namespace NINA.Utility.SkySurvey {
         }
 
         private async Task<BitmapSource> GetMosaicImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
-            var centerTask = GetSingleImage(coordinates, MAXFOVSINGLEIMAGE, MAXFOVSINGLEIMAGE, ct);
+            var centerTask = GetSingleImage(coordinates, MaxFoVPerImage, MaxFoVPerImage, ct);
 
-            var borderFoV = (fieldOfView - MAXFOVSINGLEIMAGE) / 2.0;
-            var shiftedDegree = Astrometry.Astrometry.ArcminToDegree(MAXFOVSINGLEIMAGE) / 2.0 + Astrometry.Astrometry.ArcminToDegree(borderFoV) / 2.0;
+            var borderFoV = (fieldOfView - MaxFoVPerImage) / 2.0;
+            var shiftedDegree = Astrometry.Astrometry.ArcminToDegree(MaxFoVPerImage) / 2.0 + Astrometry.Astrometry.ArcminToDegree(borderFoV) / 2.0;
 
             var topLeftTask = GetSingleImage(
                 new Coordinates(coordinates.RADegrees + shiftedDegree, coordinates.Dec + shiftedDegree, Epoch.J2000, Coordinates.RAType.Degrees),
@@ -54,7 +54,7 @@ namespace NINA.Utility.SkySurvey {
 
             var topTask = GetSingleImage(
                 new Coordinates(coordinates.RADegrees, coordinates.Dec + shiftedDegree, Epoch.J2000, Coordinates.RAType.Degrees),
-                MAXFOVSINGLEIMAGE,
+                MaxFoVPerImage,
                 borderFoV,
                 ct
             );
@@ -69,14 +69,14 @@ namespace NINA.Utility.SkySurvey {
             var leftTask = GetSingleImage(
                 new Coordinates(coordinates.RADegrees + shiftedDegree, coordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
-                MAXFOVSINGLEIMAGE,
+                MaxFoVPerImage,
                 ct
             );
 
             var rightTask = GetSingleImage(
                 new Coordinates(coordinates.RADegrees - shiftedDegree, coordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
-                MAXFOVSINGLEIMAGE,
+                MaxFoVPerImage,
                 ct
             );
 
@@ -89,7 +89,7 @@ namespace NINA.Utility.SkySurvey {
 
             var bottomTask = GetSingleImage(
                 new Coordinates(coordinates.RADegrees, coordinates.Dec - shiftedDegree, Epoch.J2000, Coordinates.RAType.Degrees),
-                MAXFOVSINGLEIMAGE,
+                MaxFoVPerImage,
                 borderFoV,
                 ct
             );
