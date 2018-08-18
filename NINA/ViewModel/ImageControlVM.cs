@@ -300,7 +300,7 @@ namespace NINA.ViewModel {
                 var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 solver.Image = Image;
                 var service = WindowServiceFactory.Create();
-                service.ShowDialog(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
                 await solver.Solve(Image, _progress, _plateSolveToken.Token);
                 return true;
             } else {
