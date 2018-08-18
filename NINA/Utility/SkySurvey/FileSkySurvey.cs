@@ -66,8 +66,8 @@ namespace NINA.Utility.SkySurvey {
                         return new SkySurveyImage() {
                             Name = Path.GetFileNameWithoutExtension(dialog.FileName),
                             Coordinates = plateSolveResult.Coordinates,
-                            FoVHeight = Astrometry.Astrometry.ArcsecToDegree(plateSolveResult.Pixscale * img.Width),
-                            FoVWidth = Astrometry.Astrometry.ArcsecToDegree(plateSolveResult.Pixscale * img.Width),
+                            FoVHeight = Astrometry.Astrometry.ArcsecToArcmin(plateSolveResult.Pixscale * img.Width),
+                            FoVWidth = Astrometry.Astrometry.ArcsecToArcmin(plateSolveResult.Pixscale * img.Width),
                             Image = img,
                             Rotation = rotation
                         };

@@ -47,7 +47,7 @@ namespace NINA.Utility.SkySurvey {
             Initialize();
         }
 
-        public static void SaveImageToCache(SkySurveyImage skySurveyImage) {
+        public static XElement SaveImageToCache(SkySurveyImage skySurveyImage) {
             try {
                 var element =
                     Cache
@@ -74,22 +74,24 @@ namespace NINA.Utility.SkySurvey {
 
                     XElement xml = new XElement("Image",
                         new XAttribute("Id", skySurveyImage.Id),
-                        new XAttribute("RA", Math.Round(skySurveyImage.Coordinates.RA, 4)),
-                        new XAttribute("Dec", Math.Round(skySurveyImage.Coordinates.Dec, 4)),
+                        new XAttribute("RA", skySurveyImage.Coordinates.RA.ToString("R", CultureInfo.InvariantCulture)),
+                        new XAttribute("Dec", skySurveyImage.Coordinates.Dec.ToString("R", CultureInfo.InvariantCulture)),
                         new XAttribute("Rotation", skySurveyImage.Rotation),
-                        new XAttribute("FoVW", skySurveyImage.FoVWidth),
-                        new XAttribute("FoVH", skySurveyImage.FoVHeight),
+                        new XAttribute("FoVW", skySurveyImage.FoVWidth.ToString("R", CultureInfo.InvariantCulture)),
+                        new XAttribute("FoVH", skySurveyImage.FoVHeight.ToString("R", CultureInfo.InvariantCulture)),
                         new XAttribute("FileName", imgFilePath),
                         new XAttribute("Name", name)
                     );
 
                     Cache.Add(xml);
                     Cache.Save(FRAMINGASSISTANTCACHEINFOPATH);
+                    return xml;
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
                 throw ex;
             }
+            return null;
         }
 
         public static XElement Cache { get; private set; }
@@ -104,10 +106,9 @@ namespace NINA.Utility.SkySurvey {
                     .Where(
                         x =>
                             x.Attribute("Name").Value == name
-                            && x.Attribute("RA").Value == Math.Round(coordinates.RA, 4).ToString(CultureInfo.InvariantCulture)
-                            && x.Attribute("Dec").Value == Math.Round(coordinates.Dec, 4).ToString(CultureInfo.InvariantCulture)
-                            && x.Attribute("FoVW").Value == fieldOfView.ToString(CultureInfo.InvariantCulture)
-                            && x.Attribute("FoVH").Value == fieldOfView.ToString(CultureInfo.InvariantCulture)
+                            && x.Attribute("RA").Value == coordinates.RA.ToString("R", CultureInfo.InvariantCulture)
+                            && x.Attribute("Dec").Value == coordinates.Dec.ToString("R", CultureInfo.InvariantCulture)
+                            && x.Attribute("FoVW").Value == fieldOfView.ToString("R", CultureInfo.InvariantCulture)
                     ).FirstOrDefault();
 
                 if (element != null) {

@@ -406,7 +406,7 @@ namespace NINA.ViewModel {
                             ImageParameter = skySurveyImage;
                         }));
 
-                        CacheSkySurvey.SaveImageToCache(skySurveyImage);
+                        SelectedImageCacheInfo = CacheSkySurvey.SaveImageToCache(skySurveyImage);
                         RaisePropertyChanged(nameof(ImageCacheInfo));
                     }
                 } catch (OperationCanceledException) {
@@ -454,7 +454,7 @@ namespace NINA.ViewModel {
                 var width = CameraWidth * conversion;
                 var height = CameraHeight * conversion;
                 Rectangle = new ObservableRectangle(parameter.Rotation) { Width = width, Height = height, X = parameter.Image.Width / 2d - width / 2d, Y = parameter.Image.Height / 2d - height / 2d, Rotation = Rectangle?.Rotation ?? 0 };
-                SelectedCoordinates = new Coordinates(Coordinates.RA, Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
+                SelectedCoordinates = new Coordinates(parameter.Coordinates.RA, parameter.Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
             }
         }
 
