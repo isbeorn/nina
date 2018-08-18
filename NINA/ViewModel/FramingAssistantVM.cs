@@ -389,31 +389,33 @@ namespace NINA.ViewModel {
         private IProgress<ApplicationStatus> _statusUpdate;
 
         private async Task<bool> LoadImage() {
-            CancelLoadImage();
-            _loadImageSource = new CancellationTokenSource();
-            try {
-                var skySurvey = SkySurveyFactory.Create(FramingAssistantSource, new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator));
+            using (MyStopWatch.Measure()) {
+                CancelLoadImage();
+                _loadImageSource = new CancellationTokenSource();
+                try {
+                    var skySurvey = SkySurveyFactory.Create(FramingAssistantSource, new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator));
 
-                var skySurveyImage = await skySurvey.GetImage(DSO?.Name, this.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
+                    var skySurveyImage = await skySurvey.GetImage(DSO?.Name, this.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
 
-                if (skySurveyImage != null) {
-                    CalculateRectangle(skySurveyImage);
+                    if (skySurveyImage != null) {
+                        CalculateRectangle(skySurveyImage);
 
-                    await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                        ImageParameter = null;
-                        GC.Collect();
-                        ImageParameter = skySurveyImage;
-                    }));
+                        await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                            ImageParameter = null;
+                            GC.Collect();
+                            ImageParameter = skySurveyImage;
+                        }));
 
-                    CacheSkySurvey.SaveImageToCache(skySurveyImage);
-                    RaisePropertyChanged(nameof(ImageCacheInfo));
+                        CacheSkySurvey.SaveImageToCache(skySurveyImage);
+                        RaisePropertyChanged(nameof(ImageCacheInfo));
+                    }
+                } catch (OperationCanceledException) {
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    Notification.ShowError(ex.Message);
                 }
-            } catch (OperationCanceledException) {
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.ShowError(ex.Message);
+                return true;
             }
-            return true;
         }
 
         public XElement ImageCacheInfo {
@@ -436,8 +438,7 @@ namespace NINA.ViewModel {
                     var name = _selectedImageCacheInfo.Attribute("Name").Value;
                     Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours);
                     FieldOfView = Astrometry.ArcminToDegree(double.Parse(_selectedImageCacheInfo.Attribute("FoVW").Value, CultureInfo.InvariantCulture));
-                    DSO = new DeepSkyObject(name, string.Empty);
-                    DSO.Coordinates = Coordinates;
+                    DSO = new DeepSkyObject(name, Coordinates, string.Empty);
                 }
                 RaisePropertyChanged();
             }

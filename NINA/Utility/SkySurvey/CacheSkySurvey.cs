@@ -60,14 +60,14 @@ namespace NINA.Utility.SkySurvey {
                         Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
                     }
 
-                    var imgFilePath = Path.Combine(FRAMINGASSISTANTCACHEPATH, skySurveyImage.Name + ".png");
+                    var imgFilePath = Path.Combine(FRAMINGASSISTANTCACHEPATH, skySurveyImage.Name + ".jpg");
 
                     imgFilePath = Utility.GetUniqueFilePath(imgFilePath);
                     var name = Path.GetFileNameWithoutExtension(imgFilePath);
 
                     using (var fileStream = new FileStream(imgFilePath, FileMode.Create)) {
-                        var encoder = new PngBitmapEncoder();
-                        //encoder.QualityLevel = 80;
+                        var encoder = new JpegBitmapEncoder();
+                        encoder.QualityLevel = 70;
                         encoder.Frames.Add(BitmapFrame.Create(skySurveyImage.Image));
                         encoder.Save(fileStream);
                     }
@@ -111,7 +111,7 @@ namespace NINA.Utility.SkySurvey {
                     ).FirstOrDefault();
 
                 if (element != null) {
-                    var img = LoadPng(element.Attribute("FileName").Value);
+                    var img = LoadJpg(element.Attribute("FileName").Value);
                     Guid id = Guid.Parse(element.Attribute("Id").Value);
                     var fovW = double.Parse(element.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
                     var fovH = double.Parse(element.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
@@ -135,9 +135,9 @@ namespace NINA.Utility.SkySurvey {
             });
         }
 
-        private BitmapSource LoadPng(string filename) {
-            PngBitmapDecoder PngDec = new PngBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            return PngDec.Frames[0];
+        private BitmapSource LoadJpg(string filename) {
+            JpegBitmapDecoder JpgDec = new JpegBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+            return JpgDec.Frames[0];
         }
     }
 }
