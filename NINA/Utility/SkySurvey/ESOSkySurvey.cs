@@ -8,13 +8,11 @@ using NINA.Utility.Astrometry;
 
 namespace NINA.Utility.SkySurvey {
 
-    internal class NASASkySurvey : ISkySurvey {
-        private const string Url = "https://skyview.gsfc.nasa.gov/current/cgi/runquery.pl?Survey=dss2r&Position={0},{1}&Size={2}&Pixels={3}&Return=JPG";
+    internal class ESOSkySurvey : ISkySurvey {
+        private const string Url = "http://archive.eso.org/dss/dss/image?ra={0}&dec={1}&x={2}&y={3}&mime-type=download-gif&Sky-Survey=DSS2&equinox=J2000&statsmode=VO";
 
         public async Task<SkySurveyImage> GetImage(Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
-            var arcSecPerPixel = 0.5;
-            var pixels = Math.Min(Astrometry.Astrometry.ArcminToArcsec(fieldOfView) * arcSecPerPixel, 5000);
-            var url = string.Format(Url, coordinates.RADegrees, coordinates.Dec, Astrometry.Astrometry.ArcminToDegree(fieldOfView), pixels);
+            var url = string.Format(Url, coordinates.RADegrees, coordinates.Dec, fieldOfView, fieldOfView);
             var image = await Utility.HttpClientGetImage(new Uri(url), ct, progress);
             image.Freeze();
             return new SkySurveyImage() {

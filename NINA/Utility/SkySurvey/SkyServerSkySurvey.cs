@@ -28,11 +28,13 @@ namespace NINA.Utility.SkySurvey {
                 arcSecPerPixel
             );
             var image = await Utility.HttpClientGetImage(new Uri(url), ct, progress);
+            image.Freeze();
             return new SkySurveyImage() {
                 Image = image,
                 FoVHeight = fieldOfView,
                 FoVWidth = fieldOfView,
-                Rotation = 180
+                Rotation = 180,
+                Coordinates = coordinates
             };
         }
     }

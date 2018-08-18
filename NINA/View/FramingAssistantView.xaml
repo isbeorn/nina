@@ -11,6 +11,7 @@
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:survey="clr-namespace:NINA.Utility.SkySurvey"
     xmlns:util="clr-namespace:NINA.Utility"
     xmlns:vm="clr-namespace:NINA.ViewModel"
     d:DesignHeight="300"
@@ -38,9 +39,8 @@
                                     Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblImageSource}" />
                                     <ComboBox
-                                        Name="PART_FramingAssistantSource"
                                         Margin="10,0,0,0"
-                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type vm:FramingAssistantSource}}}"
+                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type survey:SkySurveySource}}}"
                                         SelectedItem="{Binding FramingAssistantSource}" />
                                 </UniformGrid>
                             </Border>
@@ -82,19 +82,6 @@
                                         Text="{ns:Loc LblClearCache}"
                                         TextWrapping="Wrap" />
                                 </Button>
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="0">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="1">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
                             </Grid>
                         </StackPanel>
                     </GroupBox>
@@ -226,20 +213,6 @@
                                     </StackPanel>
                                 </UniformGrid>
                             </Border>
-
-                            <StackPanel.Style>
-                                <Style TargetType="{x:Type StackPanel}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="1">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-
-                                        <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="2">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Style>
                         </StackPanel>
                     </GroupBox>
 
@@ -335,19 +308,6 @@
                                     Text="{ns:Loc LblRecenterImage}"
                                     TextWrapping="Wrap" />
                             </Button>
-                            <Grid.Style>
-                                <Style TargetType="{x:Type Grid}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="1">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-
-                                        <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="2">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Grid.Style>
                         </Grid>
                         <Button
                             Height="35"

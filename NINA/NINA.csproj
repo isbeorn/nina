@@ -437,8 +437,9 @@
     <Compile Include="Utility\RawConverter\IRawConverter.cs" />
     <Compile Include="Utility\SerialPortInteraction.cs" />
     <Compile Include="Utility\SkySurvey\CacheSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\ESOSkySurvey.cs" />
     <Compile Include="Utility\SkySurvey\ISkySurvey.cs" />
-    <Compile Include="Utility\SkySurvey\LocalSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\FileSkySurvey.cs" />
     <Compile Include="Utility\SkySurvey\NASASkySurvey.cs" />
     <Compile Include="Utility\SkySurvey\SkyServerSkySurvey.cs" />
     <Compile Include="Utility\SkySurvey\SkySurveyFactory.cs" />

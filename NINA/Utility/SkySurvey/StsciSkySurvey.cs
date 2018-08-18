@@ -77,12 +77,13 @@ namespace NINA.Utility.SkySurvey {
                     // Converts the Visual (DrawingVisual) into a BitmapSource
                     RenderTargetBitmap bmp = new RenderTargetBitmap(imageWidth * 2, imageHeight * 2, 96, 96, PixelFormats.Pbgra32);
                     bmp.Render(drawingVisual);
-
+                    bmp.Freeze();
                     return new SkySurveyImage() {
                         Image = bmp,
                         FoVHeight = fieldOfView,
                         FoVWidth = fieldOfView,
-                        Rotation = 180
+                        Rotation = 180,
+                        Coordinates = coordinates
                     };
                 } else if (nrOfRequiredFrames == 9) {
                     return null;
@@ -93,11 +94,13 @@ namespace NINA.Utility.SkySurvey {
                 return null;
             } else {
                 var image = await GetSingleImage(coordinates, fieldOfView, ct);
+                image.Freeze();
                 return new SkySurveyImage() {
                     Image = image,
                     FoVHeight = fieldOfView,
                     FoVWidth = fieldOfView,
-                    Rotation = 180
+                    Rotation = 180,
+                    Coordinates = coordinates
                 };
             }
         }

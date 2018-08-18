@@ -15,9 +15,12 @@ namespace NINA.Utility.SkySurvey {
     }
 
     internal class SkySurveyImage {
+        public Guid Id { get; set; } = Guid.NewGuid();
         public BitmapSource Image { get; set; }
         public double FoVWidth { get; set; }
         public double FoVHeight { get; set; }
         public double Rotation { get; set; }
+        public Coordinates Coordinates { get; set; }
+        public string Name { get; internal set; }
     }
 }
