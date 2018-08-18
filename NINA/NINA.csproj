@@ -445,7 +445,8 @@
     <Compile Include="Utility\ValidationRules\MinutesRule.cs" />
     <Compile Include="Utility\ValidationRules\SecondsRule.cs" />
     <Compile Include="Utility\ValidationRules\ShortRangeRule.cs" />
-    <Compile Include="Utility\WindowService.cs" />
+    <Compile Include="Utility\WindowService\WindowService.cs" />
+    <Compile Include="Utility\WindowService\WindowServiceFactory.cs" />
     <Compile Include="Utility\XISF.cs" />
     <Compile Include="ViewModel\ApplicationStatusVM.cs" />
     <Compile Include="ViewModel\AutoFocusVM.cs" />

@@ -9,6 +9,7 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.Utility.WindowService;
 using nom.tam.fits;
 using System;
 using System.Collections.Generic;
@@ -275,6 +276,20 @@ namespace NINA.ViewModel {
         public ICommand SubSampleDragStopCommand { get; private set; }
         public ICommand SubSampleDragMoveCommand { get; private set; }
 
+        private IWindowServiceFactory windowServiceFactory;
+
+        public IWindowServiceFactory WindowServiceFactory {
+            get {
+                if (windowServiceFactory == null) {
+                    windowServiceFactory = new WindowServiceFactory();
+                }
+                return windowServiceFactory;
+            }
+            set {
+                windowServiceFactory = value;
+            }
+        }
+
         private async Task<bool> PlateSolveImage() {
             if (Image != null) {
                 _plateSolveToken = new CancellationTokenSource();
@@ -284,8 +299,8 @@ namespace NINA.ViewModel {
                 await PrepareImageHelper();
                 var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 solver.Image = Image;
-                var service = new WindowService();
-                service.ShowWindow(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                var service = WindowServiceFactory.Create();
+                service.ShowDialog(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
                 await solver.Solve(Image, _progress, _plateSolveToken.Token);
                 return true;
             } else {

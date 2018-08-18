@@ -8,6 +8,7 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.Utility.WindowService;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -215,6 +216,20 @@ namespace NINA.ViewModel {
             }
         }
 
+        private IWindowServiceFactory windowServiceFactory;
+
+        public IWindowServiceFactory WindowServiceFactory {
+            get {
+                if (windowServiceFactory == null) {
+                    windowServiceFactory = new WindowServiceFactory();
+                }
+                return windowServiceFactory;
+            }
+            set {
+                windowServiceFactory = value;
+            }
+        }
+
         private async Task<bool> StartSequence(IProgress<ApplicationStatus> progress) {
             try {
                 if (Sequence.Count <= 0) {
@@ -240,8 +255,8 @@ namespace NINA.ViewModel {
                             ImageType = CaptureSequence.ImageTypes.SNAP,
                             TotalExposureCount = 1
                         };
-                        var service = new WindowService();
-                        service.ShowWindow(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                        var service = WindowServiceFactory.Create();
+                        service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
                         var result = await solver.CaptureSolveSyncAndReslew(solveseq, true, true, true, _canceltoken.Token, progress, false, profileService.ActiveProfile.PlateSolveSettings.Threshold);
                         service.DelayedClose(TimeSpan.FromSeconds(10));
 
@@ -281,8 +296,8 @@ namespace NINA.ViewModel {
 
         private async Task AutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             var autoFocus = new AutoFocusVM(profileService, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator);
-            var service = new WindowService();
-            service.ShowWindow(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+            var service = WindowServiceFactory.Create();
+            service.Show(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
             await autoFocus.StartAutoFocus(filter, _canceltoken.Token, progress);
             service.DelayedClose(TimeSpan.FromSeconds(10));
         }

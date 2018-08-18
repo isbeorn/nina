@@ -1,6 +1,7 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
+using NINA.Utility.WindowService;
 using System;
 using System.Globalization;
 using System.Threading;
@@ -66,15 +67,29 @@ namespace NINA.ViewModel {
             }
         }
 
+        private IWindowServiceFactory windowServiceFactory;
+
+        public IWindowServiceFactory WindowServiceFactory {
+            get {
+                if (windowServiceFactory == null) {
+                    windowServiceFactory = new WindowServiceFactory();
+                }
+                return windowServiceFactory;
+            }
+            set {
+                windowServiceFactory = value;
+            }
+        }
+
         public bool UseSavedProfile { get; set; } = Properties.Settings.Default.UseSavedProfileSelection;
 
         public void SelectProfile() {
             _cancelTokenSource = new CancellationTokenSource();
             try {
                 if (!UseSavedProfile) {
-                    var ws = new WindowService();
+                    var ws = WindowServiceFactory.Create();
                     ws.OnDialogResultChanged += (s, e) => {
-                        var dialogResult = (WindowService.DialogResultEventArgs)e;
+                        var dialogResult = (DialogResultEventArgs)e;
                         if (dialogResult.DialogResult != true) {
                             _cancelTokenSource.Cancel();
                             profileService.SelectProfile(_defaultProfile.Id);

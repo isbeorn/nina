@@ -6,6 +6,7 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.Utility.WindowService;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -215,6 +216,20 @@ namespace NINA.ViewModel {
             return result;
         }
 
+        private IWindowServiceFactory windowServiceFactory;
+
+        public IWindowServiceFactory WindowServiceFactory {
+            get {
+                if (windowServiceFactory == null) {
+                    windowServiceFactory = new WindowServiceFactory();
+                }
+                return windowServiceFactory;
+            }
+            set {
+                windowServiceFactory = value;
+            }
+        }
+
         /// <summary>
         /// Checks if auto meridian flip should be considered and executes it
         /// 1) Compare next exposure length with time to meridian - If exposure length is greater
@@ -228,7 +243,7 @@ namespace NINA.ViewModel {
         /// <param name="seq">Current Sequence row</param>
         /// <returns></returns>
         public async Task<bool> MeridianFlip(CaptureSequence seq, TelescopeInfo telescopeInfo) {
-            var service = new WindowService();
+            var service = WindowServiceFactory.Create();
             this._tokensource = new CancellationTokenSource();
             this._progress = new Progress<ApplicationStatus>(p => Status = p);
             var flip = DoMeridianFlip(telescopeInfo);
