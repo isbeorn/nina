@@ -413,7 +413,6 @@
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
     <Compile Include="Utility\ObservableRectangle.cs" />
     <Compile Include="Utility\ObserveAllCollection.cs" />
-    <Compile Include="Utility\DigitalSkySurveyInteraction.cs" />
     <Compile Include="Utility\Profile\ApplicationSettings.cs" />
     <Compile Include="Utility\Profile\AstrometrySettings.cs" />
     <Compile Include="Utility\Profile\CameraSettings.cs" />
@@ -436,6 +435,15 @@
     <Compile Include="Utility\RawConverter\FreeImageConverter.cs" />
     <Compile Include="Utility\RawConverter\IRawConverter.cs" />
     <Compile Include="Utility\SerialPortInteraction.cs" />
+    <Compile Include="Utility\SkySurvey\CacheSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\ESOSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\ISkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\FileSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\MosaicSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\NASASkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\SkyServerSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\SkySurveyFactory.cs" />
+    <Compile Include="Utility\SkySurvey\StsciSkySurvey.cs" />
     <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
     <Compile Include="Utility\ValidationRules\DirectoryExistsRule.cs" />

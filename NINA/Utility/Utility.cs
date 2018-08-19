@@ -172,7 +172,7 @@ namespace NINA.Utility {
         }
 
         public static async Task<BitmapSource> HttpClientGetImage(Uri url, CancellationToken ct, IProgress<int> progress = null) {
-            var bitmap = new BitmapImage();
+            var img = new BitmapImage();
             using (var client = new WebClient()) {
                 using (ct.Register(() => client.CancelAsync(), useSynchronizationContext: false)) {
                     try {
@@ -181,11 +181,13 @@ namespace NINA.Utility {
                         };
                         var data = await client.DownloadDataTaskAsync(url);
                         using (MemoryStream stream = new MemoryStream(data)) {
+                            var bitmap = new BitmapImage();
                             bitmap.BeginInit();
                             bitmap.StreamSource = stream;
                             bitmap.CacheOption = BitmapCacheOption.OnLoad;
                             bitmap.EndInit();
                             bitmap.Freeze();
+                            img = bitmap;
                         }
                     } catch (WebException ex) {
                         if (ex.Status == WebExceptionStatus.RequestCanceled) {
@@ -196,7 +198,7 @@ namespace NINA.Utility {
                     }
                 }
             }
-            return bitmap;
+            return img;
         }
 
         public static async Task HttpDownloadFile(Uri url, string targetLocation, CancellationToken canceltoken, IProgress<int> progress = null) {

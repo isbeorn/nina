@@ -564,7 +564,10 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblLoadImageFromFile">Load Image from File</s:String>
     <s:String x:Key="LblLoadImageFromFileTooltip">Download Image from file and use the blindsolver to determine coordinates</s:String>
     <s:String x:Key="LblNoCoordinates">No coordinates available</s:String>
-    <s:String x:Key="LblBlindSolveAttemptForFraming">No coordinates available. Image has to be blindsolved for framing</s:String>
+    <s:String x:Key="LblBlindSolveAttemptForFraming" xml:space="preserve">Image has to be solved for framing.
+Should reference coordinates be taken?
+RA: {0}
+Dec: {1}</s:String>
     <s:String x:Key="LblImageSource">Image source</s:String>
     <s:String x:Key="LblDigitalSkySurvey">Digital Sky Survey</s:String>
     <s:String x:Key="LblFile">File</s:String>
@@ -668,4 +671,8 @@ Calculated HFR: {2}
     <s:String x:Key="LblGuidingRMSDescription">Root mean square error of guiding during exposure</s:String>
     <s:String x:Key="LblChange">Change</s:String>
     <s:String x:Key="LblActiveFilter">Active filter</s:String>
+    <s:String x:Key="LblNASASkySurvey">NASA Sky Survey</s:String>
+    <s:String x:Key="LblSkyServerSkySurvey">SkyServer Sky Survey</s:String>
+    <s:String x:Key="LblStsciSkySurvey">Stsci Sky Survey</s:String>
+    <s:String x:Key="LblEsoSkySurvey">ESO Sky Survey</s:String>
 </ResourceDictionary>

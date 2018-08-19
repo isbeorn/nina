@@ -350,8 +350,8 @@ namespace NINA.ViewModel {
         /// <param name="progress">   </param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
-        public async Task<PlateSolveResult> Solve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false) {
-            var solver = GetPlateSolver(source);
+        public async Task<PlateSolveResult> Solve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false, Coordinates coordinates = null) {
+            var solver = GetPlateSolver(source, coordinates);
             if (solver == null) {
                 return null;
             }
@@ -417,12 +417,16 @@ namespace NINA.ViewModel {
             _solveCancelToken?.Cancel();
         }
 
-        private IPlateSolver GetPlateSolver(BitmapSource img) {
+        private IPlateSolver GetPlateSolver(BitmapSource img, Coordinates referenceCoordiantes) {
             IPlateSolver solver = null;
             if (img != null) {
                 Coordinates coords = null;
-                if (TelescopeInfo.Connected == true) {
-                    coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                if (referenceCoordiantes != null) {
+                    coords = referenceCoordiantes;
+                } else {
+                    if (TelescopeInfo.Connected == true) {
+                        coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                    }
                 }
                 var binning = CameraInfo.BinX;
                 if (binning < 1) { binning = 1; }

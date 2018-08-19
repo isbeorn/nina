@@ -1,5 +1,6 @@
 ﻿using NINA.Model;
 using NINA.Model.MyCamera;
+using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Behaviors;
@@ -7,6 +8,7 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.Utility.SkySurvey;
 using System;
 using System.ComponentModel;
 using System.Globalization;
@@ -74,7 +76,7 @@ namespace NINA.ViewModel {
                 return false;
             }, (object o) => SelectedCoordinates != null);
 
-            LoadImageCacheList();
+            SelectedImageCacheInfo = (XElement)ImageCacheInfo.FirstNode;
 
             profileService.ProfileChanged += (object sender, EventArgs e) => {
                 RaisePropertyChanged(nameof(CameraPixelSize));
@@ -89,19 +91,25 @@ namespace NINA.ViewModel {
             };
         }
 
+        private ISkySurveyFactory skySurveyFactory;
+
+        public ISkySurveyFactory SkySurveyFactory {
+            get {
+                if (skySurveyFactory == null) {
+                    skySurveyFactory = new SkySurveyFactory();
+                }
+                return skySurveyFactory;
+            }
+            set {
+                skySurveyFactory = value;
+            }
+        }
+
         private void ClearCache(object obj) {
             var diagResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblClearCache"] + "?", "", MessageBoxButton.YesNo, MessageBoxResult.No);
             if (diagResult == MessageBoxResult.Yes) {
-                System.IO.DirectoryInfo di = new DirectoryInfo(FRAMINGASSISTANTCACHEPATH);
-
-                foreach (FileInfo file in di.GetFiles()) {
-                    file.Delete();
-                }
-                foreach (DirectoryInfo dir in di.GetDirectories()) {
-                    dir.Delete(true);
-                }
-
-                LoadImageCacheList();
+                CacheSkySurvey.Clear();
+                RaisePropertyChanged(nameof(ImageCacheInfo));
             }
         }
 
@@ -123,93 +131,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> LoadImageFromFile() {
-            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.Title = Locale.Loc.Instance["LblLoadImage"];
-            dialog.FileName = "";
-            dialog.DefaultExt = ".tif";
-            dialog.Multiselect = false;
-            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png";
-
-            if (dialog.ShowDialog() == true) {
-                BitmapSource img = null;
-                switch (Path.GetExtension(dialog.FileName)) {
-                    case ".tif":
-                    case ".tiff":
-                        img = LoadTiff(dialog.FileName);
-                        break;
-
-                    case ".png":
-                        img = LoadPng(dialog.FileName);
-                        break;
-
-                    case ".jpg":
-                        img = LoadJpg(dialog.FileName);
-                        break;
-                }
-
-                if (img == null) {
-                    return false;
-                }
-
-                var dialogResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
-                if (dialogResult == MessageBoxResult.OK) {
-                    var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                    var plateSolveResult = await solver.BlindSolve(img, _statusUpdate, _loadImageSource.Token);
-
-                    if (plateSolveResult.Success) {
-                        var rotation = 180 - plateSolveResult.Orientation;
-                        if (rotation < 0) {
-                            rotation += 360;
-                        } else if (rotation >= 360) {
-                            rotation -= 360;
-                        }
-
-                        var parameter = new FramingImageParameter() {
-                            Image = img,
-                            FieldOfViewWidth = Astrometry.ArcsecToDegree(plateSolveResult.Pixscale * img.Width),
-                            FieldOfViewHeight = Astrometry.ArcsecToDegree(plateSolveResult.Pixscale * img.Height),
-                            Rotation = rotation
-                        };
-                        Coordinates = plateSolveResult.Coordinates;
-                        DSO.Name = Path.GetFileNameWithoutExtension(dialog.FileName);
-                        FieldOfView = Math.Round(Math.Max(parameter.FieldOfViewWidth, parameter.FieldOfViewHeight), 2);
-                        CalculateRectangle(parameter);
-                        await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                            ImageParameter = parameter;
-                        }));
-
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-
-        private BitmapSource LoadPng(string filename) {
-            PngBitmapDecoder PngDec = new PngBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            return PngDec.Frames[0];
-        }
-
-        private BitmapSource LoadJpg(string filename) {
-            JpegBitmapDecoder JpgDec = new JpegBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            return JpgDec.Frames[0];
-        }
-
-        private BitmapSource LoadTiff(string filename) {
-            TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            return TifDec.Frames[0];
-        }
-
         public async Task<bool> SetCoordinates(DeepSkyObject dso) {
             this.DSO = new DeepSkyObject(dso.Name, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             this.Coordinates = dso.Coordinates;
-            FramingAssistantSource = FramingAssistantSource.DSS;
+            FramingAssistantSource = SkySurveySource.NASA;
             await LoadImageCommand.ExecuteAsync(null);
             return true;
         }
@@ -396,9 +321,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private FramingAssistantSource _framingAssistantSource;
+        private SkySurveySource _framingAssistantSource;
 
-        public FramingAssistantSource FramingAssistantSource {
+        public SkySurveySource FramingAssistantSource {
             get {
                 return _framingAssistantSource;
             }
@@ -434,9 +359,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private FramingImageParameter _imageParameter;
+        private SkySurveyImage _imageParameter;
 
-        public FramingImageParameter ImageParameter {
+        public SkySurveyImage ImageParameter {
             get {
                 return _imageParameter;
             }
@@ -464,135 +389,70 @@ namespace NINA.ViewModel {
 
         private IProgress<ApplicationStatus> _statusUpdate;
 
-        private async Task<bool> LoadImageFromDSS() {
-            var success = true;
-            try {
-                _statusUpdate.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
-
-                var arcsecPerPix = Astrometry.ArcsecPerPixel(CameraPixelSize, FocalLength);
-                var p = new DigitalSkySurveyParameters() {
-                    Coordinates = this.Coordinates,
-                    FoV = Astrometry.DegreeToArcmin(FieldOfView)
-                };
-
-                var interaction = new DigitalSkySurveyInteraction(DigitalSkySurveyDomain.NASA);
-                var img = await interaction.Download(p, _loadImageSource.Token, _progress);
-                var parameter = new FramingImageParameter() {
-                    Image = img,
-                    FieldOfViewWidth = FieldOfView,
-                    FieldOfViewHeight = FieldOfView,
-                    Rotation = 180
-                };
-
-                CalculateRectangle(parameter);
-
-                await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                    ImageParameter = parameter;
-                }));
-            } catch (OperationCanceledException) {
-                success = false;
-            } catch (Exception ex) {
-                success = false;
-                Logger.Error(ex);
-                Notification.ShowError(ex.Message);
-            } finally {
-                _statusUpdate.Report(new ApplicationStatus() { Status = "" });
-            }
-            return success;
-        }
-
         private async Task<bool> LoadImage() {
-            CancelLoadImage();
-            _loadImageSource = new CancellationTokenSource();
+            using (MyStopWatch.Measure()) {
+                CancelLoadImage();
+                _loadImageSource = new CancellationTokenSource();
+                try {
+                    var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
 
-            if (FramingAssistantSource == FramingAssistantSource.DSS) {
-                var success = await LoadImageFromDSS();
-                if (success) {
-                    FillImageCache();
+                    var skySurveyImage = await skySurvey.GetImage(DSO?.Name, this.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
+
+                    if (skySurveyImage != null) {
+                        if (skySurveyImage.Coordinates == null) {
+                            skySurveyImage = await PlateSolveSkySurvey(skySurveyImage);
+                        }
+
+                        CalculateRectangle(skySurveyImage);
+
+                        await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                            ImageParameter = null;
+                            GC.Collect();
+                            ImageParameter = skySurveyImage;
+                        }));
+
+                        SelectedImageCacheInfo = CacheSkySurvey.SaveImageToCache(skySurveyImage);
+                        RaisePropertyChanged(nameof(ImageCacheInfo));
+                    }
+                } catch (OperationCanceledException) {
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    Notification.ShowError(ex.Message);
                 }
-            } else if (FramingAssistantSource == FramingAssistantSource.FILE) {
-                var success = await LoadImageFromFile();
-                if (success) {
-                    FillImageCache();
-                }
-            } else if (FramingAssistantSource == FramingAssistantSource.CACHE) {
-                await LoadImageFromCache();
+                return true;
+            }
+        }
+
+        private async Task<SkySurveyImage> PlateSolveSkySurvey(SkySurveyImage skySurveyImage) {
+            var diagResult = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], Coordinates.RAString, Coordinates.DecString), Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
+            var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+            PlateSolveResult psResult;
+            if (diagResult == MessageBoxResult.Yes) {
+                psResult = await solver.Solve(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token, false, Coordinates);
             } else {
-                return false;
+                psResult = await solver.BlindSolve(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token);
             }
-            return true;
-        }
 
-        private async Task LoadImageFromCache() {
-            if (SelectedImageCacheInfo != null) {
-                var img = LoadJpg(SelectedImageCacheInfo.Attribute("FileName").Value);
-                var fovW = double.Parse(SelectedImageCacheInfo.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
-                var fovH = double.Parse(SelectedImageCacheInfo.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
-                var rotation = double.Parse(SelectedImageCacheInfo.Attribute("Rotation").Value, CultureInfo.InvariantCulture);
-                var parameter = new FramingImageParameter() {
-                    Image = img,
-                    FieldOfViewWidth = fovW,
-                    FieldOfViewHeight = fovH,
-                    Rotation = rotation
-                };
-                var ra = double.Parse(SelectedImageCacheInfo.Attribute("RA").Value, CultureInfo.InvariantCulture);
-                var dec = double.Parse(SelectedImageCacheInfo.Attribute("Dec").Value, CultureInfo.InvariantCulture);
-                Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours);
-                DSO.Name = SelectedImageCacheInfo.Attribute("Name").Value;
-                FieldOfView = Math.Round(Math.Max(parameter.FieldOfViewWidth, parameter.FieldOfViewHeight), 2);
-                CalculateRectangle(parameter);
-                await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                    ImageParameter = parameter;
-                }));
-            }
-        }
-
-        private void FillImageCache() {
-            try {
-                if (!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
-                    Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
+            if (psResult.Success) {
+                var rotation = 180 - psResult.Orientation;
+                if (rotation < 0) {
+                    rotation += 360;
+                } else if (rotation >= 360) {
+                    rotation -= 360;
                 }
-
-                var imgFilePath = Path.Combine(FRAMINGASSISTANTCACHEPATH, DSO.Name + ".jpg");
-
-                imgFilePath = Utility.Utility.GetUniqueFilePath(imgFilePath);
-                var name = Path.GetFileNameWithoutExtension(imgFilePath);
-
-                using (var fileStream = new FileStream(imgFilePath, FileMode.Create)) {
-                    var encoder = new JpegBitmapEncoder();
-                    encoder.QualityLevel = 80;
-                    encoder.Frames.Add(BitmapFrame.Create(ImageParameter.Image));
-                    encoder.Save(fileStream);
-                }
-
-                XElement xml = new XElement("Image",
-                    new XAttribute("RA", Coordinates.RA),
-                    new XAttribute("Dec", Coordinates.Dec),
-                    new XAttribute("Rotation", ImageParameter.Rotation),
-                    new XAttribute("FoVW", ImageParameter.FieldOfViewWidth),
-                    new XAttribute("FoVH", ImageParameter.FieldOfViewHeight),
-                    new XAttribute("FileName", imgFilePath),
-                    new XAttribute("Name", name)
-                );
-
-                ImageCacheInfo.Add(xml);
-                ImageCacheInfo.Save(FRAMINGASSISTANTCACHEINFOPATH);
-                SelectedImageCacheInfo = xml;
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.ShowError(ex.Message);
+                skySurveyImage.Coordinates = psResult.Coordinates;
+                skySurveyImage.FoVWidth = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.Width);
+                skySurveyImage.FoVHeight = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.Height);
+                skySurveyImage.Rotation = rotation;
+            } else {
+                throw new Exception("Platesolve failed to retrieve coordinates for image");
             }
+            return skySurveyImage;
         }
-
-        private XElement _imageCacheInfo;
 
         public XElement ImageCacheInfo {
             get {
-                return _imageCacheInfo;
-            }
-            set {
-                _imageCacheInfo = value;
-                RaisePropertyChanged();
+                return CacheSkySurvey.Cache; ;
             }
         }
 
@@ -604,37 +464,29 @@ namespace NINA.ViewModel {
             }
             set {
                 _selectedImageCacheInfo = value;
+                if (_selectedImageCacheInfo != null) {
+                    var ra = double.Parse(_selectedImageCacheInfo.Attribute("RA").Value, CultureInfo.InvariantCulture);
+                    var dec = double.Parse(_selectedImageCacheInfo.Attribute("Dec").Value, CultureInfo.InvariantCulture);
+                    var name = _selectedImageCacheInfo.Attribute("Name").Value;
+                    Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours);
+                    FieldOfView = Astrometry.ArcminToDegree(double.Parse(_selectedImageCacheInfo.Attribute("FoVW").Value, CultureInfo.InvariantCulture));
+                    DSO = new DeepSkyObject(name, Coordinates, string.Empty);
+                }
                 RaisePropertyChanged();
             }
         }
 
-        private void LoadImageCacheList() {
-            if (!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
-                Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
-            }
-
-            if (!File.Exists(FRAMINGASSISTANTCACHEINFOPATH)) {
-                XElement info = new XElement("ImageCacheInfo");
-                info.Save(FRAMINGASSISTANTCACHEINFOPATH);
-                ImageCacheInfo = info;
-                return;
-            } else {
-                ImageCacheInfo = XElement.Load(FRAMINGASSISTANTCACHEINFOPATH);
-            }
-            SelectedImageCacheInfo = (XElement)ImageCacheInfo.FirstNode;
-        }
-
-        private void CalculateRectangle(FramingImageParameter parameter) {
+        private void CalculateRectangle(SkySurveyImage parameter) {
             if (parameter != null) {
-                var imageArcsecWidth = Astrometry.DegreeToArcsec(parameter.FieldOfViewWidth) / parameter.Image.Width;
-                var imageArcsecHeight = Astrometry.DegreeToArcsec(parameter.FieldOfViewHeight) / parameter.Image.Height;
+                var imageArcsecWidth = Astrometry.ArcminToArcsec(parameter.FoVWidth) / parameter.Image.Width;
+                var imageArcsecHeight = Astrometry.ArcminToArcsec(parameter.FoVHeight) / parameter.Image.Height;
 
                 var arcsecPerPix = Astrometry.ArcsecPerPixel(CameraPixelSize, FocalLength);
                 var conversion = arcsecPerPix / imageArcsecWidth;
                 var width = CameraWidth * conversion;
                 var height = CameraHeight * conversion;
                 Rectangle = new ObservableRectangle(parameter.Rotation) { Width = width, Height = height, X = parameter.Image.Width / 2d - width / 2d, Y = parameter.Image.Height / 2d - height / 2d, Rotation = Rectangle?.Rotation ?? 0 };
-                SelectedCoordinates = new Coordinates(Coordinates.RA, Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
+                SelectedCoordinates = new Coordinates(parameter.Coordinates.RA, parameter.Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
             }
         }
 
@@ -653,8 +505,8 @@ namespace NINA.ViewModel {
             var x = delta.X * Math.Cos(orientation) + delta.Y * Math.Sin(orientation);
             var y = delta.Y * Math.Cos(orientation) - delta.X * Math.Sin(orientation);
 
-            var imageArcsecWidth = Astrometry.DegreeToArcsec(ImageParameter.FieldOfViewWidth) / ImageParameter.Image.Width;
-            var imageArcsecHeight = Astrometry.DegreeToArcsec(ImageParameter.FieldOfViewHeight) / ImageParameter.Image.Height;
+            var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
+            var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
 
             SelectedCoordinates = new Coordinates(
                 SelectedCoordinates.RADegrees + Astrometry.ArcsecToDegree(x * imageArcsecWidth),
@@ -688,25 +540,5 @@ namespace NINA.ViewModel {
         public IAsyncCommand RecenterCommand { get; private set; }
         public ICommand CancelLoadImageFromFileCommand { get; private set; }
         public ICommand ClearCacheCommand { get; private set; }
-    }
-
-    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    public enum FramingAssistantSource {
-
-        [Description("LblDigitalSkySurvey")]
-        DSS,
-
-        [Description("LblFile")]
-        FILE,
-
-        [Description("LblCache")]
-        CACHE
-    }
-
-    internal class FramingImageParameter {
-        public BitmapSource Image { get; set; }
-        public double FieldOfViewWidth { get; set; }
-        public double FieldOfViewHeight { get; set; }
-        public double Rotation { get; set; }
     }
 }
