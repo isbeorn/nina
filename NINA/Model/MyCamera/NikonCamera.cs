@@ -571,6 +571,7 @@ namespace NINA.Model.MyCamera {
 
             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
             var iarr = await converter.ConvertToImageArray(_memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            iarr.RAWType = "nef";
             _memoryStream.Dispose();
             _memoryStream = null;
             return iarr;
