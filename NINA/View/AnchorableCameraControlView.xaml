@@ -13,8 +13,8 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <StackPanel IsEnabled="{Binding Cam.Connected}" Orientation="Vertical">
+        <Grid IsEnabled="{Binding CameraInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <StackPanel IsEnabled="{Binding CameraInfo.Connected}" Orientation="Vertical">
 
                 <StackPanel IsEnabled="{Binding SnapCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}}" Orientation="Vertical">
                     <Border
@@ -68,11 +68,11 @@
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0,0,0,1"
-                        Visibility="{Binding Cam.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                        Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
                             <Grid Margin="5,0,0,0">
-                                <TextBox IsEnabled="{Binding Cam.CanSetGain}" Visibility="{Binding Cam.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}">
+                                <TextBox IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanSetGain}" Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}">
                                     <TextBox.Text>
                                         <Binding
                                             Converter="{StaticResource MinusOneToEmptyStringConverter}"
@@ -89,9 +89,9 @@
                                     </TextBox.Text>
                                 </TextBox>
                                 <ComboBox
-                                    ItemsSource="{Binding Cam.Gains}"
+                                    ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains}"
                                     SelectedItem="{Binding SnapGain}"
-                                    Visibility="{Binding Cam.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}" />
+                                    Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}" />
                             </Grid>
                         </UniformGrid>
                     </Border>
@@ -127,7 +127,7 @@
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0,0,0,1"
-                        Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.CanSubSample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.CameraInfo.CanSubSample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSubSample}" />
                             <CheckBox
@@ -157,7 +157,7 @@
                     CancelButtonImage="{StaticResource CancelSVG}"
                     CancelCommand="{Binding CancelSnapCommand}"
                     Command="{Binding SnapCommand}"
-                    IsEnabled="{Binding Cam.LiveViewEnabled, Converter={StaticResource InverseBooleanConverter}}"
+                    IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, Converter={StaticResource InverseBooleanConverter}}"
                     ToolTip="{ns:Loc LblTooltipTakeExposure}"
                     Visibility="{Binding SnapCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
             </StackPanel>

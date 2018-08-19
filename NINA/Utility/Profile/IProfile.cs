@@ -1,8 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace NINA.Utility.Profile {
 
-    public interface IProfile {
+    public interface IProfile : INotifyPropertyChanged {
         IApplicationSettings ApplicationSettings { get; set; }
         IAstrometrySettings AstrometrySettings { get; set; }
         ICameraSettings CameraSettings { get; set; }

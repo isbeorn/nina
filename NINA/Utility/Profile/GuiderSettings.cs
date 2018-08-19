@@ -7,7 +7,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class GuiderSettings : IGuiderSettings {
+    public class GuiderSettings : Settings, IGuiderSettings {
         private double ditherPixels = 5;
 
         [DataMember]
@@ -17,7 +17,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 ditherPixels = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -30,7 +30,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 ditherRAOnly = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -43,7 +43,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 settleTime = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -56,7 +56,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2ServerUrl = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -69,7 +69,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2ServerPort = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -82,7 +82,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2LargeHistorySize = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -95,7 +95,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2GuiderScale = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

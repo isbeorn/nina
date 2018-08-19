@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace NINA.Utility {
 
-    public class ObserveAllCollection<T> : ObservableCollection<T> {
+    public class ObserveAllCollection<T> : AsyncObservableCollection<T> {
 
         public ObserveAllCollection() : base() {
         }

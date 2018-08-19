@@ -54,7 +54,7 @@
                                 Grid.Column="1"
                                 MinHeight="40"
                                 DisplayMemberPath="Name"
-                                IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                IsEnabled="{Binding CameraInfo.Connected, Converter={StaticResource InverseBooleanConverter}}"
                                 ItemsSource="{Binding CameraChooserVM.Devices}"
                                 SelectedItem="{Binding CameraChooserVM.SelectedDevice}"
                                 SelectedValuePath="Name" />
@@ -108,15 +108,15 @@
                                     CancelButtonImage="{StaticResource CancelSVG}"
                                     CancelCommand="{Binding CancelConnectCameraCommand}"
                                     Command="{Binding ChooseCameraCommand}"
-                                    IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                    IsEnabled="{Binding CameraInfo.Connected, Converter={StaticResource InverseBooleanConverter}}"
                                     ToolTip="{ns:Loc LblConnect}"
-                                    Visibility="{Binding Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                                    Visibility="{Binding CameraInfo.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
                                 <Grid Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
                                     <Button
                                         Command="{Binding DisconnectCommand}"
-                                        IsEnabled="{Binding Connected}"
-                                        Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}">
+                                        IsEnabled="{Binding CameraInfo.Connected}"
+                                        Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}">
                                         <Button.ToolTip>
                                             <ToolTip ToolTipService.ShowOnDisabled="False">
                                                 <TextBlock Text="{ns:Loc LblDisconnect}" />
@@ -144,7 +144,7 @@
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblCameraState}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding CameraState}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding CameraInfo.CameraState}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -305,7 +305,7 @@
             <GroupBox
                 Grid.Column="1"
                 Header="{ns:Loc LblCamSettings}"
-                IsEnabled="{Binding Connected}">
+                IsEnabled="{Binding CameraInfo.Connected}">
                 <StackPanel Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
                     <DockPanel Visibility="{Binding Cam.CanGetGain, Converter={StaticResource VisibilityConverter}}">
                         <TextBlock
@@ -372,7 +372,7 @@
             Grid.RowSpan="3"
             Grid.Column="1"
             IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <Grid IsEnabled="{Binding Connected}">
+            <Grid IsEnabled="{Binding CameraInfo.Connected}">
                 <GroupBox Header="{ns:Loc LblTempControl}" IsEnabled="{Binding Cam.CanSetTemperature}">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -393,7 +393,9 @@
                                             Height="25"
                                             Margin="5,0,0,0"
                                             HorizontalAlignment="Left"
-                                            IsChecked="{Binding CoolerOn}" />
+                                            Command="{Binding ToggleCoolerOnCommand}"
+                                            CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                            IsChecked="{Binding CameraInfo.CoolerOn}" />
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
@@ -406,8 +408,8 @@
                                         <TextBlock Text="{ns:Loc LblCoolerPower}" />
                                         <TextBlock
                                             Margin="5,0,0,0"
-                                            Text="{Binding CoolerPower, StringFormat=\{0:#.00\}%}"
-                                            Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
+                                            Text="{Binding CameraInfo.CoolerPower, StringFormat=\{0:#.00\}%}"
+                                            Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
@@ -420,8 +422,8 @@
                                         <TextBlock Text="{ns:Loc LblChipTemp}" />
                                         <TextBlock
                                             Margin="5,0,0,0"
-                                            Text="{Binding Temperature, StringFormat=\{0:#.00\}}"
-                                            Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
+                                            Text="{Binding CameraInfo.Temperature, StringFormat=\{0:#.00\}}"
+                                            Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
@@ -436,7 +438,7 @@
                                             MinWidth="20"
                                             Margin="5,0,0,0"
                                             Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:#.00\}}"
-                                            Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
+                                            Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>

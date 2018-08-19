@@ -1,8 +1,10 @@
-﻿using NINA.Model.MyFilterWheel;
+﻿using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
@@ -15,13 +17,16 @@ using System.Windows.Media;
 
 namespace NINA.ViewModel {
 
-    public class OptionsVM : DockableVM {
+    internal class OptionsVM : DockableVM {
 
-        public OptionsVM(IProfileService profileService) : base(profileService) {
+        public OptionsVM(IProfileService profileService, IFilterWheelMediator filterWheelMediator) : base(profileService) {
             Title = "LblOptions";
             ContentId = nameof(OptionsVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
+
+            this.filterWheelMediator = filterWheelMediator;
+
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
@@ -44,31 +49,13 @@ namespace NINA.ViewModel {
 
             ScanForIndexFiles();
 
-            Mediator.Instance.Register((object o) => {
+            profileService.LocaleChanged += (object sender, EventArgs e) => {
                 ImagePatterns = CreateImagePatternList();
-            }, MediatorMessages.LocaleChanged);
+            };
 
-            Mediator.Instance.Register((object o) => {
-                CameraPixelSize = (double)o;
-            }, MediatorMessages.CameraPixelSizeChanged);
-
-            Mediator.Instance.RegisterRequest(new SetProfileByIdMessageHandle((SetProfileByIdMessage msg) => {
-                SelectedProfile = profileService.Profiles.ProfileList.Single(p => p.Id == msg.Id);
-                SelectProfile(null);
-                return true;
-            }));
-
-            Mediator.Instance.RegisterRequest(new GetDoublePropertyFromClassMessageHandle(typeof(OptionsVM), (GetDoublePropertyFromClassMessage msg) => {
-                try {
-                    object value = GetType().GetProperty(msg.Property).GetValue(this);
-                    if (value.GetType() == typeof(double))
-                        return (double)value;
-                } catch {
-                    return -1;
-                }
-
-                return -1;
-            }));
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                ProfileChanged();
+            };
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
         }
@@ -83,8 +70,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SelectProfile(object obj) {
-            profileService.SelectProfile(SelectedProfile.Id);
+        private void ProfileChanged() {
             RaisePropertyChanged(nameof(ColorSchemaName));
             RaisePropertyChanged(nameof(PrimaryColor));
             RaisePropertyChanged(nameof(SecondaryColor));
@@ -120,6 +106,11 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void SelectProfile(object obj) {
+            profileService.SelectProfile(SelectedProfile.Id);
+            ProfileChanged();
+        }
+
         private void AddProfile(object obj) {
             profileService.Add();
         }
@@ -142,7 +133,7 @@ namespace NINA.ViewModel {
         }
 
         private void ImportFilters(object obj) {
-            var filters = Mediator.Instance.Request(new GetAllFiltersMessage());
+            var filters = filterWheelMediator.GetAllFilters();
             if (filters != null) {
                 FilterWheelFilters.Clear();
                 FilterWheelFilters.CollectionChanged -= FilterWheelFilters_CollectionChanged;
@@ -311,11 +302,7 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.ApplicationSettings.Language;
             }
             set {
-                profileService.ActiveProfile.ApplicationSettings.Language = value;
-
-                System.Threading.Thread.CurrentThread.CurrentUICulture = Language;
-                System.Threading.Thread.CurrentThread.CurrentCulture = Language;
-                Locale.Loc.Instance.ReloadLocale(Language.Name);
+                profileService.ChangeLocale(value);
                 RaisePropertyChanged();
             }
         }
@@ -475,10 +462,10 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.AstrometrySettings.HemisphereType;
             }
             set {
-                profileService.ActiveProfile.AstrometrySettings.HemisphereType = value;
+                profileService.ChangeHemisphere(value);
+
                 RaisePropertyChanged();
                 Latitude = Latitude;
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 
@@ -994,12 +981,8 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.AstrometrySettings.Latitude;
             }
             set {
-                if ((HemisphereType == Hemisphere.SOUTHERN && value > 0) || (HemisphereType == Hemisphere.NORTHERN && value < 0)) {
-                    value = -value;
-                }
-                profileService.ActiveProfile.AstrometrySettings.Latitude = value;
+                profileService.ChangeLatitude(value);
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 
@@ -1008,9 +991,8 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.AstrometrySettings.Longitude;
             }
             set {
-                profileService.ActiveProfile.AstrometrySettings.Longitude = value;
+                profileService.ChangeLongitude(value);
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 
@@ -1304,6 +1286,7 @@ namespace NINA.ViewModel {
         }
 
         private IProfile _selectedProfile;
+        private IFilterWheelMediator filterWheelMediator;
 
         public IProfile SelectedProfile {
             get {

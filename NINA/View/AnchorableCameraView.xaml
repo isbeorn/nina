@@ -12,7 +12,7 @@
     mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <Grid IsEnabled="{Binding Cam.Connected}">
+            <Grid IsEnabled="{Binding CameraInfo.Connected}">
                 <StackPanel IsEnabled="{Binding Cam.CanSetTemperature}" Orientation="Vertical">
                     <Border
                         MinHeight="30"
@@ -26,7 +26,7 @@
                                 Margin="5"
                                 HorizontalAlignment="Left"
                                 BorderBrush="Transparent"
-                                IsChecked="{Binding Connected, FallbackValue=False, Mode=OneWay}"
+                                IsChecked="{Binding CameraInfo.Connected, FallbackValue=False, Mode=OneWay}"
                                 IsEnabled="False"
                                 Style="{StaticResource CheckmarkCheckbox}" />
                         </UniformGrid>
@@ -52,7 +52,9 @@
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
-                                IsChecked="{Binding CoolerOn}" />
+                                Command="{Binding ToggleCoolerOnCommand}"
+                                CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                IsChecked="{Binding CameraInfo.CoolerOn}" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -63,8 +65,8 @@
                             <TextBlock Text="{ns:Loc LblCoolerPower}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding CoolerPower, StringFormat=\{0:#.00\}%}"
-                                Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
+                                Text="{Binding CameraInfo.CoolerPower, StringFormat=\{0:#.00\}%}"
+                                Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -75,8 +77,8 @@
                             <TextBlock Text="{ns:Loc LblChipTempShort}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding Temperature, StringFormat=\{0:#.00\}}"
-                                Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
+                                Text="{Binding CameraInfo.Temperature, StringFormat=\{0:#.00\}}"
+                                Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -89,7 +91,7 @@
                                 MinWidth="20"
                                 Margin="5,0,0,0"
                                 Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:#.00\}}"
-                                Visibility="{Binding Connected, Converter={StaticResource VisibilityConverter}}" />
+                                Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>
 

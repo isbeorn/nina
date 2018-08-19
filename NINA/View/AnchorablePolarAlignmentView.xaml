@@ -21,9 +21,9 @@
                 <GroupBox Grid.Column="1" Header="{ns:Loc LblPlateSolvedPolarAlignment}">
                     <StackPanel Orientation="Vertical">
 
-                        <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+                        <Grid IsEnabled="{Binding CameraInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
                             <local:CameraControlView
-                                IsEnabled="{Binding Cam.Connected}"
+                                IsEnabled="{Binding CameraInfo.Connected}"
                                 MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}"
                                 MyCanGetGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanGetGain}"
                                 MyCanSetGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanSetGain}"

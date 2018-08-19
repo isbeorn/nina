@@ -4,6 +4,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Behaviors;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
@@ -20,9 +21,15 @@ using System.Xml.Linq;
 
 namespace NINA.ViewModel {
 
-    internal class FramingAssistantVM : BaseVM {
+    internal class FramingAssistantVM : BaseVM, ICameraConsumer {
 
-        public FramingAssistantVM(IProfileService profileService) : base(profileService) {
+        public FramingAssistantVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+            this.cameraMediator = cameraMediator;
+            this.cameraMediator.RegisterConsumer(this);
+            this.telescopeMediator = telescopeMediator;
+            this.imagingMediator = imagingMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
+
             Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             //Coordinates = new Coordinates(073.2920, -07.6335, Epoch.J2000, Coordinates.RAType.Degrees);
@@ -42,7 +49,12 @@ namespace NINA.ViewModel {
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache);
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async () => {
-                var msgResult = await Mediator.Instance.RequestAsync(new SetSequenceCoordinatesMessage() { DSO = new DeepSkyObject(DSO?.Name, SelectedCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository) });
+                //todo
+                var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
+                vm.ChangeTab(ApplicationTab.SEQUENCE);
+                var dso = new DeepSkyObject(DSO?.Name, SelectedCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+                var msgResult = await vm.SeqVM.SetSequenceCoordiantes(dso);
+
                 ImageParameter = null;
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -57,21 +69,24 @@ namespace NINA.ViewModel {
 
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => {
                 if (SelectedCoordinates != null) {
-                    return await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = SelectedCoordinates });
+                    return await telescopeMediator.SlewToCoordinatesAsync(SelectedCoordinates);
                 }
                 return false;
             }, (object o) => SelectedCoordinates != null);
 
-            RegisterMediatorMessages();
             LoadImageCacheList();
 
-            Mediator.Instance.Register((o) => {
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
                 RaisePropertyChanged(nameof(CameraPixelSize));
                 RaisePropertyChanged(nameof(FocalLength));
                 RaisePropertyChanged(nameof(FieldOfView));
                 RaisePropertyChanged(nameof(CameraWidth));
                 RaisePropertyChanged(nameof(CameraHeight));
-            }, MediatorMessages.ProfileChanged);
+            };
+
+            profileService.LocationChanged += (object sender, EventArgs e) => {
+                DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+            };
         }
 
         private void ClearCache(object obj) {
@@ -104,7 +119,7 @@ namespace NINA.ViewModel {
                 _status.Source = Locale.Loc.Instance["LblFramingAssistant"];
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
+                applicationStatusMediator.StatusUpdate(_status);
             }
         }
 
@@ -139,7 +154,9 @@ namespace NINA.ViewModel {
 
                 var dialogResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
                 if (dialogResult == MessageBoxResult.OK) {
-                    var plateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Image = img, Progress = _statusUpdate, Token = _loadImageSource.Token, Blind = true });
+                    var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+                    var plateSolveResult = await solver.BlindSolve(img, _statusUpdate, _loadImageSource.Token);
+
                     if (plateSolveResult.Success) {
                         var rotation = 180 - plateSolveResult.Orientation;
                         if (rotation < 0) {
@@ -189,29 +206,12 @@ namespace NINA.ViewModel {
             return TifDec.Frames[0];
         }
 
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterAsyncRequest(new SetFramingAssistantCoordinatesMessageHandle(async (SetFramingAssistantCoordinatesMessage m) => {
-                Mediator.Instance.Request(new ChangeApplicationTabMessage() { Tab = ApplicationTab.FRAMINGASSISTANT });
-                this.DSO = new DeepSkyObject(m.DSO.Name, m.DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-                this.Coordinates = m.DSO.Coordinates;
-                FramingAssistantSource = FramingAssistantSource.DSS;
-                await LoadImageCommand.ExecuteAsync(null);
-                return true;
-            }));
-
-            Mediator.Instance.Register((object o) => {
-                var cam = (ICamera)o;
-                this.CameraWidth = cam?.CameraXSize ?? this.CameraWidth;
-                this.CameraHeight = cam?.CameraYSize ?? this.CameraHeight;
-            }, MediatorMessages.CameraChanged);
-
-            Mediator.Instance.Register((object o) => {
-                DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-            }, MediatorMessages.LocationChanged);
-
-            Mediator.Instance.Register((object o) => {
-                CameraPixelSize = (double)o;
-            }, MediatorMessages.CameraPixelSizeChanged);
+        public async Task<bool> SetCoordinates(DeepSkyObject dso) {
+            this.DSO = new DeepSkyObject(dso.Name, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+            this.Coordinates = dso.Coordinates;
+            FramingAssistantSource = FramingAssistantSource.DSS;
+            await LoadImageCommand.ExecuteAsync(null);
+            return true;
         }
 
         private void CancelLoadImage() {
@@ -234,6 +234,10 @@ namespace NINA.ViewModel {
         }
 
         private Coordinates _coordinates;
+        private ICameraMediator cameraMediator;
+        private ITelescopeMediator telescopeMediator;
+        private IImagingMediator imagingMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public Coordinates Coordinates {
             get {
@@ -658,6 +662,20 @@ namespace NINA.ViewModel {
                 Epoch.J2000,
                 Coordinates.RAType.Degrees
             );
+        }
+
+        public void UpdateDeviceInfo(CameraInfo cameraInfo) {
+            if (cameraInfo != null) {
+                if (this.CameraWidth != cameraInfo.XSize && cameraInfo.XSize > 0) {
+                    this.CameraWidth = cameraInfo.XSize;
+                }
+                if (this.CameraHeight != cameraInfo.YSize && cameraInfo.YSize > 0) {
+                    this.CameraHeight = cameraInfo.YSize;
+                }
+                if (this.CameraPixelSize != cameraInfo.PixelSize) {
+                    CameraPixelSize = cameraInfo.PixelSize;
+                }
+            }
         }
 
         public ICommand DragStartCommand { get; private set; }

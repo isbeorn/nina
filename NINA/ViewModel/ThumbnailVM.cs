@@ -2,6 +2,7 @@
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using nom.tam.fits;
@@ -17,22 +18,28 @@ namespace NINA.ViewModel {
 
     internal class ThumbnailVM : DockableVM {
 
-        public ThumbnailVM(IProfileService profileService) : base(profileService) {
+        public ThumbnailVM(IProfileService profileService, IImagingMediator imagingMediator) : base(profileService) {
             Title = "LblImageHistory";
             ContentId = nameof(ThumbnailVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistorySVG"];
 
-            Mediator.Instance.RegisterAsyncRequest(
-                new AddThumbnailMessageHandle((AddThumbnailMessage msg) => {
-                    return AddThumbnail(msg);
-                })
-            );
+            this.imagingMediator = imagingMediator;
+
+            this.imagingMediator.ImageSaved += ImagingMediator_ImageSaved;
+
+            SelectCommand = new AsyncCommand<bool>((object o) => {
+                return SelectImage((Thumbnail)o);
+            });
+        }
+
+        private void ImagingMediator_ImageSaved(object sender, ImageSavedEventArgs e) {
+            AddThumbnail(e);
         }
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
-        private Task<bool> AddThumbnail(AddThumbnailMessage msg) {
+        private Task<bool> AddThumbnail(ImageSavedEventArgs msg) {
             return Task<bool>.Run(async () => {
                 var factor = 100 / msg.Image.Width;
 
@@ -71,6 +78,18 @@ namespace NINA.ViewModel {
         }
 
         private ObservableLimitedSizedStack<Thumbnail> _thumbnails;
+        private IImagingMediator imagingMediator;
+        public ICommand SelectCommand { get; set; }
+
+        private async Task<bool> SelectImage(Thumbnail thumbnail) {
+            var iarr = await thumbnail.LoadOriginalImage();
+            if (iarr != null) {
+                await imagingMediator.PrepareImage(iarr, new System.Threading.CancellationToken(), false);
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         public ObservableLimitedSizedStack<Thumbnail> Thumbnails {
             get {
@@ -90,21 +109,9 @@ namespace NINA.ViewModel {
 
         public Thumbnail(int histogramResolution) {
             this.histogramResolution = histogramResolution;
-            SelectCommand = new AsyncCommand<bool>(() => {
-                return SelectImage();
-            });
         }
 
-        private async Task<bool> SelectImage() {
-            var iarr = await LoadOriginalImage();
-            if (iarr != null) {
-                return await Mediator.Instance.RequestAsync(new SetImageMessage() { ImageArray = iarr, Mean = Mean });
-            } else {
-                return false;
-            }
-        }
-
-        private async Task<ImageArray> LoadOriginalImage() {
+        public async Task<ImageArray> LoadOriginalImage() {
             ImageArray iarr = null;
 
             try {
@@ -175,8 +182,6 @@ namespace NINA.ViewModel {
         public FileTypeEnum FileType { get; set; }
 
         private int histogramResolution;
-
-        public ICommand SelectCommand { get; set; }
 
         public DateTime Date { get; set; } = DateTime.Now;
 

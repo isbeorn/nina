@@ -145,10 +145,10 @@
                                 </Button.Content>
                                 <Button.IsEnabled>
                                     <MultiBinding Converter="{StaticResource InverseMultiBooleanANDConverter}" FallbackValue="True">
-                                        <Binding Path="CameraVM.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="FilterWheelVM.FW.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="FocuserVM.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="TelescopeVM.Telescope.Connected" Source="{StaticResource AppVM}" />
+                                        <Binding Path="CameraVM.CameraInfo.Connected" Source="{StaticResource AppVM}" />
+                                        <Binding Path="FilterWheelVM.FilterWheelInfo.Connected" Source="{StaticResource AppVM}" />
+                                        <Binding Path="FocuserVM.FocuserInfo.Connected" Source="{StaticResource AppVM}" />
+                                        <Binding Path="TelescopeVM.TelescopeInfo.Connected" Source="{StaticResource AppVM}" />
                                         <Binding Path="GuiderVM.Guider.Connected" Source="{StaticResource AppVM}" />
                                     </MultiBinding>
                                 </Button.IsEnabled>

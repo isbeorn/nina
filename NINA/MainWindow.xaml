@@ -55,7 +55,7 @@
                                         Data="{StaticResource PowerSVG}"
                                         Stretch="Uniform"
                                         Style="{StaticResource TabItemPath}"
-                                        Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        Visibility="{Binding CameraVM.CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                 </Grid>
                             </Grid>
                         </TabItem.Header>
@@ -84,7 +84,7 @@
                                             Data="{StaticResource PowerSVG}"
                                             Stretch="Uniform"
                                             Style="{StaticResource TabItemPath}"
-                                            Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                            Visibility="{Binding FilterWheelVM.FilterWheelInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </Grid>
                                 </Grid>
                                 <Grid>
@@ -105,7 +105,7 @@
                                             Data="{StaticResource PowerSVG}"
                                             Stretch="Uniform"
                                             Style="{StaticResource TabItemPath}"
-                                            Visibility="{Binding FocuserVM.Focuser.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                            Visibility="{Binding FocuserVM.FocuserInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </Grid>
                                 </Grid>
                             </UniformGrid>
@@ -137,7 +137,7 @@
                                         Data="{StaticResource PowerSVG}"
                                         Stretch="Uniform"
                                         Style="{StaticResource TabItemPath}"
-                                        Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        Visibility="{Binding TelescopeVM.TelescopeInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                 </Grid>
                             </Grid>
                         </TabItem.Header>

@@ -7,7 +7,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class AstrometrySettings : IAstrometrySettings {
+    public class AstrometrySettings : Settings, IAstrometrySettings {
         private Epoch epochType = Epoch.JNOW;
 
         [DataMember]
@@ -17,7 +17,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 epochType = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -30,7 +30,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 hemisphereType = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -43,7 +43,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 latitude = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -56,7 +56,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 longitude = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }
