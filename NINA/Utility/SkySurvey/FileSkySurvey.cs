@@ -16,11 +16,6 @@ using NINA.ViewModel;
 namespace NINA.Utility.SkySurvey {
 
     internal class FileSkySurvey : ISkySurvey {
-        private PlatesolveVM platesolver;
-
-        public FileSkySurvey(PlatesolveVM platesolver) {
-            this.platesolver = platesolver;
-        }
 
         public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
@@ -51,32 +46,14 @@ namespace NINA.Utility.SkySurvey {
                     return null;
                 }
 
-                var dialogResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
-                if (dialogResult == MessageBoxResult.OK) {
-                    var plateSolveResult = await platesolver.BlindSolve(img, new Progress<ApplicationStatus>(status => { }), ct);
-
-                    if (plateSolveResult.Success) {
-                        var rotation = 180 - plateSolveResult.Orientation;
-                        if (rotation < 0) {
-                            rotation += 360;
-                        } else if (rotation >= 360) {
-                            rotation -= 360;
-                        }
-
-                        return new SkySurveyImage() {
-                            Name = Path.GetFileNameWithoutExtension(dialog.FileName),
-                            Coordinates = plateSolveResult.Coordinates,
-                            FoVHeight = Astrometry.Astrometry.ArcsecToArcmin(plateSolveResult.Pixscale * img.Width),
-                            FoVWidth = Astrometry.Astrometry.ArcsecToArcmin(plateSolveResult.Pixscale * img.Width),
-                            Image = img,
-                            Rotation = rotation
-                        };
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
+                return new SkySurveyImage() {
+                    Name = Path.GetFileNameWithoutExtension(dialog.FileName),
+                    Coordinates = null,
+                    FoVHeight = double.NaN,
+                    FoVWidth = double.NaN,
+                    Image = img,
+                    Rotation = double.NaN
+                };
             } else {
                 return null;
             }

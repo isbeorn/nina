@@ -13,7 +13,7 @@ namespace NINA.Utility.SkySurvey {
 
     internal class SkySurveyFactory : ISkySurveyFactory {
 
-        public ISkySurvey Create(SkySurveySource source, PlatesolveVM platesolver) {
+        public ISkySurvey Create(SkySurveySource source) {
             switch (source) {
                 case SkySurveySource.NASA:
                     return new NASASkySurvey();
@@ -28,7 +28,7 @@ namespace NINA.Utility.SkySurvey {
                     return new ESOSkySurvey();
 
                 case SkySurveySource.FILE:
-                    return new FileSkySurvey(platesolver);
+                    return new FileSkySurvey();
 
                 case SkySurveySource.CACHE:
                     return new CacheSkySurvey();
@@ -41,7 +41,7 @@ namespace NINA.Utility.SkySurvey {
 
     internal interface ISkySurveyFactory {
 
-        ISkySurvey Create(SkySurveySource source, PlatesolveVM platesolver);
+        ISkySurvey Create(SkySurveySource source);
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]

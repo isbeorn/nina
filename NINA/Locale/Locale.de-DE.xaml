@@ -565,7 +565,10 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <s:String x:Key="LblLoadImageFromFile">Load Image from File</s:String>
     <s:String x:Key="LblLoadImageFromFileTooltip">Download Image from file and use the blindsolver to determine coordinates</s:String>
     <s:String x:Key="LblNoCoordinates">Keine Koordinaten verfügbar</s:String>
-    <s:String x:Key="LblBlindSolveAttemptForFraming">Keine Koordinaten verfügbar. Zur Bildausrichtung muss das Bild blindsolved werden</s:String>
+    <s:String x:Key="LblBlindSolveAttemptForFraming" xml:space="preserve">Platesolving muss auf das Bild angewendet werden.
+Sollen folgende Referenzkoordinaten verwendet werden?
+RA: {0}
+Dec: {1}</s:String>
     <s:String x:Key="LblImageSource">Bildquelle</s:String>
     <s:String x:Key="LblDigitalSkySurvey">Digital Sky Survey</s:String>
     <s:String x:Key="LblFile">Datei</s:String>
