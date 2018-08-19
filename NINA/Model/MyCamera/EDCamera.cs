@@ -4,8 +4,6 @@ using NINA.Utility;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.RawConverter;
-using NINA.Utility.WindowService;
-using NINA.ViewModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +23,6 @@ namespace NINA.Model.MyCamera {
             _cam = cam;
             Id = info.szDeviceDescription;
             Name = info.szDeviceDescription;
-            dSLRSettings = new DSLRSettingsVM(profileService);
         }
 
         private IProfileService profileService;
@@ -302,7 +299,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public bool HasSetupDialog {
-            get { return true; }
+            get { return false; }
         }
 
         private string _id;
@@ -448,8 +445,8 @@ namespace NINA.Model.MyCamera {
                     }
 
                     var sw = Stopwatch.StartNew();
-
-                    if (HasError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo))) {
+                    
+                    if (HasError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo))) {                        
                         return null;
                     }
 
@@ -516,24 +513,7 @@ namespace NINA.Model.MyCamera {
         public void SetBinning(short x, short y) {
         }
 
-        private IWindowService windowService;
-
-        public IWindowService WindowService {
-            get {
-                if (windowService == null) {
-                    windowService = new WindowService();
-                }
-                return windowService;
-            }
-            set {
-                windowService = value;
-            }
-        }
-
-        private DSLRSettingsVM dSLRSettings;
-
         public void SetupDialog() {
-            WindowService.ShowDialog(dSLRSettings, Locale.Loc.Instance["LblDSLRSettings"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
         }
 
         private void ValidateMode() {

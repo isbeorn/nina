@@ -7,8 +7,6 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.RawConverter;
-using NINA.Utility.WindowService;
-using NINA.ViewModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,7 +27,6 @@ namespace NINA.Model.MyCamera {
             /* NIKON */
             Name = "Nikon";
             _nikonManagers = new List<NikonManager>();
-            dSLRSettings = new DSLRSettingsVM(profileService);
         }
 
         private ITelescopeMediator telescopeMediator;
@@ -542,7 +539,7 @@ namespace NINA.Model.MyCamera {
 
         public bool HasSetupDialog {
             get {
-                return true;
+                return false;
             }
         }
 
@@ -583,24 +580,7 @@ namespace NINA.Model.MyCamera {
         public void SetBinning(short x, short y) {
         }
 
-        private IWindowService windowService;
-
-        public IWindowService WindowService {
-            get {
-                if (windowService == null) {
-                    windowService = new WindowService();
-                }
-                return windowService;
-            }
-            set {
-                windowService = value;
-            }
-        }
-
-        private DSLRSettingsVM dSLRSettings;
-
         public void SetupDialog() {
-            WindowService.ShowDialog(dSLRSettings, Locale.Loc.Instance["LblDSLRSettings"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
         }
 
         private Dictionary<int, double> _shutterSpeeds = new Dictionary<int, double>();

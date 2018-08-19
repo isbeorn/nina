@@ -672,8 +672,4 @@ Calculated HFR: {2}
     <s:String x:Key="LblSkyServerSkySurvey">SkyServer Sky Survey</s:String>
     <s:String x:Key="LblStsciSkySurvey">Stsci Sky Survey</s:String>
     <s:String x:Key="LblEsoSkySurvey">ESO Sky Survey</s:String>
-    <s:String x:Key="LblRaw">Raw</s:String>
-    <s:String x:Key="LblBoth">Both</s:String>
-    <s:String x:Key="LblFileSaveMode">File Save Mode</s:String>
-    <s:String x:Key="LblDSLRSettings">DSLR Settings</s:String>
 </ResourceDictionary>
