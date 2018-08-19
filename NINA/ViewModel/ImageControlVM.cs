@@ -643,20 +643,24 @@ namespace NINA.ViewModel {
                 string completefilename = Path.Combine(path, filename);
 
                 Stopwatch sw = Stopwatch.StartNew();
-                if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.FITS) {
-                    if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
-                    completefilename = SaveFits(completefilename, parameters);
-                } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF) {
-                    completefilename = SaveTiff(completefilename, TiffCompressOption.None);
-                } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_ZIP) {
-                    completefilename = SaveTiff(completefilename, TiffCompressOption.Zip);
-                } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_LZW) {
-                    completefilename = SaveTiff(completefilename, TiffCompressOption.Lzw);
-                } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.XISF) {
-                    if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
-                    completefilename = SaveXisf(completefilename, parameters);
+                if (ImgArr.RAWData != null) {
+                    completefilename = SaveRAW(completefilename);
                 } else {
-                    completefilename = SaveTiff(completefilename, TiffCompressOption.None);
+                    if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.FITS) {
+                        if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
+                        completefilename = SaveFits(completefilename, parameters);
+                    } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF) {
+                        completefilename = SaveTiff(completefilename, TiffCompressOption.None);
+                    } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_ZIP) {
+                        completefilename = SaveTiff(completefilename, TiffCompressOption.Zip);
+                    } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_LZW) {
+                        completefilename = SaveTiff(completefilename, TiffCompressOption.Lzw);
+                    } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.XISF) {
+                        if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
+                        completefilename = SaveXisf(completefilename, parameters);
+                    } else {
+                        completefilename = SaveTiff(completefilename, TiffCompressOption.None);
+                    }
                 }
 
                 imagingMediator.OnImageSaved(
@@ -703,6 +707,13 @@ namespace NINA.ViewModel {
 
         private byte[] GetEncodedFitsHeader(string keyword, bool value, string comment) {
             return GetEncodedFitsHeaderInternal(keyword, value ? "T" : "F", comment);
+        }
+
+        private string SaveRAW(string path) {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            var uniquePath = Utility.Utility.GetUniqueFilePath(path + "." + ImgArr.RAWType);
+            File.WriteAllBytes(uniquePath, ImgArr.RAWData);
+            return uniquePath;
         }
 
         private string SaveFits(string path, ImageParameters parameters) {
