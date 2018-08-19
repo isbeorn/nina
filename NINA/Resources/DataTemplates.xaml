@@ -19,4 +19,7 @@
     <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
         <view:PlateSolveView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:DSLRSettingsVM}">
+        <view:DSLRSettingsView />
+    </DataTemplate>
 </ResourceDictionary>

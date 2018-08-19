@@ -347,6 +347,7 @@
     <Compile Include="Utility\Converters\ValueToLocaleConverter.cs" />
     <Compile Include="Utility\DatabaseInteraction.cs" />
     <Compile Include="Utility\DeviceUpdateTimer.cs" />
+    <Compile Include="Utility\Enum\DSLRFileSaveMode.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
     <Compile Include="Utility\Mediator\ApplicationStatusMediator.cs" />
     <Compile Include="Utility\Mediator\CameraMediator.cs" />
@@ -460,6 +461,7 @@
     <Compile Include="ViewModel\AutoFocusVM.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
+    <Compile Include="ViewModel\DSLRSettingsVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
@@ -573,6 +575,9 @@
     </Compile>
     <Compile Include="View\CameraView.xaml.cs">
       <DependentUpon>CameraView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DSLRSettingsView.xaml.cs">
+      <DependentUpon>DSLRSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
@@ -889,6 +894,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\CameraView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DSLRSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
