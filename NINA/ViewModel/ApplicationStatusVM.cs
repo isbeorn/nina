@@ -15,7 +15,6 @@ namespace NINA.ViewModel {
 
         public ApplicationStatusVM(IProfileService profileService, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblApplicationStatus";
-            ContentId = nameof(ApplicationStatusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ApplicationStatusSVG"];
 
             this.applicationStatusMediator = applicationStatusMediator;

@@ -24,7 +24,6 @@ namespace NINA.ViewModel {
             this.focuserMediator.RegisterHandler(this);
             this.applicationStatusMediator = applicationStatusMediator;
 
-            ContentId = nameof(FocuserVM);
             ChooseFocuserCommand = new AsyncCommand<bool>(() => ChooseFocuser());
             CancelChooseFocuserCommand = new RelayCommand(CancelChooseFocuser);
             DisconnectCommand = new RelayCommand(DisconnectDiag);

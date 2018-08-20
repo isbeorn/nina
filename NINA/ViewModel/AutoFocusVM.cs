@@ -35,7 +35,6 @@ namespace NINA.ViewModel {
                 IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblAutoFocus";
-            ContentId = nameof(AutoFocusVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["AutoFocusSVG"];
 
             if (cameraMediator != null) {

@@ -49,11 +49,7 @@ namespace NINA.ViewModel {
 
         public string ContentId {
             get {
-                return _contentId;
-            }
-            set {
-                _contentId = value;
-                RaisePropertyChanged();
+                return this.GetType().Name;
             }
         }
 

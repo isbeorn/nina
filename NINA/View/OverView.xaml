@@ -190,6 +190,12 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.SequenceTemplate>
 
+                    <util:PaneTemplateSelector.RotatorTemplate>
+                        <DataTemplate>
+                            <view:AnchorableRotatorView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.RotatorTemplate>
+
                     <util:PaneTemplateSelector.WeatherDataTemplate>
                         <DataTemplate>
                             <view:AnchorableWeatherDataView />

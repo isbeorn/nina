@@ -23,7 +23,6 @@ namespace NINA.ViewModel {
 
         public CameraVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblCamera";
-            ContentId = nameof(CameraVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
 
             _cameraChooserVM = new CameraChooserVM(profileService, telescopeMediator);

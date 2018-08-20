@@ -25,7 +25,6 @@ namespace NINA.ViewModel {
                 IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblPolarAlignment";
-            ContentId = nameof(PolarAlignmentVM);
 
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PolarAlignSVG"];
 

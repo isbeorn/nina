@@ -20,6 +20,7 @@ namespace NINA.Utility.Profile {
         string Name { get; set; }
         IPlateSolveSettings PlateSolveSettings { get; set; }
         IPolarAlignmentSettings PolarAlignmentSettings { get; set; }
+        IRotatorSettings RotatorSettings { get; set; }
         ISequenceSettings SequenceSettings { get; set; }
         ITelescopeSettings TelescopeSettings { get; set; }
         IWeatherDataSettings WeatherDataSettings { get; set; }

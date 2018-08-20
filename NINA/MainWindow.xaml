@@ -112,7 +112,10 @@
                         </TabItem.Header>
                         <TabItem.Content>
                             <UniformGrid Columns="2">
-                                <view:FilterWheelView DataContext="{Binding FilterWheelVM}" />
+                                <UniformGrid Rows="2">
+                                    <view:FilterWheelView DataContext="{Binding FilterWheelVM}" />
+                                    <view:RotatorView DataContext="{Binding RotatorVM}" />
+                                </UniformGrid>
                                 <view:FocuserView DataContext="{Binding FocuserVM}" />
                             </UniformGrid>
                         </TabItem.Content>

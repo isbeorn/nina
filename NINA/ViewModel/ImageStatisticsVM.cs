@@ -19,7 +19,6 @@ namespace NINA.ViewModel {
             Title = "LblStatistics";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistogramSVG"];
 
-            ContentId = nameof(ImageStatisticsVM);
             Statistics = new ImageStatistics { };
         }
 
