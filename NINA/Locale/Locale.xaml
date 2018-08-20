@@ -672,4 +672,8 @@ Calculated HFR: {2}
     <s:String x:Key="LblSkyServerSkySurvey">SkyServer Sky Survey</s:String>
     <s:String x:Key="LblStsciSkySurvey">Stsci Sky Survey</s:String>
     <s:String x:Key="LblEsoSkySurvey">ESO Sky Survey</s:String>
+    <s:String x:Key="LblPleaseChangeToFilter">Please change to filter {0}</s:String>
+    <s:String x:Key="LblFilterChangeRequired">Filter Change Required</s:String>
+    <s:String x:Key="LblManualFilterWheel">Manual Filterwheel</s:String>
+    <s:String x:Key="LblManualFilterWheelDescription">Mirrors the filters that are set up inside the options. When a filter change is requested a notification will pop up to manually change the filter.</s:String>
 </ResourceDictionary>

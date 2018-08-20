@@ -298,6 +298,8 @@ namespace NINA.ViewModel {
                 }
             }
 
+            Devices.Add(new ManualFilterWheel(this.profileService));
+
             DetermineSelectedDevice(profileService.ActiveProfile.FilterWheelSettings.Id);
         }
     }
