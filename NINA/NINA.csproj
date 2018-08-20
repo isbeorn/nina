@@ -292,6 +292,7 @@
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
+    <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\FocuserInfo.cs" />
     <Compile Include="Model\MyFocuser\IFocuser.cs" />
