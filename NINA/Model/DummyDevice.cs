@@ -33,6 +33,30 @@ namespace NINA.Model {
             }
         }
 
+        public bool Connected {
+            get {
+                return false;
+            }
+        }
+
+        public string Description {
+            get {
+                return string.Empty;
+            }
+        }
+
+        public string DriverInfo {
+            get {
+                return string.Empty;
+            }
+        }
+
+        public string DriverVersion {
+            get {
+                return string.Empty;
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public async Task<bool> Connect(CancellationToken token) {

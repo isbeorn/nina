@@ -301,6 +301,7 @@
     <Compile Include="Model\MyGuider\PHD2Guider.cs" />
     <Compile Include="Model\MyRotator\AscomRotator.cs" />
     <Compile Include="Model\MyRotator\IRotator.cs" />
+    <Compile Include="Model\MyRotator\ManualRotator.cs" />
     <Compile Include="Model\MyRotator\RotatorInfo.cs" />
     <Compile Include="Model\MyTelescope\TelescopeInfo.cs" />
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />

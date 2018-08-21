@@ -8,7 +8,6 @@ namespace NINA.Model.MyRotator {
 
     internal interface IRotator : IDevice {
         bool IsMoving { get; }
-        bool Connected { get; }
 
         float Position { get; }
 

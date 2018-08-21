@@ -688,4 +688,8 @@ Berechneter HFR: {2}
     <s:String x:Key="LblManualFilterWheelDescription">Spiegelt die Filter, die in den Filteroptionen eingestellt sind wieder. Wenn ein Filter gewechselt wird, öffnet sich eine Mitteilung, um den Filter zu wechseln</s:String>
     <s:String x:Key="LblRotator">Rotator</s:String>
     <s:String x:Key="LblNoRotator">Kein Rotator</s:String>
+    <s:String x:Key="LblManualRotator">Manueller Rotator</s:String>
+    <s:String x:Key="LblManualRotatorDescription">Wenn Rotation benötigt wird, öffnet sich eine Mitteilung um manuell zu drehen.</s:String>
+    <s:String x:Key="LblPleaseRotate">Bitte um {0} Grad drehen</s:String>
+    <s:String x:Key="LblRotationRequired">Rotation benötigt</s:String>
 </ResourceDictionary>

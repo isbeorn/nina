@@ -18,6 +18,7 @@ namespace NINA.Model.MyFilterWheel {
         }
 
         private void ProfileService_LocaleChanged(object sender, EventArgs e) {
+            RaisePropertyChanged(nameof(Name));
             RaisePropertyChanged(nameof(Description));
         }
 

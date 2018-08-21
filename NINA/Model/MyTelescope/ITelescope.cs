@@ -4,7 +4,6 @@ using NINA.Utility.Astrometry;
 namespace NINA.Model.MyTelescope {
 
     internal interface ITelescope : IDevice {
-        bool Connected { get; }
         Coordinates Coordinates { get; }
         double RightAscension { get; }
         string RightAscensionString { get; }

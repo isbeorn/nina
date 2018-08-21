@@ -189,7 +189,10 @@ namespace NINA.ViewModel {
                                 Connected = true,
                                 IsMoving = rotator.IsMoving,
                                 Name = rotator.Name,
-                                Position = rotator.Position
+                                Description = rotator.Description,
+                                Position = rotator.Position,
+                                DriverInfo = rotator.DriverInfo,
+                                DriverVersion = rotator.DriverVersion
                             };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblRotatorConnected"]);
@@ -269,6 +272,8 @@ namespace NINA.ViewModel {
                     //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
                 }
             }
+
+            Devices.Add(new ManualRotator(profileService));
 
             DetermineSelectedDevice(profileService.ActiveProfile.RotatorSettings.Id);
         }

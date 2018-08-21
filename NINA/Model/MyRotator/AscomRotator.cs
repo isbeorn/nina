@@ -80,6 +80,24 @@ namespace NINA.Model.MyRotator {
             }
         }
 
+        public string Description {
+            get {
+                return rotator.Description;
+            }
+        }
+
+        public string DriverInfo {
+            get {
+                return rotator.DriverInfo;
+            }
+        }
+
+        public string DriverVersion {
+            get {
+                return rotator.DriverVersion;
+            }
+        }
+
         public async Task<bool> Connect(CancellationToken token) {
             return await Task<bool>.Run(() => {
                 try {
