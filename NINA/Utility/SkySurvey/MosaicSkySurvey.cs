@@ -32,7 +32,7 @@ namespace NINA.Utility.SkySurvey {
                         Image = image,
                         FoVHeight = fieldOfView,
                         FoVWidth = fieldOfView,
-                        Rotation = 180,
+                        Rotation = 0,
                         Coordinates = coordinates
                     };
                 }

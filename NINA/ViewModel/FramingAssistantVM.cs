@@ -32,10 +32,8 @@ namespace NINA.ViewModel {
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
-            Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
-            DSO = new DeepSkyObject(string.Empty, Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-            //Coordinates = new Coordinates(073.2920, -07.6335, Epoch.J2000, Coordinates.RAType.Degrees);
-            //Coordinates = new Coordinates(10.6833, 41.2686, Epoch.J2000, Coordinates.RAType.Degrees);
+            var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
+            DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
 
             CameraPixelSize = profileService.ActiveProfile.CameraSettings.PixelSize;
             FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength;
@@ -55,6 +53,7 @@ namespace NINA.ViewModel {
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
                 vm.ChangeTab(ApplicationTab.SEQUENCE);
                 var dso = new DeepSkyObject(DSO?.Name, SelectedCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+                dso.Rotation = Rectangle.DisplayedRotation;
                 var msgResult = await vm.SeqVM.SetSequenceCoordiantes(dso);
 
                 ImageParameter = null;
@@ -64,7 +63,7 @@ namespace NINA.ViewModel {
             }, (object o) => SelectedCoordinates != null);
 
             RecenterCommand = new AsyncCommand<bool>(async () => {
-                Coordinates = SelectedCoordinates;
+                DSO.Coordinates = SelectedCoordinates;
                 await LoadImageCommand.ExecuteAsync(null);
                 return true;
             }, (object o) => SelectedCoordinates != null);
@@ -133,7 +132,6 @@ namespace NINA.ViewModel {
 
         public async Task<bool> SetCoordinates(DeepSkyObject dso) {
             this.DSO = new DeepSkyObject(dso.Name, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-            this.Coordinates = dso.Coordinates;
             FramingAssistantSource = SkySurveySource.NASA;
             await LoadImageCommand.ExecuteAsync(null);
             return true;
@@ -158,29 +156,18 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Coordinates _coordinates;
         private ICameraMediator cameraMediator;
         private ITelescopeMediator telescopeMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
 
-        public Coordinates Coordinates {
-            get {
-                return _coordinates;
-            }
-            set {
-                _coordinates = value;
-                RaiseCoordinatesChanged();
-            }
-        }
-
         public int RAHours {
             get {
-                return (int)Math.Truncate(_coordinates.RA);
+                return (int)Math.Truncate(DSO.Coordinates.RA);
             }
             set {
                 if (value >= 0) {
-                    _coordinates.RA = _coordinates.RA - RAHours + value;
+                    DSO.Coordinates.RA = DSO.Coordinates.RA - RAHours + value;
                     RaiseCoordinatesChanged();
                 }
             }
@@ -188,11 +175,11 @@ namespace NINA.ViewModel {
 
         public int RAMinutes {
             get {
-                return (int)(Math.Floor(_coordinates.RA * 60.0d) % 60);
+                return (int)(Math.Floor(DSO.Coordinates.RA * 60.0d) % 60);
             }
             set {
                 if (value >= 0) {
-                    _coordinates.RA = _coordinates.RA - RAMinutes / 60.0d + value / 60.0d;
+                    DSO.Coordinates.RA = DSO.Coordinates.RA - RAMinutes / 60.0d + value / 60.0d;
                     RaiseCoordinatesChanged();
                 }
             }
@@ -200,11 +187,11 @@ namespace NINA.ViewModel {
 
         public int RASeconds {
             get {
-                return (int)(Math.Floor(_coordinates.RA * 60.0d * 60.0d) % 60);
+                return (int)(Math.Floor(DSO.Coordinates.RA * 60.0d * 60.0d) % 60);
             }
             set {
                 if (value >= 0) {
-                    _coordinates.RA = _coordinates.RA - RASeconds / (60.0d * 60.0d) + value / (60.0d * 60.0d);
+                    DSO.Coordinates.RA = DSO.Coordinates.RA - RASeconds / (60.0d * 60.0d) + value / (60.0d * 60.0d);
                     RaiseCoordinatesChanged();
                 }
             }
@@ -212,13 +199,13 @@ namespace NINA.ViewModel {
 
         public int DecDegrees {
             get {
-                return (int)Math.Truncate(_coordinates.Dec);
+                return (int)Math.Truncate(DSO.Coordinates.Dec);
             }
             set {
                 if (value < 0) {
-                    _coordinates.Dec = value - DecMinutes / 60.0d - DecSeconds / (60.0d * 60.0d);
+                    DSO.Coordinates.Dec = value - DecMinutes / 60.0d - DecSeconds / (60.0d * 60.0d);
                 } else {
-                    _coordinates.Dec = value + DecMinutes / 60.0d + DecSeconds / (60.0d * 60.0d);
+                    DSO.Coordinates.Dec = value + DecMinutes / 60.0d + DecSeconds / (60.0d * 60.0d);
                 }
                 RaiseCoordinatesChanged();
             }
@@ -226,13 +213,13 @@ namespace NINA.ViewModel {
 
         public int DecMinutes {
             get {
-                return (int)Math.Floor((Math.Abs(_coordinates.Dec * 60.0d) % 60));
+                return (int)Math.Floor((Math.Abs(DSO.Coordinates.Dec * 60.0d) % 60));
             }
             set {
-                if (_coordinates.Dec < 0) {
-                    _coordinates.Dec = _coordinates.Dec + DecMinutes / 60.0d - value / 60.0d;
+                if (DSO.Coordinates.Dec < 0) {
+                    DSO.Coordinates.Dec = DSO.Coordinates.Dec + DecMinutes / 60.0d - value / 60.0d;
                 } else {
-                    _coordinates.Dec = _coordinates.Dec - DecMinutes / 60.0d + value / 60.0d;
+                    DSO.Coordinates.Dec = DSO.Coordinates.Dec - DecMinutes / 60.0d + value / 60.0d;
                 }
 
                 RaiseCoordinatesChanged();
@@ -241,13 +228,13 @@ namespace NINA.ViewModel {
 
         public int DecSeconds {
             get {
-                return (int)Math.Floor((Math.Abs(_coordinates.Dec * 60.0d * 60.0d) % 60));
+                return (int)Math.Floor((Math.Abs(DSO.Coordinates.Dec * 60.0d * 60.0d) % 60));
             }
             set {
-                if (_coordinates.Dec < 0) {
-                    _coordinates.Dec = _coordinates.Dec + DecSeconds / (60.0d * 60.0d) - value / (60.0d * 60.0d);
+                if (DSO.Coordinates.Dec < 0) {
+                    DSO.Coordinates.Dec = DSO.Coordinates.Dec + DecSeconds / (60.0d * 60.0d) - value / (60.0d * 60.0d);
                 } else {
-                    _coordinates.Dec = _coordinates.Dec - DecSeconds / (60.0d * 60.0d) + value / (60.0d * 60.0d);
+                    DSO.Coordinates.Dec = DSO.Coordinates.Dec - DecSeconds / (60.0d * 60.0d) + value / (60.0d * 60.0d);
                 }
 
                 RaiseCoordinatesChanged();
@@ -255,14 +242,12 @@ namespace NINA.ViewModel {
         }
 
         private void RaiseCoordinatesChanged() {
-            RaisePropertyChanged(nameof(Coordinates));
             RaisePropertyChanged(nameof(RAHours));
             RaisePropertyChanged(nameof(RAMinutes));
             RaisePropertyChanged(nameof(RASeconds));
             RaisePropertyChanged(nameof(DecDegrees));
             RaisePropertyChanged(nameof(DecMinutes));
             RaisePropertyChanged(nameof(DecSeconds));
-            DSO = new DeepSkyObject(DSO?.Name ?? string.Empty, Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
         }
 
         private int _downloadProgressValue;
@@ -396,7 +381,7 @@ namespace NINA.ViewModel {
                 try {
                     var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
 
-                    var skySurveyImage = await skySurvey.GetImage(DSO?.Name, this.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
+                    var skySurveyImage = await skySurvey.GetImage(DSO?.Name, DSO?.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
 
                     if (skySurveyImage != null) {
                         if (skySurveyImage.Coordinates == null) {
@@ -424,17 +409,17 @@ namespace NINA.ViewModel {
         }
 
         private async Task<SkySurveyImage> PlateSolveSkySurvey(SkySurveyImage skySurveyImage) {
-            var diagResult = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], Coordinates.RAString, Coordinates.DecString), Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
+            var diagResult = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], DSO.Coordinates.RAString, DSO.Coordinates.DecString), Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
             var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
             PlateSolveResult psResult;
             if (diagResult == MessageBoxResult.Yes) {
-                psResult = await solver.Solve(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token, false, Coordinates);
+                psResult = await solver.Solve(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token, false, DSO.Coordinates);
             } else {
                 psResult = await solver.BlindSolve(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token);
             }
 
             if (psResult.Success) {
-                var rotation = 180 - psResult.Orientation;
+                var rotation = psResult.Orientation;
                 if (rotation < 0) {
                     rotation += 360;
                 } else if (rotation >= 360) {
@@ -468,9 +453,10 @@ namespace NINA.ViewModel {
                     var ra = double.Parse(_selectedImageCacheInfo.Attribute("RA").Value, CultureInfo.InvariantCulture);
                     var dec = double.Parse(_selectedImageCacheInfo.Attribute("Dec").Value, CultureInfo.InvariantCulture);
                     var name = _selectedImageCacheInfo.Attribute("Name").Value;
-                    Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours);
+                    var coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours);
                     FieldOfView = Astrometry.ArcminToDegree(double.Parse(_selectedImageCacheInfo.Attribute("FoVW").Value, CultureInfo.InvariantCulture));
-                    DSO = new DeepSkyObject(name, Coordinates, string.Empty);
+                    DSO = new DeepSkyObject(name, coordinates, string.Empty);
+                    RaiseCoordinatesChanged();
                 }
                 RaisePropertyChanged();
             }
