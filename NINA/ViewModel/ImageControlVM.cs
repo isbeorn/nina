@@ -59,11 +59,18 @@ namespace NINA.ViewModel {
             SubSampleDragStartCommand = new RelayCommand(SubSampleDragStart);
             SubSampleDragStopCommand = new RelayCommand(SubSampleDragStop);
             SubSampleDragMoveCommand = new RelayCommand(SubSampleDragMove);
+            InspectAbberationCommand = new RelayCommand(InspectAbberation);
 
             BahtinovRectangle = new ObservableRectangle(-1, -1, 200, 200);
             SubSampleRectangle = new ObservableRectangle(-1, -1, 600, 600);
             BahtinovRectangle.PropertyChanged += Rectangle_PropertyChanged;
             SubSampleRectangle.PropertyChanged += SubSampleRectangle_PropertyChanged;
+        }
+
+        private void InspectAbberation(object obj) {
+            var vm = new AbberationInspectorVM(profileService, Image);
+            var service = WindowServiceFactory.Create();
+            service.Show(vm, "Test", ResizeMode.CanResize, WindowStyle.ToolWindow);
         }
 
         private void Rectangle_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -269,6 +276,7 @@ namespace NINA.ViewModel {
             }
         }
 
+        public ICommand InspectAbberationCommand { get; private set; }
         public ICommand DragStartCommand { get; private set; }
         public ICommand DragStopCommand { get; private set; }
         public ICommand DragMoveCommand { get; private set; }

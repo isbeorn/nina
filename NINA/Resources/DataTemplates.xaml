@@ -19,4 +19,8 @@
     <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
         <view:PlateSolveView />
     </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:AbberationInspectorVM}">
+        <view:AbberationInspectorView />
+    </DataTemplate>
 </ResourceDictionary>
