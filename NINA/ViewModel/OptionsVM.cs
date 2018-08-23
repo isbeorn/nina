@@ -539,6 +539,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double PlateSolveRotationTolerance {
+            get {
+                return profileService.ActiveProfile.PlateSolveSettings.RotationTolerance;
+            }
+            set {
+                profileService.ActiveProfile.PlateSolveSettings.RotationTolerance = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public WeatherDataEnum WeatherDataType {
             get {
                 return profileService.ActiveProfile.WeatherDataSettings.WeatherDataType;

@@ -238,22 +238,37 @@ namespace NINA.ViewModel {
         private async Task RotateEquipment(PlateSolveResult plateSolveResult, IProgress<ApplicationStatus> progress) {
             // Rotate to desired angle
             if (rotatorInfo?.Connected == true) {
-                if (plateSolveResult == null) {
-                    var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                    var solveseq = new CaptureSequence() {
-                        ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
-                        FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
-                        ImageType = CaptureSequence.ImageTypes.SNAP,
-                        TotalExposureCount = 1
-                    };
-                    var service = WindowServiceFactory.Create();
-                    service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-                    plateSolveResult = await solver.SolveWithCapture(solveseq, progress, _canceltoken.Token);
-                }
-                if (plateSolveResult?.Success == true && rotatorInfo.Position != (float)plateSolveResult.Orientation) {
-                    var position = ((float)Sequence.DSO.Rotation - (float)plateSolveResult.Orientation);
-                    await rotatorMediator.MoveRelative(position);
-                }
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+                var solveseq = new CaptureSequence() {
+                    ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                    FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
+                    ImageType = CaptureSequence.ImageTypes.SNAP,
+                    TotalExposureCount = 1
+                };
+                var service = WindowServiceFactory.Create();
+
+                service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+
+                var orientation = (float)(plateSolveResult?.Orientation ?? 0.0f);
+                float position = 0.0f;
+                do {
+                    if (plateSolveResult == null) {
+                        plateSolveResult = await solver.SolveWithCapture(solveseq, progress, _canceltoken.Token);
+                    }
+
+                    if (!plateSolveResult.Success) {
+                        break;
+                    }
+
+                    orientation = (float)plateSolveResult.Orientation;
+
+                    position = (float)((float)Sequence.DSO.Rotation - orientation);
+                    if (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance) {
+                        await rotatorMediator.MoveRelative(position);
+                    }
+                    plateSolveResult = null;
+                } while (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance);
+                service.DelayedClose(TimeSpan.FromSeconds(10));
             }
         }
 

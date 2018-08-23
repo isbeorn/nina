@@ -14,5 +14,6 @@ namespace NINA.Utility.Profile {
         int Regions { get; set; }
         double SearchRadius { get; set; }
         double Threshold { get; set; }
+        double RotationTolerance { get; set; }
     }
 }
