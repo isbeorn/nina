@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Profile;
+using NINA.Utility.WindowService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,8 @@ namespace NINA.Model.MyRotator {
         public bool Connected { get; set; }
 
         public float Position { get; set; }
+
+        public float TargetPosition { get; set; }
 
         public bool HasSetupDialog {
             get {
@@ -76,16 +79,62 @@ namespace NINA.Model.MyRotator {
         public void Halt() {
         }
 
+        private IWindowService windowService;
+
+        public IWindowService WindowService {
+            get {
+                if (windowService == null) {
+                    windowService = new WindowService();
+                }
+                return windowService;
+            }
+            set {
+                windowService = value;
+            }
+        }
+
+        public float Rotation {
+            get {
+                return Math.Abs(TargetPosition - Position);
+            }
+        }
+
+        public float AbsTargetPosition {
+            get {
+                if (TargetPosition < 0) return TargetPosition + 360;
+                return TargetPosition % 360;
+            }
+        }
+
+        public string Direction {
+            get {
+                if (TargetPosition - Position < 0) {
+                    return Locale.Loc.Instance["LblCounterclockwise"];
+                } else {
+                    return Locale.Loc.Instance["LblClockwise"];
+                }
+            }
+        }
+
         public void Move(float position) {
             IsMoving = true;
-            MyMessageBox.MyMessageBox.Show(
-                    string.Format(Locale.Loc.Instance["LblPleaseRotate"], position),
-                    Locale.Loc.Instance["LblRotationRequired"],
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxResult.OK
-            );
-            Position = (Position + position) % 360;
+
+            TargetPosition = Position + position;
+            if (TargetPosition - Position > 180) {
+                TargetPosition = TargetPosition - 360;
+            }
+
+            if (TargetPosition - Position < -180) {
+                TargetPosition = TargetPosition + 360;
+            }
+
+            var clockwise = TargetPosition - Position > 0;
+
+            WindowService.ShowDialog(this, Locale.Loc.Instance["LblRotationRequired"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+
+            Position = TargetPosition % 360;
             if (Position < 0) { Position += 360; }
+
             IsMoving = false;
         }
 

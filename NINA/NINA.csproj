@@ -619,6 +619,9 @@
     <Compile Include="View\ImagingView.xaml.cs">
       <DependentUpon>ImagingView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ManualRotatorView.xaml.cs">
+      <DependentUpon>ManualRotatorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MeridianFlipView.xaml.cs">
       <DependentUpon>MeridianFlipView.xaml</DependentUpon>
     </Compile>
@@ -951,6 +954,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ImagingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ManualRotatorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

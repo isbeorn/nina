@@ -686,5 +686,8 @@ Calculated HFR: {2}
     <s:String x:Key="LblManualRotator">Manual Rotator</s:String>
     <s:String x:Key="LblManualRotatorDescription">When rotation is requested a notification will pop up to rotate manually</s:String>
     <s:String x:Key="LblPleaseRotate">Please rotate by {0} degrees</s:String>
-    <s:String x:Key="LblRotationRequired">Rotation required</s:String>
+    <s:String x:Key="LblRotationRequired">Camera Rotation required</s:String>
+    <s:String x:Key="LblCurrentPosition">Current Position</s:String>
+    <s:String x:Key="LblCounterclockwise">Counterclockwise</s:String>
+    <s:String x:Key="LblClockwise">Clockwise</s:String>
 </ResourceDictionary>

@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:rotator="clr-namespace:NINA.Model.MyRotator"
     xmlns:view="clr-namespace:NINA.View"
     xmlns:vm="clr-namespace:NINA.ViewModel">
     <DataTemplate DataType="{x:Type vm:MeridianFlipVM}">
@@ -18,5 +19,9 @@
 
     <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
         <view:PlateSolveView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type rotator:ManualRotator}">
+        <view:ManualRotatorView />
     </DataTemplate>
 </ResourceDictionary>

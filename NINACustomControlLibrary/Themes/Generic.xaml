@@ -9,5 +9,6 @@
         <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/HintTextBox.Generic.xaml" />
         <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/LoadingControl.Generic.xaml" />
         <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/AsyncProcessButton.Generic.xaml" />
+        <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/Arc.Generic.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
