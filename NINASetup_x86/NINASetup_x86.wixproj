@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>538efad8-6b75-4430-820c-a5c375fafe5f</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>NINASetup_x86</OutputName>
+    <OutputName>NINASetup</OutputName>
     <OutputType>Package</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
