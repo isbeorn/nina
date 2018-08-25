@@ -17,108 +17,111 @@
             </Grid.RowDefinitions>
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                 <StackPanel>
-                    <StackPanel Margin="5" VerticalAlignment="Top" DataContext="{Binding Statistics}">
+                    <StackPanel
+                        Margin="5"
+                        VerticalAlignment="Top"
+                        DataContext="{Binding Statistics}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblWidth}" />
+                                Width="70"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblWidth}" />
                             <TextBlock
-                            Width="70"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="{Binding Width, StringFormat=\{0:#0\}}" />
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding Width, StringFormat=\{0:#0\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblHeight}" />
+                                Width="70"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblHeight}" />
                             <TextBlock
-                            Width="70"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="{Binding Height, StringFormat=\{0:#\}}" />
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding Height, StringFormat=\{0:#\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblMean}" />
+                                Width="70"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblMean}" />
                             <TextBlock
-                            Width="70"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="{Binding Mean, StringFormat=\{0:#.00\}}" />
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding Mean, StringFormat=\{0:#.00\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblMin}" />
+                                Width="70"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblMin}" />
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="{Binding Min}" />
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Min}" />
                                 <TextBlock Text=" (" />
                                 <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="{Binding MinOccurrences}" />
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding MinOccurrences}" />
                                 <TextBlock Text="x)" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblMax}" />
+                                Width="70"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblMax}" />
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="{Binding Max}" />
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Max}" />
                                 <TextBlock Text=" (" />
                                 <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="{Binding MaxOccurrences}" />
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding MaxOccurrences}" />
                                 <TextBlock Text="x)" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblStDev}" />
+                                Width="70"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblStDev}" />
                             <TextBlock
-                            Width="70"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="{Binding StDev, StringFormat=\{0:#.00\}}" />
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding StDev, StringFormat=\{0:#.00\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblNrStars}" />
+                                Width="70"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNrStars}" />
                             <TextBlock
-                            Width="70"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="{Binding DetectedStars, StringFormat=\{0:#\}}" />
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding DetectedStars, StringFormat=\{0:#\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                            Width="70"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblHFR}" />
+                                Width="70"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblHFR}" />
                             <TextBlock
-                            Width="70"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
                         </StackPanel>
                     </StackPanel>
                     <Expander Header="{ns:Loc LblExposureCalculator}">
@@ -196,10 +199,10 @@
                 </StackPanel>
             </Border>
             <Border
-                DataContext="{Binding Statistics}"
                 Grid.Row="1"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="1">
+                BorderThickness="1"
+                DataContext="{Binding Statistics}">
                 <local:HistogramView MinHeight="80" />
             </Border>
         </Grid>

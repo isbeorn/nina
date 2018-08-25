@@ -19,6 +19,21 @@
         <local:ImageView Image="{Binding Image}">
             <local:ImageView.ButtonHeaderContent>
                 <StackPanel Orientation="Horizontal">
+                    <Button
+                        Width="35"
+                        Margin="2.5"
+                        Command="{Binding InspectAbberationCommand}">
+                        <Button.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="True">
+                                <TextBlock Text="{ns:Loc LblAberrationInspector}" />
+                            </ToolTip>
+                        </Button.ToolTip>
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource AberrationInspectorSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform" />
+                    </Button>
                     <ninactrl:CancellableButton
                         Grid.Column="0"
                         Width="35"
