@@ -684,4 +684,5 @@ Berechneter HFR: {2}
     <s:String x:Key="LblFilterChangeRequired">Filterwechsel benötigt</s:String>
     <s:String x:Key="LblManualFilterWheel">Manuelles Filterrad</s:String>
     <s:String x:Key="LblManualFilterWheelDescription">Spiegelt die Filter, die in den Filteroptionen eingestellt sind wieder. Wenn ein Filter gewechselt wird, öffnet sich eine Mitteilung, um den Filter zu wechseln</s:String>
+    <s:String x:Key="LblAbberationInspector">Aberrationskontrolle</s:String>
 </ResourceDictionary>

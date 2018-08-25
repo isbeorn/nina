@@ -51,7 +51,7 @@ namespace NINA.ViewModel {
             _progress = new Progress<ApplicationStatus>(p => Status = p);
 
             PrepareImageCommand = new AsyncCommand<bool>(() => PrepareImageHelper());
-            PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage());
+            PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage(), (object o) => Image != null);
             CancelPlateSolveImageCommand = new RelayCommand(CancelPlateSolveImage);
             DragStartCommand = new RelayCommand(BahtinovDragStart);
             DragStopCommand = new RelayCommand(BahtinovDragStop);
@@ -59,7 +59,7 @@ namespace NINA.ViewModel {
             SubSampleDragStartCommand = new RelayCommand(SubSampleDragStart);
             SubSampleDragStopCommand = new RelayCommand(SubSampleDragStop);
             SubSampleDragMoveCommand = new RelayCommand(SubSampleDragMove);
-            InspectAbberationCommand = new RelayCommand(InspectAbberation);
+            InspectAbberationCommand = new RelayCommand(InspectAbberation, (object o) => Image != null);
 
             BahtinovRectangle = new ObservableRectangle(-1, -1, 200, 200);
             SubSampleRectangle = new ObservableRectangle(-1, -1, 600, 600);
@@ -68,9 +68,14 @@ namespace NINA.ViewModel {
         }
 
         private void InspectAbberation(object obj) {
-            var vm = new AbberationInspectorVM(profileService, Image);
-            var service = WindowServiceFactory.Create();
-            service.Show(vm, "Test", ResizeMode.CanResize, WindowStyle.ToolWindow);
+            try {
+                var vm = new AbberationInspectorVM(profileService, Image);
+                var service = WindowServiceFactory.Create();
+                service.Show(vm, Locale.Loc.Instance["LblAberrationInspector"], ResizeMode.CanResize, WindowStyle.ToolWindow);
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.ShowError(ex.Message);
+            }
         }
 
         private void Rectangle_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
