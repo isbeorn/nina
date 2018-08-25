@@ -27,7 +27,6 @@ namespace NINA.ViewModel {
             this.focuserMediator = focuserMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
-            ContentId = nameof(FilterWheelVM);
             ChooseFWCommand = new AsyncCommand<bool>(() => ChooseFW());
             CancelChooseFWCommand = new RelayCommand(CancelChooseFW);
             DisconnectCommand = new RelayCommand(DisconnectFW);

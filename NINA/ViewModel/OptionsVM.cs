@@ -21,7 +21,6 @@ namespace NINA.ViewModel {
 
         public OptionsVM(IProfileService profileService, IFilterWheelMediator filterWheelMediator) : base(profileService) {
             Title = "LblOptions";
-            ContentId = nameof(OptionsVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
 
@@ -536,6 +535,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.PlateSolveSettings.Threshold = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double PlateSolveRotationTolerance {
+            get {
+                return profileService.ActiveProfile.PlateSolveSettings.RotationTolerance;
+            }
+            set {
+                profileService.ActiveProfile.PlateSolveSettings.RotationTolerance = value;
                 RaisePropertyChanged();
             }
         }

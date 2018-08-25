@@ -22,6 +22,7 @@ namespace NINA.Utility.Profile {
     [KnownType(typeof(MeridianFlipSettings))]
     [KnownType(typeof(PlateSolveSettings))]
     [KnownType(typeof(PolarAlignmentSettings))]
+    [KnownType(typeof(RotatorSettings))]
     [KnownType(typeof(SequenceSettings))]
     [KnownType(typeof(TelescopeSettings))]
     [KnownType(typeof(WeatherDataSettings))]
@@ -32,6 +33,10 @@ namespace NINA.Utility.Profile {
         }
 
         private void Initialize() {
+            if (RotatorSettings == null) {
+                RotatorSettings = new RotatorSettings();
+            }
+
             ApplicationSettings.PropertyChanged += SettingsChanged;
             AstrometrySettings.PropertyChanged += SettingsChanged;
             CameraSettings.PropertyChanged += SettingsChanged;
@@ -45,6 +50,7 @@ namespace NINA.Utility.Profile {
             MeridianFlipSettings.PropertyChanged += SettingsChanged;
             PlateSolveSettings.PropertyChanged += SettingsChanged;
             PolarAlignmentSettings.PropertyChanged += SettingsChanged;
+            RotatorSettings.PropertyChanged += SettingsChanged;
             SequenceSettings.PropertyChanged += SettingsChanged;
             TelescopeSettings.PropertyChanged += SettingsChanged;
             WeatherDataSettings.PropertyChanged += SettingsChanged;
@@ -151,6 +157,9 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public IPolarAlignmentSettings PolarAlignmentSettings { get; set; } = new PolarAlignmentSettings();
+
+        [DataMember]
+        public IRotatorSettings RotatorSettings { get; set; } = new RotatorSettings();
 
         [DataMember]
         public ISequenceSettings SequenceSettings { get; set; } = new SequenceSettings();

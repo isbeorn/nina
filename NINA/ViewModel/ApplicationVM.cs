@@ -21,6 +21,7 @@ namespace NINA.ViewModel {
             telescopeMediator = new TelescopeMediator();
             focuserMediator = new FocuserMediator();
             filterWheelMediator = new FilterWheelMediator();
+            rotatorMediator = new RotatorMediator();
             guiderMediator = new GuiderMediator();
             imagingMediator = new ImagingMediator();
             applicationStatusMediator = new ApplicationStatusMediator();
@@ -39,8 +40,9 @@ namespace NINA.ViewModel {
                         var fw = filterWheelMediator.Connect();
                         var telescope = telescopeMediator.Connect();
                         var focuser = focuserMediator.Connect();
+                        var rotator = rotatorMediator.Connect();
                         var guider = guiderMediator.Connect();
-                        await Task.WhenAll(cam, fw, telescope, focuser, guider);
+                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, guider);
                         return true;
                     });
                 } else {
@@ -61,6 +63,7 @@ namespace NINA.ViewModel {
         private ITelescopeMediator telescopeMediator;
         private IFocuserMediator focuserMediator;
         private IFilterWheelMediator filterWheelMediator;
+        private RotatorMediator rotatorMediator;
         private IGuiderMediator guiderMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
@@ -101,6 +104,7 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
             DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
             DockManagerVM.Anchorables.Add(AutoFocusVM);
+            DockManagerVM.Anchorables.Add(RotatorVM);
         }
 
         public void ChangeTab(ApplicationTab tab) {
@@ -192,6 +196,12 @@ namespace NINA.ViewModel {
             }
 
             try {
+                rotatorMediator.Disconnect();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            try {
                 guiderMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -273,6 +283,21 @@ namespace NINA.ViewModel {
             }
         }
 
+        private RotatorVM rotatorVM;
+
+        public RotatorVM RotatorVM {
+            get {
+                if (rotatorVM == null) {
+                    rotatorVM = new RotatorVM(profileService, rotatorMediator, applicationStatusMediator);
+                }
+                return rotatorVM;
+            }
+            set {
+                rotatorVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private WeatherDataVM _weatherDataVM;
 
         public WeatherDataVM WeatherDataVM {
@@ -293,7 +318,7 @@ namespace NINA.ViewModel {
         public SequenceVM SeqVM {
             get {
                 if (_seqVM == null) {
-                    _seqVM = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+                    _seqVM = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
                 }
                 return _seqVM;
             }

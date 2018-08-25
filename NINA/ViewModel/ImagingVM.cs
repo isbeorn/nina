@@ -30,7 +30,6 @@ namespace NINA.ViewModel {
                 IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblImaging";
-            ContentId = nameof(ImagingVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ImagingSVG"];
 
             this.imagingMediator = imagingMediator;

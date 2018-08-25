@@ -22,7 +22,7 @@ namespace NINA.Utility.SkySurvey {
                 Name = nameof(NASASkySurvey) + name,
                 FoVHeight = fieldOfView,
                 FoVWidth = fieldOfView,
-                Rotation = 180,
+                Rotation = 0,
                 Coordinates = coordinates
             };
         }

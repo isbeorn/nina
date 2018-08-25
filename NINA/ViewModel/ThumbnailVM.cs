@@ -20,7 +20,6 @@ namespace NINA.ViewModel {
 
         public ThumbnailVM(IProfileService profileService, IImagingMediator imagingMediator) : base(profileService) {
             Title = "LblImageHistory";
-            ContentId = nameof(ThumbnailVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistorySVG"];
 

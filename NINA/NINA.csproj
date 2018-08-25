@@ -299,6 +299,10 @@
     <Compile Include="Model\MyGuider\GuiderInfo.cs" />
     <Compile Include="Model\MyGuider\IGuider.cs" />
     <Compile Include="Model\MyGuider\PHD2Guider.cs" />
+    <Compile Include="Model\MyRotator\AscomRotator.cs" />
+    <Compile Include="Model\MyRotator\IRotator.cs" />
+    <Compile Include="Model\MyRotator\ManualRotator.cs" />
+    <Compile Include="Model\MyRotator\RotatorInfo.cs" />
     <Compile Include="Model\MyTelescope\TelescopeInfo.cs" />
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
@@ -369,8 +373,11 @@
     <Compile Include="Utility\Mediator\Interfaces\IGuiderMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IImagingMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IRotatorConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IRotatorMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ITelescopeConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ITelescopeMediator.cs" />
+    <Compile Include="Utility\Mediator\RotatorMediator.cs" />
     <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
@@ -387,10 +394,12 @@
     <Compile Include="Utility\Profile\IPolarAlignmentSettings.cs" />
     <Compile Include="Utility\Profile\IProfile.cs" />
     <Compile Include="Utility\Profile\IProfileService.cs" />
+    <Compile Include="Utility\Profile\IRotatorSettings.cs" />
     <Compile Include="Utility\Profile\ISequenceSettings.cs" />
     <Compile Include="Utility\Profile\ISettings.cs" />
     <Compile Include="Utility\Profile\ITelescopeSettings.cs" />
     <Compile Include="Utility\Profile\IWeatherDataSettings.cs" />
+    <Compile Include="Utility\Profile\RotatorSettings.cs" />
     <Compile Include="Utility\Profile\Settings.cs" />
     <Compile Include="Utility\RawConverter\DCRaw.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
@@ -505,6 +514,7 @@
     <Compile Include="ViewModel\ImagingVM.cs" />
     <Compile Include="ViewModel\Interfaces\IGuiderVM.cs" />
     <Compile Include="ViewModel\Interfaces\IImagingVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IRotatorVM.cs" />
     <Compile Include="ViewModel\Interfaces\ITelescopeVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
@@ -513,6 +523,7 @@
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
     <Compile Include="Model\RMS.cs" />
+    <Compile Include="ViewModel\RotatorVM.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
     <Compile Include="ViewModel\SkyAtlasVM.cs" />
     <Compile Include="ViewModel\TelescopeVM.cs" />
@@ -554,6 +565,9 @@
     </Compile>
     <Compile Include="View\AnchorablePolarAlignmentView.xaml.cs">
       <DependentUpon>AnchorablePolarAlignmentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AnchorableRotatorView.xaml.cs">
+      <DependentUpon>AnchorableRotatorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AnchorableSequenceView.xaml.cs">
       <DependentUpon>AnchorableSequenceView.xaml</DependentUpon>
@@ -609,6 +623,9 @@
     <Compile Include="View\ImagingView.xaml.cs">
       <DependentUpon>ImagingView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ManualRotatorView.xaml.cs">
+      <DependentUpon>ManualRotatorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MeridianFlipView.xaml.cs">
       <DependentUpon>MeridianFlipView.xaml</DependentUpon>
     </Compile>
@@ -641,6 +658,9 @@
     </Compile>
     <Compile Include="View\PolarScopeView.xaml.cs">
       <DependentUpon>PolarScopeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RotatorView.xaml.cs">
+      <DependentUpon>RotatorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SequenceView.xaml.cs">
       <DependentUpon>SequenceView.xaml</DependentUpon>
@@ -869,6 +889,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\AnchorableRotatorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AnchorableSequenceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -941,6 +965,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ManualRotatorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MeridianFlipView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -982,6 +1010,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PolarScopeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\RotatorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -14,7 +14,7 @@ namespace NINA.Utility.WindowService {
         protected Dispatcher dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
         protected Window window;
 
-        public void Show(object viewModel, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None) {
+        public void Show(object content, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None) {
             dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                 window = new Window() {
                     SizeToContent = SizeToContent.WidthAndHeight,
@@ -25,7 +25,7 @@ namespace NINA.Utility.WindowService {
                     MinHeight = 300,
                     MinWidth = 350
                 };
-                window.Content = viewModel;
+                window.Content = content;
                 window.Show();
             }));
         }
@@ -43,16 +43,17 @@ namespace NINA.Utility.WindowService {
             }));
         }
 
-        public void ShowDialog(object viewModel, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None) {
-            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+        public void ShowDialog(object content, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None) {
+            dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
                 window = new Window() {
                     SizeToContent = SizeToContent.WidthAndHeight,
                     Title = title,
+                    Background = Application.Current.TryFindResource("BackgroundBrush") as Brush,
                     ResizeMode = resizeMode,
                     WindowStyle = windowStyle
                 };
                 window.SizeChanged += Win_SizeChanged;
-                window.Content = viewModel;
+                window.Content = content;
                 var mainwindow = System.Windows.Application.Current.MainWindow;
                 mainwindow.Opacity = 0.8;
                 var result = window.ShowDialog();
@@ -73,9 +74,9 @@ namespace NINA.Utility.WindowService {
 
     internal interface IWindowService {
 
-        void Show(object viewModel, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None);
+        void Show(object content, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None);
 
-        void ShowDialog(object viewModel, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None);
+        void ShowDialog(object content, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None);
 
         event EventHandler OnDialogResultChanged;
 

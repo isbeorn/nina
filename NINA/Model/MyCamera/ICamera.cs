@@ -8,14 +8,10 @@ namespace NINA.Model.MyCamera {
 
     internal interface ICamera : IDevice {
         bool HasShutter { get; }
-        bool Connected { get; }
         double Temperature { get; }
         double TemperatureSetPoint { get; set; }
         short BinX { get; set; }
         short BinY { get; set; }
-        string Description { get; }
-        string DriverInfo { get; }
-        string DriverVersion { get; }
         string SensorName { get; }
         ASCOM.DeviceInterface.SensorType SensorType { get; }
         int CameraXSize { get; }
@@ -60,7 +56,9 @@ namespace NINA.Model.MyCamera {
         void StopExposure();
 
         void StartLiveView();
+
         Task<ImageArray> DownloadLiveView(CancellationToken token);
+
         void StopLiveView();
 
         void AbortExposure();

@@ -110,6 +110,30 @@
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblArcmin}" />
                     </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblRotationTolerance}" />
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="PlateSolveRotationTolerance">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblDegree}" />
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </GroupBox>

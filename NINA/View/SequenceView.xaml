@@ -412,6 +412,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
@@ -533,9 +534,22 @@
                             </UniformGrid>
                         </UniformGrid>
                     </Border>
-
-                    <Grid
+                    <Border
                         Grid.Row="3"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1">
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRotation}" />
+                                <TextBox Margin="5,0,0,0" Text="{Binding DSO.Rotation}" />
+                            </UniformGrid>
+                        </UniformGrid>
+                    </Border>
+                    <Grid
+                        Grid.Row="4"
                         Margin="0,0,0,0"
                         Visibility="{Binding AltitudeVisible, Converter={StaticResource VisibilityConverter}}">
                         <local:AltitudeChart

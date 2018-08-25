@@ -25,7 +25,6 @@ namespace NINA.ViewModel {
             this.telescopeMediator.RegisterHandler(this);
             this.applicationStatusMediator = applicationStatusMediator;
             Title = "LblTelescope";
-            ContentId = nameof(TelescopeVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["TelescopeSVG"];
 
             ChooseTelescopeCommand = new AsyncCommand<bool>(() => ChooseTelescope());

@@ -32,7 +32,6 @@ namespace NINA.ViewModel {
                 IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblPlateSolving";
-            ContentId = nameof(PlatesolveVM);
             SyncScope = false;
             SlewToTarget = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];

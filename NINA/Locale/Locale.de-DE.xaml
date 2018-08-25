@@ -239,12 +239,14 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblFilterwheelConnected">Filterrad verbunden</s:String>
     <s:String x:Key="LblFocuserConnected">Okularauszug verbunden</s:String>
     <s:String x:Key="LblTelescopeConnected">Teleskop verbunden</s:String>
+    <s:String x:Key="LblRotatorConnected">Rotator verbunden</s:String>
     <s:String x:Key="LblGuiderConnected">Guider verbunden</s:String>
     <s:String x:Key="LblTelescopeSynced">Teleskop zu Koordinaten synchronisiert</s:String>
     <s:String x:Key="LblCameraConnectionLost">Verbindung zur Kamera verloren! Bitte Kamera erneut verbinden!</s:String>
     <s:String x:Key="LblFilterwheelConnectionLost">Verbindung zum Filterrad verloren! Bitte Filterrad erneut verbinden!</s:String>
     <s:String x:Key="LblFocuserConnectionLost">Verbindung zum Okularauszug verloren! Bitte Okularauszug erneut verbinden!</s:String>
     <s:String x:Key="LblTelescopeConnectionLost">Verbindung zum Teleskop verloren! Bitte Teleskop erneut verbinden!</s:String>
+    <s:String x:Key="LblRotatorConnectionLost">Verbindung zum Rotator verloren! Bitte Rotator erneut verbinden!</s:String>
     <s:String x:Key="LblTelescopeParkedWarn">Teleskop ist geparkt und kann dadurch nicht geschwenkt werden.</s:String>
     <s:String x:Key="LblTelescopeCannotSlew">Teleskop kann nicht schwenken</s:String>
     <s:String x:Key="LblTelescopeNotConnected">Teleskop nicht verbunden</s:String>
@@ -684,5 +686,15 @@ Berechneter HFR: {2}
     <s:String x:Key="LblFilterChangeRequired">Filterwechsel benötigt</s:String>
     <s:String x:Key="LblManualFilterWheel">Manuelles Filterrad</s:String>
     <s:String x:Key="LblManualFilterWheelDescription">Spiegelt die Filter, die in den Filteroptionen eingestellt sind wieder. Wenn ein Filter gewechselt wird, öffnet sich eine Mitteilung, um den Filter zu wechseln</s:String>
+    <s:String x:Key="LblRotator">Rotator</s:String>
+    <s:String x:Key="LblNoRotator">Kein Rotator</s:String>
+    <s:String x:Key="LblManualRotator">Manueller Rotator</s:String>
+    <s:String x:Key="LblManualRotatorDescription">Wenn Rotation benötigt wird, öffnet sich eine Mitteilung um manuell zu drehen.</s:String>
+    <s:String x:Key="LblPleaseRotate">Bitte um {0} Grad drehen</s:String>
+    <s:String x:Key="LblRotationRequired">Kamera Rotation benötigt</s:String>
+    <s:String x:Key="LblCurrentPosition">Startposition</s:String>
+    <s:String x:Key="LblCounterclockwise">Linksdrehend</s:String>
+    <s:String x:Key="LblClockwise">Rechtsdrehend</s:String>
+    <s:String x:Key="LblRotationTolerance">Rotationstoleranz</s:String>
     <s:String x:Key="LblAbberationInspector">Aberrationskontrolle</s:String>
 </ResourceDictionary>

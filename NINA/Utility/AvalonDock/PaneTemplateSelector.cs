@@ -30,6 +30,8 @@ namespace NINA.Utility.AvalonDock {
 
         public DataTemplate ImageStatisticsTemplate { get; set; }
 
+        public DataTemplate RotatorTemplate { get; set; }
+
         public DataTemplate SequenceTemplate { get; set; }
 
         public DataTemplate WeatherDataTemplate { get; set; }
@@ -87,6 +89,9 @@ namespace NINA.Utility.AvalonDock {
 
             if (item is ThumbnailVM)
                 return ThumbnailTemplate;
+
+            if (item is RotatorVM)
+                return RotatorTemplate;
 
             return base.SelectTemplate(item, container);
         }

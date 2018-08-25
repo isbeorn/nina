@@ -10,7 +10,6 @@ namespace NINA.ViewModel {
             Title = "LblHFRHistory";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HFRHistorySVG"];
 
-            ContentId = nameof(ImageHistoryVM);
             _nextStatHistoryId = 1;
             ImgStatHistory = new AsyncObservableLimitedSizedStack<ImageStatistics>(100);
         }

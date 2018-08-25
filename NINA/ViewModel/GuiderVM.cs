@@ -21,7 +21,6 @@ namespace NINA.ViewModel {
 
         public GuiderVM(IProfileService profileService, IGuiderMediator guiderMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblGuider";
-            ContentId = nameof(GuiderVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
 
             this.guiderMediator = guiderMediator;

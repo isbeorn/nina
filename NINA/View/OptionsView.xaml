@@ -148,6 +148,7 @@
                                         <Binding Path="CameraVM.CameraInfo.Connected" Source="{StaticResource AppVM}" />
                                         <Binding Path="FilterWheelVM.FilterWheelInfo.Connected" Source="{StaticResource AppVM}" />
                                         <Binding Path="FocuserVM.FocuserInfo.Connected" Source="{StaticResource AppVM}" />
+                                        <Binding Path="RotatorVM.RotatorInfo.Connected" Source="{StaticResource AppVM}" />
                                         <Binding Path="TelescopeVM.TelescopeInfo.Connected" Source="{StaticResource AppVM}" />
                                         <Binding Path="GuiderVM.Guider.Connected" Source="{StaticResource AppVM}" />
                                     </MultiBinding>

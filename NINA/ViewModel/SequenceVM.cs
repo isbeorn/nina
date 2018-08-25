@@ -1,7 +1,9 @@
 ﻿using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
+using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
+using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Exceptions;
 using NINA.Utility.Mediator;
@@ -23,7 +25,7 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer {
+    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer {
 
         public SequenceVM(
                 IProfileService profileService,
@@ -32,6 +34,7 @@ namespace NINA.ViewModel {
                 IFocuserMediator focuserMediator,
                 IFilterWheelMediator filterWheelMediator,
                 IGuiderMediator guiderMediator,
+                IRotatorMediator rotatorMediator,
                 IImagingMediator imagingMediator,
                 IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
@@ -44,6 +47,9 @@ namespace NINA.ViewModel {
             this.focuserMediator = focuserMediator;
             this.focuserMediator.RegisterConsumer(this);
 
+            this.rotatorMediator = rotatorMediator;
+            this.rotatorMediator.RegisterConsumer(this);
+
             this.guiderMediator = guiderMediator;
             this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
@@ -53,7 +59,6 @@ namespace NINA.ViewModel {
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current?.Resources["SequenceSVG"];
 
-            ContentId = nameof(SequenceVM);
             AddSequenceCommand = new RelayCommand(AddSequence);
             RemoveSequenceCommand = new RelayCommand(RemoveSequence);
             StartSequenceCommand = new AsyncCommand<bool>(() => StartSequence(new Progress<ApplicationStatus>(p => Status = p)));
@@ -230,6 +235,102 @@ namespace NINA.ViewModel {
             }
         }
 
+        private async Task RotateEquipment(PlateSolveResult plateSolveResult, IProgress<ApplicationStatus> progress) {
+            // Rotate to desired angle
+            if (rotatorInfo?.Connected == true) {
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+                var solveseq = new CaptureSequence() {
+                    ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                    FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
+                    ImageType = CaptureSequence.ImageTypes.SNAP,
+                    TotalExposureCount = 1
+                };
+                var service = WindowServiceFactory.Create();
+
+                service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+
+                var orientation = (float)(plateSolveResult?.Orientation ?? 0.0f);
+                float position = 0.0f;
+                do {
+                    if (plateSolveResult == null) {
+                        plateSolveResult = await solver.SolveWithCapture(solveseq, progress, _canceltoken.Token);
+                    }
+
+                    if (!plateSolveResult.Success) {
+                        break;
+                    }
+
+                    orientation = (float)plateSolveResult.Orientation;
+
+                    position = (float)((float)Sequence.DSO.Rotation - orientation);
+                    if (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance) {
+                        await rotatorMediator.MoveRelative(position);
+                    }
+                    plateSolveResult = null;
+                } while (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance);
+                service.DelayedClose(TimeSpan.FromSeconds(10));
+            }
+        }
+
+        private async Task<PlateSolveResult> SlewToTarget(IProgress<ApplicationStatus> progress) {
+            PlateSolveResult plateSolveResult = null;
+            if (Sequence.SlewToTarget) {
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSlewToTarget"] });
+                await telescopeMediator.SlewToCoordinatesAsync(Sequence.Coordinates);
+                plateSolveResult = await CenterTarget(progress);
+            }
+            return plateSolveResult;
+        }
+
+        private async Task<PlateSolveResult> CenterTarget(IProgress<ApplicationStatus> progress) {
+            PlateSolveResult plateSolveResult = null;
+            if (Sequence.CenterTarget) {
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
+
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+                var solveseq = new CaptureSequence() {
+                    ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                    FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
+                    ImageType = CaptureSequence.ImageTypes.SNAP,
+                    TotalExposureCount = 1
+                };
+                var service = WindowServiceFactory.Create();
+                service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                plateSolveResult = await solver.CaptureSolveSyncAndReslew(solveseq, true, true, true, _canceltoken.Token, progress, false, profileService.ActiveProfile.PlateSolveSettings.Threshold);
+                service.DelayedClose(TimeSpan.FromSeconds(10));
+
+                if (plateSolveResult == null || !plateSolveResult.Success) {
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlatesolveFailed"] });
+                }
+            }
+            return plateSolveResult;
+        }
+
+        private async Task DelaySequence(IProgress<ApplicationStatus> progress) {
+            var delay = Sequence.Delay;
+            while (delay > 0) {
+                await Task.Delay(TimeSpan.FromSeconds(1), _canceltoken.Token);
+                delay--;
+                progress.Report(new ApplicationStatus() { Status = string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay) });
+            }
+        }
+
+        private async Task AutoFocusOnStart(IProgress<ApplicationStatus> progress) {
+            if (Sequence.AutoFocusOnStart) {
+                await AutoFocus(Sequence.Items[0].FilterType, _canceltoken.Token, progress);
+            }
+        }
+
+        private async Task StartGuiding(IProgress<ApplicationStatus> progress) {
+            if (Sequence.StartGuiding) {
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartGuiding"] });
+                var guiderStarted = await this.guiderMediator.StartGuiding(_canceltoken.Token);
+                if (!guiderStarted) {
+                    Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
+                }
+            }
+        }
+
         private async Task<bool> StartSequence(IProgress<ApplicationStatus> progress) {
             try {
                 if (Sequence.Count <= 0) {
@@ -242,51 +343,18 @@ namespace NINA.ViewModel {
 
                 CalculateETA();
 
-                if (Sequence.SlewToTarget) {
-                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSlewToTarget"] });
-                    await telescopeMediator.SlewToCoordinatesAsync(Sequence.Coordinates);
-                    if (Sequence.CenterTarget) {
-                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
-
-                        var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                        var solveseq = new CaptureSequence() {
-                            ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
-                            FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
-                            ImageType = CaptureSequence.ImageTypes.SNAP,
-                            TotalExposureCount = 1
-                        };
-                        var service = WindowServiceFactory.Create();
-                        service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-                        var result = await solver.CaptureSolveSyncAndReslew(solveseq, true, true, true, _canceltoken.Token, progress, false, profileService.ActiveProfile.PlateSolveSettings.Threshold);
-                        service.DelayedClose(TimeSpan.FromSeconds(10));
-
-                        //var result = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { SyncReslewRepeat = true, Progress = progress, Token = _canceltoken.Token });
-                        if (result == null || !result.Success) {
-                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlatesolveFailed"] });
-                            return false;
-                        }
-                    }
-                }
-
                 /* delay sequence start by given amount */
-                var delay = Sequence.Delay;
-                while (delay > 0) {
-                    await Task.Delay(TimeSpan.FromSeconds(1), _canceltoken.Token);
-                    delay--;
-                    progress.Report(new ApplicationStatus() { Status = string.Format(Locale.Loc.Instance["LblSequenceDelayStatus"], delay) });
-                }
+                await DelaySequence(progress);
 
-                if (Sequence.AutoFocusOnStart) {
-                    await AutoFocus(Sequence.Items[0].FilterType, _canceltoken.Token, progress);
-                }
+                //Slew and center
+                PlateSolveResult plateSolveResult = await SlewToTarget(progress);
 
-                if (Sequence.StartGuiding) {
-                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartGuiding"] });
-                    var guiderStarted = await this.guiderMediator.StartGuiding(_canceltoken.Token);
-                    if (!guiderStarted) {
-                        Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
-                    }
-                }
+                //Rotate for framing
+                await RotateEquipment(plateSolveResult, progress);
+
+                await AutoFocusOnStart(progress);
+
+                await StartGuiding(progress);
 
                 return await ProcessSequence(_canceltoken.Token, _pauseTokenSource.Token, progress);
             } finally {
@@ -469,6 +537,7 @@ namespace NINA.ViewModel {
 
         public async Task<bool> SetSequenceCoordiantes(DeepSkyObject dso) {
             var sequenceDso = new DeepSkyObject(dso.AlsoKnownAs.FirstOrDefault() ?? dso.Name ?? string.Empty, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+            sequenceDso.Rotation = dso.Rotation;
             await Task.Run(() => {
                 sequenceDso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
             });
@@ -535,6 +604,8 @@ namespace NINA.ViewModel {
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
+        private IRotatorMediator rotatorMediator;
+        private RotatorInfo rotatorInfo;
 
         public ObservableCollection<string> ImageTypes {
             get {
@@ -582,6 +653,10 @@ namespace NINA.ViewModel {
 
         public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
             this.telescopeInfo = telescopeInfo;
+        }
+
+        public void UpdateDeviceInfo(RotatorInfo deviceInfo) {
+            this.rotatorInfo = deviceInfo;
         }
 
         public ICommand AddSequenceCommand { get; private set; }

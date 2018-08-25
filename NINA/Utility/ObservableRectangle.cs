@@ -80,7 +80,7 @@ namespace NINA.Utility {
 
         public double DisplayedRotation {
             get {
-                var rotation = Rotation - _rotationOffset;
+                var rotation = _rotationOffset + Rotation;
                 if (rotation < 0) {
                     rotation += 360;
                 } else if (rotation >= 360) {

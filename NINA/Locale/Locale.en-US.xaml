@@ -239,11 +239,13 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblFocuserConnected">Focuser connected</s:String>
     <s:String x:Key="LblTelescopeConnected">Telescope connected</s:String>
     <s:String x:Key="LblGuiderConnected">Guider Connected</s:String>
+    <s:String x:Key="LblRotatorConnected">Rotator Connected</s:String>
     <s:String x:Key="LblTelescopeSynced">Telescope synced to coordinates</s:String>
     <s:String x:Key="LblCameraConnectionLost">Camera connection lost! Please reconnect camera!</s:String>
     <s:String x:Key="LblFilterwheelConnectionLost">Filterwheel connection lost! Please reconnect filterwheel!</s:String>
     <s:String x:Key="LblFocuserConnectionLost">Focuser connection lost! Please reconnect focuser!</s:String>
     <s:String x:Key="LblTelescopeConnectionLost">Telescope connection lost! Please reconnect telescope!</s:String>
+    <s:String x:Key="LblRotatorConnectionLost">Rotator connection lost! Please reconnect rotator!</s:String>
     <s:String x:Key="LblTelescopeParkedWarn">Telescope is parked. Cannot slew while parked</s:String>
     <s:String x:Key="LblTelescopeCannotSlew">Telescope cannot slew</s:String>
     <s:String x:Key="LblTelescopeNotConnected">Telescope not connected</s:String>
@@ -679,5 +681,15 @@ Calculated HFR: {2}
     <s:String x:Key="LblFilterChangeRequired">Filter Change Required</s:String>
     <s:String x:Key="LblManualFilterWheel">Manual Filterwheel</s:String>
     <s:String x:Key="LblManualFilterWheelDescription">Mirrors the filters that are set up inside the options. When a filter change is requested a notification will pop up to manually change the filter.</s:String>
+    <s:String x:Key="LblRotator">Rotator</s:String>
+    <s:String x:Key="LblNoRotator">No Rotator</s:String>
+    <s:String x:Key="LblManualRotator">Manual Rotator</s:String>
+    <s:String x:Key="LblManualRotatorDescription">When rotation is requested a notification will pop up to rotate manually</s:String>
+    <s:String x:Key="LblPleaseRotate">Please rotate by {0} degrees</s:String>
+    <s:String x:Key="LblRotationRequired">Camera Rotation required</s:String>
+    <s:String x:Key="LblCurrentPosition">Current Position</s:String>
+    <s:String x:Key="LblCounterclockwise">Counterclockwise</s:String>
+    <s:String x:Key="LblClockwise">Clockwise</s:String>
+    <s:String x:Key="LblRotationTolerance">Rotation Tolerance</s:String>
     <s:String x:Key="LblAberrationInspector">Aberration Inspector</s:String>
 </ResourceDictionary>

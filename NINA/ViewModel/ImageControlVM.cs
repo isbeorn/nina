@@ -40,7 +40,6 @@ namespace NINA.ViewModel {
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
-            ContentId = nameof(ImageControlVM);
             CanClose = false;
             AutoStretch = false;
             DetectStars = false;

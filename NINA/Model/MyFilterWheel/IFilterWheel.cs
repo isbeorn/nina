@@ -6,10 +6,6 @@ using System.Xml.Serialization;
 namespace NINA.Model.MyFilterWheel {
 
     internal interface IFilterWheel : IDevice {
-        bool Connected { get; }
-        string Description { get; }
-        string DriverInfo { get; }
-        string DriverVersion { get; }
         short InterfaceVersion { get; }
         int[] FocusOffsets { get; }
         string[] Names { get; }
@@ -22,7 +18,8 @@ namespace NINA.Model.MyFilterWheel {
     [XmlRoot(ElementName = nameof(FilterInfo))]
     public class FilterInfo : BaseINPC {
 
-        private FilterInfo() { }
+        private FilterInfo() {
+        }
 
         private string _name;
         private int _focusOffset;
