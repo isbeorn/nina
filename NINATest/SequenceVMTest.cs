@@ -3,6 +3,7 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyGuider;
+using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
 using NINA.PlateSolving;
 using NINA.Utility.Astrometry;
@@ -35,6 +36,7 @@ namespace NINATest {
         private SequenceFocuserMediator focuserMediator;
         private SequenceFilterWheelMediator filterWheelMediator;
         private SequenceGuiderMediator guiderMediator;
+        private SequenceRotatorMediator rotatorMediator;
         private SequenceImagingMediator imagingMediator;
         private SequenceApplicationStatusMediator applicationStatusMediator;
 
@@ -49,6 +51,7 @@ namespace NINATest {
             focuserMediator = new SequenceFocuserMediator();
             filterWheelMediator = new SequenceFilterWheelMediator();
             guiderMediator = new SequenceGuiderMediator();
+            rotatorMediator = new SequenceRotatorMediator();
             imagingMediator = new SequenceImagingMediator();
             applicationStatusMediator = new SequenceApplicationStatusMediator();
         }
@@ -59,16 +62,17 @@ namespace NINATest {
 
         [Test]
         public void Sequence_ConsumerRegistered() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
 
             Assert.AreEqual(vm, telescopeMediator.Consumer);
             Assert.AreEqual(vm, focuserMediator.Consumer);
             Assert.AreEqual(vm, filterWheelMediator.Consumer);
+            Assert.AreEqual(vm, rotatorMediator.Consumer);
         }
 
         [Test]
         public async Task ProcessSequence_Default() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             await vm.StartSequenceCommand.ExecuteAsync(null);
@@ -89,7 +93,7 @@ namespace NINATest {
 
         [Test]
         public async Task ProcessSequence_StartOptions_DontSlewToTargetTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.SlewToTarget = false;
             vm.Sequence = l;
@@ -103,7 +107,7 @@ namespace NINATest {
 
         [Test]
         public async Task ProcessSequence_StartOptions_CoordinatesSlewTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.CenterTarget = true;
             var coordinates = new Coordinates(10, 10, Epoch.J2000, Coordinates.RAType.Degrees);
@@ -120,7 +124,7 @@ namespace NINATest {
 
         /*Todo [Test]
         public async Task ProcessSequence_StartOptions_CenterTargetParameterTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.CenterTarget = true;
             vm.Sequence = l;
@@ -142,7 +146,7 @@ namespace NINATest {
 
         /*Todo[Test]
         public async Task ProcessSequence_StartOptions_DontCenterTargetTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.CenterTarget = false;
             vm.Sequence = l;
@@ -173,7 +177,7 @@ namespace NINATest {
 
         /*todo [Test]
         public async Task ProcessSequence_StartOptions_AutoFocusTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.AutoFocusOnStart = true;
             vm.Sequence = l;
@@ -195,7 +199,7 @@ namespace NINATest {
 
         /*todo [Test]
         public async Task ProcessSequence_StartOptions_AutoFocusParameterTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             var filter = new NINA.Model.MyFilterWheel.FilterInfo("TestFilter", 0, 100);
             l.Items[0].FilterType = filter;
@@ -220,7 +224,7 @@ namespace NINATest {
 
         /*todo [Test]
         public async Task ProcessSequence_StartOptions_DontAutoFocusTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.AutoFocusOnStart = false;
             vm.Sequence = l;
@@ -242,7 +246,7 @@ namespace NINATest {
 
         [Test]
         public async Task ProcessSequence_StartOptions_StartGuidingTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.StartGuiding = true;
             vm.Sequence = l;
@@ -256,7 +260,7 @@ namespace NINATest {
 
         [Test]
         public async Task ProcessSequence_StartOptions_DontStartGuidingTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.StartGuiding = false;
             vm.Sequence = l;
@@ -271,7 +275,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_AddSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             vm.AddSequenceCommand.Execute(null);
@@ -284,7 +288,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_OnEmptySequence_AddSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
             vm.Sequence = new CaptureSequenceList();
 
             //Act
@@ -298,7 +302,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_RemoveSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             vm.RemoveSequenceCommand.Execute(null);
@@ -311,7 +315,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_OnEmptySequence_RemoveSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             vm.RemoveSequenceCommand.Execute(null);
@@ -511,6 +515,8 @@ namespace NINATest {
             }
         }
 
+        public IRotatorSettings RotatorSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void MatchFilterSettingsWithFilterList() {
@@ -709,6 +715,41 @@ namespace NINATest {
         }
     }
 
+    internal class SequenceRotatorMediator : IRotatorMediator {
+        public void Broadcast(RotatorInfo deviceInfo) {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Connect() {
+            throw new NotImplementedException();
+        }
+
+        public void Disconnect() {
+            throw new NotImplementedException();
+        }
+
+        public Task<float> Move(float position) {
+            throw new NotImplementedException();
+        }
+
+        public Task<float> MoveRelative(float position) {
+            throw new NotImplementedException();
+        }
+
+        public IRotatorConsumer Consumer;
+
+        public void RegisterConsumer(IRotatorConsumer consumer) {
+            this.Consumer = consumer;
+        }
+
+        public void RegisterHandler(IRotatorVM handler) {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveConsumer(IRotatorConsumer consumer) {
+            throw new NotImplementedException();
+        }
+    }
     internal class SequenceGuiderMediator : IGuiderMediator {
 
         public Task<bool> AutoSelectGuideStar(CancellationToken token) {
