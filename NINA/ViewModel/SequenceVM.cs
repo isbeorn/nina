@@ -60,6 +60,7 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current?.Resources["SequenceSVG"];
 
             AddSequenceCommand = new RelayCommand(AddSequence);
+            AddTargetCommand = new RelayCommand(AddTarget);
             RemoveSequenceCommand = new RelayCommand(RemoveSequence);
             StartSequenceCommand = new AsyncCommand<bool>(() => StartSequence(new Progress<ApplicationStatus>(p => Status = p)));
             SaveSequenceCommand = new RelayCommand(SaveSequence);
@@ -74,6 +75,10 @@ namespace NINA.ViewModel {
                 dso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
                 Sequence.SetSequenceTarget(dso);
             };
+        }
+
+        private void AddTarget(object obj) {
+            this.Targets.Add(new CaptureSequenceList() { TargetName = "Target" + (this.Targets.Count + 1) });
         }
 
         private void LoadSequence(object obj) {
@@ -546,6 +551,29 @@ namespace NINA.ViewModel {
             return true;
         }
 
+        private AsyncObservableCollection<CaptureSequenceList> targets;
+
+        public AsyncObservableCollection<CaptureSequenceList> Targets {
+            get {
+                if (targets == null) {
+                    targets = new AsyncObservableCollection<CaptureSequenceList>();
+                    targets.Add(Sequence);
+                    targets.Add(new CaptureSequenceList() { TargetName = "Target1" });
+                    /*targets.Add(new CaptureSequenceList() { TargetName = "Target2" });
+                    targets.Add(new CaptureSequenceList() { TargetName = "Target3" });
+                    targets.Add(new CaptureSequenceList() { TargetName = "Target4" });
+                    targets.Add(new CaptureSequenceList() { TargetName = "Target5" });
+                    targets.Add(new CaptureSequenceList() { TargetName = "Target6" });
+                    targets.Add(new CaptureSequenceList() { TargetName = "Target7" });*/
+                }
+                return targets;
+            }
+            set {
+                targets = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private CaptureSequenceList _sequence;
 
         public CaptureSequenceList Sequence {
@@ -660,7 +688,7 @@ namespace NINA.ViewModel {
         }
 
         public ICommand AddSequenceCommand { get; private set; }
-
+        public ICommand AddTargetCommand { get; private set; }
         public ICommand RemoveSequenceCommand { get; private set; }
 
         public IAsyncCommand StartSequenceCommand { get; private set; }

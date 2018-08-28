@@ -692,4 +692,5 @@ Calculated HFR: {2}
     <s:String x:Key="LblClockwise">Clockwise</s:String>
     <s:String x:Key="LblRotationTolerance">Rotation Tolerance</s:String>
     <s:String x:Key="LblAberrationInspector">Aberration Inspector</s:String>
+    <s:String x:Key="LblTargets">Targets</s:String>
 </ResourceDictionary>

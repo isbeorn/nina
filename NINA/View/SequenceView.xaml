@@ -18,10 +18,74 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <UniformGrid Columns="2">
+        <Grid Margin="5,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <ListView
+                Margin="-5,0,0,0"
+                BorderBrush="Transparent"
+                ItemsSource="{Binding Targets}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                SelectedItem="{Binding Sequence}">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Grid Width="200" Height="30">
+                                        <Polygon
+                                            x:Name="PART_Polygon"
+                                            Margin="-38,0,0,0"
+                                            Fill="{StaticResource ButtonBackgroundBrush}"
+                                            Points="0,0 10,0 12,5 10,10 0,10 2,5 0,0"
+                                            Stretch="Fill" />
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Foreground="{StaticResource ButtonForegroundBrush}"
+                                            Text="{Binding TargetName}" />
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="PART_Polygon" Property="Fill" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+            <Button
+                Grid.Column="1"
+                Width="35"
+                Command="{Binding AddTargetCommand}"
+                IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                <Button.ToolTip>
+                    <ToolTip ToolTipService.ShowOnDisabled="True">
+                        <TextBlock Text="{ns:Loc LblTooltipAddTarget}" />
+                    </ToolTip>
+                </Button.ToolTip>
+                <Path
+                    Margin="5"
+                    Data="{StaticResource AddSVG}"
+                    Fill="{StaticResource ButtonForegroundBrush}"
+                    Stretch="Uniform" />
+            </Button>
+        </Grid>
+        <UniformGrid Grid.Row="1" Columns="2">
             <GroupBox>
                 <GroupBox.Header>
                     <UniformGrid Columns="2">
@@ -562,7 +626,7 @@
         </UniformGrid>
 
         <DataGrid
-            Grid.Row="1"
+            Grid.Row="2"
             AutoGenerateColumns="False"
             CanUserAddRows="False"
             HorizontalScrollBarVisibility="Disabled"
@@ -838,7 +902,7 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <DockPanel Grid.Row="2" Margin="5">
+        <DockPanel Grid.Row="3" Margin="5">
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                 <Button
                     Width="40"

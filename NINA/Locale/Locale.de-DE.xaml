@@ -697,4 +697,5 @@ Berechneter HFR: {2}
     <s:String x:Key="LblClockwise">Rechtsdrehend</s:String>
     <s:String x:Key="LblRotationTolerance">Rotationstoleranz</s:String>
     <s:String x:Key="LblAbberationInspector">Aberrationskontrolle</s:String>
+    <s:String x:Key="LblTargets">Ziele</s:String>
 </ResourceDictionary>
