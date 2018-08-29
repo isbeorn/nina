@@ -158,6 +158,19 @@ namespace NINA.Model {
             }
         }
 
+        private bool _isFinished;
+
+        [XmlIgnore]
+        public bool IsFinished {
+            get {
+                return _isFinished;
+            }
+            set {
+                _isFinished = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public CaptureSequence Next() {
             if (Items.Count == 0) { return null; }
 
