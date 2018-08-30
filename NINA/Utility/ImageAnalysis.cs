@@ -230,30 +230,30 @@ namespace NINA.Utility {
             public double radius;
             public double HFR;
             public AForge.Point Position;
-            public List<PixelData> Pixeldata;
-
-            public double Average {
-                get {
-                    return Pixeldata.Average((x) => x.value);
-                }
-            }
+            private List<PixelData> pixelData;
+            public double Average { get; private set; } = 0;
 
             public Rectangle Rectangle;
 
             public Star() {
-                Pixeldata = new List<PixelData>();
+                pixelData = new List<PixelData>();
+            }
+
+            public void AddPixelData(PixelData value) {
+                this.pixelData.Add(value);
             }
 
             public void CalculateHfr() {
                 double hfr = 0.0d;
-                if (this.Pixeldata.Count > 0) {
+                if (this.pixelData.Count > 0) {
                     double outerRadius = this.radius;
-                    double sum = 0, sumDist = 0;
+                    double sum = 0, sumDist = 0, allSum = 0;
 
                     int centerX = (int)Math.Floor(this.Position.X);
                     int centerY = (int)Math.Floor(this.Position.Y);
 
-                    foreach (PixelData data in this.Pixeldata) {
+                    foreach (PixelData data in this.pixelData) {
+                        allSum += data.value;
                         if (InsideCircle(data.PosX, data.PosY, this.Position.X, this.Position.Y, outerRadius)) {
                             if (data.value < 0) data.value = 0;
 
@@ -267,8 +267,10 @@ namespace NINA.Utility {
                     } else {
                         hfr = Math.Sqrt(2) * outerRadius;
                     }
+                    this.Average = allSum / this.pixelData.Count;
                 }
                 this.HFR = hfr;
+                this.pixelData.Clear();
             }
 
             private bool InsideCircle(double x, double y, double centerX, double centerY, double radius) {
@@ -389,7 +391,7 @@ namespace NINA.Utility {
                         var value = _iarr.FlatArray[x + (_iarr.Statistics.Width * y)] - _iarr.Statistics.Mean;
                         if (value < 0) { value = 0; }
                         PixelData pd = new PixelData { PosX = x, PosY = y, value = (ushort)value };
-                        s.Pixeldata.Add(pd);
+                        s.AddPixelData(pd);
                     }
                 }
                 s.CalculateHfr();
