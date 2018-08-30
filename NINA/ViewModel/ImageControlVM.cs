@@ -588,8 +588,9 @@ namespace NINA.ViewModel {
         }
 
         public static BitmapSource Stretch(double mean, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor) {
-            var img = ImageAnalysis.BitmapFromSource(source);
-            return Stretch(mean, img, pf, factor);
+            using (var img = ImageAnalysis.BitmapFromSource(source)) {
+                return Stretch(mean, img, pf, factor);
+            }
         }
 
         public static BitmapSource Stretch(double mean, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor) {

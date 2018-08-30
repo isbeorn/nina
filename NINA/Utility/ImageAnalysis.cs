@@ -410,36 +410,36 @@ namespace NINA.Utility {
 
         public BitmapSource GetAnnotatedImage() {
             using (MyStopWatch.Measure()) {
-                Bitmap bmp = Convert16BppTo8Bpp(_originalBitmapSource);
+                using (var bmp = Convert16BppTo8Bpp(_originalBitmapSource)) {
+                    using (var newBitmap = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb)) {
+                        Graphics graphics = Graphics.FromImage(newBitmap);
+                        graphics.DrawImage(bmp, 0, 0);
 
-                Bitmap newBitmap = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                        if (_starlist.Count > 0) {
+                            int r, offset = 10;
+                            float textposx, textposy;
 
-                Graphics graphics = Graphics.FromImage(newBitmap);
-                graphics.DrawImage(bmp, 0, 0);
+                            var threshhold = 200;
+                            if (_starlist.Count > threshhold) {
+                                _starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
+                                _starlist = _starlist.GetRange(0, threshhold);
+                            }
 
-                if (_starlist.Count > 0) {
-                    int r, offset = 10;
-                    float textposx, textposy;
+                            foreach (Star star in _starlist) {
+                                _token.ThrowIfCancellationRequested();
+                                r = (int)Math.Ceiling(star.radius);
+                                textposx = star.Position.X - offset;
+                                textposy = star.Position.Y - offset;
+                                graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width, star.Rectangle.Height));
+                                graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
+                            }
+                        }
+                        var img = ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
 
-                    var threshhold = 200;
-                    if (_starlist.Count > threshhold) {
-                        _starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
-                        _starlist = _starlist.GetRange(0, threshhold);
-                    }
-
-                    foreach (Star star in _starlist) {
-                        _token.ThrowIfCancellationRequested();
-                        r = (int)Math.Ceiling(star.radius);
-                        textposx = star.Position.X - offset;
-                        textposy = star.Position.Y - offset;
-                        graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width, star.Rectangle.Height));
-                        graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
+                        img.Freeze();
+                        return img;
                     }
                 }
-                var img = ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
-                newBitmap.Dispose();
-                img.Freeze();
-                return img;
             }
         }
 
@@ -544,12 +544,10 @@ namespace NINA.Utility {
             return bmp;
         }
 
-        public static Bitmap Convert16BppTo8Bpp(Bitmap bmp) {
-            return AForge.Imaging.Image.Convert16bppTo8bpp(bmp);
-        }
-
         public static Bitmap Convert16BppTo8Bpp(BitmapSource source) {
-            return AForge.Imaging.Image.Convert16bppTo8bpp(BitmapFromSource(source));
+            using (var bmp = BitmapFromSource(source)) {
+                return AForge.Imaging.Image.Convert16bppTo8bpp(bmp);
+            }
         }
 
         public static BitmapSource Convert16BppTo8BppSource(BitmapSource source) {
@@ -580,11 +578,13 @@ namespace NINA.Utility {
                 } else {
                     throw new NotSupportedException();
                 }
-                var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-                bmp = Debayer(bmp);
-                var newSource = ConvertBitmap(bmp, PixelFormats.Rgb24);
-                newSource.Freeze();
-                return newSource;
+                using (var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format8bppIndexed)) {
+                    using (var debayeredBmp = Debayer(bmp)) {
+                        var newSource = ConvertBitmap(debayeredBmp, PixelFormats.Rgb24);
+                        newSource.Freeze();
+                        return newSource;
+                    }
+                }
             }
         }
 
