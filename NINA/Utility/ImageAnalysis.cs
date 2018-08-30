@@ -476,7 +476,9 @@ namespace NINA.Utility {
 
         private void ResizeBitmapToAnalyze() {
             if (_bitmapToAnalyze.Width > _maxWidth) {
-                _bitmapToAnalyze = new ResizeBicubic(_maxWidth, (int)Math.Floor(_bitmapToAnalyze.Height * _resizefactor)).Apply(_bitmapToAnalyze);
+                var bmp = new ResizeBicubic(_maxWidth, (int)Math.Floor(_bitmapToAnalyze.Height * _resizefactor)).Apply(_bitmapToAnalyze);
+                _bitmapToAnalyze.Dispose();
+                _bitmapToAnalyze = bmp;
             }
         }
 
