@@ -95,14 +95,14 @@ namespace NINA.ViewModel {
         }
 
         private void AddTarget(object obj) {
-            this.Targets.Add(new CaptureSequenceList() { TargetName = "Target" + (this.Targets.Count + 1) });
+            this.Targets.Add(GetTemplate());
         }
 
         private void LoadSequence(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Multiselect = true;
             dialog.Title = Locale.Loc.Instance["LblLoadSequence"];
-            dialog.FileName = "Target 1";
+            dialog.FileName = "Target";
             dialog.DefaultExt = ".xml";
             dialog.Filter = "XML documents|*.xml";
 
@@ -616,33 +616,36 @@ namespace NINA.ViewModel {
             }
         }
 
+        private CaptureSequenceList GetTemplate() {
+            CaptureSequenceList csl = null;
+            if (File.Exists(profileService.ActiveProfile.SequenceSettings.TemplatePath)) {
+                using (var s = new FileStream(profileService.ActiveProfile.SequenceSettings.TemplatePath, FileMode.Open)) {
+                    csl = CaptureSequenceList.Load(
+                        s,
+                        profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
+                        profileService.ActiveProfile.AstrometrySettings.Latitude,
+                        profileService.ActiveProfile.AstrometrySettings.Longitude
+                    );
+                }
+            } else {
+                var seq = new CaptureSequence();
+                csl = new CaptureSequenceList(seq) { TargetName = "Target" };
+                csl.DSO?.SetDateAndPosition(
+                    SkyAtlasVM.GetReferenceDate(DateTime.Now),
+                    profileService.ActiveProfile.AstrometrySettings.Latitude,
+                    profileService.ActiveProfile.AstrometrySettings.Longitude
+                );
+            }
+            return csl;
+        }
+
         private CaptureSequenceList _sequence;
-        /* todo */
 
         public CaptureSequenceList Sequence {
             get {
                 if (_sequence == null) {
-                    if (File.Exists(profileService.ActiveProfile.SequenceSettings.TemplatePath)) {
-                        using (var s = new FileStream(profileService.ActiveProfile.SequenceSettings.TemplatePath, FileMode.Open)) {
-                            _sequence = CaptureSequenceList.Load(
-                                s,
-                                profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
-                                profileService.ActiveProfile.AstrometrySettings.Latitude,
-                                profileService.ActiveProfile.AstrometrySettings.Longitude
-                            );
-                        }
-                    }
-                    if (_sequence == null) {
-                        /* Fallback when no template is set or load failed */
-                        var seq = new CaptureSequence();
-                        _sequence = new CaptureSequenceList(seq) { TargetName = "Target 1" };
-                        _sequence.DSO?.SetDateAndPosition(
-                            SkyAtlasVM.GetReferenceDate(DateTime.Now),
-                            profileService.ActiveProfile.AstrometrySettings.Latitude,
-                            profileService.ActiveProfile.AstrometrySettings.Longitude
-                        );
-                        SelectedSequenceRowIdx = _sequence.Count - 1;
-                    }
+                    _sequence = GetTemplate();
+                    SelectedSequenceRowIdx = _sequence.Count - 1;
                 }
                 return _sequence;
             }
