@@ -604,7 +604,6 @@ namespace NINA.ViewModel {
                 if (targets == null) {
                     targets = new AsyncObservableCollection<CaptureSequenceList>();
                     targets.Add(Sequence);
-                    targets.Add(new CaptureSequenceList() { TargetName = "Target 2" });
                 }
                 return targets;
             }
