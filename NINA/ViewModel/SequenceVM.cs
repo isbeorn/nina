@@ -167,7 +167,6 @@ namespace NINA.ViewModel {
         }
 
         private ApplicationStatus _status;
-        /* todo */
 
         public ApplicationStatus Status {
             get {
@@ -215,7 +214,6 @@ namespace NINA.ViewModel {
         }
 
         private List<TimeSpan> _actualDownloadTimes = new List<TimeSpan>();
-        /* todo */
 
         public TimeSpan EstimatedDownloadTime {
             get {
