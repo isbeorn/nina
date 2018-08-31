@@ -8,7 +8,29 @@ namespace NINA.Utility.Profile {
     [Serializable()]
     [DataContract]
     public class GuiderSettings : Settings, IGuiderSettings {
-        private double ditherPixels = 5;
+
+        public GuiderSettings() {
+            SetDefaultValues();
+        }
+
+        [OnDeserializing]
+        public void OnDesiralization(StreamingContext context) {
+            SetDefaultValues();
+        }
+
+        private void SetDefaultValues() {
+            ditherPixels = 5;
+            ditherRAOnly = false;
+            settleTime = 10;
+            pHD2ServerUrl = "localhost";
+            pHD2ServerPort = 4400;
+            pHD2LargeHistorySize = 100;
+            pHD2GuiderScale = GuiderScaleEnum.PIXELS;
+            settlePixels = 1.5;
+            settleTimeout = 40;
+        }
+
+        private double ditherPixels;
 
         [DataMember]
         public double DitherPixels {
@@ -21,7 +43,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private bool ditherRAOnly = false;
+        private bool ditherRAOnly;
 
         [DataMember]
         public bool DitherRAOnly {
@@ -34,7 +56,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private int settleTime = 10;
+        private int settleTime;
 
         [DataMember]
         public int SettleTime {
@@ -47,7 +69,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private string pHD2ServerUrl = "localhost";
+        private string pHD2ServerUrl;
 
         [DataMember]
         public string PHD2ServerUrl {
@@ -60,7 +82,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private int pHD2ServerPort = 4400;
+        private int pHD2ServerPort;
 
         [DataMember]
         public int PHD2ServerPort {
@@ -73,7 +95,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private int pHD2LargeHistorySize = 100;
+        private int pHD2LargeHistorySize;
 
         [DataMember]
         public int PHD2HistorySize {
@@ -86,7 +108,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private GuiderScaleEnum pHD2GuiderScale = GuiderScaleEnum.PIXELS;
+        private GuiderScaleEnum pHD2GuiderScale;
 
         [DataMember]
         public GuiderScaleEnum PHD2GuiderScale {
@@ -95,6 +117,34 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2GuiderScale = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double settlePixels;
+
+        [DataMember]
+        public double SettlePixels {
+            get {
+                return settlePixels;
+            }
+
+            set {
+                settlePixels = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int settleTimeout;
+
+        [DataMember]
+        public int SettleTimeout {
+            get {
+                return settleTimeout;
+            }
+
+            set {
+                settleTimeout = value;
                 RaisePropertyChanged();
             }
         }

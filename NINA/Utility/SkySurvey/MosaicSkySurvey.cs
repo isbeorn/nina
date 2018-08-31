@@ -113,7 +113,16 @@ namespace NINA.Utility.SkySurvey {
                 *   |         |   *
                 * * * * * * * * * *
              */
-            var images = await Task.WhenAll(topLeftTask, topTask, topRightTask, leftTask, centerTask, rightTask, bottomLeftTask, bottomTask, bottomRightTask);
+            var tmpImages = await Task.WhenAll(topLeftTask, topTask, topRightTask, leftTask, centerTask, rightTask, bottomLeftTask, bottomTask, bottomRightTask);
+            BitmapSource[] images = new BitmapSource[tmpImages.Length];
+            for (var i = 0; i < tmpImages.Length; i++) {
+                double factor = 1;
+                if (centerTask.Result.PixelWidth > 640) {
+                    factor = 640.0d / centerTask.Result.PixelWidth;
+                }
+                var scaled = new WriteableBitmap(new TransformedBitmap(tmpImages[i], new ScaleTransform(factor, factor)));
+                images[i] = scaled;
+            }
 
             var mosaicWidth = images[0].PixelWidth + images[1].PixelWidth + images[2].PixelWidth;
             var mosaicHeight = images[0].PixelHeight + images[3].PixelHeight + images[6].PixelHeight;

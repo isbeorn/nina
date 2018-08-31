@@ -10,5 +10,7 @@ namespace NINA.Utility.Profile {
         int PHD2ServerPort { get; set; }
         string PHD2ServerUrl { get; set; }
         int SettleTime { get; set; }
+        double SettlePixels { get; set; }
+        int SettleTimeout { get; set; }
     }
 }

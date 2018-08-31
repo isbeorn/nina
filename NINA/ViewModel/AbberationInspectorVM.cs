@@ -41,7 +41,7 @@ namespace NINA.ViewModel {
                             CellSize
                         );
 
-                        var crop = new CroppedBitmap(source, rect);
+                        var crop = new WriteableBitmap(new CroppedBitmap(source, rect));
 
                         var panelRectangle = new System.Windows.Rect(
                             column * CellSize + column * SeparationSize,
