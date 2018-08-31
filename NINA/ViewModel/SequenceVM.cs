@@ -367,6 +367,7 @@ namespace NINA.ViewModel {
                 IsRunning = true;
                 foreach (CaptureSequenceList csl in this.Targets) {
                     try {
+                        csl.IsFinished = false;
                         csl.IsRunning = true;
                         Sequence = csl;
                         await StartSequence(csl, progress);
