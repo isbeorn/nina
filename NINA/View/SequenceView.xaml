@@ -674,7 +674,7 @@
             HorizontalScrollBarVisibility="Disabled"
             IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBooleanConverter}}"
             ItemsSource="{Binding Sequence.Items}"
-            SelectedIndex="{Binding SelectedSequenceIdx}">
+            SelectedIndex="{Binding SelectedSequenceRowIdx}">
             <DataGrid.Columns>
                 <DataGridTemplateColumn
                     Width="*"
@@ -948,7 +948,7 @@
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                 <Button
                     Width="40"
-                    Command="{Binding AddSequenceCommand}"
+                    Command="{Binding AddSequenceRowCommand}"
                     IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">
@@ -963,7 +963,7 @@
                 </Button>
                 <Button
                     Width="40"
-                    Command="{Binding RemoveSequenceCommand}"
+                    Command="{Binding RemoveSequenceRowCommand}"
                     IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">

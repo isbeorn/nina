@@ -88,15 +88,17 @@ namespace NINA.Model {
 
                 l = (CaptureSequenceList)xmlSerializer.Deserialize(stream);
                 foreach (CaptureSequence s in l) {
-                    //first try to match by name; otherwise match by position.
-                    var filter = filters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
-                    if (filter == null) {
-                        filter = filters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
+                    if (s.FilterType != null) {
+                        //first try to match by name; otherwise match by position.
+                        var filter = filters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
                         if (filter == null) {
-                            Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (s.FilterType.Position + 1)));
+                            filter = filters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
+                            if (filter == null) {
+                                Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (s.FilterType.Position + 1)));
+                            }
                         }
+                        s.FilterType = filter;
                     }
-                    s.FilterType = filter;
                 }
                 if (l.ActiveSequence == null && l.Count > 0) {
                     l.ActiveSequence = l.Items.SkipWhile(x => x.TotalExposureCount - x.ProgressExposureCount == 0).FirstOrDefault();

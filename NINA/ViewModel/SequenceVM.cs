@@ -59,10 +59,10 @@ namespace NINA.ViewModel {
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current?.Resources["SequenceSVG"];
 
-            AddSequenceCommand = new RelayCommand(AddSequence);
+            AddSequenceRowCommand = new RelayCommand(AddSequenceRow);
             AddTargetCommand = new RelayCommand(AddTarget);
             RemoveTargetCommand = new RelayCommand(RemoveTarget, (object o) => this.Targets.Count > 1);
-            RemoveSequenceCommand = new RelayCommand(RemoveSequence);
+            RemoveSequenceRowCommand = new RelayCommand(RemoveSequenceRow);
             StartSequenceCommand = new AsyncCommand<bool>(() => StartSequencing(new Progress<ApplicationStatus>(p => Status = p)));
             SaveSequenceCommand = new RelayCommand(SaveSequence);
             LoadSequenceCommand = new RelayCommand(LoadSequence);
@@ -72,9 +72,11 @@ namespace NINA.ViewModel {
             UpdateETACommand = new RelayCommand((object o) => CalculateETA());
 
             profileService.LocationChanged += (object sender, EventArgs e) => {
-                var dso = new DeepSkyObject(Sequence.DSO.Name, Sequence.DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-                dso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
-                Sequence.SetSequenceTarget(dso);
+                foreach (var seq in this.Targets) {
+                    var dso = new DeepSkyObject(seq.DSO.Name, seq.DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+                    dso.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
+                    seq.SetSequenceTarget(dso);
+                }
             };
         }
 
@@ -98,38 +100,38 @@ namespace NINA.ViewModel {
 
         private void LoadSequence(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Multiselect = true;
             dialog.Title = Locale.Loc.Instance["LblLoadSequence"];
-            dialog.FileName = "Sequence";
+            dialog.FileName = "Target 1";
             dialog.DefaultExt = ".xml";
             dialog.Filter = "XML documents|*.xml";
 
             if (dialog.ShowDialog() == true) {
-                using (var s = new FileStream(dialog.FileName, FileMode.Open)) {
-                    //var s = System.Xml.XmlReader.Create(dialog.FileName);
-                    //var listXml = XElement.Load(path);
-
-                    //System.IO.StringReader reader = new System.IO.StringReader(listXml.ToString());
-
-                    var l = CaptureSequenceList.Load(
-                        s,
-                        profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
-                        profileService.ActiveProfile.AstrometrySettings.Latitude,
-                        profileService.ActiveProfile.AstrometrySettings.Longitude
-                    );
-                    Sequence = l;
+                foreach (var fileName in dialog.FileNames) {
+                    using (var s = new FileStream(fileName, FileMode.Open)) {
+                        var l = CaptureSequenceList.Load(
+                            s,
+                            profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
+                            profileService.ActiveProfile.AstrometrySettings.Latitude,
+                            profileService.ActiveProfile.AstrometrySettings.Longitude
+                        );
+                        this.Targets.Add(l);
+                    }
                 }
             }
         }
 
         private void SaveSequence(object obj) {
-            Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
-            dialog.Title = Locale.Loc.Instance["LblSaveSequence"];
-            dialog.FileName = "Sequence";
-            dialog.DefaultExt = ".xml";
-            dialog.Filter = "XML documents (.xml)|*.xml";
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.Description = Locale.Loc.Instance["LblSaveSequence"];
 
-            if (dialog.ShowDialog() == true) {
-                Sequence.Save(dialog.FileName);
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                var path = dialog.SelectedPath;
+
+                foreach (var target in Targets) {
+                    var filePath = Utility.Utility.GetUniqueFilePath(Path.Combine(path, target.TargetName + ".xml"));
+                    target.Save(filePath);
+                }
             }
         }
 
@@ -165,6 +167,7 @@ namespace NINA.ViewModel {
         }
 
         private ApplicationStatus _status;
+        /* todo */
 
         public ApplicationStatus Status {
             get {
@@ -192,34 +195,27 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Mutex mutex = new Mutex();
-
-        public async Task AddDownloadTime(TimeSpan t) {
-            await Task.Run(() => {
-                var s = Stopwatch.StartNew();
-                mutex.WaitOne();
-                try {
-                    _actualDownloadTimes.Add(t);
-
-                    double doubleAverageTicks = _actualDownloadTimes.Average(timeSpan => timeSpan.Ticks);
-                    long longAverageTicks = Convert.ToInt64(doubleAverageTicks);
-                    EstimatedDownloadTime = new TimeSpan(longAverageTicks);
-                } finally {
-                    mutex.ReleaseMutex();
-                }
-            });
+        public void AddDownloadTime(TimeSpan t) {
+            _actualDownloadTimes.Add(t);
+            double doubleAverageTicks = _actualDownloadTimes.Average(timeSpan => timeSpan.Ticks);
+            long longAverageTicks = Convert.ToInt64(doubleAverageTicks);
+            EstimatedDownloadTime = new TimeSpan(longAverageTicks);
         }
 
         private void CalculateETA() {
             TimeSpan time = new TimeSpan();
-            foreach (CaptureSequence s in Sequence) {
-                var exposureCount = s.TotalExposureCount - s.ProgressExposureCount;
-                time = time.Add(TimeSpan.FromSeconds(exposureCount * (s.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
+            foreach (var seq in Targets) {
+                foreach (CaptureSequence cs in seq) {
+                    var exposureCount = cs.TotalExposureCount - cs.ProgressExposureCount;
+                    time = time.Add(TimeSpan.FromSeconds(exposureCount * (cs.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
+                }
             }
+
             ETA = DateTime.Now.AddSeconds(time.TotalSeconds);
         }
 
         private List<TimeSpan> _actualDownloadTimes = new List<TimeSpan>();
+        /* todo */
 
         public TimeSpan EstimatedDownloadTime {
             get {
@@ -471,7 +467,7 @@ namespace NINA.ViewModel {
 
                         seqDuration.Stop();
 
-                        await AddDownloadTime(seqDuration.Elapsed.Subtract(TimeSpan.FromSeconds(seq.ExposureTime)));
+                        AddDownloadTime(seqDuration.Elapsed.Subtract(TimeSpan.FromSeconds(seq.ExposureTime)));
 
                         if (pt.IsPaused) {
                             csl.IsRunning = false;
@@ -610,13 +606,7 @@ namespace NINA.ViewModel {
                 if (targets == null) {
                     targets = new AsyncObservableCollection<CaptureSequenceList>();
                     targets.Add(Sequence);
-                    targets.Add(new CaptureSequenceList() { TargetName = "Target1" });
-                    /*targets.Add(new CaptureSequenceList() { TargetName = "Target2" });
-                    targets.Add(new CaptureSequenceList() { TargetName = "Target3" });
-                    targets.Add(new CaptureSequenceList() { TargetName = "Target4" });
-                    targets.Add(new CaptureSequenceList() { TargetName = "Target5" });
-                    targets.Add(new CaptureSequenceList() { TargetName = "Target6" });
-                    targets.Add(new CaptureSequenceList() { TargetName = "Target7" });*/
+                    targets.Add(new CaptureSequenceList() { TargetName = "Target 2" });
                 }
                 return targets;
             }
@@ -627,6 +617,7 @@ namespace NINA.ViewModel {
         }
 
         private CaptureSequenceList _sequence;
+        /* todo */
 
         public CaptureSequenceList Sequence {
             get {
@@ -644,13 +635,13 @@ namespace NINA.ViewModel {
                     if (_sequence == null) {
                         /* Fallback when no template is set or load failed */
                         var seq = new CaptureSequence();
-                        _sequence = new CaptureSequenceList(seq);
+                        _sequence = new CaptureSequenceList(seq) { TargetName = "Target 1" };
                         _sequence.DSO?.SetDateAndPosition(
                             SkyAtlasVM.GetReferenceDate(DateTime.Now),
                             profileService.ActiveProfile.AstrometrySettings.Latitude,
                             profileService.ActiveProfile.AstrometrySettings.Longitude
                         );
-                        SelectedSequenceIdx = _sequence.Count - 1;
+                        SelectedSequenceRowIdx = _sequence.Count - 1;
                     }
                 }
                 return _sequence;
@@ -663,7 +654,7 @@ namespace NINA.ViewModel {
 
         private int _selectedSequenceIdx;
 
-        public int SelectedSequenceIdx {
+        public int SelectedSequenceRowIdx {
             get {
                 return _selectedSequenceIdx;
             }
@@ -706,19 +697,19 @@ namespace NINA.ViewModel {
             }
         }
 
-        public void AddSequence(object o) {
+        public void AddSequenceRow(object o) {
             Sequence.Add(new CaptureSequence());
-            SelectedSequenceIdx = Sequence.Count - 1;
+            SelectedSequenceRowIdx = Sequence.Count - 1;
         }
 
-        private void RemoveSequence(object obj) {
-            var idx = SelectedSequenceIdx;
+        private void RemoveSequenceRow(object obj) {
+            var idx = SelectedSequenceRowIdx;
             if (idx > -1) {
                 Sequence.RemoveAt(idx);
                 if (idx < Sequence.Count - 1) {
-                    SelectedSequenceIdx = idx;
+                    SelectedSequenceRowIdx = idx;
                 } else {
-                    SelectedSequenceIdx = Sequence.Count - 1;
+                    SelectedSequenceRowIdx = Sequence.Count - 1;
                 }
             }
         }
@@ -739,10 +730,10 @@ namespace NINA.ViewModel {
             this.rotatorInfo = deviceInfo;
         }
 
-        public ICommand AddSequenceCommand { get; private set; }
+        public ICommand AddSequenceRowCommand { get; private set; }
         public ICommand AddTargetCommand { get; private set; }
         public ICommand RemoveTargetCommand { get; private set; }
-        public ICommand RemoveSequenceCommand { get; private set; }
+        public ICommand RemoveSequenceRowCommand { get; private set; }
 
         public IAsyncCommand StartSequenceCommand { get; private set; }
 
