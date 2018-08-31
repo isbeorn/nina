@@ -67,7 +67,7 @@ namespace NINA.ViewModel {
             SaveSequenceCommand = new RelayCommand(SaveSequence);
             LoadSequenceCommand = new RelayCommand(LoadSequence);
             CancelSequenceCommand = new RelayCommand(CancelSequence);
-            PauseSequenceCommand = new RelayCommand(PauseSequence);
+            PauseSequenceCommand = new RelayCommand(PauseSequence, (object o) => !_pauseTokenSource?.IsPaused == true);
             ResumeSequenceCommand = new RelayCommand(ResumeSequence);
             UpdateETACommand = new RelayCommand((object o) => CalculateETA());
 
@@ -138,31 +138,32 @@ namespace NINA.ViewModel {
         private void ResumeSequence(object obj) {
             if (_pauseTokenSource != null) {
                 _pauseTokenSource.IsPaused = false;
-                RaisePropertyChanged(nameof(IsPaused));
-                RaisePropertyChanged(nameof(IsRunning));
             }
         }
 
         private void PauseSequence(object obj) {
             if (_pauseTokenSource != null) {
                 _pauseTokenSource.IsPaused = true;
-                RaisePropertyChanged(nameof(IsPaused));
-                RaisePropertyChanged(nameof(IsRunning));
             }
         }
 
         private void CancelSequence(object obj) {
             _canceltoken?.Cancel();
             RaisePropertyChanged(nameof(IsPaused));
-            RaisePropertyChanged(nameof(IsRunning));
         }
 
         private PauseTokenSource _pauseTokenSource;
         private CancellationTokenSource _canceltoken;
 
+        private bool isPaused;
+
         public bool IsPaused {
             get {
-                return _pauseTokenSource?.IsPaused ?? false;
+                return isPaused;
+            }
+            set {
+                isPaused = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -352,7 +353,7 @@ namespace NINA.ViewModel {
 
         public bool IsRunning {
             get {
-                return _isRunning && !IsPaused;
+                return _isRunning;
             }
             set {
                 _isRunning = value;
@@ -362,6 +363,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StartSequencing(IProgress<ApplicationStatus> progress) {
             try {
+                IsPaused = false;
                 IsRunning = true;
                 foreach (CaptureSequenceList csl in this.Targets) {
                     try {
@@ -375,6 +377,7 @@ namespace NINA.ViewModel {
                 }
                 return true;
             } finally {
+                IsPaused = false;
                 IsRunning = false;
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
@@ -469,13 +472,17 @@ namespace NINA.ViewModel {
 
                         if (pt.IsPaused) {
                             csl.IsRunning = false;
+                            IsRunning = false;
+                            IsPaused = true;
                             semaphoreSlim.Release();
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPaused"] });
                             await pt.WaitWhilePausedAsync(ct);
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblResuming"] });
                             await semaphoreSlim.WaitAsync(ct);
                             Sequence = csl;
+                            IsPaused = false;
                             csl.IsRunning = true;
+                            IsRunning = true;
                         }
 
                         actualFilter = filterWheelInfo?.SelectedFilter;
