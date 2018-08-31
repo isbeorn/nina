@@ -185,7 +185,17 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> Dither(CancellationToken ct) {
             if (Connected) {
                 _isDithering = true;
-                var ditherMsg = await SendMessage(PHD2EventId.DITHER, string.Format(PHD2Methods.DITHER, profileService.ActiveProfile.GuiderSettings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), profileService.ActiveProfile.GuiderSettings.DitherRAOnly.ToString().ToLower()));
+                var ditherMsg = await SendMessage(
+                    PHD2EventId.DITHER,
+                    string.Format(
+                        PHD2Methods.DITHER,
+                        profileService.ActiveProfile.GuiderSettings.DitherPixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture),
+                        profileService.ActiveProfile.GuiderSettings.DitherRAOnly.ToString().ToLower(),
+                        profileService.ActiveProfile.GuiderSettings.SettlePixels.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture),
+                        profileService.ActiveProfile.GuiderSettings.SettleTime.ToString(),
+                        profileService.ActiveProfile.GuiderSettings.SettleTimeout.ToString()
+                    )
+                );
                 if (ditherMsg.error != null) {
                     /* Dither failed */
                     _isDithering = false;

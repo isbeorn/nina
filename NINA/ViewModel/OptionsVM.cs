@@ -1294,6 +1294,26 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double GuiderSettlePixels {
+            get {
+                return profileService.ActiveProfile.GuiderSettings.SettlePixels;
+            }
+            set {
+                profileService.ActiveProfile.GuiderSettings.SettlePixels = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int GuiderSettleTimeout {
+            get {
+                return profileService.ActiveProfile.GuiderSettings.SettleTimeout;
+            }
+            set {
+                profileService.ActiveProfile.GuiderSettings.SettleTimeout = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private IProfile _selectedProfile;
         private IFilterWheelMediator filterWheelMediator;
 
