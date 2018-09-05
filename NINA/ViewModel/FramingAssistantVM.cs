@@ -10,10 +10,13 @@ using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.SkySurvey;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -52,28 +55,33 @@ namespace NINA.ViewModel {
                 //todo
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
                 vm.ChangeTab(ApplicationTab.SEQUENCE);
-                var dso = new DeepSkyObject(DSO?.Name, SelectedCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-                dso.Rotation = Rectangle.DisplayedRotation;
-                var msgResult = await vm.SeqVM.SetSequenceCoordiantes(dso);
+
+                var deepSkyObjects = new List<DeepSkyObject>();
+                foreach (var rect in CameraRectangles) {
+                    var dso = new DeepSkyObject(DSO?.Name + " Panel " + rect.Id, rect.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+                    dso.Rotation = Rectangle.DisplayedRotation;
+                    deepSkyObjects.Add(dso);
+                }
+
+                //var dso = new DeepSkyObject(DSO?.Name, Rectangle.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+                //dso.Rotation = Rectangle.DisplayedRotation;
+                var msgResult = await vm.SeqVM.SetSequenceCoordiantes(deepSkyObjects);
 
                 ImageParameter = null;
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 return msgResult;
-            }, (object o) => SelectedCoordinates != null);
+            }, (object o) => Rectangle?.Coordinates != null);
 
             RecenterCommand = new AsyncCommand<bool>(async () => {
-                DSO.Coordinates = SelectedCoordinates;
+                DSO.Coordinates = Rectangle.Coordinates;
                 await LoadImageCommand.ExecuteAsync(null);
                 return true;
-            }, (object o) => SelectedCoordinates != null);
+            }, (object o) => Rectangle?.Coordinates != null);
 
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => {
-                if (SelectedCoordinates != null) {
-                    return await telescopeMediator.SlewToCoordinatesAsync(SelectedCoordinates);
-                }
-                return false;
-            }, (object o) => SelectedCoordinates != null);
+                return await telescopeMediator.SlewToCoordinatesAsync(Rectangle.Coordinates);
+            }, (object o) => Rectangle?.Coordinates != null);
 
             SelectedImageCacheInfo = (XElement)ImageCacheInfo.FirstNode;
 
@@ -262,18 +270,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Coordinates _selectedCoordinates;
-
-        public Coordinates SelectedCoordinates {
-            get {
-                return _selectedCoordinates;
-            }
-            set {
-                _selectedCoordinates = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public double FieldOfView {
             get {
                 return profileService.ActiveProfile.FramingAssistantSettings.FieldOfView;
@@ -331,6 +327,85 @@ namespace NINA.ViewModel {
             }
         }
 
+        private ObservableCollection<FramingRectangle> cameraRectangles;
+
+        public ObservableCollection<FramingRectangle> CameraRectangles {
+            get {
+                if (cameraRectangles == null) {
+                    cameraRectangles = new ObservableCollection<FramingRectangle>();
+                }
+                return cameraRectangles;
+            }
+            set {
+                cameraRectangles = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double targetWidthDegrees = 0.5;
+
+        public double TargetWidthDegrees {
+            get {
+                return targetWidthDegrees;
+            }
+            set {
+                targetWidthDegrees = value;
+                RaisePropertyChanged();
+                CalculateRectangle(ImageParameter);
+            }
+        }
+
+        private double targetHeightDegrees = 1.5;
+
+        public double TargetHeightDegrees {
+            get {
+                return targetHeightDegrees;
+            }
+            set {
+                targetHeightDegrees = value;
+                RaisePropertyChanged();
+                CalculateRectangle(ImageParameter);
+            }
+        }
+
+        private double overlapPercentage = 0.2;
+
+        public double OverlapPercentage {
+            get {
+                return overlapPercentage;
+            }
+            set {
+                overlapPercentage = value;
+                RaisePropertyChanged();
+                CalculateRectangle(ImageParameter);
+            }
+        }
+
+        private double rotation = 0;
+
+        public double Rotation {
+            get {
+                return rotation;
+            }
+            set {
+                rotation = value;
+                if (Rectangle != null && ImageParameter != null && rotation >= 0 && rotation <= 360) {
+                    Rectangle.Rotation = value;
+                    var center = new Point(Rectangle.X + Rectangle.Width / 2d, Rectangle.Y + Rectangle.Height / 2d);
+                    foreach (var rect in CameraRectangles) {
+                        var rectCenter = new Point(rect.X + Rectangle.X + rect.Width / 2d, rect.Y + Rectangle.Y + rect.Height / 2d);
+
+                        var deltaX = -(rectCenter.X - center.X);
+                        var deltaY = rectCenter.Y - center.Y;
+                        var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
+                        var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
+                        rect.Coordinates = ShiftCoordinates(Rectangle.Coordinates, deltaX, deltaY, (180 + rotation) % 360, imageArcsecWidth, imageArcsecHeight);
+                    }
+                }
+                RaisePropertyChanged();
+            }
+        }
+
         private int _focalLength;
 
         public int FocalLength {
@@ -356,9 +431,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ObservableRectangle _rectangle;
+        private FramingRectangle _rectangle;
 
-        public ObservableRectangle Rectangle {
+        public FramingRectangle Rectangle {
             get {
                 return _rectangle;
             }
@@ -394,6 +469,7 @@ namespace NINA.ViewModel {
                             ImageParameter = null;
                             GC.Collect();
                             ImageParameter = skySurveyImage;
+                            Rotation = ImageParameter.Rotation;
                         }));
 
                         SelectedImageCacheInfo = CacheSkySurvey.SaveImageToCache(skySurveyImage);
@@ -464,15 +540,91 @@ namespace NINA.ViewModel {
 
         private void CalculateRectangle(SkySurveyImage parameter) {
             if (parameter != null) {
+                CameraRectangles.Clear();
+
+                var centerCoordinates = new Coordinates(parameter.Coordinates.RA, parameter.Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
+
                 var imageArcsecWidth = Astrometry.ArcminToArcsec(parameter.FoVWidth) / parameter.Image.Width;
                 var imageArcsecHeight = Astrometry.ArcminToArcsec(parameter.FoVHeight) / parameter.Image.Height;
 
                 var arcsecPerPix = Astrometry.ArcsecPerPixel(CameraPixelSize, FocalLength);
                 var conversion = arcsecPerPix / imageArcsecWidth;
+
                 var width = CameraWidth * conversion;
                 var height = CameraHeight * conversion;
-                Rectangle = new ObservableRectangle(parameter.Rotation) { Width = width, Height = height, X = parameter.Image.Width / 2d - width / 2d, Y = parameter.Image.Height / 2d - height / 2d, Rotation = Rectangle?.Rotation ?? 0 };
-                SelectedCoordinates = new Coordinates(parameter.Coordinates.RA, parameter.Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
+                var x = parameter.Image.Width / 2d - width / 2d;
+                var y = parameter.Image.Height / 2d - height / 2d;
+
+                var cameraWidthArcSec = (CameraWidth) * arcsecPerPix;
+                var cameraHeightArcSec = (CameraHeight) * arcsecPerPix;
+
+                var targetWidthArcSec = Astrometry.DegreeToArcsec(TargetWidthDegrees);
+                var targetHeightArcSec = Astrometry.DegreeToArcsec(TargetHeightDegrees);
+
+                if (cameraWidthArcSec > targetWidthArcSec && cameraHeightArcSec > targetHeightArcSec) {
+                    CameraRectangles.Add(new FramingRectangle(parameter.Rotation) {
+                        Width = width,
+                        Height = height,
+                        X = 0,
+                        Y = 0,
+                        Rotation = Rectangle?.Rotation ?? 0,
+                        Coordinates = centerCoordinates
+                    });
+                } else {
+                    var panelWidth = CameraWidth * conversion;
+                    var panelHeight = CameraHeight * conversion;
+
+                    var panelOverlapWidth = CameraWidth * OverlapPercentage * conversion;
+                    var panelOverlapHeight = CameraHeight * OverlapPercentage * conversion;
+
+                    cameraWidthArcSec = cameraWidthArcSec - (cameraWidthArcSec * OverlapPercentage);
+                    cameraHeightArcSec = cameraHeightArcSec - (cameraHeightArcSec * OverlapPercentage);
+
+                    // multi panel
+                    var horizontalPanels = Math.Ceiling(targetWidthArcSec / cameraWidthArcSec);
+                    var verticalPanels = Math.Ceiling(targetHeightArcSec / cameraHeightArcSec);
+
+                    width = horizontalPanels * panelWidth - (horizontalPanels - 1) * panelOverlapWidth;
+                    height = verticalPanels * panelHeight - (verticalPanels - 1) * panelOverlapHeight;
+                    x = parameter.Image.Width / 2d - width / 2d;
+                    y = parameter.Image.Height / 2d - height / 2d;
+                    var center = new Point(x + width / 2d, y + height / 2d);
+
+                    var id = 1;
+                    for (int i = 0; i < horizontalPanels; i++) {
+                        for (int j = 0; j < verticalPanels; j++) {
+                            var panelX = i * panelWidth - i * panelOverlapWidth;
+                            var panelY = j * panelHeight - j * panelOverlapHeight;
+
+                            var panelCenter = new Point(panelX + x + panelWidth / 2d, panelY + y + panelHeight / 2d);
+
+                            var panelDeltaX = panelCenter.X - center.X;
+                            var panelDeltaY = panelCenter.Y - center.Y;
+
+                            var panelRotation = parameter.Rotation;
+                            var panelCenterCoodrinates = ShiftCoordinates(centerCoordinates, panelDeltaX, panelDeltaY, panelRotation, imageArcsecWidth, imageArcsecHeight);
+                            var rect = new FramingRectangle(parameter.Rotation) {
+                                Id = id++,
+                                Width = panelWidth,
+                                Height = panelHeight,
+                                X = panelX,
+                                Y = panelY,
+                                Rotation = Rectangle?.Rotation ?? 0,
+                                Coordinates = panelCenterCoodrinates
+                            };
+                            CameraRectangles.Add(rect);
+                        }
+                    }
+                }
+
+                Rectangle = new FramingRectangle(parameter.Rotation) {
+                    Width = width,
+                    Height = height,
+                    X = x,
+                    Y = y,
+                    Rotation = Rectangle?.Rotation ?? 0,
+                    Coordinates = centerCoordinates
+                };
             }
         }
 
@@ -487,16 +639,57 @@ namespace NINA.ViewModel {
             this.Rectangle.X += delta.X;
             this.Rectangle.Y += delta.Y;
 
-            var orientation = Astrometry.ToRadians(ImageParameter.Rotation);
-            var x = delta.X * Math.Cos(orientation) + delta.Y * Math.Sin(orientation);
-            var y = delta.Y * Math.Cos(orientation) - delta.X * Math.Sin(orientation);
-
             var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
             var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
+            Rectangle.Coordinates = ShiftCoordinates(Rectangle.Coordinates, delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
 
-            SelectedCoordinates = new Coordinates(
-                SelectedCoordinates.RADegrees + Astrometry.ArcsecToDegree(x * imageArcsecWidth),
-                SelectedCoordinates.Dec + Astrometry.ArcsecToDegree(y * imageArcsecHeight),
+            foreach (var rect in CameraRectangles) {
+                rect.Coordinates = ShiftCoordinates(rect.Coordinates, delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
+            }
+        }
+
+        private Point RotatePoint(Point center, Point origin, double angle) {
+            var point = new Point(origin.X, origin.Y);
+            var s = Math.Sin(Astrometry.ToRadians(angle));
+            var c = Math.Cos(Astrometry.ToRadians(angle));
+
+            point.X -= center.X;
+            point.Y -= center.Y;
+
+            double xNew = point.X * c - point.Y * s;
+            double yNew = point.X * s + point.Y * c;
+
+            point.X = xNew + center.X;
+            point.Y = yNew + center.Y;
+
+            return point;
+        }
+
+        /// <summary>
+        /// Shift coordinates by a delta
+        /// </summary>
+        /// <param name="origin">Coordinates to shift from</param>
+        /// <param name="deltaX">delta x</param>
+        /// <param name="deltaY">delta y</param>
+        /// <param name="rotation">rotation relative to delta values</param>
+        /// <param name="scaleX">scale relative to deltaX in arcsecs</param>
+        /// <param name="scaleY">scale raltive to deltaY in arcsecs</param>
+        /// <returns></returns>
+        private Coordinates ShiftCoordinates(
+                Coordinates origin,
+                double deltaX,
+                double deltaY,
+                double rotation,
+                double scaleX,
+                double scaleY
+        ) {
+            var orientation = Astrometry.ToRadians(rotation);
+            var x = deltaX * Math.Cos(orientation) + deltaY * Math.Sin(orientation);
+            var y = deltaY * Math.Cos(orientation) + deltaX * Math.Sin(orientation);
+
+            return new Coordinates(
+                origin.RADegrees + Astrometry.ArcsecToDegree(x * scaleX),
+                origin.Dec + Astrometry.ArcsecToDegree(y * scaleY),
                 Epoch.J2000,
                 Coordinates.RAType.Degrees
             );
@@ -531,5 +724,38 @@ namespace NINA.ViewModel {
         public IAsyncCommand RecenterCommand { get; private set; }
         public ICommand CancelLoadImageFromFileCommand { get; private set; }
         public ICommand ClearCacheCommand { get; private set; }
+    }
+
+    internal class FramingRectangle : ObservableRectangle {
+
+        public FramingRectangle(double rotationOffset) : base(rotationOffset) {
+        }
+
+        public FramingRectangle(double x, double y, double width, double height) : base(x, y, width, height) {
+        }
+
+        private int id;
+
+        public int Id {
+            get {
+                return id;
+            }
+            set {
+                id = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Coordinates coordinates;
+
+        public Coordinates Coordinates {
+            get {
+                return coordinates;
+            }
+            set {
+                coordinates = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

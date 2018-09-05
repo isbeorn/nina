@@ -605,6 +605,18 @@ namespace NINA.ViewModel {
             return true;
         }
 
+        public async Task<bool> SetSequenceCoordiantes(ICollection<DeepSkyObject> deepSkyObjects) {
+            Targets.Clear();
+            Sequence = null;
+            foreach (var dso in deepSkyObjects) {
+                AddTarget(null);
+                Sequence = Targets.Last();
+                await SetSequenceCoordiantes(dso);
+            }
+            Sequence = Targets.FirstOrDefault();
+            return true;
+        }
+
         private AsyncObservableCollection<CaptureSequenceList> targets;
 
         public AsyncObservableCollection<CaptureSequenceList> Targets {
