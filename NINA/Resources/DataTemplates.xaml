@@ -25,7 +25,7 @@
         <view:ManualRotatorView />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type vm:AbberationInspectorVM}">
-        <view:AbberationInspectorView />
+    <DataTemplate DataType="{x:Type vm:AberrationInspectorVM}">
+        <view:AberrationInspectorView />
     </DataTemplate>
 </ResourceDictionary>
