@@ -341,7 +341,7 @@
       <Component Win64="yes" Id="Xceed.Wpf.Toolkit.dll" Guid="d7a57155-3e94-4748-9cae-84bf4184952f">
         <File Id="Xceed.Wpf.Toolkit.dll" Name="Xceed.Wpf.Toolkit.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.Toolkit.dll" />
       </Component>
-      <Component Id="AsyncEnumerable.dll" Guid="8dd0fdbc-bacd-4fdf-a83d-0e0e4b7dc56f">
+      <Component Win64="yes" Id="AsyncEnumerable.dll" Guid="8dd0fdbc-bacd-4fdf-a83d-0e0e4b7dc56f">
         <File Id="AsyncEnumerable.dll" Name="AsyncEnumerable.dll" Source="$(var.NINA_TargetDir)AsyncEnumerable.dll" />
       </Component>
     </ComponentGroup>
