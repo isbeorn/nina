@@ -52,7 +52,6 @@ namespace NINA.ViewModel {
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache);
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async () => {
-                //todo
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
                 vm.ChangeTab(ApplicationTab.SEQUENCE);
 
@@ -62,9 +61,6 @@ namespace NINA.ViewModel {
                     dso.Rotation = Rectangle.DisplayedRotation;
                     deepSkyObjects.Add(dso);
                 }
-
-                //var dso = new DeepSkyObject(DSO?.Name, Rectangle.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-                //dso.Rotation = Rectangle.DisplayedRotation;
                 var msgResult = await vm.SeqVM.SetSequenceCoordiantes(deepSkyObjects);
 
                 ImageParameter = null;
