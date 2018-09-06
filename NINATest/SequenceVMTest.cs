@@ -78,7 +78,7 @@ namespace NINATest {
             await vm.StartSequenceCommand.ExecuteAsync(null);
 
             //Assert
-            Assert.AreEqual(0, vm.SelectedSequenceIdx);
+            Assert.AreEqual(0, vm.SelectedSequenceRowIdx);
             Assert.AreEqual(vm.IsPaused, false);
             Assert.AreEqual(vm.Sequence.IsRunning, false);
         }
@@ -278,10 +278,10 @@ namespace NINATest {
             var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
 
             //Act
-            vm.AddSequenceCommand.Execute(null);
+            vm.AddSequenceRowCommand.Execute(null);
 
             //Assert
-            Assert.AreEqual(1, vm.SelectedSequenceIdx);
+            Assert.AreEqual(1, vm.SelectedSequenceRowIdx);
             Assert.AreEqual(2, vm.Sequence.Count);
         }
 
@@ -292,10 +292,10 @@ namespace NINATest {
             vm.Sequence = new CaptureSequenceList();
 
             //Act
-            vm.AddSequenceCommand.Execute(null);
+            vm.AddSequenceRowCommand.Execute(null);
 
             //Assert
-            Assert.AreEqual(0, vm.SelectedSequenceIdx);
+            Assert.AreEqual(0, vm.SelectedSequenceRowIdx);
             Assert.AreEqual(1, vm.Sequence.Count);
         }
 
@@ -305,10 +305,10 @@ namespace NINATest {
             var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
 
             //Act
-            vm.RemoveSequenceCommand.Execute(null);
+            vm.RemoveSequenceRowCommand.Execute(null);
 
             //Assert
-            Assert.AreEqual(-1, vm.SelectedSequenceIdx);
+            Assert.AreEqual(-1, vm.SelectedSequenceRowIdx);
             Assert.AreEqual(0, vm.Sequence.Count);
         }
 
@@ -318,11 +318,11 @@ namespace NINATest {
             var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
 
             //Act
-            vm.RemoveSequenceCommand.Execute(null);
-            vm.RemoveSequenceCommand.Execute(null);
+            vm.RemoveSequenceRowCommand.Execute(null);
+            vm.RemoveSequenceRowCommand.Execute(null);
 
             //Assert
-            Assert.AreEqual(-1, vm.SelectedSequenceIdx);
+            Assert.AreEqual(-1, vm.SelectedSequenceRowIdx);
             Assert.AreEqual(0, vm.Sequence.Count);
         }
     }

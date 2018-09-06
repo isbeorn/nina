@@ -700,4 +700,9 @@ Berechneter HFR: {2}
     <s:String x:Key="LblSettlePixelTolerance">Pixeltoleranz nach Ruhezeit</s:String>
     <s:String x:Key="LblMinimumSettleTime">Minimale Ruhezeit</s:String>
     <s:String x:Key="LblSettleTimeout">Ruhezeit Time-out</s:String>
+    <s:String x:Key="LblTargets">Ziele</s:String>
+    <s:String x:Key="LblTargetWidthDegrees">Minimale Breite (Grad)</s:String>
+    <s:String x:Key="LblTargetHeightDegrees">Minimale Höhe (Grad)</s:String>
+    <s:String x:Key="LblOverlapPercentage">Prozentuale Überlappung</s:String>
+    <s:String x:Key="LblPanel">Feld</s:String>
 </ResourceDictionary>

@@ -695,4 +695,9 @@ Calculated HFR: {2}
     <s:String x:Key="LblSettlePixelTolerance">Settle Pixel Tolerance</s:String>
     <s:String x:Key="LblMinimumSettleTime">Minimum Settle Time</s:String>
     <s:String x:Key="LblSettleTimeout">Settle Timeout</s:String>
+    <s:String x:Key="LblTargets">Targets</s:String>
+    <s:String x:Key="LblTargetWidthDegrees">Minimum Width (degree)</s:String>
+    <s:String x:Key="LblTargetHeightDegrees">Minimum Height (degree)</s:String>
+    <s:String x:Key="LblOverlapPercentage">Overlap percentage</s:String>
+    <s:String x:Key="LblPanel">Panel</s:String>
 </ResourceDictionary>

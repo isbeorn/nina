@@ -52,6 +52,7 @@
                                     <RowDefinition Height="40" />
                                 </Grid.RowDefinitions>
                                 <ListView
+                                    MaxHeight="250"
                                     Margin="0,5,0,0"
                                     ItemsSource="{Binding Path=ImageCacheInfo.Elements[Image]}"
                                     SelectedItem="{Binding SelectedImageCacheInfo}">
@@ -291,6 +292,37 @@
                                     <TextBox Margin="5,0,0,0" Text="{Binding FocalLength}" />
                                 </UniformGrid>
                             </Border>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="{ns:Loc LblTargets}">
+                        <StackPanel Orientation="Vertical">
+                            <Border
+                                Margin="0,6,0,6"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1">
+                                <UniformGrid Margin="0,6,0,6" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetWidthDegrees}" />
+                                    <TextBox Margin="5,0,0,0" Text="{Binding TargetWidthDegrees}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border
+                                Margin="0,6,0,6"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1">
+                                <UniformGrid Margin="0,6,0,6" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetHeightDegrees}" />
+                                    <TextBox Margin="5,0,0,0" Text="{Binding TargetHeightDegrees}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border
+                                Margin="0,6,0,6"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1">
+                                <UniformGrid Margin="0,6,0,6" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOverlapPercentage}" />
+                                    <TextBox Margin="5,0,0,0" Text="{Binding OverlapPercentage, Converter={StaticResource PercentageConverter}, StringFormat={}{0}%}" />
+                                </UniformGrid>
+                            </Border>
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                                 <UniformGrid Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRotation}" />
@@ -311,7 +343,7 @@
                                             Maximum="360"
                                             Minimum="0"
                                             TickFrequency="5"
-                                            Value="{Binding Rectangle.Rotation, FallbackValue=0}" />
+                                            Value="{Binding Rotation}" />
                                     </Grid>
                                 </UniformGrid>
                             </Border>
@@ -374,6 +406,68 @@
                     <Grid.Resources>
                         <s:Int32 x:Key="zero">0</s:Int32>
                     </Grid.Resources>
+                    <ItemsControl ItemsSource="{Binding CameraRectangles}" RenderTransformOrigin="0.5,0.5">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Grid />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                                    <Rectangle
+                                        Width="{Binding Width}"
+                                        Height="{Binding Height}"
+                                        RenderTransformOrigin="0.5,0.5"
+                                        Stroke="{StaticResource SecondaryBrush}"
+                                        StrokeThickness="5">
+
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Opacity=".25" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Orientation="Vertical">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Id}" />
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Coordinates.RAString}" />
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Coordinates.DecString}" />
+                                    </StackPanel>
+                                    <Grid.Margin>
+                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                            <Binding Path="X" />
+                                            <Binding Path="Y" />
+                                            <Binding Source="{StaticResource zero}" />
+                                            <Binding Source="{StaticResource zero}" />
+                                        </MultiBinding>
+                                    </Grid.Margin>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.RenderTransform>
+                            <RotateTransform Angle="{Binding Rectangle.Rotation}" />
+                        </ItemsControl.RenderTransform>
+                        <ItemsControl.Margin>
+                            <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                <Binding Path="Rectangle.X" />
+                                <Binding Path="Rectangle.Y" />
+                                <Binding Source="{StaticResource zero}" />
+                                <Binding Source="{StaticResource zero}" />
+                            </MultiBinding>
+                        </ItemsControl.Margin>
+                    </ItemsControl>
                     <Rectangle
                         Width="{Binding Rectangle.Width}"
                         Height="{Binding Rectangle.Height}"
@@ -381,12 +475,10 @@
                         behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
                         behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
                         behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
+                        Fill="Transparent"
                         RenderTransformOrigin="0.5,0.5"
                         Stroke="{StaticResource ButtonForegroundBrush}"
                         StrokeThickness="5">
-                        <Rectangle.Fill>
-                            <SolidColorBrush Opacity=".25" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
-                        </Rectangle.Fill>
                         <Rectangle.RenderTransform>
                             <RotateTransform Angle="{Binding Rectangle.Rotation}" />
                         </Rectangle.RenderTransform>
@@ -410,11 +502,11 @@
 
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.RAString}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Rectangle.Coordinates.RAString}" />
                                 </StackPanel>
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.DecString}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Rectangle.Coordinates.DecString}" />
                                 </StackPanel>
                             </StackPanel>
                         </Viewbox>
