@@ -292,6 +292,10 @@
                                     <TextBox Margin="5,0,0,0" Text="{Binding FocalLength}" />
                                 </UniformGrid>
                             </Border>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="{ns:Loc LblTargets}">
+                        <StackPanel Orientation="Vertical">
                             <Border
                                 Margin="0,6,0,6"
                                 BorderBrush="{StaticResource BorderBrush}"
@@ -316,7 +320,7 @@
                                 BorderThickness="0,0,0,1">
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOverlapPercentage}" />
-                                    <TextBox Margin="5,0,0,0" Text="{Binding OverlapPercentage}" />
+                                    <TextBox Margin="5,0,0,0" Text="{Binding OverlapPercentage, Converter={StaticResource PercentageConverter}, StringFormat={}{0}%}" />
                                 </UniformGrid>
                             </Border>
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">

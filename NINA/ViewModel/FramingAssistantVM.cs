@@ -342,7 +342,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private double targetWidthDegrees = 0.5;
+        private double targetWidthDegrees = 0.1;
 
         public double TargetWidthDegrees {
             get {
@@ -355,7 +355,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private double targetHeightDegrees = 1.5;
+        private double targetHeightDegrees = 0.1;
 
         public double TargetHeightDegrees {
             get {
@@ -646,23 +646,6 @@ namespace NINA.ViewModel {
             foreach (var rect in CameraRectangles) {
                 rect.Coordinates = ShiftCoordinates(rect.Coordinates, delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
             }
-        }
-
-        private Point RotatePoint(Point center, Point origin, double angle) {
-            var point = new Point(origin.X, origin.Y);
-            var s = Math.Sin(Astrometry.ToRadians(angle));
-            var c = Math.Cos(Astrometry.ToRadians(angle));
-
-            point.X -= center.X;
-            point.Y -= center.Y;
-
-            double xNew = point.X * c - point.Y * s;
-            double yNew = point.X * s + point.Y * c;
-
-            point.X = xNew + center.X;
-            point.Y = yNew + center.Y;
-
-            return point;
         }
 
         /// <summary>
