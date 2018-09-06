@@ -29,10 +29,12 @@
             </Grid.ColumnDefinitions>
 
             <ListView
+                MaxHeight="65"
                 Margin="-5,0,0,0"
                 BorderBrush="Transparent"
                 ItemsSource="{Binding Targets}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
                 SelectedItem="{Binding Sequence}">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
