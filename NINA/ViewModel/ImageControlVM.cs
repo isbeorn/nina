@@ -655,8 +655,10 @@ namespace NINA.ViewModel {
                 string completefilename = Path.Combine(path, filename);
 
                 Stopwatch sw = Stopwatch.StartNew();
+                var fileType = profileService.ActiveProfile.ImageFileSettings.FileType;
                 if (ImgArr.RAWData != null) {
                     completefilename = SaveRAW(completefilename);
+                    fileType = FileTypeEnum.RAW;
                 } else {
                     if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.FITS) {
                         if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
@@ -679,7 +681,7 @@ namespace NINA.ViewModel {
                     new ImageSavedEventArgs() {
                         PathToImage = new Uri(completefilename),
                         Image = Image,
-                        FileType = profileService.ActiveProfile.ImageFileSettings.FileType,
+                        FileType = fileType,
                         Mean = ImgArr.Statistics.Mean,
                         HFR = ImgArr.Statistics.HFR,
                         Duration = parameters.ExposureTime,

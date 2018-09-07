@@ -731,6 +731,15 @@ namespace NINA.ViewModel {
             }
         }
 
+        public FileTypeEnum[] FileTypes {
+            get {
+                return Enum.GetValues(typeof(FileTypeEnum))
+                    .Cast<FileTypeEnum>()
+                    .Where(p => p != FileTypeEnum.RAW)
+                    .ToArray<FileTypeEnum>();
+            }
+        }
+
         public FileTypeEnum FileType {
             get {
                 return profileService.ActiveProfile.ImageFileSettings.FileType;

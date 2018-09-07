@@ -18,6 +18,8 @@ namespace NINA.Utility.Enum {
         TIFF_ZIP,
 
         [Description("LblTiffLzw")]
-        TIFF_LZW
+        TIFF_LZW,
+
+        RAW
     }
 }
