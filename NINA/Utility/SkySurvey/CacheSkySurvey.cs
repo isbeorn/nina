@@ -32,6 +32,10 @@ namespace NINA.Utility.SkySurvey {
                 return;
             } else {
                 Cache = XElement.Load(FRAMINGASSISTANTCACHEINFOPATH);
+                var elements = Cache.Elements("Image").Where(x => x.Attribute("Id") == null);
+                foreach (var element in elements) {
+                    element.Add(new XAttribute("Id", Guid.NewGuid()));
+                }
             }
         }
 
