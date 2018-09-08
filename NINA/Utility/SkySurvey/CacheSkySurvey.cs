@@ -56,37 +56,50 @@ namespace NINA.Utility.SkySurvey {
                         x => x.Attribute("Id").Value == skySurveyImage.Id.ToString()
                     ).FirstOrDefault();
                 if (element == null) {
-                    if (!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
-                        Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
+                    element =
+                    Cache
+                    .Elements("Image")
+                    .Where(
+                        x =>
+                            x.Attribute("RA").Value == skySurveyImage.Coordinates.RA.ToString("R", CultureInfo.InvariantCulture)
+                            && x.Attribute("Dec").Value == skySurveyImage.Coordinates.Dec.ToString("R", CultureInfo.InvariantCulture)
+                            && x.Attribute("FoVW").Value == skySurveyImage.FoVWidth.ToString("R", CultureInfo.InvariantCulture)
+                            && x.Attribute("Source").Value == skySurveyImage.Source
+                    ).FirstOrDefault();
+
+                    if (element == null) {
+                        if (!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
+                            Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
+                        }
+
+                        var imgFilePath = Path.Combine(FRAMINGASSISTANTCACHEPATH, skySurveyImage.Name + ".jpg");
+
+                        imgFilePath = Utility.GetUniqueFilePath(imgFilePath);
+                        var name = Path.GetFileNameWithoutExtension(imgFilePath);
+
+                        using (var fileStream = new FileStream(imgFilePath, FileMode.Create)) {
+                            var encoder = new JpegBitmapEncoder();
+                            encoder.QualityLevel = 70;
+                            encoder.Frames.Add(BitmapFrame.Create(skySurveyImage.Image));
+                            encoder.Save(fileStream);
+                        }
+
+                        XElement xml = new XElement("Image",
+                            new XAttribute("Id", skySurveyImage.Id),
+                            new XAttribute("RA", skySurveyImage.Coordinates.RA.ToString("R", CultureInfo.InvariantCulture)),
+                            new XAttribute("Dec", skySurveyImage.Coordinates.Dec.ToString("R", CultureInfo.InvariantCulture)),
+                            new XAttribute("Rotation", skySurveyImage.Rotation),
+                            new XAttribute("FoVW", skySurveyImage.FoVWidth.ToString("R", CultureInfo.InvariantCulture)),
+                            new XAttribute("FoVH", skySurveyImage.FoVHeight.ToString("R", CultureInfo.InvariantCulture)),
+                            new XAttribute("FileName", imgFilePath),
+                            new XAttribute("Source", skySurveyImage.Source),
+                            new XAttribute("Name", name)
+                        );
+
+                        Cache.Add(xml);
+                        Cache.Save(FRAMINGASSISTANTCACHEINFOPATH);
+                        return xml;
                     }
-
-                    var imgFilePath = Path.Combine(FRAMINGASSISTANTCACHEPATH, skySurveyImage.Name + ".jpg");
-
-                    imgFilePath = Utility.GetUniqueFilePath(imgFilePath);
-                    var name = Path.GetFileNameWithoutExtension(imgFilePath);
-
-                    using (var fileStream = new FileStream(imgFilePath, FileMode.Create)) {
-                        var encoder = new JpegBitmapEncoder();
-                        encoder.QualityLevel = 70;
-                        encoder.Frames.Add(BitmapFrame.Create(skySurveyImage.Image));
-                        encoder.Save(fileStream);
-                    }
-
-                    XElement xml = new XElement("Image",
-                        new XAttribute("Id", skySurveyImage.Id),
-                        new XAttribute("RA", skySurveyImage.Coordinates.RA.ToString("R", CultureInfo.InvariantCulture)),
-                        new XAttribute("Dec", skySurveyImage.Coordinates.Dec.ToString("R", CultureInfo.InvariantCulture)),
-                        new XAttribute("Rotation", skySurveyImage.Rotation),
-                        new XAttribute("FoVW", skySurveyImage.FoVWidth.ToString("R", CultureInfo.InvariantCulture)),
-                        new XAttribute("FoVH", skySurveyImage.FoVHeight.ToString("R", CultureInfo.InvariantCulture)),
-                        new XAttribute("FileName", imgFilePath),
-                        new XAttribute("Source", skySurveyImage.Source),
-                        new XAttribute("Name", name)
-                    );
-
-                    Cache.Add(xml);
-                    Cache.Save(FRAMINGASSISTANTCACHEINFOPATH);
-                    return xml;
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
