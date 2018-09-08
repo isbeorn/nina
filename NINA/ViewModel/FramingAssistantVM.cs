@@ -111,7 +111,7 @@ namespace NINA.ViewModel {
         private void ClearCache(object obj) {
             var diagResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblClearCache"] + "?", "", MessageBoxButton.YesNo, MessageBoxResult.No);
             if (diagResult == MessageBoxResult.Yes) {
-                CacheSkySurvey.Clear();
+                Cache.Clear();
                 RaisePropertyChanged(nameof(ImageCacheInfo));
             }
         }
@@ -450,27 +450,32 @@ namespace NINA.ViewModel {
                 CancelLoadImage();
                 _loadImageSource = new CancellationTokenSource();
                 try {
-                    var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
+                    SkySurveyImage skySurveyImage;
+                    if (FramingAssistantSource == SkySurveySource.CACHE) {
+                        skySurveyImage = await Cache.GetImage(Guid.Parse(SelectedImageCacheInfo.Attribute("Id").Value));
+                    } else {
+                        var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
 
-                    var skySurveyImage = await skySurvey.GetImage(DSO?.Name, DSO?.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
+                        skySurveyImage = await skySurvey.GetImage(DSO?.Name, DSO?.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
+                    }
 
                     if (skySurveyImage != null) {
                         if (skySurveyImage.Coordinates == null) {
                             skySurveyImage = await PlateSolveSkySurvey(skySurveyImage);
                         }
-
-                        CalculateRectangle(skySurveyImage);
-
-                        await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                            ImageParameter = null;
-                            GC.Collect();
-                            ImageParameter = skySurveyImage;
-                            Rotation = ImageParameter.Rotation;
-                        }));
-
-                        SelectedImageCacheInfo = CacheSkySurvey.SaveImageToCache(skySurveyImage);
-                        RaisePropertyChanged(nameof(ImageCacheInfo));
                     }
+
+                    CalculateRectangle(skySurveyImage);
+
+                    await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                        ImageParameter = null;
+                        GC.Collect();
+                        ImageParameter = skySurveyImage;
+                        Rotation = ImageParameter.Rotation;
+                    }));
+
+                    SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
+                    RaisePropertyChanged(nameof(ImageCacheInfo));
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);
@@ -509,9 +514,11 @@ namespace NINA.ViewModel {
 
         public XElement ImageCacheInfo {
             get {
-                return CacheSkySurvey.Cache; ;
+                return Cache.Cache; ;
             }
         }
+
+        private CacheSkySurvey Cache { get; set; } = new CacheSkySurvey();
 
         private XElement _selectedImageCacheInfo;
 

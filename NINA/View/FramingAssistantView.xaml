@@ -70,6 +70,10 @@
                                                 Width="Auto"
                                                 DisplayMemberBinding="{Binding Path=Attribute[Dec].Value, Converter={StaticResource DegreesToDMSConverter}}"
                                                 Header="{ns:Loc LblDec}" />
+                                            <GridViewColumn
+                                                Width="Auto"
+                                                DisplayMemberBinding="{Binding Path=Attribute[Source].Value}"
+                                                Header="{ns:Loc LblSource}" />
                                         </GridView>
                                     </ListView.View>
                                 </ListView>

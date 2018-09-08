@@ -30,7 +30,8 @@ namespace NINA.Utility.SkySurvey {
             var image = await Utility.HttpClientGetImage(new Uri(url), ct, progress);
             image.Freeze();
             return new SkySurveyImage() {
-                Name = nameof(SkyServerSkySurvey) + name,
+                Name = name,
+                Source = nameof(SkyServerSkySurvey),
                 Image = image,
                 FoVHeight = fieldOfView,
                 FoVWidth = fieldOfView,

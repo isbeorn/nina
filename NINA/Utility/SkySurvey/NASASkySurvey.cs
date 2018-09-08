@@ -20,7 +20,8 @@ namespace NINA.Utility.SkySurvey {
             image.Freeze();
             return new SkySurveyImage() {
                 Image = image,
-                Name = nameof(NASASkySurvey) + name,
+                Name = name,
+                Source = nameof(NASASkySurvey),
                 FoVHeight = fieldOfView,
                 FoVWidth = fieldOfView,
                 Rotation = 0,

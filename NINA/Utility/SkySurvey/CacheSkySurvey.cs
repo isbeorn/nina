@@ -12,15 +12,15 @@ using NINA.Utility.Astrometry;
 
 namespace NINA.Utility.SkySurvey {
 
-    internal class CacheSkySurvey : ISkySurvey {
+    internal class CacheSkySurvey {
         private static string FRAMINGASSISTANTCACHEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "FramingAssistantCache");
         private static string FRAMINGASSISTANTCACHEINFOPATH = Path.Combine(FRAMINGASSISTANTCACHEPATH, "CacheInfo.xml");
 
-        static CacheSkySurvey() {
+        public CacheSkySurvey() {
             Initialize();
         }
 
-        private static void Initialize() {
+        private void Initialize() {
             if (!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
                 Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
             }
@@ -35,7 +35,7 @@ namespace NINA.Utility.SkySurvey {
             }
         }
 
-        public static void Clear() {
+        public void Clear() {
             System.IO.DirectoryInfo di = new DirectoryInfo(FRAMINGASSISTANTCACHEPATH);
 
             foreach (FileInfo file in di.GetFiles()) {
@@ -47,7 +47,7 @@ namespace NINA.Utility.SkySurvey {
             Initialize();
         }
 
-        public static XElement SaveImageToCache(SkySurveyImage skySurveyImage) {
+        public XElement SaveImageToCache(SkySurveyImage skySurveyImage) {
             try {
                 var element =
                     Cache
@@ -80,6 +80,7 @@ namespace NINA.Utility.SkySurvey {
                         new XAttribute("FoVW", skySurveyImage.FoVWidth.ToString("R", CultureInfo.InvariantCulture)),
                         new XAttribute("FoVH", skySurveyImage.FoVHeight.ToString("R", CultureInfo.InvariantCulture)),
                         new XAttribute("FileName", imgFilePath),
+                        new XAttribute("Source", skySurveyImage.Source),
                         new XAttribute("Name", name)
                     );
 
@@ -94,46 +95,47 @@ namespace NINA.Utility.SkySurvey {
             return null;
         }
 
-        public static XElement Cache { get; private set; }
+        public XElement Cache { get; private set; }
 
         public object CulutureInfo { get; private set; }
 
-        public Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
+        public Task<SkySurveyImage> GetImage(Guid id) {
             return Task.Run(() => {
                 var element =
                     Cache
                     .Elements("Image")
                     .Where(
-                        x =>
-                            x.Attribute("Name").Value == name
-                            && x.Attribute("RA").Value == coordinates.RA.ToString("R", CultureInfo.InvariantCulture)
-                            && x.Attribute("Dec").Value == coordinates.Dec.ToString("R", CultureInfo.InvariantCulture)
-                            && x.Attribute("FoVW").Value == fieldOfView.ToString("R", CultureInfo.InvariantCulture)
+                        x => x.Attribute("Id").Value == id.ToString()
                     ).FirstOrDefault();
-
                 if (element != null) {
-                    var img = LoadJpg(element.Attribute("FileName").Value);
-                    Guid id = Guid.Parse(element.Attribute("Id").Value);
-                    var fovW = double.Parse(element.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
-                    var fovH = double.Parse(element.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
-                    var rotation = double.Parse(element.Attribute("Rotation").Value, CultureInfo.InvariantCulture);
-                    var ra = double.Parse(element.Attribute("RA").Value, CultureInfo.InvariantCulture);
-                    var dec = double.Parse(element.Attribute("Dec").Value, CultureInfo.InvariantCulture);
-
-                    img.Freeze();
-                    return new SkySurveyImage() {
-                        Id = id,
-                        Image = img,
-                        FoVHeight = fovH,
-                        FoVWidth = fovW,
-                        Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours),
-                        Name = name,
-                        Rotation = rotation
-                    };
+                    return Load(element);
                 } else {
                     return null;
                 }
             });
+        }
+
+        private SkySurveyImage Load(XElement element) {
+            var img = LoadJpg(element.Attribute("FileName").Value);
+            Guid id = Guid.Parse(element.Attribute("Id").Value);
+            var fovW = double.Parse(element.Attribute("FoVW").Value, CultureInfo.InvariantCulture);
+            var fovH = double.Parse(element.Attribute("FoVH").Value, CultureInfo.InvariantCulture);
+            var rotation = double.Parse(element.Attribute("Rotation").Value, CultureInfo.InvariantCulture);
+            var ra = double.Parse(element.Attribute("RA").Value, CultureInfo.InvariantCulture);
+            var dec = double.Parse(element.Attribute("Dec").Value, CultureInfo.InvariantCulture);
+            var name = element.Attribute("Name").Value;
+            var source = element.Attribute("Source")?.Value ?? string.Empty;
+
+            img.Freeze();
+            return new SkySurveyImage() {
+                Id = id,
+                Image = img,
+                FoVHeight = fovH,
+                FoVWidth = fovW,
+                Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Hours),
+                Name = name,
+                Rotation = rotation
+            };
         }
 
         private BitmapSource LoadJpg(string filename) {

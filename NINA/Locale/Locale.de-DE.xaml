@@ -705,4 +705,5 @@ Berechneter HFR: {2}
     <s:String x:Key="LblTargetHeightDegrees">Minimale Höhe (Grad)</s:String>
     <s:String x:Key="LblOverlapPercentage">Prozentuale Überlappung</s:String>
     <s:String x:Key="LblPanel">Feld</s:String>
+    <s:String x:Key="LblSource">Quelle</s:String>
 </ResourceDictionary>
