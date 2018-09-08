@@ -70,6 +70,10 @@
                                                 Width="Auto"
                                                 DisplayMemberBinding="{Binding Path=Attribute[Dec].Value, Converter={StaticResource DegreesToDMSConverter}}"
                                                 Header="{ns:Loc LblDec}" />
+                                            <GridViewColumn
+                                                Width="Auto"
+                                                DisplayMemberBinding="{Binding Path=Attribute[Source].Value}"
+                                                Header="{ns:Loc LblSource}" />
                                         </GridView>
                                     </ListView.View>
                                 </ListView>
@@ -225,10 +229,11 @@
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFieldOfView}" />
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBox
-                                            MinWidth="40"
+                                        <ninactrl:StepperControl
                                             Margin="5,0,0,0"
-                                            Text="{Binding FieldOfView}" />
+                                            MaxValue="10"
+                                            MinValue="0.1"
+                                            Value="{Binding FieldOfView, Mode=TwoWay}" />
                                         <TextBlock
                                             Margin="5,0,0,0"
                                             VerticalAlignment="Center"
@@ -301,8 +306,11 @@
                                 BorderBrush="{StaticResource BorderBrush}"
                                 BorderThickness="0,0,0,1">
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetWidthDegrees}" />
-                                    <TextBox Margin="5,0,0,0" Text="{Binding TargetWidthDegrees}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHorizontalPanels}" />
+                                    <ninactrl:IntStepperControl
+                                        Margin="5,0,0,0"
+                                        MinValue="1"
+                                        Value="{Binding HorizontalPanels, Mode=TwoWay}" />
                                 </UniformGrid>
                             </Border>
                             <Border
@@ -310,8 +318,11 @@
                                 BorderBrush="{StaticResource BorderBrush}"
                                 BorderThickness="0,0,0,1">
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetHeightDegrees}" />
-                                    <TextBox Margin="5,0,0,0" Text="{Binding TargetHeightDegrees}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblVerticalPanels}" />
+                                    <ninactrl:IntStepperControl
+                                        Margin="5,0,0,0"
+                                        MinValue="1"
+                                        Value="{Binding VerticalPanels, Mode=TwoWay}" />
                                 </UniformGrid>
                             </Border>
                             <Border

@@ -111,7 +111,7 @@ namespace NINA.ViewModel {
         private void ClearCache(object obj) {
             var diagResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblClearCache"] + "?", "", MessageBoxButton.YesNo, MessageBoxResult.No);
             if (diagResult == MessageBoxResult.Yes) {
-                CacheSkySurvey.Clear();
+                Cache.Clear();
                 RaisePropertyChanged(nameof(ImageCacheInfo));
             }
         }
@@ -338,27 +338,27 @@ namespace NINA.ViewModel {
             }
         }
 
-        private double targetWidthDegrees = 0.1;
+        private int horizontalPanels = 1;
 
-        public double TargetWidthDegrees {
+        public int HorizontalPanels {
             get {
-                return targetWidthDegrees;
+                return horizontalPanels;
             }
             set {
-                targetWidthDegrees = value;
+                horizontalPanels = value;
                 RaisePropertyChanged();
                 CalculateRectangle(ImageParameter);
             }
         }
 
-        private double targetHeightDegrees = 0.1;
+        private int verticalPanels = 1;
 
-        public double TargetHeightDegrees {
+        public int VerticalPanels {
             get {
-                return targetHeightDegrees;
+                return verticalPanels;
             }
             set {
-                targetHeightDegrees = value;
+                verticalPanels = value;
                 RaisePropertyChanged();
                 CalculateRectangle(ImageParameter);
             }
@@ -450,27 +450,32 @@ namespace NINA.ViewModel {
                 CancelLoadImage();
                 _loadImageSource = new CancellationTokenSource();
                 try {
-                    var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
+                    SkySurveyImage skySurveyImage;
+                    if (FramingAssistantSource == SkySurveySource.CACHE) {
+                        skySurveyImage = await Cache.GetImage(Guid.Parse(SelectedImageCacheInfo.Attribute("Id").Value));
+                    } else {
+                        var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
 
-                    var skySurveyImage = await skySurvey.GetImage(DSO?.Name, DSO?.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
+                        skySurveyImage = await skySurvey.GetImage(DSO?.Name, DSO?.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
+                    }
 
                     if (skySurveyImage != null) {
                         if (skySurveyImage.Coordinates == null) {
                             skySurveyImage = await PlateSolveSkySurvey(skySurveyImage);
                         }
-
-                        CalculateRectangle(skySurveyImage);
-
-                        await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                            ImageParameter = null;
-                            GC.Collect();
-                            ImageParameter = skySurveyImage;
-                            Rotation = ImageParameter.Rotation;
-                        }));
-
-                        SelectedImageCacheInfo = CacheSkySurvey.SaveImageToCache(skySurveyImage);
-                        RaisePropertyChanged(nameof(ImageCacheInfo));
                     }
+
+                    CalculateRectangle(skySurveyImage);
+
+                    await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                        ImageParameter = null;
+                        GC.Collect();
+                        ImageParameter = skySurveyImage;
+                        Rotation = ImageParameter.Rotation;
+                    }));
+
+                    SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
+                    RaisePropertyChanged(nameof(ImageCacheInfo));
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);
@@ -509,9 +514,11 @@ namespace NINA.ViewModel {
 
         public XElement ImageCacheInfo {
             get {
-                return CacheSkySurvey.Cache; ;
+                return Cache.Cache; ;
             }
         }
+
+        private CacheSkySurvey Cache { get; set; } = new CacheSkySurvey();
 
         private XElement _selectedImageCacheInfo;
 
@@ -554,10 +561,7 @@ namespace NINA.ViewModel {
                 var cameraWidthArcSec = (CameraWidth) * arcsecPerPix;
                 var cameraHeightArcSec = (CameraHeight) * arcsecPerPix;
 
-                var targetWidthArcSec = Astrometry.DegreeToArcsec(TargetWidthDegrees);
-                var targetHeightArcSec = Astrometry.DegreeToArcsec(TargetHeightDegrees);
-
-                if (cameraWidthArcSec > targetWidthArcSec && cameraHeightArcSec > targetHeightArcSec) {
+                if (HorizontalPanels == 1 && VerticalPanels == 1) {
                     CameraRectangles.Add(new FramingRectangle(parameter.Rotation) {
                         Width = width,
                         Height = height,
@@ -576,19 +580,15 @@ namespace NINA.ViewModel {
                     cameraWidthArcSec = cameraWidthArcSec - (cameraWidthArcSec * OverlapPercentage);
                     cameraHeightArcSec = cameraHeightArcSec - (cameraHeightArcSec * OverlapPercentage);
 
-                    // multi panel
-                    var horizontalPanels = Math.Ceiling(targetWidthArcSec / cameraWidthArcSec);
-                    var verticalPanels = Math.Ceiling(targetHeightArcSec / cameraHeightArcSec);
-
-                    width = horizontalPanels * panelWidth - (horizontalPanels - 1) * panelOverlapWidth;
-                    height = verticalPanels * panelHeight - (verticalPanels - 1) * panelOverlapHeight;
+                    width = HorizontalPanels * panelWidth - (HorizontalPanels - 1) * panelOverlapWidth;
+                    height = VerticalPanels * panelHeight - (VerticalPanels - 1) * panelOverlapHeight;
                     x = parameter.Image.Width / 2d - width / 2d;
                     y = parameter.Image.Height / 2d - height / 2d;
                     var center = new Point(x + width / 2d, y + height / 2d);
 
                     var id = 1;
-                    for (int i = 0; i < horizontalPanels; i++) {
-                        for (int j = 0; j < verticalPanels; j++) {
+                    for (int i = 0; i < HorizontalPanels; i++) {
+                        for (int j = 0; j < VerticalPanels; j++) {
                             var panelX = i * panelWidth - i * panelOverlapWidth;
                             var panelY = j * panelHeight - j * panelOverlapHeight;
 

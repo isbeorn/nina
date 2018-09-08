@@ -22,7 +22,7 @@
                     <Button
                         Width="35"
                         Margin="2.5"
-                        Command="{Binding InspectAbberationCommand}">
+                        Command="{Binding InspectAberrationCommand}">
                         <Button.ToolTip>
                             <ToolTip ToolTipService.ShowOnDisabled="True">
                                 <TextBlock Text="{ns:Loc LblAberrationInspector}" />

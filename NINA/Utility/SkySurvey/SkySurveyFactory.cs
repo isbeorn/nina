@@ -30,9 +30,6 @@ namespace NINA.Utility.SkySurvey {
                 case SkySurveySource.FILE:
                     return new FileSkySurvey();
 
-                case SkySurveySource.CACHE:
-                    return new CacheSkySurvey();
-
                 default:
                     return new NASASkySurvey();
             }

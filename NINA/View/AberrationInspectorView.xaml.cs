@@ -14,11 +14,13 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace NINA.View {
+
     /// <summary>
-    /// Interaction logic for AbberationInspectorView.xaml
+    /// Interaction logic for AberrationInspectorView.xaml
     /// </summary>
-    public partial class AbberationInspectorView : UserControl {
-        public AbberationInspectorView() {
+    public partial class AberrationInspectorView : UserControl {
+
+        public AberrationInspectorView() {
             InitializeComponent();
         }
     }

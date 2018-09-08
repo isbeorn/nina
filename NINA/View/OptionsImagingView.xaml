@@ -33,7 +33,7 @@
                     Text="{ns:Loc LblSaveImageAs}" />
                 <ComboBox
                     Grid.Column="1"
-                    ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:FileTypeEnum}}}"
+                    ItemsSource="{Binding FileTypes}"
                     SelectedItem="{Binding FileType}" />
 
                 <TextBlock

@@ -50,6 +50,7 @@ namespace NINA.ViewModel {
 
             profileService.LocaleChanged += (object sender, EventArgs e) => {
                 ImagePatterns = CreateImagePatternList();
+                RaisePropertyChanged(nameof(FileTypes));
             };
 
             profileService.ProfileChanged += (object sender, EventArgs e) => {
@@ -728,6 +729,15 @@ namespace NINA.ViewModel {
             set {
                 profileService.ActiveProfile.ColorSchemaSettings.BackgroundColor = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public FileTypeEnum[] FileTypes {
+            get {
+                return Enum.GetValues(typeof(FileTypeEnum))
+                    .Cast<FileTypeEnum>()
+                    .Where(p => p != FileTypeEnum.RAW)
+                    .ToArray<FileTypeEnum>();
             }
         }
 
