@@ -1,0 +1,15 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:NINA.Resources.Styles"
+    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary">
+    <Style TargetType="ninactrl:StepperControl">
+        <Setter Property="AddSVG" Value="{StaticResource AddSVG}" />
+        <Setter Property="SubstractSVG" Value="{StaticResource SubstractSVG}" />
+    </Style>
+
+    <Style TargetType="ninactrl:IntStepperControl">
+        <Setter Property="AddSVG" Value="{StaticResource AddSVG}" />
+        <Setter Property="SubstractSVG" Value="{StaticResource SubstractSVG}" />
+    </Style>
+</ResourceDictionary>

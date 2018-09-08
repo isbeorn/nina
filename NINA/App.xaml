@@ -44,6 +44,7 @@
                 <ResourceDictionary Source="Resources\Styles\Oxyplot.xaml" />
                 <ResourceDictionary Source="Resources\Styles\DatePicker.xaml" />
                 <ResourceDictionary Source="Resources\Styles\Path.xaml" />
+                <ResourceDictionary Source="Resources\Styles\StepperControl.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
 
                 <!--  DataTemplates  -->

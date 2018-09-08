@@ -338,27 +338,27 @@ namespace NINA.ViewModel {
             }
         }
 
-        private double targetWidthDegrees = 0.1;
+        private int horizontalPanels = 1;
 
-        public double TargetWidthDegrees {
+        public int HorizontalPanels {
             get {
-                return targetWidthDegrees;
+                return horizontalPanels;
             }
             set {
-                targetWidthDegrees = value;
+                horizontalPanels = value;
                 RaisePropertyChanged();
                 CalculateRectangle(ImageParameter);
             }
         }
 
-        private double targetHeightDegrees = 0.1;
+        private int verticalPanels = 1;
 
-        public double TargetHeightDegrees {
+        public int VerticalPanels {
             get {
-                return targetHeightDegrees;
+                return verticalPanels;
             }
             set {
-                targetHeightDegrees = value;
+                verticalPanels = value;
                 RaisePropertyChanged();
                 CalculateRectangle(ImageParameter);
             }
@@ -561,10 +561,7 @@ namespace NINA.ViewModel {
                 var cameraWidthArcSec = (CameraWidth) * arcsecPerPix;
                 var cameraHeightArcSec = (CameraHeight) * arcsecPerPix;
 
-                var targetWidthArcSec = Astrometry.DegreeToArcsec(TargetWidthDegrees);
-                var targetHeightArcSec = Astrometry.DegreeToArcsec(TargetHeightDegrees);
-
-                if (cameraWidthArcSec > targetWidthArcSec && cameraHeightArcSec > targetHeightArcSec) {
+                if (HorizontalPanels == 1 && VerticalPanels == 1) {
                     CameraRectangles.Add(new FramingRectangle(parameter.Rotation) {
                         Width = width,
                         Height = height,
@@ -583,19 +580,15 @@ namespace NINA.ViewModel {
                     cameraWidthArcSec = cameraWidthArcSec - (cameraWidthArcSec * OverlapPercentage);
                     cameraHeightArcSec = cameraHeightArcSec - (cameraHeightArcSec * OverlapPercentage);
 
-                    // multi panel
-                    var horizontalPanels = Math.Ceiling(targetWidthArcSec / cameraWidthArcSec);
-                    var verticalPanels = Math.Ceiling(targetHeightArcSec / cameraHeightArcSec);
-
-                    width = horizontalPanels * panelWidth - (horizontalPanels - 1) * panelOverlapWidth;
-                    height = verticalPanels * panelHeight - (verticalPanels - 1) * panelOverlapHeight;
+                    width = HorizontalPanels * panelWidth - (HorizontalPanels - 1) * panelOverlapWidth;
+                    height = VerticalPanels * panelHeight - (VerticalPanels - 1) * panelOverlapHeight;
                     x = parameter.Image.Width / 2d - width / 2d;
                     y = parameter.Image.Height / 2d - height / 2d;
                     var center = new Point(x + width / 2d, y + height / 2d);
 
                     var id = 1;
-                    for (int i = 0; i < horizontalPanels; i++) {
-                        for (int j = 0; j < verticalPanels; j++) {
+                    for (int i = 0; i < HorizontalPanels; i++) {
+                        for (int j = 0; j < VerticalPanels; j++) {
                             var panelX = i * panelWidth - i * panelOverlapWidth;
                             var panelY = j * panelHeight - j * panelOverlapHeight;
 
