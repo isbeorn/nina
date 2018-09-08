@@ -105,6 +105,7 @@ namespace NINA.Utility.SkySurvey {
                         return xml;
                     }
                 }
+                return element;
             } catch (Exception ex) {
                 Logger.Error(ex);
                 throw ex;
