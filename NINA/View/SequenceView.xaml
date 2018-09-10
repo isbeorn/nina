@@ -36,6 +36,11 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 SelectedItem="{Binding Sequence}">
+                <ListView.Resources>
+                    <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Style>
+                </ListView.Resources>
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
@@ -108,6 +113,9 @@
                         </Setter>
                     </Style>
                 </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}"></GridView>
+                </ListView.View>
             </ListView>
             <Button
                 Grid.Column="1"
