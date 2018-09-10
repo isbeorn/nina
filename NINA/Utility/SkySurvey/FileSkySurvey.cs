@@ -52,7 +52,8 @@ namespace NINA.Utility.SkySurvey {
                     FoVHeight = double.NaN,
                     FoVWidth = double.NaN,
                     Image = img,
-                    Rotation = double.NaN
+                    Rotation = double.NaN,
+                    Source = nameof(FileSkySurvey)
                 };
             } else {
                 return null;

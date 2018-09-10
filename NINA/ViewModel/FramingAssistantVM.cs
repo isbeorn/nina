@@ -137,6 +137,7 @@ namespace NINA.ViewModel {
         public async Task<bool> SetCoordinates(DeepSkyObject dso) {
             this.DSO = new DeepSkyObject(dso.Name, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             FramingAssistantSource = SkySurveySource.NASA;
+            RaiseCoordinatesChanged();
             await LoadImageCommand.ExecuteAsync(null);
             return true;
         }
@@ -384,18 +385,20 @@ namespace NINA.ViewModel {
                 return rotation;
             }
             set {
+                var oldRotation = rotation;
                 rotation = value;
                 if (Rectangle != null && ImageParameter != null && rotation >= 0 && rotation <= 360) {
-                    Rectangle.Rotation = value;
+                    Rectangle.Rotation += (rotation - oldRotation) % 360;
+                    if (Rectangle.Rotation < 0) { Rectangle.Rotation += 360; }
                     var center = new Point(Rectangle.X + Rectangle.Width / 2d, Rectangle.Y + Rectangle.Height / 2d);
+                    var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
+                    var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
                     foreach (var rect in CameraRectangles) {
                         var rectCenter = new Point(rect.X + Rectangle.X + rect.Width / 2d, rect.Y + Rectangle.Y + rect.Height / 2d);
 
-                        var deltaX = -(rectCenter.X - center.X);
+                        var deltaX = rectCenter.X - center.X;
                         var deltaY = rectCenter.Y - center.Y;
-                        var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
-                        var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
-                        rect.Coordinates = ShiftCoordinates(Rectangle.Coordinates, deltaX, deltaY, (180 + rotation) % 360, imageArcsecWidth, imageArcsecHeight);
+                        rect.Coordinates = ShiftCoordinates(Rectangle.Coordinates, deltaX, deltaY, rotation, imageArcsecWidth, imageArcsecHeight);
                     }
                 }
                 RaisePropertyChanged();
@@ -471,7 +474,6 @@ namespace NINA.ViewModel {
                         ImageParameter = null;
                         GC.Collect();
                         ImageParameter = skySurveyImage;
-                        Rotation = ImageParameter.Rotation;
                     }));
 
                     SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
@@ -543,6 +545,8 @@ namespace NINA.ViewModel {
 
         private void CalculateRectangle(SkySurveyImage parameter) {
             if (parameter != null) {
+                Rectangle = null;
+                Rotation = parameter.Rotation;
                 CameraRectangles.Clear();
 
                 var centerCoordinates = new Coordinates(parameter.Coordinates.RA, parameter.Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
@@ -567,7 +571,7 @@ namespace NINA.ViewModel {
                         Height = height,
                         X = 0,
                         Y = 0,
-                        Rotation = Rectangle?.Rotation ?? 0,
+                        Rotation = 0,
                         Coordinates = centerCoordinates
                     });
                 } else {
@@ -598,15 +602,15 @@ namespace NINA.ViewModel {
                             var panelDeltaY = panelCenter.Y - center.Y;
 
                             var panelRotation = parameter.Rotation;
-                            var panelCenterCoodrinates = ShiftCoordinates(centerCoordinates, panelDeltaX, panelDeltaY, panelRotation, imageArcsecWidth, imageArcsecHeight);
+                            var panelCenterCoordinates = ShiftCoordinates(centerCoordinates, panelDeltaX, panelDeltaY, panelRotation, imageArcsecWidth, imageArcsecHeight);
                             var rect = new FramingRectangle(parameter.Rotation) {
                                 Id = id++,
                                 Width = panelWidth,
                                 Height = panelHeight,
                                 X = panelX,
                                 Y = panelY,
-                                Rotation = Rectangle?.Rotation ?? 0,
-                                Coordinates = panelCenterCoodrinates
+                                Rotation = 0,
+                                Coordinates = panelCenterCoordinates
                             };
                             CameraRectangles.Add(rect);
                         }
@@ -618,7 +622,7 @@ namespace NINA.ViewModel {
                     Height = height,
                     X = x,
                     Y = y,
-                    Rotation = Rectangle?.Rotation ?? 0,
+                    Rotation = 0,
                     Coordinates = centerCoordinates
                 };
             }
@@ -662,13 +666,44 @@ namespace NINA.ViewModel {
                 double scaleX,
                 double scaleY
         ) {
-            var orientation = Astrometry.ToRadians(rotation);
-            var x = deltaX * Math.Cos(orientation) + deltaY * Math.Sin(orientation);
-            var y = deltaY * Math.Cos(orientation) + deltaX * Math.Sin(orientation);
+            var rotationRad = Astrometry.ToRadians(rotation);
+
+            var deltaXDeg = -deltaX * Astrometry.ArcsecToDegree(scaleX);
+            var deltaYDeg = -deltaY * Astrometry.ArcsecToDegree(scaleY);
+
+            if (rotation != 0) {
+                //Recalculate delta based on rotation
+                //No spherical or other aberrations are assumed
+                var originalDeltaX = deltaXDeg;
+                deltaXDeg = deltaXDeg * Math.Cos(rotationRad) - deltaYDeg * Math.Sin(rotationRad);
+                deltaYDeg = deltaYDeg * Math.Cos(rotationRad) + originalDeltaX * Math.Sin(rotationRad);
+            }
+
+            var originRARad = Astrometry.ToRadians(origin.RADegrees);
+            var originDecRad = Astrometry.ToRadians(origin.Dec);
+
+            var deltaXRad = Astrometry.ToRadians(deltaXDeg);
+            var deltaYRad = Astrometry.ToRadians(deltaYDeg);
+
+            // refer to http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
+
+            var targetRARad = originRARad + Math.Atan2(deltaXRad, Math.Cos(originDecRad) - deltaYRad * Math.Sin(originDecRad));
+            var targetDecRad =
+                Math.Atan(
+                    Math.Cos(targetRARad - originRARad)
+                    * (deltaYRad * Math.Cos(originDecRad) + Math.Sin(originDecRad))
+                    / (Math.Cos(originDecRad) - deltaYRad * Math.Sin(originDecRad))
+                );
+
+            var targetRA = Astrometry.ToDegree(targetRARad);
+            if (targetRA < 0) { targetRA += 360; }
+            if (targetRA >= 360) { targetRA -= 360; }
+
+            var targetDec = Astrometry.ToDegree(targetDecRad);
 
             return new Coordinates(
-                origin.RADegrees + Astrometry.ArcsecToDegree(x * scaleX),
-                origin.Dec + Astrometry.ArcsecToDegree(y * scaleY),
+                targetRA,
+                targetDec,
                 Epoch.J2000,
                 Coordinates.RAType.Degrees
             );
