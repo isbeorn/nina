@@ -30,7 +30,6 @@ namespace NINA.ViewModel {
             ChooseTelescopeCommand = new AsyncCommand<bool>(() => ChooseTelescope());
             CancelChooseTelescopeCommand = new RelayCommand(CancelChooseTelescope);
             DisconnectCommand = new RelayCommand(DisconnectTelescope);
-            StepperMoveRateCommand = new RelayCommand(StepMoveRate);
             ParkCommand = new AsyncCommand<bool>(ParkTelescope);
             UnparkCommand = new RelayCommand(UnparkTelescope);
             SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
@@ -317,15 +316,6 @@ namespace NINA.ViewModel {
             BroadcastTelescopeInfo();
         }
 
-        private void StepMoveRate(object obj) {
-            string cmd = obj.ToString();
-            if (cmd == "+") {
-                Telescope.MovingRate++;
-            } else {
-                Telescope.MovingRate--;
-            }
-        }
-
         public void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate) {
             if (TelescopeInfo.Connected) {
                 Telescope.MoveAxis(axis, rate);
@@ -524,8 +514,6 @@ namespace NINA.ViewModel {
         public ICommand UnparkCommand { get; private set; }
 
         public ICommand StopSlewCommand { get; private set; }
-
-        public ICommand StepperMoveRateCommand { get; private set; }
 
         public ICommand RefreshTelescopeListCommand { get; private set; }
     }
