@@ -377,6 +377,7 @@
 
             <DataGrid
                 AutoGenerateColumns="False"
+                HeadersVisibility="Column"
                 HorizontalScrollBarVisibility="Disabled"
                 ItemsSource="{Binding ItemPage, IsAsync=True}"
                 SelectedItem="{Binding SelectedItem}">

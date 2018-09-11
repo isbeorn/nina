@@ -114,7 +114,7 @@
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.View>
-                    <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}"></GridView>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" />
                 </ListView.View>
             </ListView>
             <Button
@@ -681,6 +681,7 @@
             Grid.Row="2"
             AutoGenerateColumns="False"
             CanUserAddRows="False"
+            HeadersVisibility="Column"
             HorizontalScrollBarVisibility="Disabled"
             IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBooleanConverter}}"
             ItemsSource="{Binding Sequence.Items}"
