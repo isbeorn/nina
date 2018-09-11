@@ -355,6 +355,18 @@
             VerticalAlignment="Center"
             LoadingImageBrush="{StaticResource PrimaryBrush}"
             Visibility="{Binding SearchCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
+        <Path
+            Grid.Column="1"
+            Width="100"
+            Height="100"
+            Margin="5"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Data="{StaticResource MapSVG}"
+            Fill="{StaticResource ButtonForegroundDisabledBrush}"
+            Opacity="0.2"
+            Stretch="Uniform"
+            Visibility="{Binding SearchCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Visible}" />
 
         <!--  Search result area  -->
         <Grid Grid.Column="1" DataContext="{Binding SearchResult}">
@@ -362,6 +374,7 @@
                 <RowDefinition />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+
             <DataGrid
                 AutoGenerateColumns="False"
                 HorizontalScrollBarVisibility="Disabled"
