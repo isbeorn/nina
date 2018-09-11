@@ -38,6 +38,7 @@
                             HorizontalScrollBarVisibility="Disabled"
                             ItemsSource="{Binding Profiles}"
                             SelectedItem="{Binding SelectedProfile}"
+                            SelectionMode="Single"
                             VerticalScrollBarVisibility="Auto">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn

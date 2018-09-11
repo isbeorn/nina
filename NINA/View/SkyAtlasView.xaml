@@ -380,7 +380,8 @@
                 HeadersVisibility="Column"
                 HorizontalScrollBarVisibility="Disabled"
                 ItemsSource="{Binding ItemPage, IsAsync=True}"
-                SelectedItem="{Binding SelectedItem}">
+                SelectedItem="{Binding SelectedItem}"
+                SelectionMode="Single">
                 <DataGrid.Resources>
                     <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
                         <Setter Property="Visibility" Value="Collapsed" />

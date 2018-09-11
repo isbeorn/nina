@@ -74,7 +74,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="{x:Type DataGridCell}">
+    <Style x:Key="MyDataGridCell" TargetType="{x:Type DataGridCell}">
         <Setter Property="TextBlock.TextAlignment" Value="Center" />
         <Style.Triggers>
             <Trigger Property="DataGridCell.IsSelected" Value="True">
@@ -83,4 +83,6 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style BasedOn="{StaticResource MyDataGridCell}" TargetType="{x:Type DataGridCell}" />
 </ResourceDictionary>

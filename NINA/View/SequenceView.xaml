@@ -685,7 +685,20 @@
             HorizontalScrollBarVisibility="Disabled"
             IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBooleanConverter}}"
             ItemsSource="{Binding Sequence.Items}"
-            SelectedIndex="{Binding SelectedSequenceRowIdx}">
+            SelectedIndex="{Binding SelectedSequenceRowIdx}"
+            SelectionMode="Single">
+            <DataGrid.CellStyle>
+                <Style BasedOn="{StaticResource MyDataGridCell}" TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="IsEditing" Value="True" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="IsEditing" Value="True" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
             <DataGrid.Columns>
                 <DataGridTemplateColumn
                     Width="*"
