@@ -708,4 +708,5 @@ Berechneter HFR: {2}
     <s:String x:Key="LblSource">Quelle</s:String>
     <s:String x:Key="LblHorizontalPanels">Horizontale Felder</s:String>
     <s:String x:Key="LblVerticalPanels">Vertikale Felder</s:String>
+    <s:String x:Key="LblSkySurveyCacheDirectory">Sky Survey Cache Ordner</s:String>
 </ResourceDictionary>

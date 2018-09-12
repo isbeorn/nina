@@ -34,6 +34,7 @@ namespace NINA.ViewModel {
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
+            OpenSkySurveyCacheDirectoryDiagCommand = new RelayCommand(OpenSkySurveyCacheDirectoryDiag);
             ImportFiltersCommand = new RelayCommand(ImportFilters);
             AddFilterCommand = new RelayCommand(AddFilter);
             RemoveFilterCommand = new RelayCommand(RemoveFilter);
@@ -176,6 +177,15 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void OpenSkySurveyCacheDirectoryDiag(object obj) {
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.SelectedPath = profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                SkySurveyCacheDirectory = dialog.SelectedPath;
+            }
+        }
+
         private void DownloadIndexes(object obj) {
             AstrometryIndexDownloader.AstrometryIndexDownloaderVM.Show(CygwinLocation);
             ScanForIndexFiles();
@@ -264,6 +274,7 @@ namespace NINA.ViewModel {
         public ICommand ToggleColorsCommand { get; private set; }
 
         public ICommand OpenSkyAtlasImageRepositoryDiagCommand { get; private set; }
+        public ICommand OpenSkySurveyCacheDirectoryDiagCommand { get; private set; }
 
         public ICommand ImportFiltersCommand { get; private set; }
 
@@ -1021,6 +1032,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string SkySurveyCacheDirectory {
+            get {
+                return profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
+            }
+            set {
+                profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory = value;
                 RaisePropertyChanged();
             }
         }

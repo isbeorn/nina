@@ -10,5 +10,6 @@ namespace NINA.Utility.Profile {
         CultureInfo Language { get; set; }
         LogLevelEnum LogLevel { get; set; }
         string SkyAtlasImageRepository { get; set; }
+        string SkySurveyCacheDirectory { get; set; }
     }
 }

@@ -35,6 +35,8 @@ namespace NINA.ViewModel {
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
+            Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
+
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
 
@@ -81,17 +83,29 @@ namespace NINA.ViewModel {
 
             SelectedImageCacheInfo = (XElement)ImageCacheInfo.FirstNode;
 
+            var appSettings = profileService.ActiveProfile.ApplicationSettings;
+            appSettings.PropertyChanged += ApplicationSettings_PropertyChanged;
+
             profileService.ProfileChanged += (object sender, EventArgs e) => {
+                appSettings.PropertyChanged -= ApplicationSettings_PropertyChanged;
                 RaisePropertyChanged(nameof(CameraPixelSize));
                 RaisePropertyChanged(nameof(FocalLength));
                 RaisePropertyChanged(nameof(FieldOfView));
                 RaisePropertyChanged(nameof(CameraWidth));
                 RaisePropertyChanged(nameof(CameraHeight));
+                appSettings = profileService.ActiveProfile.ApplicationSettings;
+                appSettings.PropertyChanged += ApplicationSettings_PropertyChanged;
+                ApplicationSettings_PropertyChanged(null, null);
             };
 
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             };
+        }
+
+        private void ApplicationSettings_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
+            RaisePropertyChanged(nameof(ImageCacheInfo));
         }
 
         private ISkySurveyFactory skySurveyFactory;
@@ -520,7 +534,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private CacheSkySurvey Cache { get; set; } = new CacheSkySurvey();
+        private CacheSkySurvey Cache { get; set; }
 
         private XElement _selectedImageCacheInfo;
 

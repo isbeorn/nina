@@ -13,25 +13,27 @@ using NINA.Utility.Astrometry;
 namespace NINA.Utility.SkySurvey {
 
     internal class CacheSkySurvey {
-        private static string FRAMINGASSISTANTCACHEPATH = Path.Combine(Utility.APPLICATIONTEMPPATH, "FramingAssistantCache");
-        private static string FRAMINGASSISTANTCACHEINFOPATH = Path.Combine(FRAMINGASSISTANTCACHEPATH, "CacheInfo.xml");
+        private string framingAssistantCachePath;
+        private string framingAssistantCachInfo;
 
-        public CacheSkySurvey() {
+        public CacheSkySurvey(string framingAssistantCachePath) {
+            this.framingAssistantCachePath = framingAssistantCachePath;
+            this.framingAssistantCachInfo = Path.Combine(framingAssistantCachePath, "CacheInfo.xml");
             Initialize();
         }
 
         private void Initialize() {
-            if (!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
-                Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
+            if (!Directory.Exists(framingAssistantCachePath)) {
+                Directory.CreateDirectory(framingAssistantCachePath);
             }
 
-            if (!File.Exists(FRAMINGASSISTANTCACHEINFOPATH)) {
+            if (!File.Exists(framingAssistantCachInfo)) {
                 XElement info = new XElement("ImageCacheInfo");
-                info.Save(FRAMINGASSISTANTCACHEINFOPATH);
+                info.Save(framingAssistantCachInfo);
                 Cache = info;
                 return;
             } else {
-                Cache = XElement.Load(FRAMINGASSISTANTCACHEINFOPATH);
+                Cache = XElement.Load(framingAssistantCachInfo);
                 var elements = Cache.Elements("Image").Where(x => x.Attribute("Id") == null);
                 foreach (var element in elements) {
                     element.Add(new XAttribute("Id", Guid.NewGuid()));
@@ -40,7 +42,7 @@ namespace NINA.Utility.SkySurvey {
         }
 
         public void Clear() {
-            System.IO.DirectoryInfo di = new DirectoryInfo(FRAMINGASSISTANTCACHEPATH);
+            System.IO.DirectoryInfo di = new DirectoryInfo(framingAssistantCachePath);
 
             foreach (FileInfo file in di.GetFiles()) {
                 file.Delete();
@@ -72,11 +74,11 @@ namespace NINA.Utility.SkySurvey {
                     ).FirstOrDefault();
 
                     if (element == null) {
-                        if (!Directory.Exists(FRAMINGASSISTANTCACHEPATH)) {
-                            Directory.CreateDirectory(FRAMINGASSISTANTCACHEPATH);
+                        if (!Directory.Exists(framingAssistantCachePath)) {
+                            Directory.CreateDirectory(framingAssistantCachePath);
                         }
 
-                        var imgFilePath = Path.Combine(FRAMINGASSISTANTCACHEPATH, skySurveyImage.Name + ".jpg");
+                        var imgFilePath = Path.Combine(framingAssistantCachePath, skySurveyImage.Name + ".jpg");
 
                         imgFilePath = Utility.GetUniqueFilePath(imgFilePath);
                         var name = Path.GetFileNameWithoutExtension(imgFilePath);
@@ -101,7 +103,7 @@ namespace NINA.Utility.SkySurvey {
                         );
 
                         Cache.Add(xml);
-                        Cache.Save(FRAMINGASSISTANTCACHEINFOPATH);
+                        Cache.Save(framingAssistantCachInfo);
                         return xml;
                     }
                 }
