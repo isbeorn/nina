@@ -6,10 +6,14 @@
     <Style TargetType="ninactrl:StepperControl">
         <Setter Property="AddSVG" Value="{StaticResource AddSVG}" />
         <Setter Property="SubstractSVG" Value="{StaticResource SubstractSVG}" />
+        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+        <Setter Property="ButtonForegroundBrush" Value="{StaticResource ButtonForegroundBrush}" />
     </Style>
 
     <Style TargetType="ninactrl:IntStepperControl">
         <Setter Property="AddSVG" Value="{StaticResource AddSVG}" />
         <Setter Property="SubstractSVG" Value="{StaticResource SubstractSVG}" />
+        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+        <Setter Property="ButtonForegroundBrush" Value="{StaticResource ButtonForegroundBrush}" />
     </Style>
 </ResourceDictionary>

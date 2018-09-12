@@ -397,32 +397,13 @@
                         </Grid.RowDefinitions>
                         <StackPanel
                             Grid.Row="0"
-                            Grid.Column="3"
+                            Grid.Column="3" HorizontalAlignment="Right"
                             Orientation="Horizontal">
                             <TextBlock
                                 Margin="0,0,5,0"
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblRate}" />
-                            <RepeatButton
-                                Width="50"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Command="{Binding StepperMoveRateCommand}"
-                                CommandParameter="-">
-                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="&#x25BC;" />
-                            </RepeatButton>
-                            <TextBox
-                                MinWidth="40"
-                                VerticalAlignment="Center"
-                                Text="{Binding Telescope.MovingRate}" />
-                            <RepeatButton
-                                Width="50"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Command="{Binding StepperMoveRateCommand}"
-                                CommandParameter="+">
-                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="&#x25B2;" />
-                            </RepeatButton>
+                            <ninactrl:StepperControl Value="{Binding Telescope.MovingRate, Mode=TwoWay}" />
                         </StackPanel>
                         <Button
                             Grid.Row="1"
