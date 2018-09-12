@@ -923,9 +923,11 @@
                         <DataGrid
                             AutoGenerateColumns="False"
                             CanUserAddRows="False"
+                            HeadersVisibility="Column"
                             HorizontalScrollBarVisibility="Disabled"
                             ItemsSource="{Binding FilterWheelFilters}"
                             SelectedItem="{Binding SelectedFilter}"
+                            SelectionMode="Single"
                             VerticalScrollBarVisibility="Auto">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn
