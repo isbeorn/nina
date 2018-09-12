@@ -17,7 +17,7 @@ namespace NINA.Utility.SkySurvey {
         public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
             return await Task.Run(async () => {
                 if (fieldOfView > MaxFoVPerImage * 3) {
-                    throw new Exception(string.Format("Sky Survey only supports up to {0} arcmin", MaxFoVPerImage));
+                    throw new Exception(string.Format("Sky Survey only supports up to {0} degree", Astrometry.Astrometry.ArcminToDegree(MaxFoVPerImage * 3)));
                 } else {
                     BitmapSource image;
                     if (fieldOfView <= MaxFoVPerImage) {
@@ -46,57 +46,65 @@ namespace NINA.Utility.SkySurvey {
             var borderFoV = (fieldOfView - MaxFoVPerImage) / 2.0;
             var shiftedDegree = Astrometry.Astrometry.ArcminToDegree(MaxFoVPerImage) / 2.0 + Astrometry.Astrometry.ArcminToDegree(borderFoV) / 2.0;
 
+            var newCoordinates = coordinates.Shift(-shiftedDegree, -shiftedDegree, 0);
             var topLeftTask = GetSingleImage(
-                new Coordinates(coordinates.RADegrees + shiftedDegree, coordinates.Dec + shiftedDegree, Epoch.J2000, Coordinates.RAType.Degrees),
+                new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
                 ct
             );
 
+            newCoordinates = coordinates.Shift(0, -shiftedDegree, 0);
             var topTask = GetSingleImage(
-                new Coordinates(coordinates.RADegrees, coordinates.Dec + shiftedDegree, Epoch.J2000, Coordinates.RAType.Degrees),
+                new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 MaxFoVPerImage,
                 borderFoV,
                 ct
             );
 
+            newCoordinates = coordinates.Shift(shiftedDegree, -shiftedDegree, 0);
             var topRightTask = GetSingleImage(
-                new Coordinates(coordinates.RADegrees - shiftedDegree, coordinates.Dec + shiftedDegree, Epoch.J2000, Coordinates.RAType.Degrees),
+                new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
                 ct
             );
 
+            newCoordinates = coordinates.Shift(-shiftedDegree, 0, 0);
             var leftTask = GetSingleImage(
-                new Coordinates(coordinates.RADegrees + shiftedDegree, coordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
+                new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 MaxFoVPerImage,
                 ct
             );
 
+            newCoordinates = coordinates.Shift(shiftedDegree, 0, 0);
             var rightTask = GetSingleImage(
-                new Coordinates(coordinates.RADegrees - shiftedDegree, coordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
+                new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 MaxFoVPerImage,
                 ct
             );
 
+            newCoordinates = coordinates.Shift(-shiftedDegree, shiftedDegree, 0);
             var bottomLeftTask = GetSingleImage(
-                new Coordinates(coordinates.RADegrees + shiftedDegree, coordinates.Dec - shiftedDegree, Epoch.J2000, Coordinates.RAType.Degrees),
+                new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
                 ct
             );
 
+            newCoordinates = coordinates.Shift(0, shiftedDegree, 0);
             var bottomTask = GetSingleImage(
-                new Coordinates(coordinates.RADegrees, coordinates.Dec - shiftedDegree, Epoch.J2000, Coordinates.RAType.Degrees),
+                new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 MaxFoVPerImage,
                 borderFoV,
                 ct
             );
 
+            newCoordinates = coordinates.Shift(shiftedDegree, shiftedDegree, 0);
             var bottomRightTask = GetSingleImage(
-                new Coordinates(coordinates.RADegrees - shiftedDegree, coordinates.Dec - shiftedDegree, Epoch.J2000, Coordinates.RAType.Degrees),
+                new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
                 ct

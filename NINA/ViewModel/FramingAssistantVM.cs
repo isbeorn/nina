@@ -398,7 +398,7 @@ namespace NINA.ViewModel {
 
                         var deltaX = rectCenter.X - center.X;
                         var deltaY = rectCenter.Y - center.Y;
-                        rect.Coordinates = ShiftCoordinates(Rectangle.Coordinates, deltaX, deltaY, rotation, imageArcsecWidth, imageArcsecHeight);
+                        rect.Coordinates = Rectangle.Coordinates.Shift(deltaX, deltaY, rotation, imageArcsecWidth, imageArcsecHeight);
                     }
                 }
                 RaisePropertyChanged();
@@ -602,7 +602,7 @@ namespace NINA.ViewModel {
                             var panelDeltaY = panelCenter.Y - center.Y;
 
                             var panelRotation = parameter.Rotation;
-                            var panelCenterCoordinates = ShiftCoordinates(centerCoordinates, panelDeltaX, panelDeltaY, panelRotation, imageArcsecWidth, imageArcsecHeight);
+                            var panelCenterCoordinates = centerCoordinates.Shift(panelDeltaX, panelDeltaY, panelRotation, imageArcsecWidth, imageArcsecHeight);
                             var rect = new FramingRectangle(parameter.Rotation) {
                                 Id = id++,
                                 Width = panelWidth,
@@ -641,72 +641,11 @@ namespace NINA.ViewModel {
 
             var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
             var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
-            Rectangle.Coordinates = ShiftCoordinates(Rectangle.Coordinates, delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
+            Rectangle.Coordinates = Rectangle.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
 
             foreach (var rect in CameraRectangles) {
-                rect.Coordinates = ShiftCoordinates(rect.Coordinates, delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
+                rect.Coordinates = rect.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
             }
-        }
-
-        /// <summary>
-        /// Shift coordinates by a delta
-        /// </summary>
-        /// <param name="origin">Coordinates to shift from</param>
-        /// <param name="deltaX">delta x</param>
-        /// <param name="deltaY">delta y</param>
-        /// <param name="rotation">rotation relative to delta values</param>
-        /// <param name="scaleX">scale relative to deltaX in arcsecs</param>
-        /// <param name="scaleY">scale raltive to deltaY in arcsecs</param>
-        /// <returns></returns>
-        private Coordinates ShiftCoordinates(
-                Coordinates origin,
-                double deltaX,
-                double deltaY,
-                double rotation,
-                double scaleX,
-                double scaleY
-        ) {
-            var rotationRad = Astrometry.ToRadians(rotation);
-
-            var deltaXDeg = -deltaX * Astrometry.ArcsecToDegree(scaleX);
-            var deltaYDeg = -deltaY * Astrometry.ArcsecToDegree(scaleY);
-
-            if (rotation != 0) {
-                //Recalculate delta based on rotation
-                //No spherical or other aberrations are assumed
-                var originalDeltaX = deltaXDeg;
-                deltaXDeg = deltaXDeg * Math.Cos(rotationRad) - deltaYDeg * Math.Sin(rotationRad);
-                deltaYDeg = deltaYDeg * Math.Cos(rotationRad) + originalDeltaX * Math.Sin(rotationRad);
-            }
-
-            var originRARad = Astrometry.ToRadians(origin.RADegrees);
-            var originDecRad = Astrometry.ToRadians(origin.Dec);
-
-            var deltaXRad = Astrometry.ToRadians(deltaXDeg);
-            var deltaYRad = Astrometry.ToRadians(deltaYDeg);
-
-            // refer to http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
-
-            var targetRARad = originRARad + Math.Atan2(deltaXRad, Math.Cos(originDecRad) - deltaYRad * Math.Sin(originDecRad));
-            var targetDecRad =
-                Math.Atan(
-                    Math.Cos(targetRARad - originRARad)
-                    * (deltaYRad * Math.Cos(originDecRad) + Math.Sin(originDecRad))
-                    / (Math.Cos(originDecRad) - deltaYRad * Math.Sin(originDecRad))
-                );
-
-            var targetRA = Astrometry.ToDegree(targetRARad);
-            if (targetRA < 0) { targetRA += 360; }
-            if (targetRA >= 360) { targetRA -= 360; }
-
-            var targetDec = Astrometry.ToDegree(targetDecRad);
-
-            return new Coordinates(
-                targetRA,
-                targetDec,
-                Epoch.J2000,
-                Coordinates.RAType.Degrees
-            );
         }
 
         private bool prevCameraConnected = false;
