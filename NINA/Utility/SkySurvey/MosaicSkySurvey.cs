@@ -12,7 +12,6 @@ namespace NINA.Utility.SkySurvey {
 
     internal abstract class MosaicSkySurvey : ISkySurvey {
         protected double MaxFoVPerImage = 60;
-        private const string Url = "https://archive.stsci.edu/cgi-bin/dss_search?format=GIF&r={0}&d={1}&e=J2000&h={2}&w={3}&v=1";
 
         public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
             return await Task.Run(async () => {
