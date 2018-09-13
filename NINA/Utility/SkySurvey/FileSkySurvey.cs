@@ -27,7 +27,7 @@ namespace NINA.Utility.SkySurvey {
 
             if (dialog.ShowDialog() == true) {
                 BitmapSource img = null;
-                switch (Path.GetExtension(dialog.FileName)) {
+                switch (Path.GetExtension(dialog.FileName).ToLower()) {
                     case ".tif":
                     case ".tiff":
                         img = LoadTiff(dialog.FileName);
