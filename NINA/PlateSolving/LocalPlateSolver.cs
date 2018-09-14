@@ -51,7 +51,7 @@ namespace NINA.PlateSolving {
             options.Add("-u arcsecperpix");
             options.Add("--no-plots");
             options.Add("-r");
-            options.Add("--downsample 4");
+            options.Add("--downsample 2");
             options.Add(string.Format("-L {0}", _lowarcsecperpixel.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
             options.Add(string.Format("-H {0}", _higharcsecperpixel.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
 
