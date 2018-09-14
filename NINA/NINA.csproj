@@ -348,6 +348,7 @@
     <Compile Include="Utility\Converters\MultiMarginConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\PercentageConverter.cs" />
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
     <Compile Include="Utility\Converters\ValueToLocaleConverter.cs" />
     <Compile Include="Utility\DatabaseInteraction.cs" />
@@ -466,7 +467,7 @@
     <Compile Include="Utility\WindowService\WindowService.cs" />
     <Compile Include="Utility\WindowService\WindowServiceFactory.cs" />
     <Compile Include="Utility\XISF.cs" />
-    <Compile Include="ViewModel\AbberationInspectorVM.cs" />
+    <Compile Include="ViewModel\AberrationInspectorVM.cs" />
     <Compile Include="ViewModel\ApplicationStatusVM.cs" />
     <Compile Include="ViewModel\AutoFocusVM.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
@@ -530,8 +531,8 @@
     <Compile Include="ViewModel\ThumbnailVM.cs" />
     <Compile Include="ViewModel\VersionCheckVM.cs" />
     <Compile Include="ViewModel\WeatherDataVM.cs" />
-    <Compile Include="View\AbberationInspectorView.xaml.cs">
-      <DependentUpon>AbberationInspectorView.xaml</DependentUpon>
+    <Compile Include="View\AberrationInspectorView.xaml.cs">
+      <DependentUpon>AberrationInspectorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AltitudeChart.xaml.cs">
       <DependentUpon>AltitudeChart.xaml</DependentUpon>
@@ -746,6 +747,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Styles\StepperControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\SVGDictionary.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -841,7 +846,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AbberationInspectorView.xaml">
+    <Page Include="View\AberrationInspectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -34,6 +34,7 @@ namespace NINA.ViewModel {
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
+            OpenSkySurveyCacheDirectoryDiagCommand = new RelayCommand(OpenSkySurveyCacheDirectoryDiag);
             ImportFiltersCommand = new RelayCommand(ImportFilters);
             AddFilterCommand = new RelayCommand(AddFilter);
             RemoveFilterCommand = new RelayCommand(RemoveFilter);
@@ -50,6 +51,7 @@ namespace NINA.ViewModel {
 
             profileService.LocaleChanged += (object sender, EventArgs e) => {
                 ImagePatterns = CreateImagePatternList();
+                RaisePropertyChanged(nameof(FileTypes));
             };
 
             profileService.ProfileChanged += (object sender, EventArgs e) => {
@@ -175,6 +177,15 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void OpenSkySurveyCacheDirectoryDiag(object obj) {
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.SelectedPath = profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                SkySurveyCacheDirectory = dialog.SelectedPath;
+            }
+        }
+
         private void DownloadIndexes(object obj) {
             AstrometryIndexDownloader.AstrometryIndexDownloaderVM.Show(CygwinLocation);
             ScanForIndexFiles();
@@ -263,6 +274,7 @@ namespace NINA.ViewModel {
         public ICommand ToggleColorsCommand { get; private set; }
 
         public ICommand OpenSkyAtlasImageRepositoryDiagCommand { get; private set; }
+        public ICommand OpenSkySurveyCacheDirectoryDiagCommand { get; private set; }
 
         public ICommand ImportFiltersCommand { get; private set; }
 
@@ -731,6 +743,15 @@ namespace NINA.ViewModel {
             }
         }
 
+        public FileTypeEnum[] FileTypes {
+            get {
+                return Enum.GetValues(typeof(FileTypeEnum))
+                    .Cast<FileTypeEnum>()
+                    .Where(p => p != FileTypeEnum.RAW)
+                    .ToArray<FileTypeEnum>();
+            }
+        }
+
         public FileTypeEnum FileType {
             get {
                 return profileService.ActiveProfile.ImageFileSettings.FileType;
@@ -1015,6 +1036,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        public string SkySurveyCacheDirectory {
+            get {
+                return profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
+            }
+            set {
+                profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public Color NotificationWarningColor {
             get {
                 return profileService.ActiveProfile.ColorSchemaSettings.NotificationWarningColor;
@@ -1290,6 +1321,26 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.GuiderSettings.SettleTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double GuiderSettlePixels {
+            get {
+                return profileService.ActiveProfile.GuiderSettings.SettlePixels;
+            }
+            set {
+                profileService.ActiveProfile.GuiderSettings.SettlePixels = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int GuiderSettleTimeout {
+            get {
+                return profileService.ActiveProfile.GuiderSettings.SettleTimeout;
+            }
+            set {
+                profileService.ActiveProfile.GuiderSettings.SettleTimeout = value;
                 RaisePropertyChanged();
             }
         }

@@ -10,9 +10,9 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel {
 
-    internal class AbberationInspectorVM : BaseVM {
+    internal class AberrationInspectorVM : BaseVM {
 
-        public AbberationInspectorVM(IProfileService profileService, BitmapSource source) : base(profileService) {
+        public AberrationInspectorVM(IProfileService profileService, BitmapSource source) : base(profileService) {
             Columns = 3;
             SeparationSize = 4;
             CellSize = 256;

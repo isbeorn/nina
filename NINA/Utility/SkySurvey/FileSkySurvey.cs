@@ -27,7 +27,7 @@ namespace NINA.Utility.SkySurvey {
 
             if (dialog.ShowDialog() == true) {
                 BitmapSource img = null;
-                switch (Path.GetExtension(dialog.FileName)) {
+                switch (Path.GetExtension(dialog.FileName).ToLower()) {
                     case ".tif":
                     case ".tiff":
                         img = LoadTiff(dialog.FileName);
@@ -52,7 +52,8 @@ namespace NINA.Utility.SkySurvey {
                     FoVHeight = double.NaN,
                     FoVWidth = double.NaN,
                     Image = img,
-                    Rotation = double.NaN
+                    Rotation = double.NaN,
+                    Source = nameof(FileSkySurvey)
                 };
             } else {
                 return null;

@@ -13,13 +13,15 @@ namespace NINA.Utility.SkySurvey {
 
         public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
             var arcSecPerPixel = 0.5;
+            fieldOfView = Math.Round(fieldOfView, 2);
             var pixels = Math.Min(Astrometry.Astrometry.ArcminToArcsec(fieldOfView) * arcSecPerPixel, 5000);
             var url = string.Format(Url, coordinates.RADegrees, coordinates.Dec, Astrometry.Astrometry.ArcminToDegree(fieldOfView), pixels);
             var image = await Utility.HttpClientGetImage(new Uri(url), ct, progress);
             image.Freeze();
             return new SkySurveyImage() {
                 Image = image,
-                Name = nameof(NASASkySurvey) + name,
+                Name = name,
+                Source = nameof(NASASkySurvey),
                 FoVHeight = fieldOfView,
                 FoVWidth = fieldOfView,
                 Rotation = 0,

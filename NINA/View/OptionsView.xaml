@@ -34,9 +34,11 @@
                         <DataGrid
                             AutoGenerateColumns="False"
                             CanUserAddRows="False"
+                            HeadersVisibility="Column"
                             HorizontalScrollBarVisibility="Disabled"
                             ItemsSource="{Binding Profiles}"
                             SelectedItem="{Binding SelectedProfile}"
+                            SelectionMode="Single"
                             VerticalScrollBarVisibility="Auto">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn
@@ -202,6 +204,45 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Command="{Binding OpenSkyAtlasImageRepositoryDiagCommand}">
+                                <Path
+                                    Margin="4,17,4,4"
+                                    Data="{StaticResource DotsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                            </Button>
+                        </Grid>
+
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSkySurveyCacheDirectory}" />
+
+                            <TextBox
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SkySurveyCacheDirectory" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DirectoryExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+
+                            <Button
+                                Grid.Column="2"
+                                Width="30"
+                                Height="30"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding OpenSkySurveyCacheDirectoryDiagCommand}">
                                 <Path
                                     Margin="4,17,4,4"
                                     Data="{StaticResource DotsSVG}"
@@ -921,9 +962,11 @@
                         <DataGrid
                             AutoGenerateColumns="False"
                             CanUserAddRows="False"
+                            HeadersVisibility="Column"
                             HorizontalScrollBarVisibility="Disabled"
                             ItemsSource="{Binding FilterWheelFilters}"
                             SelectedItem="{Binding SelectedFilter}"
+                            SelectionMode="Single"
                             VerticalScrollBarVisibility="Auto">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn
@@ -1251,10 +1294,46 @@
                                 <TextBlock
                                     MinWidth="200"
                                     VerticalAlignment="Center"
-                                    Text="{ns:Loc LblResumeSettleTime}" />
+                                    Text="{ns:Loc LblSettlePixelTolerance}" />
+                                <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="GuiderSettlePixels" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </UniformGrid>
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblMinimumSettleTime}" />
                                 <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                     <TextBox.Text>
                                         <Binding Path="GuiderSettleTime" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </UniformGrid>
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblSettleTimeout}" />
+                                <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="GuiderSettleTimeout" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:GreaterZeroRule />
                                             </Binding.ValidationRules>

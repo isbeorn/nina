@@ -18,10 +18,126 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <UniformGrid Columns="2">
+        <Grid Margin="5,0,0,0" IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <ListView
+                MaxHeight="65"
+                Margin="-5,0,0,0"
+                BorderBrush="Transparent"
+                ItemsSource="{Binding Targets}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                SelectedItem="{Binding Sequence}">
+                <ListView.Resources>
+                    <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Style>
+                </ListView.Resources>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Grid Width="200" Height="30">
+                                        <Polygon
+                                            x:Name="PART_Polygon"
+                                            Margin="-38,0,0,0"
+                                            Fill="{StaticResource ButtonBackgroundBrush}"
+                                            Points="0,0 10,0 12,5 10,10 0,10 2,5 0,0"
+                                            Stretch="Fill" />
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Path
+                                                x:Name="PART_Finished"
+                                                Width="25"
+                                                Height="25"
+                                                Data="{StaticResource CheckedCircledSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform" />
+                                            <ninactrl:LoadingControl
+                                                x:Name="PART_Running"
+                                                Width="25"
+                                                Height="25" />
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                                Text="{Binding TargetName}" />
+                                            <Button
+                                                x:Name="PART_Close"
+                                                Grid.Column="2"
+                                                Width="25"
+                                                Height="25"
+                                                Margin="0,0,40,0"
+                                                HorizontalAlignment="Right"
+                                                Command="{Binding DataContext.RemoveTargetCommand, RelativeSource={RelativeSource AncestorType=local:SequenceView}}"
+                                                CommandParameter="{Binding}">
+                                                X
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsFinished}" Value="False">
+                                            <Setter TargetName="PART_Finished" Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsRunning}" Value="False">
+                                            <Setter TargetName="PART_Running" Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="PART_Polygon" Property="Fill" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter TargetName="PART_Close" Property="Visibility" Value="Collapsed" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" />
+                </ListView.View>
+            </ListView>
+            <Button
+                Grid.Column="1"
+                Width="35"
+                Command="{Binding AddTargetCommand}"
+                IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                <Button.ToolTip>
+                    <ToolTip ToolTipService.ShowOnDisabled="True">
+                        <TextBlock Text="{ns:Loc LblTooltipAddTarget}" />
+                    </ToolTip>
+                </Button.ToolTip>
+                <Path
+                    Margin="5"
+                    Data="{StaticResource AddSVG}"
+                    Fill="{StaticResource ButtonForegroundBrush}"
+                    Stretch="Uniform" />
+            </Button>
+        </Grid>
+        <UniformGrid
+            Grid.Row="1"
+            Columns="2"
+            IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBooleanConverter}}">
             <GroupBox>
                 <GroupBox.Header>
                     <UniformGrid Columns="2">
@@ -562,13 +678,27 @@
         </UniformGrid>
 
         <DataGrid
-            Grid.Row="1"
+            Grid.Row="2"
             AutoGenerateColumns="False"
             CanUserAddRows="False"
+            HeadersVisibility="Column"
             HorizontalScrollBarVisibility="Disabled"
-            IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+            IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBooleanConverter}}"
             ItemsSource="{Binding Sequence.Items}"
-            SelectedIndex="{Binding SelectedSequenceIdx}">
+            SelectedIndex="{Binding SelectedSequenceRowIdx}"
+            SelectionMode="Single">
+            <DataGrid.CellStyle>
+                <Style BasedOn="{StaticResource MyDataGridCell}" TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="IsEditing" Value="True" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="IsEditing" Value="True" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
             <DataGrid.Columns>
                 <DataGridTemplateColumn
                     Width="*"
@@ -838,11 +968,11 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <DockPanel Grid.Row="2" Margin="5">
+        <DockPanel Grid.Row="3" Margin="5">
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                 <Button
                     Width="40"
-                    Command="{Binding AddSequenceCommand}"
+                    Command="{Binding AddSequenceRowCommand}"
                     IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">
@@ -857,7 +987,7 @@
                 </Button>
                 <Button
                     Width="40"
-                    Command="{Binding RemoveSequenceCommand}"
+                    Command="{Binding RemoveSequenceRowCommand}"
                     IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">

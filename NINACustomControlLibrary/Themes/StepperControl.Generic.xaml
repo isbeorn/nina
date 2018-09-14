@@ -13,10 +13,10 @@
                             <ColumnDefinition />
                             <ColumnDefinition Width="25" />
                         </Grid.ColumnDefinitions>
-                        <Button Name="PART_Increment" Height="25">
+                        <Button Name="PART_Decrement" Height="25">
                             <Path
                                 Margin="5"
-                                Data="{TemplateBinding AddSVG}"
+                                Data="{TemplateBinding SubstractSVG}"
                                 Fill="{TemplateBinding ButtonForegroundBrush}"
                                 Stretch="Uniform" />
                         </Button>
@@ -28,12 +28,12 @@
                             Text="{Binding Value, StringFormat=\{0:#.00\}, UpdateSourceTrigger=LostFocus, RelativeSource={RelativeSource AncestorType={x:Type local:StepperControl}}}"
                             TextAlignment="Center" />
                         <Button
-                            Name="PART_Decrement"
+                            Name="PART_Increment"
                             Grid.Column="2"
                             Height="25">
                             <Path
                                 Margin="5"
-                                Data="{TemplateBinding SubstractSVG}"
+                                Data="{TemplateBinding AddSVG}"
                                 Fill="{TemplateBinding ButtonForegroundBrush}"
                                 Stretch="Uniform" />
                         </Button>
@@ -53,10 +53,10 @@
                             <ColumnDefinition />
                             <ColumnDefinition Width="25" />
                         </Grid.ColumnDefinitions>
-                        <Button Name="PART_Increment" Height="25">
+                        <Button Name="PART_Decrement" Height="25">
                             <Path
                                 Margin="5"
-                                Data="{TemplateBinding AddSVG}"
+                                Data="{TemplateBinding SubstractSVG}"
                                 Fill="{TemplateBinding ButtonForegroundBrush}"
                                 Stretch="Uniform" />
                         </Button>
@@ -68,12 +68,12 @@
                             Text="{Binding Value, UpdateSourceTrigger=LostFocus, RelativeSource={RelativeSource AncestorType={x:Type local:IntStepperControl}}}"
                             TextAlignment="Center" />
                         <Button
-                            Name="PART_Decrement"
+                            Name="PART_Increment"
                             Grid.Column="2"
                             Height="25">
                             <Path
                                 Margin="5"
-                                Data="{TemplateBinding SubstractSVG}"
+                                Data="{TemplateBinding AddSVG}"
                                 Fill="{TemplateBinding ButtonForegroundBrush}"
                                 Stretch="Uniform" />
                         </Button>

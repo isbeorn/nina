@@ -477,6 +477,8 @@ namespace NINA.ViewModel {
 
         public void SetBinning(short x, short y) {
             Cam.SetBinning(x, y);
+            CameraInfo.BinX = Cam.BinX;
+            CameraInfo.BinY = Cam.BinY;
             BroadcastCameraInfo();
         }
 
@@ -490,6 +492,7 @@ namespace NINA.ViewModel {
         public void SetGain(short gain) {
             if (CameraInfo.Connected == true) {
                 Cam.Gain = gain;
+                CameraInfo.Gain = Cam.Gain;
                 BroadcastCameraInfo();
             }
         }

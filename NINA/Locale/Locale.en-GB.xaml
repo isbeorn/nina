@@ -692,4 +692,16 @@ Calculated HFR: {2}
     <s:String x:Key="LblClockwise">Clockwise</s:String>
     <s:String x:Key="LblRotationTolerance">Rotation Tolerance</s:String>
     <s:String x:Key="LblAberrationInspector">Aberration Inspector</s:String>
+    <s:String x:Key="LblSettlePixelTolerance">Settle Pixel Tolerance</s:String>
+    <s:String x:Key="LblMinimumSettleTime">Minimum Settle Time</s:String>
+    <s:String x:Key="LblSettleTimeout">Settle Timeout</s:String>
+    <s:String x:Key="LblTargets">Targets</s:String>
+    <s:String x:Key="LblTargetWidthDegrees">Minimum Width (degree)</s:String>
+    <s:String x:Key="LblTargetHeightDegrees">Minimum Height (degree)</s:String>
+    <s:String x:Key="LblOverlapPercentage">Overlap percentage</s:String>
+    <s:String x:Key="LblPanel">Panel</s:String>
+    <s:String x:Key="LblSource">Source</s:String>
+    <s:String x:Key="LblHorizontalPanels">Horizontal Panels</s:String>
+    <s:String x:Key="LblVerticalPanels">Vertical Panels</s:String>
+    <s:String x:Key="LblSkySurveyCacheDirectory">Sky Survey Cache Directory</s:String>
 </ResourceDictionary>
