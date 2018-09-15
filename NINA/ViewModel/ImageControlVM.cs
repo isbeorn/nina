@@ -538,6 +538,8 @@ namespace NINA.ViewModel {
                         iarr.Statistics.DetectedStars = analysis.DetectedStars;
                     }
 
+                    source = ImageAnalysis.Convert16BppTo8BppSource(source);
+
                     if (iarr.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
                         _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
@@ -588,8 +590,9 @@ namespace NINA.ViewModel {
         }
 
         public static BitmapSource Stretch(double mean, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor) {
-            var img = ImageAnalysis.BitmapFromSource(source);
-            return Stretch(mean, img, pf, factor);
+            using (var img = ImageAnalysis.BitmapFromSource(source)) {
+                return Stretch(mean, img, pf, factor);
+            }
         }
 
         public static BitmapSource Stretch(double mean, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor) {

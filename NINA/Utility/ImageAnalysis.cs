@@ -230,30 +230,30 @@ namespace NINA.Utility {
             public double radius;
             public double HFR;
             public AForge.Point Position;
-            public List<PixelData> Pixeldata;
-
-            public double Average {
-                get {
-                    return Pixeldata.Average((x) => x.value);
-                }
-            }
+            private List<PixelData> pixelData;
+            public double Average { get; private set; } = 0;
 
             public Rectangle Rectangle;
 
             public Star() {
-                Pixeldata = new List<PixelData>();
+                pixelData = new List<PixelData>();
+            }
+
+            public void AddPixelData(PixelData value) {
+                this.pixelData.Add(value);
             }
 
             public void CalculateHfr() {
                 double hfr = 0.0d;
-                if (this.Pixeldata.Count > 0) {
+                if (this.pixelData.Count > 0) {
                     double outerRadius = this.radius;
-                    double sum = 0, sumDist = 0;
+                    double sum = 0, sumDist = 0, allSum = 0;
 
                     int centerX = (int)Math.Floor(this.Position.X);
                     int centerY = (int)Math.Floor(this.Position.Y);
 
-                    foreach (PixelData data in this.Pixeldata) {
+                    foreach (PixelData data in this.pixelData) {
+                        allSum += data.value;
                         if (InsideCircle(data.PosX, data.PosY, this.Position.X, this.Position.Y, outerRadius)) {
                             if (data.value < 0) data.value = 0;
 
@@ -267,8 +267,10 @@ namespace NINA.Utility {
                     } else {
                         hfr = Math.Sqrt(2) * outerRadius;
                     }
+                    this.Average = allSum / this.pixelData.Count;
                 }
                 this.HFR = hfr;
+                this.pixelData.Clear();
             }
 
             private bool InsideCircle(double x, double y, double centerX, double centerY, double radius) {
@@ -389,7 +391,7 @@ namespace NINA.Utility {
                         var value = _iarr.FlatArray[x + (_iarr.Statistics.Width * y)] - _iarr.Statistics.Mean;
                         if (value < 0) { value = 0; }
                         PixelData pd = new PixelData { PosX = x, PosY = y, value = (ushort)value };
-                        s.Pixeldata.Add(pd);
+                        s.AddPixelData(pd);
                     }
                 }
                 s.CalculateHfr();
@@ -408,36 +410,36 @@ namespace NINA.Utility {
 
         public BitmapSource GetAnnotatedImage() {
             using (MyStopWatch.Measure()) {
-                Bitmap bmp = Convert16BppTo8Bpp(_originalBitmapSource);
+                using (var bmp = Convert16BppTo8Bpp(_originalBitmapSource)) {
+                    using (var newBitmap = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb)) {
+                        Graphics graphics = Graphics.FromImage(newBitmap);
+                        graphics.DrawImage(bmp, 0, 0);
 
-                Bitmap newBitmap = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                        if (_starlist.Count > 0) {
+                            int r, offset = 10;
+                            float textposx, textposy;
 
-                Graphics graphics = Graphics.FromImage(newBitmap);
-                graphics.DrawImage(bmp, 0, 0);
+                            var threshhold = 200;
+                            if (_starlist.Count > threshhold) {
+                                _starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
+                                _starlist = _starlist.GetRange(0, threshhold);
+                            }
 
-                if (_starlist.Count > 0) {
-                    int r, offset = 10;
-                    float textposx, textposy;
+                            foreach (Star star in _starlist) {
+                                _token.ThrowIfCancellationRequested();
+                                r = (int)Math.Ceiling(star.radius);
+                                textposx = star.Position.X - offset;
+                                textposy = star.Position.Y - offset;
+                                graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width, star.Rectangle.Height));
+                                graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
+                            }
+                        }
+                        var img = ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
 
-                    var threshhold = 200;
-                    if (_starlist.Count > threshhold) {
-                        _starlist.Sort((item1, item2) => item2.Average.CompareTo(item1.Average));
-                        _starlist = _starlist.GetRange(0, threshhold);
-                    }
-
-                    foreach (Star star in _starlist) {
-                        _token.ThrowIfCancellationRequested();
-                        r = (int)Math.Ceiling(star.radius);
-                        textposx = star.Position.X - offset;
-                        textposy = star.Position.Y - offset;
-                        graphics.DrawEllipse(ELLIPSEPEN, new RectangleF(star.Rectangle.X, star.Rectangle.Y, star.Rectangle.Width, star.Rectangle.Height));
-                        graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
+                        img.Freeze();
+                        return img;
                     }
                 }
-                var img = ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
-                newBitmap.Dispose();
-                img.Freeze();
-                return img;
             }
         }
 
@@ -474,7 +476,9 @@ namespace NINA.Utility {
 
         private void ResizeBitmapToAnalyze() {
             if (_bitmapToAnalyze.Width > _maxWidth) {
-                _bitmapToAnalyze = new ResizeBicubic(_maxWidth, (int)Math.Floor(_bitmapToAnalyze.Height * _resizefactor)).Apply(_bitmapToAnalyze);
+                var bmp = new ResizeBicubic(_maxWidth, (int)Math.Floor(_bitmapToAnalyze.Height * _resizefactor)).Apply(_bitmapToAnalyze);
+                _bitmapToAnalyze.Dispose();
+                _bitmapToAnalyze = bmp;
             }
         }
 
@@ -540,12 +544,10 @@ namespace NINA.Utility {
             return bmp;
         }
 
-        public static Bitmap Convert16BppTo8Bpp(Bitmap bmp) {
-            return AForge.Imaging.Image.Convert16bppTo8bpp(bmp);
-        }
-
         public static Bitmap Convert16BppTo8Bpp(BitmapSource source) {
-            return AForge.Imaging.Image.Convert16bppTo8bpp(BitmapFromSource(source));
+            using (var bmp = BitmapFromSource(source)) {
+                return AForge.Imaging.Image.Convert16bppTo8bpp(bmp);
+            }
         }
 
         public static BitmapSource Convert16BppTo8BppSource(BitmapSource source) {
@@ -576,11 +578,13 @@ namespace NINA.Utility {
                 } else {
                     throw new NotSupportedException();
                 }
-                var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-                bmp = Debayer(bmp);
-                var newSource = ConvertBitmap(bmp, PixelFormats.Rgb24);
-                newSource.Freeze();
-                return newSource;
+                using (var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format8bppIndexed)) {
+                    using (var debayeredBmp = Debayer(bmp)) {
+                        var newSource = ConvertBitmap(debayeredBmp, PixelFormats.Rgb24);
+                        newSource.Freeze();
+                        return newSource;
+                    }
+                }
             }
         }
 
