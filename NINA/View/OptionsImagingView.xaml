@@ -90,7 +90,7 @@
                     Grid.Row="4"
                     Grid.ColumnSpan="3"
                     Margin="0,5,0,0"
-                    ItemsSource="{Binding ImagePatterns}">
+                    ItemsSource="{Binding ImagePatterns.Items}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn

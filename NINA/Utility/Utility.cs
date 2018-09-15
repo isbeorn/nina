@@ -31,21 +31,6 @@ namespace NINA.Utility {
 
         public static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }
 
-        /// <summary>
-        /// Replaces makros from Settings.ImageFilePattern into actual values based on input e.g.:
-        /// $$Filter$$ -&gt; "Red"
-        /// </summary>
-        /// <param name="patterns">KeyValue Collection of Makro -&gt; Makrovalue</param>
-        /// <returns></returns>
-        internal static string GetImageFileString(string filePatternMacro, ICollection<ViewModel.OptionsVM.ImagePattern> patterns) {
-            string s = filePatternMacro;
-            foreach (ViewModel.OptionsVM.ImagePattern p in patterns) {
-                s = s.Replace(p.Key, p.Value);
-            }
-            s = Path.Combine(s.Split(PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries));
-            return s;
-        }
-
         public static async Task<string> HttpGetRequest(CancellationToken canceltoken, string url, params object[] parameters) {
             string result = string.Empty;
 

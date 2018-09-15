@@ -285,6 +285,7 @@
     <Compile Include="Model\DummyDevice.cs" />
     <Compile Include="Model\GuideStepsHistory.cs" />
     <Compile Include="Model\IDevice.cs" />
+    <Compile Include="Model\ImagePattern.cs" />
     <Compile Include="Model\MyCamera\AtikCamera.cs" />
     <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />

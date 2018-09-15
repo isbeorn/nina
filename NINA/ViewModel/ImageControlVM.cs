@@ -627,34 +627,30 @@ namespace NINA.ViewModel {
 
         private async Task<bool> SaveToDiskAsync(ImageParameters parameters, CancellationToken token) {
             _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSave"] });
-            await Task.Run(async () => {
-                List<OptionsVM.ImagePattern> p = new List<OptionsVM.ImagePattern>();
+            await Task.Run(() => {
+                ImagePatterns p = new ImagePatterns();
 
-                p.Add(new OptionsVM.ImagePattern("$$FILTER$$", "Filtername", parameters.FilterName));
-
-                p.Add(new OptionsVM.ImagePattern("$$EXPOSURETIME$$", "Exposure Time in seconds", string.Format("{0:0.00}", parameters.ExposureTime)));
-                p.Add(new OptionsVM.ImagePattern("$$DATE$$", "Date with format YYYY-MM-DD", DateTime.Now.ToString("yyyy-MM-dd")));
-                p.Add(new OptionsVM.ImagePattern("$$TIME$$", "Time with format HH-mm-ss", DateTime.Now.ToString("HH-mm-ss")));
-                p.Add(new OptionsVM.ImagePattern("$$DATETIME$$", "Date with format YYYY-MM-DD_HH-mm-ss", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")));
-                p.Add(new OptionsVM.ImagePattern("$$FRAMENR$$", "# of the Frame with format ####", string.Format("{0:0000}", parameters.ExposureNumber)));
-                p.Add(new OptionsVM.ImagePattern("$$IMAGETYPE$$", "Light, Flat, Dark, Bias", parameters.ImageType));
+                p.Set(ImagePatternKeys.Filter, parameters.FilterName);
+                p.Set(ImagePatternKeys.ExposureTime, parameters.ExposureTime);
+                p.Set(ImagePatternKeys.Date, DateTime.Now.ToString("yyyy-MM-dd"));
+                p.Set(ImagePatternKeys.Time, DateTime.Now.ToString("HH-mm-ss"));
+                p.Set(ImagePatternKeys.DateTime, DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
+                p.Set(ImagePatternKeys.FrameNr, parameters.ExposureNumber);
+                p.Set(ImagePatternKeys.ImageType, parameters.ImageType);
 
                 if (parameters.Binning == string.Empty) {
-                    p.Add(new OptionsVM.ImagePattern("$$BINNING$$", "Binning of the camera", "1x1"));
+                    p.Set(ImagePatternKeys.Binning, "1x1");
                 } else {
-                    p.Add(new OptionsVM.ImagePattern("$$BINNING$$", "Binning of the camera", parameters.Binning));
+                    p.Set(ImagePatternKeys.Binning, parameters.Binning);
                 }
 
-                p.Add(new OptionsVM.ImagePattern("$$SENSORTEMP$$", "Temperature of the Camera", string.Format("{0:00}", cameraInfo.Temperature)));
-
-                p.Add(new OptionsVM.ImagePattern("$$TARGETNAME$$", "Target Name if available", parameters.TargetName));
-
-                p.Add(new OptionsVM.ImagePattern("$$GAIN$$", "Camera Gain", cameraInfo.Gain.ToString() ?? string.Empty));
-
-                p.Add(new OptionsVM.ImagePattern("$$RMS$$", "Guiding RMS during Exposure", string.Format("{0:0.00}", parameters.RecordedRMS.Total)));
+                p.Set(ImagePatternKeys.SensorTemp, cameraInfo.Temperature);
+                p.Set(ImagePatternKeys.TargetName, parameters.TargetName);
+                p.Set(ImagePatternKeys.Gain, cameraInfo.Gain);
+                p.Set(ImagePatternKeys.RMS, parameters.RecordedRMS.Total);
 
                 string path = Path.GetFullPath(profileService.ActiveProfile.ImageFileSettings.FilePath);
-                string filename = Utility.Utility.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern, p);
+                string filename = p.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern);
                 string completefilename = Path.Combine(path, filename);
 
                 Stopwatch sw = Stopwatch.StartNew();
@@ -779,77 +775,6 @@ namespace NINA.ViewModel {
                     f.Write(fs);
                 }
 
-                return uniquePath;
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
-                return string.Empty;
-            }
-        }
-
-        [Obsolete]
-        private string SaveFits2(string path, ImageParameters parameters) {
-            try {
-                Header h = new Header();
-                h.AddValue("SIMPLE", "T", "C# FITS");
-                h.AddValue("BITPIX", 16, "");
-                h.AddValue("NAXIS", 2, "Dimensionality");
-                h.AddValue("NAXIS1", this.ImgArr.Statistics.Width, "");
-                h.AddValue("NAXIS2", this.ImgArr.Statistics.Height, "");
-                h.AddValue("BZERO", 32768, "");
-                h.AddValue("EXTEND", "T", "Extensions are permitted");
-
-                h.AddValue("DATE-OBS", DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture), "");
-
-                if (!string.IsNullOrEmpty(parameters.FilterName)) {
-                    h.AddValue("FILTER", parameters.FilterName, "");
-                }
-
-                if (cameraInfo.BinX > 0) {
-                    h.AddValue("XBINNING", cameraInfo.BinX, "");
-                }
-                if (cameraInfo.BinY > 0) {
-                    h.AddValue("YBINNING", cameraInfo.BinY, "");
-                }
-                h.AddValue("EGAIN", cameraInfo.Gain, "");
-
-                if (telescopeInfo != null) {
-                    h.AddValue("SITELAT", telescopeInfo.SiteLatitude.ToString(CultureInfo.InvariantCulture), "");
-                    h.AddValue("SITELONG", telescopeInfo.SiteLongitude.ToString(CultureInfo.InvariantCulture), "");
-                    h.AddValue("OBJCTRA", telescopeInfo.RightAscensionString, "");
-                    h.AddValue("OBJCTDEC", telescopeInfo.DeclinationString, "");
-                }
-
-                var temp = cameraInfo.Temperature;
-                if (!double.IsNaN(temp)) {
-                    h.AddValue("TEMPERAT", temp, "");
-                    h.AddValue("CCD-TEMP", temp, "");
-                }
-
-                h.AddValue("IMAGETYP", parameters.ImageType, "");
-                h.AddValue("EXPOSURE", parameters.ExposureTime, "");
-
-                short[][] curl = new short[this.ImgArr.Statistics.Height][];
-                int idx = 0;
-                for (int i = 0; i < this.ImgArr.Statistics.Height; i++) {
-                    curl[i] = new short[this.ImgArr.Statistics.Width];
-                    for (int j = 0; j < this.ImgArr.Statistics.Width; j++) {
-                        curl[i][j] = (short)(short.MinValue + this.ImgArr.FlatArray[idx]);
-                        idx++;
-                    }
-                }
-                ImageData d = new ImageData(curl);
-
-                Fits fits = new Fits();
-                BasicHDU hdu = FitsFactory.HDUFactory(h, d);
-                fits.AddHDU(hdu);
-
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".fits");
-
-                using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
-                    fits.Write(fs);
-                }
                 return uniquePath;
             } catch (Exception ex) {
                 Logger.Error(ex);
