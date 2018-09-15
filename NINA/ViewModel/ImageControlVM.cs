@@ -538,6 +538,8 @@ namespace NINA.ViewModel {
                         iarr.Statistics.DetectedStars = analysis.DetectedStars;
                     }
 
+                    source = ImageAnalysis.Convert16BppTo8BppSource(source);
+
                     if (iarr.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
                         _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
