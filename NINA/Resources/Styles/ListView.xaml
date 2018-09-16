@@ -114,7 +114,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="{x:Type ListViewItem}">
+    <Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
 
@@ -143,4 +143,6 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ListViewItem}" />
 </ResourceDictionary>
