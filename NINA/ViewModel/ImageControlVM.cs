@@ -648,6 +648,7 @@ namespace NINA.ViewModel {
                 p.Set(ImagePatternKeys.TargetName, parameters.TargetName);
                 p.Set(ImagePatternKeys.Gain, cameraInfo.Gain);
                 p.Set(ImagePatternKeys.RMS, parameters.RecordedRMS.Total);
+                p.Set(ImagePatternKeys.RMSArcSec, parameters.RecordedRMS.Total * parameters.RecordedRMS.Scale);
 
                 string path = Path.GetFullPath(profileService.ActiveProfile.ImageFileSettings.FilePath);
                 string filename = p.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern);

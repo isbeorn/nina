@@ -675,7 +675,8 @@ Berechneter HFR: {2}
     <s:String x:Key="LblASIImageDownloadError">Fehler beim Erhalten der Bilddaten!</s:String>
     <s:String x:Key="LblDebayerImage">Bild debayern</s:String>
     <s:String x:Key="LblDebayerImageTooltip">Bild in der Vorschau debayern (gespeichertes Bild ist davon nicht betroffen)</s:String>
-    <s:String x:Key="LblGuidingRMSDescription">Wurzel der mittleren Fehlerquadratsumme der Nachführung während der Aufnahme</s:String>
+    <s:String x:Key="LblGuidingRMSDescription">Wurzel der mittleren Fehlerquadratsumme der Nachführung während der Aufnahme in Pixel</s:String>
+    <s:String x:Key="LblGuidingRMSArcSecDescription">Wurzel der mittleren Fehlerquadratsumme der Nachführung während der Aufnahme in Bogensekunden</s:String>
     <s:String x:Key="LblChange">Wechseln</s:String>
     <s:String x:Key="LblActiveFilter">Aktiver Filter</s:String>
     <s:String x:Key="LblNASASkySurvey">NASA Sky Survey</s:String>

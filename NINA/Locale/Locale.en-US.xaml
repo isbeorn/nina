@@ -670,7 +670,8 @@ Calculated HFR: {2}
     <s:String x:Key="LblASIImageDownloadError">Error retrieving image data from camera!</s:String>
     <s:String x:Key="LblDebayerImage">Debayer Image</s:String>
     <s:String x:Key="LblDebayerImageTooltip">Debayer Image on preview (won't affect saved file)</s:String>
-    <s:String x:Key="LblGuidingRMSDescription">Root mean square error of guiding during exposure</s:String>
+    <s:String x:Key="LblGuidingRMSDescription">Root mean square error of guiding during exposure in pixels</s:String>
+    <s:String x:Key="LblGuidingRMSArcSecDescription">Root mean square error of guiding during exposure in arc seconds</s:String>
     <s:String x:Key="LblChange">Change</s:String>
     <s:String x:Key="LblActiveFilter">Active filter</s:String>
     <s:String x:Key="LblNASASkySurvey">NASA Sky Survey</s:String>

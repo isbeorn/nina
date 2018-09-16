@@ -55,6 +55,9 @@ namespace NINA.Model {
 
             p = new ImagePattern(ImagePatternKeys.RMS, Locale.Loc.Instance["LblGuidingRMSDescription"]);
             patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.RMSArcSec, Locale.Loc.Instance["LblGuidingRMSArcSecDescription"]);
+            patterns.Add(p.Key, p);
         }
 
         public bool Set(string key, string value) {
@@ -81,8 +84,7 @@ namespace NINA.Model {
         /// <returns></returns>
         internal string GetImageFileString(string filePatternMacro) {
             string s = filePatternMacro;
-            var nonEmptyPatterns = patterns.Where((x) => !string.IsNullOrWhiteSpace(x.Value.Value)).Select((x) => x.Value);
-            foreach (ImagePattern p in nonEmptyPatterns) {
+            foreach (ImagePattern p in patterns.Values) {
                 s = s.Replace(p.Key, p.Value);
             }
             s = Path.Combine(s.Split(Utility.Utility.PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries));
@@ -104,6 +106,7 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.TargetName, "M33");
             p.Set(ImagePatternKeys.Gain, "1600");
             p.Set(ImagePatternKeys.RMS, 0.35);
+            p.Set(ImagePatternKeys.RMSArcSec, 0.65);
             return p;
         }
     }
@@ -125,6 +128,7 @@ namespace NINA.Model {
         public static readonly string TargetName = "$$TARGETNAME$$";
         public static readonly string Gain = "$$GAIN$$";
         public static readonly string RMS = "$$RMS$$";
+        public static readonly string RMSArcSec = "$$RMSARCSEC$$";
     }
 
     public class ImagePattern {
