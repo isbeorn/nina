@@ -15,7 +15,18 @@ namespace NINA.View {
         }
 
         private void TextBox_PreviewDragOver(object sender, DragEventArgs e) {
-            e.Handled = true;
+            TextBox textBox = sender as TextBox;
+            if (textBox != null && e != null) {
+                // Set the caret at the position where user ended the drag-drop operation
+                Point dropPosition = e.GetPosition(textBox);
+
+                textBox.SelectionStart = GetCaretIndexFromPoint(textBox, dropPosition);
+                textBox.SelectionLength = 0;
+
+                // don't forget to set focus to the text box to make the caret visible!
+                textBox.Focus();
+                e.Handled = true;
+            }
         }
 
         private void TextBox_Drop(object sender, DragEventArgs e) {
@@ -47,6 +58,29 @@ namespace NINA.View {
                     ImageFilePatternTextBox.Text += mySelectedItem.Key;
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the caret index of a given point in the given textbox
+        /// </summary>
+        /// <param name="textBox"></param>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        private static int GetCaretIndexFromPoint(TextBox textBox, Point point) {
+            int index = textBox.GetCharacterIndexFromPoint(point, true);
+
+            // GetCharacterIndexFromPoint is missing one caret position, as there is one extra caret position than there are characters (an extra one at the end).
+            //  We have to add that caret index if the given point is at the end of the textbox
+            if (index == textBox.Text.Length - 1) {
+                // Get the position of the character index using the bounding rectangle
+                Rect caretRect = textBox.GetRectFromCharacterIndex(index);
+                Point caretPoint = new Point(caretRect.X, caretRect.Y);
+
+                if (point.X > caretPoint.X) {
+                    index += 1;
+                }
+            }
+            return index;
         }
     }
 }
