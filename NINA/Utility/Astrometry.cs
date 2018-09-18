@@ -298,8 +298,16 @@ namespace NINA.Utility.Astrometry {
             return AstroUtils.MoonIllumination(Astrometry.GetJulianDate(date));
         }
 
+        /// <summary>
+        /// Calculates arcseconds per pixel for given pixelsize and focallength
+        /// </summary>
+        /// <param name="pixelSize">Pixel size in microns</param>
+        /// <param name="focalLength">Focallength in mm</param>
+        /// <returns></returns>
         public static double ArcsecPerPixel(double pixelSize, double focalLength) {
-            return (pixelSize / focalLength) * 206.3; ;
+            // arcseconds inside one radian and compensated by the difference of microns in pixels and mm in focal length
+            var factor = DegreeToArcsec(ToDegree(1)) / 1000d;
+            return (pixelSize / focalLength) * factor;
         }
 
         public static double MaxFieldOfView(double arcsecPerPixel, double width, double height) {
