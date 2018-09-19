@@ -55,6 +55,11 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(FileTypes));
             };
 
+            profileService.LocationChanged += (object sender, EventArgs e) => {
+                RaisePropertyChanged(nameof(Latitude));
+                RaisePropertyChanged(nameof(Longitude));
+            };
+
             profileService.ProfileChanged += (object sender, EventArgs e) => {
                 ProfileChanged();
             };

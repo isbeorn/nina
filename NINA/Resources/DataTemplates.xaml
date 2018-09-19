@@ -28,4 +28,8 @@
     <DataTemplate DataType="{x:Type vm:AberrationInspectorVM}">
         <view:AberrationInspectorView />
     </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:TelescopeLatLongSyncVM}">
+        <view:TelescopeLatLongSyncView />
+    </DataTemplate>
 </ResourceDictionary>
