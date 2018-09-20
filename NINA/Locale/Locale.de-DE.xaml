@@ -713,4 +713,5 @@ Berechneter HFR: {2}
     <s:String x:Key="LblNINAToTelescope">NINA zum Teleskop</s:String>
     <s:String x:Key="LblTelescopeToNINA">Teleskop zu NINA</s:String>
     <s:String x:Key="LblNINA">NINA</s:String>
+    <s:String x:Key="LblFocuserPositionDescription">Derzeitige Okularauszugsposition</s:String>
 </ResourceDictionary>

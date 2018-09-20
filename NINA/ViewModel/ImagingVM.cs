@@ -26,6 +26,7 @@ namespace NINA.ViewModel {
                 ICameraMediator cameraMediator,
                 ITelescopeMediator telescopeMediator,
                 IFilterWheelMediator filterWheelMediator,
+                IFocuserMediator focuserMediator,
                 IGuiderMediator guiderMediator,
                 IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
@@ -48,7 +49,7 @@ namespace NINA.ViewModel {
             StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
             StopLiveViewCommand = new RelayCommand(StopLiveView);
 
-            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, focuserMediator, imagingMediator, applicationStatusMediator);
         }
 
         private ImageControlVM _imageControl;

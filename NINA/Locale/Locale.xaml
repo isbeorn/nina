@@ -705,4 +705,5 @@ Calculated HFR: {2}
     <s:String x:Key="LblNINAToTelescope">NINA to Telescope</s:String>
     <s:String x:Key="LblTelescopeToNINA">Telescope to NINA</s:String>
     <s:String x:Key="LblNINA">NINA</s:String>
+    <s:String x:Key="LblFocuserPositionDescription">Current focuser position</s:String>
 </ResourceDictionary>

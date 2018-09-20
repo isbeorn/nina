@@ -1,5 +1,6 @@
 ﻿using NINA.Model;
 using NINA.Model.MyCamera;
+using NINA.Model.MyFocuser;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
@@ -26,9 +27,9 @@ using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
-    internal class ImageControlVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
+    internal class ImageControlVM : DockableVM, ICameraConsumer, ITelescopeConsumer, IFocuserConsumer {
 
-        public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IFocuserMediator focuserMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblImage";
 
             this.cameraMediator = cameraMediator;
@@ -36,6 +37,9 @@ namespace NINA.ViewModel {
 
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
+
+            this.focuserMediator = focuserMediator;
+            this.focuserMediator.RegisterConsumer(this);
 
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
@@ -505,8 +509,10 @@ namespace NINA.ViewModel {
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private ITelescopeMediator telescopeMediator;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
+        private IFocuserMediator focuserMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
+        private FocuserInfo focuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
 
         public async Task<BitmapSource> PrepareImage(
                 ImageArray iarr,
@@ -637,6 +643,10 @@ namespace NINA.ViewModel {
                 p.Set(ImagePatternKeys.DateTime, DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
                 p.Set(ImagePatternKeys.FrameNr, parameters.ExposureNumber);
                 p.Set(ImagePatternKeys.ImageType, parameters.ImageType);
+
+                if (focuserInfo.Connected) {
+                    p.Set(ImagePatternKeys.FocuserPosition, focuserInfo.Position);
+                }
 
                 if (parameters.Binning == string.Empty) {
                     p.Set(ImagePatternKeys.Binning, "1x1");
@@ -883,6 +893,10 @@ namespace NINA.ViewModel {
 
         public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
             this.telescopeInfo = telescopeInfo;
+        }
+
+        public void UpdateDeviceInfo(FocuserInfo deviceInfo) {
+            this.focuserInfo = deviceInfo;
         }
     }
 

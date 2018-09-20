@@ -333,7 +333,7 @@ namespace NINA.ViewModel {
         public ImagingVM ImagingVM {
             get {
                 if (_imagingVM == null) {
-                    _imagingVM = new ImagingVM(profileService, imagingMediator, cameraMediator, telescopeMediator, filterWheelMediator, guiderMediator, applicationStatusMediator);
+                    _imagingVM = new ImagingVM(profileService, imagingMediator, cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, guiderMediator, applicationStatusMediator);
                 }
                 return _imagingVM;
             }

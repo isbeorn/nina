@@ -58,6 +58,9 @@ namespace NINA.Model {
 
             p = new ImagePattern(ImagePatternKeys.RMSArcSec, Locale.Loc.Instance["LblGuidingRMSArcSecDescription"]);
             patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.FocuserPosition, Locale.Loc.Instance["LblFocuserPositionDescription"]);
+            patterns.Add(p.Key, p);
         }
 
         public bool Set(string key, string value) {
@@ -74,6 +77,10 @@ namespace NINA.Model {
                 return this.Set(key, string.Format("{0:0.00}", value));
             }
             return false;
+        }
+
+        public bool Set(string key, int value) {
+            return this.Set(key, string.Format("{0:0}", value));
         }
 
         /// <summary>
@@ -107,6 +114,7 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.Gain, "1600");
             p.Set(ImagePatternKeys.RMS, 0.35);
             p.Set(ImagePatternKeys.RMSArcSec, 0.65);
+            p.Set(ImagePatternKeys.FocuserPosition, 12542);
             return p;
         }
     }
@@ -129,6 +137,7 @@ namespace NINA.Model {
         public static readonly string Gain = "$$GAIN$$";
         public static readonly string RMS = "$$RMS$$";
         public static readonly string RMSArcSec = "$$RMSARCSEC$$";
+        public static readonly string FocuserPosition = "$$FOCUSERPOSITION$$";
     }
 
     public class ImagePattern {
