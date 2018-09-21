@@ -97,7 +97,7 @@ namespace NINA.Utility.SkySurvey {
                             new XAttribute("Rotation", skySurveyImage.Rotation),
                             new XAttribute("FoVW", skySurveyImage.FoVWidth.ToString("R", CultureInfo.InvariantCulture)),
                             new XAttribute("FoVH", skySurveyImage.FoVHeight.ToString("R", CultureInfo.InvariantCulture)),
-                            new XAttribute("FileName", imgFilePath),
+                            new XAttribute("FileName", Path.GetFileName(imgFilePath)),
                             new XAttribute("Source", skySurveyImage.Source),
                             new XAttribute("Name", name)
                         );
@@ -159,6 +159,10 @@ namespace NINA.Utility.SkySurvey {
         }
 
         private BitmapSource LoadJpg(string filename) {
+            if (!Path.IsPathRooted(filename)) {
+                filename = Path.Combine(framingAssistantCachePath, filename);
+            }
+
             JpegBitmapDecoder JpgDec = new JpegBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
             return JpgDec.Frames[0];
         }
