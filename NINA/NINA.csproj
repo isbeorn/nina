@@ -285,6 +285,7 @@
     <Compile Include="Model\DummyDevice.cs" />
     <Compile Include="Model\GuideStepsHistory.cs" />
     <Compile Include="Model\IDevice.cs" />
+    <Compile Include="Model\ImagePattern.cs" />
     <Compile Include="Model\MyCamera\AtikCamera.cs" />
     <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
@@ -527,6 +528,7 @@
     <Compile Include="ViewModel\RotatorVM.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
     <Compile Include="ViewModel\SkyAtlasVM.cs" />
+    <Compile Include="ViewModel\TelescopeLatLongSyncVM.cs" />
     <Compile Include="ViewModel\TelescopeVM.cs" />
     <Compile Include="ViewModel\ThumbnailVM.cs" />
     <Compile Include="ViewModel\VersionCheckVM.cs" />
@@ -668,6 +670,9 @@
     </Compile>
     <Compile Include="View\SkyAtlasView.xaml.cs">
       <DependentUpon>SkyAtlasView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TelescopeLatLongSyncView.xaml.cs">
+      <DependentUpon>TelescopeLatLongSyncView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TelescopeView.xaml.cs">
       <DependentUpon>TelescopeView.xaml</DependentUpon>
@@ -1027,6 +1032,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\SkyAtlasView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TelescopeLatLongSyncView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

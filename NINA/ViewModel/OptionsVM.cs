@@ -1,4 +1,5 @@
-﻿using NINA.Model.MyCamera;
+﻿using NINA.Model;
+using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
@@ -45,13 +46,18 @@ namespace NINA.ViewModel {
                 return SelectedProfile != null;
             });
 
-            ImagePatterns = CreateImagePatternList();
+            ImagePatterns = ImagePatterns.CreateExample();
 
             ScanForIndexFiles();
 
             profileService.LocaleChanged += (object sender, EventArgs e) => {
-                ImagePatterns = CreateImagePatternList();
+                ImagePatterns = ImagePatterns.CreateExample();
                 RaisePropertyChanged(nameof(FileTypes));
+            };
+
+            profileService.LocationChanged += (object sender, EventArgs e) => {
+                RaisePropertyChanged(nameof(Latitude));
+                RaisePropertyChanged(nameof(Longitude));
             };
 
             profileService.ProfileChanged += (object sender, EventArgs e) => {
@@ -149,23 +155,6 @@ namespace NINA.ViewModel {
 
         private void FilterWheelFilters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
             FilterWheelFilters = FilterWheelFilters;
-        }
-
-        private HashSet<ImagePattern> CreateImagePatternList() {
-            HashSet<ImagePattern> p = new HashSet<ImagePattern>();
-            p.Add(new ImagePattern("$$FILTER$$", Locale.Loc.Instance["LblFilternameDescription"], "L"));
-            p.Add(new ImagePattern("$$DATE$$", Locale.Loc.Instance["LblDateFormatDescription"], "2016-01-01"));
-            p.Add(new ImagePattern("$$DATETIME$$", Locale.Loc.Instance["LblDateTimeFormatDescription"], "2016-01-01_12-00-00"));
-            p.Add(new ImagePattern("$$TIME$$", Locale.Loc.Instance["LblTimeFormatDescription"], "12-00-00"));
-            p.Add(new ImagePattern("$$FRAMENR$$", Locale.Loc.Instance["LblFrameNrDescription"], "0001"));
-            p.Add(new ImagePattern("$$IMAGETYPE$$", Locale.Loc.Instance["LblImageTypeDescription"], "Light"));
-            p.Add(new ImagePattern("$$BINNING$$", Locale.Loc.Instance["LblBinningDescription"], "1x1"));
-            p.Add(new ImagePattern("$$SENSORTEMP$$", Locale.Loc.Instance["LblTemperatureDescription"], "-15"));
-            p.Add(new ImagePattern("$$EXPOSURETIME$$", Locale.Loc.Instance["LblExposureTimeDescription"], string.Format("{0:0.00}", 10.21234)));
-            p.Add(new ImagePattern("$$TARGETNAME$$", Locale.Loc.Instance["LblTargetNameDescription"], "M33"));
-            p.Add(new ImagePattern("$$GAIN$$", Locale.Loc.Instance["LblGainDescription"], "1600"));
-            p.Add(new ImagePattern("$$RMS$$", Locale.Loc.Instance["LblGuidingRMSDescription"], string.Format("{0:0.00}", 0.35)));
-            return p;
         }
 
         private void OpenSkyAtlasImageRepositoryDiag(object obj) {
@@ -289,7 +278,7 @@ namespace NINA.ViewModel {
         public ICommand SelectProfileCommand { get; private set; }
 
         private void PreviewFile(object o) {
-            MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern, ImagePatterns), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
+            MyMessageBox.MyMessageBox.Show(ImagePatterns.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
         }
 
         private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
@@ -822,57 +811,15 @@ namespace NINA.ViewModel {
             }
         }
 
-        private HashSet<ImagePattern> _imagePatterns;
+        private ImagePatterns _imagePatterns;
 
-        public HashSet<ImagePattern> ImagePatterns {
+        public ImagePatterns ImagePatterns {
             get {
                 return _imagePatterns;
             }
             set {
                 _imagePatterns = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        public class ImagePattern {
-
-            public ImagePattern(string k, string d, string v) {
-                Key = k;
-                Description = d;
-                Value = v;
-            }
-
-            private string _key;
-            private string _description;
-            private string _value;
-
-            public string Value {
-                get {
-                    return _value;
-                }
-                set {
-                    _value = value;
-                }
-            }
-
-            public string Key {
-                get {
-                    return _key;
-                }
-
-                set {
-                    _key = value;
-                }
-            }
-
-            public string Description {
-                get {
-                    return _description;
-                }
-
-                set {
-                    _description = value;
-                }
             }
         }
 

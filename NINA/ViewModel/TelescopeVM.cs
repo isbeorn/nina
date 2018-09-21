@@ -6,6 +6,7 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.Utility.WindowService;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -106,6 +107,8 @@ namespace NINA.ViewModel {
             }
         }
 
+        public IWindowService WindowService { get; set; } = new WindowService();
+
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
 
         private async Task<bool> ChooseTelescope() {
@@ -135,8 +138,20 @@ namespace NINA.ViewModel {
                         if (connected) {
                             Telescope = telescope;
 
-                            if (Telescope.CanSetSiteLatLong && (Telescope.SiteLatitude != profileService.ActiveProfile.AstrometrySettings.Latitude || Telescope.SiteLongitude != profileService.ActiveProfile.AstrometrySettings.Longitude)) {
-                                if (MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblSyncLatLongText"], Locale.Loc.Instance["LblSyncLatLong"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
+                            if (Telescope.SiteLatitude != profileService.ActiveProfile.AstrometrySettings.Latitude || Telescope.SiteLongitude != profileService.ActiveProfile.AstrometrySettings.Longitude) {
+                                var syncVM = new TelescopeLatLongSyncVM(
+                                    Telescope.CanSetSiteLatLong,
+                                    profileService.ActiveProfile.AstrometrySettings.Latitude,
+                                    profileService.ActiveProfile.AstrometrySettings.Longitude,
+                                    Telescope.SiteLatitude,
+                                    Telescope.SiteLongitude
+                                );
+                                WindowService.ShowDialog(syncVM, Locale.Loc.Instance["LblSyncLatLong"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+
+                                if (syncVM.Mode == TelescopeLatLongSyncVM.LatLongSyncMode.NINA) {
+                                    profileService.ChangeLatitude(Telescope.SiteLatitude);
+                                    profileService.ChangeLongitude(Telescope.SiteLongitude);
+                                } else if (syncVM.Mode == TelescopeLatLongSyncVM.LatLongSyncMode.TELESCOPE) {
                                     Telescope.SiteLatitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
                                     Telescope.SiteLongitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
                                 }
