@@ -28,7 +28,7 @@ namespace NINA.ViewModel {
             CancelChooseFocuserCommand = new RelayCommand(CancelChooseFocuser);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList);
-            MoveFocuserCommand = new AsyncCommand<int>(() => MoveFocuser(TargetPosition), (p) => FocuserInfo.Connected && FocuserInfo.TempComp == false);
+            MoveFocuserCommand = new AsyncCommand<int>(() => MoveFocuser(TargetPosition), (p) => FocuserInfo.Connected);
             HaltFocuserCommand = new RelayCommand(HaltFocuser);
             ToggleTempCompCommand = new RelayCommand(ToggleTempComp);
 
@@ -61,6 +61,11 @@ namespace NINA.ViewModel {
             int pos = -1;
             await Task.Run(() => {
                 try {
+                    var tempComp = false;
+                    if (Focuser.TempCompAvailable && Focuser.TempComp) {
+                        tempComp = true;
+                        ToggleTempComp(false);
+                    }
                     while (Focuser.Position != position) {
                         FocuserInfo.IsMoving = true;
                         _cancelMove.Token.ThrowIfCancellationRequested();
@@ -68,6 +73,7 @@ namespace NINA.ViewModel {
                     }
                     FocuserInfo.Position = position;
                     pos = position;
+                    ToggleTempComp(tempComp);
                     BroadcastFocuserInfo();
                 } catch (OperationCanceledException) {
                 }
