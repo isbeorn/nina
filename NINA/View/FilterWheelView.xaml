@@ -201,10 +201,6 @@
                                 Width="Auto"
                                 DisplayMemberBinding="{Binding Name}"
                                 Header="{ns:Loc LblFilterName}" />
-                            <GridViewColumn
-                                Width="Auto"
-                                DisplayMemberBinding="{Binding FocusOffset}"
-                                Header="{ns:Loc LblFocusOffset}" />
                         </GridView>
                     </ListView.View>
                 </ListView>

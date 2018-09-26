@@ -54,7 +54,7 @@ namespace NINA.ViewModel {
             await semaphoreSlim.WaitAsync(token);
             try {
                 if (FW?.Connected == true) {
-                    var prevFilter = FilterWheelInfo.SelectedFilter;
+                    var prevFilter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where(x => x.Position == FilterWheelInfo.SelectedFilter?.Position).FirstOrDefault();
                     var filter = FW.Filters.Where((x) => x.Position == inputFilter.Position).FirstOrDefault();
                     if (filter == null) {
                         Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (inputFilter.Position + 1)));
@@ -66,8 +66,11 @@ namespace NINA.ViewModel {
                         Task changeFocus = null;
                         if (profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets) {
                             if (prevFilter != null) {
-                                int offset = filter.FocusOffset - prevFilter.FocusOffset;
-                                changeFocus = focuserMediator.MoveFocuserRelative(offset);
+                                var newFilter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where(x => x.Position == filter.Position).FirstOrDefault();
+                                if (newFilter != null) {
+                                    int offset = newFilter.FocusOffset - prevFilter.FocusOffset;
+                                    changeFocus = focuserMediator.MoveFocuserRelative(offset);
+                                }
                             }
                         }
 
