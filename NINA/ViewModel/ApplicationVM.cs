@@ -423,7 +423,7 @@ namespace NINA.ViewModel {
         public AutoFocusVM AutoFocusVM {
             get {
                 if (_autoFocusVM == null) {
-                    _autoFocusVM = new AutoFocusVM(profileService, cameraMediator, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator);
+                    _autoFocusVM = new AutoFocusVM(profileService, cameraMediator, filterWheelMediator, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator);
                 }
                 return _autoFocusVM;
             }

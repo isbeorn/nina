@@ -17,18 +17,19 @@ using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
-    internal class AutoFocusVM : DockableVM, ICameraConsumer, IFocuserConsumer {
+    internal class AutoFocusVM : DockableVM, ICameraConsumer, IFocuserConsumer, IFilterWheelConsumer {
 
         public AutoFocusVM(IProfileService profileService,
             IFocuserMediator focuserMediator,
             IGuiderMediator guiderMediator,
             IImagingMediator imagingMediator,
-            IApplicationStatusMediator applicationStatusMediator) : this(profileService, null, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator) {
+            IApplicationStatusMediator applicationStatusMediator) : this(profileService, null, null, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator) {
         }
 
         public AutoFocusVM(
                 IProfileService profileService,
                 ICameraMediator cameraMediator,
+                IFilterWheelMediator filterWheelMediator,
                 IFocuserMediator focuserMediator,
                 IGuiderMediator guiderMediator,
                 IImagingMediator imagingMediator,
@@ -40,6 +41,11 @@ namespace NINA.ViewModel {
             if (cameraMediator != null) {
                 this.cameraMediator = cameraMediator;
                 this.cameraMediator.RegisterConsumer(this);
+            }
+
+            if (filterWheelMediator != null) {
+                this.filterWheelMediator = filterWheelMediator;
+                this.filterWheelMediator.RegisterConsumer(this);
             }
 
             this.focuserMediator = focuserMediator;
@@ -57,7 +63,11 @@ namespace NINA.ViewModel {
 
                         async () => {
                             _autoFocusCancelToken = new CancellationTokenSource();
-                            return await StartAutoFocus(null, _autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
+                            FilterInfo filter = null;
+                            if (this.filterInfo?.SelectedFilter != null) {
+                                filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where(x => x.Position == this.filterInfo.SelectedFilter.Position).FirstOrDefault();
+                            }
+                            return await StartAutoFocus(filter, _autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
                         }
                     ),
                 (p) => { return focuserInfo?.Connected == true && cameraInfo?.Connected == true; }
@@ -276,6 +286,8 @@ namespace NINA.ViewModel {
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private FocuserInfo focuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
         private IFocuserMediator focuserMediator;
+        private IFilterWheelMediator filterWheelMediator;
+        private FilterWheelInfo filterInfo;
 
         public AutoFocusPoint LastAutoFocusPoint {
             get {
@@ -297,6 +309,10 @@ namespace NINA.ViewModel {
 
         public void UpdateDeviceInfo(FocuserInfo focuserInfo) {
             this.focuserInfo = focuserInfo;
+        }
+
+        public void UpdateDeviceInfo(FilterWheelInfo deviceInfo) {
+            this.filterInfo = deviceInfo;
         }
 
         public ICommand StartAutoFocusCommand { get; private set; }
