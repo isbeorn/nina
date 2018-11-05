@@ -1,4 +1,4 @@
-﻿using ASCOM.DeviceInterface;
+using ASCOM.DeviceInterface;
 using Nikon;
 using NINA.Utility;
 using NINA.Utility.Enum;
@@ -603,6 +603,10 @@ namespace NINA.Model.MyCamera {
                         Logger.Debug("Use Serial Port for camera");
 
                         BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
+                    } else if (profileService.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.SERIALRELAY) {
+                        Logger.Debug("Use serial relay for camera");
+
+                        BulbCapture(exposureTime, StartSerialRelayCapture, StopSerialRelayCapture);
                     } else {
                         Logger.Debug("Use Bulb capture");
                         BulbCapture(exposureTime, StartBulbCapture, StopBulbCapture);
@@ -612,6 +616,19 @@ namespace NINA.Model.MyCamera {
         }
 
         private SerialPortInteraction serialPortInteraction;
+        private SerialRelayInteraction serialRelayInteraction;
+
+        private void StartSerialRelayCapture() {
+            Logger.Debug("Serial relay start of exposure");
+            OpenSerialRelay();
+            serialRelayInteraction.Send(new byte[] { 0xFF, 0x01, 0x01 });
+        }
+
+        private void StopSerialRelayCapture() {
+            Logger.Debug("Serial relay stop of exposure");
+            OpenSerialRelay();
+            serialRelayInteraction.Send(new byte[] { 0xFF, 0x01, 0x00 });
+        }
 
         private void StartSerialPortCapture() {
             Logger.Debug("Serial port start of exposure");
@@ -630,6 +647,15 @@ namespace NINA.Model.MyCamera {
                 serialPortInteraction = new SerialPortInteraction(profileService.ActiveProfile.CameraSettings.SerialPort);
             }
             if (!serialPortInteraction.Open()) {
+                throw new Exception("Unable to open SerialPort " + profileService.ActiveProfile.CameraSettings.SerialPort);
+            }
+        }
+
+        private void OpenSerialRelay() {
+            if (serialRelayInteraction?.PortName != profileService.ActiveProfile.CameraSettings.SerialPort) {
+                serialRelayInteraction = new SerialRelayInteraction(profileService.ActiveProfile.CameraSettings.SerialPort);
+            }
+            if (!serialRelayInteraction.Open()) {
                 throw new Exception("Unable to open SerialPort " + profileService.ActiveProfile.CameraSettings.SerialPort);
             }
         }

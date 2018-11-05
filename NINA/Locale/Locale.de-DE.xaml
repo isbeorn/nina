@@ -406,6 +406,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblBulbMode">Bulb Modus</s:String>
     <s:String x:Key="LblNative">Nativ</s:String>
     <s:String x:Key="LblSerialPort">Serieller Port</s:String>
+    <s:String x:Key="LblSerialRelay">Serielles Relay</s:String>
     <s:String x:Key="LblTelescopeSnapPort">Teleskop Snap Port</s:String>
     <s:String x:Key="LblEquipment">Ausrüstung</s:String>
     <s:String x:Key="LblImportFromFilterWheel">Von Filterrad importieren</s:String>
