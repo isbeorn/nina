@@ -632,6 +632,8 @@ namespace NINA.ViewModel {
 
                 p.Add(new OptionsVM.ImagePattern("$$GAIN$$", "Camera Gain", Cam?.Gain.ToString() ?? string.Empty));
 
+                p.Add(new OptionsVM.ImagePattern("$$RMS$$", "Guiding RMS during Exposure", string.Format("{0:0.00}", parameters.RecordedRMS.Total)));
+
                 string path = Path.GetFullPath(profileService.ActiveProfile.ImageFileSettings.FilePath);
                 string filename = Utility.Utility.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern, p);
                 string completefilename = Path.Combine(path, filename);
@@ -930,5 +932,6 @@ namespace NINA.ViewModel {
         public string Binning { get; internal set; }
         public double ExposureTime { get; internal set; }
         public string TargetName { get; internal set; }
+        public RMS RecordedRMS { get; internal set; }
     }
 }

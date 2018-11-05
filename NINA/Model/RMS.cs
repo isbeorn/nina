@@ -2,6 +2,7 @@
 using System;
 
 namespace NINA.Model {
+
     public class RMS : BaseINPC {
         private int datapoints;
         private double sum_RA;
@@ -14,7 +15,7 @@ namespace NINA.Model {
 
         public double RA {
             get {
-                return Scale * ra;
+                return ra;
             }
 
             set {
@@ -26,7 +27,7 @@ namespace NINA.Model {
 
         public double Dec {
             get {
-                return Scale * dec;
+                return dec;
             }
 
             set {
@@ -38,7 +39,7 @@ namespace NINA.Model {
 
         public double Total {
             get {
-                return Scale * total;
+                return total;
             }
 
             set {
@@ -50,19 +51,19 @@ namespace NINA.Model {
 
         public string RAText {
             get {
-                return string.Format(Locale.Loc.Instance["LblPHD2RARMS"], RA.ToString("0.00"));
+                return string.Format(Locale.Loc.Instance["LblPHD2RARMS"], RA.ToString("0.00"), (RA * Scale).ToString("0.00"));
             }
         }
 
         public string DecText {
             get {
-                return string.Format(Locale.Loc.Instance["LblPHD2DecRMS"], Dec.ToString("0.00"));
+                return string.Format(Locale.Loc.Instance["LblPHD2DecRMS"], Dec.ToString("0.00"), (Dec * Scale).ToString("0.00"));
             }
         }
 
         public string TotalText {
             get {
-                return string.Format(Locale.Loc.Instance["LblPHD2TotalRMS"], Total.ToString("0.00"));
+                return string.Format(Locale.Loc.Instance["LblPHD2TotalRMS"], Total.ToString("0.00"), (Total * Scale).ToString("0.00"));
             }
         }
 
@@ -75,6 +76,20 @@ namespace NINA.Model {
             sum_Dec += decDistance;
             sum_Dec2 += (decDistance * decDistance);
 
+            CalculateRMS();
+        }
+
+        public void RemoveDataPoint(double raDistance, double decDistance) {
+            datapoints--;
+            sum_RA -= raDistance;
+            sum_RA2 -= (raDistance * raDistance);
+            sum_Dec -= decDistance;
+            sum_Dec2 -= (decDistance * decDistance);
+
+            CalculateRMS();
+        }
+
+        private void CalculateRMS() {
             var ra = Math.Sqrt(datapoints * sum_RA2 - sum_RA * sum_RA) / datapoints;
             var dec = Math.Sqrt(datapoints * sum_Dec2 - sum_Dec * sum_Dec) / datapoints;
             RA = ra;
@@ -87,7 +102,7 @@ namespace NINA.Model {
             sum_RA = 0.0d;
             sum_RA2 = 0.0d;
             sum_Dec = 0.0d;
-            sum_Dec = 0.0d;
+            sum_Dec2 = 0.0d;
             RA = 0;
             Dec = 0;
             Total = 0;

@@ -111,7 +111,7 @@
                                         VerticalAlignment="Center"
                                         Columns="2">
                                         <TextBlock Text="{ns:Loc LblPixelScale}" />
-                                        <TextBlock Margin="5,0,0,0" Text="{Binding PixelScale}" />
+                                        <TextBlock Margin="5,0,0,0" Text="{Binding GuideStepsHistory.PixelScale}" />
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>

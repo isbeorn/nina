@@ -13,56 +13,17 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid VerticalAlignment="Center" Columns="2">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
-                    <CheckBox
-                        Width="20"
-                        Height="20"
-                        Margin="5"
-                        HorizontalAlignment="Left"
-                        BorderBrush="Transparent"
-                        IsChecked="{Binding Guider.Connected, FallbackValue=False, Mode=OneWay}"
-                        IsEnabled="False"
-                        Style="{StaticResource CheckmarkCheckbox}" />
-                </UniformGrid>
-            </Border>
-            <Border
-                Grid.Row="1"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblState}" />
                     <TextBlock Margin="5,0,0,0" Text="{Binding Guider.AppState.State}" />
                 </UniformGrid>
             </Border>
-            <Border
-                Grid.Row="2"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
-                <UniformGrid VerticalAlignment="Center" Columns="3">
-                    <TextBlock
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Text="{Binding RMS.RAText}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Text="{Binding RMS.DecText}" />
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        Text="{Binding RMS.TotalText}" />
-                </UniformGrid>
-            </Border>
             <local:MinimalisticGuiderGraph
-                Grid.Row="3"
-                MinHeight="80"
+                Grid.Row="1"
                 DataContext="{Binding}"
                 IsEnabled="{Binding Guider.Connected}" />
         </Grid>
