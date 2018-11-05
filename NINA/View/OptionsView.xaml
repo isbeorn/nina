@@ -843,7 +843,7 @@
                             <UniformGrid.Style>
                                 <Style TargetType="{x:Type UniformGrid}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="2">
+                                        <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="3">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
 
@@ -897,6 +897,10 @@
                             <UniformGrid.Style>
                                 <Style TargetType="{x:Type UniformGrid}">
                                     <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="2">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+
                                         <DataTrigger Binding="{Binding ElementName=cbBulbMode, Path=SelectedItem}" Value="1">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>

@@ -255,7 +255,7 @@ namespace NINA.ViewModel {
 
         private async Task RotateEquipment(CaptureSequenceList csl, PlateSolveResult plateSolveResult, IProgress<ApplicationStatus> progress) {
             // Rotate to desired angle
-            if (rotatorInfo?.Connected == true) {
+            if (csl.CenterTarget && rotatorInfo?.Connected == true) {
                 var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 var solveseq = new CaptureSequence() {
                     ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,

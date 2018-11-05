@@ -11,6 +11,9 @@ namespace NINA.Utility.Enum {
         [Description("LblSerialPort")]
         SERIALPORT,
 
+        [Description("LblSerialRelay")]
+        SERIALRELAY,
+
         [Description("LblTelescopeSnapPort")]
         TELESCOPESNAPPORT
     }
