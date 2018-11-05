@@ -280,7 +280,8 @@ namespace NINA.ViewModel {
                                 Temperature = Cam.Temperature,
                                 TemperatureSetPoint = Cam.TemperatureSetPoint,
                                 XSize = Cam.CameraXSize,
-                                YSize = Cam.CameraYSize
+                                YSize = Cam.CameraYSize,
+                                Battery = Cam.BatteryLevel
                             };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);

@@ -637,6 +637,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int BatteryLevel => -1;
+
         public void StopExposure() {
             var err = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
         }
@@ -689,6 +691,8 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged();
             }
         }
+
+        public bool HasBattery => true;
 
         public void StartLiveView() {
             SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_PC);
