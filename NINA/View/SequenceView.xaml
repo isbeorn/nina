@@ -703,6 +703,16 @@
                 <DataGridTemplateColumn
                     Width="*"
                     CanUserSort="False"
+                    Header="{ns:Loc LblEnabled}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></CheckBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn
+                    Width="*"
+                    CanUserSort="False"
                     Header="{ns:Loc LblProgress}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

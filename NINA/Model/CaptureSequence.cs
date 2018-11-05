@@ -44,7 +44,7 @@ namespace NINA.Model {
 
         public int Count {
             get {
-                return Items.Count;
+                return Items.Where(i => i.Enabled).Count();
             }
         }
 
@@ -179,33 +179,44 @@ namespace NINA.Model {
             CaptureSequence seq = null;
 
             if (Mode == SequenceMode.STANDARD) {
-                seq = ActiveSequence ?? Items.First();
+                seq = ActiveSequence ?? Items.First(i => i.Enabled);
                 if (seq.ProgressExposureCount == seq.TotalExposureCount) {
                     //No exposures remaining. Get next Sequence
                     var idx = Items.IndexOf(seq) + 1;
-                    if (idx < Items.Count) {
-                        seq = Items[idx];
-                        ActiveSequence = seq;
-                        return this.Next();
-                    } else {
-                        seq = null;
-                    }
+                    do {
+                        if (idx < Items.Count) {
+                            seq = Items[idx];
+                            if (!seq.Enabled) {
+                                idx++;
+                                seq = null;
+                                continue;
+                            }
+
+                            ActiveSequence = seq;
+                            return this.Next();
+                        } else {
+                            seq = null;
+                            break;
+                        }
+                    } while (seq == null);
                 }
             } else if (Mode == SequenceMode.ROTATE) {
                 //Check if all sequences are done
-                if (Items.Count == Items.Where(x => x.ProgressExposureCount == x.TotalExposureCount).Count()) {
+                if (Items.Where(x => x.Enabled).Count() == Items.Where(x => x.ProgressExposureCount == x.TotalExposureCount && x.Enabled).Count()) {
                     //All sequences done
                     ActiveSequence = null;
                     return null;
                 }
 
                 seq = ActiveSequence;
-                if (seq == Items.FirstOrDefault() && seq?.ProgressExposureCount == 0 && seq?.TotalExposureCount > 0) {
+                if (seq == Items.FirstOrDefault(i => i.Enabled) && seq?.ProgressExposureCount == 0 && seq?.TotalExposureCount > 0) {
                     //first sequence active
-                    seq = Items.First();
+                    seq = Items.First(i => i.Enabled);
                 } else {
-                    var idx = (Items.IndexOf(seq) + 1) % Items.Count;
-                    seq = Items[idx];
+                    do {
+                        var idx = (Items.IndexOf(seq) + 1) % Items.Count;
+                        seq = Items[idx];
+                    } while (!seq.Enabled);
                 }
 
                 if (seq.ProgressExposureCount == seq.TotalExposureCount) {
@@ -595,6 +606,7 @@ namespace NINA.Model {
             TotalExposureCount = exposureCount;
             DitherAmount = 1;
             Gain = -1;
+            Enabled = true;
         }
 
         private double _exposureTime;
@@ -602,6 +614,17 @@ namespace NINA.Model {
         private MyFilterWheel.FilterInfo _filterType;
         private MyCamera.BinningMode _binning;
         private int _progressExposureCount;
+
+        [XmlElement(nameof(Enabled))]
+        public bool Enabled {
+            get {
+                return _enabled;
+            }
+            set {
+                _enabled = value;
+                RaisePropertyChanged();
+            }
+        }
 
         [XmlElement(nameof(ExposureTime))]
         public double ExposureTime {
@@ -730,6 +753,7 @@ namespace NINA.Model {
         }
 
         private int _ditherAmount;
+        private bool _enabled = true;
 
         [XmlElement(nameof(DitherAmount))]
         public int DitherAmount {
