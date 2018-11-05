@@ -549,6 +549,18 @@ namespace NINA.Model.MyCamera {
         public int SubSampleWidth { get; set; }
         public int SubSampleHeight { get; set; }
 
+        public int BatteryLevel {
+            get {
+                try {
+                    return _camera.GetInteger(eNkMAIDCapability.kNkMAIDCapability_BatteryLevel);
+                } catch (NikonException ex) {
+                    return -1;
+                }
+            }
+        }
+
+        public bool HasBattery => true;
+
         public void AbortExposure() {
             if (Connected) {
                 _camera.StopBulbCapture();

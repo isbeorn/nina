@@ -1093,5 +1093,9 @@ namespace NINA.Model.MyCamera {
                 // todo: code to start liveview if possible
             }
         }
+
+        public int BatteryLevel => -1;
+
+        public bool HasBattery => false;
     }
 }

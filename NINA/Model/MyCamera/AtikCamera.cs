@@ -444,5 +444,10 @@ namespace NINA.Model.MyCamera {
                 _liveViewEnabled = value;
             }
         }
+
+
+        public int BatteryLevel => -1;
+
+        public bool HasBattery => false;
     }
 }
