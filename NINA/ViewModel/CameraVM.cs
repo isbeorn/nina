@@ -367,7 +367,7 @@ namespace NINA.ViewModel {
             CameraInfo.CameraState = (string)(o ?? string.Empty);
 
             cameraValues.TryGetValue(nameof(CameraInfo.Battery), out o);
-            CameraInfo.Battery = (int)(o ?? -1));
+            CameraInfo.Battery = (int)(o ?? -1);
 
             DateTime x = DateTime.Now;
             CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.CoolerPower));
