@@ -446,6 +446,7 @@
     <Compile Include="Utility\Profile\WeatherDataSettings.cs" />
     <Compile Include="Utility\RawConverter\FreeImageConverter.cs" />
     <Compile Include="Utility\RawConverter\IRawConverter.cs" />
+    <Compile Include="Utility\SerialRelayInteraction.cs" />
     <Compile Include="Utility\SerialPortInteraction.cs" />
     <Compile Include="Utility\SkySurvey\CacheSkySurvey.cs" />
     <Compile Include="Utility\SkySurvey\ESOSkySurvey.cs" />
