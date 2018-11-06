@@ -23,7 +23,7 @@ namespace NINA.Utility.SkySurvey {
             dialog.FileName = "";
             dialog.DefaultExt = ".tif";
             dialog.Multiselect = false;
-            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png";
+            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png;*.cr2|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png|RAW Files|*.cr2;*.nef";
 
             if (dialog.ShowDialog() == true) {
                 BitmapSource img = null;
@@ -39,6 +39,11 @@ namespace NINA.Utility.SkySurvey {
 
                     case ".jpg":
                         img = LoadJpg(dialog.FileName);
+                        break;
+
+                    case ".cr2":
+                    case ".nef":
+                        img = await LoadRAW(dialog.FileName, ct);
                         break;
                 }
 
@@ -73,6 +78,17 @@ namespace NINA.Utility.SkySurvey {
         private BitmapSource LoadTiff(string filename) {
             TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
             return TifDec.Frames[0];
+        }
+
+        private async Task<BitmapSource> LoadRAW(string filename, CancellationToken ct) {
+            using (FileStream fs = new FileStream(filename, FileMode.Open)) {
+                using (MemoryStream ms = new MemoryStream()) {
+                    fs.CopyTo(ms);
+                    var converter = RawConverter.RawConverter.CreateInstance(Enum.RawConverterEnum.DCRAW);
+                    var iarr = await converter.ConvertToImageArray(ms, ct, 0);
+                    return ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
+                }
+            }
         }
     }
 }
