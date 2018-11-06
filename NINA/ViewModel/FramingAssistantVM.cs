@@ -480,18 +480,18 @@ namespace NINA.ViewModel {
                         if (skySurveyImage.Coordinates == null) {
                             skySurveyImage = await PlateSolveSkySurvey(skySurveyImage);
                         }
+
+                        CalculateRectangle(skySurveyImage);
+
+                        await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                            ImageParameter = null;
+                            GC.Collect();
+                            ImageParameter = skySurveyImage;
+                        }));
+
+                        SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
+                        RaisePropertyChanged(nameof(ImageCacheInfo));
                     }
-
-                    CalculateRectangle(skySurveyImage);
-
-                    await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                        ImageParameter = null;
-                        GC.Collect();
-                        ImageParameter = skySurveyImage;
-                    }));
-
-                    SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
-                    RaisePropertyChanged(nameof(ImageCacheInfo));
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);
