@@ -248,6 +248,7 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblTelescopeCannotSlew">Telescope cannot slew</s:String>
     <s:String x:Key="LblTelescopeNotConnected">Telescope not connected</s:String>
     <s:String x:Key="LblCameraBusy">Camera is busy</s:String>
+    <s:String x:Key="LblCameraBattery">Camera Battery</s:String>
     <s:String x:Key="LblGuiderNoSettleDone">Guider did not send SettleDone message in time. Skipping.</s:String>
     <s:String x:Key="LblNoCameraConnected">No camera connected</s:String>
     <s:String x:Key="LblGuiderDitherButNotConnected">Guider Dither is enabled, but application is not connected to Guider</s:String>

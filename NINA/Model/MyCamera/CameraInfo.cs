@@ -80,6 +80,13 @@ namespace NINA.Model.MyCamera {
             set { pixelSize = value; RaisePropertyChanged(); }
         }
 
+        private int battery;
+
+        public int Battery {
+            get { return battery; }
+            set { battery = value; RaisePropertyChanged(); }
+        }
+
         private bool coolerOn;
 
         public bool CoolerOn {

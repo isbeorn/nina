@@ -271,6 +271,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int BatteryLevel => -1;
+
         private AsyncObservableCollection<BinningMode> _binningModes;
 
         public AsyncObservableCollection<BinningMode> BinningModes {
@@ -634,6 +636,8 @@ namespace NINA.Model.MyCamera {
                 // todo: start liveview if possible
             }
         }
+
+        public bool HasBattery => false;
     }
 
     public class CaptureAreaInfo {

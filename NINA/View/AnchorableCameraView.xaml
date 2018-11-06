@@ -96,6 +96,21 @@
                     </Border>
 
                     <Border
+                        MinHeight="30"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Visibility="{Binding Cam.HasBattery, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblCameraBattery}" />
+                            <TextBlock
+                                MinWidth="20"
+                                Margin="5,0,0,0"
+                                Text="{Binding CameraInfo.Battery, StringFormat=\{0:#.00\}%}"
+                                Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                        </UniformGrid>
+                    </Border>
+
+                    <Border
                         MinHeight="5"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0,0,0,1" />

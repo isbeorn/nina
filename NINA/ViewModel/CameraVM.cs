@@ -280,7 +280,8 @@ namespace NINA.ViewModel {
                                 Temperature = Cam.Temperature,
                                 TemperatureSetPoint = Cam.TemperatureSetPoint,
                                 XSize = Cam.CameraXSize,
-                                YSize = Cam.CameraYSize
+                                YSize = Cam.CameraYSize,
+                                Battery = Cam.BatteryLevel
                             };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
@@ -365,6 +366,9 @@ namespace NINA.ViewModel {
             cameraValues.TryGetValue(nameof(CameraInfo.CameraState), out o);
             CameraInfo.CameraState = (string)(o ?? string.Empty);
 
+            cameraValues.TryGetValue(nameof(CameraInfo.Battery), out o);
+            CameraInfo.Battery = (int)(o ?? -1);
+
             DateTime x = DateTime.Now;
             CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.CoolerPower));
             CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.Temperature));
@@ -379,6 +383,9 @@ namespace NINA.ViewModel {
             cameraValues.Add(nameof(CameraInfo.Temperature), _cam?.Temperature ?? double.NaN);
             cameraValues.Add(nameof(CameraInfo.CoolerPower), _cam?.CoolerPower ?? double.NaN);
             cameraValues.Add(nameof(CameraInfo.CameraState), _cam?.CameraState ?? string.Empty);
+            if (_cam != null && _cam.HasBattery) {
+                cameraValues.Add(nameof(CameraInfo.Battery), _cam?.BatteryLevel ?? -1);
+            }
 
             //cameraValues.Add(nameof(FullWellCapacity),_cam?.FullWellCapacity ?? double.NaN);
             //cameraValues.Add(nameof(HeatSinkTemperature),_cam?.HeatSinkTemperature ?? false);
