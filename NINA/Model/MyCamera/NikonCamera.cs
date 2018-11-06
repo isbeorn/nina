@@ -554,6 +554,7 @@ namespace NINA.Model.MyCamera {
                 try {
                     return _camera.GetInteger(eNkMAIDCapability.kNkMAIDCapability_BatteryLevel);
                 } catch (NikonException ex) {
+                    Logger.Error(ex);
                     return -1;
                 }
             }
