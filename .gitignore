@@ -1,33 +1,84 @@
-*.suo
-bin/
-NINA/bin/
-NINA/obj/
-NINASetup_x86/Debug/
-NINASetup_x86/Release/
-NINASetup/Debug/
-NINASetup/Release/
-NINACustomControlLibrary/bin/
-NINACustomControlLibrary/obj/
-NINATest/bin/
-NINATest/obj/
-nikoncswrapper/bin/
-nikoncswrapper/obj/
-StarDataImport/bin/
-StarDataImport/obj/
-SetupCygwinInstallAction/obj/
-SetupCygwinInstallAction/bin/
-packages/
+#DLL files that must not be included
 NINA/External/Canon/
 NINA/External/Nikon/
 NINA/External/x86/Canon/
 NINA/External/x86/Nikon/
 NINA/External/x64/Canon/
 NINA/External/x64/Nikon/
-/.vs/NINA/v15/sqlite3/storage.ide
-/.vs/NINA/v15
-/.vs
-/.axoCover/runs
-/.axoCover
-/TestResults
-/NINASetup_x86/obj
-/NINASetup/obj
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/
+
+# Visual Studio 2017 auto generated files
+Generated\ Files/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NUNIT
+*.VisualState.xml
+TestResult.xml
+
+# Files built by Visual Studio
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# AxoCover is a Code Coverage Tool
+.axoCover/*
+!.axoCover/settings.json
+
+# NuGet Packages
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
