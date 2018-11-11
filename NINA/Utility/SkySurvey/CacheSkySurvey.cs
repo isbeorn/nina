@@ -34,9 +34,19 @@ namespace NINA.Utility.SkySurvey {
                 return;
             } else {
                 Cache = XElement.Load(framingAssistantCachInfo);
+
+                /* Ensure Backwards compatibility with v1.6.0.2 */
                 var elements = Cache.Elements("Image").Where(x => x.Attribute("Id") == null);
                 foreach (var element in elements) {
                     element.Add(new XAttribute("Id", Guid.NewGuid()));
+                }
+                elements = Cache.Elements("Image").Where(x => x.Attribute("Source") == null);
+                foreach (var element in elements) {
+                    if (element.Attribute("Rotation").Value != "0") {
+                        element.Add(new XAttribute("Source", nameof(FileSkySurvey)));
+                    } else {
+                        element.Add(new XAttribute("Source", nameof(NASASkySurvey)));
+                    }
                 }
             }
         }

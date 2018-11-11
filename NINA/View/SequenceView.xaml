@@ -898,7 +898,7 @@
                     </DataGridTemplateColumn.Visibility>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <ComboBox SelectedItem="{Binding Gain, Mode=TwoWay, Converter={StaticResource MinusOneToEmptyStringConverter}}">
+                            <ComboBox SelectedItem="{Binding Gain, Mode=TwoWay, Converter={StaticResource MinusOneToEmptyStringConverter}, UpdateSourceTrigger=LostFocus}">
                                 <ComboBox.ItemsSource>
                                     <CompositeCollection>
                                         <s:Int16>-1</s:Int16>
