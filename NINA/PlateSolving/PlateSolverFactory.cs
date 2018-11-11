@@ -51,6 +51,22 @@ namespace NINA.PlateSolving {
                     coords,
                     profileService.ActiveProfile.PlateSolveSettings.PS2Location
                 );
+            } else if (solver == PlateSolverEnum.ASPS) {
+                if (profileService.ActiveProfile.PlateSolveSettings.SearchRadius > 0 && coords != null) {
+                    Platesolver = new AllSkyPlateSolver(
+                        profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                        profileService.ActiveProfile.CameraSettings.PixelSize * binning,
+                        profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                        coords,
+                        profileService.ActiveProfile.PlateSolveSettings.CygwinLocation
+                    );
+                } else {
+                    Platesolver = new AllSkyPlateSolver(
+                        profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                        profileService.ActiveProfile.CameraSettings.PixelSize * binning,
+                        profileService.ActiveProfile.PlateSolveSettings.CygwinLocation
+                    );
+                }
             }
 
             return Platesolver;

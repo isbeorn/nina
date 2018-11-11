@@ -12,6 +12,9 @@ namespace NINA.Utility.Enum {
         LOCAL,
 
         [Description("LblPlatesolve2")]
-        PLATESOLVE2
+        PLATESOLVE2,
+
+        [Description("LblASPS")]
+        ASPS
     }
 }
