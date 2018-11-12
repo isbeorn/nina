@@ -17,7 +17,7 @@ namespace NINA.PlateSolving {
         private double searchRadius;
         private Coordinates coords;
         private string aspsLocation;
-        private string imageFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.jpg");
+        private string imageFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "tmp.jpg").Replace("\\", "/");
         private string outputFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "aspsresult.txt");
 
         public AllSkyPlateSolver(int focalLength, double pixelSize, string aspsLocation) {
@@ -50,7 +50,7 @@ namespace NINA.PlateSolving {
                 if (File.Exists(outputFilePath)) {
                     string[] lines = File.ReadAllLines(outputFilePath, Encoding.UTF8);
                     if (lines.Length > 0) {
-                        if (lines[0] == "OK" && lines.Length > 8) {
+                        if (lines[0] == "OK" && lines.Length >= 8) {
                             var ra = double.Parse(lines[1]);
                             var dec = double.Parse(lines[2]);
 
@@ -63,58 +63,75 @@ namespace NINA.PlateSolving {
                             result.Orientation = double.Parse(lines[6]);
 
                             var focalLength = lines[7];
+
+                            result.Success = true;
                         }
                     }
                 }
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
                 Logger.Error(ex);
+            } finally {
+                if (File.Exists(outputFilePath)) {
+                    File.Delete(outputFilePath);
+                }
+                if (File.Exists(imageFilePath)) {
+                    File.Delete(imageFilePath);
+                }
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return result;
         }
 
-        private void CallCommandLine(IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+        private void CallCommandLine(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             System.Diagnostics.Process process = new System.Diagnostics.Process();
             System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
             startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-            startInfo.FileName = "cmd.exe";
+            startInfo.FileName = aspsLocation;
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = true;
             startInfo.CreateNoWindow = true;
-            startInfo.Arguments = string.Format("/C {0} /solvefile {1}", aspsLocation, GetArguments());
+            startInfo.Arguments = string.Format("/solvefile {0}", GetArguments());
             process.StartInfo = startInfo;
             process.Start();
 
-            while (!process.StandardOutput.EndOfStream) {
-                progress.Report(new ApplicationStatus() { Status = process.StandardOutput.ReadLine() });
-                canceltoken.ThrowIfCancellationRequested();
+            using (ct.Register(() => process.Kill())) {
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlateSolving"] });
+
+                while (!process.StandardOutput.EndOfStream) {
+                    progress.Report(new ApplicationStatus() { Status = process.StandardOutput.ReadLine() });
+                    ct.ThrowIfCancellationRequested();
+                }
             }
         }
 
         private string GetArguments() {
             var args = new List<string>();
 
-            args.Add("FileName");
+            //FileName
             args.Add(imageFilePath);
 
-            args.Add("OutFile");
+            //OutFile
             args.Add(outputFilePath);
 
-            args.Add("FocalLength");
+            //FocalLength
             args.Add(focalLength.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
 
-            args.Add("PixelSize");
+            //PixelSize
             args.Add(pixelSize.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
 
             if (coords != null) {
-                args.Add("CurrentRA");
-                args.Add(coords.RA.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
+                //CurrentRA
+                args.Add(coords.RADegrees.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
 
-                args.Add("CurrentDec");
+                //CurrentDec
                 args.Add(coords.Dec.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
+            } else {
+                args.Add("0");
+                args.Add("0");
             }
 
-            args.Add("NearRadius");
+            //NearRadius
             args.Add(searchRadius.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
 
             return string.Join(" ", args);

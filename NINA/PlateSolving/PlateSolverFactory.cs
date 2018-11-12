@@ -58,13 +58,13 @@ namespace NINA.PlateSolving {
                         profileService.ActiveProfile.CameraSettings.PixelSize * binning,
                         profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
                         coords,
-                        profileService.ActiveProfile.PlateSolveSettings.CygwinLocation
+                        profileService.ActiveProfile.PlateSolveSettings.AspsLocation
                     );
                 } else {
                     Platesolver = new AllSkyPlateSolver(
                         profileService.ActiveProfile.TelescopeSettings.FocalLength,
                         profileService.ActiveProfile.CameraSettings.PixelSize * binning,
-                        profileService.ActiveProfile.PlateSolveSettings.CygwinLocation
+                        profileService.ActiveProfile.PlateSolveSettings.AspsLocation
                     );
                 }
             }
