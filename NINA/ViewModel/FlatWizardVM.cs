@@ -35,13 +35,16 @@ namespace NINA.ViewModel {
 
         private double tolerance;
 
-        private double calculatedExposureTime = 0;
+        private double calculatedExposureTime;
 
-        private int calculatedHistogramMean = 0;
+        private double calculatedHistogramMean;
+
+        private double stepSize;
 
         private CancellationTokenSource findExposureCancelToken;
 
         private BitmapSource image;
+        private ApplicationStatus _status;
 
         public IAsyncCommand FindExposureTimeCommand { get; private set; }
         public RelayCommand CancelFindExposureTimeCommand { get; }
@@ -76,6 +79,7 @@ namespace NINA.ViewModel {
             Tolerance = profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance;
             GottaGoFast = profileService.ActiveProfile.FlatWizardSettings.NoFlatProcessing;
             MinExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime;
+            StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize;
         }
 
         public FlatWizardVM(IProfileService profileService,
@@ -98,18 +102,66 @@ namespace NINA.ViewModel {
             return await StartFindingExposureTimeSequence(progress, ct);
         }
 
+        public ApplicationStatus Status {
+            get {
+                return _status;
+            }
+            set {
+                _status = value;
+                _status.Source = Title;
+                RaisePropertyChanged();
+
+                applicationStatusMediator.StatusUpdate(_status);
+            }
+        }
+
         private async Task<bool> StartFindingExposureTimeSequence(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             bool foundHistogramCenter = false;
+            double exposureTime = MinExposureTime;
+            var oldAutoStretch = imagingMediator.SetAutoStretch(false);
+            var oldDetectStars = imagingMediator.SetDetectStars(false);
+
+            var status = new ApplicationStatus { Status = "Starting Exposure Time calculation at " + MinExposureTime, Source = Title };
+            progress.Report(status);
+
             do {
-                progress.Report(new ApplicationStatus() { Status = "Starting Exposure Time calculation at " + MinExposureTime });
-                var oldAutoStretch = imagingMediator.SetAutoStretch(true);
-                var oldDetectStars = imagingMediator.SetDetectStars(false);
-                Image =
-                    await imagingMediator.CaptureAndPrepareImage(new CaptureSequence(MinExposureTime, "FLAT", SelectedFilter, new BinningMode(1, 1), 1), ct, progress);
-                imagingMediator.SetAutoStretch(oldAutoStretch);
-                imagingMediator.SetDetectStars(oldDetectStars);
+                var iarr = await imagingMediator.CaptureImage(new CaptureSequence(exposureTime, "FLAT", SelectedFilter, new BinningMode(1, 1), 1), ct, progress);
+                Image = await ImageControlVM.StretchAsync(
+                    iarr.Statistics.Mean,
+                    ImageAnalysis.CreateSourceFromArray(
+                        iarr,
+                        System.Windows.Media.PixelFormats.Gray16),
+                    profileService.ActiveProfile.ImageSettings.AutoStretchFactor);
+
+                var currentMean = iarr.Statistics.Mean;
+                var histogramMeanAdu = HistogramMeanTarget * Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth);
+
+                if (histogramMeanAdu - histogramMeanAdu * Tolerance <= currentMean && histogramMeanAdu + histogramMeanAdu * Tolerance >= currentMean) {
+                    CalculatedExposureTime = exposureTime;
+                    CalculatedHistogramMean = currentMean;
+                    progress.Report(new ApplicationStatus() { Status = "Mean ADU is " + CalculatedHistogramMean + ", target Exposure Time is " + CalculatedExposureTime, Source = Title });
+                    foundHistogramCenter = true;
+                } else if (currentMean > histogramMeanAdu + histogramMeanAdu * Tolerance) {
+                    // issue with too long flats
+                    // display current mean ADU of max ADU of the camera
+                    // prompt user to either:
+                    // - dim the light
+                    // - adjust tolerance/mean
+                    // - reset exposure counter should be optional
+                    // - cancel
+                    progress.Report(new ApplicationStatus() { Status = "Could not find histogram center, last result: " + currentMean + ", last target exposure time is " + exposureTime, Source = Title });
+                    foundHistogramCenter = true;
+                } else {
+                    exposureTime += StepSize;
+                    progress.Report(new ApplicationStatus() { Status = "Mean ADU was " + currentMean + ", starting Exposure Time calculation at " + exposureTime, Source = Title });
+                }
+
                 ct.ThrowIfCancellationRequested();
             } while (foundHistogramCenter == false);
+
+            imagingMediator.SetAutoStretch(oldAutoStretch);
+            imagingMediator.SetDetectStars(oldDetectStars);
+
             return foundHistogramCenter;
         }
 
@@ -136,6 +188,17 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double StepSize {
+            get {
+                return stepSize;
+            }
+            set {
+                stepSize = value;
+                profileService.ActiveProfile.FlatWizardSettings.StepSize = stepSize;
+                RaisePropertyChanged();
+            }
+        }
+
         public bool GottaGoFast {
             get {
                 return gottaGoFast;
@@ -157,7 +220,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public int CalculatedHistogramMean {
+        public double CalculatedHistogramMean {
             get {
                 return calculatedHistogramMean;
             }
@@ -218,8 +281,6 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
-
-        public ApplicationStatus Status { get; private set; }
 
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
             CameraConnected = deviceInfo.Connected;

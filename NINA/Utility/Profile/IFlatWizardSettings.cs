@@ -5,5 +5,6 @@
         double HistogramMeanTarget { get; set; }
         double HistogramTolerance { get; set; }
         bool NoFlatProcessing { get; set; }
+        double StepSize { get; set; }
     }
 }

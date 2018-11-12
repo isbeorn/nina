@@ -21,6 +21,7 @@ namespace NINA.Utility.Profile {
             histogramTolerance = 0.1;
             histogramMeanTarget = 0.5;
             noFlatProcessing = false;
+            stepSize = 0.5;
         }
 
         private int flatCount;
@@ -71,6 +72,19 @@ namespace NINA.Utility.Profile {
             }
             set {
                 noFlatProcessing = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double stepSize;
+
+        [DataMember]
+        public double StepSize {
+            get {
+                return stepSize;
+            }
+            set {
+                stepSize = value;
                 RaisePropertyChanged();
             }
         }
