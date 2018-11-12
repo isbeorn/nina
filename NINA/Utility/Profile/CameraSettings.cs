@@ -31,6 +31,7 @@ namespace NINA.Utility.Profile {
             downloadToDataRatio = 9;
             rawConverter = RawConverterEnum.DCRAW;
             minFlatExposureTime = 0.2;
+            maxFlatExposureTime = 20;
         }
 
         [DataMember]
@@ -170,6 +171,19 @@ namespace NINA.Utility.Profile {
             }
             set {
                 minFlatExposureTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double maxFlatExposureTime;
+
+        [DataMember]
+        public double MaxFlatExposureTime {
+            get {
+                return maxFlatExposureTime;
+            }
+            set {
+                maxFlatExposureTime = value;
                 RaisePropertyChanged();
             }
         }

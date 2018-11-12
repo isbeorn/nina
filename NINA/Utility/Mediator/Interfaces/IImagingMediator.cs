@@ -23,9 +23,9 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "");
 
-        Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "");
+        Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool bCalculateStatistics = true, string targetname = "");
 
-        Task<ImageArray> CaptureImageWithoutSaving(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
+        Task<ImageArray> CaptureImageWithoutSavingToHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool bCalculateStatistics = false, string targetName = "");
 
         Task<BitmapSource> PrepareImage(ImageArray iarr, CancellationToken token, bool bSave = false, ImageParameters parameters = null);
 

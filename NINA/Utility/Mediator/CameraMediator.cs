@@ -23,8 +23,8 @@ namespace NINA.Utility.Mediator {
             return handler.LiveView(token);
         }
 
-        public Task<ImageArray> Download(CancellationToken token) {
-            return handler.Download(token);
+        public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
+            return handler.Download(token, calculateStatistics);
         }
 
         public void AbortExposure() {

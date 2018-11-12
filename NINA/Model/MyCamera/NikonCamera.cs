@@ -577,13 +577,13 @@ namespace NINA.Model.MyCamera {
             serialPortInteraction = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            var iarr = await converter.ConvertToImageArray(_memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            var iarr = await converter.ConvertToImageArray(_memoryStream, token, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
             iarr.RAWType = "nef";
             _memoryStream.Dispose();
             _memoryStream = null;

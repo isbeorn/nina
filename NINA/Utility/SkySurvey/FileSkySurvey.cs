@@ -85,7 +85,7 @@ namespace NINA.Utility.SkySurvey {
                 using (MemoryStream ms = new MemoryStream()) {
                     fs.CopyTo(ms);
                     var converter = RawConverter.RawConverter.CreateInstance(Enum.RawConverterEnum.DCRAW);
-                    var iarr = await converter.ConvertToImageArray(ms, ct, 0);
+                    var iarr = await converter.ConvertToImageArray(ms, ct, false, 0);
                     return ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
                 }
             }

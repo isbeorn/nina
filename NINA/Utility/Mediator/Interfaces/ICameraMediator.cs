@@ -17,7 +17,7 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);
 
-        Task<ImageArray> Download(CancellationToken token);
+        Task<ImageArray> Download(CancellationToken token, bool calculateStatistics);
 
         void AbortExposure();
 

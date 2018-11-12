@@ -922,7 +922,7 @@ namespace NINA.Model.MyCamera {
             _camera = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
             using (MyStopWatch.Measure("ASCOM Download")) {
                 return await Task.Run(async () => {
                     try {
@@ -936,9 +936,9 @@ namespace NINA.Model.MyCamera {
                         }
 
                         if (SensorType != SensorType.Color) {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, SensorType != SensorType.Monochrome, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         } else {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, false, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         }
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {

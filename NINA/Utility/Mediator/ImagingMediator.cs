@@ -40,12 +40,12 @@ namespace NINA.Utility.Mediator {
             return handler.CaptureAndSaveImage(seq, bsave, ct, progress, targetname);
         }
 
-        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
-            return handler.CaptureImage(sequence, token, progress, bSave, targetname);
+        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool bCalculateStatistics = true, string targetname = "") {
+            return handler.CaptureImage(sequence, token, progress, bSave, bCalculateStatistics, targetname);
         }
 
-        public Task<ImageArray> CaptureImageWithoutSaving(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            return handler.CaptureImageWithoutSaving(sequence, token, progress);
+        public Task<ImageArray> CaptureImageWithoutSavingToHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool bCalculateStatistics = false, string targetName = "") {
+            return handler.CaptureImageWithoutHistoryAndThumbnail(sequence, token, progress, bSave, bCalculateStatistics, targetName);
         }
 
         public Task<BitmapSource> PrepareImage(

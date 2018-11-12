@@ -234,9 +234,9 @@ namespace NINA.ViewModel {
             await cameraMediator.Capture(duration, isLight, token, progress);
         }
 
-        private Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress, bool calculateStatistics) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
-            return cameraMediator.Download(token);
+            return cameraMediator.Download(token, calculateStatistics);
         }
 
         private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
@@ -259,7 +259,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "", bool bSaveToStatistics = true, bool bSaveToHistory = true) {
+        public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress,
+            bool bSave = false, string targetname = "", bool calculateStatistics = true, bool bSaveToStatistics = true, bool bSaveToHistory = true) {
             //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
             await semaphoreSlim.WaitAsync(token);
@@ -318,7 +319,7 @@ namespace NINA.ViewModel {
                     var ditherTask = Dither(sequence, token, progress);
 
                     /*Download Image */
-                    arr = await Download(token, progress);
+                    arr = await Download(token, progress, calculateStatistics);
                     if (arr == null) {
                         throw new OperationCanceledException();
                     }
@@ -467,12 +468,12 @@ namespace NINA.ViewModel {
             ImageControl.ImgArr = null;
         }
 
-        public Task<ImageArray> CaptureImageWithoutSaving(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            return CaptureImage(sequence, token, progress, false, "", false, false);
+        public Task<ImageArray> CaptureImageWithoutHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool calculateStatistics = true, string targetName = "") {
+            return CaptureImage(sequence, token, progress, bSave, "", calculateStatistics, false, false);
         }
 
-        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
-            return CaptureImage(sequence, token, progress, bSave, targetname, true, true);
+        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool calculateStatistics = true, string targetname = "") {
+            return CaptureImage(sequence, token, progress, bSave, targetname, calculateStatistics, true, true);
         }
     }
 }

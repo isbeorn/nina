@@ -434,7 +434,7 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
             return await Task<ImageArray>.Run(async () => {
                 var stream = IntPtr.Zero;
                 var pointer = IntPtr.Zero;
@@ -487,7 +487,7 @@ namespace NINA.Model.MyCamera {
 
                     using (var memoryStream = new System.IO.MemoryStream(bytes)) {
                         var converter = RawConverter.CreateInstance(profileService.Profiles.ActiveProfile.CameraSettings.RawConverter);
-                        var iarr = await converter.ConvertToImageArray(memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                        var iarr = await converter.ConvertToImageArray(memoryStream, token, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         iarr.RAWType = "cr2";
                         return iarr;
                     }

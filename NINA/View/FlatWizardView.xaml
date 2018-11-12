@@ -7,16 +7,17 @@
         xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
         xmlns:ns="clr-namespace:NINA.Locale"
         xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
-            <RowDefinition Height="1*" />
             <RowDefinition Height="6*" />
+            <RowDefinition Height="0.5*" />
         </Grid.RowDefinitions>
-        <UniformGrid Grid.Row="0">
+        <UniformGrid Grid.Row="0" Columns="2">
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                 <UniformGrid Columns="2">
                     <UniformGrid
@@ -36,6 +37,28 @@
                                 Columns="2">
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatMinExposureTime}" />
                         <TextBox Margin="5,0,0,0" Text="{Binding MinExposureTime, UpdateSourceTrigger=PropertyChanged}" />
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatMaxExposureTime}" />
+                        <TextBox Margin="5,0,0,0" Text="{Binding MaxExposureTime, UpdateSourceTrigger=PropertyChanged}" />
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatStepSize}" />
+                        <TextBox Margin="5,0,0,0" Text="{Binding StepSize, UpdateSourceTrigger=PropertyChanged}" />
                     </UniformGrid>
                 </UniformGrid>
             </Border>
@@ -77,16 +100,61 @@
                     <UniformGrid
                                 Margin="0,6,0,6"
                                 VerticalAlignment="Center"
-                                Columns="2">
+                                Columns="2" Height="200">
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatFilterSelection}" />
+                        <ComboBox ItemsSource="{Binding Filters}">
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="Focusable" Value="False" />
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" />
+                                        <TextBlock Margin="5,0,0,0" HorizontalAlignment="Center" Text="{Binding Filter.Name}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatBinningMode}" />
                         <ComboBox
                                 DisplayMemberPath="Name"
-                                ItemsSource="{Binding Filters}"
-                                SelectedItem="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}"
+                                SelectedItem="{Binding Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedValuePath="Name" />
                     </UniformGrid>
                 </UniformGrid>
             </Border>
+
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatGain}" />
+                        <ComboBox SelectedItem="{Binding Gain, Mode=TwoWay, Converter={StaticResource MinusOneToEmptyStringConverter}, UpdateSourceTrigger=LostFocus}">
+                            <ComboBox.ItemsSource>
+                                <CompositeCollection>
+                                    <s:Int16>-1</s:Int16>
+                                    <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains}" />
+                                </CompositeCollection>
+                            </ComboBox.ItemsSource>
+                        </ComboBox>
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                 <UniformGrid Columns="2">
                     <UniformGrid
@@ -110,22 +178,26 @@
                 </UniformGrid>
             </Border>
         </UniformGrid>
-        <UniformGrid Grid.Row="1">
+        <local:ImageView Grid.Row="1" Image="{Binding Image}" />
+        <Grid Grid.Row="2"
+                MinWidth="300"
+                HorizontalAlignment="Right"
+                DockPanel.Dock="Right"
+                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.CameraInfo.Connected, FallbackValue=False}">
             <ninactrl:AsyncProcessButton
                     ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
                     ButtonImage="{StaticResource PlaySVG}"
                     CancelButtonImage="{StaticResource CancelSVG}"
-                    CancelCommand="{Binding CancelFindExposureTimeCommand}"
-                    Command="{Binding FindExposureTimeCommand}"
+                    CancelCommand="{Binding CancelFlatExposureSequenceCommand}"
+                    Command="{Binding StartFlatSequenceCommand}"
                     IsEnabled="{Binding CameraConnected}"
-                    IsPaused="False"
+                    IsPaused="{Binding IsPaused}"
                     LoadingImageBrush="{StaticResource PrimaryBrush}"
                     PauseButtonImage="{StaticResource PauseSVG}"
-                    PauseCommand="{Binding PauseSequenceCommand}"
+                    PauseCommand="{Binding PauseFlatExposureSequenceCommand}"
                     ResumeButtonImage="{StaticResource PlaySVG}"
-                    ResumeCommand="{Binding ResumeSequenceCommand}"
+                    ResumeCommand="{Binding ResumeFlatExposureSequenceCommand}"
                     ToolTip="{ns:Loc LblTooltipStartSequence}" />
-        </UniformGrid>
-        <local:ImageView Grid.Row="2" Image="{Binding Image}" />
+        </Grid>
     </Grid>
 </UserControl>

@@ -511,9 +511,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Task<ImageArray> Download(CancellationToken token) {
+        public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
             if (CameraInfo.Connected == true) {
-                return Cam.DownloadExposure(token);
+                return Cam.DownloadExposure(token, calculateStatistics);
             } else {
                 return null;
             }

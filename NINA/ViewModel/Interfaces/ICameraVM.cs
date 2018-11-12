@@ -26,6 +26,6 @@ namespace NINA.ViewModel.Interfaces {
 
         IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);
 
-        Task<ImageArray> Download(CancellationToken token);
+        Task<ImageArray> Download(CancellationToken token, bool calculateStatistics);
     }
 }

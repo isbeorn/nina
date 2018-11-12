@@ -14,5 +14,6 @@ namespace NINA.Utility.Profile {
         double ReadNoise { get; set; }
         string SerialPort { get; set; }
         double MinFlatExposureTime { get; set; }
+        double MaxFlatExposureTime { get; set; }
     }
 }

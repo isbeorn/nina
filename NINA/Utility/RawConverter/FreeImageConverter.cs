@@ -18,7 +18,7 @@ namespace NINA.Utility.RawConverter {
             DllLoader.LoadDll("FreeImage/FreeImage.dll");
         }
 
-        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, CancellationToken token, int histogramResolution) {
+        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, CancellationToken token, bool calculateStatistics, int histogramResolution) {
             return await Task.Run(async () => {
                 using (MyStopWatch.Measure()) {
                     FIBITMAP img;
@@ -47,7 +47,7 @@ namespace NINA.Utility.RawConverter {
                     cropped.CopyPixels(outArray, 2 * cropped.PixelWidth, 0);
                     memStream.Dispose();
                     FreeImage.UnloadEx(ref img);
-                    var iarr = await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, true, true, histogramResolution);
+                    var iarr = await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, true, calculateStatistics, histogramResolution);
                     iarr.RAWData = s.ToArray();
                     return iarr;
                 }

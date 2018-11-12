@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using NINA.Model.MyCamera;
 
 namespace NINA.Utility.Profile {
 
@@ -22,6 +23,7 @@ namespace NINA.Utility.Profile {
             histogramMeanTarget = 0.5;
             noFlatProcessing = false;
             stepSize = 0.5;
+            binningMode = new BinningMode(1, 1);
         }
 
         private int flatCount;
@@ -85,6 +87,19 @@ namespace NINA.Utility.Profile {
             }
             set {
                 stepSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private BinningMode binningMode;
+
+        [DataMember]
+        public BinningMode BinningMode {
+            get {
+                return binningMode;
+            }
+            set {
+                binningMode = value;
                 RaisePropertyChanged();
             }
         }
