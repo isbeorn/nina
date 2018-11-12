@@ -235,6 +235,21 @@
                             <Grid Width="50" Height="50">
                                 <Path
                                     Margin="5"
+                                    Data="{StaticResource ContrastSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}" />
+                            </Grid>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:FlatWizardView x:Name="FlatWizardView" DataContext="{Binding FlatWizardVM}" />
+                        </TabItem.Content>
+                    </TabItem>
+
+                    <TabItem>
+                        <TabItem.Header>
+                            <Grid Width="50" Height="50">
+                                <Path
+                                    Margin="5"
                                     Data="{StaticResource SequenceSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}" />

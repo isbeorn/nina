@@ -475,6 +475,7 @@
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
+    <Compile Include="ViewModel\FlatWizardVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
     <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />
@@ -599,6 +600,9 @@
     </Compile>
     <Compile Include="View\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FlatWizardView.xaml.cs">
+      <DependentUpon>FlatWizardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FocuserView.xaml.cs">
       <DependentUpon>FocuserView.xaml</DependentUpon>
@@ -937,6 +941,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FilterWheelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FlatWizardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
