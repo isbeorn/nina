@@ -11,6 +11,7 @@ using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
+using NINA.Utility.WindowService;
 using Nito.AsyncEx;
 using OxyPlot;
 
@@ -49,6 +50,8 @@ namespace NINA.ViewModel {
 
         private BitmapSource image;
         private ApplicationStatus _status;
+
+        public IWindowService WindowService { get; set; } = new WindowService();
 
         public IAsyncCommand FindExposureTimeCommand { get; private set; }
         public RelayCommand CancelFlatExposureSequenceCommand { get; }
@@ -90,7 +93,6 @@ namespace NINA.ViewModel {
             FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
             HistogramMeanTarget = profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget;
             Tolerance = profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance;
-            GottaGoFast = profileService.ActiveProfile.FlatWizardSettings.NoFlatProcessing;
             MinExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime;
             MaxExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime;
             StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize;
@@ -111,7 +113,6 @@ namespace NINA.ViewModel {
         }
 
         private void FilterWheelFilters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
-            Filters.Clear();
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) {
                 foreach (FilterInfo item in e.OldItems) {
                     Filters.Remove(Filters.Single(f => f.Filter == item));
@@ -222,16 +223,25 @@ namespace NINA.ViewModel {
                         progress.Report(new ApplicationStatus() { Status = "Mean ADU is " + CalculatedHistogramMean + ", target Exposure Time is " + CalculatedExposureTime, Source = Title });
                         finished = true;
                     } else if (currentMean > histogramMeanAdu + histogramMeanAdu * Tolerance) {
-                        // issue with too bright flats
-                        // display current mean ADU of max ADU of the camera
-                        // prompt user to either:
-                        // - dim the light
-                        // - adjust tolerance/mean
-                        // - reset exposure counter should be optional
-                        // - accept current exposure
-                        // - cancel flat wizard sequence
-                        progress.Report(new ApplicationStatus() { Status = "Could not find histogram center, last result: " + currentMean + ", last target exposure time is " + exposureTime, Source = Title });
-                        finished = true;
+                        TrendLine line = new TrendLine(datapoints);
+                        var expectedExposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
+
+                        var flatsWizardUserPrompt = new FlatsWizardUserPromptVM("Your flats are too bright, dim the light, adjust the tolerance, target mean or the minimum exposure time",
+                            currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
+                            Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, expectedExposureTime
+                        );
+                        WindowService.ShowDialog(flatsWizardUserPrompt, "Ur flats are succ", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+
+                        if (!flatsWizardUserPrompt.Continue) {
+                            finished = true;
+                        } else {
+                            HistogramMeanTarget = flatsWizardUserPrompt.HistogramMean;
+                            Tolerance = flatsWizardUserPrompt.Tolerance;
+                            MinExposureTime = flatsWizardUserPrompt.MinimumTime;
+                            if (flatsWizardUserPrompt.Reset) {
+                                exposureTime = MinExposureTime;
+                            }
+                        }
                     } else {
                         exposureTime += StepSize;
                         progress.Report(new ApplicationStatus() { Status = "Mean ADU was " + currentMean + ", starting Exposure Time calculation at " + exposureTime, Source = Title });
@@ -243,15 +253,21 @@ namespace NINA.ViewModel {
                     }
 
                     if (exposureTime > MaxExposureTime) {
-                        // issue with too long flats
-                        // display current mean ADU of max ADU of the camera
-                        // display estimated flat exposure time
-                        // prompt user to either:
-                        // - brighten the light
-                        // - adjust tolerance/mean
-                        // - reset exposure counter should be optional
-                        // - cancel flat wizard sequence
-                        finished = true;
+                        var flatsWizardUserPrompt = new FlatsWizardUserPromptVM("Your flats are too dim, brighten the light, adjust the tolerance, target mean or the maximum exposure time",
+                            currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
+                            Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, exposureTime
+                        );
+                        WindowService.ShowDialog(flatsWizardUserPrompt, "Ur flats are succ", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+                        if (!flatsWizardUserPrompt.Continue) {
+                            finished = true;
+                        } else {
+                            HistogramMeanTarget = flatsWizardUserPrompt.HistogramMean;
+                            Tolerance = flatsWizardUserPrompt.Tolerance;
+                            MinExposureTime = flatsWizardUserPrompt.MinimumTime;
+                            if (flatsWizardUserPrompt.Reset) {
+                                exposureTime = MinExposureTime;
+                            }
+                        }
                     }
 
                     if (pt.IsPaused) {

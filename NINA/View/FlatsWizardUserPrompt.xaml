@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="NINA.View.FlatsWizardUserPrompt"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:local="clr-namespace:NINA.View"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Text="{Binding Text}" Grid.Row="0" />
+
+        <GroupBox Grid.Row="1" Header="Current Properties">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Current Mean" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding CurrentMean}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Maximum Camera Bit Depth" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding CameraBitDepth}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Rough expected exposure time" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding ExpectedExposureTime}" />
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Grid.Row="2" Header="Adjustable Properties">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Reset Counter" />
+                    <CheckBox Margin="5,0,0,0" IsChecked="{Binding Reset}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Tolerance" />
+                    <TextBox Margin="5,0,0,0" Text="{Binding Tolerance}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Histogram Mean" />
+                    <TextBox Margin="5,0,0,0" Text="{Binding HistogramMean}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Minimum Flat Time" />
+                    <TextBox Margin="5,0,0,0" Text="{Binding MinimumTime}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Maximum Flat Time" />
+                    <TextBox Margin="5,0,0,0" Text="{Binding MaximumTime}" />
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <UniformGrid
+            Grid.Row="3"
+            Margin="5"
+            Columns="3">
+            <Button
+                Margin="5"
+                util:ButtonHelper.DialogResult="True"
+                Command="{Binding ContinueCommand}">
+                <TextBlock
+                    Margin="5"
+                    Foreground="{StaticResource ButtonForegroundBrush}"
+                    Text="Continue" />
+            </Button>
+            <Button
+                Margin="5"
+                util:ButtonHelper.DialogResult="False"
+                Command="{Binding CancelCommand}">
+                <TextBlock
+                    Margin="5"
+                    Foreground="{StaticResource ButtonForegroundBrush}"
+                    Text="Cancel Flat Wizard" />
+            </Button>
+        </UniformGrid>
+    </Grid>
+</UserControl>

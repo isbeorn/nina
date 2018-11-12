@@ -21,7 +21,6 @@ namespace NINA.Utility.Profile {
             flatCount = 10;
             histogramTolerance = 0.1;
             histogramMeanTarget = 0.5;
-            noFlatProcessing = false;
             stepSize = 0.5;
             binningMode = new BinningMode(1, 1);
         }
@@ -61,19 +60,6 @@ namespace NINA.Utility.Profile {
             }
             set {
                 histogramTolerance = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool noFlatProcessing;
-
-        [DataMember]
-        public bool NoFlatProcessing {
-            get {
-                return noFlatProcessing;
-            }
-            set {
-                noFlatProcessing = value;
                 RaisePropertyChanged();
             }
         }

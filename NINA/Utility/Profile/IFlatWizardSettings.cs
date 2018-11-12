@@ -6,7 +6,6 @@ namespace NINA.Utility.Profile {
         int FlatCount { get; set; }
         double HistogramMeanTarget { get; set; }
         double HistogramTolerance { get; set; }
-        bool NoFlatProcessing { get; set; }
         double StepSize { get; set; }
         BinningMode BinningMode { get; set; }
     }
