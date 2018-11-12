@@ -168,13 +168,15 @@ namespace NINA.Model.MyCamera {
 
         public string DriverInfo {
             get {
-                return string.Empty;
+                string s = "ZWO ASICamera2";
+                return s;
             }
         }
 
         public string DriverVersion {
             get {
-                return string.Empty;
+                string version = ASICameraDll.GetSDKVersion();
+                return version;
             }
         }
 
