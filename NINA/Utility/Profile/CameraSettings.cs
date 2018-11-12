@@ -8,7 +8,30 @@ namespace NINA.Utility.Profile {
     [Serializable()]
     [DataContract]
     public class CameraSettings : Settings, ICameraSettings {
-        private string id = "No_Device";
+        private string id;
+
+        public CameraSettings() {
+            SetDefaultValues();
+        }
+
+        [OnDeserializing]
+        public void OnDeseralization(StreamingContext context) {
+            SetDefaultValues();
+        }
+
+        private void SetDefaultValues() {
+            id = "No_Device";
+            pixelSize = 3.8;
+            bulbMode = CameraBulbModeEnum.NATIVE;
+            serialPort = "COM1";
+            readNoise = 0.0;
+            bitDepth = 16;
+            offset = 0.0;
+            fullWellCapacity = 20000;
+            downloadToDataRatio = 9;
+            rawConverter = RawConverterEnum.DCRAW;
+            minFlatExposureTime = 0.2;
+        }
 
         [DataMember]
         public string Id {
@@ -21,7 +44,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private double pixelSize = 3.8;
+        private double pixelSize;
 
         [DataMember]
         public double PixelSize {
@@ -34,7 +57,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private CameraBulbModeEnum bulbMode = CameraBulbModeEnum.NATIVE;
+        private CameraBulbModeEnum bulbMode;
 
         [DataMember]
         public CameraBulbModeEnum BulbMode {
@@ -47,7 +70,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private string serialPort = "COM1";
+        private string serialPort;
 
         [DataMember]
         public string SerialPort {
@@ -60,80 +83,93 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private double _readNoise = 0.0;
+        private double readNoise;
 
         [DataMember]
         public double ReadNoise {
             get {
-                return _readNoise;
+                return readNoise;
             }
             set {
-                _readNoise = value;
+                readNoise = value;
                 RaisePropertyChanged();
             }
         }
 
-        private double _bitDepth = 16;
+        private double bitDepth;
 
         [DataMember]
         public double BitDepth {
             get {
-                return _bitDepth;
+                return bitDepth;
             }
             set {
-                _bitDepth = value;
+                bitDepth = value;
                 RaisePropertyChanged();
             }
         }
 
-        private double _offset = 0;
+        private double offset;
 
         [DataMember]
         public double Offset {
             get {
-                return _offset;
+                return offset;
             }
             set {
-                _offset = value;
+                offset = value;
                 RaisePropertyChanged();
             }
         }
 
-        private double _fullWellCapacity = 20000;
+        private double fullWellCapacity;
 
         [DataMember]
         public double FullWellCapacity {
             get {
-                return _fullWellCapacity;
+                return fullWellCapacity;
             }
             set {
-                _fullWellCapacity = value;
+                fullWellCapacity = value;
                 RaisePropertyChanged();
             }
         }
 
-        private double _downloadToDataRatio = 9;
+        private double downloadToDataRatio;
 
         [DataMember]
         public double DownloadToDataRatio {
             get {
-                return _downloadToDataRatio;
+                return downloadToDataRatio;
             }
             set {
-                _downloadToDataRatio = value;
+                downloadToDataRatio = value;
                 RaisePropertyChanged();
             }
         }
 
-        private RawConverterEnum _rawConverter = RawConverterEnum.DCRAW;
+        private RawConverterEnum rawConverter;
 
         [DataMember]
         public RawConverterEnum RawConverter {
             get {
-                return _rawConverter;
+                return rawConverter;
             }
             set {
-                _rawConverter = value;
+                rawConverter = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double minFlatExposureTime;
+
+        [DataMember]
+        public double MinFlatExposureTime {
+            get {
+                return minFlatExposureTime;
+            }
+            set {
+                minFlatExposureTime = value;
                 RaisePropertyChanged();
             }
         }

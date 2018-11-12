@@ -11,5 +11,121 @@
       d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="6*" />
+        </Grid.RowDefinitions>
+        <UniformGrid Grid.Row="0">
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatCount}" />
+                        <TextBox Margin="5,0,0,0" Text="{Binding FlatCount, UpdateSourceTrigger=PropertyChanged}" />
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatMinExposureTime}" />
+                        <TextBox Margin="5,0,0,0" Text="{Binding MinExposureTime, UpdateSourceTrigger=PropertyChanged}" />
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramMeanTarget}" />
+                        <TextBox Margin="5,0,0,0" Text="{Binding HistogramMeanTarget, UpdateSourceTrigger=PropertyChanged}" />
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramTolerance}" />
+                        <TextBox Margin="5,0,0,0" Text="{Binding Tolerance, UpdateSourceTrigger=PropertyChanged}" />
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatNoProcessing}" />
+                        <CheckBox HorizontalAlignment="Center" IsChecked="{Binding GottaGoFast, UpdateSourceTrigger=PropertyChanged}" />
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatFilterSelection}" />
+                        <ComboBox
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding Filters}"
+                                SelectedItem="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedValuePath="Name" />
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatCalculatedExposureTime}" />
+                        <TextBox Margin="5,0,0,0" Text="{Binding CalculatedExposureTime, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" />
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <UniformGrid Columns="2">
+                    <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatCalculatedHistogramMean}" />
+                        <TextBox Margin="5,0,0,0" Text="{Binding CalculatedHistogramMean, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" />
+                    </UniformGrid>
+                </UniformGrid>
+            </Border>
+        </UniformGrid>
+        <UniformGrid Grid.Row="1">
+            <ninactrl:AsyncProcessButton
+                    ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                    ButtonImage="{StaticResource PlaySVG}"
+                    CancelButtonImage="{StaticResource CancelSVG}"
+                    CancelCommand="{Binding CancelFindExposureTimeCommand}"
+                    Command="{Binding FindExposureTimeCommand}"
+                    IsEnabled="{Binding CameraConnected}"
+                    IsPaused="False"
+                    LoadingImageBrush="{StaticResource PrimaryBrush}"
+                    PauseButtonImage="{StaticResource PauseSVG}"
+                    PauseCommand="{Binding PauseSequenceCommand}"
+                    ResumeButtonImage="{StaticResource PlaySVG}"
+                    ResumeCommand="{Binding ResumeSequenceCommand}"
+                    ToolTip="{ns:Loc LblTooltipStartSequence}" />
+        </UniformGrid>
+        <local:ImageView Grid.Row="2" Image="{Binding Image}" />
     </Grid>
 </UserControl>

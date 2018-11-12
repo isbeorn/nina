@@ -381,11 +381,13 @@
     <Compile Include="Utility\Mediator\Interfaces\ITelescopeMediator.cs" />
     <Compile Include="Utility\Mediator\RotatorMediator.cs" />
     <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
+    <Compile Include="Utility\Profile\FlatWizardSettings.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
     <Compile Include="Utility\Profile\ICameraSettings.cs" />
     <Compile Include="Utility\Profile\IColorSchemaSettings.cs" />
     <Compile Include="Utility\Profile\IFilterWheelSettings.cs" />
+    <Compile Include="Utility\Profile\IFlatWizardSettings.cs" />
     <Compile Include="Utility\Profile\IFocuserSettings.cs" />
     <Compile Include="Utility\Profile\IFramingAssistantSettings.cs" />
     <Compile Include="Utility\Profile\IGuiderSettings.cs" />
