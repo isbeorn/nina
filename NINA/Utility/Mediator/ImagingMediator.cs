@@ -44,6 +44,10 @@ namespace NINA.Utility.Mediator {
             return handler.CaptureImage(sequence, token, progress, bSave, targetname);
         }
 
+        public Task<ImageArray> CaptureImageWithoutSaving(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            return handler.CaptureImageWithoutSaving(sequence, token, progress);
+        }
+
         public Task<BitmapSource> PrepareImage(
                 ImageArray iarr,
                 CancellationToken token,
@@ -56,6 +60,10 @@ namespace NINA.Utility.Mediator {
 
         public void OnImageSaved(ImageSavedEventArgs e) {
             ImageSaved?.Invoke(handler, e);
+        }
+
+        public void DestroyImage() {
+            handler.DestroyImage();
         }
     }
 }

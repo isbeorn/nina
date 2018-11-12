@@ -66,6 +66,10 @@ namespace NINA.ViewModel {
             this.filterWheelMediator.RegisterConsumer(this);
 
             this.imagingMediator = imagingMediator;
+
+            imagingMediator.SetAutoStretch(false);
+            imagingMediator.SetDetectStars(false);
+
             this.focuserMediator = focuserMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
@@ -116,16 +120,15 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> StartFindingExposureTimeSequence(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            bool foundHistogramCenter = false;
+            bool finished = false;
             double exposureTime = MinExposureTime;
-            var oldAutoStretch = imagingMediator.SetAutoStretch(false);
-            var oldDetectStars = imagingMediator.SetDetectStars(false);
 
             var status = new ApplicationStatus { Status = "Starting Exposure Time calculation at " + MinExposureTime, Source = Title };
             progress.Report(status);
+            ImageArray iarr = null;
 
             do {
-                var iarr = await imagingMediator.CaptureImage(new CaptureSequence(exposureTime, "FLAT", SelectedFilter, new BinningMode(1, 1), 1), ct, progress);
+                iarr = await imagingMediator.CaptureImageWithoutSaving(new CaptureSequence(exposureTime, "FLAT", SelectedFilter, new BinningMode(1, 1), 1), ct, progress);
                 Image = await ImageControlVM.StretchAsync(
                     iarr.Statistics.Mean,
                     ImageAnalysis.CreateSourceFromArray(
@@ -140,7 +143,7 @@ namespace NINA.ViewModel {
                     CalculatedExposureTime = exposureTime;
                     CalculatedHistogramMean = currentMean;
                     progress.Report(new ApplicationStatus() { Status = "Mean ADU is " + CalculatedHistogramMean + ", target Exposure Time is " + CalculatedExposureTime, Source = Title });
-                    foundHistogramCenter = true;
+                    finished = true;
                 } else if (currentMean > histogramMeanAdu + histogramMeanAdu * Tolerance) {
                     // issue with too long flats
                     // display current mean ADU of max ADU of the camera
@@ -150,19 +153,24 @@ namespace NINA.ViewModel {
                     // - reset exposure counter should be optional
                     // - cancel
                     progress.Report(new ApplicationStatus() { Status = "Could not find histogram center, last result: " + currentMean + ", last target exposure time is " + exposureTime, Source = Title });
-                    foundHistogramCenter = true;
+                    finished = true;
                 } else {
                     exposureTime += StepSize;
                     progress.Report(new ApplicationStatus() { Status = "Mean ADU was " + currentMean + ", starting Exposure Time calculation at " + exposureTime, Source = Title });
                 }
 
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
                 ct.ThrowIfCancellationRequested();
-            } while (foundHistogramCenter == false);
+            } while (finished == false);
 
-            imagingMediator.SetAutoStretch(oldAutoStretch);
-            imagingMediator.SetDetectStars(oldDetectStars);
+            imagingMediator.DestroyImage();
+            iarr = null;
+            Image = null;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
 
-            return foundHistogramCenter;
+            return finished;
         }
 
         public bool CameraConnected {

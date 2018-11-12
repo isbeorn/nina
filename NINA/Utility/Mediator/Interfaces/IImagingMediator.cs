@@ -25,7 +25,11 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "");
 
+        Task<ImageArray> CaptureImageWithoutSaving(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
+
         Task<BitmapSource> PrepareImage(ImageArray iarr, CancellationToken token, bool bSave = false, ImageParameters parameters = null);
+
+        void DestroyImage();
 
         event EventHandler<ImageSavedEventArgs> ImageSaved;
 

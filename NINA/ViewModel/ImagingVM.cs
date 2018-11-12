@@ -251,7 +251,7 @@ namespace NINA.ViewModel {
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public async Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            var iarr = await CaptureImage(sequence, token, progress);
+            var iarr = await CaptureImage(sequence, token, progress, false, "");
             if (iarr != null) {
                 return await _currentPrepareImageTask;
             } else {
@@ -259,7 +259,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
+        public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "", bool bSaveToStatistics = true, bool bSaveToHistory = true) {
             //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
             await semaphoreSlim.WaitAsync(token);
@@ -342,7 +342,7 @@ namespace NINA.ViewModel {
                         TargetName = targetname,
                         RecordedRMS = rms
                     };
-                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters);
+                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters, bSaveToStatistics, bSaveToHistory);
 
                     //Wait for dither to finish. Runs in parallel to download and save.
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
@@ -460,6 +460,19 @@ namespace NINA.ViewModel {
 
         public Task<BitmapSource> PrepareImage(ImageArray iarr, CancellationToken token, bool bSave = false, ImageParameters parameters = null) {
             return ImageControl.PrepareImage(iarr, token, bSave, parameters);
+        }
+
+        public void DestroyImage() {
+            ImageControl.Image = null;
+            ImageControl.ImgArr = null;
+        }
+
+        public Task<ImageArray> CaptureImageWithoutSaving(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            return CaptureImage(sequence, token, progress, false, "", false, false);
+        }
+
+        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
+            return CaptureImage(sequence, token, progress, bSave, targetname, true, true);
         }
     }
 }
