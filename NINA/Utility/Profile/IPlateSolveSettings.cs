@@ -15,5 +15,6 @@ namespace NINA.Utility.Profile {
         double SearchRadius { get; set; }
         double Threshold { get; set; }
         double RotationTolerance { get; set; }
+        string AspsLocation { get; set; }
     }
 }

@@ -9,6 +9,9 @@ namespace NINA.Utility.Enum {
         ASTROMETRY_NET,
 
         [Description("LblLocalPlatesolver")]
-        LOCAL
+        LOCAL,
+
+        [Description("LblASPS")]
+        ASPS
     }
 }

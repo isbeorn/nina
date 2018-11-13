@@ -445,6 +445,8 @@ namespace NINA.ViewModel {
                 PlateSolverEnum type;
                 if (profileService.ActiveProfile.PlateSolveSettings.BlindSolverType == BlindSolverEnum.LOCAL) {
                     type = PlateSolverEnum.LOCAL;
+                } else if (profileService.ActiveProfile.PlateSolveSettings.BlindSolverType == BlindSolverEnum.ASPS) {
+                    type = PlateSolverEnum.ASPS;
                 } else {
                     type = PlateSolverEnum.ASTROMETRY_NET;
                 }
