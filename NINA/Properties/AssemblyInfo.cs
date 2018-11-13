@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NINA")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("Copyright ©  2016 - 2018 Stefan Berg and the NINA contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 #if DEBUG
