@@ -183,22 +183,11 @@ namespace NINA.Model {
                 if (seq?.ProgressExposureCount == seq?.TotalExposureCount) {
                     //No exposures remaining. Get next Sequence
                     var idx = Items.IndexOf(seq) + 1;
-                    do {
-                        if (idx < Items.Count) {
-                            seq = Items[idx];
-                            if (!seq.Enabled) {
-                                idx++;
-                                seq = null;
-                                continue;
-                            }
-
-                            ActiveSequence = seq;
-                            return this.Next();
-                        } else {
-                            seq = null;
-                            break;
-                        }
-                    } while (seq == null);
+                    seq = Items.Skip(idx).Where(i => i.Enabled).Take(1).SingleOrDefault();
+                    if (seq != null) {
+                        ActiveSequence = seq;
+                        return Next();
+                    }
                 }
             } else if (Mode == SequenceMode.ROTATE) {
                 //Check if all sequences are done
