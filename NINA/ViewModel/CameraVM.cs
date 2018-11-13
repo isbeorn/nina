@@ -579,6 +579,17 @@ namespace NINA.ViewModel {
                 Logger.Error(ex);
             }
 
+            /* Altair */
+            try {
+                Logger.Trace("Adding Altair Cameras");
+                foreach (var instance in Altair.AltairCam.EnumV2()) {
+                    var cam = new AltairCamera(instance, profileService);
+                    Devices.Add(cam);
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
             /* Atik */
             try {
                 Logger.Trace("Adding Atik Cameras");

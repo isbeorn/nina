@@ -109,7 +109,7 @@ namespace NINA.Model.MyCamera {
 
         public double Temperature {
             get {
-                return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TEMPERATURE) / 10; //ASI driver gets temperature in Celsius * 10
+                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TEMPERATURE) / 10.0; //ASI driver gets temperature in Celsius * 10
             }
         }
 
@@ -597,6 +597,7 @@ namespace NINA.Model.MyCamera {
                     RaisePropertyChanged(nameof(Connected));
                     RaiseAllPropertiesChanged();
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
                 return success;
