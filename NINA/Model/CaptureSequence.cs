@@ -50,8 +50,8 @@ namespace NINA.Model {
 
         public void Add(CaptureSequence s) {
             Items.Add(s);
-            if (Items.Count == 1) {
-                ActiveSequence = Items.First();
+            if (Items.Count(i => i.Enabled) == 1) {
+                ActiveSequence = Items.First(i => i.Enabled);
             }
         }
 
@@ -179,8 +179,8 @@ namespace NINA.Model {
             CaptureSequence seq = null;
 
             if (Mode == SequenceMode.STANDARD) {
-                seq = ActiveSequence ?? Items.First(i => i.Enabled);
-                if (seq.ProgressExposureCount == seq.TotalExposureCount) {
+                seq = ActiveSequence ?? Items.FirstOrDefault(i => i.Enabled);
+                if (seq?.ProgressExposureCount == seq?.TotalExposureCount) {
                     //No exposures remaining. Get next Sequence
                     var idx = Items.IndexOf(seq) + 1;
                     do {
