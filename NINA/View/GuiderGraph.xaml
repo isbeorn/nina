@@ -52,6 +52,13 @@
             <TextBlock Text="{Binding RMS.DecText}" />
             <TextBlock Text="{Binding RMS.TotalText}" />
         </StackPanel>
+        <Button
+            Height="30"
+            Margin="5"
+            VerticalAlignment="Bottom"
+            Command="{Binding ClearGraphCommand}">
+            <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblClear}" />
+        </Button>
 
         <oxy:Plot
             Grid.Column="1"

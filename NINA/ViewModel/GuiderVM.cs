@@ -35,6 +35,7 @@ namespace NINA.ViewModel {
                     !(Guider?.Connected == true)
             );
             DisconnectGuiderCommand = new RelayCommand((object o) => Disconnect(), (object o) => Guider?.Connected == true);
+            ClearGraphCommand = new RelayCommand((object o) => ResetGraphValues());
 
             GuideStepsHistory = new GuideStepsHistory(HistorySize);
         }
@@ -247,5 +248,7 @@ namespace NINA.ViewModel {
         public ICommand ConnectGuiderCommand { get; private set; }
 
         public ICommand DisconnectGuiderCommand { get; private set; }
+
+        public ICommand ClearGraphCommand { get; private set; }
     }
 }
