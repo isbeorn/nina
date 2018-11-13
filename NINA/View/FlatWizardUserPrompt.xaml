@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:util="clr-namespace:NINA.Utility"
+                     xmlns:ns="clr-namespace:NINA.Locale"
              xmlns:local="clr-namespace:NINA.View"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -16,7 +17,7 @@
         </Grid.RowDefinitions>
         <TextBlock Margin="10" Text="{Binding Text}" Grid.Row="0" />
 
-        <GroupBox Grid.Row="1" Header="Current Properties">
+        <GroupBox Grid.Row="1" Header="{ns:Loc LblFlatUserCurrentExposureCalculation}">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -42,7 +43,7 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Grid.Row="2" Header="Adjustable Properties">
+        <GroupBox Grid.Row="2" Header="{ns:Loc LblFlatUserFlatSettings}">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -89,7 +90,7 @@
                 <TextBlock
                     Margin="5"
                     Foreground="{StaticResource ButtonForegroundBrush}"
-                    Text="Continue" />
+                    Text="{ns:Loc LblContinue}" />
             </Button>
             <Button
                 Margin="5"
@@ -98,7 +99,7 @@
                 <TextBlock
                     Margin="5"
                     Foreground="{StaticResource ButtonForegroundBrush}"
-                    Text="Cancel Flat Wizard" />
+                    Text="{ns:Loc LblFlatUserPromptCancel}" />
             </Button>
         </UniformGrid>
     </Grid>

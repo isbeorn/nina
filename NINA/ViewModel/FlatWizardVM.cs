@@ -1,4 +1,5 @@
-﻿using NINA.Model;
+﻿using NINA.Locale;
+using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
@@ -332,11 +333,11 @@ namespace NINA.ViewModel {
                     TrendLine line = new TrendLine(datapoints);
                     var expectedExposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
 
-                    var flatsWizardUserPrompt = new FlatWizardUserPromptVM("Your flats are too bright, dim the light, adjust the tolerance, target mean or the minimum exposure time",
+                    var flatsWizardUserPrompt = new FlatWizardUserPromptVM(Loc.Instance["LblFlatUserPromptFlatTooBright"],
                         currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
                         Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, expectedExposureTime
                     );
-                    WindowService.ShowDialog(flatsWizardUserPrompt, "Ur flats are succ", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+                    WindowService.ShowDialog(flatsWizardUserPrompt, Loc.Instance["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
 
                     if (!flatsWizardUserPrompt.Continue) {
                         flatSequenceCts.Cancel();
@@ -354,17 +355,17 @@ namespace NINA.ViewModel {
                     progress.Report(new ApplicationStatus() { Status = "Mean ADU was " + currentMean + ", starting Exposure Time calculation at " + exposureTime, Source = Title });
                 }
 
-                if (datapoints.Count > 3 && !finished) {
+                if (datapoints.Count >= 3 && !finished) {
                     TrendLine line = new TrendLine(datapoints);
                     exposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
                 }
 
-                if (exposureTime > MaxExposureTime) {
-                    var flatsWizardUserPrompt = new FlatWizardUserPromptVM("Your flats are too dim, brighten the light, adjust the tolerance, target mean or the maximum exposure time",
+                if (exposureTime > MaxExposureTime || exposureTime < minExposureTime) {
+                    var flatsWizardUserPrompt = new FlatWizardUserPromptVM(Loc.Instance["LblFlatUserPromptFlatTooDim"],
                         currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
                         Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, exposureTime
                     );
-                    WindowService.ShowDialog(flatsWizardUserPrompt, "Ur flats are succ", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+                    WindowService.ShowDialog(flatsWizardUserPrompt, Loc.Instance["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
                     if (!flatsWizardUserPrompt.Continue) {
                         flatSequenceCts.Cancel();
                         finished = true;
@@ -380,7 +381,7 @@ namespace NINA.ViewModel {
 
                 if (pt.IsPaused) {
                     IsPaused = true;
-                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPaused"] });
+                    progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblPaused"] });
                     await pt.WaitWhilePausedAsync(ct);
                     IsPaused = false;
                 }
@@ -398,14 +399,21 @@ namespace NINA.ViewModel {
                 flatSequenceCts = new CancellationTokenSource();
             }
             try {
-                foreach (FilterInfoCheckbox filter in Filters.Where(f => f.IsChecked)) {
-                    await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filter.Filter);
-                    await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, filter.Filter, targetName);
-                    filter.IsChecked = false;
+                if (filters.Count == 0) {
+                    await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, null);
+                    await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, null, targetName);
+                } else {
+                    foreach (FilterInfoCheckbox filter in Filters.Where(f => f.IsChecked)) {
+                        await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filter.Filter);
+                        await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, filter.Filter, targetName);
+                        filter.IsChecked = false;
+                        CalculatedExposureTime = 0;
+                        CalculatedHistogramMean = 0;
+                    }
                 }
             } catch (OperationCanceledException) {
-                Utility.Notification.Notification.ShowError("Flats sequence cancelled");
-                progress.Report(new ApplicationStatus { Status = "Flats sequence has been cancelled" });
+                Utility.Notification.Notification.ShowError(Loc.Instance["LblFlatSequenceCancelled"]);
+                progress.Report(new ApplicationStatus { Status = Loc.Instance["LblFlatSequenceCancelled"] });
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;
             }

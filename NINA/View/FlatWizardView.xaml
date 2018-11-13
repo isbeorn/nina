@@ -204,18 +204,45 @@
 
                             <!--  Free Gain Setting  -->
                             <TextBox Grid.Column="1">
-                                <TextBox.Visibility>
-                                    <PriorityBinding>
-                                        <Binding
+                                <TextBox.Text>
+                                    <Binding
+                                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                        Path="Gain"
+                                        UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <util:ShortRangeRule>
+                                                <util:ShortRangeRule.ValidRange>
+                                                    <util:ShortRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}" />
+                                                </util:ShortRangeRule.ValidRange>
+                                            </util:ShortRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                        <Border.Visibility>
+                            <PriorityBinding>
+                                <Binding
                                 Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
                                 Path="CameraVM.Cam.Gains"
                                 Source="{StaticResource AppVM}" />
-                                        <Binding
-                                Converter="{StaticResource NullToVisibilityConverter}"
+                                <Binding
+                                Converter="{StaticResource NullToVisibilityCollapsedConverter}"
                                 Path="CameraVM.Cam"
                                 Source="{StaticResource AppVM}" />
-                                    </PriorityBinding>
-                                </TextBox.Visibility>
+                            </PriorityBinding>
+                        </Border.Visibility>
+                        <Grid VerticalAlignment="Center" Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+
+                            <!--  Free Gain Setting  -->
+                            <TextBox Grid.Column="1">
                                 <TextBox.Text>
                                     <Binding
                                         Converter="{StaticResource MinusOneToEmptyStringConverter}"
