@@ -183,7 +183,7 @@ namespace NINA.Model {
                 if (seq?.ProgressExposureCount == seq?.TotalExposureCount) {
                     //No exposures remaining. Get next Sequence
                     var idx = Items.IndexOf(seq) + 1;
-                    seq = Items.Skip(idx).Where(i => i.Enabled).Take(1).SingleOrDefault();
+                    seq = Items.Skip(idx).Where(i => i.Enabled).FirstOrDefault();
                     if (seq != null) {
                         ActiveSequence = seq;
                         return Next();
