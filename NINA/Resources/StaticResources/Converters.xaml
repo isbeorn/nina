@@ -27,4 +27,5 @@
     <converters:InverseMultiBooleanANDConverter x:Key="InverseMultiBooleanANDConverter" />
     <converters:BooleanAndConverter x:Key="BooleanAndConverter" />
     <converters:PercentageConverter x:Key="PercentageConverter" />
+    <converters:DecimalToSecondsConverter x:Key="DecimalToSecondsConverter" />
 </ResourceDictionary>

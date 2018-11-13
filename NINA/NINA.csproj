@@ -336,6 +336,7 @@
     <Compile Include="Utility\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DatabindingDebugConverter.cs" />
     <Compile Include="Utility\Converters\CollectionContainsItemsToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\DecimalToSecondsConverter.cs" />
     <Compile Include="Utility\Converters\DegreesToDMSConverter.cs" />
     <Compile Include="Utility\Converters\HoursToHMSConverter.cs" />
     <Compile Include="Utility\Converters\InverseBooleanConverter.cs" />
@@ -604,8 +605,8 @@
     <Compile Include="View\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FlatsWizardUserPrompt.xaml.cs">
-      <DependentUpon>FlatsWizardUserPrompt.xaml</DependentUpon>
+    <Compile Include="View\FlatWizardUserPrompt.xaml.cs">
+      <DependentUpon>FlatWizardUserPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FlatWizardView.xaml.cs">
       <DependentUpon>FlatWizardView.xaml</DependentUpon>
@@ -950,7 +951,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FlatsWizardUserPrompt.xaml">
+    <Page Include="View\FlatWizardUserPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

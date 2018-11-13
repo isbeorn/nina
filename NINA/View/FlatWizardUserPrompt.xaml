@@ -1,0 +1,105 @@
+﻿<UserControl x:Class="NINA.View.FlatWizardUserPrompt"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:util="clr-namespace:NINA.Utility"
+             xmlns:local="clr-namespace:NINA.View"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="5 5 5 5">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Margin="10" Text="{Binding Text}" Grid.Row="0" />
+
+        <GroupBox Grid.Row="1" Header="Current Properties">
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Current Mean" />
+                <TextBlock Grid.Row="0" Grid.Column="1"
+                           Text="{Binding CurrentMean}" />
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Text="Maximum Camera Bit Depth" />
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                           Text="{Binding CameraBitDepth}" />
+                <TextBlock Grid.Row="2" Grid.Column="0"
+                           Text="Rough expected exposure time" />
+                <TextBlock Grid.Row="2" Grid.Column="1"
+                           Text="{Binding ExpectedExposureTime}" />
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="2" Header="Adjustable Properties">
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Reset Counter" />
+                <CheckBox Grid.Row="0" Grid.Column="1"
+                          IsChecked="{Binding Reset}" />
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Text="Tolerance" />
+                <TextBox Grid.Row="1" Grid.Column="1"
+                         Text="{Binding Tolerance}" />
+                <TextBlock Grid.Row="2" Grid.Column="0"
+                           Text="Histogram Mean" />
+                <TextBox Grid.Row="2" Grid.Column="1"
+                         Text="{Binding HistogramMean}" />
+                <TextBlock Grid.Row="3" Grid.Column="0"
+                           Text="Minimum Flat Time" />
+                <TextBox Grid.Row="3" Grid.Column="1"
+                         Text="{Binding MinimumTime}" />
+                <TextBlock Grid.Row="4" Grid.Column="0"
+                           Text="Maximum Flat Time" />
+                <TextBox Grid.Row="4" Grid.Column="1"
+                         Text="{Binding MaximumTime}" />
+            </Grid>
+        </GroupBox>
+
+        <UniformGrid
+            Grid.Row="3"
+            Margin="5"
+            Columns="2">
+            <Button
+                Margin="5"
+                util:ButtonHelper.DialogResult="True"
+                Command="{Binding ContinueCommand}">
+                <TextBlock
+                    Margin="5"
+                    Foreground="{StaticResource ButtonForegroundBrush}"
+                    Text="Continue" />
+            </Button>
+            <Button
+                Margin="5"
+                util:ButtonHelper.DialogResult="False"
+                Command="{Binding CancelCommand}">
+                <TextBlock
+                    Margin="5"
+                    Foreground="{StaticResource ButtonForegroundBrush}"
+                    Text="Cancel Flat Wizard" />
+            </Button>
+        </UniformGrid>
+    </Grid>
+</UserControl>

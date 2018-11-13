@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel {
 
-    internal class FlatsWizardUserPromptVM : BaseINPC {
+    internal class FlatWizardUserPromptVM : BaseINPC {
         private readonly string text;
         private readonly double currentMean;
         private readonly double cameraBitDepth;
@@ -22,7 +22,7 @@ namespace NINA.ViewModel {
         public RelayCommand ContinueCommand { get; }
         public RelayCommand CancelCommand { get; }
 
-        public FlatsWizardUserPromptVM(string text, double currentMean, double cameraBitDepth, double tolerance, double histogramMean, double minimumTime, double maximumTime, double expectedExposureTime) {
+        public FlatWizardUserPromptVM(string text, double currentMean, double cameraBitDepth, double tolerance, double histogramMean, double minimumTime, double maximumTime, double expectedExposureTime) {
             this.text = text;
             this.currentMean = currentMean;
             this.cameraBitDepth = cameraBitDepth;
@@ -31,15 +31,15 @@ namespace NINA.ViewModel {
             this.expectedExposureTime = expectedExposureTime;
             this.minimumTime = minimumTime;
             this.maximumTime = maximumTime;
-            ContinueCommand = new RelayCommand(ContinueFlatsWizard);
-            CancelCommand = new RelayCommand(CancelFlatsWizard);
+            ContinueCommand = new RelayCommand(ContinueFlatWizard);
+            CancelCommand = new RelayCommand(CancelFlatWizard);
         }
 
-        private void CancelFlatsWizard(object obj) {
+        private void CancelFlatWizard(object obj) {
             continueWizard = false;
         }
 
-        private void ContinueFlatsWizard(object obj) {
+        private void ContinueFlatWizard(object obj) {
             continueWizard = true;
         }
 

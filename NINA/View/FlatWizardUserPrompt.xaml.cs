@@ -14,11 +14,13 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace NINA.View {
+
     /// <summary>
     /// Interaction logic for FlatsWizardUserPrompt.xaml
     /// </summary>
-    public partial class FlatsWizardUserPrompt : UserControl {
-        public FlatsWizardUserPrompt() {
+    public partial class FlatWizardUserPrompt : UserControl {
+
+        public FlatWizardUserPrompt() {
             InitializeComponent();
         }
     }

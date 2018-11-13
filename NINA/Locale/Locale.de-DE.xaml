@@ -716,4 +716,13 @@ Berechneter HFR: {2}
     <s:String x:Key="LblTelescopeToNINA">Teleskop zu NINA</s:String>
     <s:String x:Key="LblNINA">NINA</s:String>
     <s:String x:Key="LblFocuserPositionDescription">Derzeitige Okularauszugsposition</s:String>
+    <s:String x:Key="LblFlatWizard">Flat Wizard</s:String>
+    <s:String x:Key="LblFlatCount">Anzahl Flats</s:String>
+    <s:String x:Key="LblFlatMinExposureTime">Flat Min Belichtungszeit</s:String>
+    <s:String x:Key="LblFlatMaxExposureTime">Flat Max Belichtungszeit</s:String>
+    <s:String x:Key="LblFlatStepSize">Flat Schrittgröße</s:String>
+    <s:String x:Key="LblFlatHistogramMeanTarget">Histogrammdurchschnitssziel</s:String>
+    <s:String x:Key="LblFlatHistogramTolerance">Durchschnittstoleranz</s:String>
+    <s:String x:Key="LblFlatCalculatedExposureTime">Berechnete Flat Belichtsungszeit</s:String>
+    <s:String x:Key="LblFlatCalculatedHistogramMean">Berechneter Histogrammzielwert</s:String>
 </ResourceDictionary>

@@ -30,7 +30,7 @@ namespace NINA.ViewModel {
         private bool cameraConnected;
         private ObservableCollection<FilterInfoCheckbox> filters;
         private FilterWheelInfo filterWheelInfo;
-        private CancellationTokenSource findExposureCancelToken;
+        private CancellationTokenSource flatSequenceCts;
         private int flatCount;
         private short gain;
         private BitmapSource image;
@@ -49,7 +49,7 @@ namespace NINA.ViewModel {
                             IImagingMediator imagingMediator,
                             IFocuserMediator focuserMediator,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
-            Title = "LblFlatsWizard";
+            Title = "LblFlatWizard";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ContrastSVG"];
 
             this.cameraMediator = cameraMediator;
@@ -66,10 +66,10 @@ namespace NINA.ViewModel {
             this.focuserMediator = focuserMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
-            findExposureCancelToken = new CancellationTokenSource();
+            flatSequenceCts = new CancellationTokenSource();
             pauseTokenSource = new PauseTokenSource();
 
-            StartFlatSequenceCommand = new AsyncCommand<bool>(() => StartFlatCapture(new Progress<ApplicationStatus>(p => Status = p), findExposureCancelToken.Token, pauseTokenSource.Token));
+            StartFlatSequenceCommand = new AsyncCommand<bool>(() => StartFlatCapture(new Progress<ApplicationStatus>(p => Status = p), pauseTokenSource.Token));
             CancelFlatExposureSequenceCommand = new RelayCommand(CancelFindExposureTime);
             PauseFlatExposureSequenceCommand = new RelayCommand(new Action<object>((obj) => { IsPaused = true; pauseTokenSource.IsPaused = IsPaused; }));
             ResumeFlatExposureSequenceCommand = new RelayCommand(new Action<object>((obj) => { IsPaused = false; pauseTokenSource.IsPaused = IsPaused; }));
@@ -283,7 +283,7 @@ namespace NINA.ViewModel {
         public IWindowService WindowService { get; set; } = new WindowService();
 
         private void CancelFindExposureTime(object obj) {
-            findExposureCancelToken?.Cancel();
+            flatSequenceCts?.Cancel();
         }
 
         private void FilterWheelFilters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
@@ -308,127 +308,134 @@ namespace NINA.ViewModel {
             ImageArray iarr = null;
             List<DataPoint> datapoints = new List<DataPoint>();
 
-            try {
-                do {
-                    var sequence = new CaptureSequence(exposureTime, "FLAT", filter, BinningMode, 1);
-                    sequence.Gain = Gain;
-                    iarr = await imagingMediator.CaptureImageWithoutSavingToHistoryAndThumbnail(sequence, ct, progress, false, true);
-                    Image = await ImageControlVM.StretchAsync(
-                        iarr.Statistics.Mean,
-                        ImageAnalysis.CreateSourceFromArray(
-                            iarr,
-                            System.Windows.Media.PixelFormats.Gray16),
-                        profileService.ActiveProfile.ImageSettings.AutoStretchFactor);
+            do {
+                var sequence = new CaptureSequence(exposureTime, "FLAT", filter, BinningMode, 1);
+                sequence.Gain = Gain;
+                iarr = await imagingMediator.CaptureImageWithoutSavingToHistoryAndThumbnail(sequence, ct, progress, false, true);
+                Image = await ImageControlVM.StretchAsync(
+                    iarr.Statistics.Mean,
+                    ImageAnalysis.CreateSourceFromArray(
+                        iarr,
+                        System.Windows.Media.PixelFormats.Gray16),
+                    profileService.ActiveProfile.ImageSettings.AutoStretchFactor);
 
-                    var currentMean = iarr.Statistics.Mean;
-                    datapoints.Add(new DataPoint(exposureTime, currentMean));
-                    var histogramMeanAdu = HistogramMeanTarget * Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth);
+                var currentMean = iarr.Statistics.Mean;
+                datapoints.Add(new DataPoint(exposureTime, currentMean));
+                var histogramMeanAdu = HistogramMeanTarget * Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth);
 
-                    if (histogramMeanAdu - histogramMeanAdu * Tolerance <= currentMean && histogramMeanAdu + histogramMeanAdu * Tolerance >= currentMean) {
-                        CalculatedExposureTime = exposureTime;
-                        CalculatedHistogramMean = currentMean;
-                        progress.Report(new ApplicationStatus() { Status = "Mean ADU is " + CalculatedHistogramMean + ", target Exposure Time is " + CalculatedExposureTime, Source = Title });
+                if (histogramMeanAdu - histogramMeanAdu * Tolerance <= currentMean && histogramMeanAdu + histogramMeanAdu * Tolerance >= currentMean) {
+                    CalculatedExposureTime = exposureTime;
+                    CalculatedHistogramMean = currentMean;
+                    progress.Report(new ApplicationStatus() { Status = "Mean ADU is " + CalculatedHistogramMean + ", target Exposure Time is " + CalculatedExposureTime, Source = Title });
+                    finished = true;
+                } else if (currentMean > histogramMeanAdu + histogramMeanAdu * Tolerance) {
+                    TrendLine line = new TrendLine(datapoints);
+                    var expectedExposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
+
+                    var flatsWizardUserPrompt = new FlatWizardUserPromptVM("Your flats are too bright, dim the light, adjust the tolerance, target mean or the minimum exposure time",
+                        currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
+                        Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, expectedExposureTime
+                    );
+                    WindowService.ShowDialog(flatsWizardUserPrompt, "Ur flats are succ", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+
+                    if (!flatsWizardUserPrompt.Continue) {
+                        flatSequenceCts.Cancel();
                         finished = true;
-                    } else if (currentMean > histogramMeanAdu + histogramMeanAdu * Tolerance) {
-                        TrendLine line = new TrendLine(datapoints);
-                        var expectedExposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
-
-                        var flatsWizardUserPrompt = new FlatsWizardUserPromptVM("Your flats are too bright, dim the light, adjust the tolerance, target mean or the minimum exposure time",
-                            currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
-                            Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, expectedExposureTime
-                        );
-                        WindowService.ShowDialog(flatsWizardUserPrompt, "Ur flats are succ", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
-
-                        if (!flatsWizardUserPrompt.Continue) {
-                            finished = true;
-                        } else {
-                            HistogramMeanTarget = flatsWizardUserPrompt.HistogramMean;
-                            Tolerance = flatsWizardUserPrompt.Tolerance;
-                            MinExposureTime = flatsWizardUserPrompt.MinimumTime;
-                            if (flatsWizardUserPrompt.Reset) {
-                                exposureTime = MinExposureTime;
-                            }
-                        }
                     } else {
-                        exposureTime += StepSize;
-                        progress.Report(new ApplicationStatus() { Status = "Mean ADU was " + currentMean + ", starting Exposure Time calculation at " + exposureTime, Source = Title });
-                    }
-
-                    if (datapoints.Count > 3 && !finished) {
-                        TrendLine line = new TrendLine(datapoints);
-                        exposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
-                    }
-
-                    if (exposureTime > MaxExposureTime) {
-                        var flatsWizardUserPrompt = new FlatsWizardUserPromptVM("Your flats are too dim, brighten the light, adjust the tolerance, target mean or the maximum exposure time",
-                            currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
-                            Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, exposureTime
-                        );
-                        WindowService.ShowDialog(flatsWizardUserPrompt, "Ur flats are succ", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
-                        if (!flatsWizardUserPrompt.Continue) {
-                            finished = true;
-                        } else {
-                            HistogramMeanTarget = flatsWizardUserPrompt.HistogramMean;
-                            Tolerance = flatsWizardUserPrompt.Tolerance;
-                            MinExposureTime = flatsWizardUserPrompt.MinimumTime;
-                            if (flatsWizardUserPrompt.Reset) {
-                                exposureTime = MinExposureTime;
-                            }
+                        HistogramMeanTarget = flatsWizardUserPrompt.HistogramMean;
+                        Tolerance = flatsWizardUserPrompt.Tolerance;
+                        MinExposureTime = flatsWizardUserPrompt.MinimumTime;
+                        if (flatsWizardUserPrompt.Reset) {
+                            exposureTime = MinExposureTime;
                         }
                     }
+                } else {
+                    exposureTime += StepSize;
+                    progress.Report(new ApplicationStatus() { Status = "Mean ADU was " + currentMean + ", starting Exposure Time calculation at " + exposureTime, Source = Title });
+                }
 
-                    if (pt.IsPaused) {
-                        IsPaused = true;
-                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPaused"] });
-                        await pt.WaitWhilePausedAsync(ct);
-                        IsPaused = false;
+                if (datapoints.Count > 3 && !finished) {
+                    TrendLine line = new TrendLine(datapoints);
+                    exposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
+                }
+
+                if (exposureTime > MaxExposureTime) {
+                    var flatsWizardUserPrompt = new FlatWizardUserPromptVM("Your flats are too dim, brighten the light, adjust the tolerance, target mean or the maximum exposure time",
+                        currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
+                        Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, exposureTime
+                    );
+                    WindowService.ShowDialog(flatsWizardUserPrompt, "Ur flats are succ", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+                    if (!flatsWizardUserPrompt.Continue) {
+                        flatSequenceCts.Cancel();
+                        finished = true;
+                    } else {
+                        HistogramMeanTarget = flatsWizardUserPrompt.HistogramMean;
+                        Tolerance = flatsWizardUserPrompt.Tolerance;
+                        MinExposureTime = flatsWizardUserPrompt.MinimumTime;
+                        if (flatsWizardUserPrompt.Reset) {
+                            exposureTime = MinExposureTime;
+                        }
                     }
+                }
 
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
-                    ct.ThrowIfCancellationRequested();
-                } while (finished == false);
-            } catch (OperationCanceledException) {
-            }
+                if (pt.IsPaused) {
+                    IsPaused = true;
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPaused"] });
+                    await pt.WaitWhilePausedAsync(ct);
+                    IsPaused = false;
+                }
 
-            imagingMediator.DestroyImage();
-            iarr = null;
-            Image = null;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                ct.ThrowIfCancellationRequested();
+            } while (finished == false);
 
             return finished;
         }
 
-        private async Task<bool> StartFlatCapture(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt) {
-            foreach (FilterInfoCheckbox filter in Filters.Where(f => f.IsChecked)) {
-                await StartFindingExposureTimeSequence(progress, ct, pt, filter.Filter);
-                await StartFlatCaptureSequence(progress, ct, pt, filter.Filter, targetName);
-                filter.IsChecked = false;
+        private async Task<bool> StartFlatCapture(IProgress<ApplicationStatus> progress, PauseToken pt) {
+            if (flatSequenceCts.IsCancellationRequested) {
+                flatSequenceCts = new CancellationTokenSource();
             }
+            try {
+                foreach (FilterInfoCheckbox filter in Filters.Where(f => f.IsChecked)) {
+                    await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filter.Filter);
+                    await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, filter.Filter, targetName);
+                    filter.IsChecked = false;
+                }
+            } catch (OperationCanceledException) {
+                Utility.Notification.Notification.ShowError("Flats sequence cancelled");
+                progress.Report(new ApplicationStatus { Status = "Flats sequence has been cancelled" });
+                CalculatedExposureTime = 0;
+                CalculatedHistogramMean = 0;
+            }
+
+            imagingMediator.DestroyImage();
+            Image = null;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
             return true;
         }
 
         private async Task<bool> StartFlatCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FilterInfo filter, string targetName = "") {
-            try {
-                CaptureSequence sequence = new CaptureSequence(CalculatedExposureTime, "FLAT", filter, BinningMode, FlatCount);
-                sequence.Gain = Gain;
-                while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
-                    await imagingMediator.CaptureImageWithoutSavingToHistoryAndThumbnail(sequence, ct, progress, true, false, targetName);
+            CaptureSequence sequence = new CaptureSequence(CalculatedExposureTime, "FLAT", filter, BinningMode, FlatCount);
+            sequence.Gain = Gain;
+            while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
+                await imagingMediator.CaptureImageWithoutSavingToHistoryAndThumbnail(sequence, ct, progress, true, false, targetName);
 
-                    sequence.ProgressExposureCount++;
+                sequence.ProgressExposureCount++;
 
-                    if (pt.IsPaused) {
-                        IsPaused = true;
-                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPaused"] });
-                        await pt.WaitWhilePausedAsync(ct);
-                        IsPaused = false;
-                    }
-
-                    ct.ThrowIfCancellationRequested();
+                if (pt.IsPaused) {
+                    IsPaused = true;
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPaused"] });
+                    await pt.WaitWhilePausedAsync(ct);
+                    IsPaused = false;
                 }
-            } catch (OperationCanceledException) {
+
+                ct.ThrowIfCancellationRequested();
             }
+
             return true;
         }
 

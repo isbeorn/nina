@@ -12,179 +12,229 @@
       d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="6*" />
-            <RowDefinition Height="0.5*" />
-        </Grid.RowDefinitions>
-        <UniformGrid Grid.Row="0" Columns="2">
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatCount}" />
-                        <TextBox Margin="5,0,0,0" Text="{Binding FlatCount, UpdateSourceTrigger=PropertyChanged}" />
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatMinExposureTime}" />
-                        <TextBox Margin="5,0,0,0" Text="{Binding MinExposureTime, UpdateSourceTrigger=PropertyChanged}" />
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatMaxExposureTime}" />
-                        <TextBox Margin="5,0,0,0" Text="{Binding MaxExposureTime, UpdateSourceTrigger=PropertyChanged}" />
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatStepSize}" />
-                        <TextBox Margin="5,0,0,0" Text="{Binding StepSize, UpdateSourceTrigger=PropertyChanged}" />
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramMeanTarget}" />
-                        <TextBox Margin="5,0,0,0" Text="{Binding HistogramMeanTarget, UpdateSourceTrigger=PropertyChanged}" />
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramTolerance}" />
-                        <TextBox Margin="5,0,0,0" Text="{Binding Tolerance, UpdateSourceTrigger=PropertyChanged}" />
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatNoProcessing}" />
-                        <CheckBox HorizontalAlignment="Center" IsChecked="{Binding GottaGoFast, UpdateSourceTrigger=PropertyChanged}" />
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2" Height="200">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatFilterSelection}" />
-                        <ComboBox ItemsSource="{Binding Filters}">
-                            <ComboBox.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListBoxItem}">
-                                    <Setter Property="Focusable" Value="False" />
-                                </Style>
-                            </ComboBox.ItemContainerStyle>
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" />
-                                        <TextBlock Margin="5,0,0,0" HorizontalAlignment="Center" Text="{Binding Filter.Name}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatBinningMode}" />
-                        <ComboBox
-                                DisplayMemberPath="Name"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="5*" />
+        </Grid.ColumnDefinitions>
+        <GroupBox Header="{ns:Loc LblFlatWizard}" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Orientation="Vertical">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatCount}" TextWrapping="WrapWithOverflow" />
+                            <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding FlatCount, UpdateSourceTrigger=PropertyChanged}" />
+                            <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        Value="{Binding FlatCount, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="30" IsSnapToTickEnabled="True" TickFrequency="1" />
+                        </Grid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatMinExposureTime}" TextWrapping="WrapWithOverflow" />
+                            <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding MinExposureTime, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
+                            <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        Value="{Binding MinExposureTime, UpdateSourceTrigger=PropertyChanged}" Minimum="0.01" Maximum="10" />
+                        </Grid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatMaxExposureTime}" TextWrapping="WrapWithOverflow" />
+                            <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding MaxExposureTime, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
+                            <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        Value="{Binding MaxExposureTime, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="30" />
+                        </Grid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatStepSize}" TextWrapping="WrapWithOverflow" />
+                            <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding StepSize, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
+                            <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        Value="{Binding StepSize, UpdateSourceTrigger=PropertyChanged}" Minimum="0.01" Maximum="1" />
+                        </Grid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramMeanTarget}" TextWrapping="WrapWithOverflow" />
+                            <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding HistogramMeanTarget, UpdateSourceTrigger=PropertyChanged, StringFormat=P0}" />
+                            <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        Value="{Binding HistogramMeanTarget, UpdateSourceTrigger=PropertyChanged}" Minimum="0.1" Maximum="0.9" IsSnapToTickEnabled="True" TickFrequency="0.05" />
+                        </Grid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramTolerance}" TextWrapping="WrapWithOverflow" />
+                            <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding Tolerance, UpdateSourceTrigger=PropertyChanged, StringFormat=P0}" />
+                            <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        Value="{Binding Tolerance, UpdateSourceTrigger=PropertyChanged}" Minimum="0.1" Maximum="0.5" IsSnapToTickEnabled="True" TickFrequency="0.05" />
+                        </Grid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                        <StackPanel Orientation="Vertical" Margin="0,0,0,5">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
+                            <ListBox ItemsSource="{Binding Filters}">
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}">
+                                        <Setter Property="Focusable" Value="False" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" />
+                                            <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Filter.Name}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                        <Grid VerticalAlignment="Center" Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{ns:Loc LblBinning}" />
+                            <ComboBox Grid.Column="1"
+                                DisplayMemberPath="Name" HorizontalAlignment="Right"
                                 ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}"
                                 SelectedItem="{Binding Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedValuePath="Name" />
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
+                        </Grid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                        <Border.Visibility>
+                            <PriorityBinding>
+                                <Binding
+                                Converter="{StaticResource CollectionContainsItemsToVisibilityConverter}"
+                                Path="CameraVM.Cam.Gains"
+                                Source="{StaticResource AppVM}" />
+                                <Binding
+                                Converter="{StaticResource NullToVisibilityCollapsedConverter}"
+                                Path="CameraVM.Cam"
+                                Source="{StaticResource AppVM}" />
+                            </PriorityBinding>
+                        </Border.Visibility>
+                        <Grid VerticalAlignment="Center" Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
 
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatGain}" />
-                        <ComboBox SelectedItem="{Binding Gain, Mode=TwoWay, Converter={StaticResource MinusOneToEmptyStringConverter}, UpdateSourceTrigger=LostFocus}">
-                            <ComboBox.ItemsSource>
-                                <CompositeCollection>
-                                    <s:Int16>-1</s:Int16>
-                                    <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains}" />
-                                </CompositeCollection>
-                            </ComboBox.ItemsSource>
-                        </ComboBox>
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
+                            <ComboBox Grid.Column="1" SelectedItem="{Binding Gain, Mode=TwoWay, Converter={StaticResource MinusOneToEmptyStringConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                <ComboBox.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                            Converter="{StaticResource CollectionContainsItemsToVisibilityConverter}"
+                                            Path="CameraVM.Cam.Gains"
+                                            Source="{StaticResource AppVM}" />
+                                        <Binding
+                                            Converter="{StaticResource NullToVisibilityConverter}"
+                                            Path="CameraVM.Cam"
+                                            Source="{StaticResource AppVM}" />
+                                    </PriorityBinding>
+                                </ComboBox.Visibility>
+                                <ComboBox.ItemsSource>
+                                    <CompositeCollection>
+                                        <s:Int16>-1</s:Int16>
+                                        <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains}" />
+                                    </CompositeCollection>
+                                </ComboBox.ItemsSource>
+                            </ComboBox>
 
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatCalculatedExposureTime}" />
-                        <TextBox Margin="5,0,0,0" Text="{Binding CalculatedExposureTime, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" />
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
-                <UniformGrid Columns="2">
-                    <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatCalculatedHistogramMean}" />
-                        <TextBox Margin="5,0,0,0" Text="{Binding CalculatedHistogramMean, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" />
-                    </UniformGrid>
-                </UniformGrid>
-            </Border>
-        </UniformGrid>
-        <local:ImageView Grid.Row="1" Image="{Binding Image}" />
-        <Grid Grid.Row="2"
-                MinWidth="300"
-                HorizontalAlignment="Right"
-                DockPanel.Dock="Right"
-                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.CameraInfo.Connected, FallbackValue=False}">
-            <ninactrl:AsyncProcessButton
+                            <!--  Free Gain Setting  -->
+                            <TextBox Grid.Column="1">
+                                <TextBox.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
+                                Path="CameraVM.Cam.Gains"
+                                Source="{StaticResource AppVM}" />
+                                        <Binding
+                                Converter="{StaticResource NullToVisibilityConverter}"
+                                Path="CameraVM.Cam"
+                                Source="{StaticResource AppVM}" />
+                                    </PriorityBinding>
+                                </TextBox.Visibility>
+                                <TextBox.Text>
+                                    <Binding
+                                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                        Path="Gain"
+                                        UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <util:ShortRangeRule>
+                                                <util:ShortRangeRule.ValidRange>
+                                                    <util:ShortRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}" />
+                                                </util:ShortRangeRule.ValidRange>
+                                            </util:ShortRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </Grid>
+                    </Border>
+                    <Grid IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.CameraInfo.Connected, FallbackValue=False}" Margin="0,5,0,0">
+                        <ninactrl:AsyncProcessButton
                     ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
                     ButtonImage="{StaticResource PlaySVG}"
                     CancelButtonImage="{StaticResource CancelSVG}"
@@ -198,6 +248,45 @@
                     ResumeButtonImage="{StaticResource PlaySVG}"
                     ResumeCommand="{Binding ResumeFlatExposureSequenceCommand}"
                     ToolTip="{ns:Loc LblTooltipStartSequence}" />
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </GroupBox>
+
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <local:ImageView Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Image="{Binding Image}" />
+            <Border Grid.Row="1" Grid.Column="0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" TextWrapping="WrapWithOverflow"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatCalculatedExposureTime}" />
+                    <TextBox Grid.Column="1" VerticalAlignment="Center"
+                        Text="{Binding CalculatedExposureTime, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" IsEnabled="False" />
+                </Grid>
+            </Border>
+            <Border Grid.Row="1" Grid.Column="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" TextWrapping="WrapWithOverflow"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatCalculatedHistogramMean}" />
+                    <TextBox Grid.Column="1" VerticalAlignment="Center"
+                        Text="{Binding CalculatedHistogramMean, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0} ADU}" IsEnabled="False" />
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>

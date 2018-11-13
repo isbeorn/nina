@@ -425,6 +425,7 @@ namespace NINA.ViewModel {
 
         public IAsyncEnumerable<ImageArray> LiveView(CancellationToken ct) {
             return new AsyncEnumerable<ImageArray>(async yield => {
+                await semaphoreSlim.WaitAsync(ct);
                 if (CameraInfo.Connected && _cam.CanShowLiveView) {
                     try {
                         _cam.StartLiveView();
@@ -442,43 +443,54 @@ namespace NINA.ViewModel {
                         Notification.ShowError(ex.Message);
                     } finally {
                         _cam.StopLiveView();
+                        semaphoreSlim.Release();
                     }
                 }
             });
         }
 
+        //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
+        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+
         public async Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (CameraInfo.Connected == true) {
-                Cam.StartExposure(exposureTime, isLightFrame);
+                await semaphoreSlim.WaitAsync(token);
+                try {
+                    Cam.StartExposure(exposureTime, isLightFrame);
 
-                var start = DateTime.Now;
-                var elapsed = 0.0d;
-                var exposureSeconds = 0;
-                progress.Report(new ApplicationStatus() {
-                    Status = Locale.Loc.Instance["LblExposing"],
-                    Progress = exposureSeconds,
-                    MaxProgress = (int)exposureTime,
-                    ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
-                });
-                /* Wait for Capture */
-                if (exposureTime >= 1) {
-                    await Task.Run(async () => {
-                        do {
-                            var delta = await Utility.Utility.Delay(500, token);
-                            elapsed += delta.TotalSeconds;
-                            exposureSeconds = (int)elapsed;
-                            token.ThrowIfCancellationRequested();
-
-                            progress.Report(new ApplicationStatus() {
-                                Status = Locale.Loc.Instance["LblExposing"],
-                                Progress = exposureSeconds,
-                                MaxProgress = (int)exposureTime,
-                                ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
-                            });
-                        } while ((elapsed < exposureTime) && CameraInfo.Connected == true);
+                    var start = DateTime.Now;
+                    var elapsed = 0.0d;
+                    var exposureSeconds = 0;
+                    progress.Report(new ApplicationStatus() {
+                        Status = Locale.Loc.Instance["LblExposing"],
+                        Progress = exposureSeconds,
+                        MaxProgress = (int)exposureTime,
+                        ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
                     });
+                    /* Wait for Capture */
+
+                    if (exposureTime >= 1) {
+                        await Task.Run(async () => {
+                            do {
+                                var delta = await Utility.Utility.Delay(500, token);
+                                elapsed += delta.TotalSeconds;
+                                exposureSeconds = (int)elapsed;
+                                token.ThrowIfCancellationRequested();
+
+                                progress.Report(new ApplicationStatus() {
+                                    Status = Locale.Loc.Instance["LblExposing"],
+                                    Progress = exposureSeconds,
+                                    MaxProgress = (int)exposureTime,
+                                    ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
+                                });
+                            } while ((elapsed < exposureTime) && CameraInfo.Connected == true);
+                        });
+                    }
+                    token.ThrowIfCancellationRequested();
+                } catch (OperationCanceledException) {
+                    semaphoreSlim.Release();
+                    throw;
                 }
-                token.ThrowIfCancellationRequested();
             }
         }
 
@@ -513,8 +525,11 @@ namespace NINA.ViewModel {
 
         public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
             if (CameraInfo.Connected == true) {
-                return Cam.DownloadExposure(token, calculateStatistics);
+                var output = Cam.DownloadExposure(token, calculateStatistics);
+                semaphoreSlim.Release();
+                return output;
             } else {
+                semaphoreSlim.Release();
                 return null;
             }
         }

@@ -33,7 +33,7 @@
         <view:TelescopeLatLongSyncView />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type vm:FlatsWizardUserPromptVM}">
-        <view:FlatsWizardUserPrompt />
+    <DataTemplate DataType="{x:Type vm:FlatWizardUserPromptVM}">
+        <view:FlatWizardUserPrompt />
     </DataTemplate>
 </ResourceDictionary>
