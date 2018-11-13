@@ -708,6 +708,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblTelescopeToNINA">Telescope to NINA</s:String>
     <s:String x:Key="LblNINA">NINA</s:String>
     <s:String x:Key="LblFocuserPositionDescription">Current focuser position</s:String>
+    <s:String x:Key="LblClear">Clear</s:String>
     <s:String x:Key="LblASPS">All Sky Plate Solver</s:String>
     <s:String x:Key="LblASPSDirectory">ASPS Location</s:String>
 </ResourceDictionary>

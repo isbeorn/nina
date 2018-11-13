@@ -15,7 +15,7 @@ namespace NINA.Utility {
         }
 
         public static async Task<ImageArray> LoadImageArrayFromFile(Uri filePath, bool isBayered, int histogramResolution) {
-            using (FileStream fs = new FileStream(filePath.AbsolutePath, FileMode.Open)) {
+            using (FileStream fs = new FileStream(filePath.LocalPath, FileMode.Open)) {
                 byte[] arr = new byte[16];
                 fs.Read(arr, 0, 16);
                 var xml = XElement.Load(fs);
