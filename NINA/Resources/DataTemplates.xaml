@@ -3,7 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:rotator="clr-namespace:NINA.Model.MyRotator"
     xmlns:view="clr-namespace:NINA.View"
-    xmlns:vm="clr-namespace:NINA.ViewModel">
+    xmlns:vm="clr-namespace:NINA.ViewModel"
+    xmlns:flatwizard="clr-namespace:NINA.ViewModel.FlatWizard">
     <DataTemplate DataType="{x:Type vm:MeridianFlipVM}">
         <view:MeridianFlipView />
     </DataTemplate>
@@ -33,7 +34,7 @@
         <view:TelescopeLatLongSyncView />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type vm:FlatWizardUserPromptVM}">
+    <DataTemplate DataType="{x:Type flatwizard:FlatWizardUserPromptVM}">
         <view:FlatWizardUserPrompt />
     </DataTemplate>
 </ResourceDictionary>

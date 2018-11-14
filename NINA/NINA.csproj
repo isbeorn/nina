@@ -295,7 +295,7 @@
     <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
     <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
-    <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettingsWrapper.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardFilterSettingsWrapper.cs" />
     <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\FocuserInfo.cs" />
@@ -481,8 +481,8 @@
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
-    <Compile Include="ViewModel\FlatsWizardUserPromptVM.cs" />
-    <Compile Include="ViewModel\FlatWizardVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatsWizardUserPromptVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
     <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />

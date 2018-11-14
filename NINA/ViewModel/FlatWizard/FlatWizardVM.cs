@@ -16,7 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
-namespace NINA.ViewModel {
+namespace NINA.ViewModel.FlatWizard {
 
     internal class FlatWizardVM : DockableVM, ICameraConsumer, IFilterWheelConsumer {
         private readonly IApplicationStatusMediator applicationStatusMediator;

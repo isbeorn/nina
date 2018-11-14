@@ -1,4 +1,5 @@
-﻿using NINA.Utility;
+﻿using NINA.Model.MyFilterWheel;
+using NINA.Utility;
 using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NINA.Model.MyFilterWheel {
+namespace NINA.ViewModel.FlatWizard {
 
     public class FlatWizardFilterSettingsWrapper : BaseINPC {
         private readonly IProfileService profileService;

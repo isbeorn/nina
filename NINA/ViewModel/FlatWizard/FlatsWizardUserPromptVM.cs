@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NINA.ViewModel {
+namespace NINA.ViewModel.FlatWizard {
 
     internal class FlatWizardUserPromptVM : BaseINPC {
         private readonly string text;

@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:NINA.Resources.StaticResources"
                     xmlns:ns="clr-namespace:NINA.Locale"
-                    xmlns:fw="clr-namespace:NINA.Model.MyFilterWheel">
+                    xmlns:fw="clr-namespace:NINA.ViewModel.FlatWizard">
     <DataTemplate DataType="{x:Type fw:FlatWizardFilterSettingsWrapper}">
         <StackPanel Orientation="Vertical">
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">

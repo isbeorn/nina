@@ -3,6 +3,7 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.ViewModel.FlatWizard;
 using System;
 using System.IO;
 using System.Threading.Tasks;
