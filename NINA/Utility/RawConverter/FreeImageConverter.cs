@@ -46,6 +46,7 @@ namespace NINA.Utility.RawConverter {
                     ushort[] outArray = new ushort[cropped.PixelWidth * cropped.PixelHeight];
                     cropped.CopyPixels(outArray, 2 * cropped.PixelWidth, 0);
                     memStream.Dispose();
+                    FreeImage.UnloadEx(ref img);
                     var iarr = await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, true, true, histogramResolution);
                     iarr.RAWData = s.ToArray();
                     return iarr;

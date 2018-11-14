@@ -115,7 +115,7 @@ namespace NINA.ViewModel {
             ImageArray iarr = null;
 
             try {
-                if (File.Exists(ImagePath.AbsolutePath)) {
+                if (File.Exists(ImagePath.LocalPath)) {
                     if (FileType == FileTypeEnum.FITS) {
                         iarr = await LoadFits();
                     } else if (FileType == FileTypeEnum.XISF) {
@@ -141,7 +141,7 @@ namespace NINA.ViewModel {
 
         private async Task<ImageArray> LoadRaw(IProfileService profileService) {
             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            using (var fs = new FileStream(ImagePath.AbsolutePath, FileMode.Open)) {
+            using (var fs = new FileStream(ImagePath.LocalPath, FileMode.Open)) {
                 using (var ms = new MemoryStream()) {
                     fs.Position = 0;
                     fs.CopyTo(ms);

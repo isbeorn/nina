@@ -445,8 +445,8 @@ namespace NINA.Model.MyCamera {
                     }
 
                     var sw = Stopwatch.StartNew();
-                    
-                    if (HasError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo))) {                        
+
+                    if (HasError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo))) {
                         return null;
                     }
 
@@ -637,7 +637,20 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public int BatteryLevel => -1;
+        public int BatteryLevel {
+            get {
+                try {
+                    if (!HasError(EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_BatteryLevel, 0, out UInt32 batteryLevel))) {
+                        return (int)batteryLevel;
+                    } else {
+                        return -1;
+                    }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    return -1;
+                }
+            }
+        }
 
         public void StopExposure() {
             var err = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
