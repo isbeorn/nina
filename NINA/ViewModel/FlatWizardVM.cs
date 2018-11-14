@@ -333,22 +333,14 @@ namespace NINA.ViewModel {
                     TrendLine line = new TrendLine(datapoints);
                     var expectedExposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
 
-                    var flatsWizardUserPrompt = new FlatWizardUserPromptVM(Loc.Instance["LblFlatUserPromptFlatTooBright"],
-                        currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
-                        Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, expectedExposureTime
-                    );
-                    WindowService.ShowDialog(flatsWizardUserPrompt, Loc.Instance["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
-
-                    if (!flatsWizardUserPrompt.Continue) {
-                        flatSequenceCts.Cancel();
-                        finished = true;
+                    if (expectedExposureTime < exposureTime && datapoints.Count >= 3) {
+                        exposureTime = expectedExposureTime;
                     } else {
-                        HistogramMeanTarget = flatsWizardUserPrompt.HistogramMean;
-                        Tolerance = flatsWizardUserPrompt.Tolerance;
-                        MinExposureTime = flatsWizardUserPrompt.MinimumTime;
-                        if (flatsWizardUserPrompt.Reset) {
-                            exposureTime = MinExposureTime;
-                        }
+                        var flatsWizardUserPrompt = new FlatWizardUserPromptVM(Loc.Instance["LblFlatUserPromptFlatTooBright"],
+                            currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
+                            Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, expectedExposureTime
+                        );
+                        finished = EvaluateDialogResult(ref exposureTime, ref datapoints, flatsWizardUserPrompt);
                     }
                 } else {
                     exposureTime += StepSize;
@@ -360,23 +352,12 @@ namespace NINA.ViewModel {
                     exposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
                 }
 
-                if (exposureTime > MaxExposureTime || exposureTime < minExposureTime) {
+                if ((exposureTime > MaxExposureTime || exposureTime < MinExposureTime) && !finished) {
                     var flatsWizardUserPrompt = new FlatWizardUserPromptVM(Loc.Instance["LblFlatUserPromptFlatTooDim"],
                         currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
                         Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, exposureTime
                     );
-                    WindowService.ShowDialog(flatsWizardUserPrompt, Loc.Instance["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
-                    if (!flatsWizardUserPrompt.Continue) {
-                        flatSequenceCts.Cancel();
-                        finished = true;
-                    } else {
-                        HistogramMeanTarget = flatsWizardUserPrompt.HistogramMean;
-                        Tolerance = flatsWizardUserPrompt.Tolerance;
-                        MinExposureTime = flatsWizardUserPrompt.MinimumTime;
-                        if (flatsWizardUserPrompt.Reset) {
-                            exposureTime = MinExposureTime;
-                        }
-                    }
+                    finished = EvaluateDialogResult(ref exposureTime, ref datapoints, flatsWizardUserPrompt);
                 }
 
                 if (pt.IsPaused) {
@@ -392,6 +373,24 @@ namespace NINA.ViewModel {
             } while (finished == false);
 
             return finished;
+        }
+
+        private bool EvaluateDialogResult(ref double exposureTime, ref List<DataPoint> dataPoints, FlatWizardUserPromptVM flatsWizardUserPrompt) {
+            WindowService.ShowDialog(flatsWizardUserPrompt, Loc.Instance["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+            if (!flatsWizardUserPrompt.Continue) {
+                flatSequenceCts.Cancel();
+                return true;
+            } else {
+                HistogramMeanTarget = flatsWizardUserPrompt.HistogramMean;
+                Tolerance = flatsWizardUserPrompt.Tolerance;
+                MinExposureTime = flatsWizardUserPrompt.MinimumTime;
+                MaxExposureTime = flatsWizardUserPrompt.MaximumTime;
+                if (flatsWizardUserPrompt.Reset) {
+                    exposureTime = MinExposureTime;
+                    dataPoints = new List<DataPoint>();
+                }
+                return false;
+            }
         }
 
         private async Task<bool> StartFlatCapture(IProgress<ApplicationStatus> progress, PauseToken pt) {

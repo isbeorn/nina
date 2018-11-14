@@ -130,21 +130,21 @@
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
                         <StackPanel Orientation="Vertical" Margin="0,0,0,5">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
-                            <ListBox ItemsSource="{Binding Filters}">
-                                <ListBox.ItemContainerStyle>
+                            <ListView ItemsSource="{Binding Filters}">
+                                <ListView.ItemContainerStyle>
                                     <Style TargetType="{x:Type ListBoxItem}">
                                         <Setter Property="Focusable" Value="False" />
                                     </Style>
-                                </ListBox.ItemContainerStyle>
-                                <ListBox.ItemTemplate>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" />
                                             <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Filter.Name}" />
                                         </StackPanel>
                                     </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                                </ListView.ItemTemplate>
+                            </ListView>
                         </StackPanel>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
@@ -208,6 +208,7 @@
                                     <Binding
                                         Converter="{StaticResource MinusOneToEmptyStringConverter}"
                                         Path="Gain"
+                                        Mode="TwoWay"
                                         UpdateSourceTrigger="PropertyChanged">
                                         <Binding.ValidationRules>
                                             <util:ShortRangeRule>
