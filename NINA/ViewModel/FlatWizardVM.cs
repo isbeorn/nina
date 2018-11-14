@@ -75,6 +75,8 @@ namespace NINA.ViewModel {
             PauseFlatExposureSequenceCommand = new RelayCommand(new Action<object>((obj) => { IsPaused = true; pauseTokenSource.IsPaused = IsPaused; }));
             ResumeFlatExposureSequenceCommand = new RelayCommand(new Action<object>((obj) => { IsPaused = false; pauseTokenSource.IsPaused = IsPaused; }));
 
+            // TODO: hook into profile service and reload values on profile change
+
             FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
             HistogramMeanTarget = profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget;
             Tolerance = profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance;
@@ -308,6 +310,8 @@ namespace NINA.ViewModel {
             progress.Report(status);
             ImageArray iarr = null;
             List<DataPoint> datapoints = new List<DataPoint>();
+
+            // TODO: refactor this shit
 
             do {
                 var sequence = new CaptureSequence(exposureTime, "FLAT", filter, BinningMode, 1);
