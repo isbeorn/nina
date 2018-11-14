@@ -12,6 +12,11 @@
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+    </UserControl.Resources>
+
     <Grid>
 
         <Grid.RowDefinitions>
@@ -387,7 +392,7 @@
             Grid.Column="1"
             IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
             <Grid IsEnabled="{Binding CameraInfo.Connected}">
-                <GroupBox Header="{ns:Loc LblTempControl}" IsEnabled="{Binding Cam.CanSetTemperature}">
+                <GroupBox Header="{ns:Loc LblTempControl}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -395,7 +400,10 @@
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Vertical">
 
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource BoolToVisConverter}}">
                                 <UniformGrid Columns="2">
                                     <UniformGrid
                                         Margin="0,6,0,6"
@@ -413,7 +421,10 @@
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource BoolToVisConverter}}">
                                 <UniformGrid Columns="2">
                                     <UniformGrid
                                         Margin="0,6,0,6"
@@ -441,7 +452,10 @@
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource BoolToVisConverter}}">
                                 <UniformGrid Columns="2">
                                     <UniformGrid
                                         Margin="0,6,0,6"
@@ -457,7 +471,9 @@
                                 </UniformGrid>
                             </Border>
 
-                            <Grid VerticalAlignment="Bottom">
+                            <Grid VerticalAlignment="Bottom"
+                                Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource BoolToVisConverter}}">
+
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
