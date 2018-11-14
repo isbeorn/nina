@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="Resources\StaticResources\ViewModels.xaml" />
                 <ResourceDictionary Source="Resources\StaticResources\Brushes.xaml" />
                 <ResourceDictionary Source="Resources\StaticResources\Converters.xaml" />
+                <ResourceDictionary Source="Resources\StaticResources\DataTemplates.xaml" />
 
                 <!--  UI Styles  -->
                 <ResourceDictionary Source="Resources\Styles\Button.xaml" />

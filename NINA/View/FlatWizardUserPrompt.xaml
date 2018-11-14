@@ -44,45 +44,22 @@
         </GroupBox>
 
         <GroupBox Grid.Row="2" Header="{ns:Loc LblFlatUserFlatSettings}">
-            <Grid Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="Reset Counter" />
-                <CheckBox Grid.Row="0" Grid.Column="1"
-                          IsChecked="{Binding Reset}" />
-                <TextBlock Grid.Row="1" Grid.Column="0"
-                           Text="Tolerance" />
-                <TextBox Grid.Row="1" Grid.Column="1"
-                         Text="{Binding Tolerance}" />
-                <TextBlock Grid.Row="2" Grid.Column="0"
-                           Text="Histogram Mean" />
-                <TextBox Grid.Row="2" Grid.Column="1"
-                         Text="{Binding HistogramMean}" />
-                <TextBlock Grid.Row="3" Grid.Column="0"
-                           Text="Minimum Flat Time" />
-                <TextBox Grid.Row="3" Grid.Column="1"
-                         Text="{Binding MinimumTime}" />
-                <TextBlock Grid.Row="4" Grid.Column="0"
-                           Text="Maximum Flat Time" />
-                <TextBox Grid.Row="4" Grid.Column="1"
-                         Text="{Binding MaximumTime}" />
-            </Grid>
+            <ContentControl Content="{Binding Settings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </GroupBox>
 
         <UniformGrid
             Grid.Row="3"
             Margin="5"
-            Columns="2">
+            Columns="3">
+            <Button
+                Margin="5"
+                util:ButtonHelper.DialogResult="True"
+                Command="{Binding ResetAndContinueCommand}">
+                <TextBlock
+                    Margin="5"
+                    Foreground="{StaticResource ButtonForegroundBrush}"
+                    Text="{ns:Loc LblResetAndContinue}" />
+            </Button>
             <Button
                 Margin="5"
                 util:ButtonHelper.DialogResult="True"

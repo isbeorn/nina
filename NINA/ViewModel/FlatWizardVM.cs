@@ -29,20 +29,17 @@ namespace NINA.ViewModel {
         private double calculatedExposureTime;
         private double calculatedHistogramMean;
         private bool cameraConnected;
-        private ObservableCollection<FilterInfoCheckbox> filters;
+        private ObservableCollection<FlatWizardFilterSettingsWrapper> filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
         private FilterWheelInfo filterWheelInfo;
-        private CancellationTokenSource flatSequenceCts;
         private int flatCount;
+        private CancellationTokenSource flatSequenceCts;
         private short gain;
         private BitmapSource image;
         private bool isPaused = false;
-        private double maxExposureTime;
-        private double meanTarget;
-        private double minExposureTime;
+        private int mode;
         private PauseTokenSource pauseTokenSource;
-        private double stepSize;
+        private FlatWizardFilterSettingsWrapper singleFlatWizardFilterSettings;
         private string targetName;
-        private double tolerance;
 
         public FlatWizardVM(IProfileService profileService,
                             ICameraMediator cameraMediator,
@@ -75,28 +72,23 @@ namespace NINA.ViewModel {
             PauseFlatExposureSequenceCommand = new RelayCommand(new Action<object>((obj) => { IsPaused = true; pauseTokenSource.IsPaused = IsPaused; }));
             ResumeFlatExposureSequenceCommand = new RelayCommand(new Action<object>((obj) => { IsPaused = false; pauseTokenSource.IsPaused = IsPaused; }));
 
-            // TODO: hook into profile service and reload values on profile change
+            SingleFlatWizardFilterSettings = new FlatWizardFilterSettingsWrapper(null, new FlatWizardFilterSettings {
+                HistogramMeanTarget = profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget,
+                HistogramTolerance = profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance,
+                MaxFlatExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime,
+                MinFlatExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime,
+                StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize
+            }, profileService);
 
             FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
-            HistogramMeanTarget = profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget;
-            Tolerance = profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance;
-            MinExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime;
-            MaxExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime;
-            StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize;
             BinningMode = profileService.ActiveProfile.FlatWizardSettings.BinningMode;
 
-            profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
-            Filters = new ObservableCollection<FilterInfoCheckbox>();
+            Filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
 
-            foreach (FilterInfo item in profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters) {
-                Filters.Add(new FilterInfoCheckbox { Filter = item });
-            }
+            profileService.ActiveProfile.FilterWheelSettings.PropertyChanged += UpdateFilterWheelsSettings;
+            SingleFlatWizardFilterSettings.Settings.PropertyChanged += UpdateProfileValues;
 
-            FilterInfoCheckbox filter = Filters.FirstOrDefault();
-            if (filter != null) {
-                filter.IsChecked = true;
-            }
-            RaisePropertyChanged("Filters");
+            UpdateFilterWheelsSettings(null, null);
         }
 
         public FlatWizardVM(IProfileService profileService,
@@ -108,13 +100,13 @@ namespace NINA.ViewModel {
                             List<FilterInfo> filtersToFocus,
                             int flatCount,
                             string targetName) : this(profileService, cameraMediator, filterWheelMediator, imagingMediator, focuserMediator, applicationStatusMediator) {
-            Filters.Clear();
-            foreach (FilterInfoCheckbox filter in filtersToFocus.Select(f => new FilterInfoCheckbox { Filter = f, IsChecked = true })) {
-                Filters.Add(filter);
-            }
-
             this.targetName = targetName;
             FlatCount = flatCount;
+        }
+
+        private enum FilterCaptureMode {
+            SINGLE = 0,
+            MULTI = 1
         }
 
         public BinningMode BinningMode {
@@ -159,7 +151,7 @@ namespace NINA.ViewModel {
 
         public RelayCommand CancelFlatExposureSequenceCommand { get; }
 
-        public ObservableCollection<FilterInfoCheckbox> Filters {
+        public ObservableCollection<FlatWizardFilterSettingsWrapper> Filters {
             get {
                 return filters;
             }
@@ -192,17 +184,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public double HistogramMeanTarget {
-            get {
-                return meanTarget;
-            }
-            set {
-                meanTarget = value;
-                profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget = meanTarget;
-                RaisePropertyChanged();
-            }
-        }
-
         public BitmapSource Image {
             get {
                 return image;
@@ -223,30 +204,40 @@ namespace NINA.ViewModel {
             }
         }
 
-        public double MaxExposureTime {
+        public int Mode {
             get {
-                return maxExposureTime;
+                return mode;
             }
             set {
-                maxExposureTime = value;
-                profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime = maxExposureTime;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double MinExposureTime {
-            get {
-                return minExposureTime;
-            }
-            set {
-                minExposureTime = value;
-                profileService.ActiveProfile.CameraSettings.MinFlatExposureTime = minExposureTime;
+                mode = value;
                 RaisePropertyChanged();
             }
         }
 
         public RelayCommand PauseFlatExposureSequenceCommand { get; }
+
         public RelayCommand ResumeFlatExposureSequenceCommand { get; }
+
+        public FilterInfo SelectedFilter {
+            get {
+                return SingleFlatWizardFilterSettings.Filter;
+            }
+            set {
+                SingleFlatWizardFilterSettings.Filter = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public FlatWizardFilterSettingsWrapper SingleFlatWizardFilterSettings {
+            get {
+                return singleFlatWizardFilterSettings;
+            }
+            set {
+                singleFlatWizardFilterSettings = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public IAsyncCommand StartFlatSequenceCommand { get; private set; }
 
         public ApplicationStatus Status {
@@ -262,51 +253,32 @@ namespace NINA.ViewModel {
             }
         }
 
-        public double StepSize {
-            get {
-                return stepSize;
-            }
-            set {
-                stepSize = value;
-                profileService.ActiveProfile.FlatWizardSettings.StepSize = stepSize;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double Tolerance {
-            get {
-                return tolerance;
-            }
-            set {
-                tolerance = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public IWindowService WindowService { get; set; } = new WindowService();
 
         private void CancelFindExposureTime(object obj) {
             flatSequenceCts?.Cancel();
         }
 
-        private void FilterWheelFilters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) {
-                foreach (FilterInfo item in e.OldItems) {
-                    Filters.Remove(Filters.Single(f => f.Filter == item));
+        private bool EvaluateDialogResult(ref double exposureTime, ref List<DataPoint> dataPoints, ref FlatWizardFilterSettingsWrapper settings, FlatWizardUserPromptVM flatsWizardUserPrompt) {
+            WindowService.ShowDialog(flatsWizardUserPrompt, Loc.Instance["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+            if (!flatsWizardUserPrompt.Continue) {
+                flatSequenceCts.Cancel();
+                return true;
+            } else {
+                settings = flatsWizardUserPrompt.Settings;
+                if (flatsWizardUserPrompt.Reset) {
+                    exposureTime = settings.Settings.MinFlatExposureTime;
+                    dataPoints = new List<DataPoint>();
                 }
-            } else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add) {
-                foreach (FilterInfo item in e.NewItems) {
-                    Filters.Add(new FilterInfoCheckbox { Filter = item });
-                }
+                return false;
             }
-            RaisePropertyChanged("Filters");
         }
 
-        private async Task<bool> StartFindingExposureTimeSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FilterInfo filter) {
+        private async Task<bool> StartFindingExposureTimeSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FlatWizardFilterSettingsWrapper wrapper) {
             bool finished = false;
-            double exposureTime = MinExposureTime;
+            double exposureTime = wrapper.Settings.MinFlatExposureTime;
 
-            var status = new ApplicationStatus { Status = "Starting Exposure Time calculation at " + MinExposureTime, Source = Title };
+            var status = new ApplicationStatus { Status = "Starting Exposure Time calculation at " + wrapper.Settings.MinFlatExposureTime, Source = Title };
             progress.Report(status);
             ImageArray iarr = null;
             List<DataPoint> datapoints = new List<DataPoint>();
@@ -314,7 +286,7 @@ namespace NINA.ViewModel {
             // TODO: refactor this shit
 
             do {
-                var sequence = new CaptureSequence(exposureTime, "FLAT", filter, BinningMode, 1);
+                var sequence = new CaptureSequence(exposureTime, "FLAT", wrapper.Filter, BinningMode, 1);
                 sequence.Gain = Gain;
                 iarr = await imagingMediator.CaptureImageWithoutSavingToHistoryAndThumbnail(sequence, ct, progress, false, true);
                 Image = await ImageControlVM.StretchAsync(
@@ -326,14 +298,15 @@ namespace NINA.ViewModel {
 
                 var currentMean = iarr.Statistics.Mean;
                 datapoints.Add(new DataPoint(exposureTime, currentMean));
-                var histogramMeanAdu = HistogramMeanTarget * Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth);
+                var histogramMeanAdu = wrapper.Settings.HistogramMeanTarget * Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth);
 
-                if (histogramMeanAdu - histogramMeanAdu * Tolerance <= currentMean && histogramMeanAdu + histogramMeanAdu * Tolerance >= currentMean) {
+                if (histogramMeanAdu - histogramMeanAdu * wrapper.Settings.HistogramTolerance <= currentMean
+                    && histogramMeanAdu + histogramMeanAdu * wrapper.Settings.HistogramTolerance >= currentMean) {
                     CalculatedExposureTime = exposureTime;
                     CalculatedHistogramMean = currentMean;
                     progress.Report(new ApplicationStatus() { Status = "Mean ADU is " + CalculatedHistogramMean + ", target Exposure Time is " + CalculatedExposureTime, Source = Title });
                     finished = true;
-                } else if (currentMean > histogramMeanAdu + histogramMeanAdu * Tolerance) {
+                } else if (currentMean > histogramMeanAdu + histogramMeanAdu * wrapper.Settings.HistogramTolerance) {
                     TrendLine line = new TrendLine(datapoints);
                     var expectedExposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
 
@@ -342,12 +315,12 @@ namespace NINA.ViewModel {
                     } else {
                         var flatsWizardUserPrompt = new FlatWizardUserPromptVM(Loc.Instance["LblFlatUserPromptFlatTooBright"],
                             currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
-                            Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, expectedExposureTime
+                            wrapper, expectedExposureTime
                         );
-                        finished = EvaluateDialogResult(ref exposureTime, ref datapoints, flatsWizardUserPrompt);
+                        finished = EvaluateDialogResult(ref exposureTime, ref datapoints, ref wrapper, flatsWizardUserPrompt);
                     }
                 } else {
-                    exposureTime += StepSize;
+                    exposureTime += wrapper.Settings.StepSize;
                     progress.Report(new ApplicationStatus() { Status = "Mean ADU was " + currentMean + ", starting Exposure Time calculation at " + exposureTime, Source = Title });
                 }
 
@@ -356,12 +329,12 @@ namespace NINA.ViewModel {
                     exposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
                 }
 
-                if ((exposureTime > MaxExposureTime || exposureTime < MinExposureTime) && !finished) {
+                if ((exposureTime > wrapper.Settings.MaxFlatExposureTime || exposureTime < wrapper.Settings.MinFlatExposureTime) && !finished) {
                     var flatsWizardUserPrompt = new FlatWizardUserPromptVM(Loc.Instance["LblFlatUserPromptFlatTooDim"],
                         currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
-                        Tolerance, HistogramMeanTarget, MinExposureTime, MaxExposureTime, exposureTime
+                        wrapper, exposureTime
                     );
-                    finished = EvaluateDialogResult(ref exposureTime, ref datapoints, flatsWizardUserPrompt);
+                    finished = EvaluateDialogResult(ref exposureTime, ref datapoints, ref wrapper, flatsWizardUserPrompt);
                 }
 
                 if (pt.IsPaused) {
@@ -379,41 +352,25 @@ namespace NINA.ViewModel {
             return finished;
         }
 
-        private bool EvaluateDialogResult(ref double exposureTime, ref List<DataPoint> dataPoints, FlatWizardUserPromptVM flatsWizardUserPrompt) {
-            WindowService.ShowDialog(flatsWizardUserPrompt, Loc.Instance["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
-            if (!flatsWizardUserPrompt.Continue) {
-                flatSequenceCts.Cancel();
-                return true;
-            } else {
-                HistogramMeanTarget = flatsWizardUserPrompt.HistogramMean;
-                Tolerance = flatsWizardUserPrompt.Tolerance;
-                MinExposureTime = flatsWizardUserPrompt.MinimumTime;
-                MaxExposureTime = flatsWizardUserPrompt.MaximumTime;
-                if (flatsWizardUserPrompt.Reset) {
-                    exposureTime = MinExposureTime;
-                    dataPoints = new List<DataPoint>();
-                }
-                return false;
-            }
-        }
-
         private async Task<bool> StartFlatCapture(IProgress<ApplicationStatus> progress, PauseToken pt) {
             if (flatSequenceCts.IsCancellationRequested) {
                 flatSequenceCts = new CancellationTokenSource();
             }
             try {
-                if (filters.Count == 0) {
-                    await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, null);
-                    await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, null, targetName);
+                if ((FilterCaptureMode)Mode == FilterCaptureMode.SINGLE) {
+                    await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings);
+                    await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings.Filter, targetName);
                 } else {
-                    foreach (FilterInfoCheckbox filter in Filters.Where(f => f.IsChecked)) {
-                        await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filter.Filter);
+                    foreach (var filter in Filters.Where(f => f.IsChecked)) {
+                        await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filter);
                         await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, filter.Filter, targetName);
                         filter.IsChecked = false;
                         CalculatedExposureTime = 0;
                         CalculatedHistogramMean = 0;
                     }
                 }
+                CalculatedExposureTime = 0;
+                CalculatedHistogramMean = 0;
             } catch (OperationCanceledException) {
                 Utility.Notification.Notification.ShowError(Loc.Instance["LblFlatSequenceCancelled"]);
                 progress.Report(new ApplicationStatus { Status = Loc.Instance["LblFlatSequenceCancelled"] });
@@ -450,32 +407,42 @@ namespace NINA.ViewModel {
             return true;
         }
 
+        private void UpdateFilterWheelsSettings(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings, profileService));
+            Filters.Clear();
+            foreach (var item in newList) {
+                filters.Add(item);
+            }
+        }
+
+        private void UpdateProfileValues(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget != SingleFlatWizardFilterSettings.Settings.HistogramMeanTarget) {
+                profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget = SingleFlatWizardFilterSettings.Settings.HistogramMeanTarget;
+            }
+            if (profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance != SingleFlatWizardFilterSettings.Settings.HistogramTolerance) {
+                profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance = SingleFlatWizardFilterSettings.Settings.HistogramTolerance;
+            }
+            if (profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime != SingleFlatWizardFilterSettings.Settings.MaxFlatExposureTime) {
+                profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime = SingleFlatWizardFilterSettings.Settings.MaxFlatExposureTime;
+            }
+            if (profileService.ActiveProfile.CameraSettings.MinFlatExposureTime != SingleFlatWizardFilterSettings.Settings.MinFlatExposureTime) {
+                profileService.ActiveProfile.CameraSettings.MinFlatExposureTime = SingleFlatWizardFilterSettings.Settings.MinFlatExposureTime;
+            }
+            if (profileService.ActiveProfile.FlatWizardSettings.StepSize != SingleFlatWizardFilterSettings.Settings.StepSize) {
+                profileService.ActiveProfile.FlatWizardSettings.StepSize = SingleFlatWizardFilterSettings.Settings.StepSize;
+            }
+        }
+
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
             CameraConnected = deviceInfo.Connected;
             if (CameraConnected) {
-                MinExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime;
-                MaxExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime;
+                /*SingleFlatWizardFilterSettings.MinFlatExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime;
+                SingleFlatWizardFilterSettings.MaxFlatExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime;*/
             }
         }
 
         public void UpdateDeviceInfo(FilterWheelInfo deviceInfo) {
             filterWheelInfo = deviceInfo;
-        }
-
-        public class FilterInfoCheckbox : BaseINPC {
-            private bool isChecked = false;
-            public FilterInfo Filter { get; set; }
-
-            public bool IsChecked {
-                get {
-                    return isChecked;
-                }
-
-                set {
-                    isChecked = value;
-                    RaisePropertyChanged();
-                }
-            }
         }
     }
 }

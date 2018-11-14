@@ -7,7 +7,7 @@
         xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
         xmlns:ns="clr-namespace:NINA.Locale"
         xmlns:util="clr-namespace:NINA.Utility"
-             xmlns:s="clr-namespace:System;assembly=mscorlib"
+        xmlns:s="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800">
 
@@ -36,116 +36,6 @@
                             <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                         Value="{Binding FlatCount, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="30" IsSnapToTickEnabled="True" TickFrequency="1" />
                         </Grid>
-                    </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
-                        <Grid VerticalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="1*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0"
-                               VerticalAlignment="Center" Text="{ns:Loc LblFlatMinExposureTime}" TextWrapping="WrapWithOverflow" />
-                            <TextBox Grid.Row="0" Grid.Column="1"
-                        Text="{Binding MinExposureTime, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
-                            <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                        Value="{Binding MinExposureTime, UpdateSourceTrigger=PropertyChanged}" Minimum="0.01" Maximum="10" />
-                        </Grid>
-                    </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
-                        <Grid VerticalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="1*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0"
-                               VerticalAlignment="Center" Text="{ns:Loc LblFlatMaxExposureTime}" TextWrapping="WrapWithOverflow" />
-                            <TextBox Grid.Row="0" Grid.Column="1"
-                        Text="{Binding MaxExposureTime, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
-                            <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                        Value="{Binding MaxExposureTime, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="30" />
-                        </Grid>
-                    </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
-                        <Grid VerticalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="1*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0"
-                               VerticalAlignment="Center" Text="{ns:Loc LblFlatStepSize}" TextWrapping="WrapWithOverflow" />
-                            <TextBox Grid.Row="0" Grid.Column="1"
-                        Text="{Binding StepSize, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
-                            <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                        Value="{Binding StepSize, UpdateSourceTrigger=PropertyChanged}" Minimum="0.01" Maximum="1" />
-                        </Grid>
-                    </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
-                        <Grid VerticalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="1*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0"
-                               VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramMeanTarget}" TextWrapping="WrapWithOverflow" />
-                            <TextBox Grid.Row="0" Grid.Column="1"
-                        Text="{Binding HistogramMeanTarget, UpdateSourceTrigger=PropertyChanged, StringFormat=P0}" />
-                            <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                        Value="{Binding HistogramMeanTarget, UpdateSourceTrigger=PropertyChanged}" Minimum="0.1" Maximum="0.9" IsSnapToTickEnabled="True" TickFrequency="0.05" />
-                        </Grid>
-                    </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
-                        <Grid VerticalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="1*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0"
-                               VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramTolerance}" TextWrapping="WrapWithOverflow" />
-                            <TextBox Grid.Row="0" Grid.Column="1"
-                        Text="{Binding Tolerance, UpdateSourceTrigger=PropertyChanged, StringFormat=P0}" />
-                            <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                        Value="{Binding Tolerance, UpdateSourceTrigger=PropertyChanged}" Minimum="0.1" Maximum="0.5" IsSnapToTickEnabled="True" TickFrequency="0.05" />
-                        </Grid>
-                    </Border>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
-                        <StackPanel Orientation="Vertical" Margin="0,0,0,5">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
-                            <ListView ItemsSource="{Binding Filters}">
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="{x:Type ListBoxItem}">
-                                        <Setter Property="Focusable" Value="False" />
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" />
-                                            <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Filter.Name}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </StackPanel>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
                         <Grid VerticalAlignment="Center" Margin="0,0,0,5">
@@ -261,6 +151,50 @@
                             </TextBox>
                         </Grid>
                     </Border>
+                    <TabControl SelectedIndex="{Binding Mode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <TabItem Header="Single Mode">
+                            <StackPanel Orientation="Vertical">
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                                    <Grid VerticalAlignment="Center" Margin="0,0,0,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
+                                        <ComboBox Grid.Column="1" ItemsSource="{Binding Filters}" DisplayMemberPath="Filter.Name" SelectedItem="{Binding SelectedFilter}" />
+                                    </Grid>
+                                </Border>
+                                <ContentControl Content="{Binding SingleFlatWizardFilterSettings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Multi Mode">
+                            <ListView ItemsSource="{Binding Filters}">
+                                <ListView.ItemTemplate>
+                                    <ItemContainerTemplate>
+                                        <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                            <Expander.Header>
+                                                <Grid HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
+                                                      Margin="5,5,5,15">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="4*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock VerticalAlignment="Center" Grid.Column="0" Text="{Binding Filter.Name}" />
+                                                    <CheckBox VerticalAlignment="Center" Grid.Column="1" IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                </Grid>
+                                            </Expander.Header>
+                                            <ContentControl Content="{Binding Path=., UpdateSourceTrigger=PropertyChanged}" />
+                                        </Expander>
+                                    </ItemContainerTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                            </ListView>
+                        </TabItem>
+                    </TabControl>
                     <Grid IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.CameraInfo.Connected, FallbackValue=False}" Margin="0,5,0,0">
                         <ninactrl:AsyncProcessButton
                     ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"

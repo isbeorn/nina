@@ -7,6 +7,15 @@ namespace NINA.Model.MyFilterWheel {
     [Serializable]
     [DataContract]
     public class FlatWizardFilterSettings : BaseINPC {
+        private double histogramMeanTarget;
+
+        private double histogramTolerance;
+
+        private double maxFlatExposureTime;
+
+        private double minFlatExposureTime;
+
+        private double stepSize;
 
         public FlatWizardFilterSettings() {
             HistogramMeanTarget = 0.5;
@@ -14,10 +23,7 @@ namespace NINA.Model.MyFilterWheel {
             StepSize = 0.1;
             MinFlatExposureTime = 0.01;
             MaxFlatExposureTime = 30;
-            BinningMode = new MyCamera.BinningMode(1, 1);
         }
-
-        private double histogramMeanTarget;
 
         [DataMember]
         public double HistogramMeanTarget {
@@ -30,8 +36,6 @@ namespace NINA.Model.MyFilterWheel {
             }
         }
 
-        private double histogramTolerance;
-
         [DataMember]
         public double HistogramTolerance {
             get {
@@ -43,33 +47,16 @@ namespace NINA.Model.MyFilterWheel {
             }
         }
 
-        private double stepSize;
-
         [DataMember]
-        public double StepSize {
+        public double MaxFlatExposureTime {
             get {
-                return stepSize;
+                return maxFlatExposureTime;
             }
             set {
-                stepSize = value;
+                maxFlatExposureTime = value;
                 RaisePropertyChanged();
             }
         }
-
-        private MyCamera.BinningMode binningMode;
-
-        [DataMember]
-        public MyCamera.BinningMode BinningMode {
-            get {
-                return binningMode;
-            }
-            set {
-                binningMode = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private double minFlatExposureTime;
 
         [DataMember]
         public double MinFlatExposureTime {
@@ -82,15 +69,13 @@ namespace NINA.Model.MyFilterWheel {
             }
         }
 
-        private double maxFlatExposureTime;
-
         [DataMember]
-        public double MaxFlatExposureTime {
+        public double StepSize {
             get {
-                return maxFlatExposureTime;
+                return stepSize;
             }
             set {
-                maxFlatExposureTime = value;
+                stepSize = value;
                 RaisePropertyChanged();
             }
         }

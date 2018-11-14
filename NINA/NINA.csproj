@@ -295,6 +295,7 @@
     <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
     <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
+    <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettingsWrapper.cs" />
     <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\FocuserInfo.cs" />
@@ -743,6 +744,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\DataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\StaticResources\DataTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

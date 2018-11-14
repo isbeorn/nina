@@ -725,6 +725,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblFlatUserPromptFlatTooBright">Your flats are too bright, dim the light, adjust the tolerance, target mean or the minimum exposure time</s:String>
     <s:String x:Key="LblFlatSequenceCancelled">Flat Sequence Cancelled</s:String>
     <s:String x:Key="LblContinue">Continue</s:String>
+    <s:String x:Key="LblResetAndContinue">Reset and Continue</s:String>
     <s:String x:Key="LblFlatUserPromptCancel">Cancel Flat Wizard</s:String>
     <s:String x:Key="LblFlatUserCurrentExposureCalculation">Current Exposure Calculations</s:String>
     <s:String x:Key="LblFlatUserFlatSettings">Flat Wizard Settings</s:String>

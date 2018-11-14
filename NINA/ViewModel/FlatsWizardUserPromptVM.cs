@@ -1,4 +1,5 @@
-﻿using NINA.Utility;
+﻿using NINA.Model.MyFilterWheel;
+using NINA.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,28 +12,30 @@ namespace NINA.ViewModel {
         private readonly string text;
         private readonly double currentMean;
         private readonly double cameraBitDepth;
-        private double tolerance;
-        private bool reset;
-        private double histogramMean;
-        private double minimumTime;
-        private double maximumTime;
         private bool continueWizard;
+        private FlatWizardFilterSettingsWrapper settings;
+
+        private bool reset;
         private readonly double expectedExposureTime;
 
+        public RelayCommand ResetAndContinueCommand { get; }
         public RelayCommand ContinueCommand { get; }
         public RelayCommand CancelCommand { get; }
 
-        public FlatWizardUserPromptVM(string text, double currentMean, double cameraBitDepth, double tolerance, double histogramMean, double minimumTime, double maximumTime, double expectedExposureTime) {
+        public FlatWizardUserPromptVM(string text, double currentMean, double cameraBitDepth, FlatWizardFilterSettingsWrapper settings, double expectedExposureTime) {
             this.text = text;
             this.currentMean = currentMean;
             this.cameraBitDepth = cameraBitDepth;
-            this.tolerance = tolerance;
-            this.histogramMean = histogramMean;
             this.expectedExposureTime = expectedExposureTime;
-            this.minimumTime = minimumTime;
-            this.maximumTime = maximumTime;
+            this.settings = settings;
+            ResetAndContinueCommand = new RelayCommand(ResetAndContinueContinueFlatWizard);
             ContinueCommand = new RelayCommand(ContinueFlatWizard);
             CancelCommand = new RelayCommand(CancelFlatWizard);
+        }
+
+        private void ResetAndContinueContinueFlatWizard(object obj) {
+            continueWizard = true;
+            Reset = true;
         }
 
         private void CancelFlatWizard(object obj) {
@@ -41,6 +44,16 @@ namespace NINA.ViewModel {
 
         private void ContinueFlatWizard(object obj) {
             continueWizard = true;
+        }
+
+        public FlatWizardFilterSettingsWrapper Settings {
+            get {
+                return settings;
+            }
+            set {
+                settings = value;
+                RaisePropertyChanged();
+            }
         }
 
         public bool Continue {
@@ -79,46 +92,6 @@ namespace NINA.ViewModel {
             }
             set {
                 reset = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double Tolerance {
-            get {
-                return tolerance;
-            }
-            set {
-                tolerance = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double HistogramMean {
-            get {
-                return histogramMean;
-            }
-            set {
-                histogramMean = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double MinimumTime {
-            get {
-                return minimumTime;
-            }
-            set {
-                minimumTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double MaximumTime {
-            get {
-                return maximumTime;
-            }
-            set {
-                maximumTime = value;
                 RaisePropertyChanged();
             }
         }

@@ -1,0 +1,108 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:NINA.Resources.StaticResources"
+                    xmlns:ns="clr-namespace:NINA.Locale"
+                    xmlns:fw="clr-namespace:NINA.Model.MyFilterWheel">
+    <DataTemplate DataType="{x:Type fw:FlatWizardFilterSettingsWrapper}">
+        <StackPanel Orientation="Vertical">
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatMinExposureTime}" TextWrapping="WrapWithOverflow" />
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding Settings.MinFlatExposureTime, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
+                    <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        Value="{Binding Settings.MinFlatExposureTime, UpdateSourceTrigger=PropertyChanged}" Minimum="0.01" Maximum="10" />
+                </Grid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatMaxExposureTime}" TextWrapping="WrapWithOverflow" />
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding Settings.MaxFlatExposureTime, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
+                    <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        Value="{Binding Settings.MaxFlatExposureTime, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="30" />
+                </Grid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatStepSize}" TextWrapping="WrapWithOverflow" />
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding Settings.StepSize, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
+                    <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        Value="{Binding Settings.StepSize, UpdateSourceTrigger=PropertyChanged}" Minimum="0.01" Maximum="1" />
+                </Grid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramMeanTarget}" TextWrapping="WrapWithOverflow" />
+                    <TextBlock Grid.Row="0" Grid.Column="1"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Text="{Binding HistogramMeanTargetADU, Mode=OneWay}" />
+                    <TextBox Grid.Row="0" Grid.Column="2"
+                        Text="{Binding Settings.HistogramMeanTarget, UpdateSourceTrigger=PropertyChanged, StringFormat=P0}" />
+                    <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                        Value="{Binding Settings.HistogramMeanTarget, UpdateSourceTrigger=PropertyChanged}" Minimum="0.1" Maximum="0.9" IsSnapToTickEnabled="True" TickFrequency="0.05" />
+                </Grid>
+            </Border>
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramTolerance}" TextWrapping="WrapWithOverflow" />
+                    <TextBlock Grid.Row="0" Grid.Column="1"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Text="{Binding HistogramToleranceADU, Mode=OneWay}" />
+                    <TextBox Grid.Row="0" Grid.Column="2"
+                        Text="{Binding Settings.HistogramTolerance, UpdateSourceTrigger=PropertyChanged, StringFormat=P0}" />
+                    <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                        Value="{Binding Settings.HistogramTolerance, UpdateSourceTrigger=PropertyChanged}" Minimum="0.1" Maximum="0.5" IsSnapToTickEnabled="True" TickFrequency="0.05" />
+                </Grid>
+            </Border>
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>

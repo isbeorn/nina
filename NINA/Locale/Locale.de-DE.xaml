@@ -730,6 +730,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblFlatUserPromptFlatTooBright">Ihre Flats sind zu hell, dunkeln Sie das Licht ab, adjustieren Sie die Toleranz, das Histogrammdurchschnittsziel oder die minimale Belichtungszeit</s:String>
     <s:String x:Key="LblFlatSequenceCancelled">Flats Sequenz Abgebrochen</s:String>
     <s:String x:Key="LblContinue">Fortfahren</s:String>
+    <s:String x:Key="LblResetAndContinue">Zurücksetzen und Fortfahren</s:String>
     <s:String x:Key="LblFlatUserPromptCancel">Flat Wizard Abbrechen</s:String>
     <s:String x:Key="LblFlatUserCurrentExposureCalculation">Aktuelle Belichtungsberechnungen</s:String>
     <s:String x:Key="LblFlatUserFlatSettings">Flat Wizard Einstellungen</s:String>
