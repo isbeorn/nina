@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyCamera {
 
     internal class AltairCamera : BaseINPC, ICamera {
+        private AltairCam.eFLAG flags;
         private AltairCam camera;
 
         public AltairCamera(AltairCam.InstanceV2 instance, IProfileService profileService) {
@@ -26,6 +27,8 @@ namespace NINA.Model.MyCamera {
             this.Description = instance.model.name;
             this.PixelSizeX = instance.model.xpixsz;
             this.PixelSizeY = instance.model.ypixsz;
+
+            this.flags = (AltairCam.eFLAG)instance.model.flag;
         }
 
         private IProfileService profileService;
@@ -119,9 +122,27 @@ namespace NINA.Model.MyCamera {
 
         public double PixelSizeY { get; }
 
+        private bool canGetTemperature;
+
+        public bool CanGetTemperature {
+            get {
+                return canGetTemperature;
+            }
+            private set {
+                canGetTemperature = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool canSetTemperature;
+
         public bool CanSetTemperature {
             get {
-                return camera.get_Temperature(out var temp);
+                return canSetTemperature;
+            }
+            private set {
+                canSetTemperature = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -133,6 +154,8 @@ namespace NINA.Model.MyCamera {
 
             set {
                 if (camera.put_Option(AltairCam.eOPTION.OPTION_TEC, value ? 1 : 0)) {
+                    //Toggle fan, if supported
+                    camera.put_Option(AltairCam.eOPTION.OPTION_FAN, value ? 1 : 0);
                     RaisePropertyChanged();
                 }
             }
@@ -216,14 +239,15 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private bool _liveViewEnabled;
+
         public bool LiveViewEnabled {
             get {
-                /* todo */
-                return false;
+                return _liveViewEnabled;
             }
-
             set {
-                /* todo */
+                _liveViewEnabled = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -435,16 +459,12 @@ namespace NINA.Model.MyCamera {
 
                     /* Use maximum bit depth */
                     if (!camera.put_Option(AltairCam.eOPTION.OPTION_BITDEPTH, 1)) {
-                        Logger.Warning("AltairCamera - Could not set bit depth");
-                        Disconnect();
-                        return false;
+                        throw new Exception("AltairCamera - Could not set bit depth");
                     }
 
                     /* Use RAW Mode */
                     if (!camera.put_Option(AltairCam.eOPTION.OPTION_RAW, 1)) {
-                        Logger.Warning("AltairCamera - Could not set RAW mode");
-                        Disconnect();
-                        return false;
+                        throw new Exception("AltairCamera - Could not set RAW mode");
                     }
 
                     camera.put_AutoExpoEnable(false);
@@ -456,25 +476,30 @@ namespace NINA.Model.MyCamera {
                     this.CameraYSize = height;
 
                     /* Todo Readout flags */
+                    if ((this.flags & AltairCam.eFLAG.FLAG_PUTTEMPERATURE) != 0) {
+                        /* Can set Target Temp */
+                        CanSetTemperature = true;
+                    }
 
-                    /* Todo Sensor*/
+                    if ((this.flags & AltairCam.eFLAG.FLAG_GETTEMPERATURE) != 0) {
+                        /* Can get Target Temp */
+                        CanGetTemperature = true;
+                    }
+
+                    if ((this.flags & AltairCam.eFLAG.FLAG_TRIGGER_SOFTWARE) == 0) {
+                        throw new Exception("AltairCamera - This camera is not capable to be triggered by software and is not supported");
+                    }
 
                     if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 1)) {
-                        Logger.Warning("AltairCamera - Could not set Trigger manual mode");
-                        Disconnect();
-                        return false;
+                        throw new Exception("AltairCamera - Could not set Trigger manual mode");
                     }
 
                     if (!camera.StartPushModeV2(new AltairCam.DelegateDataCallbackV2(OnImageCallback))) {
-                        Logger.Warning("AltairCamera - Could not start push mode");
-                        Disconnect();
-                        return false;
+                        throw new Exception("AltairCamera - Could not start push mode");
                     }
 
                     if (!camera.get_RawFormat(out var fourCC, out var bitDepth)) {
-                        Logger.Warning("AltairCamera - Unable to get format information");
-                        Disconnect();
-                        return false;
+                        throw new Exception("AltairCamera - Unable to get format information");
                     }
 
                     this.bitDepth = bitDepth;
@@ -508,7 +533,10 @@ namespace NINA.Model.MyCamera {
         }
 
         public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
-            throw new NotImplementedException();
+            await downloadLiveExposure.Task;
+            var arr = await imageTask;
+            downloadLiveExposure = new TaskCompletionSource<object>();
+            return arr;
         }
 
         public void SetBinning(short x, short y) {
@@ -546,10 +574,15 @@ namespace NINA.Model.MyCamera {
             Marshal.FreeHGlobal(pointer);
 
             imageTask = ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-            downloadExposure?.TrySetResult(true);
+            if (LiveViewEnabled) {
+                downloadLiveExposure?.TrySetResult(true);
+            } else {
+                downloadExposure?.TrySetResult(true);
+            }
         }
 
         private TaskCompletionSource<object> downloadExposure;
+        private TaskCompletionSource<object> downloadLiveExposure;
         private Task<ImageArray> imageTask;
         private uint bitDepth;
 
@@ -581,7 +614,11 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartLiveView() {
-            throw new NotImplementedException();
+            if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 0)) {
+                throw new Exception("AltairCamera - Could not set Trigger video mode");
+            }
+            downloadLiveExposure = new TaskCompletionSource<object>();
+            LiveViewEnabled = true;
         }
 
         public void StopExposure() {
@@ -591,7 +628,11 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopLiveView() {
-            throw new NotImplementedException();
+            if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 1)) {
+                Disconnect();
+                throw new Exception("AltairCamera - Could not set Trigger manual mode. Reconnect Camera!");
+            }
+            LiveViewEnabled = false;
         }
     }
 }
