@@ -41,7 +41,7 @@
                             <ComboBox Grid.Column="1"
                                 DisplayMemberPath="Name" HorizontalAlignment="Right"
                                 ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}"
-                                SelectedItem="{Binding Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedItem="{Binding BinningMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedValuePath="Name" />
                         </Grid>
                     </Border>
@@ -85,25 +85,6 @@
                                     </CompositeCollection>
                                 </ComboBox.ItemsSource>
                             </ComboBox>
-
-                            <!--  Free Gain Setting  -->
-                            <TextBox Grid.Column="1">
-                                <TextBox.Text>
-                                    <Binding
-                                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
-                                        Path="Gain"
-                                        Mode="TwoWay"
-                                        UpdateSourceTrigger="PropertyChanged">
-                                        <Binding.ValidationRules>
-                                            <util:ShortRangeRule>
-                                                <util:ShortRangeRule.ValidRange>
-                                                    <util:ShortRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}" />
-                                                </util:ShortRangeRule.ValidRange>
-                                            </util:ShortRangeRule>
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
                         </Grid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
@@ -155,7 +136,8 @@
                                             <ColumnDefinition Width="1*" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
-                                        <ComboBox Grid.Column="1" ItemsSource="{Binding Filters}" DisplayMemberPath="Filter.Name" SelectedItem="{Binding SelectedFilter}" />
+                                        <!-- TODO: FIX -->
+                                        <ComboBox Grid.Column="1" ItemsSource="{Binding Filters}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedFilter}" />
                                     </Grid>
                                 </Border>
                                 <ContentControl Content="{Binding SingleFlatWizardFilterSettings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

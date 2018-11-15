@@ -487,7 +487,7 @@ namespace NINA.ViewModel {
                         });
                     }
                     token.ThrowIfCancellationRequested();
-                } catch (OperationCanceledException) {
+                } catch {
                     semaphoreSlim.Release();
                     throw;
                 }

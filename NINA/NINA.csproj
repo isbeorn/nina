@@ -484,7 +484,7 @@
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
-    <Compile Include="ViewModel\FlatWizard\FlatsWizardUserPromptVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardUserPromptVM.cs" />
     <Compile Include="ViewModel\FlatWizard\FlatWizardVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />

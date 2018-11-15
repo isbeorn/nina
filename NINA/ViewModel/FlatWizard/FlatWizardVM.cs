@@ -259,7 +259,7 @@ namespace NINA.ViewModel.FlatWizard {
             flatSequenceCts?.Cancel();
         }
 
-        private bool EvaluateDialogResult(ref double exposureTime, ref List<DataPoint> dataPoints, ref FlatWizardFilterSettingsWrapper settings, FlatWizardUserPromptVM flatsWizardUserPrompt) {
+        private bool EvaluateUserPromptResult(ref double exposureTime, ref List<DataPoint> dataPoints, ref FlatWizardFilterSettingsWrapper settings, FlatWizardUserPromptVM flatsWizardUserPrompt) {
             WindowService.ShowDialog(flatsWizardUserPrompt, Loc.Instance["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
             if (!flatsWizardUserPrompt.Continue) {
                 flatSequenceCts.Cancel();
@@ -275,81 +275,109 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         private async Task<bool> StartFindingExposureTimeSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FlatWizardFilterSettingsWrapper wrapper) {
-            bool finished = false;
+            bool userCancelled = false;
             double exposureTime = wrapper.Settings.MinFlatExposureTime;
 
             var status = new ApplicationStatus { Status = "Starting Exposure Time calculation at " + wrapper.Settings.MinFlatExposureTime, Source = Title };
             progress.Report(status);
             ImageArray iarr = null;
             List<DataPoint> datapoints = new List<DataPoint>();
+            TrendLine trendLine;
+
+            double cameraBitDepthADU = Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth);
 
             // TODO: refactor this shit
 
             do {
+                // capture a flat
                 var sequence = new CaptureSequence(exposureTime, "FLAT", wrapper.Filter, BinningMode, 1);
                 sequence.Gain = Gain;
                 iarr = await imagingMediator.CaptureImageWithoutSavingToHistoryAndThumbnail(sequence, ct, progress, false, true);
                 Image = await ImageControlVM.StretchAsync(
                     iarr.Statistics.Mean,
-                    ImageAnalysis.CreateSourceFromArray(
-                        iarr,
-                        System.Windows.Media.PixelFormats.Gray16),
+                    ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16),
                     profileService.ActiveProfile.ImageSettings.AutoStretchFactor);
 
+                // add mean to statistics
                 var currentMean = iarr.Statistics.Mean;
                 datapoints.Add(new DataPoint(exposureTime, currentMean));
-                var histogramMeanAdu = wrapper.Settings.HistogramMeanTarget * Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth);
 
-                if (histogramMeanAdu - histogramMeanAdu * wrapper.Settings.HistogramTolerance <= currentMean
-                    && histogramMeanAdu + histogramMeanAdu * wrapper.Settings.HistogramTolerance >= currentMean) {
+                // recalculate mean ADU if the user changed it
+                var histogramMeanAdu = wrapper.Settings.HistogramMeanTarget * cameraBitDepthADU;
+                var histogramMeanAduTolerance = histogramMeanAdu * wrapper.Settings.HistogramTolerance;
+                var histogramToleranceUpperBound = histogramMeanAdu + histogramMeanAduTolerance;
+                var histogramToleranceLowerBound = histogramMeanAdu - histogramMeanAduTolerance;
+
+                if (histogramToleranceLowerBound <= currentMean && histogramToleranceUpperBound >= currentMean) {
+                    // if the currentMean is within the tolerance we're done
                     CalculatedExposureTime = exposureTime;
                     CalculatedHistogramMean = currentMean;
                     progress.Report(new ApplicationStatus() { Status = "Mean ADU is " + CalculatedHistogramMean + ", target Exposure Time is " + CalculatedExposureTime, Source = Title });
-                    finished = true;
-                } else if (currentMean > histogramMeanAdu + histogramMeanAdu * wrapper.Settings.HistogramTolerance) {
-                    TrendLine line = new TrendLine(datapoints);
-                    var expectedExposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
+                    break;
+                } else if (currentMean > histogramMeanAdu + histogramMeanAduTolerance) {
+                    // if the currentMean is above the mean + tolerance the flats are too bright
+                    trendLine = new TrendLine(datapoints);
+                    var expectedExposureTime = (histogramMeanAdu - trendLine.Offset) / trendLine.Slope;
 
                     if (expectedExposureTime < exposureTime && datapoints.Count >= 3) {
                         exposureTime = expectedExposureTime;
                     } else {
                         var flatsWizardUserPrompt = new FlatWizardUserPromptVM(Loc.Instance["LblFlatUserPromptFlatTooBright"],
-                            currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
-                            wrapper, expectedExposureTime
+                            currentMean, cameraBitDepthADU, wrapper, expectedExposureTime
                         );
-                        finished = EvaluateDialogResult(ref exposureTime, ref datapoints, ref wrapper, flatsWizardUserPrompt);
+                        userCancelled = EvaluateUserPromptResult(ref exposureTime, ref datapoints, ref wrapper, flatsWizardUserPrompt);
                     }
                 } else {
+                    // we continue with trying to find the proper exposure time by increasing the next exposureTime step by StepSize
                     exposureTime += wrapper.Settings.StepSize;
                     progress.Report(new ApplicationStatus() { Status = "Mean ADU was " + currentMean + ", starting Exposure Time calculation at " + exposureTime, Source = Title });
                 }
 
-                if (datapoints.Count >= 3 && !finished) {
-                    TrendLine line = new TrendLine(datapoints);
-                    exposureTime = (histogramMeanAdu - line.Offset) / line.Slope;
+                if (datapoints.Count >= 3 && !userCancelled) {
+                    // if we have done 3 exposures already and are still not finished
+                    // extrapolate the exposure time based on the previous exposures
+                    trendLine = new TrendLine(datapoints);
+                    exposureTime = (histogramMeanAdu - trendLine.Offset) / trendLine.Slope;
+                    // TODO: possibly break here if calculaeted exposureTime is negative or show the user a dialog
                 }
 
-                if ((exposureTime > wrapper.Settings.MaxFlatExposureTime || exposureTime < wrapper.Settings.MinFlatExposureTime) && !finished) {
+                if ((exposureTime > wrapper.Settings.MaxFlatExposureTime || exposureTime < wrapper.Settings.MinFlatExposureTime) && !userCancelled) {
+                    // if the new exposure time is above the max exposure time and we are not finished
+                    // prompt the user to adjust the flat brightness or mean because the max flat exposure time does not fulfill the requirements for this specific flat set
                     var flatsWizardUserPrompt = new FlatWizardUserPromptVM(Loc.Instance["LblFlatUserPromptFlatTooDim"],
-                        currentMean, Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth),
-                        wrapper, exposureTime
+                        currentMean, cameraBitDepthADU, wrapper, exposureTime
                     );
-                    finished = EvaluateDialogResult(ref exposureTime, ref datapoints, ref wrapper, flatsWizardUserPrompt);
+                    userCancelled = EvaluateUserPromptResult(ref exposureTime, ref datapoints, ref wrapper, flatsWizardUserPrompt);
                 }
 
-                if (pt.IsPaused) {
-                    IsPaused = true;
-                    progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblPaused"] });
-                    await pt.WaitWhilePausedAsync(ct);
-                    IsPaused = false;
-                }
+                await WaitWhilePaused(progress, pt, ct);
 
+                // collect garbage to reduce ram usage
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
+                // throw a cancellation if user requested a cancel as well
                 ct.ThrowIfCancellationRequested();
-            } while (finished == false);
+            } while (userCancelled == false);
 
-            return finished;
+            if (userCancelled) {
+                // reset values just in case
+                CalculatedExposureTime = 0;
+                CalculatedHistogramMean = 0;
+            }
+
+            return userCancelled;
+        }
+
+        private async Task<PauseToken> WaitWhilePaused(IProgress<ApplicationStatus> progress, PauseToken pt, CancellationToken ct) {
+            if (pt.IsPaused) {
+                // if paused we'll wait until user unpaused here
+                IsPaused = true;
+                progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblPaused"] });
+                await pt.WaitWhilePausedAsync(ct);
+                IsPaused = false;
+            }
+
+            return pt;
         }
 
         private async Task<bool> StartFlatCapture(IProgress<ApplicationStatus> progress, PauseToken pt) {
@@ -372,12 +400,13 @@ namespace NINA.ViewModel.FlatWizard {
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;
             } catch (OperationCanceledException) {
-                Utility.Notification.Notification.ShowError(Loc.Instance["LblFlatSequenceCancelled"]);
+                Utility.Notification.Notification.ShowWarning(Loc.Instance["LblFlatSequenceCancelled"]);
                 progress.Report(new ApplicationStatus { Status = Loc.Instance["LblFlatSequenceCancelled"] });
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;
             }
 
+            await Task.Delay(1000);
             imagingMediator.DestroyImage();
             Image = null;
             GC.Collect();
