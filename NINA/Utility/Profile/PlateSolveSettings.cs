@@ -31,6 +31,7 @@ namespace NINA.Utility.Profile {
             threshold = 1.0d;
             rotationTolerance = 1.0d;
             filter = null;
+            aspsLocation = string.Empty;
         }
 
         [DataMember]
@@ -170,6 +171,19 @@ namespace NINA.Utility.Profile {
             }
             set {
                 filter = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string aspsLocation;
+
+        [DataMember]
+        public string AspsLocation {
+            get {
+                return Environment.ExpandEnvironmentVariables(aspsLocation);
+            }
+            set {
+                aspsLocation = value;
                 RaisePropertyChanged();
             }
         }

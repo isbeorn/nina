@@ -19,9 +19,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <WrapPanel DataContext="{Binding GuideStepsHistory}">
+        <WrapPanel>
             <ComboBox
                 MaxWidth="60"
+                DataContext="{Binding GuideStepsHistory}"
                 ItemStringFormat="y: +/-{0}&quot;"
                 SelectedValue="{Binding MaxY}"
                 SelectedValuePath="Content">
@@ -36,6 +37,7 @@
             <!--<TextBlock Text="{ns:Loc LblXAxisScale}" />-->
             <ComboBox
                 MaxWidth="60"
+                DataContext="{Binding GuideStepsHistory}"
                 ItemStringFormat="x: {0}"
                 SelectedValue="{Binding HistorySize}"
                 SelectedValuePath="Content">
@@ -47,9 +49,18 @@
             <!--<TextBlock Text="{ns:Loc LblYAxisUnits}" />-->
             <ComboBox
                 MaxWidth="60"
+                DataContext="{Binding GuideStepsHistory}"
                 ItemStringFormat="unit: {0}"
                 ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}"
                 SelectedItem="{Binding Scale}" />
+            <Button
+                Height="30"
+                MinWidth="50"
+                MaxWidth="60"
+                Margin="5"
+                Command="{Binding ClearGraphCommand}">
+                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblClear}" />
+            </Button>
         </WrapPanel>
         <WrapPanel Grid.Row="1" DataContext="{Binding GuideStepsHistory}">
             <TextBlock Margin="5,0,0,0" Text="{Binding RMS.RAText}" />

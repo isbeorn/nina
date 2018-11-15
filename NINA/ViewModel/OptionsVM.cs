@@ -32,6 +32,7 @@ namespace NINA.ViewModel {
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
+            OpenASPSFileDiagCommand = new RelayCommand(OpenASPSFileDiag);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
@@ -219,6 +220,15 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void OpenASPSFileDiag(object o) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.FileName = profileService.ActiveProfile.PlateSolveSettings.AspsLocation;
+
+            if (dialog.ShowDialog() == true) {
+                AspsLocation = dialog.FileName;
+            }
+        }
+
         private void ScanForIndexFiles() {
             IndexFiles.Clear();
             try {
@@ -253,6 +263,8 @@ namespace NINA.ViewModel {
         public ICommand OpenCygwinFileDiagCommand { get; private set; }
 
         public ICommand OpenPS2FileDiagCommand { get; private set; }
+
+        public ICommand OpenASPSFileDiagCommand { get; private set; }
 
         public ICommand OpenImageFileDiagCommand { get; private set; }
 
@@ -486,6 +498,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.PlateSolveSettings.PS2Location = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string AspsLocation {
+            get {
+                return profileService.ActiveProfile.PlateSolveSettings.AspsLocation;
+            }
+            set {
+                profileService.ActiveProfile.PlateSolveSettings.AspsLocation = value;
                 RaisePropertyChanged();
             }
         }

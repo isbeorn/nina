@@ -716,4 +716,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblTelescopeToNINA">Teleskop zu NINA</s:String>
     <s:String x:Key="LblNINA">NINA</s:String>
     <s:String x:Key="LblFocuserPositionDescription">Derzeitige Okularauszugsposition</s:String>
+    <s:String x:Key="LblClear">Leeren</s:String>
+    <s:String x:Key="LblASPS">All Sky Plate Solver</s:String>
+    <s:String x:Key="LblASPSDirectory">ASPS Ort</s:String>
 </ResourceDictionary>

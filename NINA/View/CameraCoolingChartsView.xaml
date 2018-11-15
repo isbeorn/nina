@@ -10,6 +10,7 @@
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -25,7 +26,8 @@
             LegendPosition="BottomLeft"
             LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
             PlotAreaBackground="{StaticResource BackgroundBrush}"
-            PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
+            PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}"
+            Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
             <oxy:Plot.Axes>
                 <oxy:LinearAxis
                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
@@ -57,7 +59,10 @@
             </oxy:Plot.Series>
         </oxy:Plot>
 
-        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" />
+        <GridSplitter
+            Grid.Row="1"
+            HorizontalAlignment="Stretch"
+            Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}" />
 
         <oxy:Plot
             Grid.Row="2"
