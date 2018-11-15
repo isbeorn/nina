@@ -163,75 +163,34 @@ namespace NINA.Model.MyCamera {
 
         public double CoolerPower {
             get {
-                /* todo */
+                /* There is no interface for a cooler percentage.
+                 * It's possible to readout voltage, but SDK says this should not be done more often than 2 seconds.
+                 * Until a different solution is there, this will not be displayed*/
                 return 0.0;
             }
         }
 
         public string CameraState {
             get {
-                /* todo */
+                /* No State available */
                 return string.Empty;
             }
         }
 
         public bool CanSubSample {
             get {
-                /* todo */
+                /*
+                 Currently Altair Cameras are fixed to certain subsample resolutions, which is incompatible to NINA's approach
+                 */
                 return false;
             }
         }
 
-        public bool EnableSubSample {
-            get {
-                /* todo */
-                return false;
-            }
-
-            set {
-                /* todo */
-            }
-        }
-
-        public int SubSampleX {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int SubSampleY {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int SubSampleWidth {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int SubSampleHeight {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public bool EnableSubSample { get; set; }
+        public int SubSampleX { get; set; }
+        public int SubSampleY { get; set; }
+        public int SubSampleWidth { get; set; }
+        public int SubSampleHeight { get; set; }
 
         public bool CanShowLiveView {
             get {
@@ -475,7 +434,7 @@ namespace NINA.Model.MyCamera {
                     this.CameraXSize = width;
                     this.CameraYSize = height;
 
-                    /* Todo Readout flags */
+                    /* Readout flags */
                     if ((this.flags & AltairCam.eFLAG.FLAG_PUTTEMPERATURE) != 0) {
                         /* Can set Target Temp */
                         CanSetTemperature = true;
