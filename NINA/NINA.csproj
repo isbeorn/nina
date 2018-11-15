@@ -295,6 +295,9 @@
     <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
     <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
+    <Compile Include="Utility\Converters\DoubleToHalfConverter.cs" />
+    <Compile Include="Utility\Converters\GreaterThanToVisiblityConverter.cs" />
+    <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
     <Compile Include="ViewModel\FlatWizard\FlatWizardFilterSettingsWrapper.cs" />
     <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
@@ -743,10 +746,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\DataTemplates.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Resources\StaticResources\DataTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -775,7 +774,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\SVGDictionary.xaml">
+    <Page Include="Resources\StaticResources\SVGDictionary.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\StaticResources\ViewModels.xaml">

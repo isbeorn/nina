@@ -13,9 +13,9 @@ namespace NINA.Utility.Converters {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (string.IsNullOrEmpty(value.ToString())) return 0;
 
-            if (value.GetType() == typeof(double)) return ((double)value).ToString("0.000") + "s";
+            if (value.GetType() == typeof(double)) return ((double)value).ToString("0.00000") + "s";
 
-            if (value.GetType() == typeof(decimal)) return ((decimal)value).ToString("0.000").ToString() + "s";
+            if (value.GetType() == typeof(decimal)) return ((decimal)value).ToString("0.00000").ToString() + "s";
 
             return value;
         }

@@ -2,7 +2,45 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:NINA.Resources.StaticResources"
                     xmlns:ns="clr-namespace:NINA.Locale"
+                    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+                    xmlns:rotator="clr-namespace:NINA.Model.MyRotator"
+                    xmlns:view="clr-namespace:NINA.View"
+                    xmlns:vm="clr-namespace:NINA.ViewModel"
                     xmlns:fw="clr-namespace:NINA.ViewModel.FlatWizard">
+
+    <DataTemplate DataType="{x:Type vm:MeridianFlipVM}">
+        <view:MeridianFlipView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:VersionCheckVM}">
+        <view:VersionCheckView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:ProfileSelectVM}">
+        <view:ProfileSelectView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:AutoFocusVM}">
+        <view:AutoFocusChart />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
+        <view:PlateSolveView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type rotator:ManualRotator}">
+        <view:ManualRotatorView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:AberrationInspectorVM}">
+        <view:AberrationInspectorView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:TelescopeLatLongSyncVM}">
+        <view:TelescopeLatLongSyncView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type fw:FlatWizardUserPromptVM}">
+        <view:FlatWizardUserPrompt />
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type fw:FlatWizardFilterSettingsWrapper}">
         <StackPanel Orientation="Vertical">
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
@@ -19,8 +57,11 @@
                                VerticalAlignment="Center" Text="{ns:Loc LblFlatMinExposureTime}" TextWrapping="WrapWithOverflow" />
                     <TextBox Grid.Row="0" Grid.Column="1"
                         Text="{Binding Settings.MinFlatExposureTime, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
-                    <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                        Value="{Binding Settings.MinFlatExposureTime, UpdateSourceTrigger=PropertyChanged}" Minimum="0.01" Maximum="10" />
+                    <ninactrl:TickSlider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        ActualValue="{Binding Settings.MinFlatExposureTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        ActualValueMinimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.ExposureMin, FallbackValue=0.00025}"
+                        ActualValueMaximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.ExposureMax, FallbackValue=30}"
+                        InitialSpeedTickValue="0.5" SpeedTickPercentageChangePerTick="0.9" MaxActualValueIncreasePerTick="1" />
                 </Grid>
             </Border>
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
@@ -37,8 +78,11 @@
                                VerticalAlignment="Center" Text="{ns:Loc LblFlatMaxExposureTime}" TextWrapping="WrapWithOverflow" />
                     <TextBox Grid.Row="0" Grid.Column="1"
                         Text="{Binding Settings.MaxFlatExposureTime, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
-                    <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                        Value="{Binding Settings.MaxFlatExposureTime, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="30" />
+                    <ninactrl:TickSlider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        ActualValue="{Binding Settings.MaxFlatExposureTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        ActualValueMinimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.ExposureMin, FallbackValue=0.00025}"
+                        ActualValueMaximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.ExposureMax, FallbackValue=30}"
+                        InitialSpeedTickValue="0.5" SpeedTickPercentageChangePerTick="0.9" MaxActualValueIncreasePerTick="1" />
                 </Grid>
             </Border>
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
@@ -56,7 +100,7 @@
                     <TextBox Grid.Row="0" Grid.Column="1"
                         Text="{Binding Settings.StepSize, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecimalToSecondsConverter}}" />
                     <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                        Value="{Binding Settings.StepSize, UpdateSourceTrigger=PropertyChanged}" Minimum="0.01" Maximum="1" />
+                        Value="{Binding Settings.StepSize, UpdateSourceTrigger=PropertyChanged}" Minimum="0.00025" Maximum="3" />
                 </Grid>
             </Border>
             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">

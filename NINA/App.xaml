@@ -13,7 +13,7 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <!--  SVG Files  -->
-                <ResourceDictionary Source="/NINA;component/Resources/SVGDictionary.xaml" />
+                <ResourceDictionary Source="/NINA;component/Resources/StaticResources/SVGDictionary.xaml" />
 
                 <!--  Static Resources  -->
                 <ResourceDictionary Source="Resources\StaticResources\ViewModels.xaml" />
@@ -47,9 +47,6 @@
                 <ResourceDictionary Source="Resources\Styles\Path.xaml" />
                 <ResourceDictionary Source="Resources\Styles\StepperControl.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
-
-                <!--  DataTemplates  -->
-                <ResourceDictionary Source="Resources\DataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
