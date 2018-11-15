@@ -386,7 +386,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void AbortExposure() {
-            throw new NotImplementedException();
+            StopExposure();
         }
 
         private void ReadOutBinning() {
@@ -394,23 +394,23 @@ namespace NINA.Model.MyCamera {
 
             switch (binning) {
                 case 0x02:
+                case 0x82:
                     MaxBinX = 2;
                     MaxBinY = 2;
                     break;
 
                 case 0x03:
+                case 0x83:
                     MaxBinX = 3;
                     MaxBinY = 3;
                     break;
 
                 case 0x04:
+                case 0x84:
                     MaxBinX = 4;
                     MaxBinY = 4;
                     break;
 
-                case 0x82:
-                case 0x83:
-                case 0x84:
                 default:
                     MaxBinX = 1;
                     MaxBinY = 1;
@@ -434,10 +434,18 @@ namespace NINA.Model.MyCamera {
                     success = true;
 
                     /* Use maximum bit depth */
-                    camera.put_Option(AltairCam.eOPTION.OPTION_BITDEPTH, 1);
+                    if (!camera.put_Option(AltairCam.eOPTION.OPTION_BITDEPTH, 1)) {
+                        Logger.Warning("AltairCamera - Could not set bit depth");
+                        Disconnect();
+                        return false;
+                    }
 
-                    /* Use Mono Mode */
-                    camera.put_Option(AltairCam.eOPTION.OPTION_RAW, 1);
+                    /* Use RAW Mode */
+                    if (!camera.put_Option(AltairCam.eOPTION.OPTION_RAW, 1)) {
+                        Logger.Warning("AltairCamera - Could not set RAW mode");
+                        Disconnect();
+                        return false;
+                    }
 
                     camera.put_AutoExpoEnable(false);
 
@@ -452,21 +460,30 @@ namespace NINA.Model.MyCamera {
                     /* Todo Sensor*/
 
                     if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 1)) {
-                        Logger.Warning("Could not set Altair Trigger manual mode");
+                        Logger.Warning("AltairCamera - Could not set Trigger manual mode");
                         Disconnect();
+                        return false;
                     }
 
                     if (!camera.StartPushModeV2(new AltairCam.DelegateDataCallbackV2(OnImageCallback))) {
-                        Logger.Warning("Could not start push mode");
+                        Logger.Warning("AltairCamera - Could not start push mode");
                         Disconnect();
+                        return false;
                     }
+
+                    if (!camera.get_RawFormat(out var fourCC, out var bitDepth)) {
+                        Logger.Warning("AltairCamera - Unable to get format information");
+                        Disconnect();
+                        return false;
+                    }
+
+                    this.bitDepth = bitDepth;
 
                     if (camera.MonoMode) {
                         SensorType = SensorType.Monochrome;
                     } else {
                         /* Todo Determine color matrix */
                         SensorType = SensorType.RGGB;
-                        //camera.get_RawFormat(out var fourCC, out var bitDepth);
                     }
 
                     Connected = true;
@@ -505,74 +522,51 @@ namespace NINA.Model.MyCamera {
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
             downloadExposure = new TaskCompletionSource<object>();
-            camera.put_ExpoTime((uint)(exposureTime * 1000000));
-            camera.Trigger(1);
+            if (!camera.put_ExpoTime((uint)(exposureTime * 1000000))) {
+                throw new Exception("AltairCamera - Could not set exposure time");
+            }
+            if (!camera.Trigger(1)) {
+                throw new Exception("AltairCamera - Failed to trigger camera");
+            }
         }
 
         private void OnImageCallback(IntPtr pData, ref AltairCam.FrameInfoV2 info, bool bSnap) {
-            var size = (this.CameraXSize * this.CameraYSize * 2);
+            int width = (int)info.width;
+            int height = (int)info.height;
+            var size = (width * height * 2);
             var pointer = Marshal.AllocHGlobal(size);
 
             AltairCam.CopyMemory(pointer, pData, (uint)size);
-            ushort[] arr = CopyToUShort(pData, size / 2);
+            ushort[] arr;
+            if (bitDepth > 8) {
+                arr = CopyToUShort(pointer, size / 2);
+            } else {
+                arr = Copy8BitToUShort(pointer, size / 2);
+            }
             Marshal.FreeHGlobal(pointer);
 
-            /* todo - format of pixels is not yet correct */
-
-            imageTask = ImageArray.CreateInstance(arr, this.CameraXSize, this.CameraYSize, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-            downloadExposure.TrySetResult(true);
+            imageTask = ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            downloadExposure?.TrySetResult(true);
         }
 
         private TaskCompletionSource<object> downloadExposure;
         private Task<ImageArray> imageTask;
-
-        private void OnAltairEvent(AltairCam.eEVENT ev) {
-            switch (ev) {
-                case AltairCam.eEVENT.EVENT_ERROR:
-                    //OnEventError();
-                    break;
-
-                case AltairCam.eEVENT.EVENT_DISCONNECTED:
-                    OnEventDisconnected();
-                    break;
-
-                case AltairCam.eEVENT.EVENT_EXPOSURE:
-                    //OnEventExposure();
-                    break;
-
-                case AltairCam.eEVENT.EVENT_IMAGE:
-
-                    break;
-
-                case AltairCam.eEVENT.EVENT_STILLIMAGE:
-                    PullImage();
-                    break;
-
-                case AltairCam.eEVENT.EVENT_TEMPTINT:
-                    //OnEventTempTint();
-                    break;
-            }
-        }
+        private uint bitDepth;
 
         private void OnEventDisconnected() {
             StopExposure();
             Disconnect();
         }
 
-        private void PullImage() {
-            //var bmp = new System.Drawing.Bitmap(this.CameraXSize, this.CameraYSize, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
-            //var bmpdata = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, bmp.PixelFormat);
-
-            int size = this.CameraXSize * this.CameraYSize * 2;
-            var pointer = Marshal.AllocHGlobal(size);
-            //int buffersize = (width * height * 16 + 7) / 8;
-
-            camera.PullImageV2(pointer, 0, out var info);
-
-            ushort[] arr = CopyToUShort(pointer, size / 2);
-            Marshal.FreeHGlobal(pointer);
-
-            var imageTask = ImageArray.CreateInstance(arr, this.CameraXSize, this.CameraYSize, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+        private ushort[] Copy8BitToUShort(IntPtr source, int length) {
+            var destination = new ushort[length];
+            unsafe {
+                var sourcePtr = (byte*)source;
+                for (int i = 0; i < length; ++i) {
+                    destination[i] = *sourcePtr++;
+                }
+            }
+            return destination;
         }
 
         private ushort[] CopyToUShort(IntPtr source, int length) {
@@ -591,7 +585,9 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopExposure() {
-            throw new NotImplementedException();
+            if (!camera.Trigger(0)) {
+                Logger.Warning("AltairCamera - Could not stop exposure");
+            }
         }
 
         public void StopLiveView() {
