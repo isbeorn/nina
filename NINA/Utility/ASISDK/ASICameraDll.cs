@@ -47,7 +47,6 @@ namespace ZWOptical.ASISDK {
 
             //Supported image type
             ASI_IMG_RAW8 = 0,
-
             ASI_IMG_RGB24,
             ASI_IMG_RAW16,
             ASI_IMG_Y8,
@@ -255,6 +254,9 @@ namespace ZWOptical.ASISDK {
         [DllImport(DLLNAME, EntryPoint = "ASISetID", CallingConvention = CallingConvention.Cdecl)]
         private static extern ASI_ERROR_CODE ASISetID(int iCameraID, ASI_ID ID);
 
+        [DllImport(DLLNAME, EntryPoint = "ASIGetSDKVersion", CallingConvention = CallingConvention.StdCall)]
+        private static extern IntPtr ASIGetSDKVersion();
+
         public static ASI_CAMERA_INFO GetCameraProperties(int cameraIndex) {
             ASI_CAMERA_INFO result;
             CheckReturn(ASIGetCameraProperty(out result, cameraIndex), MethodBase.GetCurrentMethod(), cameraIndex);
@@ -413,6 +415,14 @@ namespace ZWOptical.ASISDK {
             CheckReturn(result, MethodBase.GetCurrentMethod(), cameraId, buffer, bufferSize);
             return true;
         }
+
+        public static string GetSDKVersion() {
+            IntPtr p = ASIGetSDKVersion();
+            string version = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(p);
+
+            return version;
+        }
+
     }
 
     [Serializable]

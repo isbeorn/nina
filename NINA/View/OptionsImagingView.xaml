@@ -22,8 +22,8 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40" />
+                    <RowDefinition Height="25" />
                     <RowDefinition Height="40" />
-                    <RowDefinition Height="10" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -35,19 +35,31 @@
                     Grid.Column="1"
                     ItemsSource="{Binding FileTypes}"
                     SelectedItem="{Binding FileType}" />
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.ColumnSpan="3"
+                    Orientation="Horizontal">
+                    <Path
+                        Width="25"
+                        Margin="5"
+                        Data="{StaticResource ExclamationCircledSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveImageAsDSLRNote}" />
+                </StackPanel>
 
                 <TextBlock
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     Text="{ns:Loc LblImageFilePath}" />
                 <TextBox
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Text="{Binding ImageFilePath}" />
                 <Button
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Grid.Column="2"
                     Width="30"
                     Height="30"
