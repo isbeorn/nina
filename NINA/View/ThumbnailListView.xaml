@@ -10,6 +10,16 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
     <Grid>
+        <Path
+            Width="100"
+            Height="100"
+            Margin="5"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Data="{StaticResource HistorySVG}"
+            Fill="{StaticResource ButtonForegroundDisabledBrush}"
+            Opacity="0.2"
+            Stretch="Uniform" />
         <ScrollViewer
             x:Name="ScrollViewer"
             HorizontalScrollBarVisibility="Auto"
@@ -26,7 +36,8 @@
                         <Button
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            Command="{Binding SelectCommand}">
+                            Command="{Binding Path=DataContext.SelectCommand, ElementName=ScrollViewer}"
+                            CommandParameter="{Binding}">
                             <Grid Margin="2">
                                 <Grid.ToolTip>
                                     <TextBlock Text="{Binding ImagePath}" />

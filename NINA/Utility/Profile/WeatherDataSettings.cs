@@ -7,7 +7,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class WeatherDataSettings : IWeatherDataSettings {
+    public class WeatherDataSettings : Settings, IWeatherDataSettings {
         private WeatherDataEnum weatherDataType = WeatherDataEnum.OPENWEATHERMAP;
 
         [DataMember]
@@ -17,7 +17,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 weatherDataType = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -30,7 +30,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 openWeatherMapAPIKey = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -43,7 +43,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 openWeatherMapUrl = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

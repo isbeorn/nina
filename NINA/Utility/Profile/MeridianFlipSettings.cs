@@ -6,7 +6,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class MeridianFlipSettings : IMeridianFlipSettings {
+    public class MeridianFlipSettings : Settings, IMeridianFlipSettings {
         private bool enabled = false;
 
         [DataMember]
@@ -16,7 +16,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 enabled = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -29,7 +29,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 recenter = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -42,7 +42,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 minutesAfterMeridian = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -55,7 +55,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 settleTime = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -68,7 +68,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pauseTimeBeforeMeridian = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

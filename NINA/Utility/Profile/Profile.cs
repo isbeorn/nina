@@ -1,5 +1,6 @@
 ﻿using NINA.Model.MyFilterWheel;
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -21,12 +22,47 @@ namespace NINA.Utility.Profile {
     [KnownType(typeof(MeridianFlipSettings))]
     [KnownType(typeof(PlateSolveSettings))]
     [KnownType(typeof(PolarAlignmentSettings))]
+    [KnownType(typeof(RotatorSettings))]
     [KnownType(typeof(SequenceSettings))]
     [KnownType(typeof(TelescopeSettings))]
     [KnownType(typeof(WeatherDataSettings))]
     public class Profile : BaseINPC, IProfile {
 
         public Profile() {
+            Initialize();
+        }
+
+        private void Initialize() {
+            if (RotatorSettings == null) {
+                RotatorSettings = new RotatorSettings();
+            }
+
+            ApplicationSettings.PropertyChanged += SettingsChanged;
+            AstrometrySettings.PropertyChanged += SettingsChanged;
+            CameraSettings.PropertyChanged += SettingsChanged;
+            ColorSchemaSettings.PropertyChanged += SettingsChanged;
+            FilterWheelSettings.PropertyChanged += SettingsChanged;
+            FocuserSettings.PropertyChanged += SettingsChanged;
+            FramingAssistantSettings.PropertyChanged += SettingsChanged;
+            GuiderSettings.PropertyChanged += SettingsChanged;
+            ImageFileSettings.PropertyChanged += SettingsChanged;
+            ImageSettings.PropertyChanged += SettingsChanged;
+            MeridianFlipSettings.PropertyChanged += SettingsChanged;
+            PlateSolveSettings.PropertyChanged += SettingsChanged;
+            PolarAlignmentSettings.PropertyChanged += SettingsChanged;
+            RotatorSettings.PropertyChanged += SettingsChanged;
+            SequenceSettings.PropertyChanged += SettingsChanged;
+            TelescopeSettings.PropertyChanged += SettingsChanged;
+            WeatherDataSettings.PropertyChanged += SettingsChanged;
+        }
+
+        [OnDeserialized]
+        private void SetValuesOnDeserialized(StreamingContext context) {
+            Initialize();
+        }
+
+        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+            RaisePropertyChanged("Settings");
         }
 
         public Profile(string name) : this() {
@@ -121,6 +157,9 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public IPolarAlignmentSettings PolarAlignmentSettings { get; set; } = new PolarAlignmentSettings();
+
+        [DataMember]
+        public IRotatorSettings RotatorSettings { get; set; } = new RotatorSettings();
 
         [DataMember]
         public ISequenceSettings SequenceSettings { get; set; } = new SequenceSettings();

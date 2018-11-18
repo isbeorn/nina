@@ -1,5 +1,6 @@
 ﻿namespace NINA.Utility.Profile {
-    public interface IFocuserSettings {
+
+    public interface IFocuserSettings : ISettings {
         int AutoFocusExposureTime { get; set; }
         int AutoFocusInitialOffsetSteps { get; set; }
         int AutoFocusStepSize { get; set; }

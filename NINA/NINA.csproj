@@ -161,6 +161,9 @@
     <Reference Include="ASCOM.Utilities.Video, Version=6.1.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
+    <Reference Include="AsyncEnumerable, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0426b068161bd1d1, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncEnumerator.2.2.1\lib\net45\AsyncEnumerable.dll</HintPath>
+    </Reference>
     <Reference Include="CSharpFITS_v1.1, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CSharpFITS.1.1\lib\Net20\CSharpFITS_v1.1.dll</HintPath>
     </Reference>
@@ -278,18 +281,30 @@
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
+    <Compile Include="Model\DeviceInfo.cs" />
     <Compile Include="Model\DummyDevice.cs" />
     <Compile Include="Model\GuideStepsHistory.cs" />
     <Compile Include="Model\IDevice.cs" />
+    <Compile Include="Model\ImagePattern.cs" />
     <Compile Include="Model\MyCamera\AtikCamera.cs" />
+    <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
     <Compile Include="Model\MyCamera\ImageArray.cs" />
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
+    <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
+    <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
+    <Compile Include="Model\MyFocuser\FocuserInfo.cs" />
     <Compile Include="Model\MyFocuser\IFocuser.cs" />
+    <Compile Include="Model\MyGuider\GuiderInfo.cs" />
     <Compile Include="Model\MyGuider\IGuider.cs" />
     <Compile Include="Model\MyGuider\PHD2Guider.cs" />
+    <Compile Include="Model\MyRotator\AscomRotator.cs" />
+    <Compile Include="Model\MyRotator\IRotator.cs" />
+    <Compile Include="Model\MyRotator\ManualRotator.cs" />
+    <Compile Include="Model\MyRotator\RotatorInfo.cs" />
+    <Compile Include="Model\MyTelescope\TelescopeInfo.cs" />
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
@@ -334,11 +349,38 @@
     <Compile Include="Utility\Converters\MultiMarginConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\PercentageConverter.cs" />
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
     <Compile Include="Utility\Converters\ValueToLocaleConverter.cs" />
     <Compile Include="Utility\DatabaseInteraction.cs" />
     <Compile Include="Utility\DeviceUpdateTimer.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
+    <Compile Include="Utility\Mediator\ApplicationStatusMediator.cs" />
+    <Compile Include="Utility\Mediator\CameraMediator.cs" />
+    <Compile Include="Utility\Mediator\DeviceMediator.cs" />
+    <Compile Include="Utility\Mediator\FilterWheelMediator.cs" />
+    <Compile Include="Utility\Mediator\FocuserMediator.cs" />
+    <Compile Include="Utility\Mediator\GuiderMediator.cs" />
+    <Compile Include="Utility\Mediator\ImagingMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IApplicationStatusMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ICameraConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ICameraMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IDeviceConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IDeviceMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFilterWheelConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFilterWheelMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFocuserConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFocuserMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IGuiderConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IGuiderMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IImagingMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IRotatorConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IRotatorMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ITelescopeConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ITelescopeMediator.cs" />
+    <Compile Include="Utility\Mediator\RotatorMediator.cs" />
+    <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
     <Compile Include="Utility\Profile\ICameraSettings.cs" />
@@ -354,9 +396,13 @@
     <Compile Include="Utility\Profile\IPolarAlignmentSettings.cs" />
     <Compile Include="Utility\Profile\IProfile.cs" />
     <Compile Include="Utility\Profile\IProfileService.cs" />
+    <Compile Include="Utility\Profile\IRotatorSettings.cs" />
     <Compile Include="Utility\Profile\ISequenceSettings.cs" />
+    <Compile Include="Utility\Profile\ISettings.cs" />
     <Compile Include="Utility\Profile\ITelescopeSettings.cs" />
     <Compile Include="Utility\Profile\IWeatherDataSettings.cs" />
+    <Compile Include="Utility\Profile\RotatorSettings.cs" />
+    <Compile Include="Utility\Profile\Settings.cs" />
     <Compile Include="Utility\RawConverter\DCRaw.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
@@ -372,9 +418,6 @@
     <Compile Include="Utility\Enum\WeatherDataEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraConnectionLostException.cs" />
     <Compile Include="Utility\FITS.cs" />
-    <Compile Include="Utility\Mediator\Mediator.cs" />
-    <Compile Include="Utility\Mediator\AsyncMessageHandle.cs" />
-    <Compile Include="Utility\Mediator\MessageHandle.cs" />
     <Compile Include="Utility\MyStopWatch.cs" />
     <Compile Include="Utility\Notification\CustomDisplayPart.xaml.cs">
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
@@ -382,7 +425,6 @@
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
     <Compile Include="Utility\ObservableRectangle.cs" />
     <Compile Include="Utility\ObserveAllCollection.cs" />
-    <Compile Include="Utility\DigitalSkySurveyInteraction.cs" />
     <Compile Include="Utility\Profile\ApplicationSettings.cs" />
     <Compile Include="Utility\Profile\AstrometrySettings.cs" />
     <Compile Include="Utility\Profile\CameraSettings.cs" />
@@ -404,7 +446,17 @@
     <Compile Include="Utility\Profile\WeatherDataSettings.cs" />
     <Compile Include="Utility\RawConverter\FreeImageConverter.cs" />
     <Compile Include="Utility\RawConverter\IRawConverter.cs" />
+    <Compile Include="Utility\SerialRelayInteraction.cs" />
     <Compile Include="Utility\SerialPortInteraction.cs" />
+    <Compile Include="Utility\SkySurvey\CacheSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\ESOSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\ISkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\FileSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\MosaicSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\NASASkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\SkyServerSkySurvey.cs" />
+    <Compile Include="Utility\SkySurvey\SkySurveyFactory.cs" />
+    <Compile Include="Utility\SkySurvey\StsciSkySurvey.cs" />
     <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
     <Compile Include="Utility\ValidationRules\DirectoryExistsRule.cs" />
@@ -414,8 +466,10 @@
     <Compile Include="Utility\ValidationRules\MinutesRule.cs" />
     <Compile Include="Utility\ValidationRules\SecondsRule.cs" />
     <Compile Include="Utility\ValidationRules\ShortRangeRule.cs" />
-    <Compile Include="Utility\WindowService.cs" />
+    <Compile Include="Utility\WindowService\WindowService.cs" />
+    <Compile Include="Utility\WindowService\WindowServiceFactory.cs" />
     <Compile Include="Utility\XISF.cs" />
+    <Compile Include="ViewModel\AberrationInspectorVM.cs" />
     <Compile Include="ViewModel\ApplicationStatusVM.cs" />
     <Compile Include="ViewModel\AutoFocusVM.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
@@ -423,6 +477,11 @@
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />
+    <Compile Include="ViewModel\Interfaces\ICameraVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IDeviceVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IFilterWheelVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IFocuserVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
@@ -456,6 +515,10 @@
     <Compile Include="ViewModel\ImageHistoryVM.cs" />
     <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IGuiderVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IImagingVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IRotatorVM.cs" />
+    <Compile Include="ViewModel\Interfaces\ITelescopeVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\GuiderVM.cs" />
@@ -463,12 +526,17 @@
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
     <Compile Include="Model\RMS.cs" />
+    <Compile Include="ViewModel\RotatorVM.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
     <Compile Include="ViewModel\SkyAtlasVM.cs" />
+    <Compile Include="ViewModel\TelescopeLatLongSyncVM.cs" />
     <Compile Include="ViewModel\TelescopeVM.cs" />
     <Compile Include="ViewModel\ThumbnailVM.cs" />
     <Compile Include="ViewModel\VersionCheckVM.cs" />
     <Compile Include="ViewModel\WeatherDataVM.cs" />
+    <Compile Include="View\AberrationInspectorView.xaml.cs">
+      <DependentUpon>AberrationInspectorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\AltitudeChart.xaml.cs">
       <DependentUpon>AltitudeChart.xaml</DependentUpon>
     </Compile>
@@ -502,6 +570,9 @@
     <Compile Include="View\AnchorablePolarAlignmentView.xaml.cs">
       <DependentUpon>AnchorablePolarAlignmentView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\AnchorableRotatorView.xaml.cs">
+      <DependentUpon>AnchorableRotatorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\AnchorableSequenceView.xaml.cs">
       <DependentUpon>AnchorableSequenceView.xaml</DependentUpon>
     </Compile>
@@ -513,6 +584,9 @@
     </Compile>
     <Compile Include="View\ApplicationMenu.xaml.cs">
       <DependentUpon>ApplicationMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AutoFocusChart.xaml.cs">
+      <DependentUpon>AutoFocusChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CameraControlView.xaml.cs">
       <DependentUpon>CameraControlView.xaml</DependentUpon>
@@ -553,6 +627,9 @@
     <Compile Include="View\ImagingView.xaml.cs">
       <DependentUpon>ImagingView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ManualRotatorView.xaml.cs">
+      <DependentUpon>ManualRotatorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MeridianFlipView.xaml.cs">
       <DependentUpon>MeridianFlipView.xaml</DependentUpon>
     </Compile>
@@ -586,11 +663,17 @@
     <Compile Include="View\PolarScopeView.xaml.cs">
       <DependentUpon>PolarScopeView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\RotatorView.xaml.cs">
+      <DependentUpon>RotatorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SequenceView.xaml.cs">
       <DependentUpon>SequenceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SkyAtlasView.xaml.cs">
       <DependentUpon>SkyAtlasView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TelescopeLatLongSyncView.xaml.cs">
+      <DependentUpon>TelescopeLatLongSyncView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TelescopeView.xaml.cs">
       <DependentUpon>TelescopeView.xaml</DependentUpon>
@@ -667,6 +750,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\Path.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\StepperControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -765,6 +852,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\AberrationInspectorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AltitudeChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -809,6 +900,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\AnchorableRotatorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AnchorableSequenceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -822,6 +917,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ApplicationMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AutoFocusChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -877,6 +976,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ManualRotatorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MeridianFlipView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -921,11 +1024,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\RotatorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SequenceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\SkyAtlasView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TelescopeLatLongSyncView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1129,6 +1240,7 @@
     <Content Include="Documentation\images\usage-objectbrowser-object.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Documentation\md-template.html" />
     <Content Include="Documentation\modest.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

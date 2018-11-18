@@ -10,8 +10,6 @@
     xmlns:view="clr-namespace:NINA.View"
     Name="ThisWindow"
     Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy"
-    MinWidth="1280"
-    MinHeight="720"
     Background="{StaticResource BackgroundBrush}"
     DataContext="{StaticResource AppVM}"
     Icon="/NINA;component/Resources/observatory.png"
@@ -55,7 +53,7 @@
                                         Data="{StaticResource PowerSVG}"
                                         Stretch="Uniform"
                                         Style="{StaticResource TabItemPath}"
-                                        Visibility="{Binding CameraVM.Cam.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        Visibility="{Binding CameraVM.CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                 </Grid>
                             </Grid>
                         </TabItem.Header>
@@ -65,7 +63,7 @@
                     </TabItem>
                     <TabItem>
                         <TabItem.Header>
-                            <UniformGrid Height="50" Columns="2">
+                            <UniformGrid Height="50" Columns="3">
                                 <Grid>
                                     <Grid Width="25" Height="25">
                                         <Path
@@ -84,7 +82,7 @@
                                             Data="{StaticResource PowerSVG}"
                                             Stretch="Uniform"
                                             Style="{StaticResource TabItemPath}"
-                                            Visibility="{Binding FilterWheelVM.FW.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                            Visibility="{Binding FilterWheelVM.FilterWheelInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </Grid>
                                 </Grid>
                                 <Grid>
@@ -105,7 +103,29 @@
                                             Data="{StaticResource PowerSVG}"
                                             Stretch="Uniform"
                                             Style="{StaticResource TabItemPath}"
-                                            Visibility="{Binding FocuserVM.Focuser.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                            Visibility="{Binding FocuserVM.FocuserInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid>
+                                    <Grid Width="25" Height="25">
+                                        <Path
+                                            Margin="2.5"
+                                            Data="{StaticResource RotatorSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource TabItemPath}" />
+                                    </Grid>
+
+                                    <Grid Margin="0,0,0,5" Visibility="{Binding RotatorVM.RotatorInfo, Converter={StaticResource NullToVisibilityConverter}}">
+                                        <Path
+                                            Width="10"
+                                            Height="10"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Data="{StaticResource PowerSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource TabItemPath}"
+                                            Visibility="{Binding RotatorVM.RotatorInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </Grid>
                                 </Grid>
                             </UniformGrid>
@@ -113,7 +133,13 @@
                         <TabItem.Content>
                             <UniformGrid Columns="2">
                                 <view:FilterWheelView DataContext="{Binding FilterWheelVM}" />
-                                <view:FocuserView DataContext="{Binding FocuserVM}" />
+                                <DockPanel>
+                                    <view:FocuserView DataContext="{Binding FocuserVM}" DockPanel.Dock="Top" />
+                                    <view:RotatorView
+                                        VerticalAlignment="Bottom"
+                                        DataContext="{Binding RotatorVM}"
+                                        DockPanel.Dock="Bottom" />
+                                </DockPanel>
                             </UniformGrid>
                         </TabItem.Content>
                     </TabItem>
@@ -137,7 +163,7 @@
                                         Data="{StaticResource PowerSVG}"
                                         Stretch="Uniform"
                                         Style="{StaticResource TabItemPath}"
-                                        Visibility="{Binding TelescopeVM.Telescope.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        Visibility="{Binding TelescopeVM.TelescopeInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                 </Grid>
                             </Grid>
                         </TabItem.Header>

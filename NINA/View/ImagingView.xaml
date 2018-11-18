@@ -62,9 +62,9 @@
         <Grid
             Grid.Row="1"
             Grid.Column="1"
-            IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
+            IsEnabled="{Binding CameraInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
             <view:CameraControlView
-                IsEnabled="{Binding Cam.Connected}"
+                IsEnabled="{Binding CameraInfo.Connected}"
                 MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes, Mode=TwoWay}"
                 MyButtonImage="{StaticResource PictureSVG}"
                 MyCancelButtonImage="{StaticResource CancelSVG}"

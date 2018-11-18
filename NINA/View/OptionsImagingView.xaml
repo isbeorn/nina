@@ -22,9 +22,9 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40" />
+                    <RowDefinition Height="25" />
                     <RowDefinition Height="40" />
-                    <RowDefinition Height="10" />
-                    <RowDefinition Height="40" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <TextBlock
@@ -33,21 +33,33 @@
                     Text="{ns:Loc LblSaveImageAs}" />
                 <ComboBox
                     Grid.Column="1"
-                    ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:FileTypeEnum}}}"
+                    ItemsSource="{Binding FileTypes}"
                     SelectedItem="{Binding FileType}" />
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.ColumnSpan="3"
+                    Orientation="Horizontal">
+                    <Path
+                        Width="25"
+                        Margin="5"
+                        Data="{StaticResource ExclamationCircledSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSaveImageAsDSLRNote}" />
+                </StackPanel>
 
                 <TextBlock
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     Text="{ns:Loc LblImageFilePath}" />
                 <TextBox
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Text="{Binding ImageFilePath}" />
                 <Button
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Grid.Column="2"
                     Width="30"
                     Height="30"
@@ -67,10 +79,16 @@
                     VerticalAlignment="Center"
                     Text="{ns:Loc LblImageFilePattern}" />
                 <TextBox
+                    x:Name="ImageFilePatternTextBox"
                     Grid.Row="3"
                     Grid.Column="1"
                     VerticalAlignment="Center"
-                    Text="{Binding ImageFilePattern}" />
+                    AllowDrop="True"
+                    DragEnter="TextBox_DragEnter"
+                    Drop="TextBox_Drop"
+                    PreviewDragOver="TextBox_PreviewDragOver"
+                    Text="{Binding ImageFilePattern}"
+                    TextWrapping="Wrap" />
                 <Button
                     Grid.Row="3"
                     Grid.Column="2"
@@ -87,10 +105,11 @@
                 </Button>
 
                 <ListView
+                    x:Name="ImagePatternList"
                     Grid.Row="4"
                     Grid.ColumnSpan="3"
                     Margin="0,5,0,0"
-                    ItemsSource="{Binding ImagePatterns}">
+                    ItemsSource="{Binding ImagePatterns.Items}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn
@@ -103,6 +122,13 @@
                                 Header="{ns:Loc LblDescription}" />
                         </GridView>
                     </ListView.View>
+
+                    <ListView.ItemContainerStyle>
+                        <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
+                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListViewItem_PreviewMouseLeftButtonDown" />
+                            <EventSetter Event="PreviewMouseDoubleClick" Handler="ListViewItem_PreviewMouseDoubleClick" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
                 </ListView>
             </Grid>
         </GroupBox>

@@ -1,7 +1,8 @@
 ﻿using System.Windows.Media;
 
 namespace NINA.Utility.Profile {
-    public interface IColorSchemaSettings {
+
+    public interface IColorSchemaSettings : ISettings {
         Color AltBackgroundColor { get; set; }
         Color AltBorderColor { get; set; }
         Color AltButtonBackgroundColor { get; set; }

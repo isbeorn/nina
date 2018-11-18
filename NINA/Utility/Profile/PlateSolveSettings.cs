@@ -8,8 +8,30 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class PlateSolveSettings : IPlateSolveSettings {
+    public class PlateSolveSettings : Settings, IPlateSolveSettings {
         private PlateSolverEnum plateSolverType = PlateSolverEnum.PLATESOLVE2;
+
+        public PlateSolveSettings() {
+            SetDefaultValues();
+        }
+
+        [OnDeserializing]
+        public void OnDesiralization(StreamingContext context) {
+            SetDefaultValues();
+        }
+
+        private void SetDefaultValues() {
+            blindSolverType = BlindSolverEnum.ASTROMETRY_NET;
+            astrometryAPIKey = string.Empty;
+            cygwinLocation = string.Empty;
+            searchRadius = 30;
+            pS2Location = string.Empty;
+            regions = 5000;
+            exposureTime = 2.0d;
+            threshold = 1.0d;
+            rotationTolerance = 1.0d;
+            filter = null;
+        }
 
         [DataMember]
         public PlateSolverEnum PlateSolverType {
@@ -18,11 +40,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 plateSolverType = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private BlindSolverEnum blindSolverType = BlindSolverEnum.ASTROMETRY_NET;
+        private BlindSolverEnum blindSolverType;
 
         [DataMember]
         public BlindSolverEnum BlindSolverType {
@@ -31,11 +53,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 blindSolverType = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private string astrometryAPIKey = string.Empty;
+        private string astrometryAPIKey;
 
         [DataMember]
         public string AstrometryAPIKey {
@@ -44,11 +66,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 astrometryAPIKey = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private string cygwinLocation = @"%localappdata%\NINA\cygwin";
+        private string cygwinLocation;
 
         [DataMember]
         public string CygwinLocation {
@@ -57,11 +79,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 cygwinLocation = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private double searchRadius = 30;
+        private double searchRadius;
 
         [DataMember]
         public double SearchRadius {
@@ -70,11 +92,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 searchRadius = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private string pS2Location = string.Empty;
+        private string pS2Location;
 
         [DataMember]
         public string PS2Location {
@@ -83,11 +105,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pS2Location = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private int regions = 5000;
+        private int regions;
 
         [DataMember]
         public int Regions {
@@ -96,11 +118,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 regions = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private double exposureTime = 2.0d;
+        private double exposureTime;
 
         [DataMember]
         public double ExposureTime {
@@ -109,11 +131,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 exposureTime = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private double threshold = 1.0d;
+        private double threshold;
 
         [DataMember]
         public double Threshold {
@@ -122,11 +144,24 @@ namespace NINA.Utility.Profile {
             }
             set {
                 threshold = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private FilterInfo filter = null;
+        private double rotationTolerance;
+
+        [DataMember]
+        public double RotationTolerance {
+            get {
+                return rotationTolerance;
+            }
+            set {
+                rotationTolerance = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private FilterInfo filter;
 
         [DataMember]
         public FilterInfo Filter {
@@ -135,7 +170,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 filter = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
+using NINA.Utility.WindowService;
 using System;
 using System.Globalization;
 using System.Threading;
@@ -28,9 +29,7 @@ namespace NINA.ViewModel {
             set {
                 if (_tempProfile?.Id != value.Id || _tempProfile == null) {
                     _tempProfile = value;
-                    Mediator.Instance.Request(new SetProfileByIdMessage() {
-                        Id = value.Id
-                    });
+                    profileService.SelectProfile(value.Id);
                     RaiseAllPropertiesChanged();
                 }
             }
@@ -38,17 +37,13 @@ namespace NINA.ViewModel {
 
         public string Camera {
             get {
-                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage() {
-                    Id = ActiveProfile.CameraSettings.Id
-                }, typeof(CameraChooserVM));
+                return ActiveProfile.CameraSettings.Id;
             }
         }
 
         public string FilterWheel {
             get {
-                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage() {
-                    Id = ActiveProfile.FilterWheelSettings.Id
-                }, typeof(FilterWheelChooserVM));
+                return ActiveProfile.FilterWheelSettings.Id;
             }
         }
 
@@ -60,9 +55,7 @@ namespace NINA.ViewModel {
 
         public string Focuser {
             get {
-                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage() {
-                    Id = ActiveProfile.FocuserSettings.Id
-                }, typeof(FocuserChooserVM));
+                return ActiveProfile.FocuserSettings.Id;
             }
         }
 
@@ -70,9 +63,21 @@ namespace NINA.ViewModel {
 
         public string Telescope {
             get {
-                return Mediator.Instance.Request(new GetEquipmentNameByIdMessage() {
-                    Id = ActiveProfile.TelescopeSettings.Id
-                }, typeof(TelescopeChooserVM));
+                return ActiveProfile.TelescopeSettings.Id;
+            }
+        }
+
+        private IWindowServiceFactory windowServiceFactory;
+
+        public IWindowServiceFactory WindowServiceFactory {
+            get {
+                if (windowServiceFactory == null) {
+                    windowServiceFactory = new WindowServiceFactory();
+                }
+                return windowServiceFactory;
+            }
+            set {
+                windowServiceFactory = value;
             }
         }
 
@@ -82,14 +87,12 @@ namespace NINA.ViewModel {
             _cancelTokenSource = new CancellationTokenSource();
             try {
                 if (!UseSavedProfile) {
-                    var ws = new WindowService();
+                    var ws = WindowServiceFactory.Create();
                     ws.OnDialogResultChanged += (s, e) => {
-                        var dialogResult = (WindowService.DialogResultEventArgs)e;
+                        var dialogResult = (DialogResultEventArgs)e;
                         if (dialogResult.DialogResult != true) {
                             _cancelTokenSource.Cancel();
-                            Mediator.Instance.Request(new SetProfileByIdMessage() {
-                                Id = _defaultProfile.Id
-                            });
+                            profileService.SelectProfile(_defaultProfile.Id);
                         } else {
                             if (UseSavedProfile == true) {
                                 Properties.Settings.Default.UseSavedProfileSelection = true;

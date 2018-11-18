@@ -1,8 +1,9 @@
-﻿using ASCOM.DeviceInterface;
+using ASCOM.DeviceInterface;
 using Nikon;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.RawConverter;
@@ -18,15 +19,17 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.Model.MyCamera {
 
-    public class NikonCamera : BaseINPC, ICamera {
+    internal class NikonCamera : BaseINPC, ICamera {
 
-        public NikonCamera(IProfileService profileService) {
+        public NikonCamera(IProfileService profileService, ITelescopeMediator telescopeMediator) {
+            this.telescopeMediator = telescopeMediator;
             this.profileService = profileService;
             /* NIKON */
             Name = "Nikon";
             _nikonManagers = new List<NikonManager>();
         }
 
+        private ITelescopeMediator telescopeMediator;
         private IProfileService profileService;
         private List<NikonManager> _nikonManagers;
         private NikonManager _activeNikonManager;
@@ -546,6 +549,19 @@ namespace NINA.Model.MyCamera {
         public int SubSampleWidth { get; set; }
         public int SubSampleHeight { get; set; }
 
+        public int BatteryLevel {
+            get {
+                try {
+                    return _camera.GetInteger(eNkMAIDCapability.kNkMAIDCapability_BatteryLevel);
+                } catch (NikonException ex) {
+                    Logger.Error(ex);
+                    return -1;
+                }
+            }
+        }
+
+        public bool HasBattery => true;
+
         public void AbortExposure() {
             if (Connected) {
                 _camera.StopBulbCapture();
@@ -568,6 +584,7 @@ namespace NINA.Model.MyCamera {
 
             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
             var iarr = await converter.ConvertToImageArray(_memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            iarr.RAWType = "nef";
             _memoryStream.Dispose();
             _memoryStream = null;
             return iarr;
@@ -603,6 +620,10 @@ namespace NINA.Model.MyCamera {
                         Logger.Debug("Use Serial Port for camera");
 
                         BulbCapture(exposureTime, StartSerialPortCapture, StopSerialPortCapture);
+                    } else if (profileService.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.SERIALRELAY) {
+                        Logger.Debug("Use serial relay for camera");
+
+                        BulbCapture(exposureTime, StartSerialRelayCapture, StopSerialRelayCapture);
                     } else {
                         Logger.Debug("Use Bulb capture");
                         BulbCapture(exposureTime, StartBulbCapture, StopBulbCapture);
@@ -612,6 +633,19 @@ namespace NINA.Model.MyCamera {
         }
 
         private SerialPortInteraction serialPortInteraction;
+        private SerialRelayInteraction serialRelayInteraction;
+
+        private void StartSerialRelayCapture() {
+            Logger.Debug("Serial relay start of exposure");
+            OpenSerialRelay();
+            serialRelayInteraction.Send(new byte[] { 0xFF, 0x01, 0x01 });
+        }
+
+        private void StopSerialRelayCapture() {
+            Logger.Debug("Serial relay stop of exposure");
+            OpenSerialRelay();
+            serialRelayInteraction.Send(new byte[] { 0xFF, 0x01, 0x00 });
+        }
 
         private void StartSerialPortCapture() {
             Logger.Debug("Serial port start of exposure");
@@ -634,9 +668,18 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private void OpenSerialRelay() {
+            if (serialRelayInteraction?.PortName != profileService.ActiveProfile.CameraSettings.SerialPort) {
+                serialRelayInteraction = new SerialRelayInteraction(profileService.ActiveProfile.CameraSettings.SerialPort);
+            }
+            if (!serialRelayInteraction.Open()) {
+                throw new Exception("Unable to open SerialPort " + profileService.ActiveProfile.CameraSettings.SerialPort);
+            }
+        }
+
         private void RequestSnapPortCaptureStart() {
             Logger.Debug("Request start of exposure");
-            var success = Mediator.Instance.Request(new SendSnapPortMessage() { Start = true });
+            var success = telescopeMediator.SendToSnapPort(true);
             if (!success) {
                 throw new Exception("Request to telescope snap port failed");
             }
@@ -644,7 +687,7 @@ namespace NINA.Model.MyCamera {
 
         private void RequestSnapPortCaptureStop() {
             Logger.Debug("Request stop of exposure");
-            var success = Mediator.Instance.Request(new SendSnapPortMessage() { Start = false });
+            var success = telescopeMediator.SendToSnapPort(false);
             if (!success) {
                 throw new Exception("Request to telescope snap port failed");
             }

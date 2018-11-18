@@ -445,8 +445,8 @@ namespace NINA.Model.MyCamera {
                     }
 
                     var sw = Stopwatch.StartNew();
-                    
-                    if (HasError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo))) {                        
+
+                    if (HasError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo))) {
                         return null;
                     }
 
@@ -488,6 +488,7 @@ namespace NINA.Model.MyCamera {
                     using (var memoryStream = new System.IO.MemoryStream(bytes)) {
                         var converter = RawConverter.CreateInstance(profileService.Profiles.ActiveProfile.CameraSettings.RawConverter);
                         var iarr = await converter.ConvertToImageArray(memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                        iarr.RAWType = "cr2";
                         return iarr;
                     }
                 } finally {
@@ -588,15 +589,17 @@ namespace NINA.Model.MyCamera {
             if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF))) {
                 Notification.ShowError(Locale.Loc.Instance["LblUnableToStartExposure"]);
             }
-            DateTime d = DateTime.Now;
-            /*Stop Exposure after exposure time */
-            Task.Run(async () => {
-                await Utility.Utility.Wait(TimeSpan.FromSeconds(exposureTime));
+            if (exposureTime > 30.0) {
+                /*Stop Exposure after exposure time */
+                Task.Run(async () => {
+                    await Utility.Utility.Wait(TimeSpan.FromSeconds(exposureTime));
 
-                if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF))) {
-                    Notification.ShowError("Could not stop camera exposure");
-                }
-            });
+                    StopExposure();
+                });
+            } else {
+                /*Immediately release shutter button when having a set exposure*/
+                StopExposure();
+            }
         }
 
         private bool SetExposureTime(double exposureTime) {
@@ -636,8 +639,25 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int BatteryLevel {
+            get {
+                try {
+                    if (!HasError(EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_BatteryLevel, 0, out UInt32 batteryLevel))) {
+                        return (int)batteryLevel;
+                    } else {
+                        return -1;
+                    }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    return -1;
+                }
+            }
+        }
+
         public void StopExposure() {
-            var err = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
+            if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF))) {
+                Notification.ShowError("Could not stop camera exposure");
+            }
         }
 
         private uint SetProperty(uint property, object value) {
@@ -688,6 +708,8 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged();
             }
         }
+
+        public bool HasBattery => true;
 
         public void StartLiveView() {
             SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_PC);

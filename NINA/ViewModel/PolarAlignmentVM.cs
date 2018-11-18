@@ -4,6 +4,7 @@ using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
@@ -14,13 +15,27 @@ using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
-    internal class PolarAlignmentVM : DockableVM {
+    internal class PolarAlignmentVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
 
-        public PolarAlignmentVM(IProfileService profileService) : base(profileService) {
+        public PolarAlignmentVM(
+                IProfileService profileService,
+                ICameraMediator cameraMediator,
+                ITelescopeMediator telescopeMediator,
+                IImagingMediator imagingMediator,
+                IApplicationStatusMediator applicationStatusMediator
+        ) : base(profileService) {
             Title = "LblPolarAlignment";
-            ContentId = nameof(PolarAlignmentVM);
 
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PolarAlignSVG"];
+
+            this.cameraMediator = cameraMediator;
+            this.cameraMediator.RegisterConsumer(this);
+
+            this.imagingMediator = imagingMediator;
+
+            this.telescopeMediator = telescopeMediator;
+            this.telescopeMediator.RegisterConsumer(this);
+            this.applicationStatusMediator = applicationStatusMediator;
 
             _updateValues = new DispatcherTimer();
             _updateValues.Interval = TimeSpan.FromSeconds(10);
@@ -29,19 +44,19 @@ namespace NINA.ViewModel {
 
             MeasureAzimuthErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<ApplicationStatus>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH),
-                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
+                (p) => (TelescopeInfo?.Connected == true && CameraInfo?.Connected == true));
             MeasureAltitudeErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<ApplicationStatus>(p => AltitudePolarErrorStatus = p), Direction.ALTITUDE),
-                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
+                (p) => (TelescopeInfo?.Connected == true && CameraInfo?.Connected == true));
             SlewToAltitudeMeridianOffsetCommand = new AsyncCommand<bool>(
                 () => SlewToMeridianOffset(AltitudeMeridianOffset, AltitudeDeclination),
-                (p) => (Telescope?.Connected == true));
+                (p) => (TelescopeInfo?.Connected == true));
             SlewToAzimuthMeridianOffsetCommand = new AsyncCommand<bool>(
                 () => SlewToMeridianOffset(AzimuthMeridianOffset, AzimuthDeclination),
-                (p) => (Telescope?.Connected == true));
+                (p) => (TelescopeInfo?.Connected == true));
             DARVSlewCommand = new AsyncCommand<bool>(
                 () => Darvslew(new Progress<ApplicationStatus>(p => Status = p), new Progress<string>(p => DarvStatus = p)),
-                (p) => (Telescope?.Connected == true && Cam?.Connected == true));
+                (p) => (TelescopeInfo?.Connected == true && CameraInfo?.Connected == true));
             CancelDARVSlewCommand = new RelayCommand(
                 Canceldarvslew,
                 (p) => _cancelDARVSlewToken != null);
@@ -56,31 +71,12 @@ namespace NINA.ViewModel {
             DARVSlewRate = 0.01;
             SnapExposureDuration = 2;
 
-            RegisterMediatorMessages();
-        }
-
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.Register((object o) => {
-                Cam = (ICamera)o;
-            }, MediatorMessages.CameraChanged);
-
-            Mediator.Instance.Register((object o) => {
-                Telescope = (ITelescope)o;
-            }, MediatorMessages.TelescopeChanged);
-
-            Mediator.Instance.Register((object o) => {
-                _autoStretch = (bool)o;
-            }, MediatorMessages.AutoStrechChanged);
-            Mediator.Instance.Register((object o) => {
-                _detectStars = (bool)o;
-            }, MediatorMessages.DetectStarsChanged);
-
-            Mediator.Instance.Register((o) => {
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
                 RaisePropertyChanged(nameof(AzimuthMeridianOffset));
                 RaisePropertyChanged(nameof(AzimuthDeclination));
                 RaisePropertyChanged(nameof(AltitudeMeridianOffset));
                 RaisePropertyChanged(nameof(AltitudeDeclination));
-            }, MediatorMessages.ProfileChanged);
+            };
         }
 
         private ApplicationStatus _status;
@@ -95,31 +91,7 @@ namespace NINA.ViewModel {
                 _status.Status = _status.Status + " " + _darvStatus;
                 RaisePropertyChanged();
 
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _status });
-            }
-        }
-
-        private ITelescope _telescope;
-
-        public ITelescope Telescope {
-            get {
-                return _telescope;
-            }
-            set {
-                _telescope = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICamera _cam;
-
-        public ICamera Cam {
-            get {
-                return _cam;
-            }
-            set {
-                _cam = value;
-                RaisePropertyChanged();
+                this.applicationStatusMediator.StatusUpdate(_status);
             }
         }
 
@@ -246,7 +218,8 @@ namespace NINA.ViewModel {
         }
 
         private string _hourAngleTime;
-
+        private ICameraMediator cameraMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
         private DispatcherTimer _updateValues;
 
         private BinningMode _snapBin;
@@ -310,7 +283,7 @@ namespace NINA.ViewModel {
                 _altitudepolarErrorStatus = value;
                 _altitudepolarErrorStatus.Source = Title;
                 RaisePropertyChanged();
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _altitudepolarErrorStatus });
+                this.applicationStatusMediator.StatusUpdate(_altitudepolarErrorStatus);
             }
         }
 
@@ -325,7 +298,7 @@ namespace NINA.ViewModel {
                 _azimuthpolarErrorStatus = value;
                 _azimuthpolarErrorStatus.Source = Title;
                 RaisePropertyChanged();
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = _azimuthpolarErrorStatus });
+                this.applicationStatusMediator.StatusUpdate(_azimuthpolarErrorStatus);
             }
         }
 
@@ -355,7 +328,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> DarvTelescopeSlew(IProgress<string> progress, CancellationToken canceltoken) {
             return await Task.Run<bool>(async () => {
-                Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                Coordinates startPosition = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 try {
                     //wait 5 seconds for camera to have a starting indicator
                     await Task.Delay(TimeSpan.FromSeconds(5), canceltoken);
@@ -366,27 +339,27 @@ namespace NINA.ViewModel {
                     //duration = half of user input minus 2 seconds for settle time
                     TimeSpan duration = TimeSpan.FromSeconds((int)(DARVSlewDuration / 2) - 2);
 
-                    Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, rate);
+                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, rate);
 
                     await Task.Delay(duration, canceltoken);
 
-                    Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
 
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken);
 
                     progress.Report("Slewing back...");
 
-                    Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -rate);
+                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -rate);
 
                     await Task.Delay(duration, canceltoken);
 
-                    Telescope.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
 
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken);
                 } catch (OperationCanceledException) {
                 } finally {
                     progress.Report("Restoring start position...");
-                    await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = startPosition, Token = canceltoken });
+                    await telescopeMediator.SlewToCoordinatesAsync(startPosition);
                 }
 
                 progress.Report(string.Empty);
@@ -395,26 +368,21 @@ namespace NINA.ViewModel {
             });
         }
 
-        private bool _autoStretch;
-        private bool _detectStars;
-
         private async Task<bool> Darvslew(IProgress<ApplicationStatus> cameraprogress, IProgress<string> slewprogress) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 _cancelDARVSlewToken = new CancellationTokenSource();
                 try {
-                    var oldAutoStretch = _autoStretch;
-                    var oldDetectStars = _detectStars;
-                    Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, true);
-                    Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, false);
+                    var oldAutoStretch = imagingMediator.SetAutoStretch(true);
+                    var oldDetectStars = imagingMediator.SetDetectStars(false);
 
                     var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
-                    var capture = Mediator.Instance.RequestAsync(new CapturePrepareAndSaveImageMessage() { Sequence = seq, Save = false, Progress = cameraprogress, Token = _cancelDARVSlewToken.Token });
+                    var capture = imagingMediator.CaptureAndPrepareImage(seq, _cancelDARVSlewToken.Token, cameraprogress);
                     var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken.Token);
 
                     await Task.WhenAll(capture, slew);
 
-                    Mediator.Instance.Notify(MediatorMessages.ChangeAutoStretch, oldAutoStretch);
-                    Mediator.Instance.Notify(MediatorMessages.ChangeDetectStars, oldDetectStars);
+                    imagingMediator.SetAutoStretch(oldAutoStretch);
+                    imagingMediator.SetDetectStars(oldDetectStars);
                 } catch (OperationCanceledException) {
                 }
             } else {
@@ -434,6 +402,18 @@ namespace NINA.ViewModel {
 
         private AltitudeSite _altitudeSiteType;
 
+        private CameraInfo cameraInfo;
+
+        public CameraInfo CameraInfo {
+            get {
+                return cameraInfo ?? DeviceInfo.CreateDefaultInstance<CameraInfo>();
+            }
+            private set {
+                cameraInfo = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public AltitudeSite AltitudeSiteType {
             get {
                 return _altitudeSiteType;
@@ -444,8 +424,22 @@ namespace NINA.ViewModel {
             }
         }
 
+        private TelescopeInfo telescopeInfo;
+        private IImagingMediator imagingMediator;
+        private ITelescopeMediator telescopeMediator;
+
+        public TelescopeInfo TelescopeInfo {
+            get {
+                return telescopeInfo ?? DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
+            }
+            private set {
+                telescopeInfo = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private async Task<bool> MeasurePolarError(IProgress<ApplicationStatus> progress, Direction direction) {
-            if (Cam?.Connected == true) {
+            if (CameraInfo?.Connected == true) {
                 _cancelMeasureErrorToken = new CancellationTokenSource();
                 try {
                     double poleErr = await CalculatePoleError(progress, _cancelMeasureErrorToken.Token);
@@ -529,7 +523,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<double> CalculatePoleError(IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
-            Coordinates startPosition = new Coordinates(Telescope.RightAscension, Telescope.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+            Coordinates startPosition = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
             double poleError = double.NaN;
             try {
                 double movementdeg = 0.5d;
@@ -539,7 +533,9 @@ namespace NINA.ViewModel {
 
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
-                PlateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
+
+                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+                PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
 
                 canceltoken.ThrowIfCancellationRequested();
 
@@ -553,7 +549,7 @@ namespace NINA.ViewModel {
 
                 Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 progress.Report(new ApplicationStatus() { Status = "Slewing..." });
-                await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = targetPosition, Token = canceltoken });
+                await telescopeMediator.SlewToCoordinatesAsync(targetPosition);
 
                 canceltoken.ThrowIfCancellationRequested();
 
@@ -566,7 +562,9 @@ namespace NINA.ViewModel {
 
                 seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
-                PlateSolveResult = await Mediator.Instance.RequestAsync(new PlateSolveMessage() { Sequence = seq, Progress = progress, Token = canceltoken });
+
+                solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+                PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
 
                 canceltoken.ThrowIfCancellationRequested();
 
@@ -586,7 +584,7 @@ namespace NINA.ViewModel {
             } catch (OperationCanceledException) {
             } finally {
                 //progress.Report("Slewing back to origin...");
-                await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = startPosition, Token = canceltoken });
+                await telescopeMediator.SlewToCoordinatesAsync(startPosition);
                 //progress.Report("Done");
             }
 
@@ -594,7 +592,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> SlewToMeridianOffset(double meridianOffset, double declination) {
-            double curSiderealTime = Telescope.SiderealTime;
+            double curSiderealTime = TelescopeInfo.SiderealTime;
 
             double slew_ra = curSiderealTime + (meridianOffset * 24.0 / 360.0);
             if (slew_ra >= 24.0) {
@@ -604,7 +602,7 @@ namespace NINA.ViewModel {
             }
 
             var coords = new Coordinates(slew_ra, declination, Epoch.JNOW, Coordinates.RAType.Hours);
-            return await Mediator.Instance.RequestAsync(new SlewToCoordinatesMessage() { Coordinates = coords });
+            return await telescopeMediator.SlewToCoordinatesAsync(coords);
         }
 
         private void UpdateValues_Tick(object sender, EventArgs e) {
@@ -622,6 +620,14 @@ namespace NINA.ViewModel {
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
+        }
+
+        public void UpdateDeviceInfo(CameraInfo cameraInfo) {
+            this.CameraInfo = cameraInfo;
+        }
+
+        public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
+            this.TelescopeInfo = telescopeInfo;
         }
     }
 }

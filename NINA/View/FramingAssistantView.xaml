@@ -11,6 +11,7 @@
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:survey="clr-namespace:NINA.Utility.SkySurvey"
     xmlns:util="clr-namespace:NINA.Utility"
     xmlns:vm="clr-namespace:NINA.ViewModel"
     d:DesignHeight="300"
@@ -38,9 +39,9 @@
                                     Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblImageSource}" />
                                     <ComboBox
-                                        Name="PART_FramingAssistantSource"
+                                        x:Name="PART_FramingAssistantSource"
                                         Margin="10,0,0,0"
-                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type vm:FramingAssistantSource}}}"
+                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type survey:SkySurveySource}}}"
                                         SelectedItem="{Binding FramingAssistantSource}" />
                                 </UniformGrid>
                             </Border>
@@ -51,6 +52,7 @@
                                     <RowDefinition Height="40" />
                                 </Grid.RowDefinitions>
                                 <ListView
+                                    MaxHeight="250"
                                     Margin="0,5,0,0"
                                     ItemsSource="{Binding Path=ImageCacheInfo.Elements[Image]}"
                                     SelectedItem="{Binding SelectedImageCacheInfo}">
@@ -68,6 +70,10 @@
                                                 Width="Auto"
                                                 DisplayMemberBinding="{Binding Path=Attribute[Dec].Value, Converter={StaticResource DegreesToDMSConverter}}"
                                                 Header="{ns:Loc LblDec}" />
+                                            <GridViewColumn
+                                                Width="Auto"
+                                                DisplayMemberBinding="{Binding Path=Attribute[Source].Value}"
+                                                Header="{ns:Loc LblSource}" />
                                         </GridView>
                                     </ListView.View>
                                 </ListView>
@@ -88,8 +94,16 @@
                                             <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="0">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
-
                                             <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="1">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="2">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="3">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="4">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -215,10 +229,11 @@
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFieldOfView}" />
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBox
-                                            MinWidth="40"
+                                        <ninactrl:StepperControl
                                             Margin="5,0,0,0"
-                                            Text="{Binding FieldOfView}" />
+                                            MaxValue="10"
+                                            MinValue="0.1"
+                                            Value="{Binding FieldOfView, Mode=TwoWay}" />
                                         <TextBlock
                                             Margin="5,0,0,0"
                                             VerticalAlignment="Center"
@@ -226,20 +241,6 @@
                                     </StackPanel>
                                 </UniformGrid>
                             </Border>
-
-                            <StackPanel.Style>
-                                <Style TargetType="{x:Type StackPanel}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="1">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-
-                                        <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="2">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Style>
                         </StackPanel>
                     </GroupBox>
 
@@ -296,6 +297,43 @@
                                     <TextBox Margin="5,0,0,0" Text="{Binding FocalLength}" />
                                 </UniformGrid>
                             </Border>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="{ns:Loc LblTargets}">
+                        <StackPanel Orientation="Vertical">
+                            <Border
+                                Margin="0,6,0,6"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1">
+                                <UniformGrid Margin="0,6,0,6" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHorizontalPanels}" />
+                                    <ninactrl:IntStepperControl
+                                        Margin="5,0,0,0"
+                                        MinValue="1"
+                                        Value="{Binding HorizontalPanels, Mode=TwoWay}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border
+                                Margin="0,6,0,6"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1">
+                                <UniformGrid Margin="0,6,0,6" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblVerticalPanels}" />
+                                    <ninactrl:IntStepperControl
+                                        Margin="5,0,0,0"
+                                        MinValue="1"
+                                        Value="{Binding VerticalPanels, Mode=TwoWay}" />
+                                </UniformGrid>
+                            </Border>
+                            <Border
+                                Margin="0,6,0,6"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1">
+                                <UniformGrid Margin="0,6,0,6" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOverlapPercentage}" />
+                                    <TextBox Margin="5,0,0,0" Text="{Binding OverlapPercentage, Converter={StaticResource PercentageConverter}, StringFormat={}{0}%}" />
+                                </UniformGrid>
+                            </Border>
                             <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                                 <UniformGrid Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRotation}" />
@@ -316,7 +354,7 @@
                                             Maximum="360"
                                             Minimum="0"
                                             TickFrequency="5"
-                                            Value="{Binding Rectangle.Rotation, FallbackValue=0}" />
+                                            Value="{Binding Rotation}" />
                                     </Grid>
                                 </UniformGrid>
                             </Border>
@@ -335,19 +373,6 @@
                                     Text="{ns:Loc LblRecenterImage}"
                                     TextWrapping="Wrap" />
                             </Button>
-                            <Grid.Style>
-                                <Style TargetType="{x:Type Grid}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="1">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-
-                                        <DataTrigger Binding="{Binding ElementName=PART_FramingAssistantSource, Path=SelectedItem}" Value="2">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Grid.Style>
                         </Grid>
                         <Button
                             Height="35"
@@ -392,6 +417,68 @@
                     <Grid.Resources>
                         <s:Int32 x:Key="zero">0</s:Int32>
                     </Grid.Resources>
+                    <ItemsControl ItemsSource="{Binding CameraRectangles}" RenderTransformOrigin="0.5,0.5">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Grid />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                                    <Rectangle
+                                        Width="{Binding Width}"
+                                        Height="{Binding Height}"
+                                        RenderTransformOrigin="0.5,0.5"
+                                        Stroke="{StaticResource SecondaryBrush}"
+                                        StrokeThickness="5">
+
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Opacity=".25" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Orientation="Vertical">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Id}" />
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Coordinates.RAString}" />
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Coordinates.DecString}" />
+                                    </StackPanel>
+                                    <Grid.Margin>
+                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                            <Binding Path="X" />
+                                            <Binding Path="Y" />
+                                            <Binding Source="{StaticResource zero}" />
+                                            <Binding Source="{StaticResource zero}" />
+                                        </MultiBinding>
+                                    </Grid.Margin>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.RenderTransform>
+                            <RotateTransform Angle="{Binding Rectangle.Rotation}" />
+                        </ItemsControl.RenderTransform>
+                        <ItemsControl.Margin>
+                            <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                <Binding Path="Rectangle.X" />
+                                <Binding Path="Rectangle.Y" />
+                                <Binding Source="{StaticResource zero}" />
+                                <Binding Source="{StaticResource zero}" />
+                            </MultiBinding>
+                        </ItemsControl.Margin>
+                    </ItemsControl>
                     <Rectangle
                         Width="{Binding Rectangle.Width}"
                         Height="{Binding Rectangle.Height}"
@@ -399,12 +486,10 @@
                         behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
                         behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
                         behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
+                        Fill="Transparent"
                         RenderTransformOrigin="0.5,0.5"
                         Stroke="{StaticResource ButtonForegroundBrush}"
                         StrokeThickness="5">
-                        <Rectangle.Fill>
-                            <SolidColorBrush Opacity=".25" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
-                        </Rectangle.Fill>
                         <Rectangle.RenderTransform>
                             <RotateTransform Angle="{Binding Rectangle.Rotation}" />
                         </Rectangle.RenderTransform>
@@ -428,11 +513,11 @@
 
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.RAString}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Rectangle.Coordinates.RAString}" />
                                 </StackPanel>
                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding SelectedCoordinates.DecString}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Rectangle.Coordinates.DecString}" />
                                 </StackPanel>
                             </StackPanel>
                         </Viewbox>

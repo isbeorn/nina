@@ -6,7 +6,8 @@
     xmlns:util="clr-namespace:NINA.Utility"
     xmlns:vm="clr-namespace:NINA.ViewModel"
     DispatcherUnhandledException="Application_DispatcherUnhandledException"
-    StartupUri="MainWindow.xaml" Exit="Application_Exit">
+    Exit="Application_Exit"
+    StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
 
@@ -43,6 +44,7 @@
                 <ResourceDictionary Source="Resources\Styles\Oxyplot.xaml" />
                 <ResourceDictionary Source="Resources\Styles\DatePicker.xaml" />
                 <ResourceDictionary Source="Resources\Styles\Path.xaml" />
+                <ResourceDictionary Source="Resources\Styles\StepperControl.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
 
                 <!--  DataTemplates  -->

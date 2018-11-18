@@ -7,7 +7,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class CameraSettings : ICameraSettings {
+    public class CameraSettings : Settings, ICameraSettings {
         private string id = "No_Device";
 
         [DataMember]
@@ -17,7 +17,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 id = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -30,7 +30,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pixelSize = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -43,7 +43,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 bulbMode = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -56,7 +56,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 serialPort = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -69,7 +69,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 _readNoise = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -82,7 +82,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 _bitDepth = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -95,7 +95,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 _offset = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -108,7 +108,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 _fullWellCapacity = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -121,7 +121,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 _downloadToDataRatio = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -134,7 +134,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 _rawConverter = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

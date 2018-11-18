@@ -239,16 +239,19 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblFilterwheelConnected">Filterrad verbunden</s:String>
     <s:String x:Key="LblFocuserConnected">Okularauszug verbunden</s:String>
     <s:String x:Key="LblTelescopeConnected">Teleskop verbunden</s:String>
+    <s:String x:Key="LblRotatorConnected">Rotator verbunden</s:String>
     <s:String x:Key="LblGuiderConnected">Guider verbunden</s:String>
     <s:String x:Key="LblTelescopeSynced">Teleskop zu Koordinaten synchronisiert</s:String>
     <s:String x:Key="LblCameraConnectionLost">Verbindung zur Kamera verloren! Bitte Kamera erneut verbinden!</s:String>
     <s:String x:Key="LblFilterwheelConnectionLost">Verbindung zum Filterrad verloren! Bitte Filterrad erneut verbinden!</s:String>
     <s:String x:Key="LblFocuserConnectionLost">Verbindung zum Okularauszug verloren! Bitte Okularauszug erneut verbinden!</s:String>
     <s:String x:Key="LblTelescopeConnectionLost">Verbindung zum Teleskop verloren! Bitte Teleskop erneut verbinden!</s:String>
+    <s:String x:Key="LblRotatorConnectionLost">Verbindung zum Rotator verloren! Bitte Rotator erneut verbinden!</s:String>
     <s:String x:Key="LblTelescopeParkedWarn">Teleskop ist geparkt und kann dadurch nicht geschwenkt werden.</s:String>
     <s:String x:Key="LblTelescopeCannotSlew">Teleskop kann nicht schwenken</s:String>
     <s:String x:Key="LblTelescopeNotConnected">Teleskop nicht verbunden</s:String>
     <s:String x:Key="LblCameraBusy">Kamera ist beschäftigt</s:String>
+    <s:String x:Key="LblCameraBattery">Kamera Batterie</s:String>
     <s:String x:Key="LblGuiderNoSettleDone">Guider hat keine SettleDone Nachricht geschickt. Überspringe.</s:String>
     <s:String x:Key="LblNoCameraConnected">Keine Kamera verbunden</s:String>
     <s:String x:Key="LblGuiderDitherButNotConnected">Guider Dither ist aktiviert, aber die Applikation ist nicht mit Guider verbunden</s:String>
@@ -406,6 +409,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblBulbMode">Bulb Modus</s:String>
     <s:String x:Key="LblNative">Nativ</s:String>
     <s:String x:Key="LblSerialPort">Serieller Port</s:String>
+    <s:String x:Key="LblSerialRelay">Serielles Relay</s:String>
     <s:String x:Key="LblTelescopeSnapPort">Teleskop Snap Port</s:String>
     <s:String x:Key="LblEquipment">Ausrüstung</s:String>
     <s:String x:Key="LblImportFromFilterWheel">Von Filterrad importieren</s:String>
@@ -565,7 +569,10 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <s:String x:Key="LblLoadImageFromFile">Load Image from File</s:String>
     <s:String x:Key="LblLoadImageFromFileTooltip">Download Image from file and use the blindsolver to determine coordinates</s:String>
     <s:String x:Key="LblNoCoordinates">Keine Koordinaten verfügbar</s:String>
-    <s:String x:Key="LblBlindSolveAttemptForFraming">Keine Koordinaten verfügbar. Zur Bildausrichtung muss das Bild blindsolved werden</s:String>
+    <s:String x:Key="LblBlindSolveAttemptForFraming" xml:space="preserve">Platesolving muss auf das Bild angewendet werden.
+Sollen folgende Referenzkoordinaten verwendet werden?
+RA: {0}
+Dec: {1}</s:String>
     <s:String x:Key="LblImageSource">Bildquelle</s:String>
     <s:String x:Key="LblDigitalSkySurvey">Digital Sky Survey</s:String>
     <s:String x:Key="LblFile">Datei</s:String>
@@ -587,7 +594,7 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
     <s:String x:Key="LblPixels">Pixel</s:String>
     <s:String x:Key="LblSyncLatLong">Breitengrad/Längengrad synchronisieren</s:String>
     <s:String x:Key="LblSyncLatLongText" xml:space="preserve">Breitengrad/Längengrad des Teleskops weicht von NINAs Werten ab.
-Sollen NINAs Werte zum Teleskop synchronisiert werden?</s:String>
+Sollen die Werte synchronisiert werden?</s:String>
     <s:String x:Key="LblGuiderResumeFailed">Guiding Wiederaufnahme fehlgeschlagen</s:String>
     <s:String x:Key="LblTimeFormatDescription">Zeit mit Format HH-mm-ss</s:String>
     <s:String x:Key="LblAzimuthErrorMeasurement">Messe Azimuth Fehler</s:String>
@@ -670,5 +677,44 @@ Berechneter HFR: {2}
     <s:String x:Key="LblASIImageDownloadError">Fehler beim Erhalten der Bilddaten!</s:String>
     <s:String x:Key="LblDebayerImage">Bild debayern</s:String>
     <s:String x:Key="LblDebayerImageTooltip">Bild in der Vorschau debayern (gespeichertes Bild ist davon nicht betroffen)</s:String>
-    <s:String x:Key="LblGuidingRMSDescription">Wurzel der mittleren Fehlerquadratsumme der Nachführung während der Aufnahme</s:String>
+    <s:String x:Key="LblGuidingRMSDescription">Wurzel der mittleren Fehlerquadratsumme der Nachführung während der Aufnahme in Pixel</s:String>
+    <s:String x:Key="LblGuidingRMSArcSecDescription">Wurzel der mittleren Fehlerquadratsumme der Nachführung während der Aufnahme in Bogensekunden</s:String>
+    <s:String x:Key="LblChange">Wechseln</s:String>
+    <s:String x:Key="LblActiveFilter">Aktiver Filter</s:String>
+    <s:String x:Key="LblNASASkySurvey">NASA Sky Survey</s:String>
+    <s:String x:Key="LblSkyServerSkySurvey">SkyServer Sky Survey</s:String>
+    <s:String x:Key="LblStsciSkySurvey">Stsci Sky Survey</s:String>
+    <s:String x:Key="LblEsoSkySurvey">ESO Sky Survey</s:String>
+    <s:String x:Key="LblPleaseChangeToFilter">Bitte zu Filter {0} wechseln</s:String>
+    <s:String x:Key="LblFilterChangeRequired">Filterwechsel benötigt</s:String>
+    <s:String x:Key="LblManualFilterWheel">Manuelles Filterrad</s:String>
+    <s:String x:Key="LblManualFilterWheelDescription">Spiegelt die Filter, die in den Filteroptionen eingestellt sind wieder. Wenn ein Filter gewechselt wird, öffnet sich eine Mitteilung, um den Filter zu wechseln</s:String>
+    <s:String x:Key="LblRotator">Rotator</s:String>
+    <s:String x:Key="LblNoRotator">Kein Rotator</s:String>
+    <s:String x:Key="LblManualRotator">Manueller Rotator</s:String>
+    <s:String x:Key="LblManualRotatorDescription">Wenn Rotation benötigt wird, öffnet sich eine Mitteilung um manuell zu drehen.</s:String>
+    <s:String x:Key="LblPleaseRotate">Bitte um {0} Grad drehen</s:String>
+    <s:String x:Key="LblRotationRequired">Kamera Rotation benötigt</s:String>
+    <s:String x:Key="LblCurrentPosition">Startposition</s:String>
+    <s:String x:Key="LblCounterclockwise">Linksdrehend</s:String>
+    <s:String x:Key="LblClockwise">Rechtsdrehend</s:String>
+    <s:String x:Key="LblRotationTolerance">Rotationstoleranz</s:String>
+    <s:String x:Key="LblAberrationInspector">Aberrationskontrolle</s:String>
+    <s:String x:Key="LblSettlePixelTolerance">Pixeltoleranz nach Ruhezeit</s:String>
+    <s:String x:Key="LblMinimumSettleTime">Minimale Ruhezeit</s:String>
+    <s:String x:Key="LblSettleTimeout">Ruhezeit Time-out</s:String>
+    <s:String x:Key="LblTargets">Ziele</s:String>
+    <s:String x:Key="LblTargetWidthDegrees">Minimale Breite (Grad)</s:String>
+    <s:String x:Key="LblTargetHeightDegrees">Minimale Höhe (Grad)</s:String>
+    <s:String x:Key="LblOverlapPercentage">Prozentuale Überlappung</s:String>
+    <s:String x:Key="LblPanel">Feld</s:String>
+    <s:String x:Key="LblSource">Quelle</s:String>
+    <s:String x:Key="LblHorizontalPanels">Horizontale Felder</s:String>
+    <s:String x:Key="LblVerticalPanels">Vertikale Felder</s:String>
+    <s:String x:Key="LblSkySurveyCacheDirectory">Sky Survey Cache Ordner</s:String>
+    <s:String x:Key="LblNINAToTelescope">NINA zum Teleskop</s:String>
+    <s:String x:Key="LblTelescopeToNINA">Teleskop zu NINA</s:String>
+    <s:String x:Key="LblNINA">NINA</s:String>
+    <s:String x:Key="LblFocuserPositionDescription">Derzeitige Okularauszugsposition</s:String>
+    <s:String x:Key="LblSaveImageAsDSLRNote">Bei DSLRs wird die Bilddateiformat Einstellung ignoriert. Stattdessen werden RAW Dateien gespeichert!</s:String>
 </ResourceDictionary>

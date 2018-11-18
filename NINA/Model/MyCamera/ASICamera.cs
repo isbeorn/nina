@@ -168,13 +168,15 @@ namespace NINA.Model.MyCamera {
 
         public string DriverInfo {
             get {
-                return string.Empty;
+                string s = "ZWO ASICamera2";
+                return s;
             }
         }
 
         public string DriverVersion {
             get {
-                return string.Empty;
+                string version = ASICameraDll.GetSDKVersion();
+                return version;
             }
         }
 
@@ -270,6 +272,8 @@ namespace NINA.Model.MyCamera {
                 return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_POWER_PERC);
             }
         }
+
+        public int BatteryLevel => -1;
 
         private AsyncObservableCollection<BinningMode> _binningModes;
 
@@ -634,6 +638,8 @@ namespace NINA.Model.MyCamera {
                 // todo: start liveview if possible
             }
         }
+
+        public bool HasBattery => false;
     }
 
     public class CaptureAreaInfo {

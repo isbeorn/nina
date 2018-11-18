@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using NINA.Utility;
+using NINA.Utility.WindowService;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,6 +27,20 @@ namespace NINA.ViewModel {
         private Version _latestVersion;
         private string _setupLocation;
 
+        private IWindowServiceFactory windowServiceFactory;
+
+        public IWindowServiceFactory WindowServiceFactory {
+            get {
+                if (windowServiceFactory == null) {
+                    windowServiceFactory = new WindowServiceFactory();
+                }
+                return windowServiceFactory;
+            }
+            set {
+                windowServiceFactory = value;
+            }
+        }
+
         public async Task<bool> CheckUpdate() {
             _cancelTokenSource = new CancellationTokenSource();
             try {
@@ -33,9 +48,9 @@ namespace NINA.ViewModel {
                 if (updateAvailable) {
                     var result = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], _latestVersion.ToString()), "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes);
                     if (result == System.Windows.MessageBoxResult.Yes) {
-                        WindowService ws = new WindowService();
+                        var ws = WindowServiceFactory.Create();
                         ws.OnDialogResultChanged += (s, e) => {
-                            var dialogResult = (WindowService.DialogResultEventArgs)e;
+                            var dialogResult = (DialogResultEventArgs)e;
                             if (dialogResult.DialogResult != true) {
                                 _cancelTokenSource.Cancel();
                             }

@@ -10,6 +10,7 @@
     <Style TargetType="{x:Type TextBox}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="CaretBrush" Value="{StaticResource PrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
         <Setter Property="Template">
             <Setter.Value>

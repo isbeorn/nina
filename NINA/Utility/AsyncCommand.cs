@@ -30,7 +30,7 @@ namespace NINA.Utility {
     }
 
     public class AsyncCommand<TResult> : AsyncCommandBase {
-        private readonly Func<Task<TResult>> _command;
+        private readonly Func<object, Task<TResult>> _command;
         private NotifyTaskCompletion<TResult> _execution;
 
         /// <summary>
@@ -47,13 +47,27 @@ namespace NINA.Utility {
             return true;
         }
 
-        public AsyncCommand(Func<Task<TResult>> command) {
+        public AsyncCommand(Func<object, Task<TResult>> command) {
             _command = command;
             _canExecute = DefaultCanExecute;
         }
 
-        public AsyncCommand(Func<Task<TResult>> command, Predicate<object> canExecute) {
+        public AsyncCommand(Func<object, Task<TResult>> command, Predicate<object> canExecute) {
             _command = command;
+            _canExecute = canExecute;
+        }
+
+        public AsyncCommand(Func<Task<TResult>> command) {
+            _command = (object o) => {
+                return command();
+            };
+            _canExecute = DefaultCanExecute;
+        }
+
+        public AsyncCommand(Func<Task<TResult>> command, Predicate<object> canExecute) {
+            _command = (object o) => {
+                return command();
+            };
             _canExecute = canExecute;
         }
 
@@ -62,7 +76,7 @@ namespace NINA.Utility {
         }
 
         public override async Task ExecuteAsync(object parameter) {
-            Execution = new NotifyTaskCompletion<TResult>(_command());
+            Execution = new NotifyTaskCompletion<TResult>(_command(parameter));
             RaiseCanExecuteChanged();
             if (!Execution.IsCompleted) {
                 await Execution.TaskCompletion;

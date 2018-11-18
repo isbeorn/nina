@@ -1,7 +1,8 @@
 ﻿using NINA.Utility.Enum;
 
 namespace NINA.Utility.Profile {
-    public interface ICameraSettings {
+
+    public interface ICameraSettings : ISettings {
         double BitDepth { get; set; }
         CameraBulbModeEnum BulbMode { get; set; }
         double DownloadToDataRatio { get; set; }

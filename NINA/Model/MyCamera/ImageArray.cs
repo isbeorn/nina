@@ -3,6 +3,7 @@ using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,6 +11,17 @@ namespace NINA.Model.MyCamera {
 
     public class ImageArray {
         public ushort[] FlatArray;
+
+        /// <summary>
+        /// Contains RAW DSLR Data if available
+        /// </summary>
+        public byte[] RAWData { get; set; }
+
+        /// <summary>
+        /// Contains the type of DSLR data (e.g. cr2)
+        /// </summary>
+        public string RAWType { get; set; }
+
         public ImageStatistics Statistics { get; set; }
 
         public bool IsBayered { get; private set; }

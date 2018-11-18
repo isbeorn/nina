@@ -1,8 +1,11 @@
-﻿using NINA.Model.MyFilterWheel;
+﻿using NINA.Model;
+using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
@@ -15,13 +18,15 @@ using System.Windows.Media;
 
 namespace NINA.ViewModel {
 
-    public class OptionsVM : DockableVM {
+    internal class OptionsVM : DockableVM {
 
-        public OptionsVM(IProfileService profileService) : base(profileService) {
+        public OptionsVM(IProfileService profileService, IFilterWheelMediator filterWheelMediator) : base(profileService) {
             Title = "LblOptions";
-            ContentId = nameof(OptionsVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
+
+            this.filterWheelMediator = filterWheelMediator;
+
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
@@ -30,6 +35,7 @@ namespace NINA.ViewModel {
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
+            OpenSkySurveyCacheDirectoryDiagCommand = new RelayCommand(OpenSkySurveyCacheDirectoryDiag);
             ImportFiltersCommand = new RelayCommand(ImportFilters);
             AddFilterCommand = new RelayCommand(AddFilter);
             RemoveFilterCommand = new RelayCommand(RemoveFilter);
@@ -40,35 +46,23 @@ namespace NINA.ViewModel {
                 return SelectedProfile != null;
             });
 
-            ImagePatterns = CreateImagePatternList();
+            ImagePatterns = ImagePatterns.CreateExample();
 
             ScanForIndexFiles();
 
-            Mediator.Instance.Register((object o) => {
-                ImagePatterns = CreateImagePatternList();
-            }, MediatorMessages.LocaleChanged);
+            profileService.LocaleChanged += (object sender, EventArgs e) => {
+                ImagePatterns = ImagePatterns.CreateExample();
+                RaisePropertyChanged(nameof(FileTypes));
+            };
 
-            Mediator.Instance.Register((object o) => {
-                CameraPixelSize = (double)o;
-            }, MediatorMessages.CameraPixelSizeChanged);
+            profileService.LocationChanged += (object sender, EventArgs e) => {
+                RaisePropertyChanged(nameof(Latitude));
+                RaisePropertyChanged(nameof(Longitude));
+            };
 
-            Mediator.Instance.RegisterRequest(new SetProfileByIdMessageHandle((SetProfileByIdMessage msg) => {
-                SelectedProfile = profileService.Profiles.ProfileList.Single(p => p.Id == msg.Id);
-                SelectProfile(null);
-                return true;
-            }));
-
-            Mediator.Instance.RegisterRequest(new GetDoublePropertyFromClassMessageHandle(typeof(OptionsVM), (GetDoublePropertyFromClassMessage msg) => {
-                try {
-                    object value = GetType().GetProperty(msg.Property).GetValue(this);
-                    if (value.GetType() == typeof(double))
-                        return (double)value;
-                } catch {
-                    return -1;
-                }
-
-                return -1;
-            }));
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                ProfileChanged();
+            };
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
         }
@@ -83,8 +77,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SelectProfile(object obj) {
-            profileService.SelectProfile(SelectedProfile.Id);
+        private void ProfileChanged() {
             RaisePropertyChanged(nameof(ColorSchemaName));
             RaisePropertyChanged(nameof(PrimaryColor));
             RaisePropertyChanged(nameof(SecondaryColor));
@@ -120,6 +113,11 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void SelectProfile(object obj) {
+            profileService.SelectProfile(SelectedProfile.Id);
+            ProfileChanged();
+        }
+
         private void AddProfile(object obj) {
             profileService.Add();
         }
@@ -142,7 +140,7 @@ namespace NINA.ViewModel {
         }
 
         private void ImportFilters(object obj) {
-            var filters = Mediator.Instance.Request(new GetAllFiltersMessage());
+            var filters = filterWheelMediator.GetAllFilters();
             if (filters != null) {
                 FilterWheelFilters.Clear();
                 FilterWheelFilters.CollectionChanged -= FilterWheelFilters_CollectionChanged;
@@ -159,29 +157,21 @@ namespace NINA.ViewModel {
             FilterWheelFilters = FilterWheelFilters;
         }
 
-        private HashSet<ImagePattern> CreateImagePatternList() {
-            HashSet<ImagePattern> p = new HashSet<ImagePattern>();
-            p.Add(new ImagePattern("$$FILTER$$", Locale.Loc.Instance["LblFilternameDescription"], "L"));
-            p.Add(new ImagePattern("$$DATE$$", Locale.Loc.Instance["LblDateFormatDescription"], "2016-01-01"));
-            p.Add(new ImagePattern("$$DATETIME$$", Locale.Loc.Instance["LblDateTimeFormatDescription"], "2016-01-01_12-00-00"));
-            p.Add(new ImagePattern("$$TIME$$", Locale.Loc.Instance["LblTimeFormatDescription"], "12-00-00"));
-            p.Add(new ImagePattern("$$FRAMENR$$", Locale.Loc.Instance["LblFrameNrDescription"], "0001"));
-            p.Add(new ImagePattern("$$IMAGETYPE$$", Locale.Loc.Instance["LblImageTypeDescription"], "Light"));
-            p.Add(new ImagePattern("$$BINNING$$", Locale.Loc.Instance["LblBinningDescription"], "1x1"));
-            p.Add(new ImagePattern("$$SENSORTEMP$$", Locale.Loc.Instance["LblTemperatureDescription"], "-15"));
-            p.Add(new ImagePattern("$$EXPOSURETIME$$", Locale.Loc.Instance["LblExposureTimeDescription"], string.Format("{0:0.00}", 10.21234)));
-            p.Add(new ImagePattern("$$TARGETNAME$$", Locale.Loc.Instance["LblTargetNameDescription"], "M33"));
-            p.Add(new ImagePattern("$$GAIN$$", Locale.Loc.Instance["LblGainDescription"], "1600"));
-            p.Add(new ImagePattern("$$RMS$$", Locale.Loc.Instance["LblGuidingRMSDescription"], string.Format("{0:0.00}", 0.35)));
-            return p;
-        }
-
         private void OpenSkyAtlasImageRepositoryDiag(object obj) {
             System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
             dialog.SelectedPath = profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 SkyAtlasImageRepository = dialog.SelectedPath;
+            }
+        }
+
+        private void OpenSkySurveyCacheDirectoryDiag(object obj) {
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.SelectedPath = profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                SkySurveyCacheDirectory = dialog.SelectedPath;
             }
         }
 
@@ -273,6 +263,7 @@ namespace NINA.ViewModel {
         public ICommand ToggleColorsCommand { get; private set; }
 
         public ICommand OpenSkyAtlasImageRepositoryDiagCommand { get; private set; }
+        public ICommand OpenSkySurveyCacheDirectoryDiagCommand { get; private set; }
 
         public ICommand ImportFiltersCommand { get; private set; }
 
@@ -287,7 +278,7 @@ namespace NINA.ViewModel {
         public ICommand SelectProfileCommand { get; private set; }
 
         private void PreviewFile(object o) {
-            MyMessageBox.MyMessageBox.Show(Utility.Utility.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern, ImagePatterns), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
+            MyMessageBox.MyMessageBox.Show(ImagePatterns.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
         }
 
         private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
@@ -311,11 +302,7 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.ApplicationSettings.Language;
             }
             set {
-                profileService.ActiveProfile.ApplicationSettings.Language = value;
-
-                System.Threading.Thread.CurrentThread.CurrentUICulture = Language;
-                System.Threading.Thread.CurrentThread.CurrentCulture = Language;
-                Locale.Loc.Instance.ReloadLocale(Language.Name);
+                profileService.ChangeLocale(value);
                 RaisePropertyChanged();
             }
         }
@@ -475,10 +462,10 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.AstrometrySettings.HemisphereType;
             }
             set {
-                profileService.ActiveProfile.AstrometrySettings.HemisphereType = value;
+                profileService.ChangeHemisphere(value);
+
                 RaisePropertyChanged();
                 Latitude = Latitude;
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 
@@ -549,6 +536,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.PlateSolveSettings.Threshold = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double PlateSolveRotationTolerance {
+            get {
+                return profileService.ActiveProfile.PlateSolveSettings.RotationTolerance;
+            }
+            set {
+                profileService.ActiveProfile.PlateSolveSettings.RotationTolerance = value;
                 RaisePropertyChanged();
             }
         }
@@ -735,6 +732,15 @@ namespace NINA.ViewModel {
             }
         }
 
+        public FileTypeEnum[] FileTypes {
+            get {
+                return Enum.GetValues(typeof(FileTypeEnum))
+                    .Cast<FileTypeEnum>()
+                    .Where(p => p != FileTypeEnum.RAW)
+                    .ToArray<FileTypeEnum>();
+            }
+        }
+
         public FileTypeEnum FileType {
             get {
                 return profileService.ActiveProfile.ImageFileSettings.FileType;
@@ -805,57 +811,15 @@ namespace NINA.ViewModel {
             }
         }
 
-        private HashSet<ImagePattern> _imagePatterns;
+        private ImagePatterns _imagePatterns;
 
-        public HashSet<ImagePattern> ImagePatterns {
+        public ImagePatterns ImagePatterns {
             get {
                 return _imagePatterns;
             }
             set {
                 _imagePatterns = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        public class ImagePattern {
-
-            public ImagePattern(string k, string d, string v) {
-                Key = k;
-                Description = d;
-                Value = v;
-            }
-
-            private string _key;
-            private string _description;
-            private string _value;
-
-            public string Value {
-                get {
-                    return _value;
-                }
-                set {
-                    _value = value;
-                }
-            }
-
-            public string Key {
-                get {
-                    return _key;
-                }
-
-                set {
-                    _key = value;
-                }
-            }
-
-            public string Description {
-                get {
-                    return _description;
-                }
-
-                set {
-                    _description = value;
-                }
             }
         }
 
@@ -994,12 +958,8 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.AstrometrySettings.Latitude;
             }
             set {
-                if ((HemisphereType == Hemisphere.SOUTHERN && value > 0) || (HemisphereType == Hemisphere.NORTHERN && value < 0)) {
-                    value = -value;
-                }
-                profileService.ActiveProfile.AstrometrySettings.Latitude = value;
+                profileService.ChangeLatitude(value);
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 
@@ -1008,9 +968,8 @@ namespace NINA.ViewModel {
                 return profileService.ActiveProfile.AstrometrySettings.Longitude;
             }
             set {
-                profileService.ActiveProfile.AstrometrySettings.Longitude = value;
+                profileService.ChangeLongitude(value);
                 RaisePropertyChanged();
-                Mediator.Instance.Notify(MediatorMessages.LocationChanged, null);
             }
         }
 
@@ -1020,6 +979,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string SkySurveyCacheDirectory {
+            get {
+                return profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
+            }
+            set {
+                profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory = value;
                 RaisePropertyChanged();
             }
         }
@@ -1303,7 +1272,28 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double GuiderSettlePixels {
+            get {
+                return profileService.ActiveProfile.GuiderSettings.SettlePixels;
+            }
+            set {
+                profileService.ActiveProfile.GuiderSettings.SettlePixels = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int GuiderSettleTimeout {
+            get {
+                return profileService.ActiveProfile.GuiderSettings.SettleTimeout;
+            }
+            set {
+                profileService.ActiveProfile.GuiderSettings.SettleTimeout = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private IProfile _selectedProfile;
+        private IFilterWheelMediator filterWheelMediator;
 
         public IProfile SelectedProfile {
             get {

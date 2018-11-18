@@ -1,5 +1,6 @@
 ﻿namespace NINA.Utility.Profile {
-    public interface ITelescopeSettings {
+
+    public interface ITelescopeSettings : ISettings {
         int FocalLength { get; set; }
         string Id { get; set; }
         int SettleTime { get; set; }

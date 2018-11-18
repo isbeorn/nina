@@ -112,6 +112,18 @@ namespace NINA.Model {
             }
         }
 
+        private double rotation;
+
+        public double Rotation {
+            get {
+                return rotation;
+            }
+            set {
+                rotation = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private DataPoint _maxAltitude;
 
         public DataPoint MaxAltitude {

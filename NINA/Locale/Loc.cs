@@ -30,7 +30,6 @@ namespace NINA.Locale {
                 Logger.Error(ex);
             }
             RaiseAllPropertiesChanged();
-            Mediator.Instance.Notify(MediatorMessages.LocaleChanged, null);
         }
 
         private static readonly Lazy<Loc> lazy =

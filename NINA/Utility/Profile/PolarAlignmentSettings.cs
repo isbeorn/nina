@@ -6,7 +6,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class PolarAlignmentSettings : IPolarAlignmentSettings {
+    public class PolarAlignmentSettings : Settings, IPolarAlignmentSettings {
         private double altitudeDeclination = 0;
 
         [DataMember]
@@ -16,7 +16,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 altitudeDeclination = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -29,7 +29,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 altitudeMeridianOffset = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -42,7 +42,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 azimuthDeclination = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -55,7 +55,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 azimuthMeridianOffset = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

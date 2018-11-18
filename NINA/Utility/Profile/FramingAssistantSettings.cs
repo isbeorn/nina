@@ -6,7 +6,7 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class FramingAssistantSettings : IFramingAssistantSettings {
+    public class FramingAssistantSettings : Settings, IFramingAssistantSettings {
         private int cameraHeight = 3500;
 
         [DataMember]
@@ -16,7 +16,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 cameraHeight = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -29,7 +29,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 cameraWidth = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
@@ -42,7 +42,7 @@ namespace NINA.Utility.Profile {
             }
             set {
                 fieldOfView = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
     }

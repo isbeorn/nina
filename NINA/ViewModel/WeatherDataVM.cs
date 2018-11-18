@@ -14,8 +14,6 @@ namespace NINA.ViewModel {
             this.Title = "LblWeather";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CloudSVG"];
 
-            this.ContentId = nameof(WeatherDataVM);
-
             _updateWeatherDataTimer = new DispatcherTimer();
             _updateWeatherDataTimer.Interval = TimeSpan.FromSeconds(60);
             _updateWeatherDataTimer.Tick += _updateWeatherDataTimer_Tick;

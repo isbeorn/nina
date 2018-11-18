@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
@@ -16,6 +17,15 @@ namespace NINA.ViewModel {
         }
 
         public ApplicationVM(IProfileService profileService) : base(profileService) {
+            cameraMediator = new CameraMediator();
+            telescopeMediator = new TelescopeMediator();
+            focuserMediator = new FocuserMediator();
+            filterWheelMediator = new FilterWheelMediator();
+            rotatorMediator = new RotatorMediator();
+            guiderMediator = new GuiderMediator();
+            imagingMediator = new ImagingMediator();
+            applicationStatusMediator = new ApplicationStatusMediator();
+
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
@@ -26,11 +36,13 @@ namespace NINA.ViewModel {
                 var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblReconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag == MessageBoxResult.OK) {
                     return await Task<bool>.Run(async () => {
-                        var cam = Mediator.Instance.RequestAsync(new ConnectCameraMessage());
-                        var fw = Mediator.Instance.RequestAsync(new ConnectFilterWheelMessage());
-                        var telescope = Mediator.Instance.RequestAsync(new ConnectTelescopeMessage());
-                        var focuser = Mediator.Instance.RequestAsync(new ConnectFocuserMessage());
-                        await Task.WhenAll(cam, fw, telescope, focuser);
+                        var cam = cameraMediator.Connect();
+                        var fw = filterWheelMediator.Connect();
+                        var telescope = telescopeMediator.Connect();
+                        var focuser = focuserMediator.Connect();
+                        var rotator = rotatorMediator.Connect();
+                        var guider = guiderMediator.Connect();
+                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, guider);
                         return true;
                     });
                 } else {
@@ -44,12 +56,17 @@ namespace NINA.ViewModel {
                 }
             });
 
-            RegisterMediatorMessages();
-
             InitAvalonDockLayout();
-
-            MeridianFlipVM = new MeridianFlipVM(profileService);
         }
+
+        private ICameraMediator cameraMediator;
+        private ITelescopeMediator telescopeMediator;
+        private IFocuserMediator focuserMediator;
+        private IFilterWheelMediator filterWheelMediator;
+        private RotatorMediator rotatorMediator;
+        private IGuiderMediator guiderMediator;
+        private IImagingMediator imagingMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         private void LoadProfile(object obj) {
             if (profileService.Profiles.ProfileList.Count > 1) {
@@ -87,13 +104,11 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
             DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
             DockManagerVM.Anchorables.Add(AutoFocusVM);
+            DockManagerVM.Anchorables.Add(RotatorVM);
         }
 
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterRequest(new ChangeApplicationTabMessageHandle((ChangeApplicationTabMessage m) => {
-                TabIndex = (int)m.Tab;
-                return true;
-            }));
+        public void ChangeTab(ApplicationTab tab) {
+            TabIndex = (int)tab;
         }
 
         public string Version {
@@ -119,7 +134,7 @@ namespace NINA.ViewModel {
         public ApplicationStatusVM ApplicationStatusVM {
             get {
                 if (_applicationStatusVM == null) {
-                    _applicationStatusVM = new ApplicationStatusVM(profileService);
+                    _applicationStatusVM = new ApplicationStatusVM(profileService, applicationStatusMediator);
                 }
                 return _applicationStatusVM;
             }
@@ -157,31 +172,37 @@ namespace NINA.ViewModel {
 
         public void DisconnectEquipment() {
             try {
-                CameraVM?.Disconnect();
+                cameraMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
 
             try {
-                TelescopeVM?.Disconnect();
+                telescopeMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
 
             try {
-                FilterWheelVM?.Disconnect();
+                filterWheelMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
 
             try {
-                FocuserVM?.Disconnect();
+                focuserMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
 
             try {
-                GuiderVM?.Guider?.Disconnect();
+                rotatorMediator.Disconnect();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            try {
+                guiderMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
@@ -202,24 +223,12 @@ namespace NINA.ViewModel {
             }
         }
 
-        private MeridianFlipVM _meridianFlipVM;
-
-        public MeridianFlipVM MeridianFlipVM {
-            get {
-                return _meridianFlipVM;
-            }
-            set {
-                _meridianFlipVM = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private ThumbnailVM _thumbnailVM;
 
         public ThumbnailVM ThumbnailVM {
             get {
                 if (_thumbnailVM == null) {
-                    _thumbnailVM = new ThumbnailVM(profileService);
+                    _thumbnailVM = new ThumbnailVM(profileService, imagingMediator);
                 }
                 return _thumbnailVM;
             }
@@ -234,7 +243,7 @@ namespace NINA.ViewModel {
         public CameraVM CameraVM {
             get {
                 if (_cameraVM == null) {
-                    _cameraVM = new CameraVM(profileService);
+                    _cameraVM = new CameraVM(profileService, cameraMediator, telescopeMediator, applicationStatusMediator);
                 }
                 return _cameraVM;
             }
@@ -249,7 +258,7 @@ namespace NINA.ViewModel {
         public FilterWheelVM FilterWheelVM {
             get {
                 if (_filterWheelVM == null) {
-                    _filterWheelVM = new FilterWheelVM(profileService);
+                    _filterWheelVM = new FilterWheelVM(profileService, filterWheelMediator, focuserMediator, applicationStatusMediator);
                 }
                 return _filterWheelVM;
             }
@@ -264,12 +273,27 @@ namespace NINA.ViewModel {
         public FocuserVM FocuserVM {
             get {
                 if (_focuserVM == null) {
-                    _focuserVM = new FocuserVM(profileService);
+                    _focuserVM = new FocuserVM(profileService, focuserMediator, applicationStatusMediator);
                 }
                 return _focuserVM;
             }
             set {
                 _focuserVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private RotatorVM rotatorVM;
+
+        public RotatorVM RotatorVM {
+            get {
+                if (rotatorVM == null) {
+                    rotatorVM = new RotatorVM(profileService, rotatorMediator, applicationStatusMediator);
+                }
+                return rotatorVM;
+            }
+            set {
+                rotatorVM = value;
                 RaisePropertyChanged();
             }
         }
@@ -294,7 +318,7 @@ namespace NINA.ViewModel {
         public SequenceVM SeqVM {
             get {
                 if (_seqVM == null) {
-                    _seqVM = new SequenceVM(profileService);
+                    _seqVM = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
                 }
                 return _seqVM;
             }
@@ -309,7 +333,7 @@ namespace NINA.ViewModel {
         public ImagingVM ImagingVM {
             get {
                 if (_imagingVM == null) {
-                    _imagingVM = new ImagingVM(profileService);
+                    _imagingVM = new ImagingVM(profileService, imagingMediator, cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, guiderMediator, applicationStatusMediator);
                 }
                 return _imagingVM;
             }
@@ -324,7 +348,7 @@ namespace NINA.ViewModel {
         public PolarAlignmentVM PolarAlignVM {
             get {
                 if (_polarAlignVM == null) {
-                    _polarAlignVM = new PolarAlignmentVM(profileService);
+                    _polarAlignVM = new PolarAlignmentVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 }
                 return _polarAlignVM;
             }
@@ -339,7 +363,7 @@ namespace NINA.ViewModel {
         public PlatesolveVM PlatesolveVM {
             get {
                 if (_platesolveVM == null) {
-                    _platesolveVM = new PlatesolveVM(profileService);
+                    _platesolveVM = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 }
                 return _platesolveVM;
             }
@@ -354,7 +378,7 @@ namespace NINA.ViewModel {
         public TelescopeVM TelescopeVM {
             get {
                 if (_telescopeVM == null) {
-                    _telescopeVM = new TelescopeVM(profileService);
+                    _telescopeVM = new TelescopeVM(profileService, telescopeMediator, applicationStatusMediator);
                 }
                 return _telescopeVM;
             }
@@ -369,7 +393,7 @@ namespace NINA.ViewModel {
         public GuiderVM GuiderVM {
             get {
                 if (_guiderVM == null) {
-                    _guiderVM = new GuiderVM(profileService);
+                    _guiderVM = new GuiderVM(profileService, guiderMediator, applicationStatusMediator);
                 }
                 return _guiderVM;
             }
@@ -384,7 +408,7 @@ namespace NINA.ViewModel {
         public OptionsVM OptionsVM {
             get {
                 if (_optionsVM == null) {
-                    _optionsVM = new OptionsVM(profileService);
+                    _optionsVM = new OptionsVM(profileService, filterWheelMediator);
                 }
                 return _optionsVM;
             }
@@ -399,7 +423,7 @@ namespace NINA.ViewModel {
         public AutoFocusVM AutoFocusVM {
             get {
                 if (_autoFocusVM == null) {
-                    _autoFocusVM = new AutoFocusVM(profileService);
+                    _autoFocusVM = new AutoFocusVM(profileService, cameraMediator, filterWheelMediator, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator);
                 }
                 return _autoFocusVM;
             }
@@ -414,7 +438,7 @@ namespace NINA.ViewModel {
         public FramingAssistantVM FramingAssistantVM {
             get {
                 if (_framingAssistantVM == null) {
-                    _framingAssistantVM = new FramingAssistantVM(profileService);
+                    _framingAssistantVM = new FramingAssistantVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 }
                 return _framingAssistantVM;
             }
@@ -429,7 +453,7 @@ namespace NINA.ViewModel {
         public SkyAtlasVM SkyAtlasVM {
             get {
                 if (_skyAtlasVM == null) {
-                    _skyAtlasVM = new SkyAtlasVM(profileService);
+                    _skyAtlasVM = new SkyAtlasVM(profileService, telescopeMediator);
                 }
                 return _skyAtlasVM;
             }

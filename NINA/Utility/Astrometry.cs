@@ -298,8 +298,16 @@ namespace NINA.Utility.Astrometry {
             return AstroUtils.MoonIllumination(Astrometry.GetJulianDate(date));
         }
 
+        /// <summary>
+        /// Calculates arcseconds per pixel for given pixelsize and focallength
+        /// </summary>
+        /// <param name="pixelSize">Pixel size in microns</param>
+        /// <param name="focalLength">Focallength in mm</param>
+        /// <returns></returns>
         public static double ArcsecPerPixel(double pixelSize, double focalLength) {
-            return (pixelSize / focalLength) * 206.3; ;
+            // arcseconds inside one radian and compensated by the difference of microns in pixels and mm in focal length
+            var factor = DegreeToArcsec(ToDegree(1)) / 1000d;
+            return (pixelSize / focalLength) * factor;
         }
 
         public static double MaxFieldOfView(double arcsecPerPixel, double width, double height) {
@@ -452,6 +460,78 @@ namespace NINA.Utility.Astrometry {
             var transform = new ASCOM.Astrometry.Transform.Transform();
             transform.SetApparent(RA, Dec);
             return new Coordinates(transform.RAJ2000, transform.DecJ2000, Epoch.J2000, RAType.Hours);
+        }
+
+        /// <summary>
+        /// Shift coordinates by a delta in degree
+        /// </summary>
+        /// <param name="deltaX">delta x in degree</param>
+        /// <param name="deltaY">delta y in degree</param>
+        /// <param name="rotation">rotation relative to delta values</param>
+        /// <returns></returns>
+        public Coordinates Shift(double deltaX, double deltaY, double rotation) {
+            var deltaXDeg = -deltaX;
+            var deltaYDeg = -deltaY;
+            var rotationRad = Astrometry.ToRadians(rotation);
+
+            if (rotation != 0) {
+                //Recalculate delta based on rotation
+                //No spherical or other aberrations are assumed
+                var originalDeltaX = deltaXDeg;
+                deltaXDeg = deltaXDeg * Math.Cos(rotationRad) - deltaYDeg * Math.Sin(rotationRad);
+                deltaYDeg = deltaYDeg * Math.Cos(rotationRad) + originalDeltaX * Math.Sin(rotationRad);
+            }
+
+            var originRARad = Astrometry.ToRadians(this.RADegrees);
+            var originDecRad = Astrometry.ToRadians(this.Dec);
+
+            var deltaXRad = Astrometry.ToRadians(deltaXDeg);
+            var deltaYRad = Astrometry.ToRadians(deltaYDeg);
+
+            // refer to http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
+
+            var targetRARad = originRARad + Math.Atan2(deltaXRad, Math.Cos(originDecRad) - deltaYRad * Math.Sin(originDecRad));
+            var targetDecRad =
+                Math.Atan(
+                    Math.Cos(targetRARad - originRARad)
+                    * (deltaYRad * Math.Cos(originDecRad) + Math.Sin(originDecRad))
+                    / (Math.Cos(originDecRad) - deltaYRad * Math.Sin(originDecRad))
+                );
+
+            var targetRA = Astrometry.ToDegree(targetRARad);
+            if (targetRA < 0) { targetRA += 360; }
+            if (targetRA >= 360) { targetRA -= 360; }
+
+            var targetDec = Astrometry.ToDegree(targetDecRad);
+
+            return new Coordinates(
+                targetRA,
+                targetDec,
+                Epoch.J2000,
+                Coordinates.RAType.Degrees
+            );
+        }
+
+        /// <summary>
+        /// Shift coordinates by a delta in pixel
+        /// </summary>
+        /// <param name="origin">Coordinates to shift from</param>
+        /// <param name="deltaX">delta x</param>
+        /// <param name="deltaY">delta y</param>
+        /// <param name="rotation">rotation relative to delta values</param>
+        /// <param name="scaleX">scale relative to deltaX in arcsecs</param>
+        /// <param name="scaleY">scale raltive to deltaY in arcsecs</param>
+        /// <returns></returns>
+        public Coordinates Shift(
+                double deltaX,
+                double deltaY,
+                double rotation,
+                double scaleX,
+                double scaleY
+        ) {
+            var deltaXDeg = deltaX * Astrometry.ArcsecToDegree(scaleX);
+            var deltaYDeg = deltaY * Astrometry.ArcsecToDegree(scaleY);
+            return this.Shift(deltaXDeg, deltaYDeg, rotation);
         }
     }
 

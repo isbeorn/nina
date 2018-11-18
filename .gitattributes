@@ -1,0 +1,14 @@
+* text=crlf
+
+*.cs text
+*.xaml text
+*.sln text
+*.config text
+
+*.png binary
+*.sqlite binary
+*.md binary
+*.dll binary
+*.lib binary
+*.md3 binary
+*.exe binary

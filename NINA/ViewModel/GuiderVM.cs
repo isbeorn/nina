@@ -11,15 +11,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using NINA.ViewModel.Interfaces;
+using System.Collections.Generic;
+using NINA.Utility.Mediator.Interfaces;
 
 namespace NINA.ViewModel {
 
-    internal class GuiderVM : DockableVM {
+    internal class GuiderVM : DockableVM, IGuiderVM {
 
-        public GuiderVM(IProfileService profileService) : base(profileService) {
+        public GuiderVM(IProfileService profileService, IGuiderMediator guiderMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblGuider";
-            ContentId = nameof(GuiderVM);
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
+
+            this.guiderMediator = guiderMediator;
+            this.guiderMediator.RegisterHandler(this);
+
+            this.applicationStatusMediator = applicationStatusMediator;
+
             ConnectGuiderCommand = new AsyncCommand<bool>(
                 async () =>
                     await Task.Run<bool>(() => Connect()),
@@ -28,11 +36,7 @@ namespace NINA.ViewModel {
             );
             DisconnectGuiderCommand = new RelayCommand((object o) => Disconnect(), (object o) => Guider?.Connected == true);
 
-            /*SetUpPlotModels();*/
-
             GuideStepsHistory = new GuideStepsHistory(HistorySize);
-
-            RegisterMediatorMessages();
         }
 
         public enum GuideStepsHistoryType {
@@ -40,60 +44,34 @@ namespace NINA.ViewModel {
             GuideStepsMinimal
         }
 
-        private void RegisterMediatorMessages() {
-            Mediator.Instance.RegisterAsyncRequest(
-                new DitherGuiderMessageHandle(async (DitherGuiderMessage msg) => {
-                    return await Dither(msg.Token);
-                })
-            );
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new PauseGuiderMessageHandle(async (PauseGuiderMessage msg) => {
-                    if (msg.Pause) {
-                        return await Pause(msg.Token);
-                    } else {
-                        return await Resume(msg.Token);
-                    }
-                })
-            );
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new AutoSelectGuideStarMessageHandle(async (AutoSelectGuideStarMessage msg) => {
-                    return await AutoSelectGuideStar(msg.Token);
-                })
-            );
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new StartGuiderMessageHandle(async (StartGuiderMessage msg) => {
-                    return await StartGuiding(msg.Token);
-                })
-            );
-
-            Mediator.Instance.RegisterAsyncRequest(
-                new StopGuiderMessageHandle(async (StopGuiderMessage msg) => {
-                    return await StopGuiding(msg.Token);
-                })
-            );
-
-            Mediator.Instance.RegisterRequest(
-                new StartRMSRecordingMessageHandle((StartRMSRecordingMessage msg) => {
-                    var rms = new RMS();
-                    rms.SetScale(GuideStepsHistory.PixelScale);
-                    recordedRMS = rms;
-                    return true;
-                })
-            );
-
-            Mediator.Instance.RegisterRequest(
-                new StopRMSRecordingMessageHandle((StopRMSRecordingMessage msg) => {
-                    var rms = recordedRMS;
-                    recordedRMS = null;
-                    return rms;
-                })
-            );
+        /// <summary>
+        /// Starts recording RMS until StopRMSRecording is called
+        /// </summary>
+        /// <returns>Handle for the recording rms session</returns>
+        public Guid StartRMSRecording() {
+            var handle = Guid.NewGuid();
+            var rms = new RMS();
+            rms.SetScale(GuideStepsHistory.PixelScale);
+            recordedRMS.Add(handle, rms);
+            return handle;
         }
 
-        private async Task<bool> AutoSelectGuideStar(CancellationToken token) {
+        /// <summary>
+        /// Stops and returns RMS for the given rms session handle
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <returns>recorded RMS</returns>
+        public RMS StopRMSRecording(Guid handle) {
+            if (recordedRMS.ContainsKey(handle)) {
+                var rms = recordedRMS[handle];
+                recordedRMS.Remove(handle);
+                return rms;
+            } else {
+                return null;
+            }
+        }
+
+        public async Task<bool> AutoSelectGuideStar(CancellationToken token) {
             if (Guider?.Connected == true) {
                 var result = await Guider?.AutoSelectGuideStar();
                 await Task.Delay(TimeSpan.FromSeconds(5), token);
@@ -103,7 +81,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> Pause(CancellationToken token) {
+        public async Task<bool> PauseGuiding(CancellationToken token) {
             if (Guider?.Connected == true) {
                 return await Guider?.Pause(true, token);
             } else {
@@ -111,7 +89,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> Resume(CancellationToken token) {
+        public async Task<bool> ResumeGuiding(CancellationToken token) {
             if (Guider?.Connected == true) {
                 await Guider?.Pause(false, token);
                 await Utility.Utility.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTime), token);
@@ -138,18 +116,46 @@ namespace NINA.ViewModel {
             GuideStepsHistory.Clear();
         }
 
-        private async Task<bool> Connect() {
+        public async Task<bool> Connect() {
             ResetGraphValues();
             Guider = new PHD2Guider(profileService);
             Guider.PropertyChanged += Guider_PropertyChanged;
-            return await Guider.Connect();
+
+            var connected = await Guider.Connect();
+
+            GuiderInfo = new GuiderInfo {
+                Connected = connected
+            };
+            BroadcastGuiderInfo();
+
+            return connected;
         }
 
-        private bool Disconnect() {
+        public void Disconnect() {
             ResetGraphValues();
-            var discon = Guider.Disconnect();
+            Guider?.Disconnect();
             Guider = null;
-            return discon;
+            GuiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
+            BroadcastGuiderInfo();
+        }
+
+        private GuiderInfo guiderInfo;
+
+        public GuiderInfo GuiderInfo {
+            get {
+                if (guiderInfo == null) {
+                    guiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
+                }
+                return guiderInfo;
+            }
+            set {
+                guiderInfo = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private void BroadcastGuiderInfo() {
+            this.guiderMediator.Broadcast(GuiderInfo);
         }
 
         private void Guider_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -161,8 +167,8 @@ namespace NINA.ViewModel {
 
                 GuideStepsHistory.AddGuideStep(step);
 
-                if (recordedRMS != null) {
-                    recordedRMS.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
+                foreach (RMS rms in recordedRMS.Values) {
+                    rms.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
                 }
             }
         }
@@ -177,7 +183,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> StartGuiding(CancellationToken token) {
+        public async Task<bool> StartGuiding(CancellationToken token) {
             if (Guider?.Connected == true) {
                 return await Guider.StartGuiding(token);
             } else {
@@ -185,7 +191,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> StopGuiding(CancellationToken token) {
+        public async Task<bool> StopGuiding(CancellationToken token) {
             if (Guider?.Connected == true) {
                 return await Guider.StopGuiding(token);
             } else {
@@ -193,15 +199,20 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> Dither(CancellationToken token) {
+        public async Task<bool> Dither(CancellationToken token) {
             if (Guider?.Connected == true) {
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new Model.ApplicationStatus() { Status = Locale.Loc.Instance["LblDither"], Source = Title } });
+                applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = Locale.Loc.Instance["LblDither"], Source = Title });
                 await Guider?.Dither(token);
-                Mediator.Instance.Request(new StatusUpdateMessage() { Status = new Model.ApplicationStatus() { Status = string.Empty, Source = Title } });
+                applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = string.Empty, Source = Title });
                 return true;
             } else {
+                Disconnect();
                 return false;
             }
+        }
+
+        public GuiderInfo GetDeviceInfo() {
+            return GuiderInfo;
         }
 
         private GuideStepsHistory guideStepsHistory;
@@ -216,7 +227,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private RMS recordedRMS;
+        private Dictionary<Guid, RMS> recordedRMS = new Dictionary<Guid, RMS>();
 
         private IGuider _guider;
 
@@ -229,6 +240,9 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        private IGuiderMediator guiderMediator;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         public ICommand ConnectGuiderCommand { get; private set; }
 

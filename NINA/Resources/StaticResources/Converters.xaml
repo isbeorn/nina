@@ -26,4 +26,5 @@
     <converters:DegreesToDMSConverter x:Key="DegreesToDMSConverter" />
     <converters:InverseMultiBooleanANDConverter x:Key="InverseMultiBooleanANDConverter" />
     <converters:BooleanAndConverter x:Key="BooleanAndConverter" />
+    <converters:PercentageConverter x:Key="PercentageConverter" />
 </ResourceDictionary>

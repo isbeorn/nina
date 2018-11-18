@@ -7,8 +7,30 @@ namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class GuiderSettings : IGuiderSettings {
-        private double ditherPixels = 5;
+    public class GuiderSettings : Settings, IGuiderSettings {
+
+        public GuiderSettings() {
+            SetDefaultValues();
+        }
+
+        [OnDeserializing]
+        public void OnDesiralization(StreamingContext context) {
+            SetDefaultValues();
+        }
+
+        private void SetDefaultValues() {
+            ditherPixels = 5;
+            ditherRAOnly = false;
+            settleTime = 10;
+            pHD2ServerUrl = "localhost";
+            pHD2ServerPort = 4400;
+            pHD2LargeHistorySize = 100;
+            pHD2GuiderScale = GuiderScaleEnum.PIXELS;
+            settlePixels = 1.5;
+            settleTimeout = 40;
+        }
+
+        private double ditherPixels;
 
         [DataMember]
         public double DitherPixels {
@@ -17,11 +39,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 ditherPixels = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private bool ditherRAOnly = false;
+        private bool ditherRAOnly;
 
         [DataMember]
         public bool DitherRAOnly {
@@ -30,11 +52,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 ditherRAOnly = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private int settleTime = 10;
+        private int settleTime;
 
         [DataMember]
         public int SettleTime {
@@ -43,11 +65,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 settleTime = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private string pHD2ServerUrl = "localhost";
+        private string pHD2ServerUrl;
 
         [DataMember]
         public string PHD2ServerUrl {
@@ -56,11 +78,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2ServerUrl = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private int pHD2ServerPort = 4400;
+        private int pHD2ServerPort;
 
         [DataMember]
         public int PHD2ServerPort {
@@ -69,11 +91,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2ServerPort = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private int pHD2LargeHistorySize = 100;
+        private int pHD2LargeHistorySize;
 
         [DataMember]
         public int PHD2HistorySize {
@@ -82,11 +104,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2LargeHistorySize = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private GuiderScaleEnum pHD2GuiderScale = GuiderScaleEnum.PIXELS;
+        private GuiderScaleEnum pHD2GuiderScale;
 
         [DataMember]
         public GuiderScaleEnum PHD2GuiderScale {
@@ -95,7 +117,35 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2GuiderScale = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
+            }
+        }
+
+        private double settlePixels;
+
+        [DataMember]
+        public double SettlePixels {
+            get {
+                return settlePixels;
+            }
+
+            set {
+                settlePixels = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int settleTimeout;
+
+        [DataMember]
+        public int SettleTimeout {
+            get {
+                return settleTimeout;
+            }
+
+            set {
+                settleTimeout = value;
+                RaisePropertyChanged();
             }
         }
     }

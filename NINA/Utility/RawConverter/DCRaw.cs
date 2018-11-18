@@ -59,6 +59,7 @@ namespace NINA.Utility.RawConverter {
                                 ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
                                 bmp.CopyPixels(pixels, 2 * bmp.PixelWidth, 0);
                                 iarr = await ImageArray.CreateInstance(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, true, true, histogramResolution);
+                                iarr.RAWData = s.ToArray();
                             } else {
                                 Notification.Notification.ShowError("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());
                                 Logger.Error(sb.ToString(), null);

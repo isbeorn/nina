@@ -2,13 +2,32 @@
 using NINA.Utility.Mediator;
 using System;
 using System.Globalization;
+using System.IO;
 using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
 
     [Serializable()]
     [DataContract]
-    public class ApplicationSettings : IApplicationSettings {
+    public class ApplicationSettings : Settings, IApplicationSettings {
+
+        public ApplicationSettings() {
+            SetDefaultValues();
+        }
+
+        [OnDeserializing]
+        public void OnDesiralization(StreamingContext context) {
+            SetDefaultValues();
+        }
+
+        private void SetDefaultValues() {
+            language = new CultureInfo("en-GB");
+            logLevel = LogLevelEnum.ERROR;
+            databaseLocation = @"%localappdata%\NINA\NINA.sqlite";
+            devicePollingInterval = 0.5;
+            skyAtlasImageRepository = string.Empty;
+            skySurveyCacheDirectory = Path.Combine(Utility.APPLICATIONTEMPPATH, "FramingAssistantCache");
+        }
 
         [DataMember]
         public string Culture {
@@ -17,11 +36,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 Language = new CultureInfo(value);
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private CultureInfo language = new CultureInfo("en-GB");
+        private CultureInfo language;
 
         public CultureInfo Language {
             get {
@@ -29,11 +48,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 language = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private LogLevelEnum logLevel = LogLevelEnum.ERROR;
+        private LogLevelEnum logLevel;
 
         [DataMember]
         public LogLevelEnum LogLevel {
@@ -42,11 +61,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 logLevel = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private string databaseLocation = @"%localappdata%\NINA\NINA.sqlite";
+        private string databaseLocation;
 
         [DataMember]
         public string DatabaseLocation {
@@ -55,11 +74,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 databaseLocation = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private double devicePollingInterval = 0.5;
+        private double devicePollingInterval;
 
         [DataMember]
         public double DevicePollingInterval {
@@ -68,11 +87,11 @@ namespace NINA.Utility.Profile {
             }
             set {
                 devicePollingInterval = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
             }
         }
 
-        private string skyAtlasImageRepository = string.Empty;
+        private string skyAtlasImageRepository;
 
         [DataMember]
         public string SkyAtlasImageRepository {
@@ -81,7 +100,20 @@ namespace NINA.Utility.Profile {
             }
             set {
                 skyAtlasImageRepository = value;
-                Mediator.Mediator.Instance.Request(new SaveProfilesMessage());
+                RaisePropertyChanged();
+            }
+        }
+
+        private string skySurveyCacheDirectory;
+
+        [DataMember]
+        public string SkySurveyCacheDirectory {
+            get {
+                return skySurveyCacheDirectory;
+            }
+            set {
+                skySurveyCacheDirectory = value;
+                RaisePropertyChanged();
             }
         }
     }

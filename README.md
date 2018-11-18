@@ -43,15 +43,10 @@ https://bitbucket.org/Isbeorn/nina/wiki/Home
 ### Filterwheel Control
 * ASCOM Driver
      * Tested with Starlight XPress motorized Filterwheel, Atik EFW2
-* Manual Control (BETA)
 
 ### Autofocuser Control
 * ASCOM Driver
      * Tested with Lacerta Motorfocus
-
-### Rotator Control (BETA)
-* ASCOM Driver
-* Manual Control
 
 ### Autoguider Control
 * via communication with PHD2 Server
@@ -67,9 +62,7 @@ https://bitbucket.org/Isbeorn/nina/wiki/Home
 * Dithering after a set amount of images
 * Macros to set up custom file names
 * Supported Image formats: FITS, TIFF (Without compression, with ZIP or LZW compression), XISF
-* RAW Format for DSLRs (BETA)
 * Automatic Meridian Flip
-* Multiple Targets (BETA)
 
 ### Manual Focusing
 * Snapping of images
@@ -82,9 +75,7 @@ https://bitbucket.org/Isbeorn/nina/wiki/Home
 * During sequences
      * On start
      * After filter change
-     * After set amount of exposures
-     * After specified temperature change
-     
+
 ### Image Recognition
 * Statistics
 * Auto-Stretch
@@ -116,7 +107,6 @@ https://bitbucket.org/Isbeorn/nina/wiki/Home
 * By entering camera and telescope specs a rectangle with the respective field of view is generated
 * The rectangle can be rotated and dragged to the desired location
 * Once satisfied the coordinates where the rectangle is located can be set for a sequence to start imaging
-* Mosaic Planning (BETA)
 
 ### Image History
 * Thumbnail and statistics of images during an image session

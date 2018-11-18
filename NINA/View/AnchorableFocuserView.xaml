@@ -12,7 +12,7 @@
     mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
-            <Grid IsEnabled="{Binding Connected}">
+            <Grid IsEnabled="{Binding FocuserInfo.Connected}">
                 <StackPanel Orientation="Vertical">
                     <Border
                         MinHeight="30"
@@ -26,7 +26,7 @@
                                 Margin="5"
                                 HorizontalAlignment="Left"
                                 BorderBrush="Transparent"
-                                IsChecked="{Binding Connected, FallbackValue=False, Mode=OneWay}"
+                                IsChecked="{Binding FocuserInfo.Connected, FallbackValue=False, Mode=OneWay}"
                                 IsEnabled="False"
                                 Style="{StaticResource CheckmarkCheckbox}" />
                         </UniformGrid>
@@ -43,7 +43,7 @@
                                 Margin="5"
                                 HorizontalAlignment="Left"
                                 BorderBrush="Transparent"
-                                IsChecked="{Binding IsMoving, FallbackValue=False, Mode=OneWay}"
+                                IsChecked="{Binding FocuserInfo.IsMoving, FallbackValue=False, Mode=OneWay}"
                                 IsEnabled="False"
                                 Style="{StaticResource CheckmarkCheckbox}" />
                         </UniformGrid>
@@ -56,7 +56,7 @@
                             <TextBlock Text="{ns:Loc LblPosition}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding Position}"
+                                Text="{Binding FocuserInfo.Position}"
                                 TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
                     </Border>
@@ -72,7 +72,9 @@
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
-                                IsChecked="{Binding TempComp}" />
+                                Command="{Binding ToggleTempCompCommand}"
+                                CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                IsChecked="{Binding FocuserInfo.TempComp}" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -83,7 +85,7 @@
                             <TextBlock Text="{ns:Loc LblTemperature}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding Temperature, StringFormat=\{0:#.00\}}"
+                                Text="{Binding FocuserInfo.Temperature, StringFormat=\{0:#.00\}}"
                                 TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
                     </Border>

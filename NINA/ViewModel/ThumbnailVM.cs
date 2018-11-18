@@ -2,8 +2,10 @@
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.Utility.RawConverter;
 using nom.tam.fits;
 using System;
 using System.IO;
@@ -17,22 +19,27 @@ namespace NINA.ViewModel {
 
     internal class ThumbnailVM : DockableVM {
 
-        public ThumbnailVM(IProfileService profileService) : base(profileService) {
+        public ThumbnailVM(IProfileService profileService, IImagingMediator imagingMediator) : base(profileService) {
             Title = "LblImageHistory";
-            ContentId = nameof(ThumbnailVM);
             CanClose = false;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistorySVG"];
 
-            Mediator.Instance.RegisterAsyncRequest(
-                new AddThumbnailMessageHandle((AddThumbnailMessage msg) => {
-                    return AddThumbnail(msg);
-                })
-            );
+            this.imagingMediator = imagingMediator;
+
+            this.imagingMediator.ImageSaved += ImagingMediator_ImageSaved;
+
+            SelectCommand = new AsyncCommand<bool>((object o) => {
+                return SelectImage((Thumbnail)o);
+            });
+        }
+
+        private void ImagingMediator_ImageSaved(object sender, ImageSavedEventArgs e) {
+            AddThumbnail(e);
         }
 
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
-        private Task<bool> AddThumbnail(AddThumbnailMessage msg) {
+        private Task<bool> AddThumbnail(ImageSavedEventArgs msg) {
             return Task<bool>.Run(async () => {
                 var factor = 100 / msg.Image.Width;
 
@@ -71,6 +78,18 @@ namespace NINA.ViewModel {
         }
 
         private ObservableLimitedSizedStack<Thumbnail> _thumbnails;
+        private IImagingMediator imagingMediator;
+        public ICommand SelectCommand { get; set; }
+
+        private async Task<bool> SelectImage(Thumbnail thumbnail) {
+            var iarr = await thumbnail.LoadOriginalImage(profileService);
+            if (iarr != null) {
+                await imagingMediator.PrepareImage(iarr, new System.Threading.CancellationToken(), false);
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         public ObservableLimitedSizedStack<Thumbnail> Thumbnails {
             get {
@@ -90,31 +109,23 @@ namespace NINA.ViewModel {
 
         public Thumbnail(int histogramResolution) {
             this.histogramResolution = histogramResolution;
-            SelectCommand = new AsyncCommand<bool>(() => {
-                return SelectImage();
-            });
         }
 
-        private async Task<bool> SelectImage() {
-            var iarr = await LoadOriginalImage();
-            if (iarr != null) {
-                return await Mediator.Instance.RequestAsync(new SetImageMessage() { ImageArray = iarr, Mean = Mean });
-            } else {
-                return false;
-            }
-        }
-
-        private async Task<ImageArray> LoadOriginalImage() {
+        public async Task<ImageArray> LoadOriginalImage(IProfileService profileService) {
             ImageArray iarr = null;
 
             try {
-                if (File.Exists(ImagePath.AbsolutePath)) {
+                if (File.Exists(ImagePath.LocalPath)) {
                     if (FileType == FileTypeEnum.FITS) {
                         iarr = await LoadFits();
                     } else if (FileType == FileTypeEnum.XISF) {
                         iarr = await LoadXisf();
                     } else if (FileType == FileTypeEnum.TIFF) {
                         iarr = await LoadTiff();
+                    } else if (FileType == FileTypeEnum.RAW) {
+                        iarr = await LoadRaw(profileService);
+                    } else {
+                        throw new NotSupportedException("Fileformat is not supported");
                     }
                     iarr.Statistics.Id = StatisticsId;
                 } else {
@@ -128,23 +139,34 @@ namespace NINA.ViewModel {
             return iarr;
         }
 
-        private async Task<ImageArray> LoadXisf() {
-            var iarr = await XISF.LoadImageArrayFromFile(ImagePath, IsBayered, histogramResolution);
-            return iarr;
+        private async Task<ImageArray> LoadRaw(IProfileService profileService) {
+            var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
+            using (var fs = new FileStream(ImagePath.LocalPath, FileMode.Open)) {
+                using (var ms = new MemoryStream()) {
+                    fs.Position = 0;
+                    fs.CopyTo(ms);
+                    ms.Position = 0;
+                    var iarr = await converter.ConvertToImageArray(ms, new System.Threading.CancellationToken(), profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                    return iarr;
+                }
+            }
         }
 
-        private async Task<ImageArray> LoadTiff() {
+        private Task<ImageArray> LoadXisf() {
+            return XISF.LoadImageArrayFromFile(ImagePath, IsBayered, histogramResolution);
+        }
+
+        private Task<ImageArray> LoadTiff() {
             TiffBitmapDecoder TifDec = new TiffBitmapDecoder(ImagePath, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
             BitmapFrame bmp = TifDec.Frames[0];
             int stride = bmp.PixelWidth * ((bmp.Format.BitsPerPixel + 7) / 8);
             int arraySize = stride * bmp.PixelHeight;
             ushort[] pixels = new ushort[(int)(bmp.Width * bmp.Height)];
             bmp.CopyPixels(pixels, stride, 0);
-            var imgArr = await ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, IsBayered, true, histogramResolution);
-            return imgArr;
+            return ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, IsBayered, true, histogramResolution);
         }
 
-        private async Task<ImageArray> LoadFits() {
+        private Task<ImageArray> LoadFits() {
             Fits f = new Fits(ImagePath);
             ImageHDU hdu = (ImageHDU)f.ReadHDU();
             Array[] arr = (Array[])hdu.Data.DataArray;
@@ -158,8 +180,7 @@ namespace NINA.ViewModel {
                     pixels[i++] = (ushort)(val + short.MaxValue);
                 }
             }
-            var imgArr = await ImageArray.CreateInstance(pixels, width, height, IsBayered, true, histogramResolution);
-            return imgArr;
+            return ImageArray.CreateInstance(pixels, width, height, IsBayered, true, histogramResolution);
         }
 
         public BitmapSource ThumbnailImage { get; set; }
@@ -175,8 +196,6 @@ namespace NINA.ViewModel {
         public FileTypeEnum FileType { get; set; }
 
         private int histogramResolution;
-
-        public ICommand SelectCommand { get; set; }
 
         public DateTime Date { get; set; } = DateTime.Now;
 

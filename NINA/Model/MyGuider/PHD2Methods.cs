@@ -26,7 +26,7 @@ namespace NINA.Model.MyGuider {
         /// 3: SETTLE TIME: int - minimum time to be in-range before considering guiding to be stable
         /// 4: SETTLE TIMEOUT: int - time limit before settling is considered to have failed
         /// </summary>
-        public static string DITHER = "{{\"method\": \"dither\", \"params\": [{0}, {1}, {{\"pixels\": 1.5, \"time\": 8, \"timeout\": 40}}], \"id\": " + PHD2EventId.DITHER + "}}" + Environment.NewLine;
+        public static string DITHER = "{{\"method\": \"dither\", \"params\": [{0}, {1}, {{\"pixels\": {2}, \"time\": {3}, \"timeout\": {4}}}], \"id\": " + PHD2EventId.DITHER + "}}" + Environment.NewLine;
 
         public static string LOOP = "{\"method\": \"loop\", \"id\": " + PHD2EventId.LOOP + "}" + Environment.NewLine;
 

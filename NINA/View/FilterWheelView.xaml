@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
@@ -40,7 +41,7 @@
                         Grid.Column="1"
                         MinHeight="40"
                         DisplayMemberPath="Name"
-                        IsEnabled="{Binding FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                        IsEnabled="{Binding FilterWheelInfo.Connected, Converter={StaticResource InverseBooleanConverter}}"
                         ItemsSource="{Binding FilterWheelChooserVM.Devices}"
                         SelectedItem="{Binding FilterWheelChooserVM.SelectedDevice}"
                         SelectedValuePath="Name" />
@@ -93,14 +94,14 @@
                             CancelButtonImage="{StaticResource CancelSVG}"
                             CancelCommand="{Binding CancelChooseFWCommand}"
                             Command="{Binding ChooseFWCommand}"
-                            IsEnabled="{Binding FW.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                            IsEnabled="{Binding FilterWheelInfo.Connected, Converter={StaticResource InverseBooleanConverter}}"
                             ToolTip="{ns:Loc LblConnect}"
-                            Visibility="{Binding FW.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                            Visibility="{Binding FilterWheelInfo.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
                         <Grid Visibility="{Binding FW, Converter={StaticResource NullToVisibilityConverter}}">
                             <Button
                                 Command="{Binding DisconnectCommand}"
-                                IsEnabled="{Binding FW.Connected}"
-                                Visibility="{Binding FW.Connected, Converter={StaticResource VisibilityConverter}}">
+                                IsEnabled="{Binding FilterWheelInfo.Connected}"
+                                Visibility="{Binding FilterWheelInfo.Connected, Converter={StaticResource VisibilityConverter}}">
                                 <Button.ToolTip>
                                     <ToolTip ToolTipService.ShowOnDisabled="False">
                                         <TextBlock Text="{ns:Loc LblDisconnect}" />
@@ -170,22 +171,36 @@
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
+                <UniformGrid Margin="0,5,0,0" Columns="2">
+                    <ComboBox
+                        Name="PART_FilterComboBox"
+                        IsEnabled="{Binding FilterWheelInfo.IsMoving, Converter={StaticResource InverseBooleanConverter}}"
+                        ItemsSource="{Binding FW.Filters}"
+                        SelectedValue="{Binding TargetFilter}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Button Command="{Binding ChangeFilterCommand}">
+                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblChange}" />
+                    </Button>
+                </UniformGrid>
                 <ListView
+                    Name="PART_FilterListView"
                     MinHeight="200"
                     Margin="0,10,0,0"
-                    IsEnabled="{Binding IsMoving, Converter={StaticResource InverseBooleanConverter}}"
+                    IsEnabled="{Binding FilterWheelInfo.IsMoving, Converter={StaticResource InverseBooleanConverter}}"
+                    IsHitTestVisible="False"
                     ItemsSource="{Binding FW.Filters}"
-                    SelectedItem="{Binding SelectedFilter}">
+                    SelectedItem="{Binding FilterWheelInfo.SelectedFilter}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn
                                 Width="Auto"
                                 DisplayMemberBinding="{Binding Name}"
                                 Header="{ns:Loc LblFilterName}" />
-                            <GridViewColumn
-                                Width="Auto"
-                                DisplayMemberBinding="{Binding FocusOffset}"
-                                Header="{ns:Loc LblFocusOffset}" />
                         </GridView>
                     </ListView.View>
                 </ListView>

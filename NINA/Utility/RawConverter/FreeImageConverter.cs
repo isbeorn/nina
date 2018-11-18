@@ -12,7 +12,6 @@ using NINA.Model.MyCamera;
 
 namespace NINA.Utility.RawConverter {
 
-    // IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Connected, FallbackValue=False}"
     internal class FreeImageConverter : IRawConverter {
 
         public FreeImageConverter() {
@@ -47,7 +46,10 @@ namespace NINA.Utility.RawConverter {
                     ushort[] outArray = new ushort[cropped.PixelWidth * cropped.PixelHeight];
                     cropped.CopyPixels(outArray, 2 * cropped.PixelWidth, 0);
                     memStream.Dispose();
-                    return await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, true, true, histogramResolution);
+                    FreeImage.UnloadEx(ref img);
+                    var iarr = await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, true, true, histogramResolution);
+                    iarr.RAWData = s.ToArray();
+                    return iarr;
                 }
             });
         }

@@ -14,6 +14,7 @@
     <Grid>
         <oxy:Plot
             Background="{StaticResource BackgroundBrush}"
+            Grid.ZIndex="0"
             PlotAreaBackground="{StaticResource BackgroundBrush}"
             PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
             <oxy:Plot.Axes>
@@ -42,12 +43,23 @@
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:AreaSeries
-                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
                     Color2="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
                     DataFieldX="X"
                     DataFieldY="Y"
-                    ItemsSource="{Binding Histogram}" />
+                    ItemsSource="{Binding Histogram}"
+                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
             </oxy:Plot.Series>
         </oxy:Plot>
+        <Path
+            Width="50"
+            Height="50"
+            Margin="5"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Data="{StaticResource HistogramSVG}"
+            Fill="{StaticResource ButtonForegroundDisabledBrush}"
+            Grid.ZIndex="99"
+            Opacity="0.2"
+            Stretch="Uniform" />
     </Grid>
 </UserControl>

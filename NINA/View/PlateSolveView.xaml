@@ -6,142 +6,136 @@
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Locale"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
-    <Grid IsEnabled="{Binding Cam, Converter={StaticResource InverseNullToBooleanConverter}}">
 
-        <Grid IsEnabled="{Binding Cam.Connected}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="3*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="50" />
-            </Grid.RowDefinitions>
-
-            <Grid Grid.Column="1">
-                <local:ImageControlView DataContext="{Binding Source={StaticResource AppVM}, Path=ImagingVM.ImageControl}" />
-            </Grid>
-
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,1,0,1">
-                <UniformGrid Columns="1">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>Center RA:</TextBlock>
-                        <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.RA, StringFormat=\{0:#.000\}}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>Center RA hms:</TextBlock>
-                        <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.RAString}" />
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>Center Dec:</TextBlock>
-                        <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.Dec, StringFormat=\{0:#.000\}}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>Center Dec dms:</TextBlock>
-                        <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.DecString}" />
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>Radius:</TextBlock>
-                        <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Radius, StringFormat=\{0:#.000 deg\}}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>Pixel scale:</TextBlock>
-                        <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Pixscale, StringFormat=\{0:#.00 arcsec/pixel\}}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>Orientation:</TextBlock>
-                        <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Orientation, StringFormat=\{0:#.00\}}" />
-                    </StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Image
+            MaxWidth="300"
+            MaxHeight="300"
+            Source="{Binding Thumbnail}"
+            Stretch="Uniform" />
+        <ninactrl:LoadingControl
+            Width="40"
+            Height="40"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="{Binding PlateSolveResult, Converter={StaticResource InverseNullToVisibilityConverter}}" />
+        <StackPanel Grid.Row="1" Orientation="Vertical">
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblCenterRA}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.RA, StringFormat=\{0:#.000\}}" />
                 </UniformGrid>
             </Border>
-
-            <StackPanel
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                HorizontalAlignment="Right"
-                Orientation="Horizontal">
-
-                <local:CameraControlView
-                    MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes, Mode=TwoWay}"
-                    MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}"
-                    MyFilters="{Binding Source={StaticResource AppVM}, Path=OptionsVM.FilterWheelFilters}"
-                    MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
-                    MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}" />
-
-                <ninactrl:CancellableButton
-                    Width="50"
-                    Height="50"
-                    Margin="5,0,5,0"
-                    ButtonImage="{StaticResource PlatesolveSVG}"
-                    CancelButtonImage="{StaticResource CancelSVG}"
-                    CancelCommand="{Binding CancelSolveCommand}"
-                    Command="{Binding SolveCommand}"
-                    ToolTip="Capture image and platesolve" />
-
-                <Button
-                    Width="50"
-                    Height="50"
-                    Margin="5,0,5,0"
-                    Command="{Binding SyncCommand}">
-                    <Button.ToolTip>
-                        <ToolTip ToolTipService.ShowOnDisabled="True">
-                            Sync scope to coordinates
-                        </ToolTip>
-                    </Button.ToolTip>
-                    <Grid>
-                        <Path
-                            Margin="25,25,5,5"
-                            Data="{StaticResource LoopSVG}"
-                            Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
-                        <Path
-                            Margin="5"
-                            Data="{StaticResource TelescopeSVG}"
-                            Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
-                    </Grid>
-                </Button>
-
-                <Button
-                    Width="50"
-                    Height="50"
-                    Margin="5,0,5,0"
-                    Command="{Binding SyncAndReslewCommand}">
-                    <Button.ToolTip>
-                        <ToolTip ToolTipService.ShowOnDisabled="True">
-                            Sync scope to coordinates and reslew to initial target
-                        </ToolTip>
-                    </Button.ToolTip>
-                    <Grid>
-                        <Path
-                            Margin="5,30,30,5"
-                            Data="{StaticResource LoopSVG}"
-                            Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
-                        <Path
-                            Margin="15,30,15,5"
-                            Data="{StaticResource NextSVG}"
-                            Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
-                        <Path
-                            Margin="30,30,5,5"
-                            Data="{StaticResource SettingsSVG}"
-                            Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
-                        <Path
-                            Margin="5"
-                            Data="{StaticResource TelescopeSVG}"
-                            Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
-                    </Grid>
-                </Button>
-            </StackPanel>
-        </Grid>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblCenterRAhms}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.RAString}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblCenterDec}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.Dec, StringFormat=\{0:#.000\}}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblCenterDecdms}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.DecString}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblRadius}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Radius, StringFormat=\{0:#.000 deg\}}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblPixelScale}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Pixscale, StringFormat=\{0:#.00 arcsec/pixel\}}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblOrientation}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Orientation, StringFormat=\{0:#.00\}}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblEpoch}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.Epoch}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblRAError}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.RaErrorString}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblRAPixError}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.RaPixError, StringFormat=\{0:#.00\}}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblDecError}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.DecErrorString}" />
+                </UniformGrid>
+            </Border>
+            <Border
+                MinHeight="30"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblDecPixError}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.DecPixError, StringFormat=\{0:#.00\}}" />
+                </UniformGrid>
+            </Border>
+        </StackPanel>
     </Grid>
 </UserControl>
