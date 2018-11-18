@@ -55,7 +55,7 @@ namespace NINA.ViewModel {
                                 _cancelTokenSource.Cancel();
                             }
                         };
-                        ws.ShowDialog(this, Locale.Loc.Instance["LblUpdating"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
+                        ws.Show(this, Locale.Loc.Instance["LblUpdating"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
 
                         _setupLocation = await DownloadLatestVersion();
                         _setupLocation = Unzip(_setupLocation);
