@@ -68,7 +68,7 @@
                             <TextBlock Text="{ns:Loc LblCoolerPower}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding CameraInfo.CoolerPower, StringFormat=\{0:#.00\}%}"
+                                Text="{Binding CameraInfo.CoolerPower, StringFormat=\{0:0.00\}%}"
                                 Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>
@@ -80,7 +80,7 @@
                             <TextBlock Text="{ns:Loc LblChipTempShort}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding CameraInfo.Temperature, StringFormat=\{0:#.00\}}"
+                                Text="{Binding CameraInfo.Temperature, StringFormat=\{0:0.00\}}"
                                 Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>
@@ -94,7 +94,7 @@
                             <TextBlock
                                 MinWidth="20"
                                 Margin="5,0,0,0"
-                                Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:#.00\}}"
+                                Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:0.00\}}"
                                 Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>
@@ -109,7 +109,7 @@
                             <TextBlock
                                 MinWidth="20"
                                 Margin="5,0,0,0"
-                                Text="{Binding CameraInfo.Battery, StringFormat=\{0:#.00\}%}"
+                                Text="{Binding CameraInfo.Battery, StringFormat=\{0:0.00\}%}"
                                 Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                         </UniformGrid>
                     </Border>

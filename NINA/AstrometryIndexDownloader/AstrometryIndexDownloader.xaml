@@ -46,11 +46,11 @@
                 </UniformGrid>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Arcsecs per pixel: " />
-                    <TextBlock Text="{Binding ArcsecPerPixel, StringFormat=\{0:#.00\}}" />
+                    <TextBlock Text="{Binding ArcsecPerPixel, StringFormat=\{0:0.00\}}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Field of View: " />
-                    <TextBlock Text="{Binding FieldOfView, StringFormat=\{0:#.00\}}" />
+                    <TextBlock Text="{Binding FieldOfView, StringFormat=\{0:0.00\}}" />
                     <TextBlock Text=" arcmin" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">

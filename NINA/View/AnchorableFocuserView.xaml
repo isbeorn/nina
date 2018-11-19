@@ -85,7 +85,7 @@
                             <TextBlock Text="{ns:Loc LblTemperature}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding FocuserInfo.Temperature, StringFormat=\{0:#.00\}}"
+                                Text="{Binding FocuserInfo.Temperature, StringFormat=\{0:0.00\}}"
                                 TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
                     </Border>

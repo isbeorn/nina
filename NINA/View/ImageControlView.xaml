@@ -312,7 +312,7 @@
                                 <UniformGrid VerticalAlignment="Center" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDistance}" />
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Margin="5,0,0,0" Text="{Binding BahtinovImage.Distance, StringFormat=\{0:#.00\}}" />
+                                        <TextBlock Margin="5,0,0,0" Text="{Binding BahtinovImage.Distance, StringFormat=\{0:0.00\}}" />
                                         <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblPx}" />
                                     </StackPanel>
                                 </UniformGrid>
