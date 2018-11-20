@@ -25,7 +25,7 @@
                             Grid.Column="1"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
-                            Text="{Binding Value, StringFormat=\{0:#.00\}, UpdateSourceTrigger=LostFocus, RelativeSource={RelativeSource AncestorType={x:Type local:StepperControl}}}"
+                            Text="{Binding Value, StringFormat=\{0:0.00\}, UpdateSourceTrigger=LostFocus, RelativeSource={RelativeSource AncestorType={x:Type local:StepperControl}}}"
                             TextAlignment="Center" />
                         <Button
                             Name="PART_Increment"

@@ -88,7 +88,7 @@
                 BorderThickness="0,0,0,1">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblPosition}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.X, StringFormat=\{0:#.00\}}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.X, StringFormat=\{0:0.00\}}" />
                 </UniformGrid>
             </Border>
             <Border
@@ -97,7 +97,7 @@
                 BorderThickness="0,0,0,1">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblHFR}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.Y, StringFormat=\{0:#.00\}}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.Y, StringFormat=\{0:0.00\}}" />
                 </UniformGrid>
             </Border>
             <Border
@@ -106,7 +106,7 @@
                 BorderThickness="0,0,0,1">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblTemperature}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding Temperature, StringFormat=\{0:#.00\}}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Temperature, StringFormat=\{0:0.00\}}" />
                 </UniformGrid>
             </Border>
         </StackPanel>

@@ -62,7 +62,7 @@
                                         Width="70"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Text="{Binding Mean, StringFormat=\{0:#.00\}}" />
+                                        Text="{Binding Mean, StringFormat=\{0:0.00\}}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock
@@ -73,7 +73,7 @@
                                         Width="70"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Text="{Binding StDev, StringFormat=\{0:#.00\}}" />
+                                        Text="{Binding StDev, StringFormat=\{0:0.00\}}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock
@@ -131,7 +131,7 @@
                                         Width="70"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
+                                        Text="{Binding HFR, StringFormat=\{0:0.00\}}" />
                                 </StackPanel>
                             </StackPanel>
                         </Border>

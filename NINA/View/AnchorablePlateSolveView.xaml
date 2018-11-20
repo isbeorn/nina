@@ -32,7 +32,7 @@
                         BorderThickness="0,0,0,1">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblCenterRA}" />
-                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.RA, StringFormat=\{0:#.000\}}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.RA, StringFormat=\{0:0.000\}}" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -50,7 +50,7 @@
                         BorderThickness="0,0,0,1">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblCenterDec}" />
-                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.Dec, StringFormat=\{0:#.000\}}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.Dec, StringFormat=\{0:0.000\}}" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -68,7 +68,7 @@
                         BorderThickness="0,0,0,1">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblRadius}" />
-                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Radius, StringFormat=\{0:#.000 deg\}}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Radius, StringFormat=\{0:0.000 deg\}}" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -77,7 +77,7 @@
                         BorderThickness="0,0,0,1">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblPixelScale}" />
-                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Pixscale, StringFormat=\{0:#.00 arcsec/pixel\}}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Pixscale, StringFormat=\{0:0.00 arcsec/pixel\}}" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -86,7 +86,7 @@
                         BorderThickness="0,0,0,1">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblOrientation}" />
-                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Orientation, StringFormat=\{0:#.00\}}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Orientation, StringFormat=\{0:0.00\}}" />
                         </UniformGrid>
                     </Border>
                     <Border
@@ -243,17 +243,17 @@
                                 IsReadOnly="True" />
                             <DataGridTextColumn
                                 Width="*"
-                                Binding="{Binding RaPixError, StringFormat=\{0:#.00\}}"
+                                Binding="{Binding RaPixError, StringFormat=\{0:0.00\}}"
                                 Header="{ns:Loc LblRAPixError}"
                                 IsReadOnly="True" />
                             <DataGridTextColumn
                                 Width="*"
-                                Binding="{Binding DecPixError, StringFormat=\{0:#.00\}}"
+                                Binding="{Binding DecPixError, StringFormat=\{0:0.00\}}"
                                 Header="{ns:Loc LblDecPixError}"
                                 IsReadOnly="True" />
                             <DataGridTextColumn
                                 Width="*"
-                                Binding="{Binding Orientation, StringFormat=\{0:#.00\}}"
+                                Binding="{Binding Orientation, StringFormat=\{0:0.00\}}"
                                 Header="{ns:Loc LblOrientation}"
                                 IsReadOnly="True" />
                         </DataGrid.Columns>
