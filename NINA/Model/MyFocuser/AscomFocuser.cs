@@ -257,8 +257,11 @@ namespace NINA.Model.MyFocuser {
                         RaiseAllPropertiesChanged();
                     }
                 } catch (ASCOM.DriverAccessCOMException ex) {
-                    Notification.ShowError(ex.Message);
+                    Utility.Utility.HandleAscomCOMException(ex);
+                } catch (System.Runtime.InteropServices.COMException ex) {
+                    Utility.Utility.HandleAscomCOMException(ex);
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError("Unable to connect to focuser " + ex.Message);
                 }
                 return Connected;

@@ -93,7 +93,7 @@ namespace NINA.Utility {
                 Exception ex,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            Error(ex.Message, ex.StackTrace, memberName, sourceFilePath);
+            Error(ex.Message.Replace("{", "{{").Replace("}", "}}"), ex.StackTrace, memberName, sourceFilePath);
         }
 
         public static void Info(string message,
