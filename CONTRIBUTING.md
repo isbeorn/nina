@@ -11,9 +11,10 @@ When contributing code or documentation to this repository, please first discuss
 2. Add your changes
 3. Check that unit tests are passing
 4. Make sure no unnecessary files are accidentally checked in.
-5. Push the change to your forked repository using a good commit message
-6. Submit a pull request
-7. During the pull requests there will be discussions and constructive feedback.
+5. Add a short description about your changes to the correct section inside "RELEASE_NOTES.md"
+6. Push the change to your forked repository using a good commit message
+7. Submit a pull request
+8. During the pull requests there will be discussions and constructive feedback.
    Required changes that might be requested during this phase have to be implemented.
    Once this is done, the pull request can be merged.
 
