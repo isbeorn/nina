@@ -117,6 +117,12 @@ namespace NINA.ViewModel {
             }
         }
 
+        public string Title {
+            get {
+                return Utility.Utility.Title;
+            }
+        }
+
         private int _tabIndex;
 
         public int TabIndex {

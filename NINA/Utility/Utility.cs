@@ -26,6 +26,14 @@ namespace NINA.Utility {
             }
         }
 
+        public static string Title {
+            get {
+                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                System.Reflection.AssemblyTitleAttribute[] o = (System.Reflection.AssemblyTitleAttribute[])assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyTitleAttribute), false);
+                return o[0].Title;
+            }
+        }
+
         private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
             new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
 

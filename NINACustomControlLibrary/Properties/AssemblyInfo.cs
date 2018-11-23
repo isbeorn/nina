@@ -4,12 +4,12 @@ using System.Windows;
 
 // General Information about an assembly is controlled through the following set of attributes.
 // Change these attribute values to modify the information associated with an assembly.
-[assembly: AssemblyTitle("NINACustomControlLibrary")]
+[assembly: AssemblyTitle("N.I.N.A. Custom Control Library")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NINACustomControlLibrary")]
-[assembly: AssemblyCopyright("Copyright ©  2017 - 2018 Stefan Berg and the NINA contributors")]
+[assembly: AssemblyProduct("N.I.N.A. - Nighttime Imaging 'N' Astronomy")]
+[assembly: AssemblyCopyright("Copyright ©  2017 - 2018 Stefan Berg and the N.I.N.A. contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
