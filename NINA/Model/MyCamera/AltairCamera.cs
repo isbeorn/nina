@@ -298,9 +298,18 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private AsyncObservableCollection<BinningMode> binningModes;
+
         public AsyncObservableCollection<BinningMode> BinningModes {
             get {
-                return new AsyncObservableCollection<BinningMode>();
+                if (binningModes == null) {
+                    binningModes = new AsyncObservableCollection<BinningMode>();
+                }
+                return binningModes;
+            }
+            private set {
+                binningModes = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -375,34 +384,11 @@ namespace NINA.Model.MyCamera {
         }
 
         private void ReadOutBinning() {
-            camera.get_Option(AltairCam.eOPTION.OPTION_BINNING, out var binning);
-
-            switch (binning) {
-                case 0x02:
-                case 0x82:
-                    MaxBinX = 2;
-                    MaxBinY = 2;
-                    break;
-
-                case 0x03:
-                case 0x83:
-                    MaxBinX = 3;
-                    MaxBinY = 3;
-                    break;
-
-                case 0x04:
-                case 0x84:
-                    MaxBinX = 4;
-                    MaxBinY = 4;
-                    break;
-
-                default:
-                    MaxBinX = 1;
-                    MaxBinY = 1;
-                    break;
-            }
+            /* Found no way to readout available binning modes. Assume 4x4 for all cams for now */
             BinningModes.Clear();
-            for (short i = 0; i < MaxBinX; i++) {
+            MaxBinX = 4;
+            MaxBinY = 4;
+            for (short i = 1; i <= MaxBinX; i++) {
                 BinningModes.Add(new BinningMode(i, i));
             }
             BinX = 1;
