@@ -1253,7 +1253,6 @@
     </Content>
     <Content Include="Documentation\NINA.html">
       <DependentUpon>NINA.md</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Documentation\table-of-contents.html">
       <DependentUpon>table-of-contents.md</DependentUpon>
