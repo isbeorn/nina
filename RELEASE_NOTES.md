@@ -2,10 +2,12 @@
 
 ## Features
 
-    ###Sequence
+    ### Sequence
         - Enable/Disable sequence entries
-    ###Plate Solving
+    ### Plate Solving
         - Added interface for All Sky Platesolver
+    ### Camera Control
+        - Altair native driver support
 
 
 ## Bugfixes
@@ -25,23 +27,23 @@ ___
 
 ## Features
 
-    ###Framing Assistant
+    ### Framing Assistant
         - Mosaic planning for framing assistant
         - Added multiple new SkySurveys to choose from for framing
         - DSLR RAW files can now be loaded into framing assistant
-    ###Sequences
+    ### Sequences
         - Sequence multiple target planning. Import/Export also available 
         - Consider Rotation for framing assistant when set for a sequence during platesolves
-    ###Filter Wheel
+    ### Filter Wheel
         - Added a manual FilterWheel for users without a motorized wheel or with a filter drawer. There will pop up a window and prompt the user when a filter change is requested    
-    ###Rotators
+    ### Rotators
         - Support for ASCOM Rotators added
         - A manual rotator option is added, for users without an automatic rotator. A pop up will show with the current angle and target angle for a user to manually rotate to
-    ###Imaging
+    ### Imaging
         - DSLR Users: Images will now always be saved as RAW to prevent any loss of data due to conversions
         - Aberration inspector added to imaging tab. It will show a 3x3 Panel containing the current image
         - Battery display for DSLRs
-    ###Settings
+    ### Settings
         - Added ImageParameter $$RMSARCSEC$$ and $$FOCUSPOSITION$$
         - Latitude and Longitude can now be synced from application to telescope and vica versa (when supported).
         - Serial Relay (via USB) interaction for Nikon Bulb
