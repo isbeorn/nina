@@ -660,7 +660,7 @@
                                 VerticalAlignment="Center"
                                 Columns="2">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRotation}" />
-                                <TextBox Margin="5,0,0,0" Text="{Binding DSO.Rotation}" />
+                                <TextBox Margin="5,0,0,0" Text="{Binding Rotation}" />
                             </UniformGrid>
                         </UniformGrid>
                     </Border>
@@ -706,7 +706,7 @@
                     Header="{ns:Loc LblEnabled}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></CheckBox>
+                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

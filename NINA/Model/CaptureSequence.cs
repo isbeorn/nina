@@ -118,6 +118,7 @@ namespace NINA.Model {
         public void SetSequenceTarget(DeepSkyObject dso) {
             TargetName = dso.Name;
             Coordinates = dso.Coordinates;
+            Rotation = dso.Rotation;
             this.DSO = dso;
         }
 
@@ -320,6 +321,19 @@ namespace NINA.Model {
             }
         }
 
+        private double rotation;
+
+        [XmlAttribute(nameof(Rotation))]
+        public double Rotation {
+            get {
+                return rotation;
+            }
+            set {
+                rotation = value;
+                RaiseCoordinatesChanged();
+            }
+        }
+
         private void RaiseCoordinatesChanged() {
             RaisePropertyChanged(nameof(Coordinates));
             RaisePropertyChanged(nameof(RAHours));
@@ -331,6 +345,7 @@ namespace NINA.Model {
             AltitudeVisible = true;
             DSO.Name = this.TargetName;
             DSO.Coordinates = Coordinates;
+            DSO.Rotation = Rotation;
         }
 
         private DeepSkyObject _dso;

@@ -13,6 +13,8 @@
 ## Bugfixes
 
     - Corrected Max Binning level for ASI Cameras
+    - Focuser move command fixed where lots of move commands where sent by accident
+    - Rotation value now considered for sequence import|export
 
 ## Improvements
 
