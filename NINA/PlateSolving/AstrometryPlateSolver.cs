@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using NINA.Model;
+using NINA.Utility.Http;
 using System;
 using System.Collections.Specialized;
 using System.IO;
@@ -28,9 +29,10 @@ namespace NINA.PlateSolving {
         private async Task<JObject> Authenticate(CancellationToken canceltoken) {
             string response = string.Empty;
             string json = "{\"apikey\":\"" + _apikey + "\"}";
-            json = Utility.Utility.EncodeUrl(json);
+            json = HttpRequest.EncodeUrl(json);
             string body = "request-json=" + json;
-            response = await Utility.Utility.HttpPostRequest(_domain + AUTHURL, body, canceltoken);
+            var request = new HttpPostRequest(_domain + AUTHURL, body, "application/x-www-form-urlencoded");
+            response = await request.Request(canceltoken);
 
             JObject o = JObject.Parse(response);
 
@@ -40,35 +42,40 @@ namespace NINA.PlateSolving {
         private async Task<JObject> SubmitImage(MemoryStream ms, string session, CancellationToken canceltoken) {
             NameValueCollection nvc = new NameValueCollection();
             nvc.Add("request-json", "{\"publicly_visible\": \"n\", \"allow_modifications\": \"d\", \"session\": \"" + session + "\", \"allow_commercial_use\": \"d\"}");
-            string response = await Utility.Utility.HttpUploadFile(_domain + UPLOADURL, ms, "file", "image/jpeg", nvc, canceltoken);
+            var request = new HttpUploadFile(_domain + UPLOADURL, ms, "file", "image/jpeg", nvc);
+            string response = await request.Request(canceltoken);
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
         private async Task<JObject> GetSubmissionStatus(string subid, CancellationToken canceltoken) {
-            string response = await Utility.Utility.HttpGetRequest(canceltoken, _domain + SUBMISSIONURL, subid);
+            var request = new HttpGetRequest(_domain + SUBMISSIONURL, subid);
+            string response = await request.Request(canceltoken);
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
         private async Task<JObject> GetJobStatus(string jobid, CancellationToken canceltoken) {
-            string response = await Utility.Utility.HttpGetRequest(canceltoken, _domain + JOBSTATUSURL, jobid);
+            var request = new HttpGetRequest(_domain + JOBSTATUSURL, jobid);
+            string response = await request.Request(canceltoken);
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
         private async Task<JObject> GetJobInfo(string jobid, CancellationToken canceltoken) {
-            string response = await Utility.Utility.HttpGetRequest(canceltoken, _domain + JOBINFOURL, jobid);
+            var request = new HttpGetRequest(_domain + JOBINFOURL, jobid);
+            string response = await request.Request(canceltoken);
             JObject o = JObject.Parse(response);
 
             return o;
         }
 
-        private async Task<BitmapImage> GetJobImage(string jobid, CancellationToken canceltoken) {
-            return await Utility.Utility.HttpGetImage(canceltoken, _domain + ANNOTATEDIMAGEURL, jobid);
+        private Task<BitmapSource> GetJobImage(string jobid, CancellationToken canceltoken) {
+            var request = new HttpDownloadImageRequest(_domain + ANNOTATEDIMAGEURL, jobid);
+            return request.Request(canceltoken);
         }
 
         public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
