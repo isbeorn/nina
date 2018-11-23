@@ -66,6 +66,13 @@ namespace NINA.Utility {
             return result;
         }
 
+        public static void HandleAscomCOMException(Exception ex) {
+            Logger.Error(ex);
+            var architecture = DllLoader.IsX86() ? "x86" : "x64";
+            var invertedArchitecture = DllLoader.IsX86() ? "x64" : "x86";
+            Notification.Notification.ShowError(string.Format(Locale.Loc.Instance["LblAscomInterOpDriverException"], invertedArchitecture, architecture));
+        }
+
         public static string EncodeUrl(string s) {
             return HttpUtility.UrlEncode(s);
         }

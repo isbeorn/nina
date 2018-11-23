@@ -305,6 +305,11 @@ namespace NINA.ViewModel {
                         if (CameraInfo.Connected) { Disconnect(); }
                         CameraInfo.Connected = false;
                         return false;
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        if (CameraInfo.Connected) { Disconnect(); }
+                        CameraInfo.Connected = false;
+                        return false;
                     }
                 } else {
                     return false;
