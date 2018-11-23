@@ -104,13 +104,15 @@ namespace NINA.Model.MyCamera {
 
         public double ExposureMin {
             get {
-                return 0;
+                camera.get_ExpTimeRange(out var min, out var max, out var def);
+                return min / 1000000.0;
             }
         }
 
         public double ExposureMax {
             get {
-                return double.PositiveInfinity;
+                camera.get_ExpTimeRange(out var min, out var max, out var def);
+                return max / 1000000.0;
             }
         }
 
@@ -507,11 +509,29 @@ namespace NINA.Model.MyCamera {
         public void SetupDialog() {
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
-            downloadExposure = new TaskCompletionSource<object>();
-            if (!camera.put_ExpoTime((uint)(exposureTime * 1000000))) {
+        /// <summary>
+        /// Sets the exposure time. When given exposure time is out of bounds it will set it to nearest bound.
+        /// </summary>
+        /// <param name="time">Time in seconds</param>
+        private void SetExposureTime(double time) {
+            if (time < ExposureMin) {
+                time = ExposureMin;
+            }
+            if (time > ExposureMax) {
+                time = ExposureMax;
+            }
+
+            var µsTime = (uint)(time * 1000000);
+            if (!camera.put_ExpoTime(µsTime)) {
                 throw new Exception("AltairCamera - Could not set exposure time");
             }
+        }
+
+        public void StartExposure(double exposureTime, bool isLightFrame) {
+            downloadExposure = new TaskCompletionSource<object>();
+
+            SetExposureTime(exposureTime);
+
             if (!camera.Trigger(1)) {
                 throw new Exception("AltairCamera - Failed to trigger camera");
             }
