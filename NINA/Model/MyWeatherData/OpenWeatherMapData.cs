@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using NINA.Utility;
+using NINA.Utility.Http;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
@@ -53,7 +54,9 @@ namespace NINA.Model.MyWeatherData {
             }
 
             var url = profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl + "?appid={0}&lat={1}&lon={2}";
-            string result = await Utility.Utility.HttpGetRequest(new CancellationToken(), url, apikey, latitude, longitude);
+
+            var request = new HttpGetRequest(url, apikey, latitude, longitude);
+            string result = await request.Request(new CancellationToken());
 
             JObject o = JObject.Parse(result);
             var openweatherdata = o.ToObject<OpenWeatherDataResponse>();

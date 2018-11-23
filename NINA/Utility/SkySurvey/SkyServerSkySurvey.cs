@@ -19,15 +19,15 @@ namespace NINA.Utility.SkySurvey {
                 arcSecPerPixel = targetFoVInArcSec / 2048;
             }
 
-            var url = string.Format(
+            var request = new Http.HttpDownloadImageRequest(
                 Url,
                 coordinates.RADegrees,
                 coordinates.Dec,
                 pixels,
                 pixels,
-                arcSecPerPixel
-            );
-            var image = await Utility.HttpClientGetImage(new Uri(url), ct, progress);
+                arcSecPerPixel);
+            var image = await request.Request(ct, progress);
+
             image.Freeze();
             return new SkySurveyImage() {
                 Name = name,
