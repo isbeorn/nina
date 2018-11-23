@@ -226,9 +226,26 @@ namespace NINA.Model.MyCamera {
 
         public int Offset {
             get {
-                return -1;
+                camera.get_Option(AltairCam.eOPTION.OPTION_BLACKLEVEL, out var level);
+                return level;
             }
             set {
+                if (!camera.put_Option(AltairCam.eOPTION.OPTION_BLACKLEVEL, value)) {
+                } else {
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int OffsetMin {
+            get {
+                return 0;
+            }
+        }
+
+        public int OffsetMax {
+            get {
+                return 31 * (1 << (int)bitDepth - 8);
             }
         }
 
@@ -240,9 +257,15 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private bool canSetOffset;
+
         public bool CanSetOffset {
             get {
-                return false;
+                return canSetOffset;
+            }
+            set {
+                canSetOffset = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -431,6 +454,10 @@ namespace NINA.Model.MyCamera {
                     if ((this.flags & AltairCam.eFLAG.FLAG_GETTEMPERATURE) != 0) {
                         /* Can get Target Temp */
                         CanGetTemperature = true;
+                    }
+
+                    if ((this.flags & AltairCam.eFLAG.FLAG_BLACKLEVEL) != 0) {
+                        CanSetOffset = true;
                     }
 
                     if ((this.flags & AltairCam.eFLAG.FLAG_TRIGGER_SOFTWARE) == 0) {
