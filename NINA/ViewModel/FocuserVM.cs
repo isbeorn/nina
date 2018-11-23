@@ -59,7 +59,7 @@ namespace NINA.ViewModel {
         public async Task<int> MoveFocuser(int position) {
             _cancelMove = new CancellationTokenSource();
             int pos = -1;
-            await Task.Run(() => {
+            await Task.Run(async () => {
                 try {
                     var tempComp = false;
                     if (Focuser.TempCompAvailable && Focuser.TempComp) {
@@ -69,7 +69,7 @@ namespace NINA.ViewModel {
                     while (Focuser.Position != position) {
                         FocuserInfo.IsMoving = true;
                         _cancelMove.Token.ThrowIfCancellationRequested();
-                        Focuser.Move(position);
+                        await Focuser.Move(position, _cancelMove.Token);
                     }
                     FocuserInfo.Position = position;
                     pos = position;

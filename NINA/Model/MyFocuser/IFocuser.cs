@@ -1,4 +1,7 @@
-﻿namespace NINA.Model.MyFocuser {
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace NINA.Model.MyFocuser {
 
     internal interface IFocuser : IDevice {
         bool IsMoving { get; }
@@ -10,7 +13,7 @@
         bool TempComp { get; set; }
         double Temperature { get; }
 
-        void Move(int position);
+        Task Move(int position, CancellationToken ct);
 
         void Halt();
     }

@@ -177,9 +177,14 @@ namespace NINA.Model.MyFocuser {
             }
         }
 
-        public void Move(int position) {
+        public async Task Move(int position, CancellationToken ct) {
             if (Connected && !TempComp) {
-                _focuser.Move(position);
+                while (position != _focuser.Position) {
+                    _focuser.Move(position);
+                    while (IsMoving) {
+                        await Utility.Utility.Wait(TimeSpan.FromSeconds(1), ct);
+                    }
+                }
             }
         }
 
