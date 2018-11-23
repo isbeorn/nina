@@ -89,6 +89,8 @@
       <ComponentGroupRef Id="External_x64_Canon_files" />
       <ComponentGroupRef Id="External_x86_SQLite_files" />
       <ComponentGroupRef Id="External_x64_SQLite_files" />
+      <ComponentGroupRef Id="External_x86_Altair_files" />
+      <ComponentGroupRef Id="External_x64_Altair_files" />
     </Feature>
   </Product>
 
@@ -130,6 +132,7 @@
                 <Directory Id="External_x64_Nikon_Type0003" Name="Type0003" />
               </Directory>
               <Directory Id="External_x64_SQLite" Name="SQLite" />
+              <Directory Id="External_x64_Altair" Name="Altair" />
             </Directory>
             <Directory Id="External_x86" Name="x86">
               <Directory Id="External_x86_Nikon" Name="Nikon">
@@ -161,6 +164,7 @@
               <Directory Id="External_x86_Atik" Name="Atik" />
               <Directory Id="External_x86_ASI" Name="ASI" />
               <Directory Id="External_x86_SQLite" Name="SQLite" />
+              <Directory Id="External_x86_Altair" Name="Altair" />
             </Directory>
           </Directory>
           <Directory Id="Utility" Name="Utility">
@@ -1128,6 +1132,29 @@
     <ComponentGroup Id="External_x64_SQLite_files" Directory="External_x64_SQLite">
       <Component Win64="yes" Id="External_x64_SQLite_SQLite.Interop.dll" Guid="59cdc259-d28f-40e9-b277-4a512e4ad3d1">
         <File Id="External_x64_SQLite_SQLite.Interop.dll" Name="SQLite.Interop.dll" Source="$(var.NINA_TargetDir)External\x64\SQLite\SQLite.Interop.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x86_Altair_files" Directory="External_x86_Altair">
+      <Component Win64="yes" Id="External_x86_Altair_altaircam.lib" Guid="72043754-f8c6-46ef-a277-d79b5723cb1d">
+        <File Id="External_x86_Altair_altaircam.lib" Name="altaircam.lib" Source="$(var.NINA_TargetDir)External\x86\Altair\altaircam.lib" />
+      </Component>
+      <Component Win64="yes" Id="External_x86_Altair_updatefw.exe" Guid="e405a95d-f619-410a-b245-3c6f4e00b4de">
+        <File Id="External_x86_Altair_updatefw.exe" Name="updatefw.exe" Source="$(var.NINA_TargetDir)External\x86\Altair\updatefw.exe" />
+      </Component>
+      <Component Win64="yes" Id="External_x86_Altair_altaircam.dll" Guid="5fc243e4-9305-47ca-9033-3c35857b79e6">
+        <File Id="External_x86_Altair_altaircam.dll" Name="altaircam.dll" Source="$(var.NINA_TargetDir)External\x86\Altair\altaircam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_Altair_files" Directory="External_x64_Altair">
+      <Component Win64="yes" Id="External_x64_Altair_altaircam.lib" Guid="3f5d8bdb-e5f7-47fd-a3dc-23b479245e0b">
+        <File Id="External_x64_Altair_altaircam.lib" Name="altaircam.lib" Source="$(var.NINA_TargetDir)External\x64\Altair\altaircam.lib" />
+      </Component>
+      <Component Win64="yes" Id="External_x64_Altair_altaircam.dll" Guid="54f75954-da94-4c89-86e8-4a8d4e9229c7">
+        <File Id="External_x64_Altair_altaircam.dll" Name="altaircam.dll" Source="$(var.NINA_TargetDir)External\x64\Altair\altaircam.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
