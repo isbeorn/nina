@@ -9,7 +9,7 @@
     xmlns:util="clr-namespace:NINA.Utility"
     xmlns:view="clr-namespace:NINA.View"
     Name="ThisWindow"
-    Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy"
+    Title="{Binding Title}"
     Background="{StaticResource BackgroundBrush}"
     DataContext="{StaticResource AppVM}"
     Icon="/NINA;component/Resources/observatory.png"

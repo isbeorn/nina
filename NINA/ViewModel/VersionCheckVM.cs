@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using NINA.Utility;
+using NINA.Utility.Http;
 using NINA.Utility.WindowService;
 using System;
 using System.Collections.Generic;
@@ -111,7 +112,8 @@ namespace NINA.ViewModel {
             var url = await GetDownloadUrl(_latestVersion.ToString());
             var destination = Path.GetTempPath() + "NINASetup.zip";
             Progress<int> downloadProgress = new Progress<int>((p) => { Progress = p; });
-            await Utility.Utility.HttpDownloadFile(new Uri(url), destination, _cancelTokenSource.Token, downloadProgress);
+            var request = new HttpDownloadFileRequest(url, destination);
+            await request.Request(_cancelTokenSource.Token, downloadProgress);
             return destination;
         }
 
@@ -165,7 +167,8 @@ namespace NINA.ViewModel {
         }
 
         private async Task<BitBucketBase<T>> GetBitBucketRecursive<T>(string url) {
-            var stringversions = await Utility.Utility.HttpGetRequest(_cancelTokenSource.Token, url, null);
+            var request = new HttpGetRequest(url);
+            string stringversions = await request.Request(_cancelTokenSource.Token);
             JObject o = JObject.Parse(stringversions);
             BitBucketBase<T> versions = o.ToObject<BitBucketBase<T>>();
 

@@ -85,7 +85,7 @@
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
                                     FontSize="12"
-                                    Text="{Binding HFR, StringFormat=\{0:#.00\}}" />
+                                    Text="{Binding HFR, StringFormat=\{0:0.00\}}" />
                                 <TextBlock
                                     Grid.Row="2"
                                     Grid.Column="0"
@@ -109,7 +109,7 @@
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
                                     FontSize="12"
-                                    Text="{Binding Duration, StringFormat='{}{0:#.00}s'}" />
+                                    Text="{Binding Duration, StringFormat='{}{0:0.00}s'}" />
                                 <TextBlock
                                     Grid.Row="5"
                                     Grid.Column="0"

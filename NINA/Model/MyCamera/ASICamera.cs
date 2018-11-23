@@ -222,13 +222,15 @@ namespace NINA.Model.MyCamera {
 
         public short MaxBinX {
             get {
-                return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
+                int[] binlist = Info.SupportedBins;
+                return (short)binlist.Max();
             }
         }
 
         public short MaxBinY {
             get {
-                return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
+                int[] binlist = Info.SupportedBins;
+                return (short)binlist.Max();
             }
         }
 

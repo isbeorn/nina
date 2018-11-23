@@ -307,7 +307,7 @@
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblCameraBattery}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding CameraInfo.Battery, StringFormat=\{0:#.00\}%}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding CameraInfo.Battery, StringFormat=\{0:0.00\}%}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -429,7 +429,7 @@
                                         <TextBlock Text="{ns:Loc LblCoolerPower}" />
                                         <TextBlock
                                             Margin="5,0,0,0"
-                                            Text="{Binding CameraInfo.CoolerPower, StringFormat=\{0:#.00\}%}"
+                                            Text="{Binding CameraInfo.CoolerPower, StringFormat=\{0:0.00\}%}"
                                             Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </UniformGrid>
                                 </UniformGrid>
@@ -443,7 +443,7 @@
                                         <TextBlock Text="{ns:Loc LblChipTemp}" />
                                         <TextBlock
                                             Margin="5,0,0,0"
-                                            Text="{Binding CameraInfo.Temperature, StringFormat=\{0:#.00\}}"
+                                            Text="{Binding CameraInfo.Temperature, StringFormat=\{0:0.00\}}"
                                             Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </UniformGrid>
                                 </UniformGrid>
@@ -461,7 +461,7 @@
                                         <TextBlock
                                             MinWidth="20"
                                             Margin="5,0,0,0"
-                                            Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:#.00\}}"
+                                            Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:0.00\}}"
                                             Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                                     </UniformGrid>
                                 </UniformGrid>
@@ -499,7 +499,7 @@
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
                                         DockPanel.Dock="Right"
-                                        Text="{Binding TargetTemp, StringFormat=\{0:#.0\}}" />
+                                        Text="{Binding TargetTemp, StringFormat=\{0:0.0\}}" />
                                 </Grid>
 
                                 <Grid Grid.Row="1">
@@ -521,7 +521,7 @@
                                     <TextBlock
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
-                                        Text="{Binding Duration, StringFormat=\{0:#.0\}}" />
+                                        Text="{Binding Duration, StringFormat=\{0:0.0\}}" />
                                 </Grid>
 
                                 <Grid Grid.Row="2">

@@ -358,6 +358,12 @@
     <Compile Include="Utility\DatabaseInteraction.cs" />
     <Compile Include="Utility\DeviceUpdateTimer.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
+    <Compile Include="Utility\Http\HttpDownloadFileRequest.cs" />
+    <Compile Include="Utility\Http\HttpDownloadImageRequest.cs" />
+    <Compile Include="Utility\Http\HttpGetRequest.cs" />
+    <Compile Include="Utility\Http\HttpPostRequest.cs" />
+    <Compile Include="Utility\Http\HttpRequest.cs" />
+    <Compile Include="Utility\Http\HttpUploadFile.cs" />
     <Compile Include="Utility\Mediator\ApplicationStatusMediator.cs" />
     <Compile Include="Utility\Mediator\CameraMediator.cs" />
     <Compile Include="Utility\Mediator\DeviceMediator.cs" />
@@ -1249,7 +1255,6 @@
     </Content>
     <Content Include="Documentation\NINA.html">
       <DependentUpon>NINA.md</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Documentation\table-of-contents.html">
       <DependentUpon>table-of-contents.md</DependentUpon>
