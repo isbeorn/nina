@@ -286,6 +286,7 @@
     <Compile Include="Model\GuideStepsHistory.cs" />
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\ImagePattern.cs" />
+    <Compile Include="Model\MyCamera\AltairCamera.cs" />
     <Compile Include="Model\MyCamera\AtikCamera.cs" />
     <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
@@ -316,6 +317,7 @@
     <Compile Include="PlateSolving\AllSkyPlateSolver.cs" />
     <Compile Include="PlateSolving\Platesolve2Solver.cs" />
     <Compile Include="PlateSolving\PlateSolverFactory.cs" />
+    <Compile Include="Utility\AltairSDK\altaircam.cs" />
     <Compile Include="Utility\ASISDK\ASICameraDll.cs" />
     <Compile Include="Model\MyFilterWheel\AscomFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\IFilterWheel.cs" />
@@ -1257,6 +1259,9 @@
     <Content Include="Documentation\table-of-contents.html">
       <DependentUpon>table-of-contents.md</DependentUpon>
     </Content>
+    <Content Include="External\x64\Altair\altaircam.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\ASI\ASICamera2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1340,6 +1345,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\SQLite\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Altair\altaircam.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Altair\updatefw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\ASI\ASICamera2.dll">
@@ -1510,6 +1521,12 @@
     </Content>
     <None Include="Documentation\NINA.md" />
     <None Include="Documentation\table-of-contents.md" />
+    <Content Include="External\x64\Altair\altaircam.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Altair\altaircam.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="External\x86\ASI\ASICamera2.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
