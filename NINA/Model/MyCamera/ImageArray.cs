@@ -46,7 +46,8 @@ namespace NINA.Model.MyCamera {
             if (calculateStatistics) {
                 int width = input.GetLength(0);
                 int height = input.GetLength(1);
-                await imgArray.Statistics.Calculate(imgArray.FlatArray, width, height);
+                //todo
+                await imgArray.Statistics.Calculate(imgArray.FlatArray, width, height, isBayered, 16);
             }
 
             return imgArray;
@@ -58,17 +59,18 @@ namespace NINA.Model.MyCamera {
         /// <param name="input">Image Array in a flat array representation</param>
         /// <param name="width">Image data width (to be able to translate the 1d array back to 2d)</param>
         /// <param name="height">Image data width (to be able to translate the 1d array back to 2d)</param>
+        /// <param name="bitDepth">bit depth of each pixel</param>
         /// <param name="isBayered">Flag to indicate if the image is bayer matrix encoded</param>
         /// <param name="calculateStatistics">If false no statistics will be determined (fast mode)</param>
         /// <param name="histogramResolution">Resolution of the histogram</param>
         /// <returns></returns>
-        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, bool isBayered, bool calculateStatistics, int histogramResolution) {
+        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, int bitDepth, bool isBayered, bool calculateStatistics, int histogramResolution) {
             ImageArray imgArray = new ImageArray();
             imgArray.IsBayered = isBayered;
             imgArray.FlatArray = input;
             imgArray.Statistics = new ImageStatistics(histogramResolution);
             if (calculateStatistics) {
-                await imgArray.Statistics.Calculate(imgArray.FlatArray, width, height);
+                await imgArray.Statistics.Calculate(imgArray.FlatArray, width, height, isBayered, bitDepth);
             }
 
             return imgArray;

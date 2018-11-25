@@ -16,6 +16,7 @@ namespace NINA.Model.MyCamera {
         public int Id { get; set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
+        public int BitDepth { get; private set; }
         public double StDev { get; private set; }
         public double Mean { get; private set; }
         public int Max { get; private set; }
@@ -59,13 +60,17 @@ namespace NINA.Model.MyCamera {
         /// <param name="array">one dimensional image array</param>
         /// <param name="width">width of one row</param>
         /// <param name="height">height of one column</param>
+        /// <param name="isBayered">Flag to indicate if the image is bayer matrix encoded</param>
+        /// <param name="bitDepth">bit depth of each pixel</param>
         /// <returns></returns>
-        public Task Calculate(ushort[] array, int width, int height) {
-            return Task.Run(() => CalculateInternal(array, width, height));
+        public Task Calculate(ushort[] array, int width, int height, bool isBayered, int bitDepth) {
+            return Task.Run(() => CalculateInternal(array, width, height, isBayered, bitDepth));
         }
 
-        private void CalculateInternal(ushort[] array, int width, int height) {
+        private void CalculateInternal(ushort[] array, int width, int height, bool isBayered, int bitDepth) {
             using (MyStopWatch.Measure()) {
+                this.BitDepth = bitDepth;
+
                 long sum = 0;
                 long squareSum = 0;
                 int count = array.Count();
@@ -77,10 +82,11 @@ namespace NINA.Model.MyCamera {
                 long minOccurrences = 0;
 
                 Dictionary<double, int> histogram = new Dictionary<double, int>();
+                ushort maxHistogramValue = (ushort)((1 << bitDepth) - 1);
 
                 for (var i = 0; i < array.Length; i++) {
                     ushort val = array[i];
-                    double histogramVal = Math.Floor(val * ((double)resolution / ushort.MaxValue));
+                    double histogramVal = Math.Floor(val * ((double)resolution / maxHistogramValue));
 
                     sum += val;
                     squareSum += (long)val * val;
@@ -120,7 +126,7 @@ namespace NINA.Model.MyCamera {
                 this.Mean = mean;
                 this.Histogram = histogram.Select(g => new OxyPlot.DataPoint(g.Key, g.Value))
                     .OrderBy(item => item.X).ToList();
-                this.IsBayered = IsBayered;
+                this.IsBayered = isBayered;
                 this.Width = width;
                 this.Height = height;
             }

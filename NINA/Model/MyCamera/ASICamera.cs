@@ -257,6 +257,13 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int BitDepth {
+            get {
+                //currently ASI camera values are stretched to fit 16 bit
+                return 16;
+            }
+        }
+
         public bool CoolerOn {
             get {
                 var value = GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);
@@ -379,7 +386,7 @@ namespace NINA.Model.MyCamera {
                     if (GetExposureData(pointer, buffersize)) {
                         ushort[] arr = CopyToUShort(pointer, size / 2);
                         Marshal.FreeHGlobal(pointer);
-                        return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                        return await ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                     } else {
                         Notification.ShowError(Locale.Loc.Instance["LblASIImageDownloadError"]);
                     }
@@ -623,7 +630,7 @@ namespace NINA.Model.MyCamera {
 
             ushort[] arr = CopyToUShort(pointer, size / 2);
             Marshal.FreeHGlobal(pointer);
-            return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            return await ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
         }
 
         public void StopLiveView() {

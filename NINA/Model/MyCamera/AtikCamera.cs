@@ -315,6 +315,13 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int BitDepth {
+            get {
+                //currently unknown if the values are stretched to 16 bit or not. If not how to get this info?
+                return 16;
+            }
+        }
+
         private AsyncObservableCollection<BinningMode> _binningModes;
 
         public AsyncObservableCollection<BinningMode> BinningModes {
@@ -387,7 +394,7 @@ namespace NINA.Model.MyCamera {
                             await Task.Delay(100, token);
                         } while (!AtikCameraDll.ImageReady(_cameraP));
 
-                        return await AtikCameraDll.DownloadExposure(_cameraP, SensorType != SensorType.Monochrome, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                        return await AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
                         Logger.Error(ex);
@@ -444,7 +451,6 @@ namespace NINA.Model.MyCamera {
                 _liveViewEnabled = value;
             }
         }
-
 
         public int BatteryLevel => -1;
 

@@ -146,7 +146,7 @@ namespace NINA.ViewModel {
                     fs.Position = 0;
                     fs.CopyTo(ms);
                     ms.Position = 0;
-                    var iarr = await converter.ConvertToImageArray(ms, new System.Threading.CancellationToken(), profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                    var iarr = await converter.ConvertToImageArray(ms, 16, new System.Threading.CancellationToken(), profileService.ActiveProfile.ImageSettings.HistogramResolution);
                     return iarr;
                 }
             }
@@ -163,7 +163,7 @@ namespace NINA.ViewModel {
             int arraySize = stride * bmp.PixelHeight;
             ushort[] pixels = new ushort[(int)(bmp.Width * bmp.Height)];
             bmp.CopyPixels(pixels, stride, 0);
-            return ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, IsBayered, true, histogramResolution);
+            return ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, 16, IsBayered, true, histogramResolution);
         }
 
         private Task<ImageArray> LoadFits() {
@@ -180,7 +180,7 @@ namespace NINA.ViewModel {
                     pixels[i++] = (ushort)(val + short.MaxValue);
                 }
             }
-            return ImageArray.CreateInstance(pixels, width, height, IsBayered, true, histogramResolution);
+            return ImageArray.CreateInstance(pixels, width, height, 16, IsBayered, true, histogramResolution);
         }
 
         public BitmapSource ThumbnailImage { get; set; }

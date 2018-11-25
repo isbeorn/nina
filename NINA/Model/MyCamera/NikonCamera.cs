@@ -70,6 +70,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int BitDepth {
+            get {
+                return (int)profileService.ActiveProfile.CameraSettings.BitDepth;
+            }
+        }
+
         public void StartLiveView() {
             _camera.LiveViewEnabled = true;
             LiveViewEnabled = true;
@@ -96,7 +102,7 @@ namespace NINA.Model.MyCamera {
             ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
             bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
 
             memStream.Close();
             memStream.Dispose();
@@ -583,7 +589,7 @@ namespace NINA.Model.MyCamera {
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            var iarr = await converter.ConvertToImageArray(_memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            var iarr = await converter.ConvertToImageArray(_memoryStream, BitDepth, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
             iarr.RAWType = "nef";
             _memoryStream.Dispose();
             _memoryStream = null;
