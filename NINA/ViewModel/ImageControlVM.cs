@@ -562,7 +562,7 @@ namespace NINA.ViewModel {
                         GC.WaitForPendingFinalizers();
                         ImgArr = iarr;
                         Image = source;
-                        ImgStatisticsVM.Add(ImgArr.Statistics);
+                        ImgStatisticsVM.Add(iarr.Statistics);
                         ImgHistoryVM.Add(iarr.Statistics);
                     }));
 

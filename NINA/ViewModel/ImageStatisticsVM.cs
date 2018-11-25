@@ -18,8 +18,6 @@ namespace NINA.ViewModel {
         public ImageStatisticsVM(IProfileService profileService) : base(profileService) {
             Title = "LblStatistics";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistogramSVG"];
-
-            Statistics = new ImageStatistics { };
         }
 
         public string CurrentDownloadToDataRatio {
@@ -85,12 +83,16 @@ namespace NINA.ViewModel {
         }
 
         private double ConvertToOutputBitDepth(double input) {
-            if (Statistics.IsBayered && profileService.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW
-                || !Statistics.IsBayered) {
-                return input * (Math.Pow(2, 16) / Math.Pow(2, _bitDepth));
-            }
+            if (Statistics != null) {
+                if (Statistics.IsBayered && profileService.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW
+                    || !Statistics.IsBayered) {
+                    return input * (Math.Pow(2, 16) / Math.Pow(2, _bitDepth));
+                }
 
-            return input;
+                return input;
+            } else {
+                return 0.0;
+            }
         }
 
         private double _bitDepth {
