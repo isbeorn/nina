@@ -58,6 +58,17 @@
                         <TextBlock
                             Width="70"
                             VerticalAlignment="Center"
+                            Text="{ns:Loc LblBitDepth}" />
+                        <TextBlock
+                            Width="70"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="{Binding BitDepth}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Width="70"
+                            VerticalAlignment="Center"
                             Text="{ns:Loc LblMin}" />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
