@@ -8,6 +8,7 @@
         - Added interface for All Sky Platesolver
     ### Camera Control
         - Altair native driver support
+        - ToupTek native driver support
 
 
 ## Bugfixes
