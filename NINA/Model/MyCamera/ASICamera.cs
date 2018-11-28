@@ -373,12 +373,16 @@ namespace NINA.Model.MyCamera {
                     var width = CaptureAreaInfo.Size.Width;
                     var height = CaptureAreaInfo.Size.Height;
 
-                    var cameraDataToManaged = new CameraDataToManaged(width, height, 16);
-                    var arr = cameraDataToManaged.GetData((IntPtr ptr) => {
-                        if (!GetExposureData(ptr, (width * height * 16 + 7) / 8)) {
-                            throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
-                        }
-                    });
+                    int size = width * height * 2;
+                    var pointer = Marshal.AllocHGlobal(size);
+                    int buffersize = (width * height * 16 + 7) / 8;
+                    if (!GetExposureData(pointer, buffersize)) {
+                        throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
+                    }
+
+                    var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16);
+                    var arr = cameraDataToManaged.GetData();
+                    Marshal.FreeHGlobal(pointer);
 
                     return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                 } catch (OperationCanceledException) {
@@ -603,14 +607,23 @@ namespace NINA.Model.MyCamera {
             var width = CaptureAreaInfo.Size.Width;
             var height = CaptureAreaInfo.Size.Height;
 
-            var cameraDataToManaged = new CameraDataToManaged(width, height, 16);
-            var arr = cameraDataToManaged.GetData((IntPtr ptr) => {
-                if (!ASICameraDll.GetVideoData(_cameraId, ptr, (width * height * 16 + 7) / 8, -1)) {
-                    throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
-                }
-            });
+            int size = width * height * 2;
+
+            var pointer = Marshal.AllocHGlobal(size);
+            int buffersize = (width * height * 16 + 7) / 8;
+            if (!GetVideoData(pointer, buffersize)) {
+                throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
+            }
+
+            var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16);
+            var arr = cameraDataToManaged.GetData();
+            Marshal.FreeHGlobal(pointer);
 
             return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+        }
+
+        private bool GetVideoData(IntPtr buffer, int bufferSize) {
+            return ASICameraDll.GetVideoData(_cameraId, buffer, bufferSize, -1);
         }
 
         public void StopLiveView() {

@@ -9,34 +9,41 @@ namespace NINA.Model.MyCamera {
 
     internal class CameraDataToManaged {
         private int bitDepth;
+        private IntPtr dataPtr;
         private int width;
         private int height;
 
-        public int Size {
+        private int Size {
             get {
-                return width * height * 2;
+                return width * height;
             }
         }
 
-        public CameraDataToManaged(int width, int height, int bitDepth) {
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="dataPtr">Pointer to the image data</param>
+        /// <param name="width">Image dimension width</param>
+        /// <param name="height">Image dimension height</param>
+        /// <param name="bitDepth">Image data bit depth</param>
+        public CameraDataToManaged(IntPtr dataPtr, int width, int height, int bitDepth) {
+            this.dataPtr = dataPtr;
             this.width = width;
             this.height = height;
             this.bitDepth = bitDepth;
         }
 
-        public ushort[] GetData(Action<IntPtr> getDataFromCamera) {
-            var pointer = Marshal.AllocHGlobal(Size);
-
-            getDataFromCamera(pointer);
-
+        /// <summary>
+        /// Copies the data from the data pointer to an actual ushort array
+        /// </summary>
+        /// <returns>image data array</returns>
+        public ushort[] GetData() {
             ushort[] arr;
             if (bitDepth > 8) {
-                arr = CopyToUShort(pointer, Size / 2);
+                arr = CopyToUShort(dataPtr, Size);
             } else {
-                arr = Copy8BitToUShort(pointer, Size / 2);
+                arr = Copy8BitToUShort(dataPtr, Size);
             }
-            Marshal.FreeHGlobal(pointer);
-
             return arr;
         }
 

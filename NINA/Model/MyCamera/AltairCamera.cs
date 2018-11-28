@@ -554,10 +554,8 @@ namespace NINA.Model.MyCamera {
             int width = (int)info.width;
             int height = (int)info.height;
 
-            var cameraDataToManaged = new CameraDataToManaged(width, height, (int)bitDepth);
-            var arr = cameraDataToManaged.GetData((IntPtr ptr) => {
-                AltairCam.CopyMemory(ptr, pData, (uint)cameraDataToManaged.Size);
-            });
+            var cameraDataToManaged = new CameraDataToManaged(pData, width, height, (int)bitDepth);
+            var arr = cameraDataToManaged.GetData();
 
             imageTask = ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
             if (LiveViewEnabled) {

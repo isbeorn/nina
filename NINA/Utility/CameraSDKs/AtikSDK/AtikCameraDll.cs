@@ -100,13 +100,9 @@ namespace NINA.Utility.AtikSDK {
 
             var ptr = ArtemisImageBuffer(camera);
 
-            int size = w * h * 2;
-            IntPtr pointer = Marshal.AllocHGlobal(size);
-            int buffersize = (w * h * 16 + 7) / 8;
+            var cameraDataToManaged = new CameraDataToManaged(ptr, w, h, 16);
+            var arr = cameraDataToManaged.GetData();
 
-            ushort[] arr = new ushort[size / 2];
-            CopyToUShort(ptr, arr, 0, size / 2);
-            Marshal.FreeHGlobal(pointer);
             return await ImageArray.CreateInstance(arr, w, h, isBayered, true, histogramResolution);
         }
 
