@@ -589,7 +589,7 @@ namespace NINA.Model.MyCamera {
             if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF))) {
                 Notification.ShowError(Locale.Loc.Instance["LblUnableToStartExposure"]);
             }
-            if (exposureTime > 30.0) {
+            if ((IsManualMode() && exposureTime > 30.0) || (IsBulbMode() && exposureTime >= 1.0)) {
                 /*Stop Exposure after exposure time */
                 Task.Run(async () => {
                     await Utility.Utility.Wait(TimeSpan.FromSeconds(exposureTime));
