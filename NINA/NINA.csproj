@@ -288,6 +288,7 @@
     <Compile Include="Model\ImagePattern.cs" />
     <Compile Include="Model\MyCamera\AltairCamera.cs" />
     <Compile Include="Model\MyCamera\AtikCamera.cs" />
+    <Compile Include="Model\MyCamera\CameraDataToManaged.cs" />
     <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
     <Compile Include="Model\MyCamera\ImageArray.cs" />

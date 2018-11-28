@@ -551,17 +551,11 @@ namespace NINA.Model.MyCamera {
         private void OnImageCallback(IntPtr pData, ref ToupCam.FrameInfoV2 info, bool bSnap) {
             int width = (int)info.width;
             int height = (int)info.height;
-            var size = (width * height * 2);
-            var pointer = Marshal.AllocHGlobal(size);
 
-            ToupCam.CopyMemory(pointer, pData, (uint)size);
-            ushort[] arr;
-            if (bitDepth > 8) {
-                arr = CopyToUShort(pointer, size / 2);
-            } else {
-                arr = Copy8BitToUShort(pointer, size / 2);
-            }
-            Marshal.FreeHGlobal(pointer);
+            var cameraDataToManaged = new CameraDataToManaged(width, height, (int)bitDepth);
+            var arr = cameraDataToManaged.GetData((IntPtr ptr) => {
+                ToupCam.CopyMemory(ptr, pData, (uint)cameraDataToManaged.Size);
+            });
 
             imageTask = ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
             if (LiveViewEnabled) {
@@ -579,28 +573,6 @@ namespace NINA.Model.MyCamera {
         private void OnEventDisconnected() {
             StopExposure();
             Disconnect();
-        }
-
-        private ushort[] Copy8BitToUShort(IntPtr source, int length) {
-            var destination = new ushort[length];
-            unsafe {
-                var sourcePtr = (byte*)source;
-                for (int i = 0; i < length; ++i) {
-                    destination[i] = *sourcePtr++;
-                }
-            }
-            return destination;
-        }
-
-        private ushort[] CopyToUShort(IntPtr source, int length) {
-            var destination = new ushort[length];
-            unsafe {
-                var sourcePtr = (ushort*)source;
-                for (int i = 0; i < length; ++i) {
-                    destination[i] = *sourcePtr++;
-                }
-            }
-            return destination;
         }
 
         public void StartLiveView() {
