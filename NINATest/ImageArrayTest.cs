@@ -43,7 +43,7 @@ namespace NINATest {
             ushort[] expFlatArr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr, width, height, false, true, 100);
+            ImageArray result = await ImageArray.CreateInstance(arr, width, height, 16, false, true, 100);
 
             //Assert
             Assert.AreEqual(expX, result.Statistics.Width);
@@ -53,16 +53,14 @@ namespace NINATest {
 
         [Test]
         public void CreateInstance3dArray_ExceptionThrown() {
-            Assert.ThrowsAsync<NotSupportedException>(async () => { 
+            Assert.ThrowsAsync<NotSupportedException>(async () => {
                 //Arrange
                 var arr = new Int32[5, 5, 5];
                 //Act
                 ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
             }
             );
-            
         }
-    
 
         [Test]
         public async Task StDevTest() {
@@ -140,17 +138,17 @@ namespace NINATest {
 
         [Test]
         [TestCase(4, 3, 12345, 35483, 23914, 11569)]
-        [TestCase(46, 35, 12345,35483, 23914, 11569)]
+        [TestCase(46, 35, 12345, 35483, 23914, 11569)]
         [TestCase(460, 350, 12345, 35483, 23914, 11569)]
         public async Task StDevTest_LargeDataSetTest(int width, int height, int value1, int value2, double mean, double stdev) {
             //Arrange
             int[,] arr = new int[width, height];
             for (int x = 0; x < arr.GetLength(0); x += 1) {
                 for (int y = 0; y < arr.GetLength(1); y += 1) {
-                    arr[x, y] = (x+y)%2 == 0? value1 : value2;
+                    arr[x, y] = (x + y) % 2 == 0 ? value1 : value2;
                 }
             }
-            
+
             //Act
             ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
 
@@ -184,7 +182,6 @@ namespace NINATest {
             arr[3, 2] = 7;
             arr[3, 3] = 5;
             arr[3, 4] = 5;
-                        
 
             //Act
             ImageArray result = await ImageArray.CreateInstance(arr, false, true, 100);
