@@ -374,9 +374,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private void SetRawFormat() {
-            if (CheckError(SetProperty(EDSDK.PropID_ImageQuality, (uint)EDSDK.ImageQuality.EdsImageQuality_LR))) {
-                throw new Exception("Error setting Canon image quality to RAW");
-            }
+            CheckAndThrowError(SetProperty(EDSDK.PropID_ImageQuality, (uint)EDSDK.ImageQuality.EdsImageQuality_LR));
         }
 
         private Dictionary<double, int> ShutterSpeeds = new Dictionary<double, int>();
@@ -443,27 +441,17 @@ namespace NINA.Model.MyCamera {
                     }
 
                     using (MyStopWatch.Measure("Canon - Image Download")) {
-                        if (CheckError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo))) {
-                            throw new Exception("Canon - Unable to get DirectoryInfo");
-                        }
+                        CheckAndThrowError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo));
 
                         //create a file stream to accept the image
-
-                        if (CheckError(EDSDK.EdsCreateMemoryStream(directoryItemInfo.Size, out stream))) {
-                            throw new Exception("Canon - Unable to create MemoryStream");
-                        }
+                        CheckAndThrowError(EDSDK.EdsCreateMemoryStream(directoryItemInfo.Size, out stream));
 
                         //download image
-
-                        if (CheckError(EDSDK.EdsDownload(this.DirectoryItem, directoryItemInfo.Size, stream))) {
-                            throw new Exception("Canon - Unable to download exposure from camera");
-                        }
+                        CheckAndThrowError(EDSDK.EdsDownload(this.DirectoryItem, directoryItemInfo.Size, stream));
 
                         //complete download
+                        CheckAndThrowError(EDSDK.EdsDownloadComplete(this.DirectoryItem));
 
-                        if (CheckError(EDSDK.EdsDownloadComplete(this.DirectoryItem))) {
-                            throw new Exception("Canon - Unable to finish download");
-                        }
                         token.ThrowIfCancellationRequested();
                     }
 
@@ -582,9 +570,8 @@ namespace NINA.Model.MyCamera {
             ValidateModeForExposure(exposureTime);
 
             /* Start exposure */
-            if (CheckError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF))) {
-                throw new Exception(Locale.Loc.Instance["LblUnableToStartExposure"]);
-            }
+            CheckAndThrowError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF));
+
             if ((IsManualMode() && exposureTime > 30.0) || (IsBulbMode() && exposureTime >= 1.0)) {
                 /*Stop Exposure after exposure time */
                 Task.Run(async () => {
@@ -611,10 +598,8 @@ namespace NINA.Model.MyCamera {
                 }
             }
 
-            /* Shutter speed to Bulb */
-            if (CheckError(SetProperty(EDSDK.PropID_Tv, ShutterSpeeds[key]))) {
-                throw new Exception(Locale.Loc.Instance["LblUnableToSetExposureTime"]);
-            }
+            CheckAndThrowError(SetProperty(EDSDK.PropID_Tv, ShutterSpeeds[key]));
+
             return true;
         }
 
@@ -650,9 +635,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopExposure() {
-            if (CheckError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF))) {
-                throw new Exception("Could not stop camera exposure");
-            }
+            CheckAndThrowError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF));
         }
 
         private uint SetProperty(uint property, object value) {
@@ -666,13 +649,35 @@ namespace NINA.Model.MyCamera {
             return err;
         }
 
-        private bool CheckError(uint err) {
-            if (err == (uint)EDSDK.EDS_ERR.OK) {
+        private bool CheckError(uint code) {
+            var err = GetError(code);
+            return CheckError(err);
+        }
+
+        private bool CheckError(EDSDK.EDS_ERR err) {
+            if (err == EDSDK.EDS_ERR.OK) {
                 return false;
             } else {
-                Logger.Error(new Exception(string.Format("Canon SDK Error with Code {0} occured", err)));
+                Logger.Error(new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], err)));
                 return true;
             }
+        }
+
+        private void CheckAndThrowError(EDSDK.EDS_ERR err) {
+            if (err != EDSDK.EDS_ERR.OK) {
+                var ex = new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], err));
+                Logger.Error(ex);
+                throw ex;
+            }
+        }
+
+        private void CheckAndThrowError(uint code) {
+            var err = GetError(code);
+            CheckAndThrowError(err);
+        }
+
+        private EDSDK.EDS_ERR GetError(uint code) {
+            return (EDSDK.EDS_ERR)code;
         }
 
         public async Task<bool> Connect(CancellationToken token) {
@@ -716,22 +721,24 @@ namespace NINA.Model.MyCamera {
             LiveViewEnabled = false;
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
             IntPtr stream = IntPtr.Zero;
             IntPtr imageRef = IntPtr.Zero;
             IntPtr pointer = IntPtr.Zero;
             try {
-                if (CheckError(EDSDK.EdsCreateMemoryStream(0, out stream))) {
-                    throw new Exception("Canon - Unable to create memory stream");
-                }
+                CheckAndThrowError(EDSDK.EdsCreateMemoryStream(0, out stream));
 
-                if (CheckError(EDSDK.EdsCreateEvfImageRef(stream, out imageRef))) {
-                    throw new Exception("Canon - Unable to download image");
-                }
+                CheckAndThrowError(EDSDK.EdsCreateEvfImageRef(stream, out imageRef));
 
-                if (CheckError(EDSDK.EdsDownloadEvfImage(_cam, imageRef))) {
-                    throw new Exception("Canon - Unable to download image");
-                }
+                EDSDK.EDS_ERR err;
+                do {
+                    err = GetError(EDSDK.EdsDownloadEvfImage(_cam, imageRef));
+                    if (err == EDSDK.EDS_ERR.OBJECT_NOTREADY) {
+                        await Utility.Utility.Wait(TimeSpan.FromMilliseconds(100), token);
+                    }
+                } while (err == EDSDK.EDS_ERR.OBJECT_NOTREADY);
+
+                CheckAndThrowError(err);
 
                 EDSDK.EdsGetPointer(stream, out pointer);
                 EDSDK.EdsGetLength(stream, out var length);
@@ -753,7 +760,7 @@ namespace NINA.Model.MyCamera {
                     ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
                     bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-                    return ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                    return await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                 }
             } finally {
                 /* Memory cleanup */
