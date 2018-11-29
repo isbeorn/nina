@@ -18,7 +18,7 @@ namespace NINA.Utility.RawConverter {
             DllLoader.LoadDll("FreeImage/FreeImage.dll");
         }
 
-        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, CancellationToken token, int histogramResolution) {
+        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, int histogramResolution, CancellationToken token) {
             return await Task.Run(async () => {
                 using (MyStopWatch.Measure()) {
                     FIBITMAP img;

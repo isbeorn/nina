@@ -589,7 +589,7 @@ namespace NINA.Model.MyCamera {
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            var iarr = await converter.ConvertToImageArray(_memoryStream, BitDepth, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            var iarr = await converter.ConvertToImageArray(_memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, token);
             iarr.RAWType = "nef";
             _memoryStream.Dispose();
             _memoryStream = null;

@@ -16,7 +16,7 @@ namespace NINA.Utility.RawConverter {
         private static string DCRAWLOCATION = @"Utility\DCRaw\dcraw.exe";
         public static string FILEPREFIX = "dcraw_tmp";
 
-        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, CancellationToken token, int histogramResolution) {
+        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, int histogramResolution, CancellationToken token) {
             return await Task.Run(async () => {
                 using (MyStopWatch.Measure()) {
                     var fileextension = ".raw";

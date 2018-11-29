@@ -317,8 +317,8 @@ namespace NINA.Model.MyCamera {
 
         public int BitDepth {
             get {
-                //currently unknown if the values are stretched to 16 bit or not. If not how to get this info?
-                return 16;
+                //currently unknown if the values are stretched to 16 bit or not. Take profile value
+                return (int)profileService.ActiveProfile.CameraSettings.BitDepth;
             }
         }
 

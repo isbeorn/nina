@@ -24,8 +24,6 @@ namespace NINA.Model.MyCamera {
 
         public ImageStatistics Statistics { get; set; }
 
-        public bool IsBayered { get; private set; }
-
         private ImageArray() {
         }
 
@@ -33,21 +31,20 @@ namespace NINA.Model.MyCamera {
         /// Factory to create an ImageArray object out of a 2d or 3d array
         /// </summary>
         /// <param name="input">A 2d or 3d image array (only 2d supported right now)</param>
+        /// <param name="bitDepth">bit depth of each pixel</param>
         /// <param name="isBayered">Flag to indicate if the image is bayer matrix encoded</param>
         /// <param name="calculateStatistics">If false no statistics will be determined (fast mode)</param>
         /// <param name="histogramResolution">Resolution of the histogram</param>
         /// <returns></returns>
-        public static async Task<ImageArray> CreateInstance(Array input, bool isBayered, bool calculateStatistics, int histogramResolution) {
+        public static async Task<ImageArray> CreateInstance(Array input, int bitDepth, bool isBayered, bool calculateStatistics, int histogramResolution) {
             ImageArray imgArray = new ImageArray();
-            imgArray.IsBayered = isBayered;
-            imgArray.Statistics = new ImageStatistics(histogramResolution);
+            int width = input.GetLength(0);
+            int height = input.GetLength(1);
+            imgArray.Statistics = new ImageStatistics(width, height, bitDepth, isBayered, histogramResolution);
             await Task.Run(() => imgArray.FlipAndConvert(input));
 
             if (calculateStatistics) {
-                int width = input.GetLength(0);
-                int height = input.GetLength(1);
-                //todo
-                await imgArray.Statistics.Calculate(imgArray.FlatArray, width, height, isBayered, 16);
+                await imgArray.Statistics.Calculate(imgArray.FlatArray);
             }
 
             return imgArray;
@@ -66,11 +63,10 @@ namespace NINA.Model.MyCamera {
         /// <returns></returns>
         public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, int bitDepth, bool isBayered, bool calculateStatistics, int histogramResolution) {
             ImageArray imgArray = new ImageArray();
-            imgArray.IsBayered = isBayered;
             imgArray.FlatArray = input;
-            imgArray.Statistics = new ImageStatistics(histogramResolution);
+            imgArray.Statistics = new ImageStatistics(width, height, bitDepth, isBayered, histogramResolution);
             if (calculateStatistics) {
-                await imgArray.Statistics.Calculate(imgArray.FlatArray, width, height, isBayered, bitDepth);
+                await imgArray.Statistics.Calculate(imgArray.FlatArray);
             }
 
             return imgArray;

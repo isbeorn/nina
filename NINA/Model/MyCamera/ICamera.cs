@@ -36,6 +36,7 @@ namespace NINA.Model.MyCamera {
         bool LiveViewEnabled { get; set; }
         bool HasBattery { get; }
         int BatteryLevel { get; }
+        int BitDepth { get; }
 
         int Offset { get; set; }
         int USBLimit { get; set; }

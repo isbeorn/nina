@@ -9,8 +9,21 @@ namespace NINA.Model.MyCamera {
 
     public class ImageStatistics : BaseINPC {
 
-        public ImageStatistics(int resolution) {
+        /// <summary>
+        /// Create new instance of ImageStatistics
+        /// Calculate() has to be called to yield all statistics.
+        /// </summary>
+        /// <param name="width">width of one row</param>
+        /// <param name="height">height of one column</param>
+        /// <param name="bitDepth">bit depth of a pixel</param>
+        /// <param name="isBayered">Flag to indicate if the image is bayer matrix encoded</param>
+        /// <param name="resolution">Target histogram resolution</param>
+        public ImageStatistics(int width, int height, int bitDepth, bool isBayered, int resolution) {
+            this.Width = width;
+            this.Height = height;
+            this.IsBayered = isBayered;
             this.resolution = resolution;
+            this.BitDepth = bitDepth;
         }
 
         public int Id { get; set; }
@@ -58,19 +71,13 @@ namespace NINA.Model.MyCamera {
         /// Calculate statistics out of image array.
         /// </summary>
         /// <param name="array">one dimensional image array</param>
-        /// <param name="width">width of one row</param>
-        /// <param name="height">height of one column</param>
-        /// <param name="isBayered">Flag to indicate if the image is bayer matrix encoded</param>
-        /// <param name="bitDepth">bit depth of each pixel</param>
         /// <returns></returns>
-        public Task Calculate(ushort[] array, int width, int height, bool isBayered, int bitDepth) {
-            return Task.Run(() => CalculateInternal(array, width, height, isBayered, bitDepth));
+        public Task Calculate(ushort[] array) {
+            return Task.Run(() => CalculateInternal(array));
         }
 
-        private void CalculateInternal(ushort[] array, int width, int height, bool isBayered, int bitDepth) {
+        private void CalculateInternal(ushort[] array) {
             using (MyStopWatch.Measure()) {
-                this.BitDepth = bitDepth;
-
                 long sum = 0;
                 long squareSum = 0;
                 int count = array.Count();
@@ -82,7 +89,7 @@ namespace NINA.Model.MyCamera {
                 long minOccurrences = 0;
 
                 Dictionary<double, int> histogram = new Dictionary<double, int>();
-                ushort maxHistogramValue = (ushort)((1 << bitDepth) - 1);
+                ushort maxHistogramValue = (ushort)((1 << BitDepth) - 1);
 
                 for (var i = 0; i < array.Length; i++) {
                     ushort val = array[i];
@@ -126,9 +133,6 @@ namespace NINA.Model.MyCamera {
                 this.Mean = mean;
                 this.Histogram = histogram.Select(g => new OxyPlot.DataPoint(g.Key, g.Value))
                     .OrderBy(item => item.X).ToList();
-                this.IsBayered = isBayered;
-                this.Width = width;
-                this.Height = height;
             }
         }
     }

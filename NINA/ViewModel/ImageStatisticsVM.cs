@@ -97,7 +97,7 @@ namespace NINA.ViewModel {
 
         private double _bitDepth {
             get {
-                return profileService.ActiveProfile.CameraSettings.BitDepth;
+                return Statistics?.BitDepth ?? 16;
             }
         }
 
