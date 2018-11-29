@@ -392,7 +392,7 @@ namespace NINA.Model.MyCamera {
                 if (item.Value != 0) {
                     ShutterSpeeds.Add(item.Key, item.Value);
                 } else {
-                    Debug.Print("Unknown Shutterspeed for : " + elem);
+                    Logger.Warning("Canon - Unknown Shutterspeed with code: " + elem);
                 }
             }
         }
