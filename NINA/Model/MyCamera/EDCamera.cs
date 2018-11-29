@@ -157,7 +157,7 @@ namespace NINA.Model.MyCamera {
 
         public double ExposureMin {
             get {
-                return this.ShutterSpeeds.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
+                return this.ShutterSpeeds.Aggregate((l, r) => l.Value > r.Value ? l : r).Value;
             }
         }
 
@@ -377,16 +377,22 @@ namespace NINA.Model.MyCamera {
             CheckAndThrowError(SetProperty(EDSDK.PropID_ImageQuality, (uint)EDSDK.ImageQuality.EdsImageQuality_LR));
         }
 
-        private Dictionary<double, int> ShutterSpeeds = new Dictionary<double, int>();
+        /// <summary>
+        /// Internal ShutterSpeed Code -> ShutterSpeed Value
+        /// e.g.: 0x10 -> 30
+        /// </summary>
+        private Dictionary<int, double> ShutterSpeeds = new Dictionary<int, double>();
 
         private void GetShutterSpeeds() {
             ShutterSpeeds.Clear();
             EDSDK.EdsGetPropertyDesc(_cam, EDSDK.PropID_Tv, out var shutterSpeedsDesc);
             for (int i = 0; i < shutterSpeedsDesc.NumElements; i++) {
                 var elem = shutterSpeedsDesc.PropDesc[i];
-                var item = EDSDK.ShutterSpeeds.FirstOrDefault((x) => x.Value == elem);
+                var item = EDSDK.ShutterSpeeds.FirstOrDefault((x) => x.Key == elem);
                 if (item.Value != 0) {
                     ShutterSpeeds.Add(item.Key, item.Value);
+                } else {
+                    Debug.Print("Unknown Shutterspeed for : " + elem);
                 }
             }
         }
@@ -586,20 +592,19 @@ namespace NINA.Model.MyCamera {
         }
 
         private bool SetExposureTime(double exposureTime) {
-            double key;
+            double nearestExposureTime = double.MaxValue;
             if (exposureTime != double.MaxValue) {
-                var l = new List<double>(ShutterSpeeds.Keys);
-                key = l.Aggregate((x, y) => Math.Abs(x - exposureTime) < Math.Abs(y - exposureTime) ? x : y);
-            } else {
-                key = double.MaxValue;
-                if (!ShutterSpeeds.ContainsKey(key)) {
-                    // No Bulb available - bulb mode has to be set manually
-                    return false;
-                }
+                var l = new List<double>(ShutterSpeeds.Values);
+                nearestExposureTime = l.Aggregate((x, y) => Math.Abs(x - exposureTime) < Math.Abs(y - exposureTime) ? x : y);
             }
 
-            CheckAndThrowError(SetProperty(EDSDK.PropID_Tv, ShutterSpeeds[key]));
+            var key = ShutterSpeeds.FirstOrDefault(x => x.Value == nearestExposureTime).Key;
+            if (key == 0) {
+                // No Bulb available - bulb mode has to be set manually
+                return false;
+            }
 
+            CheckAndThrowError(SetProperty(EDSDK.PropID_Tv, key));
             return true;
         }
 
