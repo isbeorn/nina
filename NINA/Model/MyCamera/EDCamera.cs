@@ -117,7 +117,7 @@ namespace NINA.Model.MyCamera {
             get {
                 string property = string.Empty;
                 if (Connected) {
-                    if (HasError(EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_FirmwareVersion, 0, out property))) {
+                    if (CheckError(EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_FirmwareVersion, 0, out property))) {
                         return string.Empty;
                     }
                 }
@@ -266,7 +266,7 @@ namespace NINA.Model.MyCamera {
             set {
                 ValidateMode();
                 var iso = ISOSpeeds.Where((x) => x.Key == value).FirstOrDefault().Value;
-                if (HasError(SetProperty(EDSDK.PropID_ISOSpeed, iso))) {
+                if (CheckError(SetProperty(EDSDK.PropID_ISOSpeed, iso))) {
                     Notification.ShowError(Locale.Loc.Instance["LblUnableToSetISO"]);
                 }
                 RaisePropertyChanged();
@@ -315,10 +315,10 @@ namespace NINA.Model.MyCamera {
         }
 
         public IntPtr DirectoryItem { get; private set; }
-        public bool DownloadReady { get; private set; }
+        private TaskCompletionSource<object> downloadExposure;
 
         public void AbortExposure() {
-            var err = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
+            CheckError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF));
         }
 
         [System.Obsolete("Use async Connect")]
@@ -355,14 +355,14 @@ namespace NINA.Model.MyCamera {
         private uint Camera_SDKObjectEvent(uint inEvent, IntPtr inRef, IntPtr inContext) {
             if (inEvent == EDSDK.ObjectEvent_DirItemRequestTransfer) {
                 this.DirectoryItem = inRef;
-                this.DownloadReady = true;
+                downloadExposure?.TrySetResult(true);
             }
             return (uint)EDSDK.EDS_ERR.OK;
         }
 
         private void SetSaveLocation() {
             /* 1: memory card; 2: pc; 3: both */
-            if (HasError(SetProperty(EDSDK.PropID_SaveTo, 2))) {
+            if (CheckError(SetProperty(EDSDK.PropID_SaveTo, 2))) {
                 throw new Exception("Unable to set save location to PC");
             }
 
@@ -374,7 +374,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private void SetRawFormat() {
-            if (HasError(SetProperty(EDSDK.PropID_ImageQuality, (uint)EDSDK.ImageQuality.EdsImageQuality_LR))) {
+            if (CheckError(SetProperty(EDSDK.PropID_ImageQuality, (uint)EDSDK.ImageQuality.EdsImageQuality_LR))) {
                 throw new Exception("Error setting Canon image quality to RAW");
             }
         }
@@ -383,10 +383,9 @@ namespace NINA.Model.MyCamera {
 
         private void GetShutterSpeeds() {
             ShutterSpeeds.Clear();
-            EDSDK.EdsPropertyDesc bla;
-            EDSDK.EdsGetPropertyDesc(_cam, EDSDK.PropID_Tv, out bla);
-            for (int i = 0; i < bla.NumElements; i++) {
-                var elem = bla.PropDesc[i];
+            EDSDK.EdsGetPropertyDesc(_cam, EDSDK.PropID_Tv, out var shutterSpeedsDesc);
+            for (int i = 0; i < shutterSpeedsDesc.NumElements; i++) {
+                var elem = shutterSpeedsDesc.PropDesc[i];
                 var item = EDSDK.ShutterSpeeds.FirstOrDefault((x) => x.Value == elem);
                 if (item.Value != 0) {
                     ShutterSpeeds.Add(item.Key, item.Value);
@@ -429,7 +428,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void Disconnect() {
-            uint err = EDSDK.EdsCloseSession(_cam);
+            CheckError(EDSDK.EdsCloseSession(_cam));
 
             Connected = false;
         }
@@ -439,59 +438,56 @@ namespace NINA.Model.MyCamera {
                 var stream = IntPtr.Zero;
                 var pointer = IntPtr.Zero;
                 try {
-                    while (!DownloadReady) {
-                        await Task.Delay(100);
+                    using (token.Register(() => downloadExposure.TrySetCanceled())) {
+                        await downloadExposure.Task;
+                    }
+
+                    using (MyStopWatch.Measure("Canon - Image Download")) {
+                        if (CheckError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo))) {
+                            throw new Exception("Canon - Unable to get DirectoryInfo");
+                        }
+
+                        //create a file stream to accept the image
+
+                        if (CheckError(EDSDK.EdsCreateMemoryStream(directoryItemInfo.Size, out stream))) {
+                            throw new Exception("Canon - Unable to create MemoryStream");
+                        }
+
+                        //download image
+
+                        if (CheckError(EDSDK.EdsDownload(this.DirectoryItem, directoryItemInfo.Size, stream))) {
+                            throw new Exception("Canon - Unable to download exposure from camera");
+                        }
+
+                        //complete download
+
+                        if (CheckError(EDSDK.EdsDownloadComplete(this.DirectoryItem))) {
+                            throw new Exception("Canon - Unable to finish download");
+                        }
                         token.ThrowIfCancellationRequested();
                     }
 
-                    var sw = Stopwatch.StartNew();
+                    using (MyStopWatch.Measure("Canon - Creating Image Array")) {
+                        //convert to memory stream
+                        EDSDK.EdsGetPointer(stream, out pointer);
+                        EDSDK.EdsGetLength(stream, out var length);
 
-                    if (HasError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo))) {
-                        return null;
-                    }
+                        byte[] bytes = new byte[length];
 
-                    //create a file stream to accept the image
+                        //Move from unmanaged to managed code.
+                        Marshal.Copy(pointer, bytes, 0, bytes.Length);
 
-                    if (HasError(EDSDK.EdsCreateMemoryStream(directoryItemInfo.Size, out stream))) {
-                        return null;
-                    }
+                        token.ThrowIfCancellationRequested();
 
-                    //download image
-
-                    if (HasError(EDSDK.EdsDownload(this.DirectoryItem, directoryItemInfo.Size, stream))) {
-                        return null;
-                    }
-
-                    //complete download
-
-                    if (HasError(EDSDK.EdsDownloadComplete(this.DirectoryItem))) {
-                        return null;
-                    }
-                    token.ThrowIfCancellationRequested();
-
-                    Debug.Print("Download from Camera: " + sw.Elapsed);
-                    sw.Restart();
-
-                    //convert to memory stream
-
-                    EDSDK.EdsGetPointer(stream, out pointer);
-                    EDSDK.EdsGetLength(stream, out var length);
-
-                    byte[] bytes = new byte[length];
-
-                    //Move from unmanaged to managed code.
-                    Marshal.Copy(pointer, bytes, 0, bytes.Length);
-
-                    Debug.Print("Getting pixels to managed code : " + sw.Elapsed);
-                    sw.Restart();
-
-                    using (var memoryStream = new System.IO.MemoryStream(bytes)) {
-                        var converter = RawConverter.CreateInstance(profileService.Profiles.ActiveProfile.CameraSettings.RawConverter);
-                        var iarr = await converter.ConvertToImageArray(memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-                        iarr.RAWType = "cr2";
-                        return iarr;
+                        using (var memoryStream = new System.IO.MemoryStream(bytes)) {
+                            var converter = RawConverter.CreateInstance(profileService.Profiles.ActiveProfile.CameraSettings.RawConverter);
+                            var iarr = await converter.ConvertToImageArray(memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            iarr.RAWType = "cr2";
+                            return iarr;
+                        }
                     }
                 } finally {
+                    /* Memory cleanup */
                     if (pointer != IntPtr.Zero) {
                         EDSDK.EdsRelease(pointer);
                         pointer = IntPtr.Zero;
@@ -581,13 +577,13 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartExposure(double exposureTime, bool isLightFrame) {
-            DownloadReady = false;
+            downloadExposure = new TaskCompletionSource<object>();
 
             ValidateModeForExposure(exposureTime);
 
             /* Start exposure */
-            if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF))) {
-                Notification.ShowError(Locale.Loc.Instance["LblUnableToStartExposure"]);
+            if (CheckError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF))) {
+                throw new Exception(Locale.Loc.Instance["LblUnableToStartExposure"]);
             }
             if ((IsManualMode() && exposureTime > 30.0) || (IsBulbMode() && exposureTime >= 1.0)) {
                 /*Stop Exposure after exposure time */
@@ -616,9 +612,8 @@ namespace NINA.Model.MyCamera {
             }
 
             /* Shutter speed to Bulb */
-            if (HasError(SetProperty(EDSDK.PropID_Tv, ShutterSpeeds[key]))) {
-                Notification.ShowError(Locale.Loc.Instance["LblUnableToSetExposureTime"]);
-                return false;
+            if (CheckError(SetProperty(EDSDK.PropID_Tv, ShutterSpeeds[key]))) {
+                throw new Exception(Locale.Loc.Instance["LblUnableToSetExposureTime"]);
             }
             return true;
         }
@@ -642,7 +637,7 @@ namespace NINA.Model.MyCamera {
         public int BatteryLevel {
             get {
                 try {
-                    if (!HasError(EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_BatteryLevel, 0, out UInt32 batteryLevel))) {
+                    if (!CheckError(EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_BatteryLevel, 0, out UInt32 batteryLevel))) {
                         return (int)batteryLevel;
                     } else {
                         return -1;
@@ -655,8 +650,8 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopExposure() {
-            if (HasError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF))) {
-                Notification.ShowError("Could not stop camera exposure");
+            if (CheckError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF))) {
+                throw new Exception("Could not stop camera exposure");
             }
         }
 
@@ -671,7 +666,7 @@ namespace NINA.Model.MyCamera {
             return err;
         }
 
-        private bool HasError(uint err) {
+        private bool CheckError(uint err) {
             if (err == (uint)EDSDK.EDS_ERR.OK) {
                 return false;
             } else {
@@ -721,49 +716,60 @@ namespace NINA.Model.MyCamera {
             LiveViewEnabled = false;
         }
 
-        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
-            if (HasError(EDSDK.EdsCreateMemoryStream(0, out var stream))) {
-                return null;
+        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+            IntPtr stream = IntPtr.Zero;
+            IntPtr imageRef = IntPtr.Zero;
+            IntPtr pointer = IntPtr.Zero;
+            try {
+                if (CheckError(EDSDK.EdsCreateMemoryStream(0, out stream))) {
+                    throw new Exception("Canon - Unable to create memory stream");
+                }
+
+                if (CheckError(EDSDK.EdsCreateEvfImageRef(stream, out imageRef))) {
+                    throw new Exception("Canon - Unable to download image");
+                }
+
+                if (CheckError(EDSDK.EdsDownloadEvfImage(_cam, imageRef))) {
+                    throw new Exception("Canon - Unable to download image");
+                }
+
+                EDSDK.EdsGetPointer(stream, out pointer);
+                EDSDK.EdsGetLength(stream, out var length);
+
+                byte[] bytes = new byte[length];
+
+                //Move from unmanaged to managed code.
+                Marshal.Copy(pointer, bytes, 0, bytes.Length);
+
+                using (var memoryStream = new System.IO.MemoryStream(bytes)) {
+                    JpegBitmapDecoder decoder = new JpegBitmapDecoder(memoryStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+
+                    FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
+                    bitmap.BeginInit();
+                    bitmap.Source = decoder.Frames[0];
+                    bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+                    bitmap.EndInit();
+
+                    ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
+                    bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
+
+                    return ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                }
+            } finally {
+                /* Memory cleanup */
+                if (stream != IntPtr.Zero) {
+                    EDSDK.EdsRelease(stream);
+                    stream = IntPtr.Zero;
+                }
+                if (pointer != IntPtr.Zero) {
+                    EDSDK.EdsRelease(pointer);
+                    pointer = IntPtr.Zero;
+                }
+                if (imageRef != IntPtr.Zero) {
+                    EDSDK.EdsRelease(imageRef);
+                    imageRef = IntPtr.Zero;
+                }
             }
-
-            if (HasError(EDSDK.EdsCreateEvfImageRef(stream, out var imageRef))) {
-                return null;
-            }
-
-            if (HasError(EDSDK.EdsDownloadEvfImage(_cam, imageRef))) {
-                return null;
-            }
-
-            EDSDK.EdsGetPointer(stream, out var pointer);
-            EDSDK.EdsGetLength(stream, out var length);
-
-            byte[] bytes = new byte[length];
-
-            //Move from unmanaged to managed code.
-            Marshal.Copy(pointer, bytes, 0, bytes.Length);
-
-            System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(bytes);
-
-            JpegBitmapDecoder decoder = new JpegBitmapDecoder(memoryStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
-
-            FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
-            bitmap.BeginInit();
-            bitmap.Source = decoder.Frames[0];
-            bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
-            bitmap.EndInit();
-
-            ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
-            bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
-
-            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-
-            memoryStream.Close();
-            memoryStream.Dispose();
-
-            EDSDK.EdsRelease(stream);
-            EDSDK.EdsRelease(imageRef);
-
-            return iarr;
         }
     }
 }
