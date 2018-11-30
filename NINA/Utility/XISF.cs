@@ -29,7 +29,9 @@ namespace NINA.Utility {
                 ushort[] img = new ushort[(int)Math.Ceiling(encodedImg.Length / 2.0)];
                 Buffer.BlockCopy(encodedImg, 0, img, 0, encodedImg.Length);
 
-                return await ImageArray.CreateInstance(img, width, height, isBayered, true, histogramResolution);
+                //Seems to be no attribute to identify the bit depth. Assume 16.
+                var bitDepth = 16;
+                return await ImageArray.CreateInstance(img, width, height, bitDepth, isBayered, true, histogramResolution);
             }
         }
 

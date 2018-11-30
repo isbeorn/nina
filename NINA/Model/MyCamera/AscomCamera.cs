@@ -936,9 +936,9 @@ namespace NINA.Model.MyCamera {
                         }
 
                         if (SensorType != SensorType.Color) {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         } else {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, BitDepth, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         }
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
@@ -1100,5 +1100,11 @@ namespace NINA.Model.MyCamera {
         public int BatteryLevel => -1;
 
         public bool HasBattery => false;
+
+        public int BitDepth {
+            get {
+                return (int)profileService.ActiveProfile.CameraSettings.BitDepth;
+            }
+        }
     }
 }

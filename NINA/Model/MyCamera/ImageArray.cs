@@ -24,98 +24,52 @@ namespace NINA.Model.MyCamera {
 
         public ImageStatistics Statistics { get; set; }
 
-        public bool IsBayered { get; private set; }
-
-        private ImageArray(int histogramResolution) {
-            this.histogramResolution = histogramResolution;
-            Statistics = new ImageStatistics { };
+        private ImageArray() {
         }
 
-        private int histogramResolution;
-
-        public static async Task<ImageArray> CreateInstance(Array input, bool isBayered, bool calculateStatistics, int histogramResolution) {
-            ImageArray imgArray = new ImageArray(histogramResolution);
-            imgArray.IsBayered = isBayered;
+        /// <summary>
+        /// Factory to create an ImageArray object out of a 2d or 3d array
+        /// </summary>
+        /// <param name="input">A 2d or 3d image array (only 2d supported right now)</param>
+        /// <param name="bitDepth">bit depth of each pixel</param>
+        /// <param name="isBayered">Flag to indicate if the image is bayer matrix encoded</param>
+        /// <param name="calculateStatistics">If false no statistics will be determined (fast mode)</param>
+        /// <param name="histogramResolution">Resolution of the histogram</param>
+        /// <returns></returns>
+        public static async Task<ImageArray> CreateInstance(Array input, int bitDepth, bool isBayered, bool calculateStatistics, int histogramResolution) {
+            ImageArray imgArray = new ImageArray();
+            int width = input.GetLength(0);
+            int height = input.GetLength(1);
+            imgArray.Statistics = new ImageStatistics(width, height, bitDepth, isBayered, histogramResolution);
             await Task.Run(() => imgArray.FlipAndConvert(input));
+
             if (calculateStatistics) {
-                await Task.Run(() => imgArray.CalculateStatistics());
+                await imgArray.Statistics.Calculate(imgArray.FlatArray);
             }
 
             return imgArray;
         }
 
-        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, bool isBayered, bool calculateStatistics, int histogramResolution) {
-            ImageArray imgArray = new ImageArray(histogramResolution);
-            imgArray.IsBayered = isBayered;
+        /// <summary>
+        /// Factory to create an ImageArray object out of a one dimensional flat array
+        /// </summary>
+        /// <param name="input">Image Array in a flat array representation</param>
+        /// <param name="width">Image data width (to be able to translate the 1d array back to 2d)</param>
+        /// <param name="height">Image data width (to be able to translate the 1d array back to 2d)</param>
+        /// <param name="bitDepth">bit depth of each pixel</param>
+        /// <param name="isBayered">Flag to indicate if the image is bayer matrix encoded</param>
+        /// <param name="calculateStatistics">If false no statistics will be determined (fast mode)</param>
+        /// <param name="histogramResolution">Resolution of the histogram</param>
+        /// <returns></returns>
+        public static async Task<ImageArray> CreateInstance(ushort[] input, int width, int height, int bitDepth, bool isBayered, bool calculateStatistics, int histogramResolution) {
+            ImageArray imgArray = new ImageArray();
             imgArray.FlatArray = input;
-            imgArray.Statistics.Width = width;
-            imgArray.Statistics.Height = height;
+            imgArray.Statistics = new ImageStatistics(width, height, bitDepth, isBayered, histogramResolution);
             if (calculateStatistics) {
-                await Task.Run(() => imgArray.CalculateStatistics());
+                await imgArray.Statistics.Calculate(imgArray.FlatArray);
             }
 
             return imgArray;
-        }
-
-        private void CalculateStatistics() {
-            using (MyStopWatch.Measure()) {
-                long sum = 0;
-                long squareSum = 0;
-                int count = this.FlatArray.Count();
-                ushort max = 0;
-                ushort oldmax = max;
-                long maxOccurrences = 0;
-                ushort min = ushort.MaxValue;
-                ushort oldmin = min;
-                long minOccurrences = 0;
-
-                double resolution = histogramResolution;
-                Dictionary<double, int> histogram = new Dictionary<double, int>();
-
-                for (var i = 0; i < this.FlatArray.Length; i++) {
-                    ushort val = this.FlatArray[i];
-                    double histogramVal = Math.Floor(val * (resolution / ushort.MaxValue));
-
-                    sum += val;
-                    squareSum += (long)val * val;
-
-                    histogram.TryGetValue(histogramVal, out var curCount);
-                    histogram[histogramVal] = curCount + 1;
-
-                    min = Math.Min(min, val);
-                    if (min != oldmin) {
-                        minOccurrences = 0;
-                    }
-                    if (val == min) {
-                        minOccurrences += 1;
-                    }
-
-                    max = Math.Max(max, val);
-                    if (max != oldmax) {
-                        maxOccurrences = 0;
-                    }
-                    if (val == max) {
-                        maxOccurrences += 1;
-                    }
-
-                    oldmin = min;
-                    oldmax = max;
-                }
-
-                double mean = sum / (double)count;
-                double variance = (squareSum - count * mean * mean) / (count);
-                double stdev = Math.Sqrt(variance);
-
-                this.Statistics.Max = max;
-                this.Statistics.MaxOccurrences = maxOccurrences;
-                this.Statistics.Min = min;
-                this.Statistics.MinOccurrences = minOccurrences;
-                this.Statistics.StDev = stdev;
-                this.Statistics.Mean = mean;
-                this.Statistics.Histogram = histogram.Select(g => new OxyPlot.DataPoint(g.Key, g.Value))
-                    .OrderBy(item => item.X).ToList();
-                this.Statistics.IsBayered = IsBayered;
-            }
         }
 
         private void FlipAndConvert(Array input) {
@@ -132,8 +86,6 @@ namespace NINA.Model.MyCamera {
                 int width = arr.GetLength(0);
                 int height = arr.GetLength(1);
 
-                this.Statistics.Width = width;
-                this.Statistics.Height = height;
                 int length = width * height;
                 ushort[] flatArray = new ushort[length];
                 ushort value;

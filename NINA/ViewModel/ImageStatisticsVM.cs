@@ -18,8 +18,6 @@ namespace NINA.ViewModel {
         public ImageStatisticsVM(IProfileService profileService) : base(profileService) {
             Title = "LblStatistics";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistogramSVG"];
-
-            Statistics = new ImageStatistics { };
         }
 
         public string CurrentDownloadToDataRatio {
@@ -85,17 +83,15 @@ namespace NINA.ViewModel {
         }
 
         private double ConvertToOutputBitDepth(double input) {
-            if (Statistics.IsBayered && profileService.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW
-                || !Statistics.IsBayered) {
-                return input * (Math.Pow(2, 16) / Math.Pow(2, _bitDepth));
-            }
+            if (Statistics != null) {
+                if (Statistics.IsBayered && profileService.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW
+                    || !Statistics.IsBayered) {
+                    return input * (Math.Pow(2, 16) / Math.Pow(2, Statistics.BitDepth));
+                }
 
-            return input;
-        }
-
-        private double _bitDepth {
-            get {
-                return profileService.ActiveProfile.CameraSettings.BitDepth;
+                return input;
+            } else {
+                return 0.0;
             }
         }
 
@@ -107,7 +103,11 @@ namespace NINA.ViewModel {
 
         private double _squaredReadNoise {
             get {
-                return ConvertToOutputBitDepth(Math.Pow(profileService.ActiveProfile.CameraSettings.ReadNoise / (profileService.ActiveProfile.CameraSettings.FullWellCapacity / Math.Pow(2, _bitDepth)), 2));
+                if (Statistics != null) {
+                    return ConvertToOutputBitDepth(Math.Pow(profileService.ActiveProfile.CameraSettings.ReadNoise / (profileService.ActiveProfile.CameraSettings.FullWellCapacity / Math.Pow(2, Statistics.BitDepth)), 2));
+                } else {
+                    return 0;
+                }
             }
         }
 

@@ -476,7 +476,7 @@ namespace NINA.Model.MyCamera {
                         throw new Exception("AltairCamera - Unable to get format information");
                     }
 
-                    this.bitDepth = bitDepth;
+                    this.BitDepth = (int)bitDepth;
 
                     if (camera.MonoMode) {
                         SensorType = SensorType.Monochrome;
@@ -558,14 +558,14 @@ namespace NINA.Model.MyCamera {
 
             AltairCam.CopyMemory(pointer, pData, (uint)size);
             ushort[] arr;
-            if (bitDepth > 8) {
+            if (BitDepth > 8) {
                 arr = CopyToUShort(pointer, size / 2);
             } else {
                 arr = Copy8BitToUShort(pointer, size / 2);
             }
             Marshal.FreeHGlobal(pointer);
 
-            imageTask = ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
             if (LiveViewEnabled) {
                 downloadLiveExposure?.TrySetResult(true);
             } else {
@@ -576,7 +576,17 @@ namespace NINA.Model.MyCamera {
         private TaskCompletionSource<object> downloadExposure;
         private TaskCompletionSource<object> downloadLiveExposure;
         private Task<ImageArray> imageTask;
-        private uint bitDepth;
+        private int bitDepth;
+
+        public int BitDepth {
+            get {
+                return bitDepth;
+            }
+            private set {
+                bitDepth = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private void OnEventDisconnected() {
             StopExposure();
