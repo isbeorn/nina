@@ -245,7 +245,7 @@ namespace NINA.Model.MyCamera {
 
         public int OffsetMax {
             get {
-                return 31 * (1 << (int)bitDepth - 8);
+                return 31 * (1 << BitDepth - 8);
             }
         }
 
@@ -554,7 +554,7 @@ namespace NINA.Model.MyCamera {
             int width = (int)info.width;
             int height = (int)info.height;
 
-            var cameraDataToManaged = new CameraDataToManaged(pData, width, height, (int)bitDepth);
+            var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth);
             var arr = cameraDataToManaged.GetData();
 
             imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
