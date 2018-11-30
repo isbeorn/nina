@@ -86,18 +86,12 @@ namespace NINA.ViewModel {
             if (Statistics != null) {
                 if (Statistics.IsBayered && profileService.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW
                     || !Statistics.IsBayered) {
-                    return input * (Math.Pow(2, 16) / Math.Pow(2, _bitDepth));
+                    return input * (Math.Pow(2, 16) / Math.Pow(2, Statistics.BitDepth));
                 }
 
                 return input;
             } else {
                 return 0.0;
-            }
-        }
-
-        private double _bitDepth {
-            get {
-                return Statistics?.BitDepth ?? 16;
             }
         }
 
@@ -109,7 +103,11 @@ namespace NINA.ViewModel {
 
         private double _squaredReadNoise {
             get {
-                return ConvertToOutputBitDepth(Math.Pow(profileService.ActiveProfile.CameraSettings.ReadNoise / (profileService.ActiveProfile.CameraSettings.FullWellCapacity / Math.Pow(2, _bitDepth)), 2));
+                if (Statistics != null) {
+                    return ConvertToOutputBitDepth(Math.Pow(profileService.ActiveProfile.CameraSettings.ReadNoise / (profileService.ActiveProfile.CameraSettings.FullWellCapacity / Math.Pow(2, Statistics.BitDepth)), 2));
+                } else {
+                    return 0;
+                }
             }
         }
 
