@@ -773,7 +773,7 @@ namespace NINA.Model.MyCamera {
                     ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
                     bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-                    return await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                    return await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                 }
             } finally {
                 /* Memory cleanup */
