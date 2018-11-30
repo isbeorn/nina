@@ -546,7 +546,7 @@ namespace NINA.ViewModel {
 
                     source = ImageAnalysis.Convert16BppTo8BppSource(source);
 
-                    if (iarr.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
+                    if (iarr.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
                         _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
                     }
@@ -562,7 +562,7 @@ namespace NINA.ViewModel {
                         GC.WaitForPendingFinalizers();
                         ImgArr = iarr;
                         Image = source;
-                        ImgStatisticsVM.Add(ImgArr.Statistics);
+                        ImgStatisticsVM.Add(iarr.Statistics);
                         ImgHistoryVM.Add(iarr.Statistics);
                     }));
 
@@ -695,7 +695,7 @@ namespace NINA.ViewModel {
                         Mean = ImgArr.Statistics.Mean,
                         HFR = ImgArr.Statistics.HFR,
                         Duration = parameters.ExposureTime,
-                        IsBayered = ImgArr.IsBayered,
+                        IsBayered = ImgArr.Statistics.IsBayered,
                         Filter = parameters.FilterName,
                         StatisticsId = ImgArr.Statistics.Id
                     }
