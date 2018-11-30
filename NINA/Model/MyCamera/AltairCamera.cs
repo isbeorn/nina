@@ -551,17 +551,19 @@ namespace NINA.Model.MyCamera {
         }
 
         private void OnImageCallback(IntPtr pData, ref AltairCam.FrameInfoV2 info, bool bSnap) {
-            int width = (int)info.width;
-            int height = (int)info.height;
+            if ((LiveViewEnabled && downloadLiveExposure?.Task.IsCompleted != true) || (!LiveViewEnabled && downloadExposure?.Task.IsCompleted != true)) {
+                int width = (int)info.width;
+                int height = (int)info.height;
 
-            var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth);
-            var arr = cameraDataToManaged.GetData();
+                var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth);
+                var arr = cameraDataToManaged.GetData();
 
-            imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-            if (LiveViewEnabled) {
-                downloadLiveExposure?.TrySetResult(true);
-            } else {
-                downloadExposure?.TrySetResult(true);
+                imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                if (LiveViewEnabled) {
+                    downloadLiveExposure?.TrySetResult(true);
+                } else {
+                    downloadExposure?.TrySetResult(true);
+                }
             }
         }
 
