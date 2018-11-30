@@ -473,11 +473,12 @@ namespace NINA.Model.MyCamera {
 
                         token.ThrowIfCancellationRequested();
 
-                    using (var memoryStream = new System.IO.MemoryStream(bytes)) {
-                        var converter = RawConverter.CreateInstance(profileService.Profiles.ActiveProfile.CameraSettings.RawConverter);
-                        var iarr = await converter.ConvertToImageArray(memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, token);
-                        iarr.RAWType = "cr2";
-                        return iarr;
+                        using (var memoryStream = new System.IO.MemoryStream(bytes)) {
+                            var converter = RawConverter.CreateInstance(profileService.Profiles.ActiveProfile.CameraSettings.RawConverter);
+                            var iarr = await converter.ConvertToImageArray(memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, token);
+                            iarr.RAWType = "cr2";
+                            return iarr;
+                        }
                     }
                 } finally {
                     /* Memory cleanup */
