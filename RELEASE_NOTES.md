@@ -16,6 +16,7 @@
     - Focuser move command fixed where lots of move commands where sent by accident
     - Rotation value now considered for sequence import|export
     - Canon: Fixed bulb mode for exposure times <30s
+    - Canon: All shutter speeds now correctly added when step set custom function is set to 1/3
 
 ## Improvements
 
@@ -23,6 +24,7 @@
     - Hide camera cooler controls when not available for current camera model
     - Zero Floating point numbers now displayed as "0.00" instead of ".00"
     - Show better exception message when an ASCOM Interop Exception occurs
+    - Canon: Errors are now shown to users in a readable format if any occur
 
 ___
 
