@@ -257,6 +257,13 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int BitDepth {
+            get {
+                //currently ASI camera values are stretched to fit 16 bit
+                return 16;
+            }
+        }
+
         public bool CoolerOn {
             get {
                 var value = GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);
@@ -384,7 +391,7 @@ namespace NINA.Model.MyCamera {
                     var arr = cameraDataToManaged.GetData();
                     Marshal.FreeHGlobal(pointer);
 
-                    return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                    return await ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);
@@ -619,7 +626,7 @@ namespace NINA.Model.MyCamera {
             var arr = cameraDataToManaged.GetData();
             Marshal.FreeHGlobal(pointer);
 
-            return await ImageArray.CreateInstance(arr, width, height, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            return await ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
         }
 
         private bool GetVideoData(IntPtr buffer, int bufferSize) {

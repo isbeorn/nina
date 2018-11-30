@@ -751,7 +751,11 @@
                                     <TextBox.Text>
                                         <Binding Path="BitDepth" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
-                                                <rules:GreaterZeroRule />
+                                                <util:ShortRangeRule>
+                                                    <util:ShortRangeRule.ValidRange>
+                                                        <util:ShortRangeChecker Maximum="16" Minimum="8" />
+                                                    </util:ShortRangeRule.ValidRange>
+                                                </util:ShortRangeRule>
                                             </Binding.ValidationRules>
                                         </Binding>
                                     </TextBox.Text>

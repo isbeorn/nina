@@ -16,7 +16,7 @@ namespace NINA.Utility.RawConverter {
         private static string DCRAWLOCATION = @"Utility\DCRaw\dcraw.exe";
         public static string FILEPREFIX = "dcraw_tmp";
 
-        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, CancellationToken token, int histogramResolution) {
+        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, int histogramResolution, CancellationToken token) {
             return await Task.Run(async () => {
                 using (MyStopWatch.Measure()) {
                     var fileextension = ".raw";
@@ -58,7 +58,11 @@ namespace NINA.Utility.RawConverter {
                                 BitmapFrame bmp = TifDec.Frames[0];
                                 ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
                                 bmp.CopyPixels(pixels, 2 * bmp.PixelWidth, 0);
-                                iarr = await ImageArray.CreateInstance(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, true, true, histogramResolution);
+
+                                //Due to the settings of dcraw decoding the values will be stretched to 16 bits
+                                bitDepth = 16;
+
+                                iarr = await ImageArray.CreateInstance(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, bitDepth, true, true, histogramResolution);
                                 iarr.RAWData = s.ToArray();
                             } else {
                                 Notification.Notification.ShowError("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());
