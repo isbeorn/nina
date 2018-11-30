@@ -655,6 +655,17 @@ namespace NINA.ViewModel {
                 Logger.Error(ex);
             }
 
+            /* ToupTek */
+            try {
+                Logger.Trace("Adding ToupTek Cameras");
+                foreach (var instance in ToupTek.ToupCam.EnumV2()) {
+                    var cam = new ToupTekCamera(instance, profileService);
+                    Devices.Add(cam);
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
             DetermineSelectedDevice(profileService.ActiveProfile.CameraSettings.Id);
         }
     }
