@@ -383,13 +383,15 @@ namespace NINA.Model.MyCamera {
                     int size = width * height * 2;
                     var pointer = Marshal.AllocHGlobal(size);
                     int buffersize = (width * height * 16 + 7) / 8;
-                    if (GetExposureData(pointer, buffersize)) {
-                        ushort[] arr = CopyToUShort(pointer, size / 2);
-                        Marshal.FreeHGlobal(pointer);
-                        return await ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-                    } else {
-                        Notification.ShowError(Locale.Loc.Instance["LblASIImageDownloadError"]);
+                    if (!GetExposureData(pointer, buffersize)) {
+                        throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
                     }
+
+                    var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16);
+                    var arr = cameraDataToManaged.GetData();
+                    Marshal.FreeHGlobal(pointer);
+
+                    return await ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);
@@ -397,17 +399,6 @@ namespace NINA.Model.MyCamera {
                 }
                 return null;
             });
-        }
-
-        private ushort[] CopyToUShort(IntPtr source, int length) {
-            var destination = new ushort[length];
-            unsafe {
-                var sourcePtr = (ushort*)source;
-                for (int i = 0; i < length; ++i) {
-                    destination[i] = *sourcePtr++;
-                }
-            }
-            return destination;
         }
 
         private bool GetExposureData(IntPtr buffer, int bufferSize) {
@@ -624,13 +615,22 @@ namespace NINA.Model.MyCamera {
             var height = CaptureAreaInfo.Size.Height;
 
             int size = width * height * 2;
-            IntPtr pointer = Marshal.AllocHGlobal(size);
-            int buffersize = (width * height * 16 + 7) / 8;
-            ASICameraDll.GetVideoData(_cameraId, pointer, buffersize, -1);
 
-            ushort[] arr = CopyToUShort(pointer, size / 2);
+            var pointer = Marshal.AllocHGlobal(size);
+            int buffersize = (width * height * 16 + 7) / 8;
+            if (!GetVideoData(pointer, buffersize)) {
+                throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
+            }
+
+            var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16);
+            var arr = cameraDataToManaged.GetData();
             Marshal.FreeHGlobal(pointer);
+
             return await ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+        }
+
+        private bool GetVideoData(IntPtr buffer, int bufferSize) {
+            return ASICameraDll.GetVideoData(_cameraId, buffer, bufferSize, -1);
         }
 
         public void StopLiveView() {
