@@ -45,5 +45,6 @@ This project is utilizing a standard git flow where it has the following branche
 	* Altair SDK: reach out to AltairAstro. They can provide you with their sdk. Contact details at https://cameras.altairastro.com/
 	* ASI SDK: SDK is available at https://astronomy-imaging-camera.com/software-drivers section "For Developers"
 	* Atik SDK: SDK is available at https://www.atik-cameras.com/downloads/
+	* ToupTek SDK: SDK is available at http://www.touptek.com/upload/download/toupcamsdk.zip
     * Due to licensing of those files, they must not be put into a public repository
 * (Optional) To be able to build the setup projects you need to install [WiX](http://wixtoolset.org/) and their [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=RobMensching.WixToolsetVisualStudio2017Extension)

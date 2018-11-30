@@ -48,6 +48,12 @@ namespace Altair {
 #else
     public class SafeCamHandle : SafeHandle
     {
+        private const string DLLNAME = "altaircam.dll";
+
+        static SafeCamHandle() {
+            DllLoader.LoadDll("Altair/" + DLLNAME);
+        }
+
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
         private static extern void Altaircam_Close(IntPtr h);
 

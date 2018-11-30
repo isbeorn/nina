@@ -1,26 +1,24 @@
-﻿using Altair;
-using ASCOM.DeviceInterface;
+﻿using ASCOM.DeviceInterface;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ToupTek;
 
 namespace NINA.Model.MyCamera {
 
-    internal class AltairCamera : BaseINPC, ICamera {
-        private AltairCam.eFLAG flags;
-        private AltairCam camera;
+    internal class ToupTekCamera : BaseINPC, ICamera {
+        private ToupCam.eFLAG flags;
+        private ToupCam camera;
 
-        public AltairCamera(AltairCam.InstanceV2 instance, IProfileService profileService) {
+        public ToupTekCamera(ToupCam.InstanceV2 instance, IProfileService profileService) {
             this.profileService = profileService;
             this.Id = instance.id;
             this.Name = instance.displayname;
@@ -28,7 +26,7 @@ namespace NINA.Model.MyCamera {
             this.PixelSizeX = instance.model.xpixsz;
             this.PixelSizeY = instance.model.ypixsz;
 
-            this.flags = (AltairCam.eFLAG)instance.model.flag;
+            this.flags = (ToupCam.eFLAG)instance.model.flag;
         }
 
         private IProfileService profileService;
@@ -49,7 +47,7 @@ namespace NINA.Model.MyCamera {
         public double TemperatureSetPoint {
             get {
                 if (CanSetTemperature) {
-                    camera.get_Option(AltairCam.eOPTION.OPTION_TECTARGET, out var target);
+                    camera.get_Option(ToupCam.eOPTION.OPTION_TECTARGET, out var target);
                     return target / 10.0;
                 } else {
                     return double.MinValue;
@@ -57,7 +55,7 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 if (CanSetTemperature) {
-                    if (camera.put_Option(AltairCam.eOPTION.OPTION_TECTARGET, (int)(value * 10))) {
+                    if (camera.put_Option(ToupCam.eOPTION.OPTION_TECTARGET, (int)(value * 10))) {
                         RaisePropertyChanged();
                     }
                 }
@@ -150,14 +148,14 @@ namespace NINA.Model.MyCamera {
 
         public bool CoolerOn {
             get {
-                camera.get_Option(AltairCam.eOPTION.OPTION_TEC, out var cooler);
+                camera.get_Option(ToupCam.eOPTION.OPTION_TEC, out var cooler);
                 return cooler == 1;
             }
 
             set {
-                if (camera.put_Option(AltairCam.eOPTION.OPTION_TEC, value ? 1 : 0)) {
+                if (camera.put_Option(ToupCam.eOPTION.OPTION_TEC, value ? 1 : 0)) {
                     //Toggle fan, if supported
-                    camera.put_Option(AltairCam.eOPTION.OPTION_FAN, value ? 1 : 0);
+                    camera.put_Option(ToupCam.eOPTION.OPTION_FAN, value ? 1 : 0);
                     RaisePropertyChanged();
                 }
             }
@@ -182,7 +180,7 @@ namespace NINA.Model.MyCamera {
         public bool CanSubSample {
             get {
                 /*
-                 Currently Altair Cameras are fixed to certain subsample resolutions, which is incompatible to NINA's approach
+                 Currently ToupTek Cameras are fixed to certain subsample resolutions, which is incompatible to NINA's approach
                  */
                 return false;
             }
@@ -226,11 +224,11 @@ namespace NINA.Model.MyCamera {
 
         public int Offset {
             get {
-                camera.get_Option(AltairCam.eOPTION.OPTION_BLACKLEVEL, out var level);
+                camera.get_Option(ToupCam.eOPTION.OPTION_BLACKLEVEL, out var level);
                 return level;
             }
             set {
-                if (!camera.put_Option(AltairCam.eOPTION.OPTION_BLACKLEVEL, value)) {
+                if (!camera.put_Option(ToupCam.eOPTION.OPTION_BLACKLEVEL, value)) {
                 } else {
                     RaisePropertyChanged();
                 }
@@ -392,13 +390,13 @@ namespace NINA.Model.MyCamera {
 
         public string DriverInfo {
             get {
-                return "Altair Astro SDK";
+                return "ToupTek SDK";
             }
         }
 
         public string DriverVersion {
             get {
-                return AltairCam.Version();
+                return ToupCam.Version();
             }
         }
 
@@ -422,19 +420,19 @@ namespace NINA.Model.MyCamera {
             return Task<bool>.Run(() => {
                 var success = false;
                 try {
-                    camera = new AltairCam();
+                    camera = new ToupCam();
                     camera.Open(this.Id);
 
                     success = true;
 
                     /* Use maximum bit depth */
-                    if (!camera.put_Option(AltairCam.eOPTION.OPTION_BITDEPTH, 1)) {
-                        throw new Exception("AltairCamera - Could not set bit depth");
+                    if (!camera.put_Option(ToupCam.eOPTION.OPTION_BITDEPTH, 1)) {
+                        throw new Exception("ToupTekCamera - Could not set bit depth");
                     }
 
                     /* Use RAW Mode */
-                    if (!camera.put_Option(AltairCam.eOPTION.OPTION_RAW, 1)) {
-                        throw new Exception("AltairCamera - Could not set RAW mode");
+                    if (!camera.put_Option(ToupCam.eOPTION.OPTION_RAW, 1)) {
+                        throw new Exception("ToupTekCamera - Could not set RAW mode");
                     }
 
                     camera.put_AutoExpoEnable(false);
@@ -446,34 +444,34 @@ namespace NINA.Model.MyCamera {
                     this.CameraYSize = height;
 
                     /* Readout flags */
-                    if ((this.flags & AltairCam.eFLAG.FLAG_PUTTEMPERATURE) != 0) {
+                    if ((this.flags & ToupCam.eFLAG.FLAG_PUTTEMPERATURE) != 0) {
                         /* Can set Target Temp */
                         CanSetTemperature = true;
                     }
 
-                    if ((this.flags & AltairCam.eFLAG.FLAG_GETTEMPERATURE) != 0) {
+                    if ((this.flags & ToupCam.eFLAG.FLAG_GETTEMPERATURE) != 0) {
                         /* Can get Target Temp */
                         CanGetTemperature = true;
                     }
 
-                    if ((this.flags & AltairCam.eFLAG.FLAG_BLACKLEVEL) != 0) {
+                    if ((this.flags & ToupCam.eFLAG.FLAG_BLACKLEVEL) != 0) {
                         CanSetOffset = true;
                     }
 
-                    if ((this.flags & AltairCam.eFLAG.FLAG_TRIGGER_SOFTWARE) == 0) {
-                        throw new Exception("AltairCamera - This camera is not capable to be triggered by software and is not supported");
+                    if ((this.flags & ToupCam.eFLAG.FLAG_TRIGGER_SOFTWARE) == 0) {
+                        throw new Exception("ToupTekCamera - This camera is not capable to be triggered by software and is not supported");
                     }
 
-                    if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 1)) {
-                        throw new Exception("AltairCamera - Could not set Trigger manual mode");
+                    if (!camera.put_Option(ToupCam.eOPTION.OPTION_TRIGGER, 1)) {
+                        throw new Exception("ToupTekCamera - Could not set Trigger manual mode");
                     }
 
-                    if (!camera.StartPushModeV2(new AltairCam.DelegateDataCallbackV2(OnImageCallback))) {
-                        throw new Exception("AltairCamera - Could not start push mode");
+                    if (!camera.StartPushModeV2(new ToupCam.DelegateDataCallbackV2(OnImageCallback))) {
+                        throw new Exception("ToupTekCamera - Could not start push mode");
                     }
 
                     if (!camera.get_RawFormat(out var fourCC, out var bitDepth)) {
-                        throw new Exception("AltairCamera - Unable to get format information");
+                        throw new Exception("ToupTekCamera - Unable to get format information");
                     }
 
                     this.BitDepth = (int)bitDepth;
@@ -515,7 +513,7 @@ namespace NINA.Model.MyCamera {
 
         public void SetBinning(short x, short y) {
             if (x <= MaxBinX) {
-                camera.put_Option(AltairCam.eOPTION.OPTION_BINNING, x);
+                camera.put_Option(ToupCam.eOPTION.OPTION_BINNING, x);
             }
         }
 
@@ -536,7 +534,7 @@ namespace NINA.Model.MyCamera {
 
             var µsTime = (uint)(time * 1000000);
             if (!camera.put_ExpoTime(µsTime)) {
-                throw new Exception("AltairCamera - Could not set exposure time");
+                throw new Exception("ToupTekCamera - Could not set exposure time");
             }
         }
 
@@ -546,11 +544,11 @@ namespace NINA.Model.MyCamera {
             SetExposureTime(exposureTime);
 
             if (!camera.Trigger(1)) {
-                throw new Exception("AltairCamera - Failed to trigger camera");
+                throw new Exception("ToupTekCamera - Failed to trigger camera");
             }
         }
 
-        private void OnImageCallback(IntPtr pData, ref AltairCam.FrameInfoV2 info, bool bSnap) {
+        private void OnImageCallback(IntPtr pData, ref ToupCam.FrameInfoV2 info, bool bSnap) {
             if ((LiveViewEnabled && downloadLiveExposure?.Task.IsCompleted != true) || (!LiveViewEnabled && downloadExposure?.Task.IsCompleted != true)) {
                 int width = (int)info.width;
                 int height = (int)info.height;
@@ -588,8 +586,8 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartLiveView() {
-            if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 0)) {
-                throw new Exception("AltairCamera - Could not set Trigger video mode");
+            if (!camera.put_Option(ToupCam.eOPTION.OPTION_TRIGGER, 0)) {
+                throw new Exception("ToupTekCamera - Could not set Trigger video mode");
             }
             downloadLiveExposure = new TaskCompletionSource<object>();
             LiveViewEnabled = true;
@@ -597,14 +595,14 @@ namespace NINA.Model.MyCamera {
 
         public void StopExposure() {
             if (!camera.Trigger(0)) {
-                Logger.Warning("AltairCamera - Could not stop exposure");
+                Logger.Warning("ToupTekCamera - Could not stop exposure");
             }
         }
 
         public void StopLiveView() {
-            if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 1)) {
+            if (!camera.put_Option(ToupCam.eOPTION.OPTION_TRIGGER, 1)) {
                 Disconnect();
-                throw new Exception("AltairCamera - Could not set Trigger manual mode. Reconnect Camera!");
+                throw new Exception("ToupTekCamera - Could not set Trigger manual mode. Reconnect Camera!");
             }
             LiveViewEnabled = false;
         }

@@ -91,6 +91,8 @@
       <ComponentGroupRef Id="External_x64_SQLite_files" />
       <ComponentGroupRef Id="External_x86_Altair_files" />
       <ComponentGroupRef Id="External_x64_Altair_files" />
+      <ComponentGroupRef Id="External_x64_ToupTek_files" />
+      <ComponentGroupRef Id="External_x86_ToupTek_files" />
     </Feature>
   </Product>
 
@@ -133,6 +135,7 @@
               </Directory>
               <Directory Id="External_x64_SQLite" Name="SQLite" />
               <Directory Id="External_x64_Altair" Name="Altair" />
+              <Directory Id="External_x64_ToupTek" Name="ToupTek" />
             </Directory>
             <Directory Id="External_x86" Name="x86">
               <Directory Id="External_x86_Nikon" Name="Nikon">
@@ -165,6 +168,7 @@
               <Directory Id="External_x86_ASI" Name="ASI" />
               <Directory Id="External_x86_SQLite" Name="SQLite" />
               <Directory Id="External_x86_Altair" Name="Altair" />
+              <Directory Id="External_x86_ToupTek" Name="ToupTek" />
             </Directory>
           </Directory>
           <Directory Id="Utility" Name="Utility">
@@ -1155,6 +1159,23 @@
       </Component>
       <Component Win64="yes" Id="External_x64_Altair_altaircam.dll" Guid="54f75954-da94-4c89-86e8-4a8d4e9229c7">
         <File Id="External_x64_Altair_altaircam.dll" Name="altaircam.dll" Source="$(var.NINA_TargetDir)External\x64\Altair\altaircam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_ToupTek_files" Directory="External_x64_ToupTek">
+      <Component Win64="yes" Id="External_x64_ToupTek_toupcam.dll" Guid="791c2974-a774-4723-a7cd-b808a1b2e1e9">
+        <File Id="External_x64_ToupTek_toupcam.dll" Name="toupcam.dll" Source="$(var.NINA_TargetDir)External\x64\ToupTek\toupcam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x86_ToupTek_files" Directory="External_x86_ToupTek">
+      <Component Win64="yes" Id="External_x86_ToupTek_updatefw.exe" Guid="968ed6dc-9379-485e-8c7e-7274bd589293">
+        <File Id="External_x86_ToupTek_updatefw.exe" Name="updatefw.exe" Source="$(var.NINA_TargetDir)External\x86\ToupTek\updatefw.exe" />
+      </Component>
+      <Component Win64="yes" Id="External_x86_ToupTek_toupcam.dll" Guid="c6eb2a4b-8c5c-4459-9a4b-8d76a1fff868">
+        <File Id="External_x86_ToupTek_toupcam.dll" Name="toupcam.dll" Source="$(var.NINA_TargetDir)External\x86\ToupTek\toupcam.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
