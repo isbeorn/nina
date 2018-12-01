@@ -486,6 +486,27 @@
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
+                            <Border
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Visibility="{Binding Cam.HasDewHeater, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                <UniformGrid Columns="2">
+                                    <UniformGrid
+                                        Margin="0,6,0,6"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDewHeater}" />
+                                        <CheckBox
+                                            Width="75"
+                                            Height="25"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            Command="{Binding ToggleDewHeaterOnCommand}"
+                                            CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                            IsChecked="{Binding CameraInfo.DewHeaterOn}" />
+                                    </UniformGrid>
+                                </UniformGrid>
+                            </Border>
 
                             <Grid VerticalAlignment="Bottom" Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
 

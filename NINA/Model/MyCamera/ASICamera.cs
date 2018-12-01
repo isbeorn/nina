@@ -140,7 +140,7 @@ namespace NINA.Model.MyCamera {
                 if (CanSetTemperature) {
                     return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
                 } else {
-                    return double.MinValue;
+                    return Double.NaN;
                 }
             }
             set {
@@ -301,6 +301,29 @@ namespace NINA.Model.MyCamera {
         public double CoolerPower {
             get {
                 return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_POWER_PERC);
+            }
+        }
+
+        public bool HasDewHeater {
+            get {
+                bool rv;
+
+                if ((rv = GetControlIsWritable(ASICameraDll.ASI_CONTROL_TYPE.ASI_ANTI_DEW_HEATER)) == true) {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public bool DewHeaterOn {
+            get {
+                int val = GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_ANTI_DEW_HEATER);
+                return val == 0 ? false : true;
+            }
+            set {
+                if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_ANTI_DEW_HEATER, value ? 1 : 0)) {
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -566,6 +589,11 @@ namespace NINA.Model.MyCamera {
             return control?.MinValue ?? 0;
         }
 
+        private bool GetControlIsWritable(ASICameraDll.ASI_CONTROL_TYPE type) {
+            var control = GetControl(type);
+            return control?.IsWritable ?? false;
+        }
+
         private bool SetControlValue(ASICameraDll.ASI_CONTROL_TYPE type, int value) {
             var control = GetControl(type);
             if (control != null && value <= control.MaxValue && value >= control.MinValue) {
@@ -706,7 +734,7 @@ namespace NINA.Model.MyCamera {
         public int DefaultValue { get { return _props.DefaultValue; } }
         public ASICameraDll.ASI_CONTROL_TYPE ControlType { get { return _props.ControlType; } }
         public bool IsAutoAvailable { get { return _props.IsAutoSupported != ASICameraDll.ASI_BOOL.ASI_FALSE; } }
-        public bool Writeable { get { return _props.IsWritable != ASICameraDll.ASI_BOOL.ASI_FALSE; } }
+        public bool IsWritable { get { return _props.IsWritable != ASICameraDll.ASI_BOOL.ASI_FALSE; } }
 
         public int Value {
             get {

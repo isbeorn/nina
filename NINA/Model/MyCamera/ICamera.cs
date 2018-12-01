@@ -48,6 +48,8 @@ namespace NINA.Model.MyCamera {
         bool CanSetTemperature { get; }
         bool CoolerOn { get; set; }
         double CoolerPower { get; }
+        bool HasDewHeater { get; }
+        bool DewHeaterOn { get; set; }
         string CameraState { get; }
         bool CanSubSample { get; }
         bool EnableSubSample { get; set; }

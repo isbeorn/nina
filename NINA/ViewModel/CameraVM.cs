@@ -65,6 +65,7 @@ namespace NINA.ViewModel {
             CoolerPowerHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             ToggleCoolerOnCommand = new RelayCommand(ToggleCoolerOn);
+            ToggleDewHeaterOnCommand = new RelayCommand(ToggleDewHeaterOn);
 
             updateTimer = new DeviceUpdateTimer(
                 GetCameraValues,
@@ -294,6 +295,7 @@ namespace NINA.ViewModel {
                                 Connected = true,
                                 CoolerOn = Cam.CoolerOn,
                                 CoolerPower = Cam.CoolerPower,
+                                DewHeaterOn = Cam.DewHeaterOn,
                                 Gain = Cam.Gain,
                                 HasShutter = Cam.HasShutter,
                                 IsSubSampleEnabled = Cam.EnableSubSample,
@@ -369,6 +371,12 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void ToggleDewHeaterOn(object o) {
+            if (CameraInfo.Connected) {
+                Cam.DewHeaterOn = (bool)o;
+            }
+        }
+
         private void BroadcastCameraInfo() {
             cameraMediator.Broadcast(CameraInfo);
         }
@@ -391,6 +399,9 @@ namespace NINA.ViewModel {
             cameraValues.TryGetValue(nameof(CameraInfo.CoolerPower), out o);
             CameraInfo.CoolerPower = (double)(o ?? double.NaN);
 
+            cameraValues.TryGetValue(nameof(CameraInfo.DewHeaterOn), out o);
+            CameraInfo.DewHeaterOn = (bool)(o ?? false);
+
             cameraValues.TryGetValue(nameof(CameraInfo.CameraState), out o);
             CameraInfo.CameraState = (string)(o ?? string.Empty);
 
@@ -410,6 +421,7 @@ namespace NINA.ViewModel {
             cameraValues.Add(nameof(CameraInfo.CoolerOn), _cam?.CoolerOn ?? false);
             cameraValues.Add(nameof(CameraInfo.Temperature), _cam?.Temperature ?? double.NaN);
             cameraValues.Add(nameof(CameraInfo.CoolerPower), _cam?.CoolerPower ?? double.NaN);
+            cameraValues.Add(nameof(CameraInfo.DewHeaterOn), _cam?.DewHeaterOn ?? false);
             cameraValues.Add(nameof(CameraInfo.CameraState), _cam?.CameraState ?? string.Empty);
             if (_cam != null && _cam.HasBattery) {
                 cameraValues.Add(nameof(CameraInfo.Battery), _cam?.BatteryLevel ?? -1);
@@ -568,6 +580,7 @@ namespace NINA.ViewModel {
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
         public ICommand ToggleCoolerOnCommand { get; private set; }
         public ICommand CoolCamCommand { get; private set; }
+        public ICommand ToggleDewHeaterOnCommand { get; private set; }
 
         private IApplicationStatusMediator applicationStatusMediator;
 

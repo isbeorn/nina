@@ -48,6 +48,8 @@
     <s:String x:Key="LblCoolerPower">Kühlerleistung</s:String>
     <s:String x:Key="LblChipTemp">Chip Temperatur</s:String>
     <s:String x:Key="LblTargetTemp">Zieltemperatur</s:String>
+    <s:String x:Key="LblDewHeater">Kameratauheizung</s:String>
+    <s:String x:Key="LblDewHeaterShort">Tauheizung</s:String>
     <s:String x:Key="LblDuration">Dauer</s:String>
     <s:String x:Key="LblExposureTime">Belichtungszeit</s:String>
     <s:String x:Key="LblFilter">Filter</s:String>

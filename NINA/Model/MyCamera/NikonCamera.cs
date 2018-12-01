@@ -406,7 +406,6 @@ namespace NINA.Model.MyCamera {
             get {
                 return false;
             }
-
             set {
             }
         }
@@ -414,6 +413,20 @@ namespace NINA.Model.MyCamera {
         public double CoolerPower {
             get {
                 return double.NaN;
+            }
+        }
+
+        public bool HasDewHeater {
+            get {
+                return false;
+            }
+        }
+
+        public bool DewHeaterOn {
+            get {
+                return false;
+            }
+            set {
             }
         }
 
