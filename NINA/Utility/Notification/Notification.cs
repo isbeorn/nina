@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using ToastNotifications;
 using ToastNotifications.Core;
 using ToastNotifications.Lifetime;
+using ToastNotifications.Lifetime.Clear;
 using ToastNotifications.Position;
 using ToastNotifications.Utilities;
 
@@ -40,7 +41,7 @@ namespace NINA.Utility.Notification {
                 cfg.PositionProvider = new PrimaryScreenPositionProvider(
                     corner: Corner.BottomRight,
                     offsetX: 1,
-                    offsetY: 40);
+                    offsetY: 1);
 
                 cfg.LifetimeSupervisor = new CustomLifetimeSupervisor();
             });
@@ -305,12 +306,19 @@ namespace NINA.Utility.Notification {
             }
         }
 
+        public void ClearMessages(IClearStrategy clearStrategy) {
+            var notifications = clearStrategy.GetNotificationsToRemove(_notifications);
+            foreach (var notification in notifications) {
+                CloseNotification(notification);
+            }
+        }
+
         public event EventHandler<ShowNotificationEventArgs> ShowNotificationRequested;
 
         public event EventHandler<CloseNotificationEventArgs> CloseNotificationRequested;
     }
 
-    public class CustomNotificationsList : ConcurrentDictionary<int, NotificationMetaData> {
+    public class CustomNotificationsList : NotificationsList {
         private int _id = 0;
 
         public NotificationMetaData Add(INotification notification, bool neverEnding) {
