@@ -289,15 +289,19 @@ namespace NINA.ViewModel {
 
             Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoFilterwheel"]));
 
-            var ascomDevices = new ASCOM.Utilities.Profile();
+            try {
+                var ascomDevices = new ASCOM.Utilities.Profile();
 
-            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("FilterWheel")) {
-                try {
-                    AscomFilterWheel cam = new AscomFilterWheel(device.Key, device.Value);
-                    Devices.Add(cam);
-                } catch (Exception) {
-                    //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
+                foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("FilterWheel")) {
+                    try {
+                        AscomFilterWheel cam = new AscomFilterWheel(device.Key, device.Value);
+                        Devices.Add(cam);
+                    } catch (Exception) {
+                        //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
+                    }
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             Devices.Add(new ManualFilterWheel(this.profileService));

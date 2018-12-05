@@ -543,15 +543,19 @@ namespace NINA.ViewModel {
 
             Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoTelescope"]));
 
-            var ascomDevices = new ASCOM.Utilities.Profile();
+            try {
+                var ascomDevices = new ASCOM.Utilities.Profile();
 
-            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Telescope")) {
-                try {
-                    AscomTelescope cam = new AscomTelescope(device.Key, device.Value, profileService);
-                    Devices.Add(cam);
-                } catch (Exception) {
-                    //only add telescopes which are supported. e.g. x86 drivers will not work in x64
+                foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Telescope")) {
+                    try {
+                        AscomTelescope cam = new AscomTelescope(device.Key, device.Value, profileService);
+                        Devices.Add(cam);
+                    } catch (Exception) {
+                        //only add telescopes which are supported. e.g. x86 drivers will not work in x64
+                    }
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             DetermineSelectedDevice(profileService.ActiveProfile.TelescopeSettings.Id);
