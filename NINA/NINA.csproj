@@ -321,6 +321,7 @@
     <Compile Include="PlateSolving\AllSkyPlateSolver.cs" />
     <Compile Include="PlateSolving\Platesolve2Solver.cs" />
     <Compile Include="PlateSolving\PlateSolverFactory.cs" />
+    <Compile Include="Utility\ASCOMInteraction.cs" />
     <Compile Include="Utility\CameraSDKs\AltairSDK\altaircam.cs" />
     <Compile Include="Utility\CameraSDKs\ASISDK\ASICameraDll.cs" />
     <Compile Include="Model\MyFilterWheel\AscomFilterWheel.cs" />

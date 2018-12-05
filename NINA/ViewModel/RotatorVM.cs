@@ -263,15 +263,8 @@ namespace NINA.ViewModel {
             Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoRotator"]));
 
             try {
-                var ascomDevices = new ASCOM.Utilities.Profile();
-
-                foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Rotator")) {
-                    try {
-                        AscomRotator rotator = new AscomRotator(device.Key, device.Value);
-                        Devices.Add(rotator);
-                    } catch (Exception) {
-                        //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
-                    }
+                foreach (IRotator rotator in ASCOMInteraction.GetRotators(profileService)) {
+                    Devices.Add(rotator);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
