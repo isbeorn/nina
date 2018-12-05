@@ -1057,8 +1057,13 @@ namespace NINA.Model.MyTelescope {
             }
         }
 
+        private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
+            new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
+
+        private static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }
+
         public bool Sync(string ra, string dec) {
-            return Sync(Utility.Utility.AscomUtil.HMSToHours(ra), Utility.Utility.AscomUtil.DMSToDegrees(dec));
+            return Sync(AscomUtil.HMSToHours(ra), AscomUtil.DMSToDegrees(dec));
         }
 
         public bool Sync(double ra, double dec) {

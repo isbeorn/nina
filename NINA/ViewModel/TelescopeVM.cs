@@ -482,8 +482,8 @@ namespace NINA.ViewModel {
         }
 
         private void SlewToCoordinates(object obj) {
-            var targetRightAscencion = Utility.Utility.AscomUtil.HMSToHours(TargetRightAscencionHours + ":" + TargetRightAscencionMinutes + ":" + TargetRightAscencionSeconds);
-            var targetDeclination = Utility.Utility.AscomUtil.DMSToDegrees(TargetDeclinationDegrees + ":" + TargetDeclinationMinutes + ":" + TargetDeclinationSeconds);
+            var targetRightAscencion = TargetRightAscencionHours + Astrometry.ArcminToDegree(TargetRightAscencionMinutes) + Astrometry.ArcsecToDegree(TargetRightAscencionSeconds);
+            var targetDeclination = TargetDeclinationDegrees + Astrometry.ArcminToDegree(TargetDeclinationMinutes) + Astrometry.ArcsecToDegree(TargetDeclinationSeconds);
 
             var coords = new Coordinates(targetRightAscencion, targetDeclination, Epoch.J2000, Coordinates.RAType.Hours);
             SlewToCoordinates(coords);

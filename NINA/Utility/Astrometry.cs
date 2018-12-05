@@ -10,7 +10,7 @@ namespace NINA.Utility.Astrometry {
     public class Astrometry {
         private static ASCOM.Astrometry.AstroUtils.AstroUtils _astroUtils;
 
-        public static ASCOM.Astrometry.AstroUtils.AstroUtils AstroUtils {
+        private static ASCOM.Astrometry.AstroUtils.AstroUtils AstroUtils {
             get {
                 if (_astroUtils == null) {
                     _astroUtils = new ASCOM.Astrometry.AstroUtils.AstroUtils();
@@ -78,19 +78,34 @@ namespace NINA.Utility.Astrometry {
             return NOVAS.JulianDate((short)utcdate.Year, (short)utcdate.Month, (short)utcdate.Day, utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0);
         }
 
+        public static double DeltaT(DateTime date) {
+            var daysInYear = DateTime.IsLeapYear(date.Year) ? 366d : 365d;
+            var yearFraction = date.Year + date.DayOfYear / daysInYear;
+
+            return DeltaTInternal(yearFraction);
+        }
+
+        public static double DeltaT(double julianDate) {
+            short year = 0, month = 0, day = 0;
+            double hour = 0;
+            NOVAS.CalDate(julianDate, ref year, ref month, ref day, ref hour);
+
+            var date = new DateTime(year, month, day);
+            var daysInYear = DateTime.IsLeapYear(year) ? 366d : 365d;
+            var yearFraction = year + date.DayOfYear / daysInYear;
+
+            return DeltaTInternal(yearFraction);
+        }
+
         /// <summary>
         /// Calculates the value of DeltaT for years 2012 and later
         /// prior to 2012 will throw NotSupportedException!
         /// Calculations are based on best fit to DeltaT data from: http://maia.usno.navy.mil/ser7/deltat.data and http://maia.usno.navy.mil/ser7/deltat.preds
+        /// Published DeltaT information: https://www.usno.navy.mil/USNO/earth-orientation/eo-products/long-term
         /// </summary>
-        /// <param name="julianDate">Julian Date</param>
+        /// <param name="yearFraction">Fraction of year (e.g. 2018.324234)</param>
         /// <returns>DeltaT at given date</returns>
-        public static double DeltaT(double julianDate) {
-            double j2000 = 2451545.0; //J2000.0 julian date
-
-            //Year fraction approximation
-            double yearFraction = 2000.0 + (julianDate - j2000) / 365.25;
-
+        private static double DeltaTInternal(double yearFraction) {
             if (yearFraction >= 2018) {
                 return (0.0024855297566049 * Math.Pow(yearFraction, 3)) + (-15.0681141702439 * Math.Pow(yearFraction, 2)) + (30449.647471213 * yearFraction) - 20511035.5077593;
             }
@@ -129,7 +144,7 @@ namespace NINA.Utility.Astrometry {
             double jd_low = jd - jd_high;
 
             double lst = 0;
-            NOVAS.SiderealTime(jd_high, jd_low, DeltaT(jd), NOVAS.GstType.GreenwichApparentSiderealTime, NOVAS.Method.EquinoxBased, NOVAS.Accuracy.Full, ref lst);
+            NOVAS.SiderealTime(jd_high, jd_low, DeltaT(date), NOVAS.GstType.GreenwichApparentSiderealTime, NOVAS.Method.EquinoxBased, NOVAS.Accuracy.Full, ref lst);
             lst = lst + DegreesToHours(longitude);
             return lst;
         }
@@ -321,24 +336,96 @@ namespace NINA.Utility.Astrometry {
             return HoursToHMS(hours).Replace(':', ' ');
         }
 
-        public static MoonPhase GetMoonPhase(DateTime date) {
-            var phase = AstroUtils.MoonPhase(GetJulianDate(date));
+        private static Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition> GetMoonAndSunPosition(DateTime date, double jd) {
+            var deltaT = DeltaT(date);
 
-            if ((phase >= -180.0 && phase < -135.0) || phase == 180.0) {
+            var obs = new NOVAS.Observer() {
+                OnSurf = new NOVAS.OnSurface() { },
+                Where = (short)NOVAS.ObserverLocation.EarthGeoCenter
+            };
+
+            var moon = new NOVAS.CelestialObject() {
+                Name = "Moon",
+                Number = (short)NOVAS.Body.Moon,
+                Star = new NOVAS.CatalogueEntry(),
+                Type = (short)NOVAS.ObjectType.MajorPlanetSunOrMoon
+            };
+
+            var moonPosition = new NOVAS.SkyPosition();
+
+            var jdTt = jd + SecondsToDays(deltaT);
+
+            var err = NOVAS.Place(jdTt, moon, obs, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref moonPosition);
+
+            var sun = new NOVAS.CelestialObject() {
+                Name = "Sun",
+                Number = (short)NOVAS.Body.Sun,
+                Star = new NOVAS.CatalogueEntry(),
+                Type = (short)NOVAS.ObjectType.MajorPlanetSunOrMoon
+            };
+
+            var sunPosition = new NOVAS.SkyPosition();
+
+            NOVAS.Place(jdTt, sun, obs, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref sunPosition);
+
+            return new Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition>(moonPosition, sunPosition);
+        }
+
+        private static double GetMoonPositionAngle(DateTime date) {
+            var jd = GetJulianDate(date);
+            var tuple = GetMoonAndSunPosition(date, jd);
+            var moonPosition = tuple.Item1;
+            var sunPosition = tuple.Item2;
+
+            var positionAngle = (Math.Abs((moonPosition.RA - sunPosition.RA)) % 180);
+            var ascomCheck = AstroUtils.MoonPhase(jd);
+
+            return positionAngle;
+        }
+
+        private static double CalculateMoonIllumination(DateTime date) {
+            var jd = GetJulianDate(date);
+            var tuple = GetMoonAndSunPosition(date, jd);
+            var moonPosition = tuple.Item1;
+            var sunPosition = tuple.Item2;
+
+            var raDiffRad = ToRadians(HoursToDegrees(sunPosition.RA - moonPosition.RA));
+            var moonDecRad = ToRadians(moonPosition.Dec);
+            var sunDecRad = ToRadians(sunPosition.Dec);
+
+            var phi = Math.Acos(Math.Sin(sunDecRad) * Math.Sin(moonDecRad) +
+                        Math.Cos(sunDecRad) * Math.Cos(moonDecRad) * Math.Cos(raDiffRad));
+
+            var phaseAngle = Math.Atan2(sunPosition.Dis * Math.Sin(phi), moonPosition.Dis - sunPosition.Dis * Math.Cos(phi));
+
+            var illuminatedFraction = (1.0 + Math.Cos(phaseAngle) / 2.0);
+            var ascomCheck = AstroUtils.MoonIllumination(jd);
+
+            return illuminatedFraction;
+        }
+
+        public static double SecondsToDays(double seconds) {
+            return seconds * (1.0 / (60.0 * 60.0 * 24.0));
+        }
+
+        public static MoonPhase GetMoonPhase(DateTime date) {
+            var angle = GetMoonPositionAngle(date);
+
+            if ((angle >= -180.0 && angle < -135.0) || angle == 180.0) {
                 return MoonPhase.FullMoon;
-            } else if (phase >= -135.0 && phase < -90.0) {
+            } else if (angle >= -135.0 && angle < -90.0) {
                 return MoonPhase.WaningGibbous;
-            } else if (phase >= -90.0 && phase < -45.0) {
+            } else if (angle >= -90.0 && angle < -45.0) {
                 return MoonPhase.LastQuarter;
-            } else if (phase >= -45 && phase < 0.0) {
+            } else if (angle >= -45 && angle < 0.0) {
                 return MoonPhase.WaningCrescent;
-            } else if (phase >= 0.0 && phase < 45.0) {
+            } else if (angle >= 0.0 && angle < 45.0) {
                 return MoonPhase.NewMoon;
-            } else if (phase >= 45.0 && phase < 90.0) {
+            } else if (angle >= 45.0 && angle < 90.0) {
                 return MoonPhase.WaxingCrescent;
-            } else if (phase >= 90.0 && phase < 135.0) {
+            } else if (angle >= 90.0 && angle < 135.0) {
                 return MoonPhase.FirstQuarter;
-            } else if (phase >= 135.0 && phase < 180.0) {
+            } else if (angle >= 135.0 && angle < 180.0) {
                 return MoonPhase.WaxingGibbous;
             } else {
                 return MoonPhase.Unknown;
@@ -346,7 +433,7 @@ namespace NINA.Utility.Astrometry {
         }
 
         public static double GetMoonIllumination(DateTime date) {
-            return AstroUtils.MoonIllumination(Astrometry.GetJulianDate(date));
+            return CalculateMoonIllumination(date);
         }
 
         /// <summary>

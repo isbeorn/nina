@@ -358,6 +358,12 @@ namespace StarDataImport {
         }
 
         private class DatabaseDSO {
+
+            private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
+            new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
+
+            private static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }
+
             public List<cataloguenr> cataloguenr;
 
             //public string obj;
@@ -425,8 +431,8 @@ namespace StarDataImport {
                 type = fields[2];
                 constellation = fields[3];
 
-                RA = Utility.AscomUtil.HMSToDegrees(fields[4]);
-                DEC = Utility.AscomUtil.DMSToDegrees(fields[5]);
+                RA = AscomUtil.HMSToDegrees(fields[4]);
+                DEC = AscomUtil.DMSToDegrees(fields[5]);
 
                 magnitude = double.Parse(fields[6], CultureInfo.CreateSpecificCulture("de-DE"));
                 subr = double.Parse(fields[7], CultureInfo.CreateSpecificCulture("de-DE"));

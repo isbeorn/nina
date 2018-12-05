@@ -958,11 +958,9 @@ namespace NINA.Model.MyCamera {
                 return await Task.Run(async () => {
                     try {
                         using (MyStopWatch.Measure("ASCOM WaitForCamera")) {
-                            ASCOM.Utilities.Util U = Utility.Utility.AscomUtil;
                             while (!ImageReady && Connected) {
                                 //Console.Write(".");
-                                U.WaitForMilliseconds(100);
-                                token.ThrowIfCancellationRequested();
+                                await Utility.Utility.Wait(TimeSpan.FromMilliseconds(100), token);
                             }
                         }
 
