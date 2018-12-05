@@ -1,5 +1,4 @@
-﻿using ASCOM.DeviceInterface;
-using NINA.Model.MyCamera;
+﻿using NINA.Model.MyCamera;
 using System;
 using System.Diagnostics;
 using System.Linq;

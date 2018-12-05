@@ -1,5 +1,4 @@
-﻿using ASCOM.DeviceInterface;
-using EDSDKLib;
+﻿using EDSDKLib;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
