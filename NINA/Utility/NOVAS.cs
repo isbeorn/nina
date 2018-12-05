@@ -13,8 +13,15 @@ namespace NINA.Utility {
     internal static class NOVAS {
         private const string DLLNAME = "NOVAS31.dll";
 
+        private static double JPL_EPHEM_START_DATE = 2305424.5; // First date of data in the ephemeredes file
+        private static double JPL_EPHEM_END_DATE = 2525008.5; // Last date of data in the ephemeredes file
+
         static NOVAS() {
             DllLoader.LoadDll("NOVAS/" + DLLNAME);
+
+            short a = 0;
+            var ephemLocation = System.AppDomain.CurrentDomain.BaseDirectory + "/External/JPLEPH";
+            EphemOpen(ephemLocation, ref JPL_EPHEM_START_DATE, ref JPL_EPHEM_END_DATE, ref a);
         }
 
         #region "Public Methods"
@@ -62,6 +69,12 @@ namespace NINA.Utility {
 
         [DllImport(DLLNAME, EntryPoint = "place")]
         private static extern short NOVAS_Place(double jdTt, ref CelestialObject celObject, ref Observer observer, double deltaT, short coordinateSystem, short accuracy, ref SkyPosition position);
+
+        [DllImport(DLLNAME, EntryPoint = "set_racio_file")]
+        private static extern void SetRACIOFile([MarshalAs(UnmanagedType.LPStr)] string Name);
+
+        [DllImport(DLLNAME, EntryPoint = "ephem_open")]
+        private static extern short EphemOpen([MarshalAs(UnmanagedType.LPStr)] string Ephem_Name, ref double JD_Begin, ref double JD_End, ref short DENumber);
 
         #endregion "External DLL calls"
 

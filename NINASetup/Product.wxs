@@ -1184,10 +1184,14 @@
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <ComponentGroup Id="External_x64_NOVAS_files" Directory="External_x64_NOVAS">
-      <Component Win64="yes" Id="External_x64_NOVAS_NOVAS31_64.dll" Guid="c4ba853c-4556-4c6e-9825-76a41474f378">
-        <File Id="External_x64_NOVAS_NOVAS31_64.dll" Name="NOVAS31-64.dll" Source="$(var.NINA_TargetDir)External\x64\NOVAS\NOVAS31-64.dll" />
+    <ComponentGroup Id="External_JPLEPH_files" Directory="External">
+      <Component Win64="yes" Id="JPLEPH" Guid="3D939C40-47D8-4BF2-8C93-5324FAD7CD08">
+        <File Id="JPLEPH" Name="JPLEPH" Source="$(var.NINA_TargetDir)External\JPLEPH" />
       </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_NOVAS_files" Directory="External_x64_NOVAS">
       <Component Win64="yes" Id="External_x64_NOVAS_NOVAS31.dll" Guid="399f4ac2-9791-4e32-89cf-40279554a426">
         <File Id="External_x64_NOVAS_NOVAS31.dll" Name="NOVAS31.dll" Source="$(var.NINA_TargetDir)External\x64\NOVAS\NOVAS31.dll" />
       </Component>

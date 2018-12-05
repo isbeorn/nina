@@ -377,8 +377,8 @@ namespace NINA.Utility.Astrometry {
             var moonPosition = tuple.Item1;
             var sunPosition = tuple.Item2;
 
-            var positionAngle = (Math.Abs((moonPosition.RA - sunPosition.RA)) % 180);
-            var ascomCheck = AstroUtils.MoonPhase(jd);
+            var diff = HoursToDegrees(moonPosition.RA - sunPosition.RA);
+            var positionAngle = (diff) % 180;
 
             return positionAngle;
         }
@@ -393,13 +393,14 @@ namespace NINA.Utility.Astrometry {
             var moonDecRad = ToRadians(moonPosition.Dec);
             var sunDecRad = ToRadians(sunPosition.Dec);
 
-            var phi = Math.Acos(Math.Sin(sunDecRad) * Math.Sin(moonDecRad) +
-                        Math.Cos(sunDecRad) * Math.Cos(moonDecRad) * Math.Cos(raDiffRad));
+            var phi = Math.Acos(
+                        Math.Sin(sunDecRad) * Math.Sin(moonDecRad) +
+                        Math.Cos(sunDecRad) * Math.Cos(moonDecRad) * Math.Cos(raDiffRad)
+                      );
 
             var phaseAngle = Math.Atan2(sunPosition.Dis * Math.Sin(phi), moonPosition.Dis - sunPosition.Dis * Math.Cos(phi));
 
-            var illuminatedFraction = (1.0 + Math.Cos(phaseAngle) / 2.0);
-            var ascomCheck = AstroUtils.MoonIllumination(jd);
+            var illuminatedFraction = (1.0 + Math.Cos(phaseAngle)) / 2.0;
 
             return illuminatedFraction;
         }

@@ -1552,6 +1552,9 @@
     <Content Include="External\x64\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\JPLEPH">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="External\x64\ToupTek\toupcam.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
