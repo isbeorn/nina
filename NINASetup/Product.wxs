@@ -1185,15 +1185,24 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="External_x64_NOVAS_files" Directory="External_x64_NOVAS">
-      <Component Win64="yes"  Id="External_x64_NOVAS_NOVAS31_64.dll" Guid="c4ba853c-4556-4c6e-9825-76a41474f378">
+      <Component Win64="yes" Id="External_x64_NOVAS_NOVAS31_64.dll" Guid="c4ba853c-4556-4c6e-9825-76a41474f378">
         <File Id="External_x64_NOVAS_NOVAS31_64.dll" Name="NOVAS31-64.dll" Source="$(var.NINA_TargetDir)External\x64\NOVAS\NOVAS31-64.dll" />
+      </Component>
+      <Component Win64="yes" Id="External_x64_NOVAS_NOVAS31.dll" Guid="399f4ac2-9791-4e32-89cf-40279554a426">
+        <File Id="External_x64_NOVAS_NOVAS31.dll" Name="NOVAS31.dll" Source="$(var.NINA_TargetDir)External\x64\NOVAS\NOVAS31.dll" />
+      </Component>
+      <Component Win64="yes" Id="External_x64_NOVAS_cio_ra.bin" Guid="d18f333b-074e-4c33-9e5e-18d5c9770dd0">
+        <File Id="External_x64_NOVAS_cio_ra.bin" Name="cio_ra.bin" Source="$(var.NINA_TargetDir)External\x64\NOVAS\cio_ra.bin" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="External_x86_NOVAS_files" Directory="External_x86_NOVAS">
-      <Component Win64="yes"  Id="External_x86_NOVAS_NOVAS31.dll" Guid="0d940503-3770-4d11-ab73-a1f7e834f41a">
+      <Component Win64="yes" Id="External_x86_NOVAS_NOVAS31.dll" Guid="0d940503-3770-4d11-ab73-a1f7e834f41a">
         <File Id="External_x86_NOVAS_NOVAS31.dll" Name="NOVAS31.dll" Source="$(var.NINA_TargetDir)External\x86\NOVAS\NOVAS31.dll" />
+      </Component>
+      <Component Win64="yes" Id="External_x86_NOVAS_cio_ra.bin" Guid="e1c12df7-978a-4f9a-8047-3a214036cf6d">
+        <File Id="External_x86_NOVAS_cio_ra.bin" Name="cio_ra.bin" Source="$(var.NINA_TargetDir)External\x86\NOVAS\cio_ra.bin" />
       </Component>
     </ComponentGroup>
   </Fragment>
