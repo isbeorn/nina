@@ -19,17 +19,6 @@ namespace NINA.Utility.Astrometry {
             }
         }
 
-        private static ASCOM.Astrometry.NOVAS.NOVAS31 _nOVAS31;
-
-        public static ASCOM.Astrometry.NOVAS.NOVAS31 NOVAS31 {
-            get {
-                if (_nOVAS31 == null) {
-                    _nOVAS31 = new ASCOM.Astrometry.NOVAS.NOVAS31(); ;
-                }
-                return _nOVAS31;
-            }
-        }
-
         /// <summary>
         /// Convert degree to radians
         /// </summary>
@@ -86,7 +75,39 @@ namespace NINA.Utility.Astrometry {
 
         public static double GetJulianDate(DateTime date) {
             var utcdate = date.ToUniversalTime();
-            return NOVAS31.JulianDate((short)utcdate.Year, (short)utcdate.Month, (short)utcdate.Day, utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0);
+            return NOVAS.JulianDate((short)utcdate.Year, (short)utcdate.Month, (short)utcdate.Day, utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0);
+        }
+
+        /// <summary>
+        /// Calculates the value of DeltaT for years 2012 and later
+        /// prior to 2012 will throw NotSupportedException!
+        /// Calculations are based on best fit to DeltaT data from: http://maia.usno.navy.mil/ser7/deltat.data and http://maia.usno.navy.mil/ser7/deltat.preds
+        /// </summary>
+        /// <param name="julianDate">Julian Date</param>
+        /// <returns>DeltaT at given date</returns>
+        public static double DeltaT(double julianDate) {
+            double j2000 = 2451545.0; //J2000.0 julian date
+
+            //Year fraction approximation
+            double yearFraction = 2000.0 + (julianDate - j2000) / 365.25;
+
+            if (yearFraction >= 2018) {
+                return (0.0024855297566049 * Math.Pow(yearFraction, 3)) + (-15.0681141702439 * Math.Pow(yearFraction, 2)) + (30449.647471213 * yearFraction) - 20511035.5077593;
+            }
+
+            if (yearFraction >= 2017) {
+                return (0.02465436 * Math.Pow(yearFraction, 2)) + (-98.92626556 * yearFraction) + 99301.85784308;
+            }
+
+            if (yearFraction >= 2015) {
+                return (0.02002376 * Math.Pow(yearFraction, 2)) + (-80.27921003 * yearFraction) + 80529.32;
+            }
+
+            if ((yearFraction >= 2011.75) & (yearFraction < 2015.75)) {
+                return (0.00231189 * Math.Pow(yearFraction, 2)) + (-8.85231952 * yearFraction) + 8518.54;
+            }
+
+            throw new NotSupportedException(string.Format("Yearfraction {0} is not supported", yearFraction));
         }
 
         /// <summary>
@@ -108,7 +129,7 @@ namespace NINA.Utility.Astrometry {
             double jd_low = jd - jd_high;
 
             double lst = 0;
-            NOVAS31.SiderealTime(jd_high, jd_low, NOVAS31.DeltaT(jd), ASCOM.Astrometry.GstType.GreenwichApparentSiderealTime, ASCOM.Astrometry.Method.EquinoxBased, ASCOM.Astrometry.Accuracy.Full, ref lst);
+            NOVAS.SiderealTime(jd_high, jd_low, DeltaT(jd), NOVAS.GstType.GreenwichApparentSiderealTime, NOVAS.Method.EquinoxBased, NOVAS.Accuracy.Full, ref lst);
             lst = lst + DegreesToHours(longitude);
             return lst;
         }

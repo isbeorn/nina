@@ -395,6 +395,7 @@
     <Compile Include="Utility\Mediator\Interfaces\ITelescopeMediator.cs" />
     <Compile Include="Utility\Mediator\RotatorMediator.cs" />
     <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
+    <Compile Include="Utility\NOVAS.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
     <Compile Include="Utility\Profile\ICameraSettings.cs" />
@@ -1350,6 +1351,9 @@
     <Content Include="External\x64\Nikon\Type0022\NkdPTP.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\NOVAS\NOVAS31.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\SQLite\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1444,6 +1448,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\Nikon\Type0022\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\NOVAS\NOVAS31.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\SQLite\SQLite.Interop.dll">

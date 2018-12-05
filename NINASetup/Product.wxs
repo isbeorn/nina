@@ -93,6 +93,8 @@
       <ComponentGroupRef Id="External_x64_Altair_files" />
       <ComponentGroupRef Id="External_x64_ToupTek_files" />
       <ComponentGroupRef Id="External_x86_ToupTek_files" />
+      <ComponentGroupRef Id="External_x64_NOVAS_files" />
+      <ComponentGroupRef Id="External_x86_NOVAS_files" />
     </Feature>
   </Product>
 
@@ -136,6 +138,7 @@
               <Directory Id="External_x64_SQLite" Name="SQLite" />
               <Directory Id="External_x64_Altair" Name="Altair" />
               <Directory Id="External_x64_ToupTek" Name="ToupTek" />
+              <Directory Id="External_x64_NOVAS" Name="NOVAS" />
             </Directory>
             <Directory Id="External_x86" Name="x86">
               <Directory Id="External_x86_Nikon" Name="Nikon">
@@ -169,6 +172,7 @@
               <Directory Id="External_x86_SQLite" Name="SQLite" />
               <Directory Id="External_x86_Altair" Name="Altair" />
               <Directory Id="External_x86_ToupTek" Name="ToupTek" />
+              <Directory Id="External_x86_NOVAS" Name="NOVAS" />
             </Directory>
           </Directory>
           <Directory Id="Utility" Name="Utility">
@@ -1176,6 +1180,20 @@
       </Component>
       <Component Win64="yes" Id="External_x86_ToupTek_toupcam.dll" Guid="c6eb2a4b-8c5c-4459-9a4b-8d76a1fff868">
         <File Id="External_x86_ToupTek_toupcam.dll" Name="toupcam.dll" Source="$(var.NINA_TargetDir)External\x86\ToupTek\toupcam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_NOVAS_files" Directory="External_x64_NOVAS">
+      <Component Win64="yes"  Id="External_x64_NOVAS_NOVAS31_64.dll" Guid="c4ba853c-4556-4c6e-9825-76a41474f378">
+        <File Id="External_x64_NOVAS_NOVAS31_64.dll" Name="NOVAS31-64.dll" Source="$(var.NINA_TargetDir)External\x64\NOVAS\NOVAS31-64.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x86_NOVAS_files" Directory="External_x86_NOVAS">
+      <Component Win64="yes"  Id="External_x86_NOVAS_NOVAS31.dll" Guid="0d940503-3770-4d11-ab73-a1f7e834f41a">
+        <File Id="External_x86_NOVAS_NOVAS31.dll" Name="NOVAS31.dll" Source="$(var.NINA_TargetDir)External\x86\NOVAS\NOVAS31.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
