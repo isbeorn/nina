@@ -1549,6 +1549,9 @@
     <Content Include="External\x86\Altair\altaircam.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="External\x64\NOVAS\cio_ra.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="External\x64\ToupTek\toupcam.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1621,6 +1624,9 @@
     <Content Include="External\x86\Nikon\Type0022\Type0022.md3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="External\x86\NOVAS\cio_ra.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="External\x86\ToupTek\toupcam.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
