@@ -37,7 +37,7 @@ namespace NINA.PlateSolving {
 
         public string RaErrorString {
             get {
-                return Utility.Utility.AscomUtil.DegreesToHMS(RaError);
+                return Astrometry.DegreesToHMS(RaError);
             }
         }
 

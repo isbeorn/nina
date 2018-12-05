@@ -231,12 +231,15 @@ namespace NINA.Utility.Astrometry {
         /// <param name="value"></param>
         /// <returns></returns>
         public static string DegreesToDMS(double value) {
+            return DegreesToDMS(value, "{0:00}° {1:00}' {2:00}\"");
+        }
+
+        private static string DegreesToDMS(double value, string pattern) {
             bool negative = false;
             if (value < 0) {
                 negative = true;
                 value = -value;
             }
-            var pattern = "{0:00}° {1:00}' {2:00}\"";
             if (negative) {
                 pattern = "-" + pattern;
             }
@@ -276,7 +279,7 @@ namespace NINA.Utility.Astrometry {
         /// <param name="deg"></param>
         /// <returns></returns>
         public static string DegreesToHMS(double deg) {
-            return Utility.AscomUtil.DegreesToHMS(deg);
+            return DegreesToDMS(DegreesToHours(deg), "{0:00}:{1:00}:{2:00}");
         }
 
         /// <summary>
@@ -401,7 +404,7 @@ namespace NINA.Utility.Astrometry {
         [XmlIgnore]
         public string RAString {
             get {
-                return Utility.AscomUtil.DegreesToHMS(RADegrees);
+                return Astrometry.DegreesToHMS(RADegrees);
             }
         }
 
