@@ -586,9 +586,37 @@ namespace NINA.Utility.Astrometry {
         /// </summary>
         /// <returns></returns>
         private Coordinates TransformToJNOW() {
-            var transform = new ASCOM.Astrometry.Transform.Transform();
-            transform.SetJ2000(RA, Dec);
-            return new Coordinates(transform.RAApparent, transform.DECApparent, Epoch.JNOW, RAType.Hours);
+            double jdTT = GetJdTTNow();
+
+            double ri = 0, di = 0, eo = 0;
+            SOFA.CelestialToIntermediate(Astrometry.ToRadians(RADegrees), Astrometry.ToRadians(Dec), 0.0, 0.0, 0.0, 0.0, jdTT, 0.0, ref ri, ref di, ref eo);
+
+            double raApparent = Astrometry.ToDegree(SOFA.Anp(ri - eo));
+            double decApparent = Astrometry.ToDegree(di);
+
+            return new Coordinates(raApparent, decApparent, Epoch.JNOW, RAType.Degrees);
+        }
+
+        private double GetJdTTNow() {
+            var utcNow = DateTime.UtcNow;
+            double utc1 = 0, utc2 = 0, tai1 = 0, tai2 = 0, tt1 = 0, tt2 = 0;
+            GetJdUTCNow(ref utc1, ref utc2);
+            SOFA.UtcTai(utc1, utc2, ref tai1, ref tai2);
+            SOFA.TaiTt(tai1, tai2, ref tt1, ref tt2);
+
+            return tt1 + tt2;
+        }
+
+        private void GetJdUTCNow(ref double utc1, ref double utc2) {
+            var utcNow = DateTime.UtcNow;
+            SOFA.Dtf2d("UTC", utcNow.Year, utcNow.Month, utcNow.Day, utcNow.Hour, utcNow.Minute, (double)utcNow.Second + (double)utcNow.Millisecond / 1000.0, ref utc1, ref utc2);
+        }
+
+        private double GetJdUTCNow() {
+            var utcNow = DateTime.UtcNow;
+            double utc1 = 0, utc2 = 0;
+            GetJdUTCNow(ref utc1, ref utc2);
+            return utc1 + utc2;
         }
 
         /// <summary>
@@ -596,9 +624,15 @@ namespace NINA.Utility.Astrometry {
         /// </summary>
         /// <returns></returns>
         private Coordinates TransformToJ2000() {
-            var transform = new ASCOM.Astrometry.Transform.Transform();
-            transform.SetApparent(RA, Dec);
-            return new Coordinates(transform.RAJ2000, transform.DecJ2000, Epoch.J2000, RAType.Hours);
+            var jdTT = GetJdTTNow();
+            var jdUTC = GetJdUTCNow();
+            double rc = 0, dc = 0, eo = 0;
+            SOFA.IntermediateToCelestial(SOFA.Anp(Astrometry.ToRadians(RADegrees) + SOFA.Eo06a(jdUTC, 0.0)), Astrometry.ToRadians(Dec), jdTT, 0.0, ref rc, ref dc, ref eo);
+
+            var raCelestial = Astrometry.ToDegree(rc);
+            var decCelestial = Astrometry.ToDegree(dc);
+
+            return new Coordinates(raCelestial, decCelestial, Epoch.J2000, RAType.Degrees);
         }
 
         /// <summary>

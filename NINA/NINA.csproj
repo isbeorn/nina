@@ -473,6 +473,7 @@
     <Compile Include="Utility\SkySurvey\SkyServerSkySurvey.cs" />
     <Compile Include="Utility\SkySurvey\SkySurveyFactory.cs" />
     <Compile Include="Utility\SkySurvey\StsciSkySurvey.cs" />
+    <Compile Include="Utility\SOFA.cs" />
     <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
     <Compile Include="Utility\ValidationRules\DirectoryExistsRule.cs" />
@@ -1355,6 +1356,9 @@
     <Content Include="External\x64\NOVAS\NOVAS31.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\SOFA\SOFA.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\SQLite\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1452,6 +1456,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\NOVAS\NOVAS31.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\SOFA\SOFA.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\SQLite\SQLite.Interop.dll">
