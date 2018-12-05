@@ -164,5 +164,23 @@ namespace NINATest {
 
             Assert.AreEqual(0, alt);
         }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(90)]
+        [TestCase(-90)]
+        [TestCase(91)]
+        [TestCase(-91)]
+        [TestCase(72.016666666666666666)] //Arcsec rounded = 60
+        [TestCase(-72.016666666666666666)]//Arcsec rounded = 60
+        [TestCase(33.9999999)] //Arcsec rounded = 60 and arcmin will be 60
+        [TestCase(-33.9999999)] //Arcsec rounded = 60 and arcmin will be 60
+        public void DegreesToDMS(double degree) {
+            var value = Astrometry.DegreesToDMS(degree);
+
+            /* Check that it matches ascom values */
+
+            Assert.AreEqual(new ASCOM.Utilities.Util().DegreesToDMS(degree), value);
+        }
     }
 }

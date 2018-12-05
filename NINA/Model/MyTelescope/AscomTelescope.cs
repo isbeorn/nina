@@ -96,7 +96,7 @@ namespace NINA.Model.MyTelescope {
 
         public string AltitudeString {
             get {
-                return Utility.Utility.AscomUtil.DegreesToDMS(Altitude);
+                return Astrometry.DegreesToDMS(Altitude);
             }
         }
 
@@ -118,7 +118,7 @@ namespace NINA.Model.MyTelescope {
 
         public string AzimuthString {
             get {
-                return Utility.Utility.AscomUtil.DegreesToDMS(Azimuth);
+                return Astrometry.DegreesToDMS(Azimuth);
             }
         }
 
@@ -352,7 +352,7 @@ namespace NINA.Model.MyTelescope {
 
         public string DeclinationString {
             get {
-                return Utility.Utility.AscomUtil.DegreesToDMS(Declination);
+                return Astrometry.DegreesToDMS(Declination);
             }
         }
 

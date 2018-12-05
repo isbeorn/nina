@@ -228,10 +228,37 @@ namespace NINA.Utility.Astrometry {
         /// <summary>
         /// Formats a given hours value into format "DD° MM' SS"
         /// </summary>
-        /// <param name="hours"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        public static string DegreesToDMS(double deg) {
-            return Utility.AscomUtil.DegreesToDMS(deg);
+        public static string DegreesToDMS(double value) {
+            bool negative = false;
+            if (value < 0) {
+                negative = true;
+                value = -value;
+            }
+            var pattern = "{0:00}° {1:00}' {2:00}\"";
+            if (negative) {
+                pattern = "-" + pattern;
+            }
+
+            var degree = Math.Floor(value);
+            var arcmin = Math.Floor(DegreeToArcmin(value - degree));
+            var arcminDeg = ArcminToDegree(arcmin);
+
+            var arcsec = Math.Round(DegreeToArcsec(value - degree - arcminDeg), 2);
+            if (arcsec == 60) {
+                /* If arcsec got rounded to 60 add to arcmin instead */
+                arcsec = 0;
+                arcmin += 1;
+
+                if (arcmin == 60) {
+                    /* If arcmin got rounded to 60 add to degree instead */
+                    arcmin = 0;
+                    degree += 1;
+                }
+            }
+
+            return string.Format(pattern, degree, arcmin, arcsec);
         }
 
         /// <summary>
@@ -240,7 +267,7 @@ namespace NINA.Utility.Astrometry {
         /// <param name="deg"></param>
         /// <returns></returns>
         public static string DegreesToFitsDMS(double deg) {
-            return Utility.AscomUtil.DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", ""); ;
+            return DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", ""); ;
         }
 
         /// <summary>
@@ -396,7 +423,7 @@ namespace NINA.Utility.Astrometry {
         [XmlIgnore]
         public string DecString {
             get {
-                return Utility.AscomUtil.DegreesToDMS(Dec);
+                return Astrometry.DegreesToDMS(Dec);
             }
         }
 

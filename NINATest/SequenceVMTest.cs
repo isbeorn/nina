@@ -603,7 +603,7 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate) {
+        public void MoveAxis(TelescopeAxes axis, double rate) {
             throw new NotImplementedException();
         }
 
@@ -716,6 +716,7 @@ namespace NINATest {
     }
 
     internal class SequenceRotatorMediator : IRotatorMediator {
+
         public void Broadcast(RotatorInfo deviceInfo) {
             throw new NotImplementedException();
         }
@@ -750,6 +751,7 @@ namespace NINATest {
             throw new NotImplementedException();
         }
     }
+
     internal class SequenceGuiderMediator : IGuiderMediator {
 
         public Task<bool> AutoSelectGuideStar(CancellationToken token) {
