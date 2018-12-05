@@ -1,5 +1,4 @@
 ﻿using Altair;
-using ASCOM.DeviceInterface;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;

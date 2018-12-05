@@ -11,7 +11,7 @@ namespace NINA.Utility.Mediator.Interfaces {
 
     internal interface ITelescopeMediator : IDeviceMediator<ITelescopeVM, ITelescopeConsumer, TelescopeInfo> {
 
-        void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate);
+        void MoveAxis(TelescopeAxes axis, double rate);
 
         bool Sync(double ra, double dec);
 

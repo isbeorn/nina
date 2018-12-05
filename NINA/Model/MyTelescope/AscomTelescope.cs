@@ -951,7 +951,25 @@ namespace NINA.Model.MyTelescope {
                 if (CanSlew) {
                     if (!AtPark) {
                         try {
-                            _telescope.MoveAxis(axis, rate);
+                            ASCOM.DeviceInterface.TelescopeAxes translatedAxis;
+                            switch (axis) {
+                                case TelescopeAxes.Primary:
+                                    translatedAxis = ASCOM.DeviceInterface.TelescopeAxes.axisPrimary;
+                                    break;
+
+                                case TelescopeAxes.Secondary:
+                                    translatedAxis = ASCOM.DeviceInterface.TelescopeAxes.axisSecondary;
+                                    break;
+
+                                case TelescopeAxes.Tertiary:
+                                    translatedAxis = ASCOM.DeviceInterface.TelescopeAxes.axisTertiary;
+                                    break;
+
+                                default:
+                                    translatedAxis = ASCOM.DeviceInterface.TelescopeAxes.axisPrimary;
+                                    break;
+                            }
+                            _telescope.MoveAxis(translatedAxis, rate);
                         } catch (Exception e) {
                             Notification.ShowError(e.Message);
                         }
@@ -1125,7 +1143,7 @@ namespace NINA.Model.MyTelescope {
 
                     double max = double.MinValue;
                     double min = double.MaxValue;
-                    IAxisRates r = _telescope.AxisRates(TelescopeAxes.axisSecondary);
+                    IAxisRates r = _telescope.AxisRates(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary);
                     IEnumerator e = r.GetEnumerator();
                     foreach (IRate item in r) {
                         if (min > item.Minimum) {

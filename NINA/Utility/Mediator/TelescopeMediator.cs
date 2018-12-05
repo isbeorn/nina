@@ -13,7 +13,7 @@ namespace NINA.Utility.Mediator {
 
     internal class TelescopeMediator : DeviceMediator<ITelescopeVM, ITelescopeConsumer, TelescopeInfo>, ITelescopeMediator {
 
-        public void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate) {
+        public void MoveAxis(TelescopeAxes axis, double rate) {
             handler.MoveAxis(axis, rate);
         }
 

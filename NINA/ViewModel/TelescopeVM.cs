@@ -331,7 +331,7 @@ namespace NINA.ViewModel {
             BroadcastTelescopeInfo();
         }
 
-        public void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate) {
+        public void MoveAxis(TelescopeAxes axis, double rate) {
             if (TelescopeInfo.Connected) {
                 Telescope.MoveAxis(axis, rate);
             }
@@ -348,32 +348,32 @@ namespace NINA.ViewModel {
         private void Move(object obj) {
             string cmd = obj.ToString();
             if (cmd == "W") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -Telescope.MovingRate);
+                MoveAxis(TelescopeAxes.Primary, -Telescope.MovingRate);
             }
             if (cmd == "O") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, Telescope.MovingRate);
+                MoveAxis(TelescopeAxes.Primary, Telescope.MovingRate);
             }
             if (cmd == "N") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, Telescope.MovingRate);
+                MoveAxis(TelescopeAxes.Secondary, Telescope.MovingRate);
             }
             if (cmd == "S") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, -Telescope.MovingRate);
+                MoveAxis(TelescopeAxes.Secondary, -Telescope.MovingRate);
             }
         }
 
         private void StopMove(object obj) {
             string cmd = obj.ToString();
             if (cmd == "W") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                MoveAxis(TelescopeAxes.Primary, 0);
             }
             if (cmd == "O") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                MoveAxis(TelescopeAxes.Primary, 0);
             }
             if (cmd == "N") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, 0);
+                MoveAxis(TelescopeAxes.Secondary, 0);
             }
             if (cmd == "S") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, 0);
+                MoveAxis(TelescopeAxes.Secondary, 0);
             }
         }
 

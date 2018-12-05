@@ -339,21 +339,21 @@ namespace NINA.ViewModel {
                     //duration = half of user input minus 2 seconds for settle time
                     TimeSpan duration = TimeSpan.FromSeconds((int)(DARVSlewDuration / 2) - 2);
 
-                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, rate);
+                    telescopeMediator.MoveAxis(TelescopeAxes.Primary, rate);
 
                     await Task.Delay(duration, canceltoken);
 
-                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                    telescopeMediator.MoveAxis(TelescopeAxes.Primary, 0);
 
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken);
 
                     progress.Report("Slewing back...");
 
-                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -rate);
+                    telescopeMediator.MoveAxis(TelescopeAxes.Primary, -rate);
 
                     await Task.Delay(duration, canceltoken);
 
-                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                    telescopeMediator.MoveAxis(TelescopeAxes.Primary, 0);
 
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken);
                 } catch (OperationCanceledException) {
