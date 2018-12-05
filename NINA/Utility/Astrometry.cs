@@ -288,7 +288,7 @@ namespace NINA.Utility.Astrometry {
         /// <param name="hours"></param>
         /// <returns></returns>
         public static string HoursToHMS(double hours) {
-            return Utility.AscomUtil.HoursToHMS(hours);
+            return DegreesToDMS(hours, "{0:00}:{1:00}:{2:00}");
         }
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace NINA.Utility.Astrometry {
         /// <param name="hours"></param>
         /// <returns></returns>
         public static string HoursToFitsHMS(double hours) {
-            return Utility.AscomUtil.HoursToHMS(hours).Replace(':', ' ');
+            return HoursToHMS(hours).Replace(':', ' ');
         }
 
         public static MoonPhase GetMoonPhase(DateTime date) {

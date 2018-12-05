@@ -616,7 +616,7 @@ namespace NINA.ViewModel {
                 var hour_angle = Astrometry.GetHourAngle(lst, polaris.RA);
 
                 Rotation = -Astrometry.HoursToDegrees(hour_angle);
-                HourAngleTime = ascomutil.HoursToHMS(hour_angle);
+                HourAngleTime = Astrometry.HoursToHMS(hour_angle);
             } catch (Exception ex) {
                 Logger.Error(ex);
             }

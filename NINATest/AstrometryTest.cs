@@ -200,5 +200,23 @@ namespace NINATest {
 
             Assert.AreEqual(new ASCOM.Utilities.Util().DegreesToHMS(degree), value);
         }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(90)]
+        [TestCase(-90)]
+        [TestCase(91)]
+        [TestCase(-91)]
+        [TestCase(72.016666666666666666)] //Arcsec rounded = 60
+        [TestCase(-72.016666666666666666)]//Arcsec rounded = 60
+        [TestCase(33.9999999)] //Arcsec rounded = 60 and arcmin will be 60
+        [TestCase(-33.9999999)] //Arcsec rounded = 60 and arcmin will be 60
+        public void HoursToHMS(double hours) {
+            var value = Astrometry.HoursToHMS(hours);
+
+            /* Check that it matches ascom values */
+
+            Assert.AreEqual(new ASCOM.Utilities.Util().HoursToHMS(hours), value);
+        }
     }
 }

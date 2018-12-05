@@ -534,7 +534,7 @@ namespace NINA.Model.MyTelescope {
 
         public string RightAscensionString {
             get {
-                return Utility.Utility.AscomUtil.HoursToHMS(RightAscension);
+                return Astrometry.HoursToHMS(RightAscension);
             }
         }
 
@@ -550,7 +550,7 @@ namespace NINA.Model.MyTelescope {
 
         public string SiderealTimeString {
             get {
-                return Utility.Utility.AscomUtil.HoursToHMS(SiderealTime);
+                return Astrometry.HoursToHMS(SiderealTime);
             }
         }
 
@@ -1104,7 +1104,7 @@ namespace NINA.Model.MyTelescope {
 
         public string HoursToMeridianString {
             get {
-                return Utility.Utility.AscomUtil.HoursToHMS(HoursToMeridian);
+                return Astrometry.HoursToHMS(HoursToMeridian);
             }
         }
 
@@ -1125,7 +1125,7 @@ namespace NINA.Model.MyTelescope {
 
         public string TimeToMeridianFlipString {
             get {
-                return Utility.Utility.AscomUtil.HoursToHMS(TimeToMeridianFlip);
+                return Astrometry.HoursToHMS(TimeToMeridianFlip);
             }
         }
 
