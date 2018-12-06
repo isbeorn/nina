@@ -3,21 +3,12 @@ using NINA.Utility.Profile;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Astrometry {
 
     public class Astrometry {
-        private static ASCOM.Astrometry.AstroUtils.AstroUtils _astroUtils;
-
-        private static ASCOM.Astrometry.AstroUtils.AstroUtils AstroUtils {
-            get {
-                if (_astroUtils == null) {
-                    _astroUtils = new ASCOM.Astrometry.AstroUtils.AstroUtils();
-                }
-                return _astroUtils;
-            }
-        }
 
         /// <summary>
         /// Convert degree to radians
@@ -210,55 +201,30 @@ namespace NINA.Utility.Astrometry {
             }
         }
 
-        public static RiseAndSetAstroEvent GetRiseAndSetEvent(DateTime date, EventType type, double latitude, double longitude) {
-            var d = date.Day;
-            var m = date.Month;
-            var y = date.Year;
-
-            /*The returned zero based arraylist has the following values:
-             * Arraylist(0) - Boolean - True if the body is above the event limit at midnight (the beginning of the 24 hour day), false if it is below the event limit
-             * Arraylist(1) - Integer - Number of rise events in this 24 hour period
-             * Arraylist(2) - Integer - Number of set events in this 24 hour period
-             * Arraylist(3) onwards - Double - Values of rise events in hours Arraylist
-             * (3 + NumberOfRiseEvents) onwards - Double - Values of set events in hours*/
-            var times = AstroUtils.EventTimes(type, d, m, y, latitude, longitude, TimeZone.CurrentTimeZone.GetUtcOffset(date).Hours + TimeZone.CurrentTimeZone.GetUtcOffset(date).Minutes / 60.0);
-
-            if (times.Count > 3) {
-                int nrOfRiseEvents = (int)times[1];
-                int nrOfSetEvents = (int)times[2];
-
-                double[] rises = new double[nrOfRiseEvents];
-                double[] sets = new double[nrOfSetEvents];
-
-                for (int i = 0; i < nrOfRiseEvents; i++) {
-                    rises[i] = (double)times[i + 3];
-                }
-
-                for (int i = 0; i < nrOfSetEvents; i++) {
-                    sets[i] = (double)times[i + 3 + nrOfRiseEvents];
-                }
-
-                if (rises.Count() > 0 && sets.Count() > 0) {
-                    var rise = rises[0];
-                    var set = sets[0];
-                    return new RiseAndSetAstroEvent(date, rise, set);
-                } else {
-                    return null;
-                }
-            }
-            return null;
+        public static double AUToKilometer(double au) {
+            const double conversionFactor = 149597870.7; // https://de.wikipedia.org/wiki/Astronomische_Einheit
+            return au * conversionFactor;
         }
 
-        public static RiseAndSetAstroEvent GetNightTimes(DateTime date, double latitude, double longitude) {
-            return GetRiseAndSetEvent(date, EventType.AstronomicalTwilight, latitude, longitude);
+        public static RiseAndSetEvent GetNightTimes(DateTime date, double latitude, double longitude) {
+            var riseAndSet = new AstronomicalTwilightRiseAndSet(date, latitude, longitude);
+            var t = riseAndSet.Calculate().Result;
+
+            return riseAndSet;
         }
 
-        public static RiseAndSetAstroEvent GetMoonRiseAndSet(DateTime date, double latitude, double longitude) {
-            return GetRiseAndSetEvent(date, EventType.MoonRiseMoonSet, latitude, longitude);
+        public static RiseAndSetEvent GetMoonRiseAndSet(DateTime date, double latitude, double longitude) {
+            var riseAndSet = new MoonRiseAndSet(date, latitude, longitude);
+            var t = riseAndSet.Calculate().Result;
+
+            return riseAndSet;
         }
 
-        public static RiseAndSetAstroEvent GetSunRiseAndSet(DateTime date, double latitude, double longitude) {
-            return GetRiseAndSetEvent(date, EventType.SunRiseSunset, latitude, longitude);
+        public static RiseAndSetEvent GetSunRiseAndSet(DateTime date, double latitude, double longitude) {
+            var riseAndSet = new SunRiseAndSet(date, latitude, longitude);
+            var t = riseAndSet.Calculate().Result;
+
+            return riseAndSet;
         }
 
         /// <summary>
@@ -467,28 +433,6 @@ namespace NINA.Utility.Astrometry {
             WaxingCrescent,
             FirstQuarter,
             WaxingGibbous
-        }
-
-        public class RiseAndSetAstroEvent {
-
-            public RiseAndSetAstroEvent(DateTime referenceDate, double rise, double set) {
-                RiseDate = new DateTime(referenceDate.Year, referenceDate.Month, referenceDate.Day, referenceDate.Hour, referenceDate.Minute, referenceDate.Second);
-                if (RiseDate.Hour + RiseDate.Minute / 60.0 + RiseDate.Second / 60.0 / 60.0 > rise) {
-                    RiseDate = RiseDate.AddDays(1);
-                }
-                RiseDate = RiseDate.Date;
-                RiseDate = RiseDate.AddHours(rise);
-
-                SetDate = new DateTime(referenceDate.Year, referenceDate.Month, referenceDate.Day, referenceDate.Hour, referenceDate.Minute, referenceDate.Second);
-                if (SetDate.Hour + SetDate.Minute / 60.0 + SetDate.Second / 60.0 / 60.0 > set) {
-                    SetDate = SetDate.AddDays(1);
-                }
-                SetDate = SetDate.Date;
-                SetDate = SetDate.AddHours(set);
-            }
-
-            public DateTime RiseDate { get; private set; }
-            public DateTime SetDate { get; private set; }
         }
     }
 
@@ -746,5 +690,289 @@ namespace NINA.Utility.Astrometry {
 
         [Description("LblWest")]
         WEST
+    }
+
+    public abstract class RiseAndSetEvent {
+
+        public RiseAndSetEvent(DateTime date, double latitude, double longitude) {
+            this.Date = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+            this.Latitude = latitude;
+            this.Longitude = longitude;
+        }
+
+        public DateTime Date { get; private set; }
+        public double Latitude { get; private set; }
+        public double Longitude { get; private set; }
+        public DateTime? Rise { get; private set; }
+        public DateTime? Set { get; private set; }
+
+        protected abstract double AdjustAltitude(Body body);
+
+        protected abstract Body GetBody(DateTime date);
+
+        /// <summary>
+        /// Calculates rise and set time for the sun
+        /// Caveat: does not consider more than two rises
+        /// </summary>
+        /// <returns></returns>
+        public Task<bool> Calculate() {
+            return Task.Run(async () => {
+                // Check rise and set events in two hour periods
+                var offset = 0;
+
+                do {
+                    // Shift date by offset
+                    var offsetDate = Date.AddHours(offset);
+
+                    // Get three sun locations for date, date + 1 hour and date + 2 hours
+                    var bodyAt0 = GetBody(offsetDate);
+                    var bodyAt1 = GetBody(offsetDate.AddHours(1));
+                    var bodyAt2 = GetBody(offsetDate.AddHours(2));
+
+                    await Task.WhenAll(bodyAt0.Calculate(), bodyAt1.Calculate(), bodyAt2.Calculate());
+
+                    var location = new NOVAS.OnSurface() {
+                        Latitude = Latitude,
+                        Longitude = Longitude
+                    };
+
+                    // Adjust altitude for the three sunrise event
+                    var altitude0 = AdjustAltitude(bodyAt0);
+                    var altitude1 = AdjustAltitude(bodyAt1);
+                    var altitude2 = AdjustAltitude(bodyAt2);
+
+                    // Normalized quadratic equation parameters
+                    var a = 0.5 * (altitude2 + altitude0) - altitude1;
+                    var b = 0.5 * (altitude2 - altitude0);
+                    var c = altitude0;
+
+                    // x = -b +- Sqrt(b² - 4ac) / 2a   --- https://de.khanacademy.org/math/algebra/quadratics/solving-quadratics-using-the-quadratic-formula/a/discriminant-review
+
+                    var xAxisSymmetry = -b / (2.0 * a);
+                    var discriminant = (Math.Pow(b, 2)) - (4.0 * a * c);
+
+                    var zeroPoint1 = double.NaN;
+                    var zeroPoint2 = double.NaN;
+                    var events = 0;
+
+                    if (discriminant > 0) {
+                        // Zero points detected
+                        var delta = 0.5 * Math.Sqrt(discriminant) / Math.Abs(a);
+                        zeroPoint1 = xAxisSymmetry - delta;
+                        zeroPoint2 = xAxisSymmetry + delta;
+
+                        if (Math.Abs(zeroPoint1) <= 1) {
+                            events++;
+                        }
+                        if (Math.Abs(zeroPoint2) <= 1) {
+                            events++;
+                        }
+                        if (zeroPoint1 < -1.0) {
+                            zeroPoint1 = zeroPoint2;
+                        }
+                    }
+
+                    var gradient = 2 * a * zeroPoint1 + b;
+
+                    if (events == 1) {
+                        if (gradient > 0) {
+                            // rise
+                            this.Rise = offsetDate.AddHours(zeroPoint1);
+                        } else {
+                            // set
+                            this.Set = offsetDate.AddHours(zeroPoint1);
+                        }
+                    } else if (events == 2) {
+                        if (gradient > 0) {
+                            // rise and set
+                            this.Rise = offsetDate.AddHours(zeroPoint1);
+                            this.Set = offsetDate.AddHours(zeroPoint2);
+                        } else {
+                            // set and rise
+                            this.Rise = offsetDate.AddHours(zeroPoint2);
+                            this.Set = offsetDate.AddHours(zeroPoint1);
+                        }
+                    }
+                    offset += 2;
+                } while (!((this.Rise != null && this.Set != null) || offset > 24));
+
+                return true;
+            });
+        }
+    }
+
+    public class SunRiseAndSet : RiseAndSetEvent {
+
+        public SunRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude) {
+        }
+
+        private double SunRiseDegree {
+            get {
+                //http://aa.usno.navy.mil/faq/docs/RST_defs.php #Paragraph Sunrise and sunset
+                return Astrometry.ArcminToDegree(-50);
+            }
+        }
+
+        protected override double AdjustAltitude(Body body) {
+            return body.Altitude - SunRiseDegree;
+        }
+
+        protected override Body GetBody(DateTime date) {
+            return new Sun(date, Latitude, Longitude);
+        }
+    }
+
+    public class AstronomicalTwilightRiseAndSet : RiseAndSetEvent {
+
+        public AstronomicalTwilightRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude) {
+        }
+
+        private double AstronomicalTwilightDegree {
+            get {
+                //http://aa.usno.navy.mil/faq/docs/RST_defs.php #Paragraph Astronomical twilight
+                return -18;
+            }
+        }
+
+        protected override double AdjustAltitude(Body body) {
+            return body.Altitude - AstronomicalTwilightDegree;
+        }
+
+        protected override Body GetBody(DateTime date) {
+            return new Sun(date, Latitude, Longitude);
+        }
+    }
+
+    public class MoonRiseAndSet : RiseAndSetEvent {
+
+        public MoonRiseAndSet(DateTime date, double latitude, double longitude) : base(date, latitude, longitude) {
+        }
+
+        protected override double AdjustAltitude(Body body) {
+            /* Due to the moon being close and orbit not being circular enough, altitude is adjusted accordingly */
+            var horizon = 90.0;
+            var location = new NOVAS.OnSurface() {
+                Latitude = Latitude,
+                Longitude = Longitude
+            };
+            var refraction = NOVAS.Refract(ref location, NOVAS.RefractionOption.StandardRefraction, horizon);
+
+            var altitude = body.Altitude - Astrometry.ToDegree(Earth.Radius) / body.Distance + Astrometry.ToDegree(body.Radius) / body.Distance + refraction;
+            return altitude;
+        }
+
+        protected override Body GetBody(DateTime date) {
+            return new Moon(date, Latitude, Longitude);
+        }
+    }
+
+    public class Earth {
+
+        public static double Radius {
+            get {
+                return 6371; // https://de.wikipedia.org/wiki/Erdradius
+            }
+        }
+    }
+
+    public abstract class Body {
+
+        public Body(DateTime date, double latitude, double longitude) {
+            this.Date = date;
+            this.Latitude = latitude;
+            this.Longitude = longitude;
+        }
+
+        public DateTime Date { get; private set; }
+        public double Latitude { get; private set; }
+        public double Longitude { get; private set; }
+        public double Distance { get; protected set; }
+        public double Altitude { get; protected set; }
+
+        public abstract double Radius { get; }
+        protected abstract string Name { get; }
+        protected abstract NOVAS.Body BodyNumber { get; }
+
+        public Task Calculate() {
+            return Task.Run(() => {
+                var jd = Astrometry.GetJulianDate(Date);
+                var deltaT = Astrometry.DeltaT(Date);
+
+                var location = new NOVAS.OnSurface() {
+                    Latitude = Latitude,
+                    Longitude = Longitude
+                };
+
+                var observer = new NOVAS.Observer() {
+                    OnSurf = location,
+                    Where = (short)NOVAS.ObserverLocation.EarthGeoCenter
+                };
+
+                var obj = new NOVAS.CelestialObject() {
+                    Name = Name,
+                    Number = (short)BodyNumber,
+                    Star = new NOVAS.CatalogueEntry(),
+                    Type = (short)NOVAS.ObjectType.MajorPlanetSunOrMoon
+                };
+
+                var objPosition = new NOVAS.SkyPosition();
+
+                NOVAS.Place(jd + Astrometry.SecondsToDays(deltaT), obj, observer, deltaT, NOVAS.CoordinateSystem.EquinoxOfDate, NOVAS.Accuracy.Full, ref objPosition);
+
+                this.Distance = Astrometry.AUToKilometer(objPosition.Dis);
+
+                var siderealTime = Astrometry.GetLocalSiderealTime(Date, Longitude);
+                var hourAngle = Astrometry.HoursToDegrees(Astrometry.GetHourAngle(siderealTime, objPosition.RA));
+                this.Altitude = Astrometry.GetAltitude(hourAngle, Latitude, objPosition.Dec);
+            });
+        }
+    }
+
+    public class Sun : Body {
+
+        public Sun(DateTime date, double latitude, double longitude) : base(date, latitude, longitude) {
+        }
+
+        public override double Radius {
+            get {
+                return 696342; // https://de.wikipedia.org/wiki/Sonnenradius
+            }
+        }
+
+        protected override string Name {
+            get {
+                return "Sun";
+            }
+        }
+
+        protected override NOVAS.Body BodyNumber {
+            get {
+                return NOVAS.Body.Sun;
+            }
+        }
+    }
+
+    public class Moon : Body {
+
+        public Moon(DateTime date, double latitude, double longitude) : base(date, latitude, longitude) {
+        }
+
+        public override double Radius {
+            get {
+                return 1738; // https://de.wikipedia.org/wiki/Monddurchmesser
+            }
+        }
+
+        protected override string Name {
+            get {
+                return "Moon";
+            }
+        }
+
+        protected override NOVAS.Body BodyNumber {
+            get {
+                return NOVAS.Body.Moon;
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace NINA.Utility {
      * https://aa.usno.navy.mil/software/novas/novas_c/NOVAS_C3.1_Guide.pdf
      */
 
-    internal static class NOVAS {
+    public static class NOVAS {
         private const string DLLNAME = "NOVAS31.dll";
 
         private static double JPL_EPHEM_START_DATE = 2305424.5; // First date of data in the ephemeredes file
@@ -36,6 +36,17 @@ namespace NINA.Utility {
 
         public static double CalDate(double jtd, ref short year, ref short month, ref short day, ref double hour) {
             return NOVAS_CalDate(jtd, ref year, ref month, ref day, ref hour);
+        }
+
+        /// <summary>
+        /// Computes atmospheric refraction in zenith distance
+        /// </summary>
+        /// <param name="location"></param>
+        /// <param name="refractionOption"></param>
+        /// <param name="zdObs"></param>
+        /// <returns></returns>
+        public static double Refract(ref OnSurface location, RefractionOption refractionOption, double zdObs) {
+            return NOVAS_Refract(ref location, refractionOption, zdObs);
         }
 
         /// <summary>
@@ -75,6 +86,9 @@ namespace NINA.Utility {
 
         [DllImport(DLLNAME, EntryPoint = "ephem_open")]
         private static extern short EphemOpen([MarshalAs(UnmanagedType.LPStr)] string Ephem_Name, ref double JD_Begin, ref double JD_End, ref short DENumber);
+
+        [DllImport(DLLNAME, EntryPoint = "refract")]
+        private static extern double NOVAS_Refract(ref OnSurface location, RefractionOption refractionOption, double zdObs);
 
         #endregion "External DLL calls"
 
@@ -307,6 +321,12 @@ namespace NINA.Utility {
         public enum Accuracy : short {
             Full = 0,
             Reduced = 1
+        }
+
+        public enum RefractionOption : int {
+            NoRefraction = 0,
+            StandardRefraction = 1,
+            LocationRefraction = 2
         }
 
         #endregion "NOVAS helper enums"

@@ -100,8 +100,8 @@ namespace NINA.ViewModel {
                     var twilight = TwilightRiseAndSet;
                     if (twilight != null) {
                         _nightDuration = new AsyncObservableCollection<DataPoint>() {
-                        new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate), 90),
-                        new DataPoint(DateTimeAxis.ToDouble(twilight.SetDate), 90) };
+                        new DataPoint(DateTimeAxis.ToDouble(twilight.Rise), 90),
+                        new DataPoint(DateTimeAxis.ToDouble(twilight.Set), 90) };
                     } else {
                         _nightDuration = new AsyncObservableCollection<DataPoint>();
                     }
@@ -119,16 +119,16 @@ namespace NINA.ViewModel {
                     var night = TwilightRiseAndSet;
                     if (twilight != null) {
                         _twilightDuration = new AsyncObservableCollection<DataPoint>();
-                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.SetDate), 90));
+                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.Set), 90));
 
                         if (night != null) {
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate), 90));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate), 0));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate), 0));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate), 90));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.Set), 90));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.Set), 0));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.Rise), 0));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.Rise), 90));
                         }
 
-                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate), 90));
+                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.Rise), 90));
                     } else {
                         _twilightDuration = new AsyncObservableCollection<DataPoint>();
                     }
@@ -137,9 +137,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Astrometry.RiseAndSetAstroEvent _twilightRiseAndSet;
+        private RiseAndSetEvent _twilightRiseAndSet;
 
-        public Astrometry.RiseAndSetAstroEvent TwilightRiseAndSet {
+        public RiseAndSetEvent TwilightRiseAndSet {
             get {
                 if (_twilightRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
@@ -153,9 +153,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Astrometry.RiseAndSetAstroEvent _moonRiseAndSet;
+        private RiseAndSetEvent _moonRiseAndSet;
 
-        public Astrometry.RiseAndSetAstroEvent MoonRiseAndSet {
+        public RiseAndSetEvent MoonRiseAndSet {
             get {
                 if (_moonRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
@@ -201,9 +201,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Astrometry.RiseAndSetAstroEvent _sunRiseAndSet;
+        private RiseAndSetEvent _sunRiseAndSet;
 
-        public Astrometry.RiseAndSetAstroEvent SunRiseAndSet {
+        public RiseAndSetEvent SunRiseAndSet {
             get {
                 if (_sunRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
