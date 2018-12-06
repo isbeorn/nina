@@ -69,51 +69,23 @@ namespace NINA.Utility.Astrometry {
             return NOVAS.JulianDate((short)utcdate.Year, (short)utcdate.Month, (short)utcdate.Day, utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0);
         }
 
-        public static double DeltaT(DateTime date) {
-            var daysInYear = DateTime.IsLeapYear(date.Year) ? 366d : 365d;
-            var yearFraction = date.Year + date.DayOfYear / daysInYear;
-
-            return DeltaTInternal(yearFraction);
-        }
-
-        public static double DeltaT(double julianDate) {
-            short year = 0, month = 0, day = 0;
-            double hour = 0;
-            NOVAS.CalDate(julianDate, ref year, ref month, ref day, ref hour);
-
-            var date = new DateTime(year, month, day);
-            var daysInYear = DateTime.IsLeapYear(year) ? 366d : 365d;
-            var yearFraction = year + date.DayOfYear / daysInYear;
-
-            return DeltaTInternal(yearFraction);
-        }
-
         /// <summary>
-        /// Calculates the value of DeltaT for years 2012 and later
-        /// prior to 2012 will throw NotSupportedException!
-        /// Calculations are based on best fit to DeltaT data from: http://maia.usno.navy.mil/ser7/deltat.data and http://maia.usno.navy.mil/ser7/deltat.preds
+        /// Calculates the value of DeltaT using SOFA
         /// Published DeltaT information: https://www.usno.navy.mil/USNO/earth-orientation/eo-products/long-term
         /// </summary>
-        /// <param name="yearFraction">Fraction of year (e.g. 2018.324234)</param>
+        /// <param name="date">Date to retrieve DeltaT for</param>
         /// <returns>DeltaT at given date</returns>
-        private static double DeltaTInternal(double yearFraction) {
-            if (yearFraction >= 2018) {
-                return (0.0024855297566049 * Math.Pow(yearFraction, 3)) + (-15.0681141702439 * Math.Pow(yearFraction, 2)) + (30449.647471213 * yearFraction) - 20511035.5077593;
-            }
+        public static double DeltaT(DateTime date) {
+            var utcDate = date.ToUniversalTime();
+            double utc1 = 0, utc2 = 0, tai1 = 0, tai2 = 0, tt1 = 0, tt2 = 0;
+            SOFA.Dtf2d("UTC", utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, (double)utcDate.Second + (double)utcDate.Millisecond / 1000.0, ref utc1, ref utc2);
+            SOFA.UtcTai(utc1, utc2, ref tai1, ref tai2);
+            SOFA.TaiTt(tai1, tai2, ref tt1, ref tt2);
 
-            if (yearFraction >= 2017) {
-                return (0.02465436 * Math.Pow(yearFraction, 2)) + (-98.92626556 * yearFraction) + 99301.85784308;
-            }
-
-            if (yearFraction >= 2015) {
-                return (0.02002376 * Math.Pow(yearFraction, 2)) + (-80.27921003 * yearFraction) + 80529.32;
-            }
-
-            if ((yearFraction >= 2011.75) & (yearFraction < 2015.75)) {
-                return (0.00231189 * Math.Pow(yearFraction, 2)) + (-8.85231952 * yearFraction) + 8518.54;
-            }
-
-            throw new NotSupportedException(string.Format("Yearfraction {0} is not supported", yearFraction));
+            var utc = utc1 + utc2;
+            var tt = tt1 + tt2;
+            var deltaT = Math.Abs(utc - tt) * 60 * 60 * 24;
+            return deltaT;
         }
 
         /// <summary>
