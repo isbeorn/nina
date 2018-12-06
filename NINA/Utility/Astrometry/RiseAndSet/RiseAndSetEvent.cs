@@ -22,8 +22,8 @@ namespace NINA.Utility.Astrometry {
         protected abstract Body GetBody(DateTime date);
 
         /// <summary>
-        /// Calculates rise and set time for the sun
-        /// Caveat: does not consider more than two rises
+        /// Calculates rise and set time
+        /// Caveat: does not consider more than one rise and one set event
         /// </summary>
         /// <returns></returns>
         public Task<bool> Calculate() {
@@ -35,7 +35,7 @@ namespace NINA.Utility.Astrometry {
                     // Shift date by offset
                     var offsetDate = Date.AddHours(offset);
 
-                    // Get three sun locations for date, date + 1 hour and date + 2 hours
+                    // Get three body locations for date, date + 1 hour and date + 2 hours
                     var bodyAt0 = GetBody(offsetDate);
                     var bodyAt1 = GetBody(offsetDate.AddHours(1));
                     var bodyAt2 = GetBody(offsetDate.AddHours(2));
@@ -47,19 +47,22 @@ namespace NINA.Utility.Astrometry {
                         Longitude = Longitude
                     };
 
-                    // Adjust altitude for the three sunrise event
+                    // Adjust altitude for the three body parameters
                     var altitude0 = AdjustAltitude(bodyAt0);
                     var altitude1 = AdjustAltitude(bodyAt1);
                     var altitude2 = AdjustAltitude(bodyAt2);
 
-                    // Normalized quadratic equation parameters
+                    // fit the three reference positions into a quadratic equation
                     var a = 0.5 * (altitude2 + altitude0) - altitude1;
                     var b = 0.5 * (altitude2 - altitude0);
                     var c = altitude0;
 
                     // x = -b +- Sqrt(b² - 4ac) / 2a   --- https://de.khanacademy.org/math/algebra/quadratics/solving-quadratics-using-the-quadratic-formula/a/discriminant-review
 
-                    var xAxisSymmetry = -b / (2.0 * a);
+                    // Symmetry formula: x = -b / 2a
+                    var axisSymmetry = -b / (2.0 * a);
+
+                    // Discriminant definition: b² - 4ac
                     var discriminant = (Math.Pow(b, 2)) - (4.0 * a * c);
 
                     var zeroPoint1 = double.NaN;
@@ -67,10 +70,10 @@ namespace NINA.Utility.Astrometry {
                     var events = 0;
 
                     if (discriminant > 0) {
-                        // Zero points detected
+                        // Zero points detected when discriminant > 0
                         var delta = 0.5 * Math.Sqrt(discriminant) / Math.Abs(a);
-                        zeroPoint1 = xAxisSymmetry - delta;
-                        zeroPoint2 = xAxisSymmetry + delta;
+                        zeroPoint1 = axisSymmetry - delta;
+                        zeroPoint2 = axisSymmetry + delta;
 
                         if (Math.Abs(zeroPoint1) <= 1) {
                             events++;
@@ -83,6 +86,7 @@ namespace NINA.Utility.Astrometry {
                         }
                     }
 
+                    //find the gradient at zeroPoint1. positive => rise event, negative => set event
                     var gradient = 2 * a * zeroPoint1 + b;
 
                     if (events == 1) {
@@ -105,6 +109,7 @@ namespace NINA.Utility.Astrometry {
                         }
                     }
                     offset += 2;
+                    //Repeat until rise and set events are found, or after a whole day
                 } while (!((this.Rise != null && this.Set != null) || offset > 24));
 
                 return true;
