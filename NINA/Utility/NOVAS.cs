@@ -62,8 +62,13 @@ namespace NINA.Utility {
         /// <param name="position"></param>
         /// <returns></returns>
         public static short Place(double jdTt, CelestialObject celestialObject, Observer observer, double deltaT, CoordinateSystem coordinateSystem, Accuracy accuracy, ref SkyPosition position) {
-            return NOVAS_Place(jdTt, ref celestialObject, ref observer, deltaT, (short)coordinateSystem, (short)accuracy, ref position);
+            lock (lockObj) {
+                var err = NOVAS_Place(jdTt, ref celestialObject, ref observer, deltaT, (short)coordinateSystem, (short)accuracy, ref position);
+                return err;
+            }
         }
+
+        private static readonly object lockObj = new object();
 
         #endregion "Public Methods"
 
