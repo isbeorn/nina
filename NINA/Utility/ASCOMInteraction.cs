@@ -89,5 +89,9 @@ namespace NINA.Utility {
             }
             return l;
         }
+
+        public static string GetVersion() {
+            return "Version " + new ASCOM.Utilities.Util().PlatformVersion;
+        }
     }
 }
