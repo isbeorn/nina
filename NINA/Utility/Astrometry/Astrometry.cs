@@ -1,6 +1,4 @@
-﻿using ASCOM.Astrometry;
-using NINA.Utility.Profile;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Linq;
 
@@ -93,13 +91,6 @@ namespace NINA.Utility.Astrometry {
         /// <returns>Sidereal Time in hours</returns>
         public static double GetLocalSiderealTime(DateTime date, double longitude) {
             var jd = GetJulianDate(date);
-
-            /*
-            var jd = AstroUtils.JulianDateUtc;
-            var d = (jd - 2451545.0);
-            var UT = DateTime.UtcNow.ToUniversalTime();
-            var lst2 = 100.46 + 0.985647 * d + longitude + 15 * (UT.Hour + UT.Minute / 60.0 + UT.Second / 60.0 / 60.0);
-            lst2 = (lst2 % 360) / 15;*/
 
             long jd_high = (long)jd;
             double jd_low = jd - jd_high;
