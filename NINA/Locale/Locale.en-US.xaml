@@ -716,4 +716,5 @@ Calculated HFR: {2}
     <s:String x:Key="LblASPS">All Sky Plate Solver</s:String>
     <s:String x:Key="LblASPSDirectory">ASPS Location</s:String>
     <s:String x:Key="LblAscomInterOpDriverException">An ASCOM driver interop exception occurred. This is most likely caused by a mismatch between the driver being installed as {0} and N.I.N.A. being {1}. Please install the driver as {1}</s:String>
+    <s:String x:Key="LblCanonErrorOccurred">A Canon error occored: {0}</s:String>
 </ResourceDictionary>
