@@ -15,9 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Model.MyCamera {
-
     internal class EDCamera : BaseINPC, ICamera {
-
         public EDCamera(IntPtr cam, EDSDK.EdsDeviceInfo info, IProfileService profileService) {
             this.profileService = profileService;
             _cam = cam;
@@ -439,8 +437,8 @@ namespace NINA.Model.MyCamera {
 
         public async Task<ImageArray> DownloadExposure(CancellationToken token) {
             return await Task<ImageArray>.Run(async () => {
-                var stream = IntPtr.Zero;
-                var pointer = IntPtr.Zero;
+                var memoryStreamHandle = IntPtr.Zero;
+                var imageDataPointer = IntPtr.Zero;
                 try {
                     using (token.Register(() => downloadExposure.TrySetCanceled())) {
                         await downloadExposure.Task;
@@ -450,10 +448,10 @@ namespace NINA.Model.MyCamera {
                         CheckAndThrowError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo));
 
                         //create a file stream to accept the image
-                        CheckAndThrowError(EDSDK.EdsCreateMemoryStream(directoryItemInfo.Size, out stream));
+                        CheckAndThrowError(EDSDK.EdsCreateMemoryStream(directoryItemInfo.Size, out memoryStreamHandle));
 
                         //download image
-                        CheckAndThrowError(EDSDK.EdsDownload(this.DirectoryItem, directoryItemInfo.Size, stream));
+                        CheckAndThrowError(EDSDK.EdsDownload(this.DirectoryItem, directoryItemInfo.Size, memoryStreamHandle));
 
                         //complete download
                         CheckAndThrowError(EDSDK.EdsDownloadComplete(this.DirectoryItem));
@@ -463,17 +461,17 @@ namespace NINA.Model.MyCamera {
 
                     using (MyStopWatch.Measure("Canon - Creating Image Array")) {
                         //convert to memory stream
-                        EDSDK.EdsGetPointer(stream, out pointer);
-                        EDSDK.EdsGetLength(stream, out var length);
+                        EDSDK.EdsGetPointer(memoryStreamHandle, out imageDataPointer);
+                        EDSDK.EdsGetLength(memoryStreamHandle, out var length);
 
-                        byte[] bytes = new byte[length];
+                        byte[] rawImageData = new byte[length];
 
                         //Move from unmanaged to managed code.
-                        Marshal.Copy(pointer, bytes, 0, bytes.Length);
+                        Marshal.Copy(imageDataPointer, rawImageData, 0, rawImageData.Length);
 
                         token.ThrowIfCancellationRequested();
 
-                        using (var memoryStream = new System.IO.MemoryStream(bytes)) {
+                        using (var memoryStream = new System.IO.MemoryStream(rawImageData)) {
                             var converter = RawConverter.CreateInstance(profileService.Profiles.ActiveProfile.CameraSettings.RawConverter);
                             var iarr = await converter.ConvertToImageArray(memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, token);
                             iarr.RAWType = "cr2";
@@ -482,9 +480,9 @@ namespace NINA.Model.MyCamera {
                     }
                 } finally {
                     /* Memory cleanup */
-                    if (pointer != IntPtr.Zero) {
-                        EDSDK.EdsRelease(pointer);
-                        pointer = IntPtr.Zero;
+                    if (imageDataPointer != IntPtr.Zero) {
+                        EDSDK.EdsRelease(imageDataPointer);
+                        imageDataPointer = IntPtr.Zero;
                     }
 
                     if (this.DirectoryItem != IntPtr.Zero) {
@@ -492,9 +490,9 @@ namespace NINA.Model.MyCamera {
                         this.DirectoryItem = IntPtr.Zero;
                     }
 
-                    if (stream != IntPtr.Zero) {
-                        EDSDK.EdsRelease(stream);
-                        stream = IntPtr.Zero;
+                    if (memoryStreamHandle != IntPtr.Zero) {
+                        EDSDK.EdsRelease(memoryStreamHandle);
+                        memoryStreamHandle = IntPtr.Zero;
                     }
                 }
             });
