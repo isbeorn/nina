@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{C6BBBBD5-9C87-4CAA-8BA4-7055D58287A8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SOFA</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;SOFA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;SOFA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;SOFA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;SOFA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\sofa.h" />
+    <ClInclude Include="src\sofam.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\a2af.c" />
+    <ClCompile Include="src\a2tf.c" />
+    <ClCompile Include="src\ab.c" />
+    <ClCompile Include="src\ae2hd.c" />
+    <ClCompile Include="src\af2a.c" />
+    <ClCompile Include="src\anp.c" />
+    <ClCompile Include="src\anpm.c" />
+    <ClCompile Include="src\apcg.c" />
+    <ClCompile Include="src\apcg13.c" />
+    <ClCompile Include="src\apci.c" />
+    <ClCompile Include="src\apci13.c" />
+    <ClCompile Include="src\apco.c" />
+    <ClCompile Include="src\apco13.c" />
+    <ClCompile Include="src\apcs.c" />
+    <ClCompile Include="src\apcs13.c" />
+    <ClCompile Include="src\aper.c" />
+    <ClCompile Include="src\aper13.c" />
+    <ClCompile Include="src\apio.c" />
+    <ClCompile Include="src\apio13.c" />
+    <ClCompile Include="src\atci13.c" />
+    <ClCompile Include="src\atciq.c" />
+    <ClCompile Include="src\atciqn.c" />
+    <ClCompile Include="src\atciqz.c" />
+    <ClCompile Include="src\atco13.c" />
+    <ClCompile Include="src\atic13.c" />
+    <ClCompile Include="src\aticq.c" />
+    <ClCompile Include="src\aticqn.c" />
+    <ClCompile Include="src\atio13.c" />
+    <ClCompile Include="src\atioq.c" />
+    <ClCompile Include="src\atoc13.c" />
+    <ClCompile Include="src\atoi13.c" />
+    <ClCompile Include="src\atoiq.c" />
+    <ClCompile Include="src\bi00.c" />
+    <ClCompile Include="src\bp00.c" />
+    <ClCompile Include="src\bp06.c" />
+    <ClCompile Include="src\bpn2xy.c" />
+    <ClCompile Include="src\c2i00a.c" />
+    <ClCompile Include="src\c2i00b.c" />
+    <ClCompile Include="src\c2i06a.c" />
+    <ClCompile Include="src\c2ibpn.c" />
+    <ClCompile Include="src\c2ixy.c" />
+    <ClCompile Include="src\c2ixys.c" />
+    <ClCompile Include="src\c2s.c" />
+    <ClCompile Include="src\c2t00a.c" />
+    <ClCompile Include="src\c2t00b.c" />
+    <ClCompile Include="src\c2t06a.c" />
+    <ClCompile Include="src\c2tcio.c" />
+    <ClCompile Include="src\c2teqx.c" />
+    <ClCompile Include="src\c2tpe.c" />
+    <ClCompile Include="src\c2txy.c" />
+    <ClCompile Include="src\cal2jd.c" />
+    <ClCompile Include="src\cp.c" />
+    <ClCompile Include="src\cpv.c" />
+    <ClCompile Include="src\cr.c" />
+    <ClCompile Include="src\d2dtf.c" />
+    <ClCompile Include="src\d2tf.c" />
+    <ClCompile Include="src\dat.c" />
+    <ClCompile Include="src\dtdb.c" />
+    <ClCompile Include="src\dtf2d.c" />
+    <ClCompile Include="src\eceq06.c" />
+    <ClCompile Include="src\ecm06.c" />
+    <ClCompile Include="src\ee00.c" />
+    <ClCompile Include="src\ee00a.c" />
+    <ClCompile Include="src\ee00b.c" />
+    <ClCompile Include="src\ee06a.c" />
+    <ClCompile Include="src\eect00.c" />
+    <ClCompile Include="src\eform.c" />
+    <ClCompile Include="src\eo06a.c" />
+    <ClCompile Include="src\eors.c" />
+    <ClCompile Include="src\epb.c" />
+    <ClCompile Include="src\epb2jd.c" />
+    <ClCompile Include="src\epj.c" />
+    <ClCompile Include="src\epj2jd.c" />
+    <ClCompile Include="src\epv00.c" />
+    <ClCompile Include="src\eqec06.c" />
+    <ClCompile Include="src\eqeq94.c" />
+    <ClCompile Include="src\era00.c" />
+    <ClCompile Include="src\fad03.c" />
+    <ClCompile Include="src\fae03.c" />
+    <ClCompile Include="src\faf03.c" />
+    <ClCompile Include="src\faju03.c" />
+    <ClCompile Include="src\fal03.c" />
+    <ClCompile Include="src\falp03.c" />
+    <ClCompile Include="src\fama03.c" />
+    <ClCompile Include="src\fame03.c" />
+    <ClCompile Include="src\fane03.c" />
+    <ClCompile Include="src\faom03.c" />
+    <ClCompile Include="src\fapa03.c" />
+    <ClCompile Include="src\fasa03.c" />
+    <ClCompile Include="src\faur03.c" />
+    <ClCompile Include="src\fave03.c" />
+    <ClCompile Include="src\fk52h.c" />
+    <ClCompile Include="src\fk5hip.c" />
+    <ClCompile Include="src\fk5hz.c" />
+    <ClCompile Include="src\fw2m.c" />
+    <ClCompile Include="src\fw2xy.c" />
+    <ClCompile Include="src\g2icrs.c" />
+    <ClCompile Include="src\gc2gd.c" />
+    <ClCompile Include="src\gc2gde.c" />
+    <ClCompile Include="src\gd2gc.c" />
+    <ClCompile Include="src\gd2gce.c" />
+    <ClCompile Include="src\gmst00.c" />
+    <ClCompile Include="src\gmst06.c" />
+    <ClCompile Include="src\gmst82.c" />
+    <ClCompile Include="src\gst00a.c" />
+    <ClCompile Include="src\gst00b.c" />
+    <ClCompile Include="src\gst06.c" />
+    <ClCompile Include="src\gst06a.c" />
+    <ClCompile Include="src\gst94.c" />
+    <ClCompile Include="src\h2fk5.c" />
+    <ClCompile Include="src\hd2ae.c" />
+    <ClCompile Include="src\hd2pa.c" />
+    <ClCompile Include="src\hfk5z.c" />
+    <ClCompile Include="src\icrs2g.c" />
+    <ClCompile Include="src\ir.c" />
+    <ClCompile Include="src\jd2cal.c" />
+    <ClCompile Include="src\jdcalf.c" />
+    <ClCompile Include="src\ld.c" />
+    <ClCompile Include="src\ldn.c" />
+    <ClCompile Include="src\ldsun.c" />
+    <ClCompile Include="src\lteceq.c" />
+    <ClCompile Include="src\ltecm.c" />
+    <ClCompile Include="src\lteqec.c" />
+    <ClCompile Include="src\ltp.c" />
+    <ClCompile Include="src\ltpb.c" />
+    <ClCompile Include="src\ltpecl.c" />
+    <ClCompile Include="src\ltpequ.c" />
+    <ClCompile Include="src\num00a.c" />
+    <ClCompile Include="src\num00b.c" />
+    <ClCompile Include="src\num06a.c" />
+    <ClCompile Include="src\numat.c" />
+    <ClCompile Include="src\nut00a.c" />
+    <ClCompile Include="src\nut00b.c" />
+    <ClCompile Include="src\nut06a.c" />
+    <ClCompile Include="src\nut80.c" />
+    <ClCompile Include="src\nutm80.c" />
+    <ClCompile Include="src\obl06.c" />
+    <ClCompile Include="src\obl80.c" />
+    <ClCompile Include="src\p06e.c" />
+    <ClCompile Include="src\p2pv.c" />
+    <ClCompile Include="src\p2s.c" />
+    <ClCompile Include="src\pap.c" />
+    <ClCompile Include="src\pas.c" />
+    <ClCompile Include="src\pb06.c" />
+    <ClCompile Include="src\pdp.c" />
+    <ClCompile Include="src\pfw06.c" />
+    <ClCompile Include="src\plan94.c" />
+    <ClCompile Include="src\pm.c" />
+    <ClCompile Include="src\pmat00.c" />
+    <ClCompile Include="src\pmat06.c" />
+    <ClCompile Include="src\pmat76.c" />
+    <ClCompile Include="src\pmp.c" />
+    <ClCompile Include="src\pmpx.c" />
+    <ClCompile Include="src\pmsafe.c" />
+    <ClCompile Include="src\pn.c" />
+    <ClCompile Include="src\pn00.c" />
+    <ClCompile Include="src\pn00a.c" />
+    <ClCompile Include="src\pn00b.c" />
+    <ClCompile Include="src\pn06.c" />
+    <ClCompile Include="src\pn06a.c" />
+    <ClCompile Include="src\pnm00a.c" />
+    <ClCompile Include="src\pnm00b.c" />
+    <ClCompile Include="src\pnm06a.c" />
+    <ClCompile Include="src\pnm80.c" />
+    <ClCompile Include="src\pom00.c" />
+    <ClCompile Include="src\ppp.c" />
+    <ClCompile Include="src\ppsp.c" />
+    <ClCompile Include="src\pr00.c" />
+    <ClCompile Include="src\prec76.c" />
+    <ClCompile Include="src\pv2p.c" />
+    <ClCompile Include="src\pv2s.c" />
+    <ClCompile Include="src\pvdpv.c" />
+    <ClCompile Include="src\pvm.c" />
+    <ClCompile Include="src\pvmpv.c" />
+    <ClCompile Include="src\pvppv.c" />
+    <ClCompile Include="src\pvstar.c" />
+    <ClCompile Include="src\pvtob.c" />
+    <ClCompile Include="src\pvu.c" />
+    <ClCompile Include="src\pvup.c" />
+    <ClCompile Include="src\pvxpv.c" />
+    <ClCompile Include="src\pxp.c" />
+    <ClCompile Include="src\refco.c" />
+    <ClCompile Include="src\rm2v.c" />
+    <ClCompile Include="src\rv2m.c" />
+    <ClCompile Include="src\rx.c" />
+    <ClCompile Include="src\rxp.c" />
+    <ClCompile Include="src\rxpv.c" />
+    <ClCompile Include="src\rxr.c" />
+    <ClCompile Include="src\ry.c" />
+    <ClCompile Include="src\rz.c" />
+    <ClCompile Include="src\s00.c" />
+    <ClCompile Include="src\s00a.c" />
+    <ClCompile Include="src\s00b.c" />
+    <ClCompile Include="src\s06.c" />
+    <ClCompile Include="src\s06a.c" />
+    <ClCompile Include="src\s2c.c" />
+    <ClCompile Include="src\s2p.c" />
+    <ClCompile Include="src\s2pv.c" />
+    <ClCompile Include="src\s2xpv.c" />
+    <ClCompile Include="src\sepp.c" />
+    <ClCompile Include="src\seps.c" />
+    <ClCompile Include="src\sp00.c" />
+    <ClCompile Include="src\starpm.c" />
+    <ClCompile Include="src\starpv.c" />
+    <ClCompile Include="src\sxp.c" />
+    <ClCompile Include="src\sxpv.c" />
+    <ClCompile Include="src\taitt.c" />
+    <ClCompile Include="src\taiut1.c" />
+    <ClCompile Include="src\taiutc.c" />
+    <ClCompile Include="src\tcbtdb.c" />
+    <ClCompile Include="src\tcgtt.c" />
+    <ClCompile Include="src\tdbtcb.c" />
+    <ClCompile Include="src\tdbtt.c" />
+    <ClCompile Include="src\tf2a.c" />
+    <ClCompile Include="src\tf2d.c" />
+    <ClCompile Include="src\tpors.c" />
+    <ClCompile Include="src\tporv.c" />
+    <ClCompile Include="src\tpsts.c" />
+    <ClCompile Include="src\tpstv.c" />
+    <ClCompile Include="src\tpxes.c" />
+    <ClCompile Include="src\tpxev.c" />
+    <ClCompile Include="src\tr.c" />
+    <ClCompile Include="src\trxp.c" />
+    <ClCompile Include="src\trxpv.c" />
+    <ClCompile Include="src\tttai.c" />
+    <ClCompile Include="src\tttcg.c" />
+    <ClCompile Include="src\tttdb.c" />
+    <ClCompile Include="src\ttut1.c" />
+    <ClCompile Include="src\ut1tai.c" />
+    <ClCompile Include="src\ut1tt.c" />
+    <ClCompile Include="src\ut1utc.c" />
+    <ClCompile Include="src\utctai.c" />
+    <ClCompile Include="src\utcut1.c" />
+    <ClCompile Include="src\xy06.c" />
+    <ClCompile Include="src\xys00a.c" />
+    <ClCompile Include="src\xys00b.c" />
+    <ClCompile Include="src\xys06a.c" />
+    <ClCompile Include="src\zp.c" />
+    <ClCompile Include="src\zpv.c" />
+    <ClCompile Include="src\zr.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
