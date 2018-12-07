@@ -24,6 +24,7 @@
     - Hide camera cooler controls when not available for current camera model
     - Zero Floating point numbers now displayed as "0.00" instead of ".00"
     - Show better exception message when an ASCOM Interop Exception occurs
+    - Removed hard requirement of ASCOM platform. Application can now function without it
 
 ___
 
