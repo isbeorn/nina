@@ -355,7 +355,7 @@ namespace NINA.ViewModel {
                     Notification.ShowError(Locale.Loc.Instance["LblCameraConnectionLost"]);
                     throw ex;
                 } catch (Exception ex) {
-                    Notification.ShowError(Locale.Loc.Instance["LblUnexpectedError"]);
+                    Notification.ShowError(Locale.Loc.Instance["LblUnexpectedError"] + Environment.NewLine + ex.Message);
                     Logger.Error(ex);
                     cameraMediator.AbortExposure();
                     throw ex;
