@@ -12,7 +12,7 @@ namespace NINA.ViewModel.Interfaces {
 
         Task<bool> SlewToCoordinatesAsync(Coordinates coords);
 
-        void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate);
+        void MoveAxis(TelescopeAxes axis, double rate);
 
         bool Sync(double ra, double dec);
 

@@ -826,7 +826,38 @@ namespace NINA.Model.MyCamera {
         public SensorType SensorType {
             get {
                 if (Connected) {
-                    return _camera.SensorType;
+                    SensorType type;
+                    switch (_camera.SensorType) {
+                        case ASCOM.DeviceInterface.SensorType.Monochrome:
+                            type = SensorType.Monochrome;
+                            break;
+
+                        case ASCOM.DeviceInterface.SensorType.Color:
+                            type = SensorType.Color;
+                            break;
+
+                        case ASCOM.DeviceInterface.SensorType.RGGB:
+                            type = SensorType.RGGB;
+                            break;
+
+                        case ASCOM.DeviceInterface.SensorType.CMYG:
+                            type = SensorType.CMYG;
+                            break;
+
+                        case ASCOM.DeviceInterface.SensorType.CMYG2:
+                            type = SensorType.CMYG2;
+                            break;
+
+                        case ASCOM.DeviceInterface.SensorType.LRGB:
+                            type = SensorType.LRGB;
+                            break;
+
+                        default:
+                            type = SensorType.Monochrome;
+                            break;
+                    }
+
+                    return type;
                 } else {
                     return SensorType.Monochrome;
                 }
@@ -927,11 +958,9 @@ namespace NINA.Model.MyCamera {
                 return await Task.Run(async () => {
                     try {
                         using (MyStopWatch.Measure("ASCOM WaitForCamera")) {
-                            ASCOM.Utilities.Util U = Utility.Utility.AscomUtil;
                             while (!ImageReady && Connected) {
                                 //Console.Write(".");
-                                U.WaitForMilliseconds(100);
-                                token.ThrowIfCancellationRequested();
+                                await Utility.Utility.Wait(TimeSpan.FromMilliseconds(100), token);
                             }
                         }
 

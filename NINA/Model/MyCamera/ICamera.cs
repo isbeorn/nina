@@ -13,7 +13,7 @@ namespace NINA.Model.MyCamera {
         short BinX { get; set; }
         short BinY { get; set; }
         string SensorName { get; }
-        ASCOM.DeviceInterface.SensorType SensorType { get; }
+        SensorType SensorType { get; }
         int CameraXSize { get; }
         int CameraYSize { get; }
         double ExposureMin { get; }

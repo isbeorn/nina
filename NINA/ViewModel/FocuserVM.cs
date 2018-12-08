@@ -306,15 +306,12 @@ namespace NINA.ViewModel {
 
             Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoFocuser"]));
 
-            var ascomDevices = new ASCOM.Utilities.Profile();
-
-            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Focuser")) {
-                try {
-                    AscomFocuser focuser = new AscomFocuser(device.Key, device.Value);
+            try {
+                foreach (IFocuser focuser in ASCOMInteraction.GetFocusers(profileService)) {
                     Devices.Add(focuser);
-                } catch (Exception) {
-                    //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             DetermineSelectedDevice(profileService.ActiveProfile.FocuserSettings.Id);

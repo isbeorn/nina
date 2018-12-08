@@ -1,5 +1,4 @@
-﻿using ASCOM.DeviceInterface;
-using NINA.Utility.Astrometry;
+﻿using NINA.Utility.Astrometry;
 
 namespace NINA.Model.MyTelescope {
 

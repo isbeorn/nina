@@ -164,5 +164,61 @@ namespace NINATest {
 
             Assert.AreEqual(0, alt);
         }
+
+        [Test]
+        [TestCase(0, "00° 00' 00\"")]
+        [TestCase(90, "90° 00' 00\"")]
+        [TestCase(-90, "-90° 00' 00\"")]
+        [TestCase(91, "91° 00' 00\"")]
+        [TestCase(-91, "-91° 00' 00\"")]
+        [TestCase(72.016666666666666666, "72° 01' 00\"")] //Arcsec rounded = 60
+        [TestCase(-72.016666666666666666, "-72° 01' 00\"")]//Arcsec rounded = 60
+        [TestCase(33.9999999, "34° 00' 00\"")] //Arcsec rounded = 60 and arcmin will be 60
+        [TestCase(-33.9999999, "-34° 00' 00\"")] //Arcsec rounded = 60 and arcmin will be 60
+        public void DegreesToDMS(double degree, string expected) {
+            var value = Astrometry.DegreesToDMS(degree);
+
+            Assert.AreEqual(expected, value);
+        }
+
+        [Test]
+        [TestCase(0, "00:00:00")]
+        [TestCase(90, "06:00:00")]
+        [TestCase(-90, "-06:00:00")]
+        [TestCase(91, "06:04:00")]
+        [TestCase(-91, "-06:04:00")]
+        [TestCase(72.016666666666666666, "04:48:04")]
+        [TestCase(-72.016666666666666666, "-04:48:04")]
+        [TestCase(33.9999999, "02:16:00")]
+        [TestCase(-33.9999999, "-02:16:00")]
+        [TestCase(75, "05:00:00")]
+        [TestCase(-75, "-05:00:00")]
+        [TestCase(0.248, "00:01:00")]
+        [TestCase(-0.248, "-00:01:00")]
+        [TestCase(14.999, "01:00:00")]
+        [TestCase(-14.999, "-01:00:00")]
+        public void DegreesToHMS(double degree, string expected) {
+            var value = Astrometry.DegreesToHMS(degree);
+            /* Check that it matches ascom values */
+
+            Assert.AreEqual(expected, value);
+        }
+
+        [Test]
+        [TestCase(0, "00:00:00")]
+        [TestCase(90, "90:00:00")]
+        [TestCase(-90, "-90:00:00")]
+        [TestCase(91, "91:00:00")]
+        [TestCase(-91, "-91:00:00")]
+        [TestCase(72.016666666666666666, "72:01:00")]
+        [TestCase(-72.016666666666666666, "-72:01:00")]
+        [TestCase(33.9999999, "34:00:00")]
+        [TestCase(-33.9999999, "-34:00:00")]
+        public void HoursToHMS(double hours, string expected) {
+            var value = Astrometry.HoursToHMS(hours);
+            /* Check that it matches ascom values */
+
+            Assert.AreEqual(expected, value);
+        }
     }
 }

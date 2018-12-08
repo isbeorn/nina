@@ -275,7 +275,7 @@
                         BorderThickness="0,0,0,1">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMoonRise}" />
-                            <TextBlock Text="{Binding MoonRiseAndSet.RiseDate, StringFormat={}{0:HH:mm}}" />
+                            <TextBlock Text="{Binding MoonRiseAndSet.Rise, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
 
@@ -285,7 +285,7 @@
                         BorderThickness="0,0,0,1">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMoonSet}" />
-                            <TextBlock Text="{Binding MoonRiseAndSet.SetDate, StringFormat={}{0:HH:mm}}" />
+                            <TextBlock Text="{Binding MoonRiseAndSet.Set, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
 
@@ -295,7 +295,7 @@
                         BorderThickness="0,0,0,1">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDawn}" />
-                            <TextBlock Text="{Binding TwilightRiseAndSet.RiseDate, StringFormat={}{0:HH:mm}}" />
+                            <TextBlock Text="{Binding TwilightRiseAndSet.Rise, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
 
@@ -305,7 +305,7 @@
                         BorderThickness="0,0,0,1">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSunRise}" />
-                            <TextBlock Text="{Binding SunRiseAndSet.RiseDate, StringFormat={}{0:HH:mm}}" />
+                            <TextBlock Text="{Binding SunRiseAndSet.Rise, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
 
@@ -315,7 +315,7 @@
                         BorderThickness="0,0,0,1">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSunSet}" />
-                            <TextBlock Text="{Binding SunRiseAndSet.SetDate, StringFormat={}{0:HH:mm}}" />
+                            <TextBlock Text="{Binding SunRiseAndSet.Set, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
 
@@ -325,7 +325,7 @@
                         BorderThickness="0,0,0,1">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDusk}" />
-                            <TextBlock Text="{Binding TwilightRiseAndSet.SetDate, StringFormat={}{0:HH:mm}}" />
+                            <TextBlock Text="{Binding TwilightRiseAndSet.Set, StringFormat={}{0:HH:mm}}" />
                         </UniformGrid>
                     </Border>
                 </StackPanel>

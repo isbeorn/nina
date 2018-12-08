@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ASCOM.DeviceInterface;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Notification;

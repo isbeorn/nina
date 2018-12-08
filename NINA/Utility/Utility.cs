@@ -34,11 +34,6 @@ namespace NINA.Utility {
             }
         }
 
-        private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
-            new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
-
-        public static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }
-
         public static void HandleAscomCOMException(Exception ex) {
             Logger.Error(ex);
             var architecture = DllLoader.IsX86() ? "x86" : "x64";

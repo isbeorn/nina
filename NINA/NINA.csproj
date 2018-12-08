@@ -294,6 +294,7 @@
     <Compile Include="Model\MyCamera\ImageArray.cs" />
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
+    <Compile Include="Model\MyCamera\SensorType.cs" />
     <Compile Include="Model\MyCamera\ToupTekCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
     <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
@@ -307,6 +308,7 @@
     <Compile Include="Model\MyRotator\IRotator.cs" />
     <Compile Include="Model\MyRotator\ManualRotator.cs" />
     <Compile Include="Model\MyRotator\RotatorInfo.cs" />
+    <Compile Include="Model\MyTelescope\TelescopeAxes.cs" />
     <Compile Include="Model\MyTelescope\TelescopeInfo.cs" />
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
@@ -319,6 +321,16 @@
     <Compile Include="PlateSolving\AllSkyPlateSolver.cs" />
     <Compile Include="PlateSolving\Platesolve2Solver.cs" />
     <Compile Include="PlateSolving\PlateSolverFactory.cs" />
+    <Compile Include="Utility\ASCOMInteraction.cs" />
+    <Compile Include="Utility\Astrometry\RiseAndSet\AstronomicalTwilightRiseAndSet.cs" />
+    <Compile Include="Utility\Astrometry\Body\Body.cs" />
+    <Compile Include="Utility\Astrometry\Coordinates.cs" />
+    <Compile Include="Utility\Astrometry\Body\Earth.cs" />
+    <Compile Include="Utility\Astrometry\Body\Moon.cs" />
+    <Compile Include="Utility\Astrometry\RiseAndSet\MoonRiseAndSet.cs" />
+    <Compile Include="Utility\Astrometry\RiseAndSet\RiseAndSetEvent.cs" />
+    <Compile Include="Utility\Astrometry\Body\Sun.cs" />
+    <Compile Include="Utility\Astrometry\RiseAndSet\SunRiseAndSet.cs" />
     <Compile Include="Utility\CameraSDKs\AltairSDK\altaircam.cs" />
     <Compile Include="Utility\CameraSDKs\ASISDK\ASICameraDll.cs" />
     <Compile Include="Model\MyFilterWheel\AscomFilterWheel.cs" />
@@ -393,6 +405,7 @@
     <Compile Include="Utility\Mediator\Interfaces\ITelescopeMediator.cs" />
     <Compile Include="Utility\Mediator\RotatorMediator.cs" />
     <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
+    <Compile Include="Utility\NOVAS.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
     <Compile Include="Utility\Profile\ICameraSettings.cs" />
@@ -469,6 +482,7 @@
     <Compile Include="Utility\SkySurvey\SkyServerSkySurvey.cs" />
     <Compile Include="Utility\SkySurvey\SkySurveyFactory.cs" />
     <Compile Include="Utility\SkySurvey\StsciSkySurvey.cs" />
+    <Compile Include="Utility\SOFA.cs" />
     <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
     <Compile Include="Utility\ValidationRules\DirectoryExistsRule.cs" />
@@ -506,7 +520,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Utility\Astrometry.cs" />
+    <Compile Include="Utility\Astrometry\Astrometry.cs" />
     <Compile Include="Utility\AsyncCommand.cs" />
     <Compile Include="Utility\AsyncObservableCollection.cs" />
     <Compile Include="Utility\BaseINPC.cs" />
@@ -1348,6 +1362,12 @@
     <Content Include="External\x64\Nikon\Type0022\NkdPTP.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\NOVAS\NOVAS31.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\SOFA\SOFA.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\SQLite\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1442,6 +1462,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\Nikon\Type0022\NkdPTP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\NOVAS\NOVAS31.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\SOFA\SOFA.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\SQLite\SQLite.Interop.dll">
@@ -1540,6 +1566,12 @@
     <Content Include="External\x86\Altair\altaircam.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\NOVAS\cio_ra.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\JPLEPH">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="External\x64\ToupTek\toupcam.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1610,6 +1642,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\Nikon\Type0022\Type0022.md3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="External\x86\ToupTek\toupcam.lib">

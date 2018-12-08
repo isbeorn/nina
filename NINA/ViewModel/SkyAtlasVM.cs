@@ -99,9 +99,14 @@ namespace NINA.ViewModel {
                 if (_nightDuration == null) {
                     var twilight = TwilightRiseAndSet;
                     if (twilight != null) {
+                        var rise = twilight.Rise;
+                        var set = twilight.Set;
+
+                        if (rise.HasValue) rise = rise.Value.AddDays(1);
+
                         _nightDuration = new AsyncObservableCollection<DataPoint>() {
-                        new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate), 90),
-                        new DataPoint(DateTimeAxis.ToDouble(twilight.SetDate), 90) };
+                        new DataPoint(DateTimeAxis.ToDouble(rise), 90),
+                        new DataPoint(DateTimeAxis.ToDouble(set), 90) };
                     } else {
                         _nightDuration = new AsyncObservableCollection<DataPoint>();
                     }
@@ -118,17 +123,25 @@ namespace NINA.ViewModel {
                     var twilight = SunRiseAndSet;
                     var night = TwilightRiseAndSet;
                     if (twilight != null) {
+                        var twilightRise = twilight.Rise;
+                        var twilightSet = twilight.Set;
+                        var rise = night.Rise;
+                        var set = night.Set;
+
+                        if (twilightRise.HasValue) twilightRise = twilightRise.Value.AddDays(1);
+                        if (rise.HasValue) rise = rise.Value.AddDays(1);
+
                         _twilightDuration = new AsyncObservableCollection<DataPoint>();
-                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.SetDate), 90));
+                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilightSet), 90));
 
                         if (night != null) {
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate), 90));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate), 0));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate), 0));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate), 90));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(set), 90));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(set), 0));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(rise), 0));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(rise), 90));
                         }
 
-                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate), 90));
+                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilightRise), 90));
                     } else {
                         _twilightDuration = new AsyncObservableCollection<DataPoint>();
                     }
@@ -137,9 +150,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Astrometry.RiseAndSetAstroEvent _twilightRiseAndSet;
+        private RiseAndSetEvent _twilightRiseAndSet;
 
-        public Astrometry.RiseAndSetAstroEvent TwilightRiseAndSet {
+        public RiseAndSetEvent TwilightRiseAndSet {
             get {
                 if (_twilightRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
@@ -153,9 +166,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Astrometry.RiseAndSetAstroEvent _moonRiseAndSet;
+        private RiseAndSetEvent _moonRiseAndSet;
 
-        public Astrometry.RiseAndSetAstroEvent MoonRiseAndSet {
+        public RiseAndSetEvent MoonRiseAndSet {
             get {
                 if (_moonRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
@@ -201,9 +214,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Astrometry.RiseAndSetAstroEvent _sunRiseAndSet;
+        private RiseAndSetEvent _sunRiseAndSet;
 
-        public Astrometry.RiseAndSetAstroEvent SunRiseAndSet {
+        public RiseAndSetEvent SunRiseAndSet {
             get {
                 if (_sunRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);

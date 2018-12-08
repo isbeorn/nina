@@ -611,15 +611,8 @@ namespace NINA.ViewModel {
 
             /* ASCOM */
             try {
-                var ascomDevices = new ASCOM.Utilities.Profile();
-                foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
-                    try {
-                        AscomCamera cam = new AscomCamera(device.Key, device.Value + " (ASCOM)", profileService);
-                        Logger.Trace(string.Format("Adding {0}", cam.Name));
-                        Devices.Add(cam);
-                    } catch (Exception) {
-                        //only add cameras which are supported. e.g. x86 drivers will not work in x64
-                    }
+                foreach (ICamera cam in ASCOMInteraction.GetCameras(profileService)) {
+                    Devices.Add(cam);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);

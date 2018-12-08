@@ -1,4 +1,3 @@
-using ASCOM.DeviceInterface;
 using Nikon;
 using NINA.Utility;
 using NINA.Utility.Enum;

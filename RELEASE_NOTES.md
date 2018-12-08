@@ -26,6 +26,7 @@
     - Zero Floating point numbers now displayed as "0.00" instead of ".00"
     - Show better exception message when an ASCOM Interop Exception occurs
     - Canon: Errors are now shown to users in a readable format if any occur
+    - Removed hard requirement of ASCOM platform. Application can now function without it
 
 ___
 

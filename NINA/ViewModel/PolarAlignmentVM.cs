@@ -339,21 +339,21 @@ namespace NINA.ViewModel {
                     //duration = half of user input minus 2 seconds for settle time
                     TimeSpan duration = TimeSpan.FromSeconds((int)(DARVSlewDuration / 2) - 2);
 
-                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, rate);
+                    telescopeMediator.MoveAxis(TelescopeAxes.Primary, rate);
 
                     await Task.Delay(duration, canceltoken);
 
-                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                    telescopeMediator.MoveAxis(TelescopeAxes.Primary, 0);
 
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken);
 
                     progress.Report("Slewing back...");
 
-                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -rate);
+                    telescopeMediator.MoveAxis(TelescopeAxes.Primary, -rate);
 
                     await Task.Delay(duration, canceltoken);
 
-                    telescopeMediator.MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                    telescopeMediator.MoveAxis(TelescopeAxes.Primary, 0);
 
                     await Task.Delay(TimeSpan.FromSeconds(1), canceltoken);
                 } catch (OperationCanceledException) {
@@ -605,18 +605,19 @@ namespace NINA.ViewModel {
             return await telescopeMediator.SlewToCoordinatesAsync(coords);
         }
 
+        private const double polarisRA = 2.5303040444444442;
+        private const double polarisDec = 89.264108972222218;
+
         private void UpdateValues_Tick(object sender, EventArgs e) {
             try {
-                var ascomutil = Utility.Utility.AscomUtil;
-
-                var polaris = new Coordinates(ascomutil.HMSToHours("02:31:49.09456"), ascomutil.DMSToDegrees("89:15:50.7923"), Epoch.J2000, Coordinates.RAType.Hours);
+                var polaris = new Coordinates(polarisRA, polarisDec, Epoch.J2000, Coordinates.RAType.Hours);
                 polaris = polaris.Transform(Epoch.JNOW);
 
                 var lst = Astrometry.GetLocalSiderealTimeNow(profileService.ActiveProfile.AstrometrySettings.Longitude);
                 var hour_angle = Astrometry.GetHourAngle(lst, polaris.RA);
 
                 Rotation = -Astrometry.HoursToDegrees(hour_angle);
-                HourAngleTime = ascomutil.HoursToHMS(hour_angle);
+                HourAngleTime = Astrometry.HoursToHMS(hour_angle);
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
