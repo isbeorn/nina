@@ -605,9 +605,12 @@ namespace NINA.ViewModel {
             return await telescopeMediator.SlewToCoordinatesAsync(coords);
         }
 
+        private const double polarisRA = 2.5303040444444442;
+        private const double polarisDec = 89.264108972222218;
+
         private void UpdateValues_Tick(object sender, EventArgs e) {
             try {
-                var polaris = new Coordinates(2.5303040444444442, 89.264108972222218, Epoch.J2000, Coordinates.RAType.Hours);
+                var polaris = new Coordinates(polarisRA, polarisDec, Epoch.J2000, Coordinates.RAType.Hours);
                 polaris = polaris.Transform(Epoch.JNOW);
 
                 var lst = Astrometry.GetLocalSiderealTimeNow(profileService.ActiveProfile.AstrometrySettings.Longitude);
