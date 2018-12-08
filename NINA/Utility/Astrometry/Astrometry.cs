@@ -211,7 +211,7 @@ namespace NINA.Utility.Astrometry {
             var arcmin = Math.Floor(DegreeToArcmin(value - degree));
             var arcminDeg = ArcminToDegree(arcmin);
 
-            var arcsec = Math.Round(DegreeToArcsec(value - degree - arcminDeg), 2);
+            var arcsec = Math.Round(DegreeToArcsec(value - degree - arcminDeg), 0);
             if (arcsec == 60) {
                 /* If arcsec got rounded to 60 add to arcmin instead */
                 arcsec = 0;
