@@ -35,7 +35,7 @@ namespace NINA.Utility {
         }
 
         public static bool IsX86() {
-            return IntPtr.Size == 4;
+            return !Environment.Is64BitProcess;
         }
     }
 }
