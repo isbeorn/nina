@@ -9,6 +9,12 @@ using System.Windows.Input;
 
 namespace NINACustomControlLibrary {
 
+    public interface IAutoCompleteItem {
+        string Column1 { get; }
+        string Column2 { get; }
+        string Column3 { get; }
+    }
+
     public class AutoCompleteBox : HintTextBox {
 
         static AutoCompleteBox() {
@@ -16,11 +22,11 @@ namespace NINACustomControlLibrary {
         }
 
         public static readonly DependencyProperty SearchResultProperty =
-           DependencyProperty.Register(nameof(SearchResult), typeof(IEnumerable<string>), typeof(AutoCompleteBox), new UIPropertyMetadata(null));
+           DependencyProperty.Register(nameof(SearchResult), typeof(ICollection<IAutoCompleteItem>), typeof(AutoCompleteBox), new UIPropertyMetadata(null));
 
-        public IEnumerable<string> SearchResult {
+        public ICollection<IAutoCompleteItem> SearchResult {
             get {
-                return (IEnumerable<string>)GetValue(SearchResultProperty);
+                return (ICollection<IAutoCompleteItem>)GetValue(SearchResultProperty);
             }
             set {
                 SetValue(SearchResultProperty, value);
@@ -28,11 +34,11 @@ namespace NINACustomControlLibrary {
         }
 
         public static readonly DependencyProperty SelectedSearchResultProperty =
-           DependencyProperty.Register(nameof(SelectedSearchResult), typeof(string), typeof(AutoCompleteBox), new UIPropertyMetadata(string.Empty));
+           DependencyProperty.Register(nameof(SelectedSearchResult), typeof(IAutoCompleteItem), typeof(AutoCompleteBox), new UIPropertyMetadata(null));
 
-        public string SelectedSearchResult {
+        public IAutoCompleteItem SelectedSearchResult {
             get {
-                return (string)GetValue(SelectedSearchResultProperty);
+                return (IAutoCompleteItem)GetValue(SelectedSearchResultProperty);
             }
             set {
                 SetValue(SelectedSearchResultProperty, value);

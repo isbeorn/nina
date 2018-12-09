@@ -56,7 +56,9 @@
                                 </ListView.Resources>
                                 <ListView.View>
                                     <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
-                                        <GridViewColumn Width="Auto" />
+                                        <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Column1}" />
+                                        <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Column2}" />
+                                        <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Column3}" />
                                     </GridView>
                                 </ListView.View>
                             </ListView>

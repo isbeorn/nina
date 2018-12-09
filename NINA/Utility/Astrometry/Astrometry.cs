@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace NINA.Utility.Astrometry {
 
@@ -261,6 +262,53 @@ namespace NINA.Utility.Astrometry {
         /// <returns></returns>
         public static string HoursToFitsHMS(double hours) {
             return HoursToHMS(hours).Replace(':', ' ');
+        }
+
+        /// <summary>
+        /// Restores double degree value out of dms string
+        /// </summary>
+        /// <param name="hms">hms string</param>
+        /// <returns>value in degree</returns>
+        public static double HMSToDegrees(string hms) {
+            return HoursToDegrees(DMSToDegrees(hms));
+        }
+
+        /// <summary>
+        /// Restores double degree value out of dms string
+        /// </summary>
+        /// <param name="dms">dms string</param>
+        /// <returns>value in degree</returns>
+        public static double DMSToDegrees(string dms) {
+            dms = dms.Trim();
+
+            double signFactor = 1d;
+            if (dms.Contains('-')) {
+                signFactor = -1d;
+            }
+
+            var pattern = "[0-9\\.]+";
+            if (dms.Contains(",")) {
+                pattern = "[0-9\\,]+";
+            }
+            var regex = new Regex(pattern);
+
+            var matches = regex.Matches(dms);
+
+            double degree = 0, minutes = 0, seconds = 0;
+
+            if (matches.Count > 0) {
+                degree = double.Parse(matches[0].Value);
+
+                if (matches.Count > 1) {
+                    minutes = ArcminToDegree(double.Parse(matches[1].Value));
+                }
+
+                if (matches.Count > 2) {
+                    seconds = ArcsecToDegree(double.Parse(matches[2].Value));
+                }
+            }
+
+            return signFactor * (degree + minutes + seconds);
         }
 
         private static Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition> GetMoonAndSunPosition(DateTime date, double jd) {

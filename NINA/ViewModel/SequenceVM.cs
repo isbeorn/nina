@@ -11,6 +11,7 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.WindowService;
+using NINACustomControlLibrary;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -686,9 +687,9 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource targetSearchCts;
 
-        private INotifyTaskCompletion<List<string>> targetSearchResult;
+        private INotifyTaskCompletion<List<IAutoCompleteItem>> targetSearchResult;
 
-        public INotifyTaskCompletion<List<string>> TargetSearchResult {
+        public INotifyTaskCompletion<List<IAutoCompleteItem>> TargetSearchResult {
             get {
                 return targetSearchResult;
             }
@@ -698,19 +699,26 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string selectedTargetSearchResult;
+        private IAutoCompleteItem selectedTargetSearchResult;
 
-        public string SelectedTargetSearchResult {
+        public IAutoCompleteItem SelectedTargetSearchResult {
             get {
                 return selectedTargetSearchResult;
             }
             set {
                 selectedTargetSearchResult = value;
-                if (_sequence != null) _sequence.PropertyChanged -= _sequence_PropertyChanged;
-                Sequence.TargetName = value;
-                if (_sequence != null) _sequence.PropertyChanged += _sequence_PropertyChanged;
+                if (selectedTargetSearchResult != null) {
+                    if (_sequence != null) _sequence.PropertyChanged -= _sequence_PropertyChanged;
+                    Sequence.TargetName = value.Column1;
+                    Sequence.Coordinates = new Utility.Astrometry.Coordinates(
+                        Utility.Astrometry.Astrometry.HMSToDegrees(value.Column2),
+                        Utility.Astrometry.Astrometry.DMSToDegrees(value.Column3),
+                        Utility.Astrometry.Epoch.J2000,
+                        Utility.Astrometry.Coordinates.RAType.Degrees);
+                    if (_sequence != null) _sequence.PropertyChanged += _sequence_PropertyChanged;
 
-                ShowTargetNameHint = false;
+                    ShowTargetNameHint = false;
+                }
                 RaisePropertyChanged();
             }
         }
@@ -727,14 +735,28 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Task<List<string>> SearchDSOs(string searchString, CancellationToken ct) {
+        private class DSOAutoCompleteItem : IAutoCompleteItem {
+            public string Column1 { get; set; }
+
+            public string Column2 { get; set; }
+
+            public string Column3 { get; set; }
+        }
+
+        private Task<List<IAutoCompleteItem>> SearchDSOs(string searchString, CancellationToken ct) {
             return Task.Run(async () => {
                 var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
                 var searchParams = new DatabaseInteraction.DeepSkyObjectSearchParams();
                 searchParams.ObjectName = searchString;
                 var result = await db.GetDeepSkyObjects(string.Empty, searchParams, ct);
                 ShowTargetNameHint = true;
-                return result.Select(x => x.Name).ToList();
+
+                var list = new List<IAutoCompleteItem>();
+                foreach (var item in result) {
+                    list.Add(new DSOAutoCompleteItem() { Column1 = item.Name, Column2 = item.Coordinates.RAString, Column3 = item.Coordinates.DecString });
+                }
+
+                return list;
             });
         }
 
