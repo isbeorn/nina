@@ -321,25 +321,25 @@ namespace NINA.Utility {
 
         #region "External DLL calls"
 
-        [DllImport(DLLNAME, EntryPoint = "iauAtci13")]
+        [DllImport(DLLNAME, EntryPoint = "iauAtci13", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SOFA_Atci13(double rc, double dc, double pr, double pd, double px, double rv, double date1, double date2, ref double ri, ref double di, ref double eo);
 
-        [DllImport(DLLNAME, EntryPoint = "iauAtic13")]
+        [DllImport(DLLNAME, EntryPoint = "iauAtic13", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SOFA_Atic13(double ri, double di, double date1, double date2, ref double rc, ref double dc, ref double eo);
 
-        [DllImport(DLLNAME, EntryPoint = "iauAnp")]
+        [DllImport(DLLNAME, EntryPoint = "iauAnp", CallingConvention = CallingConvention.Cdecl)]
         private static extern double SOFA_Anp(double a);
 
-        [DllImport(DLLNAME, EntryPoint = "iauEo06a")]
+        [DllImport(DLLNAME, EntryPoint = "iauEo06a", CallingConvention = CallingConvention.Cdecl)]
         private static extern double SOFA_Eo06a(double date1, double date2);
 
-        [DllImport(DLLNAME, EntryPoint = "iauDtf2d")]
+        [DllImport(DLLNAME, EntryPoint = "iauDtf2d", CallingConvention = CallingConvention.Cdecl)]
         private static extern short SOFA_Dtf2d(string scale, int iy, int im, int id, int ihr, int imn, double sec, ref double d1, ref double d2);
 
-        [DllImport(DLLNAME, EntryPoint = "iauUtctai")]
+        [DllImport(DLLNAME, EntryPoint = "iauUtctai", CallingConvention = CallingConvention.Cdecl)]
         private static extern short SOFA_Utctai(double utc1, double utc2, ref double tai1, ref double tai2);
 
-        [DllImport(DLLNAME, EntryPoint = "iauTaitt")]
+        [DllImport(DLLNAME, EntryPoint = "iauTaitt", CallingConvention = CallingConvention.Cdecl)]
         private static extern short SOFA_Taitt(double tai1, double tai2, ref double tt1, ref double tt2);
 
         #endregion "External DLL calls"
