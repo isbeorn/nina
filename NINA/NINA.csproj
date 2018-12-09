@@ -280,6 +280,7 @@
     </Compile>
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
+    <Compile Include="Model\Sequence\CaptureSequence.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
     <Compile Include="Model\DeviceInfo.cs" />
     <Compile Include="Model\DummyDevice.cs" />
@@ -314,6 +315,8 @@
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
     <Compile Include="Model\MyWeatherData\OpenWeatherMapData.cs" />
+    <Compile Include="Model\Sequence\CaptureSequenceList.cs" />
+    <Compile Include="Model\Sequence\SequenceMode.cs" />
     <Compile Include="MyMessageBox\MyMessageBox.cs" />
     <Compile Include="MyMessageBox\MyMessageBoxView.xaml.cs">
       <DependentUpon>MyMessageBoxView.xaml</DependentUpon>
@@ -514,7 +517,6 @@
     <Compile Include="PlateSolving\LocalPlateSolver.cs" />
     <Compile Include="PlateSolving\AstrometryPlateSolver.cs" />
     <Compile Include="PlateSolving\IPlateSolver.cs" />
-    <Compile Include="Model\CaptureSequence.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

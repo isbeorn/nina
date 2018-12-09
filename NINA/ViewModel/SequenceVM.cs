@@ -661,15 +661,81 @@ namespace NINA.ViewModel {
         public CaptureSequenceList Sequence {
             get {
                 if (_sequence == null) {
-                    _sequence = GetTemplate();
+                    Sequence = GetTemplate();
                     SelectedSequenceRowIdx = _sequence.Count - 1;
                 }
                 return _sequence;
             }
             set {
+                if (_sequence != null) _sequence.PropertyChanged -= _sequence_PropertyChanged;
                 _sequence = value;
+                if (_sequence != null) _sequence.PropertyChanged += _sequence_PropertyChanged;
                 RaisePropertyChanged();
             }
+        }
+
+        private void _sequence_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(CaptureSequenceList.TargetName)) {
+                if (Sequence.TargetName.Length > 1) {
+                    targetSearchCts?.Cancel();
+                    targetSearchCts = new CancellationTokenSource();
+                    TargetSearchResult = NotifyTaskCompletion.Create(SearchDSOs(Sequence.TargetName, targetSearchCts.Token));
+                }
+            }
+        }
+
+        private CancellationTokenSource targetSearchCts;
+
+        private INotifyTaskCompletion<List<string>> targetSearchResult;
+
+        public INotifyTaskCompletion<List<string>> TargetSearchResult {
+            get {
+                return targetSearchResult;
+            }
+            set {
+                targetSearchResult = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string selectedTargetSearchResult;
+
+        public string SelectedTargetSearchResult {
+            get {
+                return selectedTargetSearchResult;
+            }
+            set {
+                selectedTargetSearchResult = value;
+                if (_sequence != null) _sequence.PropertyChanged -= _sequence_PropertyChanged;
+                Sequence.TargetName = value;
+                if (_sequence != null) _sequence.PropertyChanged += _sequence_PropertyChanged;
+
+                ShowTargetNameHint = false;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool showTargetNameHint;
+
+        public bool ShowTargetNameHint {
+            get {
+                return showTargetNameHint;
+            }
+            set {
+                showTargetNameHint = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Task<List<string>> SearchDSOs(string searchString, CancellationToken ct) {
+            return Task.Run(async () => {
+                var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+                var searchParams = new DatabaseInteraction.DeepSkyObjectSearchParams();
+                searchParams.ObjectName = searchString;
+                var result = await db.GetDeepSkyObjects(string.Empty, searchParams, ct);
+                ShowTargetNameHint = true;
+                return result.Select(x => x.Name).ToList();
+            });
         }
 
         private int _selectedSequenceIdx;
