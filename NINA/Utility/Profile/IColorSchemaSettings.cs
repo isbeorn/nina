@@ -27,6 +27,7 @@ namespace NINA.Utility.Profile {
 
     public interface IColorSchemaSettings : ISettings {
         Color AltBackgroundColor { get; set; }
+        Color AltSecondaryBackgroundColor { get; set; }
         Color AltBorderColor { get; set; }
         Color AltButtonBackgroundColor { get; set; }
         Color AltButtonBackgroundSelectedColor { get; set; }
@@ -41,6 +42,7 @@ namespace NINA.Utility.Profile {
         Color AltPrimaryColor { get; set; }
         Color AltSecondaryColor { get; set; }
         Color BackgroundColor { get; set; }
+        Color SecondaryBackgroundColor { get; set; }
         Color BorderColor { get; set; }
         Color ButtonBackgroundColor { get; set; }
         Color ButtonBackgroundSelectedColor { get; set; }

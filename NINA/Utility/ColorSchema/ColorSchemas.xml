@@ -31,6 +31,8 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFFFFFFF" />
     <NotificationErrorTextColor Color="#FFFFFFFF" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Classic">
     <PrimaryColor Color="#FF000000" />
@@ -45,6 +47,8 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FF000000" />
     <NotificationErrorTextColor Color="#FF000000" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Dark">
     <PrimaryColor Color="#FF550C18" />
@@ -59,6 +63,8 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FF02010A" />
     <NotificationErrorTextColor Color="#FF02010A" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Seance">
     <PrimaryColor Color="#FF000000" />
@@ -73,6 +79,8 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFFFFFFF" />
     <NotificationErrorTextColor Color="#FFFFFFFF" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Persian">
     <PrimaryColor Color="#FFECF0F1" />
@@ -87,6 +95,8 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFECF0F1" />
     <NotificationErrorTextColor Color="#FFECF0F1" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Persian Faint">
     <PrimaryColor Color="#FFBDC3C7" />
@@ -101,6 +111,8 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFBDC3C7" />
     <NotificationErrorTextColor Color="#FFBDC3C7" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="High Contrast">
     <PrimaryColor Color="#FFFFFFFF" />
@@ -115,6 +127,8 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFFFFFFF" />
     <NotificationErrorTextColor Color="#FFFFFFFF" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Black Coral">
     <PrimaryColor Color="#FFDEDEE8" />
@@ -129,6 +143,8 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFF7F7FF" />
     <NotificationErrorTextColor Color="#FFF7F7FF" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Arsenic">
     <PrimaryColor Color="#FFFFFFFF" />
@@ -143,6 +159,8 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFF8E9E9" />
     <NotificationErrorTextColor Color="#FFF8E9E9" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Vivid Malachite">
     <PrimaryColor Color="#FFECF0F1" />
@@ -157,6 +175,8 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFBDC3C7" />
     <NotificationErrorTextColor Color="#FFBDC3C7" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Shark">
     <PrimaryColor Color="#FFEDEDED" />
@@ -165,12 +185,19 @@
     <BackgroundColor Color="#FF36393E" />
     <ButtonBackgroundColor Color="#FF2a2c31" />
     <ButtonBackgroundSelectedColor Color="#FF24252A" />
-    <ButtonForegroundColor Color="#FFA9AAAC" />
-    <ButtonForegroundDisabledColor Color="#FF1D2731" />
+    <ButtonForegroundColor Color="#FFFFFFFF" />
+    <ButtonForegroundDisabledColor Color="#FF848484" />
     <NotificationWarningColor Color="#FF5E330B" />
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFA9AAAC" />
     <NotificationErrorTextColor Color="#FFA9AAAC" />
+    <SecondaryBackgroundColor Color="#FF202225" />
+
+    <Sidebar2Color Color="#FF2F3136" />
+    <MenubarColor Color="#FF2F3136" />
+
+    <TextBackground Color="#FF484B51" />
+    <TextColor Color="#FF72767D" />
   </ColorSchema>
   <ColorSchema Name="Wisteria">
     <PrimaryColor Color="#FFECF0F1" />
@@ -185,6 +212,8 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFECF0F1" />
     <NotificationErrorTextColor Color="#FFECF0F1" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Navy">
     <PrimaryColor Color="#FF6FC3DF" />
@@ -199,5 +228,7 @@
     <NotificationErrorColor Color="#FFDB0606" />
     <NotificationWarningTextColor Color="#FF6FC3DF" />
     <NotificationErrorTextColor Color="#FF6FC3DF" />
+    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <!--TODO-->
   </ColorSchema>
 </ColorSchemas>

@@ -777,6 +777,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        public Color SecondaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.SecondaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.SecondaryBackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public FileTypeEnum[] FileTypes {
             get {
                 return Enum.GetValues(typeof(FileTypeEnum))
@@ -904,6 +914,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ColorSchemaSettings.AltBackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color AltSecondaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryBackgroundColor = value;
                 RaisePropertyChanged();
             }
         }

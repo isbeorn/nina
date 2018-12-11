@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <Application
     x:Class="NINA.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -40,6 +39,7 @@
 
                 <!--  UI Styles  -->
                 <ResourceDictionary Source="Resources\Styles\Button.xaml" />
+                <ResourceDictionary Source="Resources\Styles\Path.xaml" />
                 <ResourceDictionary Source="Resources\Styles\Window.xaml" />
                 <ResourceDictionary Source="Resources\Styles\TextBlock.xaml" />
                 <ResourceDictionary Source="Resources\Styles\TextBox.xaml" />
@@ -61,7 +61,6 @@
                 <ResourceDictionary Source="Resources\Styles\CancellableButton.xaml" />
                 <ResourceDictionary Source="Resources\Styles\Oxyplot.xaml" />
                 <ResourceDictionary Source="Resources\Styles\DatePicker.xaml" />
-                <ResourceDictionary Source="Resources\Styles\Path.xaml" />
                 <ResourceDictionary Source="Resources\Styles\StepperControl.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
 

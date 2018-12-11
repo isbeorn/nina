@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <Window
     x:Class="NINA.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -301,10 +300,10 @@
                         Height="40"
                         Margin="10"
                         VerticalAlignment="Center"
-                        Background="{StaticResource BackgroundBrush}"
-                        ButtonForegroundBrush="{StaticResource PrimaryBrush}"
+                        Background="{StaticResource SecondaryBackgroundBrush}"
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundDisabledBrush}"
                         ButtonImage="{StaticResource PowerSVG}"
-                        ButtonStyle="{StaticResource BackgroundButton}"
+                        ButtonStyle="{StaticResource SecondaryBackgroundButton}"
                         Command="{Binding ConnectAllDevicesCommand}"
                         ToolTip="{ns:Loc LblConnect}" />
                     <ninactrl:LoadingControl
@@ -315,8 +314,15 @@
                         Visibility="{Binding ConnectAllDevicesCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
                 </Grid>
             </Grid>
+            <Grid
+                Grid.Row="1"
+                MinWidth="80"
+                MaxWidth="80"
+                HorizontalAlignment="Left"
+                Background="{StaticResource SecondaryBackgroundBrush}" />
             <Border
                 Grid.Row="1"
+                Margin="80,0,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0,1,0,0">
 

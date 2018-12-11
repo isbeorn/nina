@@ -193,6 +193,23 @@ namespace NINA.Utility.Profile {
         }
 
         [DataMember]
+        private Color secondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
+
+        [DataMember]
+        public Color SecondaryBackgroundColor {
+            get {
+                return ColorSchema.SecondaryBackgroundColor;
+            }
+            set {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
+                    ColorSchema.SecondaryBackgroundColor = value;
+                    secondaryBackgroundColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [DataMember]
         private Color buttonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0B3C5D");
 
         [DataMember]
@@ -357,6 +374,23 @@ namespace NINA.Utility.Profile {
                 if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.SecondaryColor = value;
                     altSecondaryColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [DataMember]
+        private Color altSecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
+
+        [DataMember]
+        public Color AltSecondaryBackgroundColor {
+            get {
+                return AltColorSchema.SecondaryBackgroundColor;
+            }
+            set {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
+                    AltColorSchema.SecondaryBackgroundColor = value;
+                    altSecondaryBackgroundColor = value;
                     RaisePropertyChanged();
                 }
             }

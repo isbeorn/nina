@@ -71,6 +71,7 @@ namespace NINA.Utility {
                 SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1B2A41"),
                 BorderColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
                 BackgroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
+                SecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"), /* Todo*/
                 ButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF96031A"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
@@ -89,6 +90,7 @@ namespace NINA.Utility {
                 SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF54748C"),
                 BorderColor = (Color)ColorConverter.ConvertFromString("#AABCBCBC"),
                 BackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+                SecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"), /* Todo*/
                 ButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0B3C5D"),
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF2190DB"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
@@ -125,6 +127,10 @@ namespace NINA.Utility {
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
         public Color BackgroundColor { get; set; }
+
+        [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
+        public Color SecondaryBackgroundColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]

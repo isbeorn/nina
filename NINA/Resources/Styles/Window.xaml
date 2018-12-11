@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style x:Key="MainWindow" TargetType="{x:Type Window}">
@@ -42,7 +41,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
-                        <Grid Background="{StaticResource BackgroundBrush}">
+                        <Grid Background="{StaticResource SecondaryBackgroundBrush}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="20" />
                                 <RowDefinition Height="*" />
@@ -79,7 +78,7 @@
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ToggleColorsCommand}"
-                                    Style="{StaticResource BackgroundButton}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                     <Button.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="True">
@@ -89,7 +88,7 @@
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource EyeSVG}"
-                                        Fill="{StaticResource PrimaryBrush}"
+                                        Style="{StaticResource WindowButtonPath}"
                                         Stretch="Uniform" />
                                 </Button>
                                 <Button
@@ -98,12 +97,12 @@
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=OpenManualCommand}"
-                                    Style="{StaticResource BackgroundButton}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource QuestionSVG}"
-                                        Fill="{StaticResource PrimaryBrush}"
+                                        Style="{StaticResource WindowButtonPath}"
                                         Stretch="Uniform" />
                                 </Button>
                                 <Button
@@ -112,13 +111,13 @@
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=MinimizeWindowCommand}"
-                                    Style="{StaticResource BackgroundButton}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                     <Path
                                         Margin="2,12,2,2"
                                         VerticalAlignment="Bottom"
                                         Data="{StaticResource MinimizeWindowSVG}"
-                                        Fill="{StaticResource PrimaryBrush}"
+                                        Style="{StaticResource WindowButtonPath}"
                                         Stretch="Uniform" />
                                 </Button>
                                 <Button
@@ -127,12 +126,12 @@
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=MaximizeWindowCommand}"
-                                    Style="{StaticResource BackgroundButton}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource MaximizeSVG}"
-                                        Fill="{StaticResource PrimaryBrush}"
+                                        Style="{StaticResource WindowButtonPath}"
                                         Stretch="Uniform" />
                                 </Button>
                                 <Button
@@ -141,12 +140,12 @@
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=ExitCommand}"
-                                    Style="{StaticResource BackgroundButton}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource CancelSVG}"
-                                        Fill="{StaticResource PrimaryBrush}"
+                                        Style="{StaticResource WindowButtonPath}"
                                         Stretch="Uniform" />
                                 </Button>
                             </StackPanel>
