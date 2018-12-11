@@ -395,6 +395,32 @@ namespace NINA.Utility.Astrometry {
             FirstQuarter,
             WaxingGibbous
         }
+
+        /// <summary>
+        /// Approximate dew point using Magnus Formula
+        /// </summary>
+        /// <param name="temperatrue">Temperature in Celsius</param>
+        /// <param name="humidity">Humidity</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// https://en.wikipedia.org/wiki/Dew_point#Calculating_the_dew_point
+        /// Using b and c values from Journal of Applied Meteorology and Climatology
+        /// </remarks>
+        public static double ApproximateDewPoint(double temperatrue, double humidity) {
+            // 0°C <= T <= 50°C ==> Error <= 0.05%
+            double b = 17.368;
+            double c = 233.88;
+            if (temperatrue < 0) {
+                // -40°C <= T < 0°C ==> Error <= 0.06%
+                b = 17.966;
+                c = 247.15;
+            }
+
+            var γTRH = Math.Log(humidity / 100d) + ((b * temperatrue) / (c + temperatrue));
+
+            var dP = (c * γTRH) / (b - γTRH);
+            return dP;
+        }
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
