@@ -1658,7 +1658,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="AstrophotographyBuddy_TemporaryKey.pfx" />
-    <Content Include="LICENCE.txt">
+    <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Properties\app.manifest" />

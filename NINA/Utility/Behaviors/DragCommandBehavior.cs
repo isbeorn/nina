@@ -1,4 +1,27 @@
-﻿using System.Windows;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using System.Windows;
 using System.Windows.Input;
 
 namespace NINA.Utility.Behaviors {
@@ -36,7 +59,7 @@ namespace NINA.Utility.Behaviors {
         public static void SetResizeBoundary(DependencyObject obj, bool value) {
             obj.SetValue(ResizeBoundaryProperty, value);
         }
-        
+
         //private RectangleDragMode _subSampleRectangleDragMode;
 
         private static void OnDragChanged(object sender, DependencyPropertyChangedEventArgs e) {
@@ -135,8 +158,8 @@ namespace NINA.Utility.Behaviors {
             var mousePos = mouseEventArgs.GetPosition(parent);
             var hitTest = System.Windows.Media.VisualTreeHelper.HitTest(element, startPoint);
             var boundary = GetResizeBoundary(element);
-            
-            if(!element.IsMouseCaptured) {
+
+            if (!element.IsMouseCaptured) {
                 if (!double.IsNaN(boundary)) {
                     if (startPoint.X < boundary && startPoint.Y < boundary) {
                         Mouse.OverrideCursor = Cursors.SizeNWSE;
