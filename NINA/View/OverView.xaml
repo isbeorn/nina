@@ -47,12 +47,6 @@
                 Margin="2,0,0,0"
                 HorizontalAlignment="Left"
                 Orientation="Horizontal">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="{StaticResource ButtonForegroundBrush}"
-                    Text="{ns:Loc LblInfo}"
-                    TextAlignment="Center" />
                 <ItemsControl ItemsSource="{Binding AnchorableInfoPanels}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -115,6 +109,12 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource ButtonForegroundBrush}"
+                    Text="{ns:Loc LblInfo}"
+                    TextAlignment="Center" />
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
