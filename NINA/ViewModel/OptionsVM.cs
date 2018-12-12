@@ -651,6 +651,7 @@ namespace NINA.ViewModel {
             var tmpSecondaryColor = SecondaryColor;
             var tmpBorderColor = BorderColor;
             var tmpBackgroundColor = BackgroundColor;
+            var tmpSecondaryBackgroundColor = SecondaryBackgroundColor;
             var tmpButtonBackgroundColor = ButtonBackgroundColor;
             var tmpButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor;
             var tmpButtonForegroundColor = ButtonForegroundColor;
@@ -665,6 +666,7 @@ namespace NINA.ViewModel {
             SecondaryColor = AltSecondaryColor;
             BorderColor = AltBorderColor;
             BackgroundColor = AltBackgroundColor;
+            SecondaryBackgroundColor = AltSecondaryBackgroundColor;
             ButtonBackgroundColor = AltButtonBackgroundColor;
             ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor;
             ButtonForegroundColor = AltButtonForegroundColor;
@@ -679,6 +681,7 @@ namespace NINA.ViewModel {
             AltSecondaryColor = tmpSecondaryColor;
             AltBorderColor = tmpBorderColor;
             AltBackgroundColor = tmpBackgroundColor;
+            AltSecondaryBackgroundColor = tmpSecondaryBackgroundColor;
             AltButtonBackgroundColor = tmpButtonBackgroundColor;
             AltButtonBackgroundSelectedColor = tmpButtonBackgroundSelectedColor;
             AltButtonForegroundColor = tmpButtonForegroundColor;
@@ -700,6 +703,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(SecondaryColor));
                 RaisePropertyChanged(nameof(BorderColor));
                 RaisePropertyChanged(nameof(BackgroundColor));
+                RaisePropertyChanged(nameof(SecondaryBackgroundColor));
                 RaisePropertyChanged(nameof(ButtonBackgroundColor));
                 RaisePropertyChanged(nameof(ButtonBackgroundSelectedColor));
                 RaisePropertyChanged(nameof(ButtonForegroundColor));
@@ -728,6 +732,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(AltSecondaryColor));
                 RaisePropertyChanged(nameof(AltBorderColor));
                 RaisePropertyChanged(nameof(AltBackgroundColor));
+                RaisePropertyChanged(nameof(AltSecondaryBackgroundColor));
                 RaisePropertyChanged(nameof(AltButtonBackgroundColor));
                 RaisePropertyChanged(nameof(AltButtonBackgroundSelectedColor));
                 RaisePropertyChanged(nameof(AltButtonForegroundColor));
