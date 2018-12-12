@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.SkyAtlasView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -44,7 +43,7 @@
                 <RowDefinition Height="60" />
             </Grid.RowDefinitions>
             <!--  Filter area  -->
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="5">
                         <ninactrl:HintTextBox
@@ -59,7 +58,7 @@
                         </ninactrl:HintTextBox>
                         <Expander
                             BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
+                            BorderThickness="0,0,0,1"
                             Header="{ns:Loc LblObjectType}">
                             <ScrollViewer Grid.Column="1" MaxHeight="300">
                                 <ItemsControl ItemsSource="{Binding ObjectTypes}">
@@ -80,7 +79,7 @@
                         </Expander>
                         <Expander
                             BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
+                            BorderThickness="0,0,0,1"
                             Header="{ns:Loc LblConstellation}">
                             <ComboBox ItemsSource="{Binding Constellations}" SelectedItem="{Binding SelectedConstellation}">
                                 <ComboBox.ItemTemplate>
@@ -92,7 +91,7 @@
                         </Expander>
                         <Expander
                             BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
+                            BorderThickness="0,0,0,1"
                             Header="{ns:Loc LblCoordinates}">
                             <StackPanel>
                                 <StackPanel>
@@ -138,7 +137,7 @@
                         </Expander>
                         <Expander
                             BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
+                            BorderThickness="0,0,0,1"
                             Header="{ns:Loc LblSurfaceBrightness}">
                             <StackPanel>
                                 <UniformGrid Columns="2">
@@ -153,7 +152,7 @@
                         </Expander>
                         <Expander
                             BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
+                            BorderThickness="0,0,0,1"
                             Header="{ns:Loc LblApparentSize}">
                             <StackPanel>
                                 <UniformGrid Columns="2">
@@ -176,7 +175,7 @@
                         </Expander>
                         <Expander
                             BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
+                            BorderThickness="0,0,0,1"
                             Header="{ns:Loc LblApparentMagnitude}">
                             <StackPanel>
                                 <UniformGrid Columns="2">
@@ -192,7 +191,7 @@
 
                         <Expander
                             BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
+                            BorderThickness="0,0,0,1"
                             Header="{ns:Loc LblMinimumAltitude}">
                             <StackPanel>
                                 <UniformGrid Columns="2">
@@ -222,7 +221,7 @@
 
                         <Expander
                             BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
+                            BorderThickness="0,0,0,1"
                             Header="{ns:Loc LblReferenceDate}">
                             <UniformGrid Columns="2">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReferenceDate}" />
@@ -260,7 +259,7 @@
                 Grid.Row="1"
                 Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="1">
+                BorderThickness="0,1,0,1">
                 <StackPanel>
                     <Grid Margin="0,5,0,0">
                         <Path
@@ -280,7 +279,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblIllumination}" />
                             <TextBlock Text="{Binding Illumination, StringFormat={}{0:P2}}" />
@@ -290,7 +289,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMoonRise}" />
                             <TextBlock Text="{Binding MoonRiseAndSet.Rise, StringFormat={}{0:HH:mm}}" />
@@ -300,7 +299,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMoonSet}" />
                             <TextBlock Text="{Binding MoonRiseAndSet.Set, StringFormat={}{0:HH:mm}}" />
@@ -310,7 +309,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDawn}" />
                             <TextBlock Text="{Binding TwilightRiseAndSet.Rise, StringFormat={}{0:HH:mm}}" />
@@ -320,7 +319,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSunRise}" />
                             <TextBlock Text="{Binding SunRiseAndSet.Rise, StringFormat={}{0:HH:mm}}" />
@@ -330,7 +329,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSunSet}" />
                             <TextBlock Text="{Binding SunRiseAndSet.Set, StringFormat={}{0:HH:mm}}" />
@@ -340,7 +339,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDusk}" />
                             <TextBlock Text="{Binding TwilightRiseAndSet.Set, StringFormat={}{0:HH:mm}}" />
@@ -352,7 +351,7 @@
                 Grid.Row="2"
                 Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="1">
+                BorderThickness="0,1,0,0">
 
                 <StackPanel VerticalAlignment="Center" Orientation="Vertical">
                     <TextBlock Text="{ns:Loc LblDataProvidedBy}" />

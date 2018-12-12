@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.AnchorableCameraControlView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -38,7 +37,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblExposureTime}" />
                             <TextBox MinWidth="50" Margin="5">
@@ -55,7 +54,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
                             <ComboBox
@@ -70,7 +69,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBinning}" />
                             <ComboBox
@@ -85,7 +84,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
+                        BorderThickness="0"
                         Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
@@ -116,7 +115,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblLoop}" />
                             <CheckBox
@@ -130,7 +129,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSave}" />
                             <CheckBox
@@ -144,7 +143,7 @@
                     <Border
                         MinHeight="30"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
+                        BorderThickness="0"
                         Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.CameraInfo.CanSubSample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSubSample}" />

@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.FramingAssistantView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -50,7 +49,7 @@
                 <StackPanel Orientation="Vertical">
                     <GroupBox Header="{ns:Loc LblImageSource}">
                         <StackPanel Orientation="Vertical">
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
@@ -132,7 +131,7 @@
                     </GroupBox>
                     <GroupBox Header="{ns:Loc LblCoordinates}">
                         <StackPanel Orientation="Vertical">
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
@@ -145,7 +144,7 @@
                                         TextAlignment="Right" />
                                 </UniformGrid>
                             </Border>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
@@ -194,7 +193,7 @@
                                     </StackPanel>
                                 </UniformGrid>
                             </Border>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
@@ -243,7 +242,7 @@
                                     </StackPanel>
                                 </UniformGrid>
                             </Border>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFieldOfView}" />
                                     <StackPanel Orientation="Horizontal">
@@ -288,19 +287,19 @@
 
                     <GroupBox Header="{ns:Loc LblCameraParameter}">
                         <StackPanel Orientation="Vertical">
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblWidth}" />
                                     <TextBox Margin="5,0,0,0" Text="{Binding CameraWidth}" />
                                 </UniformGrid>
                             </Border>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHeight}" />
                                     <TextBox Margin="5,0,0,0" Text="{Binding CameraHeight}" />
                                 </UniformGrid>
                             </Border>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPixelSize}" />
                                     <TextBox Margin="5,0,0,0" Text="{Binding CameraPixelSize}" />
@@ -309,7 +308,7 @@
                             <Border
                                 Margin="0,6,0,6"
                                 BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1">
+                                BorderThickness="0">
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFocalLength}" />
                                     <TextBox Margin="5,0,0,0" Text="{Binding FocalLength}" />
@@ -322,7 +321,7 @@
                             <Border
                                 Margin="0,6,0,6"
                                 BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1">
+                                BorderThickness="0">
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblHorizontalPanels}" />
                                     <ninactrl:IntStepperControl
@@ -334,7 +333,7 @@
                             <Border
                                 Margin="0,6,0,6"
                                 BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1">
+                                BorderThickness="0">
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblVerticalPanels}" />
                                     <ninactrl:IntStepperControl
@@ -346,13 +345,13 @@
                             <Border
                                 Margin="0,6,0,6"
                                 BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1">
+                                BorderThickness="0">
                                 <UniformGrid Margin="0,6,0,6" Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOverlapPercentage}" />
                                     <TextBox Margin="5,0,0,0" Text="{Binding OverlapPercentage, Converter={StaticResource PercentageConverter}, StringFormat={}{0}%}" />
                                 </UniformGrid>
                             </Border>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRotation}" />
                                     <Grid>

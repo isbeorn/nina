@@ -95,7 +95,7 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFECF0F1" />
     <NotificationErrorTextColor Color="#FFECF0F1" />
-    <SecondaryBackgroundColor Color="#FFFFFFFF" />
+    <SecondaryBackgroundColor Color="#FF202225" />
     <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Persian Faint">

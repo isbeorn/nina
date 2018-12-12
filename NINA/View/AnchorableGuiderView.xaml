@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.AnchorableGuiderView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -30,10 +29,13 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+            <Border
+                Margin="0,5,0,5"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblState}" />

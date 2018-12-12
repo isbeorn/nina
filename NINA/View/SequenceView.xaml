@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.SequenceView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -169,7 +168,7 @@
                 </GroupBox.Header>
 
                 <StackPanel DataContext="{Binding Sequence}">
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                         <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
@@ -189,7 +188,7 @@
                         </UniformGrid>
                     </Border>
 
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                         <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
@@ -204,7 +203,7 @@
                         </UniformGrid>
                     </Border>
 
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                         <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
@@ -220,7 +219,7 @@
                         </UniformGrid>
                     </Border>
                     <StackPanel Visibility="{Binding Coordinates, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                             <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
@@ -248,7 +247,7 @@
                         </Border>
                         <Border
                             BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0,0,0,1"
+                            BorderThickness="0"
                             DataContext="{Binding Source={StaticResource AppVM}, Path=SeqVM}">
                             <UniformGrid Columns="2">
                                 <UniformGrid
@@ -296,7 +295,7 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,1">
                             <Expander x:Name="PART_AutoFocusExpander">
                                 <Expander.Header>
                                     <StackPanel Orientation="Horizontal">
@@ -385,7 +384,7 @@
                                 </Expander.Header>
 
                                 <StackPanel Orientation="Vertical">
-                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                         <UniformGrid Columns="2">
                                             <UniformGrid
                                                 Margin="0,6,0,6"
@@ -411,7 +410,7 @@
                                             </UniformGrid>
                                         </UniformGrid>
                                     </Border>
-                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                         <UniformGrid Columns="2">
                                             <UniformGrid
                                                 Margin="0,6,0,6"
@@ -452,7 +451,7 @@
                                             </UniformGrid>
                                         </UniformGrid>
                                     </Border>
-                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                         <UniformGrid Columns="2">
                                             <UniformGrid
                                                 Margin="0,6,0,6"
@@ -549,7 +548,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                         <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
@@ -563,7 +562,7 @@
                     <Border
                         Grid.Row="1"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
@@ -617,7 +616,7 @@
                     <Border
                         Grid.Row="2"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"
@@ -671,7 +670,7 @@
                     <Border
                         Grid.Row="3"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"

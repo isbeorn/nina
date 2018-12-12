@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.AnchorablePolarAlignmentView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -88,7 +87,7 @@
                                                 <Border
                                                     MinHeight="30"
                                                     BorderBrush="{StaticResource BorderBrush}"
-                                                    BorderThickness="0,0,0,1">
+                                                    BorderThickness="0">
                                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                                         <TextBlock Text="{ns:Loc LblMeridianOffset}" />
                                                         <TextBox Margin="0,0,10,0" Text="{Binding AltitudeMeridianOffset}" />
@@ -97,7 +96,7 @@
                                                 <Border
                                                     MinHeight="30"
                                                     BorderBrush="{StaticResource BorderBrush}"
-                                                    BorderThickness="0,0,0,1">
+                                                    BorderThickness="0">
                                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                                         <TextBlock Text="{ns:Loc LblDeclination}" />
                                                         <TextBox Margin="0,0,10,0" Text="{Binding AltitudeDeclination}" />
@@ -145,7 +144,7 @@
                                                 <Border
                                                     MinHeight="30"
                                                     BorderBrush="{StaticResource BorderBrush}"
-                                                    BorderThickness="0,0,0,1">
+                                                    BorderThickness="0">
                                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                                         <TextBlock Text="{ns:Loc LblMeridianOffset}" />
                                                         <TextBox Margin="0,0,10,0" Text="{Binding AzimuthMeridianOffset}" />
@@ -154,7 +153,7 @@
                                                 <Border
                                                     MinHeight="30"
                                                     BorderBrush="{StaticResource BorderBrush}"
-                                                    BorderThickness="0,0,0,1">
+                                                    BorderThickness="0">
                                                     <UniformGrid VerticalAlignment="Center" Columns="2">
                                                         <TextBlock Text="{ns:Loc LblDeclination}" />
                                                         <TextBox Margin="0,0,10,0" Text="{Binding AzimuthDeclination}" />

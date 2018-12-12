@@ -101,7 +101,7 @@
             <Border
                 Grid.Column="1"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="1,0,0,0">
+                BorderThickness="0,0,0,0">
                 <ContentPresenter
                     x:Name="ContentPresenter"
                     Margin="2,2,0,0"
