@@ -20,6 +20,7 @@
     <Style TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource ButtonBackgroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
 
@@ -28,7 +29,7 @@
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1"
+                        BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="0">
                         <Border Background="{TemplateBinding Background}" CornerRadius="0">
                             <Grid>

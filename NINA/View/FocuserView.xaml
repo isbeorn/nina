@@ -42,9 +42,9 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition />
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <ninactrl:LoadingControl
                         Height="30"
@@ -64,6 +64,7 @@
                         Grid.Column="2"
                         Width="40"
                         Height="40"
+                        Margin="1,0,0,0"
                         Command="{Binding FocuserChooserVM.SetupDialogCommand}"
                         IsEnabled="{Binding FocuserChooserVM.SelectedDevice.HasSetupDialog}">
                         <Button.ToolTip>
@@ -83,6 +84,7 @@
                         Grid.Column="3"
                         Width="40"
                         Height="40"
+                        Margin="1,0,0,0"
                         Command="{Binding RefreshFocuserListCommand}">
                         <Button.ToolTip>
                             <ToolTip ToolTipService.ShowOnDisabled="False">
@@ -101,6 +103,7 @@
                         Grid.Column="4"
                         Width="40"
                         Height="40"
+                        Margin="1,0,0,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
                         <ninactrl:CancellableButton

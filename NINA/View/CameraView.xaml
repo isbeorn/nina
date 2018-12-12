@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.CameraView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -59,9 +58,9 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition />
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <ninactrl:LoadingControl
                                 Height="30"
@@ -81,6 +80,7 @@
                                 Grid.Column="2"
                                 Width="40"
                                 Height="40"
+                                Margin="1,0,0,0"
                                 Command="{Binding CameraChooserVM.SetupDialogCommand}"
                                 IsEnabled="{Binding CameraChooserVM.SelectedDevice.HasSetupDialog}">
                                 <Button.ToolTip>
@@ -100,6 +100,7 @@
                                 Grid.Column="3"
                                 Width="40"
                                 Height="40"
+                                Margin="1,0,0,0"
                                 Command="{Binding RefreshCameraListCommand}">
                                 <Button.ToolTip>
                                     <ToolTip ToolTipService.ShowOnDisabled="False">
@@ -118,6 +119,7 @@
                                 Grid.Column="4"
                                 Width="40"
                                 Height="40"
+                                Margin="1,0,0,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center">
 
@@ -485,8 +487,7 @@
                                 </UniformGrid>
                             </Border>
 
-                            <Grid VerticalAlignment="Bottom"
-                                Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                            <Grid VerticalAlignment="Bottom" Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
 
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />

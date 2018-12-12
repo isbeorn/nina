@@ -58,7 +58,7 @@
                         Name="PART_Border"
                         Margin="-1,2,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1,1,1,0">
+                        BorderThickness="1,0,1,0">
                         <Grid>
                             <Grid Name="PART_Panel">
                                 <ContentPresenter

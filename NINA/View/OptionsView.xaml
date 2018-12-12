@@ -136,7 +136,7 @@
                             </Button>
                             <Button
                                 Width="40"
-                                Margin="0,5,0,5"
+                                Margin="1,5,0,5"
                                 Command="{Binding CloneProfileCommand}">
                                 <Path
                                     Margin="5"
@@ -146,7 +146,7 @@
                             </Button>
                             <Button
                                 Width="40"
-                                Margin="0,5,0,5"
+                                Margin="1,5,0,5"
                                 Command="{Binding RemoveProfileCommand}">
                                 <Path
                                     Margin="5"
@@ -157,7 +157,7 @@
                             <Button
                                 Grid.Column="1"
                                 Width="100"
-                                Margin="0,5,0,5"
+                                Margin="1,5,0,5"
                                 Command="{Binding SelectProfileCommand}">
                                 <Button.Content>
                                     <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
@@ -1142,7 +1142,7 @@
                                 <Button
                                     Grid.Column="1"
                                     Width="40"
-                                    Margin="0,5,0,5"
+                                    Margin="1,5,0,5"
                                     Command="{Binding RemoveFilterCommand}">
                                     <Path
                                         Margin="5"

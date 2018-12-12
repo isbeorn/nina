@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -294,7 +293,7 @@
                             Grid.Column="0"
                             Background="{StaticResource BackgroundBrush}"
                             BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderThickness="0,0,0,1"
                             KeyboardNavigation.DirectionalNavigation="Contained"
                             KeyboardNavigation.TabIndex="2"
                             KeyboardNavigation.TabNavigation="Cycle">
@@ -371,6 +370,7 @@
     </Style>
 
     <Style TargetType="dock:AnchorablePaneTitle">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -382,15 +382,18 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <dock:DropDownControlArea DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}" DropDownContextMenuDataContext="{Binding Path=LayoutItem, RelativeSource={RelativeSource TemplatedParent}}">
+
                                 <ContentPresenter
                                     Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}"
                                     ContentTemplate="{Binding Model.Root.Manager.AnchorableTitleTemplate, RelativeSource={RelativeSource TemplatedParent}}"
                                     ContentTemplateSelector="{Binding Model.Root.Manager.AnchorableTitleTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}" />
                             </dock:DropDownControlArea>
+                            <Border
+                                Grid.ColumnSpan="10"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1" />
 
                             <!--<avalonDockControls:DropDownButton x:Name="PART_ContextMenu"
                                 Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
@@ -414,8 +417,10 @@
 
                             <Button
                                 x:Name="PART_HidePin"
-                                Grid.Column="3"
+                                Margin="1"
+                                Grid.Column="1"
                                 Background="{StaticResource BackgroundBrush}"
+                                BorderThickness="0"
                                 Command="{Binding Path=LayoutItem.HideCommand, RelativeSource={RelativeSource TemplatedParent}}"
                                 Focusable="False"
                                 ToolTip="Hide"

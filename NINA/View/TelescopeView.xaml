@@ -56,9 +56,9 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition />
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <ninactrl:LoadingControl
                                 Height="30"
@@ -78,6 +78,7 @@
                                 Grid.Column="2"
                                 Width="40"
                                 Height="40"
+                                Margin="1,0,0,0"
                                 Command="{Binding TelescopeChooserVM.SetupDialogCommand}"
                                 IsEnabled="{Binding TelescopeChooserVM.SelectedDevice.HasSetupDialog}">
                                 <Button.ToolTip>
@@ -97,6 +98,7 @@
                                 Grid.Column="3"
                                 Width="40"
                                 Height="40"
+                                Margin="1,0,0,0"
                                 Command="{Binding RefreshTelescopeListCommand}">
                                 <Button.ToolTip>
                                     <ToolTip ToolTipService.ShowOnDisabled="False">
@@ -114,7 +116,8 @@
                             <Grid
                                 Grid.Column="4"
                                 Width="40"
-                                Height="40">
+                                Height="40"
+                                Margin="1,0,0,0">
                                 <ninactrl:CancellableButton
                                     ButtonForegroundBrush="{StaticResource ButtonForegroundDisabledBrush}"
                                     ButtonImage="{StaticResource PowerSVG}"
