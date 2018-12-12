@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.OverView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -25,6 +24,7 @@
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:util="clr-namespace:NINA.Utility.AvalonDock"
     xmlns:view="clr-namespace:NINA.View"
     xmlns:vm="clr-namespace:NINA.ViewModel"
@@ -37,60 +37,161 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="40" />
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
-        <ItemsControl Grid.Column="1" ItemsSource="{Binding Anchorables}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <ToggleButton
-                        Height="40"
-                        Margin="2.5"
-                        Command="{Binding HideCommand}"
-                        IsChecked="{Binding IsVisible, Mode=OneWay}">
-                        <ToggleButton.ToolTip>
-                            <TextBlock Text="{Binding Title}" />
-                        </ToggleButton.ToolTip>
-                        <ToggleButton.Style>
-                            <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <Path
-                                                    Margin="5"
-                                                    Data="{Binding ImageGeometry}"
-                                                    Fill="{StaticResource PrimaryBrush}"
-                                                    Stretch="Uniform" />
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-                                    </Trigger>
-                                    <Trigger Property="IsChecked" Value="False">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <Path
-                                                    Margin="5"
-                                                    Data="{Binding ImageGeometry}"
-                                                    Fill="{StaticResource PrimaryBrush}"
-                                                    Opacity="0.4"
-                                                    Stretch="Uniform" />
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ToggleButton.Style>
-                    </ToggleButton>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <Grid Background="{StaticResource TertiaryBackgroundBrush}">
+            <StackPanel
+                Margin="2,0,0,0"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource ButtonForegroundBrush}"
+                    Text="{ns:Loc LblInfo}"
+                    TextAlignment="Center" />
+                <ItemsControl ItemsSource="{Binding AnchorableInfoPanels}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ToggleButton
+                                Width="30"
+                                Height="30"
+                                Margin="2.5"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding HideCommand}"
+                                IsChecked="{Binding IsVisible, Mode=OneWay}">
+                                <ToggleButton.ToolTip>
+                                    <TextBlock Text="{Binding Title}" />
+                                </ToggleButton.ToolTip>
+                                <ToggleButton.Style>
+                                    <Style BasedOn="{StaticResource AvalonSideBarToggleButton}" TargetType="ToggleButton">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="Pink"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="False">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
 
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource ButtonForegroundBrush}"
+                    Text="{ns:Loc LblTools}"
+                    TextAlignment="Center" />
+                <ItemsControl ItemsSource="{Binding AnchorableTools}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ToggleButton
+                                Width="30"
+                                Height="30"
+                                Margin="2.5"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding HideCommand}"
+                                IsChecked="{Binding IsVisible, Mode=OneWay}">
+                                <ToggleButton.ToolTip>
+                                    <TextBlock Text="{Binding Title}" />
+                                </ToggleButton.ToolTip>
+                                <ToggleButton.Style>
+                                    <Style BasedOn="{StaticResource AvalonSideBarToggleButton}" TargetType="ToggleButton">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="Pink"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="False">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Grid>
         <dock:DockingManager
             x:Name="dockManager"
+            Grid.Row="1"
+            Margin="0,2.5,0,0"
             AnchorablesSource="{Binding Anchorables}"
             DataContext="{Binding}"
             DocumentsSource="{Binding Documents}">

@@ -733,4 +733,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblCanonErrorOccurred">A Canon error occored: {0}</s:String>
     <s:String x:Key="LblSkyAtlas">Sky Atlas</s:String>
     <s:String x:Key="LblFraming">Framing</s:String>
+    <s:String x:Key="LblTools">Tools</s:String>
+    <s:String x:Key="LblSecondaryBackground">Secondary Background</s:String>
+    <s:String x:Key="LblTertiaryBackground">Tertiary Background</s:String>
 </ResourceDictionary>

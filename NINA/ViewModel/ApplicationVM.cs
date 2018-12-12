@@ -113,21 +113,40 @@ namespace NINA.ViewModel {
 
         public void InitAvalonDockLayout() {
             DockManagerVM.Documents.Add(ImagingVM.ImageControl);
-            DockManagerVM.Anchorables.Add(ThumbnailVM);
             DockManagerVM.Anchorables.Add(CameraVM);
-            DockManagerVM.Anchorables.Add(TelescopeVM);
-            DockManagerVM.Anchorables.Add(PlatesolveVM);
-            DockManagerVM.Anchorables.Add(PolarAlignVM);
-            DockManagerVM.Anchorables.Add(WeatherDataVM);
-            DockManagerVM.Anchorables.Add(GuiderVM);
-            DockManagerVM.Anchorables.Add(SeqVM);
             DockManagerVM.Anchorables.Add(FilterWheelVM);
             DockManagerVM.Anchorables.Add(FocuserVM);
-            DockManagerVM.Anchorables.Add(ImagingVM);
-            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
-            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
-            DockManagerVM.Anchorables.Add(AutoFocusVM);
             DockManagerVM.Anchorables.Add(RotatorVM);
+            DockManagerVM.Anchorables.Add(TelescopeVM);
+            DockManagerVM.Anchorables.Add(GuiderVM);
+
+            DockManagerVM.Anchorables.Add(ImagingVM);
+            DockManagerVM.Anchorables.Add(SeqVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
+
+            DockManagerVM.Anchorables.Add(ThumbnailVM);
+            DockManagerVM.Anchorables.Add(WeatherDataVM);
+            DockManagerVM.Anchorables.Add(PlatesolveVM);
+            DockManagerVM.Anchorables.Add(PolarAlignVM);
+            DockManagerVM.Anchorables.Add(AutoFocusVM);
+
+            DockManagerVM.AnchorableInfoPanels.Add(CameraVM);
+            DockManagerVM.AnchorableInfoPanels.Add(FilterWheelVM);
+            DockManagerVM.AnchorableInfoPanels.Add(FocuserVM);
+            DockManagerVM.AnchorableInfoPanels.Add(RotatorVM);
+            DockManagerVM.AnchorableInfoPanels.Add(TelescopeVM);
+            DockManagerVM.AnchorableInfoPanels.Add(GuiderVM);
+            DockManagerVM.AnchorableInfoPanels.Add(SeqVM);
+            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgStatisticsVM);
+            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgHistoryVM);
+
+            DockManagerVM.AnchorableTools.Add(ImagingVM);
+            DockManagerVM.AnchorableTools.Add(ThumbnailVM);
+            DockManagerVM.AnchorableTools.Add(WeatherDataVM);
+            DockManagerVM.AnchorableTools.Add(PlatesolveVM);
+            DockManagerVM.AnchorableTools.Add(PolarAlignVM);
+            DockManagerVM.AnchorableTools.Add(AutoFocusVM);
         }
 
         public void ChangeTab(ApplicationTab tab) {

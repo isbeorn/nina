@@ -73,6 +73,36 @@ namespace NINA.ViewModel {
             }
         }
 
+        private ObservableCollection<DockableVM> _anchorableTools;
+
+        public ObservableCollection<DockableVM> AnchorableTools {
+            get {
+                if (_anchorableTools == null) {
+                    _anchorableTools = new ObservableCollection<DockableVM>();
+                }
+                return _anchorableTools;
+            }
+            private set {
+                _anchorableTools = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ObservableCollection<DockableVM> _anchorableInfoPanels;
+
+        public ObservableCollection<DockableVM> AnchorableInfoPanels {
+            get {
+                if (_anchorableInfoPanels == null) {
+                    _anchorableInfoPanels = new ObservableCollection<DockableVM>();
+                }
+                return _anchorableInfoPanels;
+            }
+            private set {
+                _anchorableInfoPanels = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private Xceed.Wpf.AvalonDock.DockingManager _dockmanager;
         private bool _dockloaded = false;
 

@@ -652,6 +652,7 @@ namespace NINA.ViewModel {
             var tmpBorderColor = BorderColor;
             var tmpBackgroundColor = BackgroundColor;
             var tmpSecondaryBackgroundColor = SecondaryBackgroundColor;
+            var tmpTertiaryBackgroundColor = TertiaryBackgroundColor;
             var tmpButtonBackgroundColor = ButtonBackgroundColor;
             var tmpButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor;
             var tmpButtonForegroundColor = ButtonForegroundColor;
@@ -667,6 +668,7 @@ namespace NINA.ViewModel {
             BorderColor = AltBorderColor;
             BackgroundColor = AltBackgroundColor;
             SecondaryBackgroundColor = AltSecondaryBackgroundColor;
+            TertiaryBackgroundColor = AltTertiaryBackgroundColor;
             ButtonBackgroundColor = AltButtonBackgroundColor;
             ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor;
             ButtonForegroundColor = AltButtonForegroundColor;
@@ -682,6 +684,7 @@ namespace NINA.ViewModel {
             AltBorderColor = tmpBorderColor;
             AltBackgroundColor = tmpBackgroundColor;
             AltSecondaryBackgroundColor = tmpSecondaryBackgroundColor;
+            AltTertiaryBackgroundColor = tmpTertiaryBackgroundColor;
             AltButtonBackgroundColor = tmpButtonBackgroundColor;
             AltButtonBackgroundSelectedColor = tmpButtonBackgroundSelectedColor;
             AltButtonForegroundColor = tmpButtonForegroundColor;
@@ -704,6 +707,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(BorderColor));
                 RaisePropertyChanged(nameof(BackgroundColor));
                 RaisePropertyChanged(nameof(SecondaryBackgroundColor));
+                RaisePropertyChanged(nameof(TertiaryBackgroundColor));
                 RaisePropertyChanged(nameof(ButtonBackgroundColor));
                 RaisePropertyChanged(nameof(ButtonBackgroundSelectedColor));
                 RaisePropertyChanged(nameof(ButtonForegroundColor));
@@ -733,6 +737,7 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(AltBorderColor));
                 RaisePropertyChanged(nameof(AltBackgroundColor));
                 RaisePropertyChanged(nameof(AltSecondaryBackgroundColor));
+                RaisePropertyChanged(nameof(AltTertiaryBackgroundColor));
                 RaisePropertyChanged(nameof(AltButtonBackgroundColor));
                 RaisePropertyChanged(nameof(AltButtonBackgroundSelectedColor));
                 RaisePropertyChanged(nameof(AltButtonForegroundColor));
@@ -788,6 +793,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ColorSchemaSettings.SecondaryBackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color TertiaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.TertiaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.TertiaryBackgroundColor = value;
                 RaisePropertyChanged();
             }
         }
@@ -929,6 +944,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryBackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color AltTertiaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.AltTertiaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.AltTertiaryBackgroundColor = value;
                 RaisePropertyChanged();
             }
         }

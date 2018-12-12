@@ -30,6 +30,7 @@
     <SolidColorBrush x:Key="NotificationWarningTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.NotificationWarningTextColor}" />
     <SolidColorBrush x:Key="NotificationErrorTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.NotificationErrorTextColor}" />
     <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.SecondaryBackgroundColor}" />
+    <SolidColorBrush x:Key="TertiaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.TertiaryBackgroundColor}" />
 
     <SolidColorBrush x:Key="AltPrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltPrimaryColor}" />
     <SolidColorBrush x:Key="AltSecondaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltSecondaryColor}" />
@@ -43,4 +44,6 @@
     <SolidColorBrush x:Key="AltNotificationErrorBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationErrorColor}" />
     <SolidColorBrush x:Key="AltNotificationWarningTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationWarningTextColor}" />
     <SolidColorBrush x:Key="AltNotificationErrorTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationErrorTextColor}" />
+    <SolidColorBrush x:Key="AltSecondaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltSecondaryBackgroundColor}" />
+    <SolidColorBrush x:Key="AltTertiaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltTertiaryBackgroundColor}" />
 </ResourceDictionary>
