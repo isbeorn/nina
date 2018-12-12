@@ -71,7 +71,7 @@ namespace NINA.Utility {
                 SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1B2A41"),
                 BorderColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
                 BackgroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
-                SecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"), /* Todo*/
+                SecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF2d060d"),
                 ButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF96031A"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
@@ -90,11 +90,11 @@ namespace NINA.Utility {
                 SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF54748C"),
                 BorderColor = (Color)ColorConverter.ConvertFromString("#AABCBCBC"),
                 BackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
-                SecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"), /* Todo*/
+                SecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0d3956"),
                 ButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0B3C5D"),
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF2190DB"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
-                ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF1D2731"),
+                ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FFc5d2db"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),

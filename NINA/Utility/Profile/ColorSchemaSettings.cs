@@ -193,7 +193,7 @@ namespace NINA.Utility.Profile {
         }
 
         [DataMember]
-        private Color secondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
+        private Color secondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0d3956");
 
         [DataMember]
         public Color SecondaryBackgroundColor {
@@ -244,7 +244,7 @@ namespace NINA.Utility.Profile {
         }
 
         [DataMember]
-        private Color buttonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF1D2731");
+        private Color buttonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FFc5d2db");
 
         [DataMember]
         public Color ButtonForegroundDisabledColor {
@@ -363,7 +363,7 @@ namespace NINA.Utility.Profile {
         }
 
         [DataMember]
-        private Color altSecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1B2A41");
+        private Color altSecondaryColor = (Color)ColorConverter.ConvertFromString("#FF2d060d");
 
         [DataMember]
         public Color AltSecondaryColor {

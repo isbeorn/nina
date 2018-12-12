@@ -60,10 +60,12 @@
                                 <TextBlock
                                     Margin="4,0,0,0"
                                     VerticalAlignment="Center"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
                                     Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
                                 <TextBlock
                                     Margin="4,0,0,0"
                                     VerticalAlignment="Center"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
                                     Text="{Binding Source={StaticResource AppVM}, Path=Version}" />
                             </StackPanel>
 
@@ -88,8 +90,8 @@
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource EyeSVG}"
-                                        Style="{StaticResource WindowButtonPath}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        Style="{StaticResource WindowButtonPath}" />
                                 </Button>
                                 <Button
                                     Width="20"
@@ -102,8 +104,8 @@
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource QuestionSVG}"
-                                        Style="{StaticResource WindowButtonPath}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        Style="{StaticResource WindowButtonPath}" />
                                 </Button>
                                 <Button
                                     Width="20"
@@ -117,8 +119,8 @@
                                         Margin="2,12,2,2"
                                         VerticalAlignment="Bottom"
                                         Data="{StaticResource MinimizeWindowSVG}"
-                                        Style="{StaticResource WindowButtonPath}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        Style="{StaticResource WindowButtonPath}" />
                                 </Button>
                                 <Button
                                     Width="20"
@@ -131,8 +133,8 @@
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource MaximizeSVG}"
-                                        Style="{StaticResource WindowButtonPath}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        Style="{StaticResource WindowButtonPath}" />
                                 </Button>
                                 <Button
                                     Width="20"
@@ -145,8 +147,8 @@
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource CancelSVG}"
-                                        Style="{StaticResource WindowButtonPath}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        Style="{StaticResource WindowButtonPath}" />
                                 </Button>
                             </StackPanel>
 
