@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -732,4 +731,6 @@ Calculated HFR: {2}
     <s:String x:Key="LblASPSDirectory">ASPS Location</s:String>
     <s:String x:Key="LblAscomInterOpDriverException">An ASCOM driver interop exception occurred. This is most likely caused by a mismatch between the driver being installed as {0} and N.I.N.A. being {1}. Please install the driver as {1}</s:String>
     <s:String x:Key="LblCanonErrorOccurred">A Canon error occored: {0}</s:String>
+    <s:String x:Key="LblSkyAtlas">Sky Atlas</s:String>
+    <s:String x:Key="LblFraming">Framing</s:String>
 </ResourceDictionary>

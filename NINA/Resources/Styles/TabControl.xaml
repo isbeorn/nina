@@ -23,7 +23,7 @@
                 <ControlTemplate TargetType="TabItem">
                     <Border
                         Name="PART_Border"
-                        Margin="0,5,0,0"
+                        Margin="0,7,0,0"
                         Background="Transparent"
                         BorderThickness="0">
                         <Grid Name="PART_Panel">
