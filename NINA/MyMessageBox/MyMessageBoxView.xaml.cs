@@ -41,5 +41,9 @@ namespace NINA.MyMessageBox {
         private void Button_Cancel_Click(object sender, RoutedEventArgs e) {
             DialogResult = false;
         }
+
+        private void Window_ContentRendered(object sender, System.EventArgs e) {
+            InvalidateVisual();
+        }
     }
 }
