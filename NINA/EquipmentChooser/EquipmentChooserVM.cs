@@ -104,6 +104,7 @@ namespace NINA.EquipmentChooser {
             }
         }
 
+        [Obsolete]
         public static Model.IDevice Show(EquipmentType equipment, IProfileService profileService) {
             var chooser = new EquipmentChooserVM(equipment, profileService);
 

@@ -169,7 +169,7 @@ namespace NINA.ViewModel {
                                     Telescope.SiteLatitude,
                                     Telescope.SiteLongitude
                                 );
-                                WindowService.ShowDialog(syncVM, Locale.Loc.Instance["LblSyncLatLong"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+                                await WindowService.ShowDialog(syncVM, Locale.Loc.Instance["LblSyncLatLong"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
 
                                 if (syncVM.Mode == TelescopeLatLongSyncVM.LatLongSyncMode.NINA) {
                                     profileService.ChangeLatitude(Telescope.SiteLatitude);

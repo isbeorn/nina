@@ -21,22 +21,24 @@
 
 #endregion "copyright"
 
-using NINA.Utility.WindowService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
-namespace NINA.AstrometryIndexDownloader {
+namespace NINA.Utility.WindowService {
 
-    /// <summary>
-    /// Interaction logic for AstrometryIndexDownloader.xaml
-    /// </summary>
-    public partial class AstrometryIndexDownloader : CustomWindow {
+    public class CustomWindow : Window {
 
-        public AstrometryIndexDownloader() {
-            InitializeComponent();
-        }
+        public static readonly DependencyProperty CloseCommandProperty =
+        DependencyProperty.Register(nameof(CloseCommand), typeof(ICommand), typeof(Window), null);
 
-        private void ButtonOK_Click(object sender, RoutedEventArgs e) {
-            DialogResult = true;
+        public ICommand CloseCommand {
+            get { return (ICommand)GetValue(CloseCommandProperty); }
+            set { SetValue(CloseCommandProperty, value); }
         }
     }
 }
