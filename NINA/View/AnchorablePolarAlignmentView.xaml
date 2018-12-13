@@ -34,7 +34,7 @@
         <Grid>
             <StackPanel>
 
-                <local:PolarScopeView MinHeight="200" />
+                <local:PolarScopeView Width="Auto" />
                 <GroupBox Grid.Column="1" Header="{ns:Loc LblPlateSolvedPolarAlignment}">
                     <StackPanel Orientation="Vertical">
 
