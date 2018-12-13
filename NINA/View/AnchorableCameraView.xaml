@@ -127,7 +127,7 @@
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCoolerOn}" />
                             <CheckBox
-                                Height="25"
+                                Width="75"
                                 HorizontalAlignment="Left"
                                 Command="{Binding ToggleCoolerOnCommand}"
                                 CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"

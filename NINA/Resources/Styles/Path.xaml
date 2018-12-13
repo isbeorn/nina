@@ -41,10 +41,6 @@
             <Trigger Property="IsEnabled" Value="false">
                 <Setter Property="Opacity" Value="0.6" />
             </Trigger>
-
-            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=IsSelected}" Value="True">
-                <Setter Property="Fill" Value="{StaticResource ButtonForegroundBrush}" />
-            </DataTrigger>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=IsMouseOver}" Value="True">
                 <Setter Property="Fill" Value="{StaticResource ButtonForegroundBrush}" />
             </DataTrigger>

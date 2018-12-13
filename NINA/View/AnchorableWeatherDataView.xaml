@@ -140,6 +140,7 @@
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRefresh}" />
                     <CheckBox
+                        Width="75"
                         Margin="5,0,0,0"
                         HorizontalAlignment="Left"
                         IsChecked="{Binding DoUpdate}">

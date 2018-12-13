@@ -28,8 +28,8 @@
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Border
                         x:Name="border"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1">
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
                         <Border Background="{TemplateBinding Background}">
                             <Grid>
                                 <ContentPresenter
