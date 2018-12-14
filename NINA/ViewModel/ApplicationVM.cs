@@ -112,7 +112,7 @@ namespace NINA.ViewModel {
         }
 
         public void InitAvalonDockLayout() {
-            DockManagerVM.Documents.Add(ImagingVM.ImageControl);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl);
             DockManagerVM.Anchorables.Add(CameraVM);
             DockManagerVM.Anchorables.Add(FilterWheelVM);
             DockManagerVM.Anchorables.Add(FocuserVM);
@@ -131,6 +131,7 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(PolarAlignVM);
             DockManagerVM.Anchorables.Add(AutoFocusVM);
 
+            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl);
             DockManagerVM.AnchorableInfoPanels.Add(CameraVM);
             DockManagerVM.AnchorableInfoPanels.Add(FilterWheelVM);
             DockManagerVM.AnchorableInfoPanels.Add(FocuserVM);

@@ -32,30 +32,6 @@ namespace NINA.ViewModel {
 
         public DockManagerVM(IProfileService profileService/*IEnumerable<DockableVM> dockWindowViewModels*/) : base(profileService) {
             LoadAvalonDockLayoutCommand = new RelayCommand(LoadAvalonDockLayout);
-
-            /*foreach (var document in dockWindowViewModels) {
-                document.PropertyChanged += DockWindowViewModel_PropertyChanged;
-                if (!document.IsClosed)
-                    this.Documents.Add(document);
-            }*/
-        }
-
-        /// <summary>
-        /// Gets a collection of all visible documents
-        /// </summary>
-        private ObservableCollection<DockableVM> _documents;
-
-        public ObservableCollection<DockableVM> Documents {
-            get {
-                if (_documents == null) {
-                    _documents = new ObservableCollection<DockableVM>();
-                }
-                return _documents;
-            }
-            private set {
-                _documents = value;
-                RaisePropertyChanged();
-            }
         }
 
         private ObservableCollection<DockableVM> _anchorables;
@@ -127,16 +103,5 @@ namespace NINA.ViewModel {
         }
 
         public ICommand LoadAvalonDockLayoutCommand { get; private set; }
-
-        /*private void DockWindowViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            DockableVM document = sender as DockableVM;
-
-            if (e.PropertyName == nameof(DockableVM.IsClosed)) {
-                if (!document.IsClosed)
-                    this.Documents.Add(document);
-                else
-                    this.Documents.Remove(document);
-            }
-        }*/
     }
 }

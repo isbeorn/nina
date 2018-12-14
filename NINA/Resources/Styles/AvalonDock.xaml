@@ -25,7 +25,6 @@
     <DataTemplate x:Key="DocumentHeaderTemplate">
         <TextBlock
             Name="PART_TextBlock"
-            Margin="10,0,10,0"
             Foreground="{StaticResource PrimaryBrush}"
             Text="{Binding Title}" />
         <DataTemplate.Triggers>
@@ -37,7 +36,6 @@
     <DataTemplate x:Key="AnchorHeaderTemplate">
         <TextBlock
             Name="PART_TextBlock"
-            Margin="10,0,10,0"
             Foreground="{StaticResource PrimaryBrush}"
             Text="{Binding Title}" />
         <DataTemplate.Triggers>
@@ -48,7 +46,6 @@
     </DataTemplate>
 
     <Style TargetType="{x:Type dock:LayoutDocumentTabItem}">
-        <Setter Property="Margin" Value="-6,-10,-6,-10" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type dock:LayoutDocumentTabItem}">
@@ -58,7 +55,7 @@
                             Name="Panel"
                             Background="{StaticResource BackgroundBrush}"
                             BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1">
+                            BorderThickness="0,0,1,0">
                             <Grid>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -97,7 +94,6 @@
                         <DataTrigger Binding="{Binding Path=IsSelected}" Value="true">
                             <Setter TargetName="DocumentCloseButton" Property="Visibility" Value="Visible" />
                             <Setter TargetName="Panel" Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
-                            <Setter Property="Margin" Value="-6,-12,-6,-11" />
                         </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="DocumentCloseButton" Property="Visibility" Value="Visible" />
@@ -116,7 +112,7 @@
     </Style>
 
     <Style TargetType="{x:Type dock:LayoutAnchorableTabItem}">
-        <Setter Property="Margin" Value="-6,-10,-6,-10" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type dock:LayoutAnchorableTabItem}">
@@ -124,8 +120,8 @@
                         <Border
                             Name="Panel"
                             Background="{StaticResource BackgroundBrush}"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1,0,1,1">
+                            BorderBrush="Transparent"
+                            BorderThickness="0">
                             <Grid>
                                 <Grid>
                                     <ContentPresenter
@@ -143,12 +139,11 @@
                     </dock:DropDownControlArea>
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding Path=IsSelected}" Value="true">
-                            <Setter Property="Margin" Value="-6,-12,-6,-11" />
                             <Setter TargetName="Panel" Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
                         </DataTrigger>
-                        <Trigger SourceName="Panel" Property="IsMouseOver" Value="True">
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}, Path=IsMouseOver}" Value="True">
                             <Setter TargetName="Panel" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
-                        </Trigger>
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -183,7 +178,7 @@
                         </Grid.RowDefinitions>
                         <!--  Following border is required to catch mouse events  -->
                         <Border Grid.RowSpan="2" Background="Transparent" />
-                        <Grid Panel.ZIndex="1">
+                        <Grid Name="PART_HeaderContainer" Panel.ZIndex="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="Auto" />
@@ -195,6 +190,7 @@
                                 Margin="2,2,2,0"
                                 IsItemsHost="true"
                                 KeyboardNavigation.TabIndex="1" />
+
                             <dock:DropDownButton
                                 x:Name="MenuDropDownButton"
                                 Grid.Column="1"
@@ -240,7 +236,7 @@
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Model.ChildrenCount}" Value="0">
-                            <Setter TargetName="MenuDropDownButton" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PART_HeaderContainer" Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -250,9 +246,67 @@
             <Setter.Value>
                 <Style TargetType="{x:Type TabItem}">
                     <Setter Property="Visibility" Value="{Binding IsVisible, Converter={StaticResource VisibilityConverter}}" />
+                    <!--<Setter Property="Visibility" Value="Collapsed" />-->
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="IsEnabled" Value="{Binding IsEnabled}" />
+                    <Setter Property="ToolTip" Value="{Binding ToolTip}" />
+                    <Setter Property="Padding" Value="2,0,2,0" />
+                    <Setter Property="Margin" Value="0,2,0,0" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TabItem}">
+                                <Grid SnapsToDevicePixels="true">
+                                    <Border
+                                        x:Name="Bd"
+                                        Padding="{TemplateBinding Padding}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="1,1,1,0">
+                                        <ContentPresenter
+                                            x:Name="Content"
+                                            HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                            VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                            ContentSource="Header"
+                                            RecognizesAccessKey="True"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Border>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="Selector.IsSelected" Value="true">
+                                        <Setter Property="Background" Value="White" />
+                                        <Setter Property="Panel.ZIndex" Value="1" />
+                                        <Setter Property="Margin" Value="0,0,0,-2" />
+                                        <Setter TargetName="Content" Property="Margin" Value="0,0,0,3" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="true" />
+                                            <Condition Property="Selector.IsSelected" Value="false" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                                        <Setter Property="Panel.ZIndex" Value="0" />
+                                    </MultiTrigger>
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <!--<Style TargetType="{x:Type TabItem}">
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="ToolTip" Value="{Binding ToolTip}" />
-                </Style>
+
+                -->
+                <!--<Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}, Path=Items.Count, Converter={StaticResource DebugConverter}}" Value="1">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>-->
+                <!--
+                </Style>-->
             </Setter.Value>
         </Setter>
         <Setter Property="ItemTemplate">
@@ -306,7 +360,6 @@
                         <dock:AnchorablePaneTabPanel
                             x:Name="HeaderPanel"
                             Grid.Row="1"
-                            Margin="6,10,6,10"
                             Panel.ZIndex="1"
                             IsItemsHost="true"
                             KeyboardNavigation.TabIndex="1" />
@@ -325,6 +378,45 @@
                 <Style TargetType="{x:Type TabItem}">
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="ToolTip" Value="{Binding ToolTip}" />
+                    <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TabItem}">
+                                <Grid SnapsToDevicePixels="true">
+                                    <Border
+                                        x:Name="Bd"
+                                        Padding="{TemplateBinding Padding}"
+                                        Background="{StaticResource BackgroundBrush}"
+                                        BorderBrush="{StaticResource BorderBrush}"
+                                        BorderThickness="0,0,1,0">
+                                        <ContentPresenter
+                                            x:Name="Content"
+                                            HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                            VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                            ContentSource="Header"
+                                            RecognizesAccessKey="True"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Border>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="Selector.IsSelected" Value="true">
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                                        <Setter TargetName="Bd" Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                                        <Setter Property="Panel.ZIndex" Value="1" />
+                                        <Setter Property="Margin" Value="0,-1,-1,-2" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="true">
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                        <Setter TargetName="Bd" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                                        <Setter Property="Panel.ZIndex" Value="0" />
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}, Path=Items.Count}" Value="1">
                             <Setter Property="Visibility" Value="Collapsed" />
@@ -356,7 +448,7 @@
     </Style>
 
     <Style TargetType="{x:Type dock:DockingManager}">
-        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="Background" Value="{StaticResource TertiaryBackgroundBrush}" />
         <Setter Property="DocumentPaneControlStyle" Value="{StaticResource DocumentPaneControlStyle}" />
         <Setter Property="AnchorablePaneControlStyle" Value="{StaticResource AnchorablePaneControlStyle}" />
         <Setter Property="AnchorTemplate" Value="{StaticResource AnchorTemplate}" />
@@ -368,6 +460,15 @@
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
     </Style>
+
+    <DataTemplate x:Key="AnchorableTitleContentTemplate">
+        <TextBlock
+            Margin="1,0,0,0"
+            VerticalAlignment="Center"
+            FontSize="10"
+            Foreground="{StaticResource ButtonForegroundBrush}"
+            Text="{Binding Title}" />
+    </DataTemplate>
 
     <Style TargetType="dock:AnchorablePaneTitle">
         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -383,17 +484,20 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <dock:DropDownControlArea DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}" DropDownContextMenuDataContext="{Binding Path=LayoutItem, RelativeSource={RelativeSource TemplatedParent}}">
-
-                                <ContentPresenter
-                                    Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}"
-                                    ContentTemplate="{Binding Model.Root.Manager.AnchorableTitleTemplate, RelativeSource={RelativeSource TemplatedParent}}"
-                                    ContentTemplateSelector="{Binding Model.Root.Manager.AnchorableTitleTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}" />
-                            </dock:DropDownControlArea>
                             <Border
+                                x:Name="PART_TitleBorder"
                                 Grid.ColumnSpan="10"
+                                Background="{StaticResource SecondaryBackgroundBrush}"
                                 BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1" />
+                                BorderThickness="0" />
+
+                            <ContentPresenter
+                                Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}"
+                                ContentTemplate="{StaticResource AnchorableTitleContentTemplate}"
+                                ContentTemplateSelector="{Binding Model.Root.Manager.AnchorableTitleTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <!-- Context menu disabled
+                            <dock:DropDownControlArea DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}" DropDownContextMenuDataContext="{Binding Path=LayoutItem, RelativeSource={RelativeSource TemplatedParent}}">
+                            </dock:DropDownControlArea>-->
 
                             <!--<avalonDockControls:DropDownButton x:Name="PART_ContextMenu"
                                 Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
@@ -417,9 +521,9 @@
 
                             <Button
                                 x:Name="PART_HidePin"
-                                Margin="1"
                                 Grid.Column="1"
-                                Background="{StaticResource BackgroundBrush}"
+                                Margin="1"
+                                Background="Transparent"
                                 BorderThickness="0"
                                 Command="{Binding Path=LayoutItem.HideCommand, RelativeSource={RelativeSource TemplatedParent}}"
                                 Focusable="False"
@@ -430,13 +534,16 @@
                                     Height="10"
                                     Margin="2"
                                     Data="{StaticResource CancelSVG}"
-                                    Fill="{StaticResource PrimaryBrush}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform" />
                                 <!--<Image Source="/Xceed.Wpf.AvalonDock;component/Themes/Generic/Images/PinClose.png" />-->
                             </Button>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PART_TitleBorder" Property="Background" Value="{StaticResource ButtonBackgroundSelectedBrush}" />
+                        </Trigger>
                         <!--<DataTrigger Binding="{Binding Model.IsAutoHidden, RelativeSource={RelativeSource Mode=Self}}" Value="True">
                             <Setter Property="LayoutTransform" TargetName="PART_AutoHidePin">
                                 <Setter.Value>
