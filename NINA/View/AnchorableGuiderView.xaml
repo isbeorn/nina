@@ -20,9 +20,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enum="clr-namespace:NINA.Utility.Enum"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+    xmlns:util="clr-namespace:NINA.Utility"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -32,20 +35,202 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Border
-                Margin="0,5,0,5"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0">
-                <UniformGrid VerticalAlignment="Center" Columns="2">
+            <WrapPanel Margin="1,5,0,0">
+                <StackPanel Height="25" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblState}" />
+                    <TextBlock VerticalAlignment="Center" Text=": " />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Guider.AppState.State}" />
+                </StackPanel>
+                <Border Height="25" BorderBrush="{x:Null}">
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding GuideStepsHistory.RMS.RAText}" />
+                </Border>
+                <Border Height="25" BorderBrush="{x:Null}">
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding GuideStepsHistory.RMS.DecText}" />
+                </Border>
+                <Border Height="25" BorderBrush="{x:Null}">
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding GuideStepsHistory.RMS.TotalText}" />
+                </Border>
 
-                    <TextBlock Text="{ns:Loc LblState}" />
-                    <TextBlock Margin="5,0,0,0" Text="{Binding Guider.AppState.State}" />
-                </UniformGrid>
-            </Border>
-            <local:MinimalisticGuiderGraph
-                Grid.Row="1"
-                DataContext="{Binding}"
-                IsEnabled="{Binding Guider.Connected}" />
+                <ComboBox
+                    Height="25"
+                    MinWidth="0"
+                    MinHeight="0"
+                    Margin="5,0,0,0"
+                    DataContext="{Binding GuideStepsHistory}"
+                    ItemStringFormat="y: +/-{0}&quot;"
+                    SelectedValue="{Binding MaxY}"
+                    SelectedValuePath="Content">
+                    <ComboBoxItem>0.25</ComboBoxItem>
+                    <ComboBoxItem>0.5</ComboBoxItem>
+                    <ComboBoxItem>1</ComboBoxItem>
+                    <ComboBoxItem>2</ComboBoxItem>
+                    <ComboBoxItem>4</ComboBoxItem>
+                    <ComboBoxItem>8</ComboBoxItem>
+                    <ComboBoxItem>16</ComboBoxItem>
+                </ComboBox>
+                <!--<TextBlock Text="{ns:Loc LblXAxisScale}" />-->
+                <ComboBox
+                    Height="25"
+                    MinWidth="0"
+                    MinHeight="0"
+                    Margin="5,0,0,0"
+                    DataContext="{Binding GuideStepsHistory}"
+                    ItemStringFormat="x: {0}"
+                    SelectedValue="{Binding HistorySize}"
+                    SelectedValuePath="Content">
+                    <ComboBoxItem>50</ComboBoxItem>
+                    <ComboBoxItem>100</ComboBoxItem>
+                    <ComboBoxItem>200</ComboBoxItem>
+                    <ComboBoxItem>400</ComboBoxItem>
+                </ComboBox>
+                <!--<TextBlock Text="{ns:Loc LblYAxisUnits}" />-->
+                <ComboBox
+                    Height="25"
+                    MinWidth="0"
+                    MinHeight="0"
+                    Margin="5,0,0,0"
+                    DataContext="{Binding GuideStepsHistory}"
+                    ItemStringFormat="unit: {0}"
+                    ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}"
+                    SelectedItem="{Binding Scale}" />
+                <Button
+                    Grid.Column="3"
+                    Height="25"
+                    MinWidth="50"
+                    MaxWidth="60"
+                    Margin="5,0,0,0"
+                    Command="{Binding ClearGraphCommand}">
+                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblClear}" />
+                </Button>
+            </WrapPanel>
+
+            <oxy:Plot
+                Grid.Row="2"
+                Background="{StaticResource BackgroundBrush}"
+                DataContext="{Binding GuideStepsHistory}"
+                LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
+                LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
+                LegendFontSize="10"
+                LegendMaxHeight="35"
+                LegendOrientation="Horizontal"
+                LegendPadding="2"
+                LegendPlacement="Inside"
+                LegendPosition="BottomLeft"
+                LegendSymbolLength="10"
+                LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                PlotAreaBackground="{StaticResource BackgroundBrush}"
+                PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis
+                        Key="DistanceAxis"
+                        AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        IsPanEnabled="False"
+                        IsZoomEnabled="False"
+                        MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
+                        MajorGridlineStyle="LongDash"
+                        MajorStep="{Binding Interval}"
+                        Maximum="{Binding MaxY}"
+                        Minimum="{Binding MinY}"
+                        Position="Left"
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                    <oxy:LinearAxis
+                        Key="DurationAxis"
+                        IsAxisVisible="False"
+                        IsPanEnabled="False"
+                        IsZoomEnabled="False"
+                        Maximum="{Binding MaxDurationY}"
+                        Minimum="{Binding MinDurationY}"
+                        Position="Right" />
+                    <oxy:LinearAxis
+                        Key="TextAxisX"
+                        IsAxisVisible="False"
+                        Maximum="1"
+                        Minimum="0"
+                        Position="Bottom" />
+                    <oxy:LinearAxis
+                        Key="TextAxisY"
+                        IsAxisVisible="False"
+                        Maximum="1"
+                        Minimum="0"
+                        Position="Right" />
+                    <oxy:LinearAxis
+                        Key="DataAxisX"
+                        IsAxisVisible="False"
+                        Position="Bottom" />
+                </oxy:Plot.Axes>
+                <oxy:Plot.Series>
+                    <oxy:LineSeries
+                        Title="{ns:Loc LblRA}"
+                        DataFieldX="Time"
+                        DataFieldY="RADistanceRawDisplay"
+                        ItemsSource="{Binding GuideSteps}"
+                        XAxisKey="DataAxisX"
+                        YAxisKey="DistanceAxis"
+                        Color="Blue" />
+                    <oxy:LineSeries
+                        Title="{ns:Loc LblDec}"
+                        DataFieldX="Time"
+                        DataFieldY="DecDistanceRawDisplay"
+                        ItemsSource="{Binding GuideSteps}"
+                        XAxisKey="DataAxisX"
+                        YAxisKey="DistanceAxis"
+                        Color="Red" />
+                    <oxy:LinearBarSeries
+                        Title="{ns:Loc LblRACorrections}"
+                        BarWidth="3"
+                        DataFieldX="TimeRA"
+                        DataFieldY="RADuration"
+                        FillColor="Transparent"
+                        ItemsSource="{Binding GuideSteps}"
+                        StrokeColor="Blue"
+                        StrokeThickness="1"
+                        XAxisKey="DataAxisX"
+                        YAxisKey="DurationAxis"
+                        Color="Blue" />
+                    <oxy:LinearBarSeries
+                        Title="{ns:Loc LblDecCorrections}"
+                        BarWidth="3"
+                        DataFieldX="TimeDec"
+                        DataFieldY="DECDuration"
+                        FillColor="Transparent"
+                        ItemsSource="{Binding GuideSteps}"
+                        StrokeColor="Red"
+                        StrokeThickness="1"
+                        XAxisKey="DataAxisX"
+                        YAxisKey="DurationAxis"
+                        Color="Red" />
+                </oxy:Plot.Series>
+                <oxy:Plot.Annotations>
+                    <oxy:LineAnnotation
+                        Text="GuideNorth"
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TextVerticalAlignment="Top"
+                        Type="Horizontal"
+                        XAxisKey="TextAxisX"
+                        Y="1"
+                        YAxisKey="TextAxisY"
+                        Color="Transparent" />
+                    <oxy:LineAnnotation
+                        Text="GuideEast"
+                        TextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        TextVerticalAlignment="Bottom"
+                        Type="Horizontal"
+                        XAxisKey="TextAxisX"
+                        Y="0"
+                        YAxisKey="TextAxisY"
+                        Color="Transparent" />
+                </oxy:Plot.Annotations>
+            </oxy:Plot>
         </Grid>
     </ScrollViewer>
 </UserControl>

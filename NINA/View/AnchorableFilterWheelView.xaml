@@ -60,9 +60,11 @@
                 </UniformGrid>
             </Border>
 
-            <UniformGrid Rows="2">
+            <UniformGrid Margin="0,5,5,0" Columns="2">
                 <ComboBox
                     Name="PART_FilterComboBox"
+                    MinWidth="0"
+                    Height="25"
                     IsEnabled="{Binding FilterWheelInfo.IsMoving, Converter={StaticResource InverseBooleanConverter}}"
                     ItemsSource="{Binding FW.Filters}"
                     SelectedValue="{Binding TargetFilter}">
@@ -73,8 +75,8 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <Button
-                    Height="35"
-                    Margin="10"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Stretch"
                     Command="{Binding ChangeFilterCommand}">
                     <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblChange}" />
                 </Button>

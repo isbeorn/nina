@@ -123,7 +123,7 @@
             </GroupBox>
 
             <ninactrl:AsyncProcessButton
-                Height="35"
+                Height="25"
                 Margin="10,0,10,0"
                 ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
                 ButtonImage="{StaticResource PlaySVG}"

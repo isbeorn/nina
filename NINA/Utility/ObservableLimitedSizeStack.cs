@@ -108,12 +108,22 @@ namespace NINA.Utility {
 
         public int MaxSize {
             get {
-                return _maxSize;
+                _lock.EnterReadLock();
+                try {
+                    return _maxSize;
+                } finally {
+                    _lock.ExitReadLock();
+                }
             }
             set {
-                _maxSize = value;
-                while (this._underLyingLinkedList.Count > _maxSize) {
-                    _underLyingLinkedList.RemoveFirst();
+                _lock.EnterWriteLock();
+                try {
+                    _maxSize = value;
+                    while (this._underLyingLinkedList.Count > _maxSize) {
+                        _underLyingLinkedList.RemoveFirst();
+                    }
+                } finally {
+                    _lock.ExitWriteLock();
                 }
             }
         }

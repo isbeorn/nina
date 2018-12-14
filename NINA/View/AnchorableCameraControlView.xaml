@@ -157,7 +157,7 @@
                     </Border>
 
                     <ninactrl:CancellableButton
-                        Height="35"
+                        Height="25"
                         Margin="10,10,10,0"
                         ButtonImage="{StaticResource LiveViewSVG}"
                         CancelButtonImage="{StaticResource CancelSVG}"
@@ -168,7 +168,7 @@
                 </StackPanel>
 
                 <ninactrl:CancellableButton
-                    Height="35"
+                    Height="25"
                     Margin="10,10,10,0"
                     ButtonImage="{StaticResource CameraSVG}"
                     CancelButtonImage="{StaticResource CancelSVG}"

@@ -93,8 +93,8 @@
 
                     <Grid Margin="0,5,0,0" IsEnabled="{Binding RotatorInfo.Connected, Converter={StaticResource InverseNullToBooleanConverter}}">
                         <ninactrl:CancellableButton
-                            Height="35"
-                            Margin="10"
+                            Height="25"
+                            Margin="10,10,10,0"
                             ButtonText="{ns:Loc LblMove}"
                             CancelButtonImage="{StaticResource CancelSVG}"
                             CancelCommand="{Binding HaltCommand}"

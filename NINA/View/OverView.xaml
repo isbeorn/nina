@@ -193,8 +193,7 @@
             Grid.Row="1"
             Margin="0,0,0,0"
             AnchorablesSource="{Binding Anchorables}"
-            DataContext="{Binding}"
-            DocumentsSource="{Binding Documents}">
+            DataContext="{Binding}">
             <!--<dock:DockingManager.Theme>
                 <dock:MetroTheme />
             </dock:DockingManager.Theme>-->

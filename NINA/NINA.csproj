@@ -660,9 +660,6 @@
     <Compile Include="View\MeridianFlipView.xaml.cs">
       <DependentUpon>MeridianFlipView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\MinimalisticGuiderGraph.xaml.cs">
-      <DependentUpon>MinimalisticGuiderGraph.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\OptionsImagingView.xaml.cs">
       <DependentUpon>OptionsImagingView.xaml</DependentUpon>
     </Compile>
@@ -1008,10 +1005,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MeridianFlipView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\MinimalisticGuiderGraph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
