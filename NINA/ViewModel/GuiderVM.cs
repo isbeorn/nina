@@ -159,7 +159,6 @@ namespace NINA.ViewModel {
             Guider?.Disconnect();
             Guider = null;
             GuiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
-            ResetGraphValues();
             BroadcastGuiderInfo();
         }
 
