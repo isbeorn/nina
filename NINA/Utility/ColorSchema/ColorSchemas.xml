@@ -63,7 +63,6 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FF02010A" />
     <NotificationErrorTextColor Color="#FF02010A" />
-
     <SecondaryBackgroundColor Color="#FF230409" />
     <TertiaryBackgroundColor Color="#FF2d060d" />
   </ColorSchema>
@@ -128,7 +127,6 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFFFFFFF" />
     <NotificationErrorTextColor Color="#FFFFFFFF" />
-
     <SecondaryBackgroundColor Color="#FF000000" />
     <TertiaryBackgroundColor Color="#FF000000" />
   </ColorSchema>
@@ -145,7 +143,6 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFF7F7FF" />
     <NotificationErrorTextColor Color="#FFF7F7FF" />
-
     <SecondaryBackgroundColor Color="#FF393f4c" />
     <TertiaryBackgroundColor Color="#FF4a5368" />
   </ColorSchema>
@@ -162,7 +159,6 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFF8E9E9" />
     <NotificationErrorTextColor Color="#FFF8E9E9" />
-
     <SecondaryBackgroundColor Color="#FF2a2c31" />
     <TertiaryBackgroundColor Color="#FF30393a" />
   </ColorSchema>
@@ -179,7 +175,6 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFBDC3C7" />
     <NotificationErrorTextColor Color="#FFBDC3C7" />
-
     <SecondaryBackgroundColor Color="#FF2a352f" />
     <TertiaryBackgroundColor Color="#FF415148" />
   </ColorSchema>
@@ -196,7 +191,6 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFA9AAAC" />
     <NotificationErrorTextColor Color="#FFA9AAAC" />
-    <!-- TODO-->
     <SecondaryBackgroundColor Color="#FF202225" />
     <TertiaryBackgroundColor Color="#FF404144" />
   </ColorSchema>
@@ -213,7 +207,6 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFECF0F1" />
     <NotificationErrorTextColor Color="#FFECF0F1" />
-
     <SecondaryBackgroundColor Color="#FF230d1e" />
     <TertiaryBackgroundColor Color="#FF3d1433" />
   </ColorSchema>
