@@ -43,6 +43,7 @@ namespace NINA.Utility.Profile {
                 NINA.Properties.Settings.Default.Save();
             }
             Load();
+            CreateWatcher();
         }
 
         private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -118,19 +119,43 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        private FileSystemWatcher profileFileWatcher;
+
+        private void CreateWatcher() {
+            profileFileWatcher = new FileSystemWatcher() {
+                Path = Path.GetDirectoryName(PROFILEFILEPATH),
+                NotifyFilter = NotifyFilters.LastWrite,
+                Filter = Path.GetFileName(PROFILEFILEPATH)
+            };
+
+            profileFileWatcher.Changed += ProfileFileWatcher_Changed;
+            //profileFileWatcher.Created += ProfileFileWatcher_Changed;
+
+            profileFileWatcher.EnableRaisingEvents = true;
+        }
+
+        private void ProfileFileWatcher_Changed(object sender, FileSystemEventArgs e) {
+            profileFileWatcher.EnableRaisingEvents = false;
+            Debug.Print(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
+
+            //Todo - Reload Profile
+
+            System.Threading.Thread.Sleep(200);
+            profileFileWatcher.EnableRaisingEvents = true;
+        }
+
         private static object lockobj = new object();
 
         private void Save() {
             try {
+                profileFileWatcher.EnableRaisingEvents = false;
                 lock (lockobj) {
                     var tries = 0;
                     const int maxTries = 10;
                     while (true) {
                         try {
-                            Debug.Print("Trying to get file read info");
                             using (var fs = new FileStream(PROFILEFILEPATH, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None)) {
                                 var serializer = new DataContractSerializer(typeof(Profiles));
-                                Debug.Print("Reading file");
                                 Profiles profileToWrite = Profiles;
                                 if (fs.Length > 0) {
                                     /* Copy file to temp file */
@@ -170,7 +195,6 @@ namespace NINA.Utility.Profile {
                                 fs.Position = 0;
                                 fs.SetLength(0);
                                 serializer = new DataContractSerializer(typeof(Profiles));
-                                Debug.Print("Writing file");
                                 serializer.WriteObject(fs, profileToWrite);
 
                                 //Delete Temp file
@@ -197,6 +221,8 @@ namespace NINA.Utility.Profile {
                     //Restore temp file
                     File.Copy(PROFILETEMPFILEPATH, PROFILEFILEPATH, true);
                 }
+            } finally {
+                profileFileWatcher.EnableRaisingEvents = true;
             }
         }
 
