@@ -104,7 +104,7 @@ namespace NINA.ViewModel {
                 return await telescopeMediator.SlewToCoordinatesAsync(Rectangle.Coordinates);
             }, (object o) => Rectangle?.Coordinates != null);
 
-            SelectedImageCacheInfo = (XElement)ImageCacheInfo.FirstNode;
+            _selectedImageCacheInfo = (XElement)ImageCacheInfo.FirstNode;
 
             var appSettings = profileService.ActiveProfile.ApplicationSettings;
             appSettings.PropertyChanged += ApplicationSettings_PropertyChanged;
