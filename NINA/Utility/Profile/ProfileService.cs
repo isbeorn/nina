@@ -298,6 +298,7 @@ namespace NINA.Utility.Profile {
                             }
 
                             var id = Profiles.ActiveProfileId;
+                            if (id == Guid.Empty) id = Profiles.ProfileList[0].Id;
                             SelectProfile(id);
                         }
                     }
