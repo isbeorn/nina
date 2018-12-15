@@ -36,13 +36,13 @@
         <dock:BoolToVisibilityConverter x:Key="btvc" />
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Background="{StaticResource TertiaryBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Grid Background="{StaticResource TertiaryBackgroundBrush}">
+        <Grid>
             <StackPanel
                 Margin="2,0,0,0"
                 HorizontalAlignment="Left"
@@ -191,7 +191,7 @@
         <dock:DockingManager
             x:Name="dockManager"
             Grid.Row="1"
-            Margin="0,0,0,0"
+            Margin="1,0,0,0"
             AnchorablesSource="{Binding Anchorables}"
             DataContext="{Binding}">
             <!--<dock:DockingManager.Theme>

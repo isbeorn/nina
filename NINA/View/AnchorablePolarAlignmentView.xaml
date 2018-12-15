@@ -69,7 +69,7 @@
                                     <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:AltitudeSite}}}" SelectedItem="{Binding AltitudeSiteType}" />
 
                                     <ninactrl:CancellableButton
-                                        Height="35"
+                                        Height="25"
                                         Margin="10,10,10,0"
                                         ButtonText="{ns:Loc LblAltitudeErrorMeasurement}"
                                         CancelButtonImage="{StaticResource CancelSVG}"
@@ -103,7 +103,7 @@
                                                     </UniformGrid>
                                                 </Border>
                                                 <Button
-                                                    Height="35"
+                                                    Height="25"
                                                     MinWidth="60"
                                                     Margin="10,10,10,10"
                                                     VerticalAlignment="Center"
@@ -127,7 +127,7 @@
                                     VerticalAlignment="Center"
                                     Orientation="Vertical">
                                     <ninactrl:CancellableButton
-                                        Height="35"
+                                        Height="25"
                                         ButtonText="{ns:Loc LblAzimuthErrorMeasurement}"
                                         CancelButtonImage="{StaticResource CancelSVG}"
                                         CancelCommand="{Binding CancelMeasureAzimuthErrorCommand}"
@@ -160,7 +160,7 @@
                                                     </UniformGrid>
                                                 </Border>
                                                 <Button
-                                                    Height="35"
+                                                    Height="25"
                                                     MinWidth="60"
                                                     Margin="10,10,10,10"
                                                     VerticalAlignment="Center"
@@ -207,7 +207,7 @@
                         </StackPanel>
 
                         <ninactrl:CancellableButton
-                            Height="35"
+                            Height="25"
                             Margin="10,10,10,0"
                             ButtonText="{ns:Loc LblSlew}"
                             CancelButtonImage="{StaticResource CancelSVG}"

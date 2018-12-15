@@ -44,7 +44,7 @@
             <Grid IsEnabled="{Binding CameraInfo.Connected}">
                 <StackPanel Orientation="Vertical">
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
@@ -53,7 +53,7 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
@@ -62,7 +62,7 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
@@ -71,7 +71,7 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
@@ -80,7 +80,7 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
@@ -89,7 +89,7 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
@@ -98,7 +98,7 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
@@ -107,7 +107,7 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
@@ -117,12 +117,12 @@
                     </Border>
 
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0" />
 
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid Columns="2">
@@ -136,7 +136,7 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid Columns="2">
@@ -199,7 +199,7 @@
                         MySelectedGain="{Binding SnapGain, Mode=TwoWay}" />
 
                     <ninactrl:CancellableButton
-                        Height="35"
+                        Height="25"
                         Margin="10,10,10,0"
                         ButtonImage="{StaticResource PlaySVG}"
                         CancelButtonImage="{StaticResource CancelSVG}"

@@ -33,7 +33,6 @@
     <NotificationErrorTextColor Color="#FFFFFFFF" />
     <SecondaryBackgroundColor Color="#FF0d3956" />
     <TertiaryBackgroundColor Color="#FF114f77" />
-    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Classic">
     <PrimaryColor Color="#FF000000" />
@@ -50,7 +49,6 @@
     <NotificationErrorTextColor Color="#FF000000" />
     <SecondaryBackgroundColor Color="#FF4f4f4f" />
     <TertiaryBackgroundColor Color="#FF707070" />
-    <!--TODO-->
   </ColorSchema>
   <ColorSchema Name="Dark">
     <PrimaryColor Color="#FF550C18" />
@@ -65,9 +63,9 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FF02010A" />
     <NotificationErrorTextColor Color="#FF02010A" />
-    <!--TODO-->
-    <SecondaryBackgroundColor Color="#FF2d060d" />
-    <TertiaryBackgroundColor Color="#FF4c0a16" />
+
+    <SecondaryBackgroundColor Color="#FF230409" />
+    <TertiaryBackgroundColor Color="#FF2d060d" />
   </ColorSchema>
   <ColorSchema Name="Seance">
     <PrimaryColor Color="#FF000000" />
@@ -83,8 +81,7 @@
     <NotificationWarningTextColor Color="#FFFFFFFF" />
     <NotificationErrorTextColor Color="#FFFFFFFF" />
     <SecondaryBackgroundColor Color="#FF450d4f" />
-    <TertiaryBackgroundColor Color="#FF761987" />
-    <!--TODO-->
+    <TertiaryBackgroundColor Color="#FF5d116b" />
   </ColorSchema>
   <ColorSchema Name="Persian">
     <PrimaryColor Color="#FFECF0F1" />
@@ -131,7 +128,7 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFFFFFFF" />
     <NotificationErrorTextColor Color="#FFFFFFFF" />
-    <!--TODO-->
+
     <SecondaryBackgroundColor Color="#FF000000" />
     <TertiaryBackgroundColor Color="#FF000000" />
   </ColorSchema>
@@ -148,7 +145,7 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFF7F7FF" />
     <NotificationErrorTextColor Color="#FFF7F7FF" />
-    <!--TODO-->
+
     <SecondaryBackgroundColor Color="#FF393f4c" />
     <TertiaryBackgroundColor Color="#FF4a5368" />
   </ColorSchema>
@@ -165,13 +162,13 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFF8E9E9" />
     <NotificationErrorTextColor Color="#FFF8E9E9" />
-    <!--TODO-->
+
     <SecondaryBackgroundColor Color="#FF2a2c31" />
     <TertiaryBackgroundColor Color="#FF30393a" />
   </ColorSchema>
   <ColorSchema Name="Vivid Malachite">
     <PrimaryColor Color="#FFECF0F1" />
-    <SecondaryColor Color="#FF1D2731" />
+    <SecondaryColor Color="#FF1b3325" />
     <BorderColor Color="#FF285238" />
     <BackgroundColor Color="#FF34403A" />
     <ButtonBackgroundColor Color="#FF138A36" />
@@ -182,9 +179,9 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFBDC3C7" />
     <NotificationErrorTextColor Color="#FFBDC3C7" />
-    <!--TODO-->
-    <SecondaryBackgroundColor Color="#FF2a2c31" />
-    <TertiaryBackgroundColor Color="#FF272d2a" />
+
+    <SecondaryBackgroundColor Color="#FF2a352f" />
+    <TertiaryBackgroundColor Color="#FF415148" />
   </ColorSchema>
   <ColorSchema Name="Shark">
     <PrimaryColor Color="#FFEDEDED" />
@@ -216,7 +213,7 @@
     <NotificationErrorColor Color="#FF700000" />
     <NotificationWarningTextColor Color="#FFECF0F1" />
     <NotificationErrorTextColor Color="#FFECF0F1" />
-    <!--TODO-->
+
     <SecondaryBackgroundColor Color="#FF230d1e" />
     <TertiaryBackgroundColor Color="#FF3d1433" />
   </ColorSchema>
@@ -233,8 +230,7 @@
     <NotificationErrorColor Color="#FFDB0606" />
     <NotificationWarningTextColor Color="#FF6FC3DF" />
     <NotificationErrorTextColor Color="#FF6FC3DF" />
-    <!--TODO-->
     <SecondaryBackgroundColor Color="#FF10233d" />
-    <TertiaryBackgroundColor Color="#FF13253d" />
+    <TertiaryBackgroundColor Color="#FF0f2138" />
   </ColorSchema>
 </ColorSchemas>
