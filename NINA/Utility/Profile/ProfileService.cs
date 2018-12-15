@@ -26,6 +26,7 @@ using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -101,14 +102,19 @@ namespace NINA.Utility.Profile {
         public Profiles Profiles { get; set; }
 
         public void Add() {
-            Profiles.Add(new Profile("Profile" + (Profiles.ProfileList.Count + 1)));
+            Add(new Profile("Profile" + (Profiles.ProfileList.Count + 1)));
+        }
+
+        private void Add(IProfile p) {
+            Profiles.Add(p);
+            Save();
         }
 
         public void Clone(Guid id) {
             var p = Profiles.ProfileList.Where((x) => x.Id == id).FirstOrDefault();
             if (p != null) {
                 var newProfile = Profile.Clone(p);
-                Profiles.Add(newProfile);
+                Add(newProfile);
             }
         }
 
@@ -117,19 +123,71 @@ namespace NINA.Utility.Profile {
         private void Save() {
             try {
                 lock (lockobj) {
-                    var serializer = new DataContractSerializer(typeof(Profiles));
+                    var tries = 0;
+                    const int maxTries = 10;
+                    while (true) {
+                        try {
+                            Debug.Print("Trying to get file read info");
+                            using (var fs = new FileStream(PROFILEFILEPATH, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None)) {
+                                var serializer = new DataContractSerializer(typeof(Profiles));
+                                Debug.Print("Reading file");
+                                Profiles profileToWrite = Profiles;
+                                if (fs.Length > 0) {
+                                    /* Copy file to temp file */
+                                    using (var copyStream = new FileStream(PROFILETEMPFILEPATH, FileMode.Create, FileAccess.Write)) {
+                                        fs.CopyTo(copyStream);
+                                        //Reset filestream position
+                                        fs.Position = 0;
+                                    }
 
-                    //Copy profile to temp file, to be able to roll back in case of error
-                    if (File.Exists(PROFILEFILEPATH)) {
-                        File.Copy(PROFILEFILEPATH, PROFILETEMPFILEPATH, true);
+                                    /* Read profiles from file, replace current profile in file with actual profile */
+                                    var obj = serializer.ReadObject(fs);
+                                    profileToWrite = (Profiles)obj;
+
+                                    var idx = -1;
+                                    for (var i = 0; i < profileToWrite.ProfileList.Count; i++) {
+                                        if (Profiles.ActiveProfileId == profileToWrite.ProfileList[i].Id) {
+                                            idx = i;
+                                            break;
+                                        }
+                                    }
+                                    if (idx >= 0) {
+                                        profileToWrite.ProfileList.RemoveAt(idx);
+                                        profileToWrite.ProfileList.Insert(idx, Profiles.ActiveProfile);
+                                    }
+
+                                    profileToWrite.ActiveProfileId = Profiles.ActiveProfileId;
+
+                                    var excludedIDs = new HashSet<Guid>(profileToWrite.ProfileList.Select(p => p.Id));
+                                    var profilesToAdd = this.Profiles.ProfileList.Where(x => !excludedIDs.Contains(x.Id));
+
+                                    foreach (var p in profilesToAdd) {
+                                        profileToWrite.Add(p);
+                                    }
+                                }
+
+                                //Reset filestream content and position
+                                fs.Position = 0;
+                                fs.SetLength(0);
+                                serializer = new DataContractSerializer(typeof(Profiles));
+                                Debug.Print("Writing file");
+                                serializer.WriteObject(fs, profileToWrite);
+
+                                //Delete Temp file
+                                File.Delete(PROFILETEMPFILEPATH);
+
+                                break;
+                            }
+                        } catch (IOException ex) {
+                            if (tries >= maxTries) {
+                                Logger.Error(ex);
+                                Notification.Notification.ShowError(ex.Message);
+                                break;
+                            }
+                        }
+
+                        System.Threading.Thread.Sleep(200);
                     }
-
-                    using (FileStream writer = new FileStream(PROFILEFILEPATH, FileMode.Create)) {
-                        serializer.WriteObject(writer, Profiles);
-                    }
-
-                    //Delete Temp file
-                    File.Delete(PROFILETEMPFILEPATH);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
