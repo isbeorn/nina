@@ -11,7 +11,7 @@
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
       <bal:WixStandardBootstrapperApplication
         ThemeFile="$(var.ProjectDir)\RtfTheme.xml"
-        LogoFile="$(var.NINASetup.ProjectDir)\observatory.ico"
+        LogoFile="$(var.ProjectDir)\ninasplash-small.png"
         LicenseFile="$(var.SolutionDir)\RELEASE_NOTES.rtf"
         ShowVersion="yes" />
     </BootstrapperApplicationRef>
