@@ -107,6 +107,8 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(SecondaryColor));
             RaisePropertyChanged(nameof(BorderColor));
             RaisePropertyChanged(nameof(BackgroundColor));
+            RaisePropertyChanged(nameof(SecondaryBackgroundColor));
+            RaisePropertyChanged(nameof(TertiaryBackgroundColor));
             RaisePropertyChanged(nameof(ButtonBackgroundColor));
             RaisePropertyChanged(nameof(ButtonBackgroundSelectedColor));
             RaisePropertyChanged(nameof(ButtonForegroundColor));
@@ -120,6 +122,8 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(AltSecondaryColor));
             RaisePropertyChanged(nameof(AltBorderColor));
             RaisePropertyChanged(nameof(AltBackgroundColor));
+            RaisePropertyChanged(nameof(AltSecondaryBackgroundColor));
+            RaisePropertyChanged(nameof(AltTertiaryBackgroundColor));
             RaisePropertyChanged(nameof(AltButtonBackgroundColor));
             RaisePropertyChanged(nameof(AltButtonBackgroundSelectedColor));
             RaisePropertyChanged(nameof(AltButtonForegroundColor));
