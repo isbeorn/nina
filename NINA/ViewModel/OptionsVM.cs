@@ -1,4 +1,27 @@
-﻿using NINA.Model;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
@@ -628,6 +651,8 @@ namespace NINA.ViewModel {
             var tmpSecondaryColor = SecondaryColor;
             var tmpBorderColor = BorderColor;
             var tmpBackgroundColor = BackgroundColor;
+            var tmpSecondaryBackgroundColor = SecondaryBackgroundColor;
+            var tmpTertiaryBackgroundColor = TertiaryBackgroundColor;
             var tmpButtonBackgroundColor = ButtonBackgroundColor;
             var tmpButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor;
             var tmpButtonForegroundColor = ButtonForegroundColor;
@@ -642,6 +667,8 @@ namespace NINA.ViewModel {
             SecondaryColor = AltSecondaryColor;
             BorderColor = AltBorderColor;
             BackgroundColor = AltBackgroundColor;
+            SecondaryBackgroundColor = AltSecondaryBackgroundColor;
+            TertiaryBackgroundColor = AltTertiaryBackgroundColor;
             ButtonBackgroundColor = AltButtonBackgroundColor;
             ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor;
             ButtonForegroundColor = AltButtonForegroundColor;
@@ -656,6 +683,8 @@ namespace NINA.ViewModel {
             AltSecondaryColor = tmpSecondaryColor;
             AltBorderColor = tmpBorderColor;
             AltBackgroundColor = tmpBackgroundColor;
+            AltSecondaryBackgroundColor = tmpSecondaryBackgroundColor;
+            AltTertiaryBackgroundColor = tmpTertiaryBackgroundColor;
             AltButtonBackgroundColor = tmpButtonBackgroundColor;
             AltButtonBackgroundSelectedColor = tmpButtonBackgroundSelectedColor;
             AltButtonForegroundColor = tmpButtonForegroundColor;
@@ -677,6 +706,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(SecondaryColor));
                 RaisePropertyChanged(nameof(BorderColor));
                 RaisePropertyChanged(nameof(BackgroundColor));
+                RaisePropertyChanged(nameof(SecondaryBackgroundColor));
+                RaisePropertyChanged(nameof(TertiaryBackgroundColor));
                 RaisePropertyChanged(nameof(ButtonBackgroundColor));
                 RaisePropertyChanged(nameof(ButtonBackgroundSelectedColor));
                 RaisePropertyChanged(nameof(ButtonForegroundColor));
@@ -705,6 +736,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(AltSecondaryColor));
                 RaisePropertyChanged(nameof(AltBorderColor));
                 RaisePropertyChanged(nameof(AltBackgroundColor));
+                RaisePropertyChanged(nameof(AltSecondaryBackgroundColor));
+                RaisePropertyChanged(nameof(AltTertiaryBackgroundColor));
                 RaisePropertyChanged(nameof(AltButtonBackgroundColor));
                 RaisePropertyChanged(nameof(AltButtonBackgroundSelectedColor));
                 RaisePropertyChanged(nameof(AltButtonForegroundColor));
@@ -750,6 +783,26 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ColorSchemaSettings.BackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color SecondaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.SecondaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.SecondaryBackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color TertiaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.TertiaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.TertiaryBackgroundColor = value;
                 RaisePropertyChanged();
             }
         }
@@ -881,6 +934,26 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ColorSchemaSettings.AltBackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color AltSecondaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryBackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color AltTertiaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.AltTertiaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.AltTertiaryBackgroundColor = value;
                 RaisePropertyChanged();
             }
         }

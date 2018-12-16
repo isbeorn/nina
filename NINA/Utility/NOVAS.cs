@@ -1,4 +1,27 @@
-﻿using System;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -74,25 +97,25 @@ namespace NINA.Utility {
 
         #region "External DLL calls"
 
-        [DllImport(DLLNAME, EntryPoint = "cal_date")]
+        [DllImport(DLLNAME, EntryPoint = "cal_date", CallingConvention = CallingConvention.Cdecl)]
         private static extern double NOVAS_CalDate(double tjd, ref short year, ref short month, ref short day, ref double hour);
 
-        [DllImport(DLLNAME, EntryPoint = "julian_date")]
+        [DllImport(DLLNAME, EntryPoint = "julian_date", CallingConvention = CallingConvention.Cdecl)]
         private static extern double NOVAS_JulianDate(short year, short month, short day, double hour);
 
-        [DllImport(DLLNAME, EntryPoint = "sidereal_time")]
+        [DllImport(DLLNAME, EntryPoint = "sidereal_time", CallingConvention = CallingConvention.Cdecl)]
         private static extern short NOVAS_SiderealTime(double jdHigh, double jdLow, double detlaT, GstType gstType, Method method, Accuracy accuracy, ref double gst);
 
-        [DllImport(DLLNAME, EntryPoint = "place")]
+        [DllImport(DLLNAME, EntryPoint = "place", CallingConvention = CallingConvention.Cdecl)]
         private static extern short NOVAS_Place(double jdTt, ref CelestialObject celObject, ref Observer observer, double deltaT, short coordinateSystem, short accuracy, ref SkyPosition position);
 
-        [DllImport(DLLNAME, EntryPoint = "set_racio_file")]
+        [DllImport(DLLNAME, EntryPoint = "set_racio_file", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SetRACIOFile([MarshalAs(UnmanagedType.LPStr)] string Name);
 
-        [DllImport(DLLNAME, EntryPoint = "ephem_open")]
+        [DllImport(DLLNAME, EntryPoint = "ephem_open", CallingConvention = CallingConvention.Cdecl)]
         private static extern short EphemOpen([MarshalAs(UnmanagedType.LPStr)] string Ephem_Name, ref double JD_Begin, ref double JD_End, ref short DENumber);
 
-        [DllImport(DLLNAME, EntryPoint = "refract")]
+        [DllImport(DLLNAME, EntryPoint = "refract", CallingConvention = CallingConvention.Cdecl)]
         private static extern double NOVAS_Refract(ref OnSurface location, RefractionOption refractionOption, double zdObs);
 
         #endregion "External DLL calls"

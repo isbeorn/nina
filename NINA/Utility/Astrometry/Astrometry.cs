@@ -1,4 +1,27 @@
-﻿using System;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -442,6 +465,32 @@ namespace NINA.Utility.Astrometry {
             WaxingCrescent,
             FirstQuarter,
             WaxingGibbous
+        }
+
+        /// <summary>
+        /// Approximate dew point using Magnus Formula
+        /// </summary>
+        /// <param name="temperatrue">Temperature in Celsius</param>
+        /// <param name="humidity">Humidity</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// https://en.wikipedia.org/wiki/Dew_point#Calculating_the_dew_point
+        /// Using b and c values from Journal of Applied Meteorology and Climatology
+        /// </remarks>
+        public static double ApproximateDewPoint(double temperatrue, double humidity) {
+            // 0°C <= T <= 50°C ==> Error <= 0.05%
+            double b = 17.368;
+            double c = 233.88;
+            if (temperatrue < 0) {
+                // -40°C <= T < 0°C ==> Error <= 0.06%
+                b = 17.966;
+                c = 247.15;
+            }
+
+            var γTRH = Math.Log(humidity / 100d) + ((b * temperatrue) / (c + temperatrue));
+
+            var dP = (c * γTRH) / (b - γTRH);
+            return dP;
         }
     }
 
