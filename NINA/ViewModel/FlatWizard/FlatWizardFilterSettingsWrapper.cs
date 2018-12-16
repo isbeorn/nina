@@ -1,27 +1,25 @@
-﻿using NINA.Model.MyFilterWheel;
+﻿using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Utility.Mediator.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace NINA.ViewModel.FlatWizard {
+namespace NINA.ViewModel.FlatWizard
+{
 
-    public class FlatWizardFilterSettingsWrapper : BaseINPC {
-        private readonly IProfileService profileService;
-
+    internal class FlatWizardFilterSettingsWrapper : BaseINPC, ICameraConsumer {
         private FilterInfo filterInfo;
 
         private bool isChecked = false;
 
         private FlatWizardFilterSettings settings;
 
-        public FlatWizardFilterSettingsWrapper(FilterInfo filterInfo, FlatWizardFilterSettings settings, IProfileService profileService) {
+        private CameraInfo cameraInfo;
+
+        public FlatWizardFilterSettingsWrapper(FilterInfo filterInfo, FlatWizardFilterSettings settings, ICameraMediator cameraMediator) {
             this.filterInfo = filterInfo;
-            this.profileService = profileService;
             this.settings = settings;
+            cameraMediator.RegisterConsumer(this);
             settings.PropertyChanged += Settings_PropertyChanged;
         }
 
@@ -37,13 +35,13 @@ namespace NINA.ViewModel.FlatWizard {
 
         public string HistogramMeanTargetADU {
             get {
-                return (settings.HistogramMeanTarget * Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth)).ToString("0");
+                return (settings.HistogramMeanTarget * Math.Pow(2, cameraInfo.BitDepth)).ToString("0");
             }
         }
 
         public string HistogramToleranceADU {
             get {
-                double histogrammean = settings.HistogramMeanTarget * Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth);
+                double histogrammean = settings.HistogramMeanTarget * Math.Pow(2, cameraInfo.BitDepth);
                 return (histogrammean - histogrammean * settings.HistogramTolerance).ToString("0") + " - " + (histogrammean + histogrammean * settings.HistogramTolerance).ToString("0");
             }
         }
@@ -67,6 +65,13 @@ namespace NINA.ViewModel.FlatWizard {
                 settings = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public void UpdateDeviceInfo(CameraInfo deviceInfo)
+        {
+            cameraInfo = deviceInfo;
+            RaisePropertyChanged(nameof(HistogramMeanTargetADU));
+            RaisePropertyChanged(nameof(HistogramToleranceADU));
         }
 
         private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

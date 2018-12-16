@@ -45,7 +45,6 @@
     <converters:InverseMultiBooleanANDConverter x:Key="InverseMultiBooleanANDConverter" />
     <converters:BooleanAndConverter x:Key="BooleanAndConverter" />
     <converters:PercentageConverter x:Key="PercentageConverter" />
-    <converters:DecimalToSecondsConverter x:Key="DecimalToSecondsConverter" />
     <converters:DoubleToHalfConverter x:Key="DoubleToHalfConverter" />
     <converters:WidthAndValueToWidthConverter x:Key="WidthAndValueToWidthConverter" />
     <converters:GreaterThanToVisiblityConverter x:Key="GreaterThanToVisiblityConverter" />

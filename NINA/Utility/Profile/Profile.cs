@@ -90,7 +90,8 @@ namespace NINA.Utility.Profile {
         }
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            RaisePropertyChanged("Settings");
+            DelayedPropertyChanged("Settings", 1000);
+            //RaisePropertyChanged("Settings");
         }
 
         public Profile(string name) : this() {

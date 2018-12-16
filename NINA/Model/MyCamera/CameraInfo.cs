@@ -54,6 +54,17 @@ namespace NINA.Model.MyCamera {
             set { binxX = value; RaisePropertyChanged(); }
         }
 
+        private int bitDepth;
+
+        public int BitDepth {
+            get {
+                return bitDepth;
+            }
+            set {
+                bitDepth = value; RaisePropertyChanged();
+            }
+        }
+
         private short binY;
 
         public short BinY {

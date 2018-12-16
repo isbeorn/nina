@@ -40,6 +40,7 @@ namespace NINA.ViewModel.FlatWizard {
         private PauseTokenSource pauseTokenSource;
         private FlatWizardFilterSettingsWrapper singleFlatWizardFilterSettings;
         private string targetName;
+        private CameraInfo cameraInfo;
 
         public FlatWizardVM(IProfileService profileService,
                             ICameraMediator cameraMediator,
@@ -78,7 +79,7 @@ namespace NINA.ViewModel.FlatWizard {
                 MaxFlatExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime,
                 MinFlatExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime,
                 StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize
-            }, profileService);
+            }, cameraMediator);
 
             FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
             BinningMode = profileService.ActiveProfile.FlatWizardSettings.BinningMode;
@@ -284,7 +285,7 @@ namespace NINA.ViewModel.FlatWizard {
             List<DataPoint> datapoints = new List<DataPoint>();
             TrendLine trendLine;
 
-            double cameraBitDepthADU = Math.Pow(2, profileService.ActiveProfile.CameraSettings.BitDepth);
+            double cameraBitDepthADU = Math.Pow(2, cameraInfo.BitDepth);
 
             // TODO: refactor this shit
 
@@ -437,11 +438,27 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         private void UpdateFilterWheelsSettings(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings, profileService));
-            Filters.Clear();
-            foreach (var item in newList) {
-                filters.Add(item);
+            var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings, cameraMediator)).ToList();
+            FlatWizardFilterSettingsWrapper[] tempList = new FlatWizardFilterSettingsWrapper[Filters.Count];
+            Filters.CopyTo(tempList, 0);
+            foreach(var item in tempList)
+            {
+                var newlistitem = newList.SingleOrDefault(f => f.Filter == item.Filter);
+                Filters[Filters.IndexOf(item)] = newlistitem;
+                newList.Remove(newlistitem);
             }
+
+            foreach(var item in newList)
+            {
+                Filters.Add(item);
+            }
+
+            while(Filters.Contains(null))
+            {
+                Filters.Remove(null);
+            }
+
+            RaisePropertyChanged("Filters");
         }
 
         private void UpdateProfileValues(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -465,8 +482,7 @@ namespace NINA.ViewModel.FlatWizard {
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
             CameraConnected = deviceInfo.Connected;
             if (CameraConnected) {
-                /*SingleFlatWizardFilterSettings.MinFlatExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime;
-                SingleFlatWizardFilterSettings.MaxFlatExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime;*/
+                cameraInfo = deviceInfo;
             }
         }
 
