@@ -31,13 +31,13 @@ namespace NINA.Utility.Converters {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             double outVal;
-            double.TryParse((string)value, out outVal);
+            double.TryParse(value.ToString(), out outVal);
             return outVal / 2;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             double outVal;
-            double.TryParse((string)value, out outVal);
+            double.TryParse(value.ToString(), out outVal);
             return outVal * 2;
         }
     }

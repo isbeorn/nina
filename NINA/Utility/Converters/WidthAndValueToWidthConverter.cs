@@ -36,8 +36,8 @@ namespace NINA.Utility.Converters {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             double width;
             double value;
-            double.TryParse((string)values[0], out width);
-            double.TryParse((string)values[1], out value);
+            double.TryParse(values[0].ToString(), out width);
+            double.TryParse(values[1].ToString(), out value);
             value = value - 0.5;
             if (value < 0) value *= -1;
             return width * value;

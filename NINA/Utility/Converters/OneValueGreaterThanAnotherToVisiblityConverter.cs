@@ -33,7 +33,7 @@ namespace NINA.Utility.Converters {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             double value0;
             double value1;
-            if (double.TryParse((string)values[0], out value0) && double.TryParse((string)values[1], out value1))
+            if (double.TryParse(values[0].ToString(), out value0) && double.TryParse(values[1].ToString(), out value1))
                 if (value0 > value1) {
                     return Visibility.Visible;
                 } else {
