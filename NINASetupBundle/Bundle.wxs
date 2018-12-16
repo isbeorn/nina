@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+  <Bundle Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Version="1.7.1.1" Manufacturer="N.I.N.A." UpgradeCode="E51BC85C-6DE1-4653-9B0B-3C80754E4C90">
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
+      <bal:WixStandardBootstrapperApplication
+        ThemeFile="$(var.ProjectDir)\RtfTheme.xml"
+        LogoFile="$(var.NINASetup.ProjectDir)\observatory.ico"
+        LicenseFile="$(var.SolutionDir)\RELEASE_NOTES.rtf"
+        ShowVersion="yes" />
+    </BootstrapperApplicationRef>
+    <Chain>
+      <PackageGroupRef Id="NetFx472Redist" />
+      <MsiPackage Id="NINASetup" Name="NINASetup.msi" SourceFile="$(var.NINASetup.TargetDir)" DisplayInternalUI="yes" />
+    </Chain>
+  </Bundle>
+</Wix>

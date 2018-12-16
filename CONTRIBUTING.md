@@ -48,3 +48,9 @@ This project is utilizing a standard git flow where it has the following branche
 	* ToupTek SDK: SDK is available at http://www.touptek.com/upload/download/toupcamsdk.zip
     * Due to licensing of those files, they must not be put into a public repository
 * (Optional) To be able to build the setup projects you need to install [WiX](http://wixtoolset.org/) and their [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=RobMensching.WixToolsetVisualStudio2017Extension)
+
+## NINASetupBundle Prerequisites
+
+* To provide release notes for the setup bundle, there is a build event using "pandoc" that creates an rtf file out of RELEASE_NOTES.md
+* It is expected inside the folder "%LOCALAPPDATA%\Pandoc\pandoc.exe"
+* Setup can be downloaded at https://pandoc.org/installing.html
