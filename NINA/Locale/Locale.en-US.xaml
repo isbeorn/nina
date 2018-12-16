@@ -745,6 +745,9 @@ Calculated HFR: {2}
     <s:String x:Key="LblFlatMinExposureTime">Flat Min Exposure</s:String>
     <s:String x:Key="LblFlatMaxExposureTime">Flat Max Exposure</s:String>
     <s:String x:Key="LblFlatStepSize">Flat Step Size</s:String>
+    <s:String x:Key="LblFlatExposureCalcStart">Starting Exposure Time calculation at {0}</s:String>
+    <s:String x:Key="LblFlatExposureCalcContinue">Mean ADU was {0}, starting Exposure Time calculation at {1}</s:String>
+    <s:String x:Key="LblFlatExposureCalcFinished">Mean ADU is {0} target Exposure Time is {1}</s:String>
     <s:String x:Key="LblCurrentMean">Current Mean</s:String>
     <s:String x:Key="LblBitDepthADU">Bit Depth in ADU</s:String>
     <s:String x:Key="LblEstimatedExposureTime">Estimated Exposure Time</s:String>

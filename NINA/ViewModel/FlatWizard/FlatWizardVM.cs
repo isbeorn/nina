@@ -22,7 +22,6 @@ namespace NINA.ViewModel.FlatWizard {
         private readonly IApplicationStatusMediator applicationStatusMediator;
         private readonly ICameraMediator cameraMediator;
         private readonly IFilterWheelMediator filterWheelMediator;
-        private readonly IFocuserMediator focuserMediator;
         private readonly IImagingMediator imagingMediator;
         private ApplicationStatus _status;
         private BinningMode binningMode;
@@ -30,7 +29,6 @@ namespace NINA.ViewModel.FlatWizard {
         private double calculatedHistogramMean;
         private bool cameraConnected;
         private ObservableCollection<FlatWizardFilterSettingsWrapper> filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
-        private FilterWheelInfo filterWheelInfo;
         private int flatCount;
         private CancellationTokenSource flatSequenceCts;
         private short gain;
@@ -46,7 +44,6 @@ namespace NINA.ViewModel.FlatWizard {
                             ICameraMediator cameraMediator,
                             IFilterWheelMediator filterWheelMediator,
                             IImagingMediator imagingMediator,
-                            IFocuserMediator focuserMediator,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFlatWizard";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ContrastSVG"];
@@ -62,7 +59,6 @@ namespace NINA.ViewModel.FlatWizard {
             imagingMediator.SetAutoStretch(false);
             imagingMediator.SetDetectStars(false);
 
-            this.focuserMediator = focuserMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
             flatSequenceCts = new CancellationTokenSource();
@@ -102,7 +98,7 @@ namespace NINA.ViewModel.FlatWizard {
                             IApplicationStatusMediator applicationStatusMediator,
                             List<FilterInfo> filtersToFocus,
                             int flatCount,
-                            string targetName) : this(profileService, cameraMediator, filterWheelMediator, imagingMediator, focuserMediator, applicationStatusMediator) {
+                            string targetName) : this(profileService, cameraMediator, filterWheelMediator, imagingMediator, applicationStatusMediator) {
             this.targetName = targetName;
             FlatCount = flatCount;
         }
@@ -285,7 +281,7 @@ namespace NINA.ViewModel.FlatWizard {
             bool userCancelled = false;
             double exposureTime = wrapper.Settings.MinFlatExposureTime;
 
-            var status = new ApplicationStatus { Status = "Starting Exposure Time calculation at " + wrapper.Settings.MinFlatExposureTime, Source = Title };
+            var status = new ApplicationStatus { Status = string.Format(Loc.Instance["LblFlatExposureCalcStart"], wrapper.Settings.MinFlatExposureTime), Source = Title };
             progress.Report(status);
             ImageArray iarr = null;
             List<DataPoint> datapoints = new List<DataPoint>();
@@ -319,7 +315,7 @@ namespace NINA.ViewModel.FlatWizard {
                     // if the currentMean is within the tolerance we're done
                     CalculatedExposureTime = exposureTime;
                     CalculatedHistogramMean = currentMean;
-                    progress.Report(new ApplicationStatus() { Status = "Mean ADU is " + CalculatedHistogramMean + ", target Exposure Time is " + CalculatedExposureTime, Source = Title });
+                    progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFlatExposureCalcFinished"], CalculatedHistogramMean, CalculatedExposureTime), Source = Title });
                     break;
                 } else if (currentMean > histogramMeanAdu + histogramMeanAduTolerance) {
                     // if the currentMean is above the mean + tolerance the flats are too bright
@@ -337,7 +333,7 @@ namespace NINA.ViewModel.FlatWizard {
                 } else {
                     // we continue with trying to find the proper exposure time by increasing the next exposureTime step by StepSize
                     exposureTime += wrapper.Settings.StepSize;
-                    progress.Report(new ApplicationStatus() { Status = "Mean ADU was " + currentMean + ", starting Exposure Time calculation at " + exposureTime, Source = Title });
+                    progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFlatExposureCalcContinue"], currentMean, exposureTime), Source = Title });
                 }
 
                 if (datapoints.Count >= 3 && !userCancelled) {
