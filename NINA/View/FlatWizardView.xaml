@@ -136,8 +136,7 @@
                                             <ColumnDefinition Width="1*" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
-                                        <!-- TODO: FIX -->
-                                        <ComboBox Grid.Column="1" ItemsSource="{Binding Filters}" DisplayMemberPath="Filter.Name" SelectedItem="{Binding SelectedFilter}" />
+                                        <ComboBox Grid.Column="1" ItemsSource="{Binding Filters}" DisplayMemberPath="Filter.Name" SelectedItem="{Binding SingleFlatWizardFilterSettings}" />
                                     </Grid>
                                 </Border>
                                 <ContentControl Content="{Binding SingleFlatWizardFilterSettings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

@@ -68,6 +68,8 @@ namespace NINA.ViewModel.FlatWizard {
             flatSequenceCts = new CancellationTokenSource();
             pauseTokenSource = new PauseTokenSource();
 
+            var progress = new Progress<ApplicationStatus>(p => Status = p);
+
             StartFlatSequenceCommand = new AsyncCommand<bool>(() => StartFlatCapture(new Progress<ApplicationStatus>(p => Status = p), pauseTokenSource.Token));
             CancelFlatExposureSequenceCommand = new RelayCommand(CancelFindExposureTime);
             PauseFlatExposureSequenceCommand = new RelayCommand(new Action<object>((obj) => { IsPaused = true; pauseTokenSource.IsPaused = IsPaused; }));
@@ -219,16 +221,6 @@ namespace NINA.ViewModel.FlatWizard {
 
         public RelayCommand ResumeFlatExposureSequenceCommand { get; }
 
-        public FilterInfo SelectedFilter {
-            get {
-                return SingleFlatWizardFilterSettings.Filter;
-            }
-            set {
-                SingleFlatWizardFilterSettings.Filter = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public FlatWizardFilterSettingsWrapper SingleFlatWizardFilterSettings {
             get {
                 return singleFlatWizardFilterSettings;
@@ -247,7 +239,8 @@ namespace NINA.ViewModel.FlatWizard {
             }
             set {
                 _status = value;
-                _status.Source = Title;
+                if (_status.Source == null)
+                    _status.Source = Loc.Instance["LblFlatWizardCapture"];
                 RaisePropertyChanged();
 
                 applicationStatusMediator.StatusUpdate(_status);
@@ -261,7 +254,7 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         private bool EvaluateUserPromptResult(ref double exposureTime, ref List<DataPoint> dataPoints, ref FlatWizardFilterSettingsWrapper settings, FlatWizardUserPromptVM flatsWizardUserPrompt) {
-            WindowService.ShowDialog(flatsWizardUserPrompt, Loc.Instance["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+            WindowService.ShowDialog(flatsWizardUserPrompt, Loc.Instance["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow).Wait();
             if (!flatsWizardUserPrompt.Continue) {
                 flatSequenceCts.Cancel();
                 return true;
@@ -373,7 +366,7 @@ namespace NINA.ViewModel.FlatWizard {
             if (pt.IsPaused) {
                 // if paused we'll wait until user unpaused here
                 IsPaused = true;
-                progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblPaused"] });
+                progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblPaused"], Source = Title });
                 await pt.WaitWhilePausedAsync(ct);
                 IsPaused = false;
             }
@@ -402,7 +395,7 @@ namespace NINA.ViewModel.FlatWizard {
                 CalculatedHistogramMean = 0;
             } catch (OperationCanceledException) {
                 Utility.Notification.Notification.ShowWarning(Loc.Instance["LblFlatSequenceCancelled"]);
-                progress.Report(new ApplicationStatus { Status = Loc.Instance["LblFlatSequenceCancelled"] });
+                progress.Report(new ApplicationStatus { Status = Loc.Instance["LblFlatSequenceCancelled"], Source = Title });
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;
             }
@@ -412,6 +405,9 @@ namespace NINA.ViewModel.FlatWizard {
             Image = null;
             GC.Collect();
             GC.WaitForPendingFinalizers();
+
+            progress.Report(new ApplicationStatus());
+            progress.Report(new ApplicationStatus() { Source = Title });
 
             return true;
         }
@@ -426,7 +422,7 @@ namespace NINA.ViewModel.FlatWizard {
 
                 if (pt.IsPaused) {
                     IsPaused = true;
-                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPaused"] });
+                    progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblPaused"], Source = Title });
                     await pt.WaitWhilePausedAsync(ct);
                     IsPaused = false;
                 }
@@ -438,24 +434,26 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         private void UpdateFilterWheelsSettings(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            var selectedFilter = SingleFlatWizardFilterSettings;
             var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings, cameraMediator)).ToList();
             FlatWizardFilterSettingsWrapper[] tempList = new FlatWizardFilterSettingsWrapper[Filters.Count];
             Filters.CopyTo(tempList, 0);
-            foreach(var item in tempList)
-            {
+            foreach (var item in tempList) {
                 var newlistitem = newList.SingleOrDefault(f => f.Filter == item.Filter);
                 Filters[Filters.IndexOf(item)] = newlistitem;
                 newList.Remove(newlistitem);
             }
 
-            foreach(var item in newList)
-            {
+            foreach (var item in newList) {
                 Filters.Add(item);
             }
 
-            while(Filters.Contains(null))
-            {
+            while (Filters.Contains(null)) {
                 Filters.Remove(null);
+            }
+
+            if (selectedFilter.Filter != null) {
+                SingleFlatWizardFilterSettings = Filters.First(f => f.Filter.Name == selectedFilter.Filter?.Name);
             }
 
             RaisePropertyChanged("Filters");
