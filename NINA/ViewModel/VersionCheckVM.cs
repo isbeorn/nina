@@ -102,7 +102,7 @@ namespace NINA.ViewModel {
             ProcessStartInfo Info = new ProcessStartInfo();
             Info.WindowStyle = ProcessWindowStyle.Hidden;
             Info.CreateNoWindow = true;
-            Info.FileName = _setupLocation + "NINASetup.msi";
+            Info.FileName = _setupLocation + "NINASetupBundle.exe";
             Process.Start(Info);
             System.Windows.Application.Current.Shutdown();
         }
@@ -168,7 +168,7 @@ namespace NINA.ViewModel {
         private async Task<string> GetDownloadUrl(string version) {
             var downloads = await GetBitBucketRecursive<BitBucketDownload>(DOWNLOADSURL);
 
-            var filename = "NINASetup_{0}{1}.zip";
+            var filename = "NINASetupBundle_{0}{1}.zip";
             if (DllLoader.IsX86()) {
                 filename = string.Format(filename, version, "_x86");
             } else {
