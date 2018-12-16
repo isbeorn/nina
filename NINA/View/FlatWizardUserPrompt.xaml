@@ -29,15 +29,15 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="Current Mean" />
+                           Text="{ns:Loc LblCurrentMean}" />
                 <TextBlock Grid.Row="0" Grid.Column="1"
                            Text="{Binding CurrentMean}" />
                 <TextBlock Grid.Row="1" Grid.Column="0"
-                           Text="Maximum Camera Bit Depth" />
+                           Text="{ns:Loc LblBitDepthADU}" />
                 <TextBlock Grid.Row="1" Grid.Column="1"
                            Text="{Binding CameraBitDepth}" />
                 <TextBlock Grid.Row="2" Grid.Column="0"
-                           Text="Rough expected exposure time" />
+                           Text="{ns:Loc LblEstimatedExposureTime}" />
                 <TextBlock Grid.Row="2" Grid.Column="1"
                            Text="{Binding ExpectedExposureTime}" />
             </Grid>

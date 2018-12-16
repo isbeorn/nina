@@ -154,6 +154,8 @@ namespace NINA.ViewModel.FlatWizard {
 
         public RelayCommand CancelFlatExposureSequenceCommand { get; }
 
+        public ObservableCollection<FilterInfo> FilterInfos => new ObservableCollection<FilterInfo>(Filters.Select(f => f.Filter).ToList());
+
         public ObservableCollection<FlatWizardFilterSettingsWrapper> Filters {
             get {
                 return filters;
@@ -220,6 +222,17 @@ namespace NINA.ViewModel.FlatWizard {
         public RelayCommand PauseFlatExposureSequenceCommand { get; }
 
         public RelayCommand ResumeFlatExposureSequenceCommand { get; }
+
+        public FilterInfo SelectedFilter {
+            get {
+                return singleFlatWizardFilterSettings.Filter;
+            }
+            set {
+                singleFlatWizardFilterSettings.Filter = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(SingleFlatWizardFilterSettings));
+            }
+        }
 
         public FlatWizardFilterSettingsWrapper SingleFlatWizardFilterSettings {
             get {
@@ -434,7 +447,7 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         private void UpdateFilterWheelsSettings(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            var selectedFilter = SingleFlatWizardFilterSettings;
+            var selectedFilter = SelectedFilter;
             var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings, cameraMediator)).ToList();
             FlatWizardFilterSettingsWrapper[] tempList = new FlatWizardFilterSettingsWrapper[Filters.Count];
             Filters.CopyTo(tempList, 0);
@@ -452,11 +465,12 @@ namespace NINA.ViewModel.FlatWizard {
                 Filters.Remove(null);
             }
 
-            if (selectedFilter.Filter != null) {
-                SingleFlatWizardFilterSettings = Filters.First(f => f.Filter.Name == selectedFilter.Filter?.Name);
+            if (selectedFilter != null) {
+                SelectedFilter = Filters.FirstOrDefault(f => f.Filter.Name == selectedFilter.Name)?.Filter;
             }
 
             RaisePropertyChanged("Filters");
+            RaisePropertyChanged("FilterInfos");
         }
 
         private void UpdateProfileValues(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

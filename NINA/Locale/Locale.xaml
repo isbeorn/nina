@@ -737,10 +737,14 @@ Calculated HFR: {2}
     <s:String x:Key="LblSecondaryBackground">Secondary Background</s:String>
     <s:String x:Key="LblTertiaryBackground">Tertiary Background</s:String>
     <s:String x:Key="LblFlatWizard">Flat Wizard</s:String>
+    <s:String x:Key="LblFlatWizardCapture">Flat Wizard Capture</s:String>
     <s:String x:Key="LblFlatCount">Flats to take</s:String>
     <s:String x:Key="LblFlatMinExposureTime">Flat Min Exposure</s:String>
     <s:String x:Key="LblFlatMaxExposureTime">Flat Max Exposure</s:String>
     <s:String x:Key="LblFlatStepSize">Flat Step Size</s:String>
+    <s:String x:Key="LblCurrentMean">Current Mean</s:String>
+    <s:String x:Key="LblBitDepthADU">Bit Depth in ADU</s:String>
+    <s:String x:Key="LblEstimatedExposureTime">Estimated Exposure Time</s:String>
     <s:String x:Key="LblFlatHistogramMeanTarget">Histogram Mean Target</s:String>
     <s:String x:Key="LblFlatHistogramTolerance">Mean Tolerance</s:String>
     <s:String x:Key="LblFlatCalculatedExposureTime">Calculated Target Exposure Time</s:String>

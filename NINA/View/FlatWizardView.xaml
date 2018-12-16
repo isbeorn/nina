@@ -129,20 +129,20 @@
                     <TabControl SelectedIndex="{Binding Mode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <TabItem Header="Single Mode">
                             <StackPanel Orientation="Vertical">
-                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5"  Visibility="{Binding Filters, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
                                     <Grid VerticalAlignment="Center" Margin="0,0,0,5">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="1*" />
                                             <ColumnDefinition Width="1*" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
-                                        <ComboBox Grid.Column="1" ItemsSource="{Binding Filters}" DisplayMemberPath="Filter.Name" SelectedItem="{Binding SingleFlatWizardFilterSettings}" />
+                                        <ComboBox Grid.Column="1" ItemsSource="{Binding FilterInfos}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedFilter}" />
                                     </Grid>
                                 </Border>
                                 <ContentControl Content="{Binding SingleFlatWizardFilterSettings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
                         </TabItem>
-                        <TabItem Header="Multi Mode">
+                        <TabItem Header="Multi Mode" Visibility="{Binding Filters, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
                             <ListView ItemsSource="{Binding Filters}">
                                 <ListView.ItemTemplate>
                                     <ItemContainerTemplate>

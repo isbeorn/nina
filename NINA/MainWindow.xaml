@@ -338,6 +338,13 @@
                                     Data="{StaticResource ContrastSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,-4,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text="{ns:Loc LblFlatWizard}" />
                             </Grid>
                         </TabItem.Header>
                         <TabItem.Content>
@@ -348,6 +355,10 @@
                     <TabItem>
                         <TabItem.Header>
                             <Grid Width="50" Height="50">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="10" />
+                                </Grid.RowDefinitions>
                                 <Path
                                     Margin="5"
                                     Data="{StaticResource SequenceSVG}"
