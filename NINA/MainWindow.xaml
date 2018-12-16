@@ -335,7 +335,7 @@
                                 </Grid.RowDefinitions>
                                 <Path
                                     Margin="5"
-                                    Data="{StaticResource ContrastSVG}"
+                                    Data="{StaticResource FlatWizardSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}" />
                                 <TextBlock

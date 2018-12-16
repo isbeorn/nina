@@ -18,10 +18,9 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.FlatWizard {
 
-    internal class FlatWizardVM : DockableVM, ICameraConsumer, IFilterWheelConsumer {
+    internal class FlatWizardVM : DockableVM, ICameraConsumer {
         private readonly IApplicationStatusMediator applicationStatusMediator;
         private readonly ICameraMediator cameraMediator;
-        private readonly IFilterWheelMediator filterWheelMediator;
         private readonly IImagingMediator imagingMediator;
         private ApplicationStatus _status;
         private BinningMode binningMode;
@@ -42,7 +41,6 @@ namespace NINA.ViewModel.FlatWizard {
 
         public FlatWizardVM(IProfileService profileService,
                             ICameraMediator cameraMediator,
-                            IFilterWheelMediator filterWheelMediator,
                             IImagingMediator imagingMediator,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFlatWizard";
@@ -50,9 +48,6 @@ namespace NINA.ViewModel.FlatWizard {
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
-
-            this.filterWheelMediator = filterWheelMediator;
-            this.filterWheelMediator.RegisterConsumer(this);
 
             this.imagingMediator = imagingMediator;
 
@@ -98,7 +93,7 @@ namespace NINA.ViewModel.FlatWizard {
                             IApplicationStatusMediator applicationStatusMediator,
                             List<FilterInfo> filtersToFocus,
                             int flatCount,
-                            string targetName) : this(profileService, cameraMediator, filterWheelMediator, imagingMediator, applicationStatusMediator) {
+                            string targetName) : this(profileService, cameraMediator, imagingMediator, applicationStatusMediator) {
             this.targetName = targetName;
             FlatCount = flatCount;
         }
@@ -278,31 +273,29 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         private async Task<bool> StartFindingExposureTimeSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FlatWizardFilterSettingsWrapper wrapper) {
-            bool userCancelled = false;
+            bool userPromptCancelled = false;
             double exposureTime = wrapper.Settings.MinFlatExposureTime;
 
             var status = new ApplicationStatus { Status = string.Format(Loc.Instance["LblFlatExposureCalcStart"], wrapper.Settings.MinFlatExposureTime), Source = Title };
             progress.Report(status);
-            ImageArray iarr = null;
+            ImageArray imageArray = null;
             List<DataPoint> datapoints = new List<DataPoint>();
             TrendLine trendLine;
 
             double cameraBitDepthADU = Math.Pow(2, cameraInfo.BitDepth);
 
-            // TODO: refactor this shit
-
             do {
                 // capture a flat
                 var sequence = new CaptureSequence(exposureTime, "FLAT", wrapper.Filter, BinningMode, 1);
                 sequence.Gain = Gain;
-                iarr = await imagingMediator.CaptureImageWithoutSavingToHistoryAndThumbnail(sequence, ct, progress, false, true);
+                imageArray = await imagingMediator.CaptureImageWithoutSavingToHistoryAndThumbnail(sequence, ct, progress, false, true);
                 Image = await ImageControlVM.StretchAsync(
-                    iarr.Statistics.Mean,
-                    ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16),
+                    imageArray.Statistics.Mean,
+                    ImageAnalysis.CreateSourceFromArray(imageArray, System.Windows.Media.PixelFormats.Gray16),
                     profileService.ActiveProfile.ImageSettings.AutoStretchFactor);
 
                 // add mean to statistics
-                var currentMean = iarr.Statistics.Mean;
+                var currentMean = imageArray.Statistics.Mean;
                 datapoints.Add(new DataPoint(exposureTime, currentMean));
 
                 // recalculate mean ADU if the user changed it
@@ -328,7 +321,8 @@ namespace NINA.ViewModel.FlatWizard {
                         var flatsWizardUserPrompt = new FlatWizardUserPromptVM(Loc.Instance["LblFlatUserPromptFlatTooBright"],
                             currentMean, cameraBitDepthADU, wrapper, expectedExposureTime
                         );
-                        userCancelled = EvaluateUserPromptResult(ref exposureTime, ref datapoints, ref wrapper, flatsWizardUserPrompt);
+                        userPromptCancelled = EvaluateUserPromptResult(ref exposureTime, ref datapoints, ref wrapper, flatsWizardUserPrompt);
+                        if (userPromptCancelled) break;
                     }
                 } else {
                     // we continue with trying to find the proper exposure time by increasing the next exposureTime step by StepSize
@@ -336,21 +330,21 @@ namespace NINA.ViewModel.FlatWizard {
                     progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFlatExposureCalcContinue"], currentMean, exposureTime), Source = Title });
                 }
 
-                if (datapoints.Count >= 3 && !userCancelled) {
+                if (datapoints.Count >= 3) {
                     // if we have done 3 exposures already and are still not finished
                     // extrapolate the exposure time based on the previous exposures
                     trendLine = new TrendLine(datapoints);
                     exposureTime = (histogramMeanAdu - trendLine.Offset) / trendLine.Slope;
-                    // TODO: possibly break here if calculaeted exposureTime is negative or show the user a dialog
                 }
 
-                if ((exposureTime > wrapper.Settings.MaxFlatExposureTime || exposureTime < wrapper.Settings.MinFlatExposureTime) && !userCancelled) {
+                if ((exposureTime > wrapper.Settings.MaxFlatExposureTime || exposureTime < wrapper.Settings.MinFlatExposureTime)) {
                     // if the new exposure time is above the max exposure time and we are not finished
                     // prompt the user to adjust the flat brightness or mean because the max flat exposure time does not fulfill the requirements for this specific flat set
                     var flatsWizardUserPrompt = new FlatWizardUserPromptVM(Loc.Instance["LblFlatUserPromptFlatTooDim"],
                         currentMean, cameraBitDepthADU, wrapper, exposureTime
                     );
-                    userCancelled = EvaluateUserPromptResult(ref exposureTime, ref datapoints, ref wrapper, flatsWizardUserPrompt);
+                    userPromptCancelled = EvaluateUserPromptResult(ref exposureTime, ref datapoints, ref wrapper, flatsWizardUserPrompt);
+                    if (userPromptCancelled) break;
                 }
 
                 await WaitWhilePaused(progress, pt, ct);
@@ -360,15 +354,15 @@ namespace NINA.ViewModel.FlatWizard {
                 GC.WaitForPendingFinalizers();
                 // throw a cancellation if user requested a cancel as well
                 ct.ThrowIfCancellationRequested();
-            } while (userCancelled == false);
+            } while (userPromptCancelled == false);
 
-            if (userCancelled) {
-                // reset values just in case
+            if (userPromptCancelled) {
+                // reset values when cancelled
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;
             }
 
-            return userCancelled;
+            return userPromptCancelled;
         }
 
         private async Task<PauseToken> WaitWhilePaused(IProgress<ApplicationStatus> progress, PauseToken pt, CancellationToken ct) {
@@ -392,10 +386,10 @@ namespace NINA.ViewModel.FlatWizard {
                     await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings);
                     await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings.Filter, targetName);
                 } else {
-                    foreach (var filter in Filters.Where(f => f.IsChecked)) {
-                        await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filter);
-                        await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, filter.Filter, targetName);
-                        filter.IsChecked = false;
+                    foreach (var filterSettings in Filters.Where(f => f.IsChecked)) {
+                        await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
+                        await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, filterSettings.Filter, targetName);
+                        filterSettings.IsChecked = false;
                         CalculatedExposureTime = 0;
                         CalculatedHistogramMean = 0;
                     }
@@ -492,10 +486,6 @@ namespace NINA.ViewModel.FlatWizard {
             if (CameraConnected) {
                 cameraInfo = deviceInfo;
             }
-        }
-
-        public void UpdateDeviceInfo(FilterWheelInfo deviceInfo) {
-            filterWheelInfo = deviceInfo;
         }
     }
 }
