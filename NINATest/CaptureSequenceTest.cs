@@ -1,4 +1,27 @@
-﻿using NINA.Model;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NUnit.Framework;
@@ -62,6 +85,28 @@ namespace NINATest {
         }
 
         [Test]
+        public void GetNextSequence_ModeStandardOneDisabled_Initial() {
+            //Arrange
+            var seq = new CaptureSequence();
+            var seq2 = new CaptureSequence() { Enabled = false };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.STANDARD;
+            l.Add(seq);
+            l.Add(seq2);
+
+            //Act
+            var nextSeq = l.Next();
+
+            //Assert
+            Assert.AreEqual(string.Empty, l.TargetName, "Targetname");
+            Assert.AreSame(seq, nextSeq);
+            Assert.AreEqual(1, l.Count);
+            Assert.AreSame(seq, l.ActiveSequence);
+            Assert.AreEqual(1, l.ActiveSequenceIndex);
+            Assert.AreEqual(0, l.Delay);
+        }
+
+        [Test]
         public void GetNextSequence_ModeStandard_NextSequenceSelected() {
             //Arrange
             var seq = new CaptureSequence() { TotalExposureCount = 2 };
@@ -86,11 +131,35 @@ namespace NINATest {
         }
 
         [Test]
+        public void GetNextSequence_ModeStandardOneDisabled_NextSequenceSelectedShouldBeEmpty() {
+            //Arrange
+            var seq = new CaptureSequence() { TotalExposureCount = 2 };
+            var seq2 = new CaptureSequence() { Enabled = false };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.STANDARD;
+            l.Add(seq);
+            l.Add(seq2);
+
+            //Act
+            var nextSeq = l.Next();
+            nextSeq = l.Next();
+            nextSeq = l.Next();
+
+            //Assert
+            Assert.AreEqual(string.Empty, l.TargetName, "Targetname");
+            Assert.AreSame(null, nextSeq);
+            Assert.AreEqual(1, l.Count);
+            Assert.AreSame(null, l.ActiveSequence);
+            Assert.AreEqual(-1, l.ActiveSequenceIndex);
+            Assert.AreEqual(0, l.Delay);
+        }
+
+        [Test]
         public void GetNextSequence_ModeStandard_AllFinished() {
             //Arrange
-            var seq = new CaptureSequence() { ProgressExposureCount = 5 };
-            var seq2 = new CaptureSequence() { ProgressExposureCount = 5 };
-            var seq3 = new CaptureSequence() { ProgressExposureCount = 5 };
+            var seq = new CaptureSequence() { TotalExposureCount = 5 };
+            var seq2 = new CaptureSequence() { TotalExposureCount = 5 };
+            var seq3 = new CaptureSequence() { TotalExposureCount = 5 };
             var l = new CaptureSequenceList();
             l.Mode = SequenceMode.STANDARD;
 
@@ -110,6 +179,33 @@ namespace NINATest {
         }
 
         [Test]
+        public void GetNextSequence_ModeStandardOneDisabled_AllFinished() {
+            //Arrange
+            var seq = new CaptureSequence() { TotalExposureCount = 5 };
+            var seq2 = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 5, Enabled = false };
+            var seq3 = new CaptureSequence() { TotalExposureCount = 5 };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.STANDARD;
+
+            l.Add(seq);
+            l.Add(seq2);
+            l.Add(seq3);
+
+            //Act
+            CaptureSequence actualSeq;
+            while ((actualSeq = l.Next()) != null) {
+            }
+
+            //Assert
+            Assert.AreEqual(null, l.ActiveSequence);
+            Assert.AreEqual(-1, l.ActiveSequenceIndex);
+            Assert.AreEqual(1, l.Items.Where(x => x.ProgressExposureCount < x.TotalExposureCount).Count());
+            Assert.AreEqual(5, seq.ProgressExposureCount);
+            Assert.AreEqual(0, seq2.ProgressExposureCount);
+            Assert.AreEqual(5, seq3.ProgressExposureCount);
+        }
+
+        [Test]
         public void GetNextSequence_ModeStandard_EmptyListNextNull() {
             //Arrange
             var l = new CaptureSequenceList();
@@ -125,10 +221,45 @@ namespace NINATest {
         }
 
         [Test]
+        public void GetNextSequence_ModeStandardOneDisabled_EmptyListNextNull() {
+            //Arrange
+            var seq = new CaptureSequence() { TotalExposureCount = 5, Enabled = false };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.STANDARD;
+
+            l.Add(seq);
+
+            //Act
+            var actual = l.Next();
+
+            //Assert
+            Assert.AreSame(null, actual);
+            Assert.AreEqual(null, l.ActiveSequence);
+            Assert.AreEqual(-1, l.ActiveSequenceIndex);
+        }
+
+        [Test]
         public void GetNextSequence_ModeRotate_EmptyListNextNull() {
             //Arrange
             var l = new CaptureSequenceList();
             l.Mode = SequenceMode.ROTATE;
+
+            //Act
+            var actual = l.Next();
+
+            //Assert
+            Assert.AreSame(null, actual);
+            Assert.AreEqual(null, l.ActiveSequence);
+            Assert.AreEqual(-1, l.ActiveSequenceIndex);
+        }
+
+        [Test]
+        public void GetNextSequence_ModeRotateOneDisabled_EmptyListNextNull() {
+            //Arrange
+            var seq = new CaptureSequence() { TotalExposureCount = 5, Enabled = false };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.ROTATE;
+            l.Add(seq);
 
             //Act
             var actual = l.Next();
@@ -166,6 +297,38 @@ namespace NINATest {
         }
 
         [Test]
+        public void GetNextSequence_ModeRotateOneDisabled_NextSequenceSelected() {
+            //Arrange
+            var seq = new CaptureSequence() { TotalExposureCount = 5 };
+            var seq2 = new CaptureSequence() { TotalExposureCount = 5, Enabled = false };
+            var seq3 = new CaptureSequence() { TotalExposureCount = 5, Enabled = false };
+            var seq4 = new CaptureSequence() { TotalExposureCount = 5 };
+            var seq5 = new CaptureSequence() { TotalExposureCount = 5, Enabled = false };
+            var seq6 = new CaptureSequence() { TotalExposureCount = 5 };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.ROTATE;
+
+            l.Add(seq);
+            l.Add(seq2);
+            l.Add(seq3);
+            l.Add(seq4);
+            l.Add(seq5);
+            l.Add(seq6);
+
+            //Act
+            var actualFirst = l.Next();
+            var actualSecond = l.Next();
+            var actualThird = l.Next();
+            var actualFourth = l.Next();
+
+            //Assert
+            Assert.AreSame(seq, actualFirst, "First wrong");
+            Assert.AreSame(seq4, actualSecond, "Second wrong");
+            Assert.AreSame(seq6, actualThird, "Third wrong");
+            Assert.AreSame(seq, actualFourth, "Fourth wrong");
+        }
+
+        [Test]
         public void GetNextSequence_ModeRotate_FirstEmptySecondSelected() {
             //Arrange
             var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 0 };
@@ -183,6 +346,26 @@ namespace NINATest {
 
             //Assert
             Assert.AreSame(seq2, actual);
+        }
+
+        [Test]
+        public void GetNextSequence_ModeRotateOneDisabled_FirstEmptySecondDisabledThirdSelected() {
+            //Arrange
+            var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 0 };
+            var seq2 = new CaptureSequence() { ProgressExposureCount = 5, TotalExposureCount = 10, Enabled = false };
+            var seq3 = new CaptureSequence() { ProgressExposureCount = 5, TotalExposureCount = 7 };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.ROTATE;
+
+            l.Add(seq);
+            l.Add(seq2);
+            l.Add(seq3);
+
+            //Act
+            var actual = l.Next();
+
+            //Assert
+            Assert.AreSame(seq3, actual);
         }
 
         [Test]
@@ -207,6 +390,31 @@ namespace NINATest {
             Assert.AreEqual(null, l.ActiveSequence);
             Assert.AreEqual(-1, l.ActiveSequenceIndex);
             Assert.AreEqual(0, l.Items.Where(x => x.ProgressExposureCount < x.TotalExposureCount || x.ProgressExposureCount > x.TotalExposureCount).Count());
+        }
+
+        [Test]
+        public void GetNextSequence_ModeRotateOneDisabled_AllFinished() {
+            //Arrange
+            var seq = new CaptureSequence() { TotalExposureCount = 5 };
+            var seq2 = new CaptureSequence() { TotalExposureCount = 5, Enabled = false };
+            var seq3 = new CaptureSequence() { TotalExposureCount = 5 };
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.ROTATE;
+
+            l.Add(seq);
+            l.Add(seq2);
+            l.Add(seq3);
+
+            //Act
+            CaptureSequence actualSeq;
+            while ((actualSeq = l.Next()) != null) {
+            }
+
+            //Assert
+            Assert.AreEqual(null, l.ActiveSequence);
+            Assert.AreEqual(-1, l.ActiveSequenceIndex);
+            Assert.AreEqual(1, l.Items.Where(x => x.ProgressExposureCount < x.TotalExposureCount || x.ProgressExposureCount > x.TotalExposureCount).Count());
+            Assert.AreEqual(0, seq2.ProgressExposureCount);
         }
 
         [Test]
@@ -253,6 +461,25 @@ namespace NINATest {
         }
 
         [Test]
+        public void DisableSequenceDuringPause_NextItemSelected() {
+            var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 5 };
+            var seq2 = new CaptureSequence() { TotalExposureCount = 10 };
+
+            var l = new CaptureSequenceList();
+            l.Add(seq);
+
+            l.Next();
+            l.Next();
+            l.Next();
+
+            l.Items[l.ActiveSequenceIndex - 1].Enabled = false;
+
+            l.Add(seq2);
+
+            Assert.AreEqual(seq2, l.ActiveSequence);
+        }
+
+        [Test]
         public void DeleteSequenceDuringPause_ModeRotate_NextItemSelected() {
             var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 5 };
             var seq2 = new CaptureSequence() { TotalExposureCount = 10 };
@@ -273,6 +500,26 @@ namespace NINATest {
         }
 
         [Test]
+        public void DisableSequenceDuringPause_ModeRotate_NextItemSelected() {
+            var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 5 };
+            var seq2 = new CaptureSequence() { TotalExposureCount = 10 };
+
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.ROTATE;
+            l.Add(seq);
+
+            l.Next();
+            l.Next();
+            l.Next();
+
+            l.Items[l.ActiveSequenceIndex - 1].Enabled = false;
+
+            l.Add(seq2);
+
+            Assert.AreEqual(seq2, l.ActiveSequence);
+        }
+
+        [Test]
         public void AddFirstSequence_ActiveSequenceSet() {
             var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 5 };
 
@@ -280,6 +527,17 @@ namespace NINATest {
             l.Add(seq);
 
             Assert.AreEqual(seq, l.ActiveSequence);
+        }
+
+        [Test]
+        public void AddFirstSequenceAfterOneDisabledExists_ActiveSequenceSet() {
+            var seq = new CaptureSequence() { ProgressExposureCount = 0, TotalExposureCount = 5, Enabled = false };
+            var seq2 = new CaptureSequence() { TotalExposureCount = 10 };
+            var l = new CaptureSequenceList();
+            l.Add(seq);
+            l.Add(seq2);
+
+            Assert.AreEqual(seq2, l.ActiveSequence);
         }
 
         [Test]
@@ -412,6 +670,7 @@ namespace NINATest {
             Assert.AreEqual(CaptureSequence.ImageTypes.LIGHT, seq.ImageType, "ImageType value not as expected");
             Assert.AreEqual(0, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
             Assert.AreEqual(1, seq.TotalExposureCount, "TotalExposureCount value not as expected");
+            Assert.AreEqual(true, seq.Enabled, "Enabled value not as expected");
         }
 
         [Test]
@@ -437,6 +696,7 @@ namespace NINATest {
             Assert.AreEqual(imageType, seq.ImageType, "ImageType value not as expected");
             Assert.AreEqual(0, seq.ProgressExposureCount, "ProgressExposureCount value not as expected");
             Assert.AreEqual(exposureCount, seq.TotalExposureCount, "TotalExposureCount value not as expected");
+            Assert.AreEqual(true, seq.Enabled, "Enabled value not as expected");
         }
 
         [Test]

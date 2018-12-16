@@ -1,4 +1,27 @@
-﻿using NINA.Model;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Model.MyFocuser;
 using NINA.Utility;
 using NINA.Utility.Mediator;
@@ -59,7 +82,7 @@ namespace NINA.ViewModel {
         public async Task<int> MoveFocuser(int position) {
             _cancelMove = new CancellationTokenSource();
             int pos = -1;
-            await Task.Run(() => {
+            await Task.Run(async () => {
                 try {
                     var tempComp = false;
                     if (Focuser.TempCompAvailable && Focuser.TempComp) {
@@ -69,7 +92,7 @@ namespace NINA.ViewModel {
                     while (Focuser.Position != position) {
                         FocuserInfo.IsMoving = true;
                         _cancelMove.Token.ThrowIfCancellationRequested();
-                        Focuser.Move(position);
+                        await Focuser.Move(position, _cancelMove.Token);
                     }
                     FocuserInfo.Position = position;
                     pos = position;
@@ -306,15 +329,12 @@ namespace NINA.ViewModel {
 
             Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoFocuser"]));
 
-            var ascomDevices = new ASCOM.Utilities.Profile();
-
-            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Focuser")) {
-                try {
-                    AscomFocuser focuser = new AscomFocuser(device.Key, device.Value);
+            try {
+                foreach (IFocuser focuser in ASCOMInteraction.GetFocusers(profileService)) {
                     Devices.Add(focuser);
-                } catch (Exception) {
-                    //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             DetermineSelectedDevice(profileService.ActiveProfile.FocuserSettings.Id);

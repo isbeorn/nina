@@ -1,4 +1,27 @@
-﻿using EDSDKLib;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using EDSDKLib;
 using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
@@ -305,6 +328,11 @@ namespace NINA.ViewModel {
                         if (CameraInfo.Connected) { Disconnect(); }
                         CameraInfo.Connected = false;
                         return false;
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        if (CameraInfo.Connected) { Disconnect(); }
+                        CameraInfo.Connected = false;
+                        return false;
                     }
                 } else {
                     return false;
@@ -594,6 +622,17 @@ namespace NINA.ViewModel {
                 Logger.Error(ex);
             }
 
+            /* Altair */
+            try {
+                Logger.Trace("Adding Altair Cameras");
+                foreach (var instance in Altair.AltairCam.EnumV2()) {
+                    var cam = new AltairCamera(instance, profileService);
+                    Devices.Add(cam);
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
             /* Atik */
             try {
                 Logger.Trace("Adding Atik Cameras");
@@ -610,15 +649,8 @@ namespace NINA.ViewModel {
 
             /* ASCOM */
             try {
-                var ascomDevices = new ASCOM.Utilities.Profile();
-                foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
-                    try {
-                        AscomCamera cam = new AscomCamera(device.Key, device.Value + " (ASCOM)", profileService);
-                        Logger.Trace(string.Format("Adding {0}", cam.Name));
-                        Devices.Add(cam);
-                    } catch (Exception) {
-                        //only add cameras which are supported. e.g. x86 drivers will not work in x64
-                    }
+                foreach (ICamera cam in ASCOMInteraction.GetCameras(profileService)) {
+                    Devices.Add(cam);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -650,6 +682,17 @@ namespace NINA.ViewModel {
             /* NIKON */
             try {
                 Devices.Add(new NikonCamera(profileService, telescopeMediator));
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            /* ToupTek */
+            try {
+                Logger.Trace("Adding ToupTek Cameras");
+                foreach (var instance in ToupTek.ToupCam.EnumV2()) {
+                    var cam = new ToupTekCamera(instance, profileService);
+                    Devices.Add(cam);
+                }
             } catch (Exception ex) {
                 Logger.Error(ex);
             }

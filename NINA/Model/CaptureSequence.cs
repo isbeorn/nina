@@ -1,4 +1,27 @@
-﻿using NINA.Utility;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -44,14 +67,14 @@ namespace NINA.Model {
 
         public int Count {
             get {
-                return Items.Count;
+                return Items.Where(i => i.Enabled).Count();
             }
         }
 
         public void Add(CaptureSequence s) {
             Items.Add(s);
-            if (Items.Count == 1) {
-                ActiveSequence = Items.First();
+            if (Items.Count(i => i.Enabled) == 1) {
+                ActiveSequence = Items.First(i => i.Enabled);
             }
         }
 
@@ -118,6 +141,7 @@ namespace NINA.Model {
         public void SetSequenceTarget(DeepSkyObject dso) {
             TargetName = dso.Name;
             Coordinates = dso.Coordinates;
+            Rotation = dso.Rotation;
             this.DSO = dso;
         }
 
@@ -179,33 +203,33 @@ namespace NINA.Model {
             CaptureSequence seq = null;
 
             if (Mode == SequenceMode.STANDARD) {
-                seq = ActiveSequence ?? Items.First();
-                if (seq.ProgressExposureCount == seq.TotalExposureCount) {
+                seq = ActiveSequence ?? Items.FirstOrDefault(i => i.Enabled);
+                if (seq?.ProgressExposureCount == seq?.TotalExposureCount) {
                     //No exposures remaining. Get next Sequence
                     var idx = Items.IndexOf(seq) + 1;
-                    if (idx < Items.Count) {
-                        seq = Items[idx];
+                    seq = Items.Skip(idx).Where(i => i.Enabled).FirstOrDefault();
+                    if (seq != null) {
                         ActiveSequence = seq;
-                        return this.Next();
-                    } else {
-                        seq = null;
+                        return Next();
                     }
                 }
             } else if (Mode == SequenceMode.ROTATE) {
                 //Check if all sequences are done
-                if (Items.Count == Items.Where(x => x.ProgressExposureCount == x.TotalExposureCount).Count()) {
+                if (Items.Where(x => x.Enabled).Count() == Items.Where(x => x.ProgressExposureCount == x.TotalExposureCount && x.Enabled).Count()) {
                     //All sequences done
                     ActiveSequence = null;
                     return null;
                 }
 
                 seq = ActiveSequence;
-                if (seq == Items.FirstOrDefault() && seq?.ProgressExposureCount == 0 && seq?.TotalExposureCount > 0) {
+                if (seq == Items.FirstOrDefault(i => i.Enabled) && seq?.ProgressExposureCount == 0 && seq?.TotalExposureCount > 0) {
                     //first sequence active
-                    seq = Items.First();
+                    seq = Items.First(i => i.Enabled);
                 } else {
-                    var idx = (Items.IndexOf(seq) + 1) % Items.Count;
-                    seq = Items[idx];
+                    do {
+                        var idx = (Items.IndexOf(seq) + 1) % Items.Count;
+                        seq = Items[idx];
+                    } while (!seq.Enabled);
                 }
 
                 if (seq.ProgressExposureCount == seq.TotalExposureCount) {
@@ -320,6 +344,19 @@ namespace NINA.Model {
             }
         }
 
+        private double rotation;
+
+        [XmlAttribute(nameof(Rotation))]
+        public double Rotation {
+            get {
+                return rotation;
+            }
+            set {
+                rotation = value;
+                RaiseCoordinatesChanged();
+            }
+        }
+
         private void RaiseCoordinatesChanged() {
             RaisePropertyChanged(nameof(Coordinates));
             RaisePropertyChanged(nameof(RAHours));
@@ -331,6 +368,7 @@ namespace NINA.Model {
             AltitudeVisible = true;
             DSO.Name = this.TargetName;
             DSO.Coordinates = Coordinates;
+            DSO.Rotation = Rotation;
         }
 
         private DeepSkyObject _dso;
@@ -595,6 +633,7 @@ namespace NINA.Model {
             TotalExposureCount = exposureCount;
             DitherAmount = 1;
             Gain = -1;
+            Enabled = true;
         }
 
         private double _exposureTime;
@@ -602,6 +641,17 @@ namespace NINA.Model {
         private MyFilterWheel.FilterInfo _filterType;
         private MyCamera.BinningMode _binning;
         private int _progressExposureCount;
+
+        [XmlElement(nameof(Enabled))]
+        public bool Enabled {
+            get {
+                return _enabled;
+            }
+            set {
+                _enabled = value;
+                RaisePropertyChanged();
+            }
+        }
 
         [XmlElement(nameof(ExposureTime))]
         public double ExposureTime {
@@ -730,6 +780,7 @@ namespace NINA.Model {
         }
 
         private int _ditherAmount;
+        private bool _enabled = true;
 
         [XmlElement(nameof(DitherAmount))]
         public int DitherAmount {

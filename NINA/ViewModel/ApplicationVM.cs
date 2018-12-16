@@ -1,4 +1,27 @@
-﻿using NINA.Utility;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
@@ -95,22 +118,42 @@ namespace NINA.ViewModel {
         }
 
         public void InitAvalonDockLayout() {
-            DockManagerVM.Documents.Add(ImagingVM.ImageControl);
-            DockManagerVM.Anchorables.Add(ThumbnailVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl);
             DockManagerVM.Anchorables.Add(CameraVM);
-            DockManagerVM.Anchorables.Add(TelescopeVM);
-            DockManagerVM.Anchorables.Add(PlatesolveVM);
-            DockManagerVM.Anchorables.Add(PolarAlignVM);
-            DockManagerVM.Anchorables.Add(WeatherDataVM);
-            DockManagerVM.Anchorables.Add(GuiderVM);
-            DockManagerVM.Anchorables.Add(SeqVM);
             DockManagerVM.Anchorables.Add(FilterWheelVM);
             DockManagerVM.Anchorables.Add(FocuserVM);
-            DockManagerVM.Anchorables.Add(ImagingVM);
-            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
-            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
-            DockManagerVM.Anchorables.Add(AutoFocusVM);
             DockManagerVM.Anchorables.Add(RotatorVM);
+            DockManagerVM.Anchorables.Add(TelescopeVM);
+            DockManagerVM.Anchorables.Add(GuiderVM);
+
+            DockManagerVM.Anchorables.Add(ImagingVM);
+            DockManagerVM.Anchorables.Add(SeqVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
+
+            DockManagerVM.Anchorables.Add(ThumbnailVM);
+            DockManagerVM.Anchorables.Add(WeatherDataVM);
+            DockManagerVM.Anchorables.Add(PlatesolveVM);
+            DockManagerVM.Anchorables.Add(PolarAlignVM);
+            DockManagerVM.Anchorables.Add(AutoFocusVM);
+
+            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl);
+            DockManagerVM.AnchorableInfoPanels.Add(CameraVM);
+            DockManagerVM.AnchorableInfoPanels.Add(FilterWheelVM);
+            DockManagerVM.AnchorableInfoPanels.Add(FocuserVM);
+            DockManagerVM.AnchorableInfoPanels.Add(RotatorVM);
+            DockManagerVM.AnchorableInfoPanels.Add(TelescopeVM);
+            DockManagerVM.AnchorableInfoPanels.Add(GuiderVM);
+            DockManagerVM.AnchorableInfoPanels.Add(SeqVM);
+            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgStatisticsVM);
+            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgHistoryVM);
+
+            DockManagerVM.AnchorableTools.Add(ImagingVM);
+            DockManagerVM.AnchorableTools.Add(ThumbnailVM);
+            DockManagerVM.AnchorableTools.Add(WeatherDataVM);
+            DockManagerVM.AnchorableTools.Add(PlatesolveVM);
+            DockManagerVM.AnchorableTools.Add(PolarAlignVM);
+            DockManagerVM.AnchorableTools.Add(AutoFocusVM);
         }
 
         public void ChangeTab(ApplicationTab tab) {
@@ -120,6 +163,12 @@ namespace NINA.ViewModel {
         public string Version {
             get {
                 return Utility.Utility.Version;
+            }
+        }
+
+        public string Title {
+            get {
+                return Utility.Utility.Title;
             }
         }
 

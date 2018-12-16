@@ -1,4 +1,26 @@
-using ASCOM.DeviceInterface;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
 using Nikon;
 using NINA.Utility;
 using NINA.Utility.Enum;
@@ -70,6 +92,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int BitDepth {
+            get {
+                return (int)profileService.ActiveProfile.CameraSettings.BitDepth;
+            }
+        }
+
         public void StartLiveView() {
             _camera.LiveViewEnabled = true;
             LiveViewEnabled = true;
@@ -96,7 +124,7 @@ namespace NINA.Model.MyCamera {
             ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
             bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
 
             memStream.Close();
             memStream.Dispose();
@@ -583,7 +611,7 @@ namespace NINA.Model.MyCamera {
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            var iarr = await converter.ConvertToImageArray(_memoryStream, token, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            var iarr = await converter.ConvertToImageArray(_memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, calculateStatistics, token);
             iarr.RAWType = "nef";
             _memoryStream.Dispose();
             _memoryStream = null;

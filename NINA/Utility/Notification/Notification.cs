@@ -1,4 +1,27 @@
-﻿using System;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +34,7 @@ using System.Windows.Threading;
 using ToastNotifications;
 using ToastNotifications.Core;
 using ToastNotifications.Lifetime;
+using ToastNotifications.Lifetime.Clear;
 using ToastNotifications.Position;
 using ToastNotifications.Utilities;
 
@@ -40,7 +64,7 @@ namespace NINA.Utility.Notification {
                 cfg.PositionProvider = new PrimaryScreenPositionProvider(
                     corner: Corner.BottomRight,
                     offsetX: 1,
-                    offsetY: 40);
+                    offsetY: 1);
 
                 cfg.LifetimeSupervisor = new CustomLifetimeSupervisor();
             });
@@ -305,12 +329,19 @@ namespace NINA.Utility.Notification {
             }
         }
 
+        public void ClearMessages(IClearStrategy clearStrategy) {
+            var notifications = clearStrategy.GetNotificationsToRemove(_notifications);
+            foreach (var notification in notifications) {
+                CloseNotification(notification);
+            }
+        }
+
         public event EventHandler<ShowNotificationEventArgs> ShowNotificationRequested;
 
         public event EventHandler<CloseNotificationEventArgs> CloseNotificationRequested;
     }
 
-    public class CustomNotificationsList : ConcurrentDictionary<int, NotificationMetaData> {
+    public class CustomNotificationsList : NotificationsList {
         private int _id = 0;
 
         public NotificationMetaData Add(INotification notification, bool neverEnding) {
