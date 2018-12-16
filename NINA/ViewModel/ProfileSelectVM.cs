@@ -39,7 +39,7 @@ namespace NINA.ViewModel {
         public ProfileSelectVM(IProfileService profileService) {
             this.profileService = profileService;
             Profiles = profileService.Profiles.ProfileList;
-            ActiveProfile = profileService.ActiveProfile;
+            _tempProfile = profileService.ActiveProfile;
             _defaultProfile = ActiveProfile;
         }
 
