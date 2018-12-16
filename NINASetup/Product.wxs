@@ -1193,6 +1193,9 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="External_x64_ToupTek_files" Directory="External_x64_ToupTek">
+      <Component Win64="$(var.Win64)" Id="External_x64_ToupTek_toupcam.lib" Guid="C7D109E4-C10E-43D3-BD38-A759BF224116">
+        <File Id="External_x64_ToupTek_toupcam.lib" Name="toupcam.lib" Source="$(var.NINA_TargetDir)External\x64\ToupTek\toupcam.lib" />
+      </Component>
       <Component Win64="$(var.Win64)" Id="External_x64_ToupTek_toupcam.dll" Guid="791c2974-a774-4723-a7cd-b808a1b2e1e9">
         <File Id="External_x64_ToupTek_toupcam.dll" Name="toupcam.dll" Source="$(var.NINA_TargetDir)External\x64\ToupTek\toupcam.dll" />
       </Component>
@@ -1200,6 +1203,9 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="External_x86_ToupTek_files" Directory="External_x86_ToupTek">
+      <Component Win64="$(var.Win64)" Id="External_x86_ToupTek_toupcam.lib" Guid="A3C9CF4F-69C2-421E-865B-8972C6C0704C">
+        <File Id="External_x86_ToupTek_toupcam.lib" Name="toupcam.lib" Source="$(var.NINA_TargetDir)External\x86\ToupTek\toupcam.lib" />
+      </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_ToupTek_updatefw.exe" Guid="968ed6dc-9379-485e-8c7e-7274bd589293">
         <File Id="External_x86_ToupTek_updatefw.exe" Name="updatefw.exe" Source="$(var.NINA_TargetDir)External\x86\ToupTek\updatefw.exe" />
       </Component>
