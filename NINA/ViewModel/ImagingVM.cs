@@ -283,7 +283,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress,
-            bool bSave = false, string targetname = "", bool calculateStatistics = true, bool bSaveToStatistics = true, bool bSaveToHistory = true) {
+            bool bSave = false, string targetname = "", bool calculateStatistics = true, bool addtoStatistics = true, bool addToHistory = true) {
             //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
             await semaphoreSlim.WaitAsync(token);
@@ -364,7 +364,7 @@ namespace NINA.ViewModel {
                         TargetName = targetname,
                         RecordedRMS = rms
                     };
-                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters, bSaveToStatistics, bSaveToHistory);
+                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters, addtoStatistics, addToHistory);
 
                     //Wait for dither to finish. Runs in parallel to download and save.
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
