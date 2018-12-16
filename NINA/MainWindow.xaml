@@ -1,4 +1,21 @@
-﻿<Window
+﻿<!--
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+<Window
     x:Class="NINA.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,7 +26,7 @@
     xmlns:util="clr-namespace:NINA.Utility"
     xmlns:view="clr-namespace:NINA.View"
     Name="ThisWindow"
-    Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy"
+    Title="{Binding Title}"
     Background="{StaticResource BackgroundBrush}"
     DataContext="{StaticResource AppVM}"
     Icon="/NINA;component/Resources/observatory.png"
@@ -36,25 +53,39 @@
                     <TabItem>
                         <TabItem.Header>
                             <Grid>
-                                <Grid Width="50" Height="50">
-                                    <Path
-                                        Margin="5"
-                                        Data="{StaticResource CameraSVG}"
-                                        Stretch="Uniform"
-                                        Style="{StaticResource TabItemPath}" />
-                                </Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="10" />
+                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid Width="50" Height="50">
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource CameraSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource TabItemPath}" />
+                                    </Grid>
 
-                                <Grid Visibility="{Binding CameraVM.Cam, Converter={StaticResource NullToVisibilityConverter}}">
-                                    <Path
-                                        Width="10"
-                                        Height="10"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Bottom"
-                                        Data="{StaticResource PowerSVG}"
-                                        Stretch="Uniform"
-                                        Style="{StaticResource TabItemPath}"
-                                        Visibility="{Binding CameraVM.CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                    <Grid Visibility="{Binding CameraVM.Cam, Converter={StaticResource NullToVisibilityConverter}}">
+                                        <Path
+                                            Width="10"
+                                            Height="10"
+                                            Margin="0,0,0,4"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Data="{StaticResource PowerSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource TabItemPath}"
+                                            Visibility="{Binding CameraVM.CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                    </Grid>
                                 </Grid>
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,-4,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text="{ns:Loc LblCamera}" />
                             </Grid>
                         </TabItem.Header>
                         <TabItem.Content>
@@ -63,72 +94,85 @@
                     </TabItem>
                     <TabItem>
                         <TabItem.Header>
-                            <UniformGrid Height="50" Columns="3">
-                                <Grid>
-                                    <Grid Width="25" Height="25">
-                                        <Path
-                                            Margin="2.5"
-                                            Data="{StaticResource FWSVG}"
-                                            Stretch="Uniform"
-                                            Style="{StaticResource TabItemPath}" />
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="10" />
+                                </Grid.RowDefinitions>
+                                <UniformGrid Height="50" Columns="3">
+                                    <Grid>
+                                        <Grid Width="25" Height="25">
+                                            <Path
+                                                Margin="2.5"
+                                                Data="{StaticResource FWSVG}"
+                                                Stretch="Uniform"
+                                                Style="{StaticResource TabItemPath}" />
+                                        </Grid>
+
+                                        <Grid Margin="0,0,0,5" Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}">
+                                            <Path
+                                                Width="10"
+                                                Height="10"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Bottom"
+                                                Data="{StaticResource PowerSVG}"
+                                                Stretch="Uniform"
+                                                Style="{StaticResource TabItemPath}"
+                                                Visibility="{Binding FilterWheelVM.FilterWheelInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        </Grid>
+                                    </Grid>
+                                    <Grid>
+                                        <Grid Width="25" Height="25">
+                                            <Path
+                                                Margin="2.5"
+                                                Data="{StaticResource FocusSVG}"
+                                                Stretch="Uniform"
+                                                Style="{StaticResource TabItemPath}" />
+                                        </Grid>
+
+                                        <Grid Margin="0,0,0,5" Visibility="{Binding FocuserVM.Focuser, Converter={StaticResource NullToVisibilityConverter}}">
+                                            <Path
+                                                Width="10"
+                                                Height="10"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Bottom"
+                                                Data="{StaticResource PowerSVG}"
+                                                Stretch="Uniform"
+                                                Style="{StaticResource TabItemPath}"
+                                                Visibility="{Binding FocuserVM.FocuserInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        </Grid>
                                     </Grid>
 
-                                    <Grid Margin="0,0,0,5" Visibility="{Binding FilterWheelVM.FW, Converter={StaticResource NullToVisibilityConverter}}">
-                                        <Path
-                                            Width="10"
-                                            Height="10"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Bottom"
-                                            Data="{StaticResource PowerSVG}"
-                                            Stretch="Uniform"
-                                            Style="{StaticResource TabItemPath}"
-                                            Visibility="{Binding FilterWheelVM.FilterWheelInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
-                                    </Grid>
-                                </Grid>
-                                <Grid>
-                                    <Grid Width="25" Height="25">
-                                        <Path
-                                            Margin="2.5"
-                                            Data="{StaticResource FocusSVG}"
-                                            Stretch="Uniform"
-                                            Style="{StaticResource TabItemPath}" />
-                                    </Grid>
+                                    <Grid>
+                                        <Grid Width="25" Height="25">
+                                            <Path
+                                                Margin="2.5"
+                                                Data="{StaticResource RotatorSVG}"
+                                                Stretch="Uniform"
+                                                Style="{StaticResource TabItemPath}" />
+                                        </Grid>
 
-                                    <Grid Margin="0,0,0,5" Visibility="{Binding FocuserVM.Focuser, Converter={StaticResource NullToVisibilityConverter}}">
-                                        <Path
-                                            Width="10"
-                                            Height="10"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Bottom"
-                                            Data="{StaticResource PowerSVG}"
-                                            Stretch="Uniform"
-                                            Style="{StaticResource TabItemPath}"
-                                            Visibility="{Binding FocuserVM.FocuserInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        <Grid Margin="0,0,0,5" Visibility="{Binding RotatorVM.RotatorInfo, Converter={StaticResource NullToVisibilityConverter}}">
+                                            <Path
+                                                Width="10"
+                                                Height="10"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Bottom"
+                                                Data="{StaticResource PowerSVG}"
+                                                Stretch="Uniform"
+                                                Style="{StaticResource TabItemPath}"
+                                                Visibility="{Binding RotatorVM.RotatorInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-
-                                <Grid>
-                                    <Grid Width="25" Height="25">
-                                        <Path
-                                            Margin="2.5"
-                                            Data="{StaticResource RotatorSVG}"
-                                            Stretch="Uniform"
-                                            Style="{StaticResource TabItemPath}" />
-                                    </Grid>
-
-                                    <Grid Margin="0,0,0,5" Visibility="{Binding RotatorVM.RotatorInfo, Converter={StaticResource NullToVisibilityConverter}}">
-                                        <Path
-                                            Width="10"
-                                            Height="10"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Bottom"
-                                            Data="{StaticResource PowerSVG}"
-                                            Stretch="Uniform"
-                                            Style="{StaticResource TabItemPath}"
-                                            Visibility="{Binding RotatorVM.RotatorInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
-                                    </Grid>
-                                </Grid>
-                            </UniformGrid>
+                                </UniformGrid>
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,-4,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text="{ns:Loc LblEquipment}" />
+                            </Grid>
                         </TabItem.Header>
                         <TabItem.Content>
                             <UniformGrid Columns="2">
@@ -146,25 +190,39 @@
                     <TabItem>
                         <TabItem.Header>
                             <Grid>
-                                <Grid Width="50" Height="50">
-                                    <Path
-                                        Margin="5"
-                                        Data="{StaticResource TelescopeSVG}"
-                                        Stretch="Uniform"
-                                        Style="{StaticResource TabItemPath}" />
-                                </Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="10" />
+                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid Width="50" Height="50">
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource TelescopeSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource TabItemPath}" />
+                                    </Grid>
 
-                                <Grid Visibility="{Binding TelescopeVM.Telescope, Converter={StaticResource NullToVisibilityConverter}}">
-                                    <Path
-                                        Width="10"
-                                        Height="10"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Bottom"
-                                        Data="{StaticResource PowerSVG}"
-                                        Stretch="Uniform"
-                                        Style="{StaticResource TabItemPath}"
-                                        Visibility="{Binding TelescopeVM.TelescopeInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                    <Grid Visibility="{Binding TelescopeVM.Telescope, Converter={StaticResource NullToVisibilityConverter}}">
+                                        <Path
+                                            Width="10"
+                                            Height="10"
+                                            Margin="0,0,0,4"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Data="{StaticResource PowerSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource TabItemPath}"
+                                            Visibility="{Binding TelescopeVM.TelescopeInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                    </Grid>
                                 </Grid>
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,-4,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text="{ns:Loc LblTelescope}" />
                             </Grid>
                         </TabItem.Header>
                         <TabItem.Content>
@@ -174,25 +232,39 @@
                     <TabItem>
                         <TabItem.Header>
                             <Grid>
-                                <Grid Width="50" Height="50">
-                                    <Path
-                                        Margin="5"
-                                        Data="{StaticResource GuiderSVG}"
-                                        Stretch="Uniform"
-                                        Style="{StaticResource TabItemPath}" />
-                                </Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="10" />
+                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid Width="50" Height="50">
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource GuiderSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource TabItemPath}" />
+                                    </Grid>
 
-                                <Grid Visibility="{Binding GuiderVM.Guider, Converter={StaticResource NullToVisibilityConverter}}">
-                                    <Path
-                                        Width="10"
-                                        Height="10"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Bottom"
-                                        Data="{StaticResource PowerSVG}"
-                                        Stretch="Uniform"
-                                        Style="{StaticResource TabItemPath}"
-                                        Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                    <Grid Visibility="{Binding GuiderVM.Guider, Converter={StaticResource NullToVisibilityConverter}}">
+                                        <Path
+                                            Width="10"
+                                            Height="10"
+                                            Margin="0,0,0,4"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Data="{StaticResource PowerSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource TabItemPath}"
+                                            Visibility="{Binding GuiderVM.Guider.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                    </Grid>
                                 </Grid>
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,-4,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text="{ns:Loc LblGuider}" />
                             </Grid>
                         </TabItem.Header>
                         <TabItem.Content>
@@ -203,11 +275,24 @@
                     <TabItem>
                         <TabItem.Header>
                             <Grid Width="50" Height="50">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="10" />
+                                </Grid.RowDefinitions>
+
                                 <Path
                                     Margin="5"
                                     Data="{StaticResource MapSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}" />
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,-4,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text="{ns:Loc LblSkyAtlas}" />
                             </Grid>
                         </TabItem.Header>
                         <TabItem.Content>
@@ -218,11 +303,22 @@
                     <TabItem>
                         <TabItem.Header>
                             <Grid Width="50" Height="50">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="10" />
+                                </Grid.RowDefinitions>
                                 <Path
                                     Margin="5"
                                     Data="{StaticResource FocusAssistantSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,-4,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text="{ns:Loc LblFraming}" />
                             </Grid>
                         </TabItem.Header>
                         <TabItem.Content>
@@ -233,11 +329,22 @@
                     <TabItem>
                         <TabItem.Header>
                             <Grid Width="50" Height="50">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="10" />
+                                </Grid.RowDefinitions>
                                 <Path
                                     Margin="5"
                                     Data="{StaticResource SequenceSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,-4,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text="{ns:Loc LblSequence}" />
                             </Grid>
                         </TabItem.Header>
                         <TabItem.Content>
@@ -248,11 +355,22 @@
                     <TabItem>
                         <TabItem.Header>
                             <Grid Width="50" Height="50">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="10" />
+                                </Grid.RowDefinitions>
                                 <Path
                                     Margin="5"
                                     Data="{StaticResource PictureSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,-4,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text="{ns:Loc LblImaging}" />
                             </Grid>
                         </TabItem.Header>
                         <TabItem.Content>
@@ -262,11 +380,22 @@
                     <TabItem>
                         <TabItem.Header>
                             <Grid Width="50" Height="50">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="10" />
+                                </Grid.RowDefinitions>
                                 <Path
                                     Margin="5"
                                     Data="{StaticResource SettingsSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,-4,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="9"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text="{ns:Loc LblOptions}" />
                             </Grid>
                         </TabItem.Header>
                         <TabItem.Content>
@@ -283,10 +412,10 @@
                         Height="40"
                         Margin="10"
                         VerticalAlignment="Center"
-                        Background="{StaticResource BackgroundBrush}"
-                        ButtonForegroundBrush="{StaticResource PrimaryBrush}"
+                        Background="{StaticResource SecondaryBackgroundBrush}"
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundDisabledBrush}"
                         ButtonImage="{StaticResource PowerSVG}"
-                        ButtonStyle="{StaticResource BackgroundButton}"
+                        ButtonStyle="{StaticResource SecondaryBackgroundButton}"
                         Command="{Binding ConnectAllDevicesCommand}"
                         ToolTip="{ns:Loc LblConnect}" />
                     <ninactrl:LoadingControl
@@ -297,8 +426,15 @@
                         Visibility="{Binding ConnectAllDevicesCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
                 </Grid>
             </Grid>
+            <Grid
+                Grid.Row="1"
+                MinWidth="80"
+                MaxWidth="80"
+                HorizontalAlignment="Left"
+                Background="{StaticResource SecondaryBackgroundBrush}" />
             <Border
                 Grid.Row="1"
+                Margin="80,0,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0,1,0,0">
 

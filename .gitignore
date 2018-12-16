@@ -1,10 +1,10 @@
-#DLL files that must not be included
-NINA/External/Canon/
-NINA/External/Nikon/
-NINA/External/x86/Canon/
-NINA/External/x86/Nikon/
-NINA/External/x64/Canon/
-NINA/External/x64/Nikon/
+#Exclude external DLL files
+NINA/External/*/Altair
+NINA/External/*/ASI
+NINA/External/*/Atik
+NINA/External/*/Canon
+NINA/External/*/Nikon
+NINA/External/*/ToupTek
 
 # User-specific files
 *.rsuser

@@ -1,4 +1,24 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<!--
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:win="clr-namespace:NINA.Utility.WindowService">
 
     <Style x:Key="MainWindow" TargetType="{x:Type Window}">
         <Setter Property="WindowChrome.WindowChrome">
@@ -24,7 +44,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
-                        <Grid Background="{StaticResource BackgroundBrush}">
+                        <Grid Background="{StaticResource SecondaryBackgroundBrush}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="20" />
                                 <RowDefinition Height="*" />
@@ -43,10 +63,12 @@
                                 <TextBlock
                                     Margin="4,0,0,0"
                                     VerticalAlignment="Center"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
                                     Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
                                 <TextBlock
                                     Margin="4,0,0,0"
                                     VerticalAlignment="Center"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
                                     Text="{Binding Source={StaticResource AppVM}, Path=Version}" />
                             </StackPanel>
 
@@ -61,7 +83,7 @@
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ToggleColorsCommand}"
-                                    Style="{StaticResource BackgroundButton}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                     <Button.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="True">
@@ -71,8 +93,8 @@
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource EyeSVG}"
-                                        Fill="{StaticResource PrimaryBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        Style="{StaticResource WindowButtonPath}" />
                                 </Button>
                                 <Button
                                     Width="20"
@@ -80,13 +102,13 @@
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=OpenManualCommand}"
-                                    Style="{StaticResource BackgroundButton}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource QuestionSVG}"
-                                        Fill="{StaticResource PrimaryBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        Style="{StaticResource WindowButtonPath}" />
                                 </Button>
                                 <Button
                                     Width="20"
@@ -94,14 +116,14 @@
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=MinimizeWindowCommand}"
-                                    Style="{StaticResource BackgroundButton}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                     <Path
                                         Margin="2,12,2,2"
                                         VerticalAlignment="Bottom"
                                         Data="{StaticResource MinimizeWindowSVG}"
-                                        Fill="{StaticResource PrimaryBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        Style="{StaticResource WindowButtonPath}" />
                                 </Button>
                                 <Button
                                     Width="20"
@@ -109,13 +131,13 @@
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=MaximizeWindowCommand}"
-                                    Style="{StaticResource BackgroundButton}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource MaximizeSVG}"
-                                        Fill="{StaticResource PrimaryBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        Style="{StaticResource WindowButtonPath}" />
                                 </Button>
                                 <Button
                                     Width="20"
@@ -123,13 +145,13 @@
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Right"
                                     Command="{Binding Source={StaticResource AppVM}, Path=ExitCommand}"
-                                    Style="{StaticResource BackgroundButton}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                     <Path
                                         Margin="2"
                                         Data="{StaticResource CancelSVG}"
-                                        Fill="{StaticResource PrimaryBrush}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"
+                                        Style="{StaticResource WindowButtonPath}" />
                                 </Button>
                             </StackPanel>
 
@@ -143,19 +165,28 @@
         </Setter>
     </Style>
 
-    <Style x:Key="NoResizeWindow" TargetType="{x:Type Window}">
+    <Style x:Key="NoResizeWindow" TargetType="{x:Type win:CustomWindow}">
+        <Setter Property="ResizeMode" Value="NoResize" />
+
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
-                <WindowChrome CaptionHeight="30" GlassFrameThickness="-1" />
+                <WindowChrome
+                    CaptionHeight="20"
+                    GlassFrameThickness="-1"
+                    UseAeroCaptionButtons="False" />
             </Setter.Value>
         </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                        <Grid Background="Transparent">
+                    <Border
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
+                        <Grid Background="{StaticResource SecondaryBackgroundBrush}">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
+                                <RowDefinition Height="20" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <StackPanel
@@ -164,16 +195,40 @@
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal">
                                 <Rectangle
-                                    Width="25"
-                                    Height="25"
+                                    Width="18"
+                                    Height="18"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Fill="{StaticResource Observatory}" />
                                 <TextBlock
                                     Margin="4,0,0,0"
                                     VerticalAlignment="Center"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
                                     Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
                             </StackPanel>
+
+                            <StackPanel
+                                Margin="0,0,2.5,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+                                <Button
+                                    Name="PART_CloseButton"
+                                    Width="20"
+                                    Height="15"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CloseCommand}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
+                                    WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Path
+                                        Margin="2"
+                                        Data="{StaticResource CancelSVG}"
+                                        Stretch="Uniform"
+                                        Style="{StaticResource WindowButtonPath}" />
+                                </Button>
+                            </StackPanel>
+
                             <Border Grid.Row="1" Background="{StaticResource BackgroundBrush}">
                                 <ContentPresenter Content="{TemplateBinding Content}" />
                             </Border>

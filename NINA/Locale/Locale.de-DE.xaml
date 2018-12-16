@@ -1,4 +1,21 @@
-﻿<ResourceDictionary
+﻿<!--
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:NINA.Resources"
@@ -716,4 +733,15 @@ Berechneter HFR: {2}
     <s:String x:Key="LblTelescopeToNINA">Teleskop zu NINA</s:String>
     <s:String x:Key="LblNINA">NINA</s:String>
     <s:String x:Key="LblFocuserPositionDescription">Derzeitige Okularauszugsposition</s:String>
+    <s:String x:Key="LblSaveImageAsDSLRNote">Bei DSLRs wird die Bilddateiformat Einstellung ignoriert. Stattdessen werden RAW Dateien gespeichert!</s:String>
+    <s:String x:Key="LblClear">Leeren</s:String>
+    <s:String x:Key="LblASPS">All Sky Plate Solver</s:String>
+    <s:String x:Key="LblASPSDirectory">ASPS Ort</s:String>
+    <s:String x:Key="LblAscomInterOpDriverException">Eine ASCOM Treiber Interop Ausnahme ist aufgetreten. Dies passiert wahrscheinlich durch einen Unterschied zwischen dem Treiber, der als {0} installiert wurde und N.I.N.A. als {1}. Bitte den Treiber als {1} installieren.</s:String>
+    <s:String x:Key="LblCanonErrorOccurred">Ein Canon Fehler ist aufgetreten: {0}</s:String>
+    <s:String x:Key="LblSkyAtlas">Sternenatlas</s:String>
+    <s:String x:Key="LblFraming">Rahmung</s:String>
+    <s:String x:Key="LblTools">Werkzeuge</s:String>
+    <s:String x:Key="LblSecondaryBackground">Sekundärer Hintergrund</s:String>
+    <s:String x:Key="LblTertiaryBackground">Tertiärer Hintergrund</s:String>
 </ResourceDictionary>

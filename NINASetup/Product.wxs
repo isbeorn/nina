@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
+-->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define NINA_TargetDir=$(var.NINA.TargetDir)?>
   <?define nikoncswrapper_TargetDir=$(var.nikoncswrapper.TargetDir)?>
   <?define NINACustomControlLibrary_TargetDir=$(var.NINACustomControlLibrary.TargetDir)?>
-  <Product Id="F1B740D1-8AFB-4D02-84A3-17E71B72DBBD" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="1.6.1.11" Manufacturer="NINA" UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
+  <Product Id="B72A53E3-EF14-4A82-BE32-D4172531A5B4" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="1.7.1.1" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x64" />
 
     <!--Todo does not find file-->
@@ -89,6 +107,12 @@
       <ComponentGroupRef Id="External_x64_Canon_files" />
       <ComponentGroupRef Id="External_x86_SQLite_files" />
       <ComponentGroupRef Id="External_x64_SQLite_files" />
+      <ComponentGroupRef Id="External_x86_Altair_files" />
+      <ComponentGroupRef Id="External_x64_Altair_files" />
+      <ComponentGroupRef Id="External_x64_ToupTek_files" />
+      <ComponentGroupRef Id="External_x86_ToupTek_files" />
+      <ComponentGroupRef Id="External_x64_NOVAS_files" />
+      <ComponentGroupRef Id="External_x86_NOVAS_files" />
     </Feature>
   </Product>
 
@@ -130,6 +154,9 @@
                 <Directory Id="External_x64_Nikon_Type0003" Name="Type0003" />
               </Directory>
               <Directory Id="External_x64_SQLite" Name="SQLite" />
+              <Directory Id="External_x64_Altair" Name="Altair" />
+              <Directory Id="External_x64_ToupTek" Name="ToupTek" />
+              <Directory Id="External_x64_NOVAS" Name="NOVAS" />
             </Directory>
             <Directory Id="External_x86" Name="x86">
               <Directory Id="External_x86_Nikon" Name="Nikon">
@@ -161,6 +188,9 @@
               <Directory Id="External_x86_Atik" Name="Atik" />
               <Directory Id="External_x86_ASI" Name="ASI" />
               <Directory Id="External_x86_SQLite" Name="SQLite" />
+              <Directory Id="External_x86_Altair" Name="Altair" />
+              <Directory Id="External_x86_ToupTek" Name="ToupTek" />
+              <Directory Id="External_x86_NOVAS" Name="NOVAS" />
             </Directory>
           </Directory>
           <Directory Id="Utility" Name="Utility">
@@ -226,7 +256,7 @@
     <ComponentGroup Id="AvalonDock" Directory="NinaAppDataFolder">
       <Component Win64="yes" Id="avalondock.config" Guid="18AB9F1E-B75A-4071-B00F-BE34DBD0AA5B">
         <File Id="avalondock.config" Name="avalondock.config" Source="$(var.SolutionDir)NINA\Resources\avalondock.config" />
-        <RemoveFile Id="avalondock.config" Name="avalondock.config" Directory="NinaAppDataFolder" On="uninstall" />
+        <RemoveFile Id="avalondock.config" Name="avalondock.config" Directory="NinaAppDataFolder" On="both" />
         <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
     </ComponentGroup>
@@ -239,8 +269,8 @@
       <!-- <Component Win64="yes" Id="ProductComponent"> -->
       <!-- TODO: Insert files, registry keys, and other resources here. -->
       <!-- </Component> -->
-      <Component Win64="yes" Id="LICENCE.txt" Guid="0a6ae791-4e08-46de-933a-843e8977a0f0">
-        <File Id="LICENCE.txt" Name="LICENCE.txt" Source="$(var.NINA_TargetDir)LICENCE.txt" />
+      <Component Win64="yes" Id="LICENSE.txt" Guid="0a6ae791-4e08-46de-933a-843e8977a0f0">
+        <File Id="LICENSE.txt" Name="LICENSE.txt" Source="$(var.NINA_TargetDir)LICENSE.txt" />
       </Component>
       <Component Win64="yes" Id="NINA.exe" Guid="b4545676-e377-4900-85f6-3bdc93962a45">
         <File Id="NINA.exe" Name="NINA.exe" Source="$(var.NINA_TargetDir)NINA.exe" />
@@ -1128,6 +1158,73 @@
     <ComponentGroup Id="External_x64_SQLite_files" Directory="External_x64_SQLite">
       <Component Win64="yes" Id="External_x64_SQLite_SQLite.Interop.dll" Guid="59cdc259-d28f-40e9-b277-4a512e4ad3d1">
         <File Id="External_x64_SQLite_SQLite.Interop.dll" Name="SQLite.Interop.dll" Source="$(var.NINA_TargetDir)External\x64\SQLite\SQLite.Interop.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x86_Altair_files" Directory="External_x86_Altair">
+      <Component Win64="yes" Id="External_x86_Altair_altaircam.lib" Guid="72043754-f8c6-46ef-a277-d79b5723cb1d">
+        <File Id="External_x86_Altair_altaircam.lib" Name="altaircam.lib" Source="$(var.NINA_TargetDir)External\x86\Altair\altaircam.lib" />
+      </Component>
+      <Component Win64="yes" Id="External_x86_Altair_updatefw.exe" Guid="e405a95d-f619-410a-b245-3c6f4e00b4de">
+        <File Id="External_x86_Altair_updatefw.exe" Name="updatefw.exe" Source="$(var.NINA_TargetDir)External\x86\Altair\updatefw.exe" />
+      </Component>
+      <Component Win64="yes" Id="External_x86_Altair_altaircam.dll" Guid="5fc243e4-9305-47ca-9033-3c35857b79e6">
+        <File Id="External_x86_Altair_altaircam.dll" Name="altaircam.dll" Source="$(var.NINA_TargetDir)External\x86\Altair\altaircam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_Altair_files" Directory="External_x64_Altair">
+      <Component Win64="yes" Id="External_x64_Altair_altaircam.lib" Guid="3f5d8bdb-e5f7-47fd-a3dc-23b479245e0b">
+        <File Id="External_x64_Altair_altaircam.lib" Name="altaircam.lib" Source="$(var.NINA_TargetDir)External\x64\Altair\altaircam.lib" />
+      </Component>
+      <Component Win64="yes" Id="External_x64_Altair_altaircam.dll" Guid="54f75954-da94-4c89-86e8-4a8d4e9229c7">
+        <File Id="External_x64_Altair_altaircam.dll" Name="altaircam.dll" Source="$(var.NINA_TargetDir)External\x64\Altair\altaircam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_ToupTek_files" Directory="External_x64_ToupTek">
+      <Component Win64="yes" Id="External_x64_ToupTek_toupcam.dll" Guid="791c2974-a774-4723-a7cd-b808a1b2e1e9">
+        <File Id="External_x64_ToupTek_toupcam.dll" Name="toupcam.dll" Source="$(var.NINA_TargetDir)External\x64\ToupTek\toupcam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x86_ToupTek_files" Directory="External_x86_ToupTek">
+      <Component Win64="yes" Id="External_x86_ToupTek_updatefw.exe" Guid="968ed6dc-9379-485e-8c7e-7274bd589293">
+        <File Id="External_x86_ToupTek_updatefw.exe" Name="updatefw.exe" Source="$(var.NINA_TargetDir)External\x86\ToupTek\updatefw.exe" />
+      </Component>
+      <Component Win64="yes" Id="External_x86_ToupTek_toupcam.dll" Guid="c6eb2a4b-8c5c-4459-9a4b-8d76a1fff868">
+        <File Id="External_x86_ToupTek_toupcam.dll" Name="toupcam.dll" Source="$(var.NINA_TargetDir)External\x86\ToupTek\toupcam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_JPLEPH_files" Directory="External">
+      <Component Win64="yes" Id="JPLEPH" Guid="3D939C40-47D8-4BF2-8C93-5324FAD7CD08">
+        <File Id="JPLEPH" Name="JPLEPH" Source="$(var.NINA_TargetDir)External\JPLEPH" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_NOVAS_files" Directory="External_x64_NOVAS">
+      <Component Win64="yes" Id="External_x64_NOVAS_NOVAS31.dll" Guid="399f4ac2-9791-4e32-89cf-40279554a426">
+        <File Id="External_x64_NOVAS_NOVAS31.dll" Name="NOVAS31.dll" Source="$(var.NINA_TargetDir)External\x64\NOVAS\NOVAS31.dll" />
+      </Component>
+      <Component Win64="yes" Id="External_x64_NOVAS_cio_ra.bin" Guid="d18f333b-074e-4c33-9e5e-18d5c9770dd0">
+        <File Id="External_x64_NOVAS_cio_ra.bin" Name="cio_ra.bin" Source="$(var.NINA_TargetDir)External\x64\NOVAS\cio_ra.bin" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x86_NOVAS_files" Directory="External_x86_NOVAS">
+      <Component Win64="yes" Id="External_x86_NOVAS_NOVAS31.dll" Guid="0d940503-3770-4d11-ab73-a1f7e834f41a">
+        <File Id="External_x86_NOVAS_NOVAS31.dll" Name="NOVAS31.dll" Source="$(var.NINA_TargetDir)External\x86\NOVAS\NOVAS31.dll" />
+      </Component>
+      <Component Win64="yes" Id="External_x86_NOVAS_cio_ra.bin" Guid="e1c12df7-978a-4f9a-8047-3a214036cf6d">
+        <File Id="External_x86_NOVAS_cio_ra.bin" Name="cio_ra.bin" Source="$(var.NINA_TargetDir)External\x86\NOVAS\cio_ra.bin" />
       </Component>
     </ComponentGroup>
   </Fragment>

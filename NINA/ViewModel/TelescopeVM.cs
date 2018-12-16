@@ -1,4 +1,27 @@
-﻿using NINA.Model;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
@@ -146,7 +169,7 @@ namespace NINA.ViewModel {
                                     Telescope.SiteLatitude,
                                     Telescope.SiteLongitude
                                 );
-                                WindowService.ShowDialog(syncVM, Locale.Loc.Instance["LblSyncLatLong"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+                                await WindowService.ShowDialog(syncVM, Locale.Loc.Instance["LblSyncLatLong"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
 
                                 if (syncVM.Mode == TelescopeLatLongSyncVM.LatLongSyncMode.NINA) {
                                     profileService.ChangeLatitude(Telescope.SiteLatitude);
@@ -331,7 +354,7 @@ namespace NINA.ViewModel {
             BroadcastTelescopeInfo();
         }
 
-        public void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate) {
+        public void MoveAxis(TelescopeAxes axis, double rate) {
             if (TelescopeInfo.Connected) {
                 Telescope.MoveAxis(axis, rate);
             }
@@ -348,32 +371,32 @@ namespace NINA.ViewModel {
         private void Move(object obj) {
             string cmd = obj.ToString();
             if (cmd == "W") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, -Telescope.MovingRate);
+                MoveAxis(TelescopeAxes.Primary, -Telescope.MovingRate);
             }
             if (cmd == "O") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, Telescope.MovingRate);
+                MoveAxis(TelescopeAxes.Primary, Telescope.MovingRate);
             }
             if (cmd == "N") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, Telescope.MovingRate);
+                MoveAxis(TelescopeAxes.Secondary, Telescope.MovingRate);
             }
             if (cmd == "S") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, -Telescope.MovingRate);
+                MoveAxis(TelescopeAxes.Secondary, -Telescope.MovingRate);
             }
         }
 
         private void StopMove(object obj) {
             string cmd = obj.ToString();
             if (cmd == "W") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                MoveAxis(TelescopeAxes.Primary, 0);
             }
             if (cmd == "O") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisPrimary, 0);
+                MoveAxis(TelescopeAxes.Primary, 0);
             }
             if (cmd == "N") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, 0);
+                MoveAxis(TelescopeAxes.Secondary, 0);
             }
             if (cmd == "S") {
-                MoveAxis(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary, 0);
+                MoveAxis(TelescopeAxes.Secondary, 0);
             }
         }
 
@@ -482,8 +505,8 @@ namespace NINA.ViewModel {
         }
 
         private void SlewToCoordinates(object obj) {
-            var targetRightAscencion = Utility.Utility.AscomUtil.HMSToHours(TargetRightAscencionHours + ":" + TargetRightAscencionMinutes + ":" + TargetRightAscencionSeconds);
-            var targetDeclination = Utility.Utility.AscomUtil.DMSToDegrees(TargetDeclinationDegrees + ":" + TargetDeclinationMinutes + ":" + TargetDeclinationSeconds);
+            var targetRightAscencion = TargetRightAscencionHours + Astrometry.ArcminToDegree(TargetRightAscencionMinutes) + Astrometry.ArcsecToDegree(TargetRightAscencionSeconds);
+            var targetDeclination = TargetDeclinationDegrees + Astrometry.ArcminToDegree(TargetDeclinationMinutes) + Astrometry.ArcsecToDegree(TargetDeclinationSeconds);
 
             var coords = new Coordinates(targetRightAscencion, targetDeclination, Epoch.J2000, Coordinates.RAType.Hours);
             SlewToCoordinates(coords);
@@ -543,15 +566,12 @@ namespace NINA.ViewModel {
 
             Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoTelescope"]));
 
-            var ascomDevices = new ASCOM.Utilities.Profile();
-
-            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Telescope")) {
-                try {
-                    AscomTelescope cam = new AscomTelescope(device.Key, device.Value, profileService);
-                    Devices.Add(cam);
-                } catch (Exception) {
-                    //only add telescopes which are supported. e.g. x86 drivers will not work in x64
+            try {
+                foreach (ITelescope telescope in ASCOMInteraction.GetTelescopes(profileService)) {
+                    Devices.Add(telescope);
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             DetermineSelectedDevice(profileService.ActiveProfile.TelescopeSettings.Id);
