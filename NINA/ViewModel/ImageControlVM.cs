@@ -54,6 +54,7 @@ namespace NINA.ViewModel {
 
         public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IFocuserMediator focuserMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblImage";
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PictureSVG"];
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
@@ -66,8 +67,6 @@ namespace NINA.ViewModel {
 
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
-
-            CanClose = false;
             AutoStretch = false;
             DetectStars = false;
             ShowCrossHair = false;

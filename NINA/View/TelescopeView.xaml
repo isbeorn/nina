@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.TelescopeView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -57,9 +56,9 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition />
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <ninactrl:LoadingControl
                                 Height="30"
@@ -79,6 +78,7 @@
                                 Grid.Column="2"
                                 Width="40"
                                 Height="40"
+                                Margin="1,0,0,0"
                                 Command="{Binding TelescopeChooserVM.SetupDialogCommand}"
                                 IsEnabled="{Binding TelescopeChooserVM.SelectedDevice.HasSetupDialog}">
                                 <Button.ToolTip>
@@ -98,6 +98,7 @@
                                 Grid.Column="3"
                                 Width="40"
                                 Height="40"
+                                Margin="1,0,0,0"
                                 Command="{Binding RefreshTelescopeListCommand}">
                                 <Button.ToolTip>
                                     <ToolTip ToolTipService.ShowOnDisabled="False">
@@ -115,7 +116,8 @@
                             <Grid
                                 Grid.Column="4"
                                 Width="40"
-                                Height="40">
+                                Height="40"
+                                Margin="1,0,0,0">
                                 <ninactrl:CancellableButton
                                     ButtonForegroundBrush="{StaticResource ButtonForegroundDisabledBrush}"
                                     ButtonImage="{StaticResource PowerSVG}"
@@ -150,7 +152,7 @@
                 </GroupBox.Header>
                 <Grid>
                     <StackPanel>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                             <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
@@ -164,7 +166,7 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                             <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
@@ -178,7 +180,7 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                             <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
@@ -199,7 +201,7 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                             <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
@@ -217,7 +219,7 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                             <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
@@ -228,7 +230,7 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                             <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
@@ -246,7 +248,7 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                             <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
@@ -264,7 +266,7 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                             <UniformGrid Columns="2">
                                 <UniformGrid
                                     Margin="0,6,0,6"
@@ -291,7 +293,7 @@
             <Grid IsEnabled="{Binding TelescopeInfo.Connected}">
                 <GroupBox Header="{ns:Loc LblManualCoordinates}">
                     <StackPanel>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                             <StackPanel Margin="0,6,0,6" Orientation="Horizontal">
                                 <TextBlock Width="60" Text="{ns:Loc LblTargetRA}" />
                                 <TextBox
@@ -335,7 +337,7 @@
                                 <TextBlock>s</TextBlock>
                             </StackPanel>
                         </Border>
-                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                             <StackPanel Margin="0,6,0,6" Orientation="Horizontal">
                                 <TextBlock Width="60" Text="{ns:Loc LblTargetDec}" />
                                 <TextBox
@@ -415,7 +417,8 @@
                         </Grid.RowDefinitions>
                         <StackPanel
                             Grid.Row="0"
-                            Grid.Column="3" HorizontalAlignment="Right"
+                            Grid.Column="3"
+                            HorizontalAlignment="Right"
                             Orientation="Horizontal">
                             <TextBlock
                                 Margin="0,0,5,0"

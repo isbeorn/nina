@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.AnchorableCameraView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -34,15 +33,15 @@
             <Grid IsEnabled="{Binding CameraInfo.Connected}">
                 <StackPanel IsEnabled="{Binding Cam.CanSetTemperature}" Orientation="Vertical">
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
                             <CheckBox
                                 Width="20"
                                 Height="20"
-                                Margin="5"
+                                Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
                                 BorderBrush="Transparent"
                                 IsChecked="{Binding CameraInfo.Connected, FallbackValue=False, Mode=OneWay}"
@@ -51,9 +50,9 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
+                        BorderThickness="0"
                         Visibility="{Binding Cam.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblGain}" />
@@ -61,26 +60,9 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
-                        Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
-                        <UniformGrid Columns="2">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCoolerOn}" />
-                            <CheckBox
-                                Width="75"
-                                Height="25"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Left"
-                                Command="{Binding ToggleCoolerOnCommand}"
-                                CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
-                                IsChecked="{Binding CameraInfo.CoolerOn}" />
-                        </UniformGrid>
-                    </Border>
-                    <Border
-                        MinHeight="30"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
+                        BorderThickness="0"
                         Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblCoolerPower}" />
@@ -91,9 +73,9 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblChipTempShort}" />
                             <TextBlock
@@ -103,9 +85,9 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
+                        BorderThickness="0"
                         Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblTargetTempShort}" />
@@ -118,9 +100,9 @@
                     </Border>
 
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
+                        BorderThickness="0"
                         Visibility="{Binding Cam.HasBattery, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblCameraBattery}" />
@@ -135,13 +117,29 @@
                     <Border
                         MinHeight="5"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
+                        BorderThickness="0"
                         Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}" />
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                        <UniformGrid Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCoolerOn}" />
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                Command="{Binding ToggleCoolerOnCommand}"
+                                CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                IsChecked="{Binding CameraInfo.CoolerOn}" />
+                        </UniformGrid>
+                    </Border>
 
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
+                        BorderThickness="0"
                         Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetTempShort}" />
@@ -156,9 +154,9 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
+                        BorderThickness="0"
                         Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDuration}" />
@@ -172,9 +170,9 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
+                        BorderThickness="0"
                         Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                         <StackPanel VerticalAlignment="Center">
                             <Grid
@@ -191,8 +189,8 @@
                                     Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}" />
                             </Grid>
                             <ninactrl:CancellableButton
-                                Height="35"
-                                Margin="10"
+                                Height="25"
+                                Margin="10,10,10,0"
                                 VerticalAlignment="Center"
                                 ButtonImage="{StaticResource ThermometerSVG}"
                                 CancelButtonImage="{StaticResource CancelSVG}"

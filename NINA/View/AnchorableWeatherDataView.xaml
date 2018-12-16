@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.AnchorableWeatherDataView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -31,103 +30,103 @@
         <StackPanel Orientation="Vertical">
             <StackPanel DataContext="{Binding WeatherData}" Orientation="Vertical">
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1" />
+                    BorderThickness="0" />
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblLatitude}" />
                         <TextBlock Margin="5,0,0,0" Text="{Binding Latitude}" />
                     </UniformGrid>
                 </Border>
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblLongitude}" />
                         <TextBlock Margin="5,0,0,0" Text="{Binding Longitude}" />
                     </UniformGrid>
                 </Border>
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblTemperature}" />
                         <TextBlock Margin="5,0,0,0" Text="{Binding Temperature, StringFormat=\{0:0.00\}°C}" />
                     </UniformGrid>
                 </Border>
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblHumidity}" />
                         <TextBlock Margin="5,0,0,0" Text="{Binding Humidity, StringFormat=\{0:0.00\}%}" />
                     </UniformGrid>
                 </Border>
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblDewpoint}" />
                         <TextBlock Margin="5,0,0,0" Text="{Binding Dewpoint, StringFormat=\{0:0.00\}°C}" />
                     </UniformGrid>
                 </Border>
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblPressure}" />
                         <TextBlock Margin="5,0,0,0" Text="{Binding Pressure}" />
                     </UniformGrid>
                 </Border>
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblWindSpeed}" />
                         <TextBlock Margin="5,0,0,0" Text="{Binding WindSpeed}" />
                     </UniformGrid>
                 </Border>
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblWindDirection}" />
                         <TextBlock Margin="5,0,0,0" Text="{Binding WindDirection}" />
                     </UniformGrid>
                 </Border>
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblCloudCoverage}" />
                         <TextBlock Margin="5,0,0,0" Text="{Binding CloudCoverage, StringFormat=\{0:0.00\}%}" />
                     </UniformGrid>
                 </Border>
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblSunrise}" />
                         <TextBlock Margin="5,0,0,0" Text="{Binding Sunrise}" />
                     </UniformGrid>
                 </Border>
                 <Border
-                    MinHeight="30"
+                    Margin="0,5,0,0"
                     BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0,0,0,1">
+                    BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <TextBlock Text="{ns:Loc LblSunset}" />
                         <TextBlock Margin="5,0,0,0" Text="{Binding Sunset}" />
@@ -135,12 +134,13 @@
                 </Border>
             </StackPanel>
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRefresh}" />
                     <CheckBox
+                        Width="75"
                         Margin="5,0,0,0"
                         HorizontalAlignment="Left"
                         IsChecked="{Binding DoUpdate}">

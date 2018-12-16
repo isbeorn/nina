@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.PolarScopeView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -26,27 +25,43 @@
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
-    <Grid Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
+    <Grid Height="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}" SnapsToDevicePixels="True">
 
-        <Grid>
-            <Ellipse
-                Margin="0"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Fill="{StaticResource BackgroundBrush}"
-                Stretch="UniformToFill"
-                Stroke="{StaticResource PrimaryBrush}"
-                StrokeThickness="4" />
-
-            <Grid Margin="20">
-
+        <Grid SnapsToDevicePixels="True">
+            <Grid Margin="15">
                 <Line
                     Margin="0"
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
-                    StrokeThickness="1"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-5" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-10" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
                     Y1="0"
                     Y2="1">
                     <Line.RenderTransform>
@@ -58,7 +73,45 @@
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-15" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-20" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-25" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
                     StrokeThickness="1"
                     Y1="0"
                     Y2="1">
@@ -71,8 +124,34 @@
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
-                    StrokeThickness="1"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-35" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-40" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
                     Y1="0"
                     Y2="1">
                     <Line.RenderTransform>
@@ -84,7 +163,32 @@
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-50" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-55" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
                     StrokeThickness="1"
                     Y1="0"
                     Y2="1">
@@ -97,8 +201,34 @@
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
-                    StrokeThickness="1"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-65" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-70" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
                     Y1="0"
                     Y2="1">
                     <Line.RenderTransform>
@@ -110,12 +240,12 @@
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
-                    StrokeThickness="1"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
                     Y1="0"
                     Y2="1">
                     <Line.RenderTransform>
-                        <RotateTransform Angle="-90" />
+                        <RotateTransform Angle="-80" />
                     </Line.RenderTransform>
                 </Line>
                 <Line
@@ -123,8 +253,47 @@
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
-                    StrokeThickness="1"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-85" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-95" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-100" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
                     Y1="0"
                     Y2="1">
                     <Line.RenderTransform>
@@ -136,7 +305,32 @@
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-110" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-115" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
                     StrokeThickness="1"
                     Y1="0"
                     Y2="1">
@@ -149,8 +343,34 @@
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
-                    StrokeThickness="1"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-125" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-130" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
                     Y1="0"
                     Y2="1">
                     <Line.RenderTransform>
@@ -162,7 +382,32 @@
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-140" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-145" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
                     StrokeThickness="1"
                     Y1="0"
                     Y2="1">
@@ -175,8 +420,34 @@
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
-                    StrokeThickness="1"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-155" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-160" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
                     Y1="0"
                     Y2="1">
                     <Line.RenderTransform>
@@ -188,23 +459,43 @@
                     RenderTransformOrigin="0.5,0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
-                    StrokeDashArray="2 2"
-                    StrokeThickness="1"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
                     Y1="0"
                     Y2="1">
                     <Line.RenderTransform>
-                        <RotateTransform Angle="-180" />
+                        <RotateTransform Angle="-170" />
+                    </Line.RenderTransform>
+                </Line>
+                <Line
+                    Margin="0"
+                    RenderTransformOrigin="0.5,0.5"
+                    Stretch="Fill"
+                    Stroke="{StaticResource PrimaryBrush}"
+                    StrokeDashArray="1 1"
+                    StrokeThickness="0.5"
+                    Y1="0"
+                    Y2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="-175" />
                     </Line.RenderTransform>
                 </Line>
             </Grid>
 
             <Ellipse
-                Margin="41"
+                Margin="25"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Stretch="UniformToFill"
+                Stroke="{StaticResource PrimaryBrush}" />
+
+            <Ellipse
+                Margin="35"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Fill="{StaticResource BackgroundBrush}"
                 Stretch="UniformToFill"
-                Stroke="{StaticResource PrimaryBrush}" />
+                Stroke="Transparent" />
 
             <Grid RenderTransformOrigin=".5,.5">
                 <Ellipse
@@ -214,7 +505,7 @@
                     Stretch="UniformToFill"
                     Stroke="{StaticResource PrimaryBrush}" />
                 <Ellipse
-                    Margin="41"
+                    Margin="30"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Stretch="UniformToFill"
@@ -231,22 +522,27 @@
                 <Line
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    RenderTransformOrigin="0.5 0.5"
                     Stretch="Fill"
                     Stroke="{StaticResource PrimaryBrush}"
                     StrokeThickness="1"
-                    Y1="0"
-                    Y2="1" />
+                    X1="0"
+                    X2="1">
+                    <Line.RenderTransform>
+                        <RotateTransform Angle="90" />
+                    </Line.RenderTransform>
+                </Line>
 
                 <Grid Margin="0,-1,0,1" RenderTransformOrigin="0.5,0.5">
                     <Path
-                        Margin="5,30,0,0"
+                        Margin="3,25,0,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
                         Fill="{StaticResource ButtonBackgroundBrush}"
                         Stroke="{StaticResource PrimaryBrush}"
                         StrokeThickness="0">
                         <Path.Data>
-                            <EllipseGeometry RadiusX="5" RadiusY="5" />
+                            <EllipseGeometry RadiusX="3" RadiusY="3" />
                         </Path.Data>
                     </Path>
                     <TextBlock

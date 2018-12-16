@@ -21,17 +21,24 @@
 
 #endregion "copyright"
 
-using System.Windows.Controls;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
-namespace NINA.View {
+namespace NINA.Utility.WindowService {
 
-    /// <summary>
-    /// Interaction logic for MinimalisticGuiderGraph.xaml
-    /// </summary>
-    public partial class MinimalisticGuiderGraph : UserControl {
+    public class CustomWindow : Window {
 
-        public MinimalisticGuiderGraph() {
-            InitializeComponent();
+        public static readonly DependencyProperty CloseCommandProperty =
+        DependencyProperty.Register(nameof(CloseCommand), typeof(ICommand), typeof(Window), null);
+
+        public ICommand CloseCommand {
+            get { return (ICommand)GetValue(CloseCommandProperty); }
+            set { SetValue(CloseCommandProperty, value); }
         }
     }
 }

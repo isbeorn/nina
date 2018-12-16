@@ -14,13 +14,13 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
-<Window
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+<win:CustomWindow
     x:Class="NINA.AstrometryIndexDownloader.AstrometryIndexDownloader"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:win="clr-namespace:NINA.Utility.WindowService"
     xmlns:local="clr-namespace:NINA.AstrometryIndexDownloader"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
@@ -204,4 +204,4 @@
             </StackPanel>
         </GroupBox>
     </Grid>
-</Window>
+</win:CustomWindow>

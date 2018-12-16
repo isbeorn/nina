@@ -667,7 +667,6 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 _liveViewEnabled = value;
-                // todo: start liveview if possible
             }
         }
 

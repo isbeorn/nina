@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style TargetType="{x:Type ListView}">
@@ -28,8 +27,7 @@
                         Name="Border"
                         Background="Transparent"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="2">
+                        BorderThickness="1">
                         <ScrollViewer Style="{DynamicResource {x:Static GridView.GridViewScrollViewerStyleKey}}">
                             <ItemsPresenter />
                         </ScrollViewer>
@@ -62,7 +60,7 @@
                             Name="HeaderBorder"
                             Background="{TemplateBinding Panel.Background}"
                             BorderBrush="{TemplateBinding Border.BorderBrush}"
-                            BorderThickness="0,1,0,1">
+                            BorderThickness="0,0,0,1">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition MaxHeight="7" />

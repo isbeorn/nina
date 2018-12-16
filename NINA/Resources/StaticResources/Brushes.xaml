@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.PrimaryColor}" />
@@ -30,6 +29,8 @@
     <SolidColorBrush x:Key="NotificationErrorBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.NotificationErrorColor}" />
     <SolidColorBrush x:Key="NotificationWarningTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.NotificationWarningTextColor}" />
     <SolidColorBrush x:Key="NotificationErrorTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.NotificationErrorTextColor}" />
+    <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.SecondaryBackgroundColor}" />
+    <SolidColorBrush x:Key="TertiaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.TertiaryBackgroundColor}" />
 
     <SolidColorBrush x:Key="AltPrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltPrimaryColor}" />
     <SolidColorBrush x:Key="AltSecondaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltSecondaryColor}" />
@@ -43,4 +44,6 @@
     <SolidColorBrush x:Key="AltNotificationErrorBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationErrorColor}" />
     <SolidColorBrush x:Key="AltNotificationWarningTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationWarningTextColor}" />
     <SolidColorBrush x:Key="AltNotificationErrorTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationErrorTextColor}" />
+    <SolidColorBrush x:Key="AltSecondaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltSecondaryBackgroundColor}" />
+    <SolidColorBrush x:Key="AltTertiaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltTertiaryBackgroundColor}" />
 </ResourceDictionary>

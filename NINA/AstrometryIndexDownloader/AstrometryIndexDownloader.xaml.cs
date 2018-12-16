@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Utility.WindowService;
 using System.Windows;
 
 namespace NINA.AstrometryIndexDownloader {
@@ -28,7 +29,7 @@ namespace NINA.AstrometryIndexDownloader {
     /// <summary>
     /// Interaction logic for AstrometryIndexDownloader.xaml
     /// </summary>
-    public partial class AstrometryIndexDownloader : Window {
+    public partial class AstrometryIndexDownloader : CustomWindow {
 
         public AstrometryIndexDownloader() {
             InitializeComponent();

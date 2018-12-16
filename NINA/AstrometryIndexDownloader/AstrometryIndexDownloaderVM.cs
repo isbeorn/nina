@@ -23,6 +23,7 @@
 
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.WindowService;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,6 +31,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace NINA.AstrometryIndexDownloader {
 
@@ -182,9 +184,12 @@ namespace NINA.AstrometryIndexDownloader {
             var destinationfolder = cygwinlocation + "\\usr\\share\\astrometry\\data\\";
             AstrometryIndexDownloaderVM vm = new AstrometryIndexDownloaderVM(destinationfolder);
 
-            System.Windows.Window win = new AstrometryIndexDownloader {
-                DataContext = vm
+            CustomWindow win = new AstrometryIndexDownloader {
+                DataContext = vm,
+                Title = "Astrometry Index Downloader"
             };
+
+            win.CloseCommand = new RelayCommand((object o) => win.Close());
 
             var mainwindow = System.Windows.Application.Current.MainWindow;
             mainwindow.Opacity = 0.8;

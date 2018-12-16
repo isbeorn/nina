@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.MeridianFlipView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -94,32 +93,7 @@
     </UserControl.Resources>
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="25" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <TextBlock
-                    Margin="5,0,0,0"
-                    VerticalAlignment="Center"
-                    Text="{ns:Loc LblAutoMeridianFlip}" />
-                <Button HorizontalAlignment="Right" Command="{Binding CancelCommand}">
-                    <Button.ToolTip>
-                        <ToolTip ToolTipService.ShowOnDisabled="False">
-                            <TextBlock Text="{ns:Loc LblCancel}" />
-                        </ToolTip>
-                    </Button.ToolTip>
-                    <Grid>
-                        <Path
-                            Margin="5"
-                            Data="{StaticResource CancelSVG}"
-                            Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
-                    </Grid>
-                </Button>
-            </Grid>
             <TabControl
-                Grid.Row="1"
                 Margin="-5,0,0,0"
                 ContentTemplateSelector="{StaticResource templateSelector}"
                 ItemsSource="{Binding Steps}"

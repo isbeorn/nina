@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.AnchorableImageHistoryView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -35,9 +34,13 @@
                 IsLegendVisible="True"
                 LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
                 LegendBorder="{Binding Path=Color, Source={StaticResource BorderBrush}}"
+                LegendFontSize="10"
+                LegendMaxHeight="35"
                 LegendOrientation="Horizontal"
-                LegendPlacement="Outside"
-                LegendPosition="BottomLeft"
+                LegendPadding="2"
+                LegendPlacement="Inside"
+                LegendPosition="TopLeft"
+                LegendSymbolLength="10"
                 LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                 PlotAreaBackground="{StaticResource BackgroundBrush}"
                 PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">

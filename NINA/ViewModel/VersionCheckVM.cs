@@ -79,13 +79,14 @@ namespace NINA.ViewModel {
                                 _cancelTokenSource.Cancel();
                             }
                         };
-                        ws.Show(this, Locale.Loc.Instance["LblUpdating"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
+                        var t = ws.ShowDialog(this, Locale.Loc.Instance["LblUpdating"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
 
                         _setupLocation = await DownloadLatestVersion();
                         _setupLocation = Unzip(_setupLocation);
                         if (!string.IsNullOrEmpty(_setupLocation)) {
                             UpdateReady = true;
                         }
+                        await t;
                     }
                 } else {
                     return false;
