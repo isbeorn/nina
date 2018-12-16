@@ -10,7 +10,6 @@
         - Altair native driver support
         - ToupTek native driver support
 
-
 ## Bugfixes
 
     - Corrected Max Binning level for ASI Cameras
@@ -18,6 +17,7 @@
     - Rotation value now considered for sequence import|export
     - Canon: Fixed bulb mode for exposure times <30s
     - Canon: All shutter speeds now correctly added when step set custom function is set to 1/3
+    - Meridian Flip window does not get stuck anymore when clicking on cancel
 
 ## Improvements
 
@@ -27,6 +27,12 @@
     - Show better exception message when an ASCOM Interop Exception occurs
     - Canon: Errors are now shown to users in a readable format if any occur
     - Removed hard requirement of ASCOM platform. Application can now function without it
+    - Improved UI Style. 
+        - Tweaked some color themes for more consistent colors
+        - Better spacing between elements to reduce wasted space
+        - Two new background colors to better pronounce some ui elements
+        - Reworked Imaging tab to have a common style.
+        - Imaging tab tools pane (to hide/show panels) moved to the top and split into two separate categories
 
 ___
 

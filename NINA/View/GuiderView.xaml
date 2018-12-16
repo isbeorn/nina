@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.GuiderView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -93,7 +92,7 @@
                     </GroupBox.Header>
                     <Grid>
                         <StackPanel>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid Columns="2">
                                     <UniformGrid
                                         Margin="0,6,0,6"
@@ -111,7 +110,7 @@
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid Columns="2">
                                     <UniformGrid
                                         Margin="0,6,0,6"
@@ -122,7 +121,7 @@
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                                 <UniformGrid Columns="2">
                                     <UniformGrid
                                         Margin="0,6,0,6"

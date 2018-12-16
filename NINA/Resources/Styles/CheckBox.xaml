@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -25,45 +24,45 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type CheckBox}">
-                    <Border
-                        Width="{TemplateBinding Width}"
-                        Height="{TemplateBinding Height}"
-                        MinWidth="75"
-                        MinHeight="25"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Border x:Name="On" Background="{StaticResource ButtonForegroundBrush}">
-                                <TextBlock
-                                    x:Name="OnText"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Foreground="{StaticResource ButtonForegroundBrush}"
-                                    Text="{ns:Loc LblOn}" />
-                            </Border>
-                            <Border
-                                x:Name="Off"
-                                Grid.Column="1"
-                                Background="{StaticResource ButtonBackgroundBrush}">
-                                <TextBlock
-                                    x:Name="OffText"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Foreground="{StaticResource ButtonForegroundBrush}"
-                                    Text="{ns:Loc LblOff}" />
-                            </Border>
-                        </Grid>
-                    </Border>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="On"
+                            Background="{StaticResource BackgroundBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1,1,0,1">
+                            <TextBlock
+                                x:Name="OnText"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource BackgroundBrush}"
+                                Text="{ns:Loc LblOn}" />
+                        </Border>
+                        <Border
+                            x:Name="Off"
+                            Grid.Column="1"
+                            Background="{StaticResource ButtonBackgroundBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0">
+                            <TextBlock
+                                x:Name="OffText"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{ns:Loc LblOff}" />
+                        </Border>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="On" Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
+                            <Setter TargetName="On" Property="BorderThickness" Value="0" />
                             <Setter TargetName="OnText" Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
-                            <Setter TargetName="Off" Property="Background" Value="{StaticResource ButtonForegroundBrush}" />
-                            <Setter TargetName="OffText" Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+                            <Setter TargetName="Off" Property="Background" Value="{StaticResource BackgroundBrush}" />
+                            <Setter TargetName="Off" Property="BorderThickness" Value="0,1,1,1" />
+                            <Setter TargetName="OffText" Property="Foreground" Value="{StaticResource BackgroundBrush}" />
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>

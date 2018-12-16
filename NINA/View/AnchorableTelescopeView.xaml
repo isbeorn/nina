@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.AnchorableTelescopeView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -30,15 +29,15 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Orientation="Vertical">
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
                     <CheckBox
                         Width="20"
                         Height="20"
-                        Margin="5"
+                        Margin="5,0,0,0"
                         HorizontalAlignment="Left"
                         BorderBrush="Transparent"
                         IsChecked="{Binding TelescopeInfo.Connected, FallbackValue=False, Mode=OneWay}"
@@ -47,15 +46,15 @@
                 </UniformGrid>
             </Border>
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTracking}" />
                     <CheckBox
                         Width="20"
                         Height="20"
-                        Margin="5"
+                        Margin="5,0,0,0"
                         HorizontalAlignment="Left"
                         BorderBrush="Transparent"
                         IsChecked="{Binding TelescopeInfo.Tracking, FallbackValue=False, Mode=OneWay}"
@@ -64,9 +63,9 @@
                 </UniformGrid>
             </Border>
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblSiderealTime}" />
@@ -74,9 +73,9 @@
                 </UniformGrid>
             </Border>
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblMeridianIn}" />
@@ -84,9 +83,9 @@
                 </UniformGrid>
             </Border>
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblRightAscension}" />
@@ -94,9 +93,9 @@
                 </UniformGrid>
             </Border>
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblDeclination}" />
@@ -104,9 +103,9 @@
                 </UniformGrid>
             </Border>
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
 
                     <TextBlock Text="{ns:Loc LblAltitude}" />
@@ -114,9 +113,9 @@
                 </UniformGrid>
             </Border>
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblAzimuth}" />
 

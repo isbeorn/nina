@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.AutoFocusChart"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -92,36 +91,36 @@
             DataContext="{Binding LastAutoFocusPoint}"
             Orientation="Vertical">
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblTime}" />
                     <TextBlock Margin="5,0,0,0" Text="{Binding Timestamp}" />
                 </UniformGrid>
             </Border>
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblPosition}" />
                     <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.X, StringFormat=\{0:0.00\}}" />
                 </UniformGrid>
             </Border>
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblHFR}" />
                     <TextBlock Margin="5,0,0,0" Text="{Binding Focuspoint.Y, StringFormat=\{0:0.00\}}" />
                 </UniformGrid>
             </Border>
             <Border
-                MinHeight="30"
+                Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,0,1">
+                BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock Text="{ns:Loc LblTemperature}" />
                     <TextBlock Margin="5,0,0,0" Text="{Binding Temperature, StringFormat=\{0:0.00\}}" />

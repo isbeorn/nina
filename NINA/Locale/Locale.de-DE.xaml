@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -740,4 +739,9 @@ Berechneter HFR: {2}
     <s:String x:Key="LblASPSDirectory">ASPS Ort</s:String>
     <s:String x:Key="LblAscomInterOpDriverException">Eine ASCOM Treiber Interop Ausnahme ist aufgetreten. Dies passiert wahrscheinlich durch einen Unterschied zwischen dem Treiber, der als {0} installiert wurde und N.I.N.A. als {1}. Bitte den Treiber als {1} installieren.</s:String>
     <s:String x:Key="LblCanonErrorOccurred">Ein Canon Fehler ist aufgetreten: {0}</s:String>
+    <s:String x:Key="LblSkyAtlas">Sternenatlas</s:String>
+    <s:String x:Key="LblFraming">Rahmung</s:String>
+    <s:String x:Key="LblTools">Werkzeuge</s:String>
+    <s:String x:Key="LblSecondaryBackground">Sekundärer Hintergrund</s:String>
+    <s:String x:Key="LblTertiaryBackground">Tertiärer Hintergrund</s:String>
 </ResourceDictionary>

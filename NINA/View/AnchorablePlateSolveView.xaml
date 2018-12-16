@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.AnchorablePlateSolveView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -45,72 +44,72 @@
             <Grid IsEnabled="{Binding CameraInfo.Connected}">
                 <StackPanel Orientation="Vertical">
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblCenterRA}" />
                             <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.RA, StringFormat=\{0:0.000\}}" />
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblCenterRAhms}" />
                             <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.RAString}" />
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblCenterDec}" />
                             <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.Dec, StringFormat=\{0:0.000\}}" />
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblCenterDecdms}" />
                             <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.DecString}" />
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblRadius}" />
                             <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Radius, StringFormat=\{0:0.000 deg\}}" />
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblPixelScale}" />
                             <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Pixscale, StringFormat=\{0:0.00 arcsec/pixel\}}" />
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblOrientation}" />
                             <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Orientation, StringFormat=\{0:0.00\}}" />
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblEpoch}" />
                             <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.Epoch}" />
@@ -118,14 +117,14 @@
                     </Border>
 
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1" />
+                        BorderThickness="0" />
 
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSync}" />
                             <CheckBox
@@ -137,9 +136,9 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReslewToTarget}" />
                             <CheckBox
@@ -153,7 +152,7 @@
                     <Border
                         MinHeight="60"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid Rows="2">
                             <UniformGrid Columns="2">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRepeatUntil}" />
@@ -200,7 +199,7 @@
                         MySelectedGain="{Binding SnapGain, Mode=TwoWay}" />
 
                     <ninactrl:CancellableButton
-                        Height="35"
+                        Height="25"
                         Margin="10,10,10,0"
                         ButtonImage="{StaticResource PlaySVG}"
                         CancelButtonImage="{StaticResource CancelSVG}"

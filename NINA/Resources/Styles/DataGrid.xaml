@@ -22,6 +22,8 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
+        <Setter Property="HorizontalGridLinesBrush" Value="Transparent" />
     </Style>
 
     <Style TargetType="{x:Type DataGridColumnHeader}">
@@ -29,7 +31,7 @@
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderThickness" Value="0 0 0 1" />
         <Style.Triggers>
             <Trigger Property="SortDirection" Value="{x:Null}">
                 <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
@@ -68,9 +70,10 @@
     </Style>
 
     <Style TargetType="{x:Type DataGridRow}">
+        <Setter Property="MinHeight" Value="35" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="Validation.ErrorTemplate" Value="{x:Null}" />
         <Setter Property="ValidationErrorTemplate">
@@ -101,6 +104,5 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
     <Style BasedOn="{StaticResource MyDataGridCell}" TargetType="{x:Type DataGridCell}" />
 </ResourceDictionary>

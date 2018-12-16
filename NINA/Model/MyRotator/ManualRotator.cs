@@ -153,7 +153,8 @@ namespace NINA.Model.MyRotator {
 
             var clockwise = TargetPosition - Position > 0;
 
-            WindowService.ShowDialog(this, Locale.Loc.Instance["LblRotationRequired"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+            var task = WindowService.ShowDialog(this, Locale.Loc.Instance["LblRotationRequired"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+            task.Wait();
 
             Position = TargetPosition % 360;
             if (Position < 0) { Position += 360; }
