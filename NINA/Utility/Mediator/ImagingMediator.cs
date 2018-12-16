@@ -59,24 +59,24 @@ namespace NINA.Utility.Mediator {
             return handler.CaptureAndPrepareImage(sequence, token, progress);
         }
 
-        public Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
-            return handler.CaptureAndSaveImage(seq, bsave, ct, progress, targetname);
+        public Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool save, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
+            return handler.CaptureAndSaveImage(seq, save, ct, progress, targetname);
         }
 
-        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool bCalculateStatistics = true, string targetname = "") {
-            return handler.CaptureImage(sequence, token, progress, bSave, bCalculateStatistics, targetname);
+        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool save = false, bool calculateStatistics = true, string targetname = "") {
+            return handler.CaptureImage(sequence, token, progress, save, calculateStatistics, targetname);
         }
 
-        public Task<ImageArray> CaptureImageWithoutSavingToHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool bCalculateStatistics = false, string targetName = "") {
-            return handler.CaptureImageWithoutHistoryAndThumbnail(sequence, token, progress, bSave, bCalculateStatistics, targetName);
+        public Task<ImageArray> CaptureImageWithoutSavingToHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool save = false, bool calculateStatistics = false, string targetName = "") {
+            return handler.CaptureImageWithoutHistoryAndThumbnail(sequence, token, progress, save, calculateStatistics, targetName);
         }
 
         public Task<BitmapSource> PrepareImage(
                 ImageArray iarr,
                 CancellationToken token,
-                bool bSave = false,
+                bool save = false,
                 ImageParameters parameters = null) {
-            return handler.PrepareImage(iarr, token, bSave, parameters);
+            return handler.PrepareImage(iarr, token, save, parameters);
         }
 
         public event EventHandler<ImageSavedEventArgs> ImageSaved;

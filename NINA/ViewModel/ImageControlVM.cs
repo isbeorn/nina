@@ -539,10 +539,10 @@ namespace NINA.ViewModel {
         public async Task<BitmapSource> PrepareImage(
                 ImageArray iarr,
                 CancellationToken token,
-                bool bSave = false,
+                bool saveImage = false,
                 ImageParameters parameters = null,
-                bool bSaveToStatistics = true,
-                bool bSaveToHistory = true) {
+                bool addToStatistics = true,
+                bool addToHistory = true) {
             BitmapSource source = null;
             try {
                 await ss.WaitAsync(token);
@@ -586,15 +586,15 @@ namespace NINA.ViewModel {
                         GC.WaitForPendingFinalizers();
                         ImgArr = iarr;
                         Image = source;
-                        if (bSaveToStatistics)
+                        if (addToStatistics)
                             ImgStatisticsVM.Add(ImgArr.Statistics);
-                        if (bSaveToHistory)
+                        if (addToHistory)
                             ImgHistoryVM.Add(iarr.Statistics);
                     }));
 
                     AnalyzeBahtinov();
 
-                    if (bSave) {
+                    if (saveImage) {
                         await SaveToDisk(parameters, token);
                     }
                 }

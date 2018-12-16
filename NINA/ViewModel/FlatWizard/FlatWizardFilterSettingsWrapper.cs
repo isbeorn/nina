@@ -96,8 +96,8 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            RaisePropertyChanged("HistogramMeanTargetADU");
-            RaisePropertyChanged("HistogramToleranceADU");
+            RaisePropertyChanged(nameof(HistogramMeanTargetADU));
+            RaisePropertyChanged(nameof(HistogramToleranceADU));
             if (Filter?.FlatWizardFilterSettings != null) {
                 Filter.FlatWizardFilterSettings = Settings;
             }

@@ -27,11 +27,17 @@ using System.Windows.Data;
 
 namespace NINA.Utility.Converters {
 
+
+    /// <summary>
+    /// Very specific converter to convert width and a value up to 0.5 to a new width
+    /// </summary>
     internal class WidthAndValueToWidthConverter : IMultiValueConverter {
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-            double width = (double)values[0];
-            double value = (double)values[1];
+            double width;
+            double value;
+            double.TryParse((string)values[0], out width);
+            double.TryParse((string)values[1], out value);
             value = value - 0.5;
             if (value < 0) value *= -1;
             return width * value;

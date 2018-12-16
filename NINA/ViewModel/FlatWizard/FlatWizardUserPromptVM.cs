@@ -51,16 +51,16 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         private void ResetAndContinueContinueFlatWizard(object obj) {
-            continueWizard = true;
+            Continue = true;
             Reset = true;
         }
 
         private void CancelFlatWizard(object obj) {
-            continueWizard = false;
+            Continue = false;
         }
 
         private void ContinueFlatWizard(object obj) {
-            continueWizard = true;
+            Continue = true;
         }
 
         public FlatWizardFilterSettingsWrapper Settings {
@@ -76,6 +76,9 @@ namespace NINA.ViewModel.FlatWizard {
         public bool Continue {
             get {
                 return continueWizard;
+            }
+            private set {
+                continueWizard = value;
             }
         }
 
@@ -112,7 +115,5 @@ namespace NINA.ViewModel.FlatWizard {
                 RaisePropertyChanged();
             }
         }
-
-        public double ExpectedExposureTime1 { get; }
     }
 }

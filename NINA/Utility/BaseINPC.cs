@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -33,13 +34,16 @@ namespace NINA.Utility {
         [field: System.NonSerialized]
         Dictionary<string, Timer> delayedTimers = new Dictionary<string, Timer>();
 
-        protected void DelayedPropertyChanged([CallerMemberName] string propertyName = null, int delayInMs = 500) {
+        protected void DelayedPropertyChanged([CallerMemberName] string propertyName = null, TimeSpan delay = default(TimeSpan)) {
+            if (delay == default(TimeSpan)) {
+                delay = TimeSpan.FromMilliseconds(500);
+            }
             if (delayedTimers == null) {
                 delayedTimers = new Dictionary<string, Timer>();
             }
 
             if (!delayedTimers.ContainsKey(propertyName)) {
-                delayedTimers.Add(propertyName, new Timer(new TimerCallback((x) => TimedPropertyChanged(propertyName)), new object(), delayInMs, Timeout.Infinite));
+                delayedTimers.Add(propertyName, new Timer(new TimerCallback((x) => TimedPropertyChanged(propertyName)), new object(), delay.Milliseconds, Timeout.Infinite));
             }
         }
 

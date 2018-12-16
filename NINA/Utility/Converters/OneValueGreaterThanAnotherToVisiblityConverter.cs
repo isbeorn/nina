@@ -23,18 +23,28 @@
 
 using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 
 namespace NINA.Utility.Converters {
 
-    internal class DoubleToHalfConverter : IValueConverter {
+    internal class OneValueGreaterThanAnotherToVisiblityConverter : IMultiValueConverter {
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return (double)value / 2;
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+            double value0;
+            double value1;
+            if (double.TryParse((string)values[0], out value0) && double.TryParse((string)values[1], out value1))
+                if (value0 > value1) {
+                    return Visibility.Visible;
+                } else {
+                    return Visibility.Collapsed;
+                } else {
+                return Visibility.Collapsed;
+            }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            return (double)value * 2;
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
         }
     }
 }
