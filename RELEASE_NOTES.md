@@ -33,6 +33,7 @@
         - Two new background colors to better pronounce some ui elements
         - Reworked Imaging tab to have a common style.
         - Imaging tab tools pane (to hide/show panels) moved to the top and split into two separate categories
+    - Profiles don't get overriden when using multiple instances of N.I.N.A. with each one having a separate profile active
 
 ___
 
