@@ -158,6 +158,11 @@ namespace NINA.Utility.Profile {
                         //var lastActive = profiles.ProfileList.Where(x => x.Id == profiles.ActiveProfileId).FirstOrDefault();
                         var id = Profiles.ActiveProfileId;
 
+                        //Fallback if the active profile was deleted somehow
+                        if (profiles.ProfileList.Where(x => x.Id == id).FirstOrDefault() == null) {
+                            profiles.Add(Profiles.ActiveProfile);
+                        }
+
                         dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
                             Profiles.ProfileList.Clear();
                             foreach (var p in profiles.ProfileList) {
