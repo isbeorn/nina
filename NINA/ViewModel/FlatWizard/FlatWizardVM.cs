@@ -108,19 +108,6 @@ namespace NINA.ViewModel.FlatWizard {
             UpdateFilterWheelsSettings(null, null);
         }
 
-        public FlatWizardVM(IProfileService profileService,
-                            ICameraMediator cameraMediator,
-                            IFilterWheelMediator filterWheelMediator,
-                            IImagingMediator imagingMediator,
-                            IFocuserMediator focuserMediator,
-                            IApplicationStatusMediator applicationStatusMediator,
-                            List<FilterInfo> filtersToFocus,
-                            int flatCount,
-                            string targetName) : this(profileService, cameraMediator, imagingMediator, applicationStatusMediator) {
-            this.targetName = targetName;
-            FlatCount = flatCount;
-        }
-
         private enum FilterCaptureMode {
             SINGLE = 0,
             MULTI = 1
@@ -132,6 +119,8 @@ namespace NINA.ViewModel.FlatWizard {
             }
             set {
                 binningMode = value;
+                if (binningMode != profileService.ActiveProfile.FlatWizardSettings.BinningMode)
+                    profileService.ActiveProfile.FlatWizardSettings.BinningMode = binningMode;
                 RaisePropertyChanged();
             }
         }
@@ -188,7 +177,8 @@ namespace NINA.ViewModel.FlatWizard {
             }
             set {
                 flatCount = value;
-                profileService.ActiveProfile.FlatWizardSettings.FlatCount = flatCount;
+                if (flatCount != profileService.ActiveProfile.FlatWizardSettings.FlatCount)
+                    profileService.ActiveProfile.FlatWizardSettings.FlatCount = flatCount;
                 RaisePropertyChanged();
             }
         }
@@ -482,8 +472,8 @@ namespace NINA.ViewModel.FlatWizard {
                 SelectedFilter = Filters.FirstOrDefault(f => f.Filter.Name == selectedFilter.Name)?.Filter;
             }
 
-            RaisePropertyChanged("Filters");
-            RaisePropertyChanged("FilterInfos");
+            RaisePropertyChanged(nameof(Filters));
+            RaisePropertyChanged(nameof(FilterInfos));
         }
 
         private void UpdateProfileValues(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -505,10 +495,7 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
-            CameraConnected = deviceInfo.Connected;
-            if (CameraConnected) {
-                cameraInfo = deviceInfo;
-            }
+            cameraInfo = deviceInfo;
         }
     }
 }
