@@ -61,7 +61,8 @@ namespace NINA.Model.MyCamera {
                 return bitDepth;
             }
             set {
-                bitDepth = value; RaisePropertyChanged();
+                bitDepth = value;
+                RaisePropertyChanged();
             }
         }
 
