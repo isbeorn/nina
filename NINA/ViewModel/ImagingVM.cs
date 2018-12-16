@@ -332,8 +332,6 @@ namespace NINA.ViewModel {
                     /* Stop RMS Recording */
                     var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
 
-                    token.ThrowIfCancellationRequested();
-
                     if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
