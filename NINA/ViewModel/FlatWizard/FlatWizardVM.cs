@@ -496,6 +496,7 @@ namespace NINA.ViewModel.FlatWizard {
 
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
             cameraInfo = deviceInfo;
+            CameraConnected = cameraInfo.Connected;
         }
     }
 }
