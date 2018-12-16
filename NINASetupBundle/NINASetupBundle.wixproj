@@ -60,6 +60,7 @@
     <EmbeddedResource Include="RtfTheme.wxl" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="NINASetupBundle.wax" />
     <Content Include="ninasplash-small.png" />
     <Content Include="RtfTheme.xml" />
     <Content Include="vcredist_x86.exe" />

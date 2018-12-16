@@ -21,10 +21,10 @@
   <?if $(var.Platform) = x64 ?>
   <?define Win64 = "yes" ?>
   <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-  <?else ?>
+  <?else?>
   <?define Win64 = "no" ?>
   <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-  <?endif ?>
+  <?endif?>
   <?define NINA_TargetDir=$(var.NINA.TargetDir)?>
   <?define nikoncswrapper_TargetDir=$(var.nikoncswrapper.TargetDir)?>
   <?define NINACustomControlLibrary_TargetDir=$(var.NINACustomControlLibrary.TargetDir)?>
@@ -120,6 +120,8 @@
       <ComponentGroupRef Id="External_x86_ToupTek_files" />
       <ComponentGroupRef Id="External_x64_NOVAS_files" />
       <ComponentGroupRef Id="External_x86_NOVAS_files" />
+      <ComponentGroupRef Id="External_x86_SOFA_files" />
+      <ComponentGroupRef Id="External_x64_SOFA_files" />
     </Feature>
   </Product>
 
@@ -164,6 +166,7 @@
               <Directory Id="External_x64_Altair" Name="Altair" />
               <Directory Id="External_x64_ToupTek" Name="ToupTek" />
               <Directory Id="External_x64_NOVAS" Name="NOVAS" />
+              <Directory Id="External_x64_SOFA" Name="SOFA" />
             </Directory>
             <Directory Id="External_x86" Name="x86">
               <Directory Id="External_x86_Nikon" Name="Nikon">
@@ -198,6 +201,7 @@
               <Directory Id="External_x86_Altair" Name="Altair" />
               <Directory Id="External_x86_ToupTek" Name="ToupTek" />
               <Directory Id="External_x86_NOVAS" Name="NOVAS" />
+              <Directory Id="External_x86_SOFA" Name="SOFA" />
             </Directory>
           </Directory>
           <Directory Id="Utility" Name="Utility">
@@ -1238,6 +1242,20 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_NOVAS_cio_ra.bin" Guid="e1c12df7-978a-4f9a-8047-3a214036cf6d">
         <File Id="External_x86_NOVAS_cio_ra.bin" Name="cio_ra.bin" Source="$(var.NINA_TargetDir)External\x86\NOVAS\cio_ra.bin" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x86_SOFA_files" Directory="External_x86_SOFA">
+      <Component Win64="$(var.Win64)" Id="External_x86_SOFA_SOFA.dll" Guid="1b6b705a-c95d-465b-8e06-ab5c4a5ed7c9">
+        <File Id="External_x86_SOFA_SOFA.dll" Name="SOFA.dll" Source="$(var.NINA_TargetDir)External\x86\SOFA\SOFA.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_SOFA_files" Directory="External_x64_SOFA">
+      <Component Win64="$(var.Win64)" Id="External_x64_SOFA_SOFA.dll" Guid="7e84f09e-ef65-4075-93f9-34a61f47a2af">
+        <File Id="External_x64_SOFA_SOFA.dll" Name="SOFA.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFA.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
