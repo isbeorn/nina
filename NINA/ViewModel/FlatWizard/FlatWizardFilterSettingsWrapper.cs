@@ -4,8 +4,7 @@ using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
 using System;
 
-namespace NINA.ViewModel.FlatWizard
-{
+namespace NINA.ViewModel.FlatWizard {
 
     internal class FlatWizardFilterSettingsWrapper : BaseINPC, ICameraConsumer {
         private FilterInfo filterInfo;
@@ -67,8 +66,7 @@ namespace NINA.ViewModel.FlatWizard
             }
         }
 
-        public void UpdateDeviceInfo(CameraInfo deviceInfo)
-        {
+        public void UpdateDeviceInfo(CameraInfo deviceInfo) {
             cameraInfo = deviceInfo;
             RaisePropertyChanged(nameof(HistogramMeanTargetADU));
             RaisePropertyChanged(nameof(HistogramToleranceADU));

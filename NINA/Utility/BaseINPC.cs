@@ -26,75 +26,61 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace NINA.Utility
-{
+namespace NINA.Utility {
 
     [System.Serializable()]
-    public abstract class BaseINPC : INotifyPropertyChanged
-    {
+    public abstract class BaseINPC : INotifyPropertyChanged {
         [field: System.NonSerialized]
         Dictionary<string, Timer> delayedTimers = new Dictionary<string, Timer>();
 
-        protected void DelayedPropertyChanged([CallerMemberName] string propertyName = null, int delayInMs = 500)
-        {
-            if (delayedTimers == null)
-            {
+        protected void DelayedPropertyChanged([CallerMemberName] string propertyName = null, int delayInMs = 500) {
+            if (delayedTimers == null) {
                 delayedTimers = new Dictionary<string, Timer>();
             }
 
-            if (!delayedTimers.ContainsKey(propertyName))
-            {
+            if (!delayedTimers.ContainsKey(propertyName)) {
                 delayedTimers.Add(propertyName, new Timer(new TimerCallback((x) => TimedPropertyChanged(propertyName)), new object(), delayInMs, Timeout.Infinite));
             }
         }
 
-        private void TimedPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            if (delayedTimers.ContainsKey(propertyName))
-            {
+        private void TimedPropertyChanged([CallerMemberName] string propertyName = null) {
+            if (delayedTimers.ContainsKey(propertyName)) {
                 delayedTimers[propertyName].Change(Timeout.Infinite, Timeout.Infinite);
                 delayedTimers.Remove(propertyName);
                 RaisePropertyChanged(propertyName);
             }
         }
 
-        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-        {
+        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         [field: System.NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void ChildChanged(object sender, PropertyChangedEventArgs e)
-        {
+        protected void ChildChanged(object sender, PropertyChangedEventArgs e) {
             RaisePropertyChanged("IsChanged");
         }
 
         protected void Items_CollectionChanged(object sender,
-               System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.OldItems != null)
-            {
+               System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+            if (e.OldItems != null) {
                 foreach (INotifyPropertyChanged item in e.OldItems)
                     item.PropertyChanged -= new
                                            PropertyChangedEventHandler(Item_PropertyChanged);
             }
-            if (e.NewItems != null)
-            {
+            if (e.NewItems != null) {
                 foreach (INotifyPropertyChanged item in e.NewItems)
                     item.PropertyChanged +=
                                        new PropertyChangedEventHandler(Item_PropertyChanged);
             }
         }
 
-        protected void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
+        protected void Item_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             RaisePropertyChanged("IsChanged");
         }
 
-        protected void RaiseAllPropertiesChanged()
-        {
+        protected void RaiseAllPropertiesChanged() {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
         }
     }
