@@ -67,7 +67,7 @@ namespace NINA.ViewModel.FlatWizard {
                             IImagingMediator imagingMediator,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFlatWizard";
-            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ContrastSVG"];
+            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FlatWizardSVG"];
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
