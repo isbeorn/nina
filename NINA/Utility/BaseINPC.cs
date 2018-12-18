@@ -42,16 +42,20 @@ namespace NINA.Utility {
                 delayedTimers = new Dictionary<string, Timer>();
             }
 
-            if (!delayedTimers.ContainsKey(propertyName)) {
-                delayedTimers.Add(propertyName, new Timer(new TimerCallback((x) => TimedPropertyChanged(propertyName)), new object(), delay.Milliseconds, Timeout.Infinite));
+            lock (delayedTimers) {
+                if (!delayedTimers.ContainsKey(propertyName)) {
+                    delayedTimers.Add(propertyName, new Timer(new TimerCallback((x) => TimedPropertyChanged(propertyName)), new object(), delay.Milliseconds, Timeout.Infinite));
+                }
             }
         }
 
         private void TimedPropertyChanged([CallerMemberName] string propertyName = null) {
-            if (delayedTimers.ContainsKey(propertyName)) {
-                delayedTimers[propertyName].Change(Timeout.Infinite, Timeout.Infinite);
-                delayedTimers.Remove(propertyName);
-                RaisePropertyChanged(propertyName);
+            lock (delayedTimers) {
+                if (delayedTimers.ContainsKey(propertyName)) {
+                    delayedTimers[propertyName].Change(Timeout.Infinite, Timeout.Infinite);
+                    delayedTimers.Remove(propertyName);
+                    RaisePropertyChanged(propertyName);
+                }
             }
         }
 
