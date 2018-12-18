@@ -23,14 +23,10 @@
 
 using NINA.Model;
 using NINA.Model.MyCamera;
-using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel;
 using NINA.ViewModel.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -65,10 +61,6 @@ namespace NINA.Utility.Mediator {
 
         public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool save = false, bool calculateStatistics = true, string targetname = "") {
             return handler.CaptureImage(sequence, token, progress, save, calculateStatistics, targetname);
-        }
-
-        public Task<ImageArray> CaptureImageWithoutSavingToHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool save = false, bool calculateStatistics = false, string targetName = "") {
-            return handler.CaptureImageWithoutHistoryAndThumbnail(sequence, token, progress, save, calculateStatistics, targetName);
         }
 
         public Task<BitmapSource> PrepareImage(

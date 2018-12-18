@@ -302,6 +302,7 @@
     <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
     <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
     <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FlatWizard\FlatWizardFilterSettingsWrapper.cs" />
     <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
@@ -512,6 +513,7 @@
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
     <Compile Include="ViewModel\FlatWizard\FlatWizardUserPromptVM.cs" />
     <Compile Include="ViewModel\FlatWizard\FlatWizardVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\IFlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
     <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />

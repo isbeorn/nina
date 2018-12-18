@@ -373,7 +373,7 @@ namespace NINA.ViewModel {
         public FlatWizardVM FlatWizardVM {
             get {
                 if (_flatWizardVM == null) {
-                    _flatWizardVM = new FlatWizardVM(profileService, flatsImagingVM, cameraMediator, applicationStatusMediator);
+                    _flatWizardVM = new FlatWizardVM(profileService, flatsImagingVM, cameraMediator, new FlatWizardExposureTimeFinderService(), applicationStatusMediator);
                 }
                 return _flatWizardVM;
             }

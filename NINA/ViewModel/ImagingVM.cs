@@ -489,8 +489,21 @@ namespace NINA.ViewModel {
             ImageControl.ImgArr = null;
         }
 
-        public Task<ImageArray> CaptureImageWithoutHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool calculateStatistics = true, string targetName = "") {
-            return CaptureImage(sequence, token, progress, bSave, "", calculateStatistics, false, false);
+        public Task<ImageArray> CaptureImageWithoutHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool calculateStatistics = true) {
+            return CaptureImage(sequence, token, progress, false, "", calculateStatistics, false, false);
+        }
+
+        public Task<ImageArray> CaptureImageWithoutProcessingAndSaveAsync(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            return CaptureImage(sequence, token, progress, true, "", false, false, false);
+        }
+
+        public async Task<BitmapSource> CaptureImageWithoutProcessingAndSaveSync(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            var iarr = await CaptureImageWithoutProcessingAndSaveAsync(sequence, token, progress);
+            if (iarr != null) {
+                return await _currentPrepareImageTask;
+            } else {
+                return null;
+            }
         }
 
         public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool calculateStatistics = true, string targetname = "") {
