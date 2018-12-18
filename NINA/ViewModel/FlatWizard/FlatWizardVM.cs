@@ -58,9 +58,8 @@ namespace NINA.ViewModel.FlatWizard {
         private int mode;
         private PauseTokenSource pauseTokenSource;
         private FlatWizardFilterSettingsWrapper singleFlatWizardFilterSettings;
-        private string targetName;
         private CameraInfo cameraInfo;
-        private ImagingVM imagingVM;
+        private readonly ImagingVM imagingVM;
 
         public FlatWizardVM(IProfileService profileService,
                             ImagingVM imagingVM,
@@ -71,15 +70,11 @@ namespace NINA.ViewModel.FlatWizard {
 
             this.imagingVM = imagingVM;
 
-            this.cameraMediator = cameraMediator;
-            this.cameraMediator.RegisterConsumer(this);
-
-            this.cameraMediator = cameraMediator;
-
             imagingVM.SetAutoStretch(false);
             imagingVM.SetDetectStars(false);
 
             this.applicationStatusMediator = applicationStatusMediator;
+            this.cameraMediator = cameraMediator;
 
             flatSequenceCts = new CancellationTokenSource();
             pauseTokenSource = new PauseTokenSource();
@@ -99,6 +94,8 @@ namespace NINA.ViewModel.FlatWizard {
                 StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize
             });
 
+            SingleFlatWizardFilterSettings.CameraInfo = cameraInfo;
+
             FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
             BinningMode = profileService.ActiveProfile.FlatWizardSettings.BinningMode;
 
@@ -107,7 +104,13 @@ namespace NINA.ViewModel.FlatWizard {
             profileService.ActiveProfile.FilterWheelSettings.PropertyChanged += UpdateFilterWheelsSettings;
             SingleFlatWizardFilterSettings.Settings.PropertyChanged += UpdateProfileValues;
 
+            // first update filters
+
             UpdateFilterWheelsSettings(null, null);
+
+            // then register consumer and get the cameraInfo so it's populated to all filters including the singleflatwizardfiltersettings
+
+            this.cameraMediator.RegisterConsumer(this);
         }
 
         private enum FilterCaptureMode {
@@ -399,11 +402,11 @@ namespace NINA.ViewModel.FlatWizard {
             try {
                 if ((FilterCaptureMode)Mode == FilterCaptureMode.SINGLE) {
                     await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings);
-                    await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings.Filter, targetName);
+                    await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings.Filter);
                 } else {
                     foreach (var filterSettings in Filters.Where(f => f.IsChecked)) {
                         await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
-                        await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, filterSettings.Filter, targetName);
+                        await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, filterSettings.Filter);
                         filterSettings.IsChecked = false;
                         CalculatedExposureTime = 0;
                         CalculatedHistogramMean = 0;
@@ -429,11 +432,11 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private async Task<bool> StartFlatCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FilterInfo filter, string targetName = "") {
+        private async Task<bool> StartFlatCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FilterInfo filter) {
             CaptureSequence sequence = new CaptureSequence(CalculatedExposureTime, "FLAT", filter, BinningMode, FlatCount);
             sequence.Gain = Gain;
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
-                await imagingVM.CaptureImageWithoutHistoryAndThumbnail(sequence, ct, progress, true, false, targetName);
+                await imagingVM.CaptureImageWithoutHistoryAndThumbnail(sequence, ct, progress, true, false);
 
                 sequence.ProgressExposureCount++;
 
@@ -498,9 +501,10 @@ namespace NINA.ViewModel.FlatWizard {
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
             cameraInfo = deviceInfo;
             CameraConnected = cameraInfo.Connected;
-            foreach(var filter in Filters) {
+            foreach (var filter in Filters) {
                 filter.CameraInfo = cameraInfo;
             }
+
             SingleFlatWizardFilterSettings.CameraInfo = cameraInfo;
         }
     }

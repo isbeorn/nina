@@ -50,7 +50,9 @@ namespace NINA.ViewModel {
             imagingMediator = new ImagingMediator();
             applicationStatusMediator = new ApplicationStatusMediator();
 
-            flatsImagingVM = new ImagingVM(profileService, imagingMediator, cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, guiderMediator, applicationStatusMediator);
+            ImagingMediator flatWizardImagingMediator = new ImagingMediator();
+
+            flatsImagingVM = new ImagingVM(profileService, flatWizardImagingMediator, cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, guiderMediator, applicationStatusMediator);
 
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
