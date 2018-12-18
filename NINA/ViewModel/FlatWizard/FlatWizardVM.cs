@@ -44,7 +44,6 @@ namespace NINA.ViewModel.FlatWizard {
     internal class FlatWizardVM : DockableVM, ICameraConsumer {
         private readonly IApplicationStatusMediator applicationStatusMediator;
         private readonly ICameraMediator cameraMediator;
-        private readonly IImagingMediator imagingMediator;
         private ApplicationStatus _status;
         private BinningMode binningMode;
         private double calculatedExposureTime;
@@ -61,21 +60,24 @@ namespace NINA.ViewModel.FlatWizard {
         private FlatWizardFilterSettingsWrapper singleFlatWizardFilterSettings;
         private string targetName;
         private CameraInfo cameraInfo;
+        private ImagingVM imagingVM;
 
         public FlatWizardVM(IProfileService profileService,
+                            ImagingVM imagingVM,
                             ICameraMediator cameraMediator,
-                            IImagingMediator imagingMediator,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFlatWizard";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FlatWizardSVG"];
 
+            this.imagingVM = imagingVM;
+
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
 
-            this.imagingMediator = imagingMediator;
+            this.cameraMediator = cameraMediator;
 
-            imagingMediator.SetAutoStretch(false);
-            imagingMediator.SetDetectStars(false);
+            imagingVM.SetAutoStretch(false);
+            imagingVM.SetDetectStars(false);
 
             this.applicationStatusMediator = applicationStatusMediator;
 
@@ -95,7 +97,7 @@ namespace NINA.ViewModel.FlatWizard {
                 MaxFlatExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime,
                 MinFlatExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime,
                 StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize
-            }, cameraMediator);
+            });
 
             FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
             BinningMode = profileService.ActiveProfile.FlatWizardSettings.BinningMode;
@@ -301,7 +303,7 @@ namespace NINA.ViewModel.FlatWizard {
                 // capture a flat
                 var sequence = new CaptureSequence(exposureTime, "FLAT", wrapper.Filter, BinningMode, 1);
                 sequence.Gain = Gain;
-                imageArray = await imagingMediator.CaptureImageWithoutSavingToHistoryAndThumbnail(sequence, ct, progress, false, true);
+                imageArray = await imagingVM.CaptureImageWithoutHistoryAndThumbnail(sequence, ct, progress, false, true);
                 Image = await ImageControlVM.StretchAsync(
                     imageArray.Statistics.Mean,
                     ImageAnalysis.CreateSourceFromArray(imageArray, System.Windows.Media.PixelFormats.Gray16),
@@ -416,8 +418,7 @@ namespace NINA.ViewModel.FlatWizard {
                 CalculatedHistogramMean = 0;
             }
 
-            await Task.Delay(1000);
-            imagingMediator.DestroyImage();
+            imagingVM.DestroyImage();
             Image = null;
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -432,7 +433,7 @@ namespace NINA.ViewModel.FlatWizard {
             CaptureSequence sequence = new CaptureSequence(CalculatedExposureTime, "FLAT", filter, BinningMode, FlatCount);
             sequence.Gain = Gain;
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
-                await imagingMediator.CaptureImageWithoutSavingToHistoryAndThumbnail(sequence, ct, progress, true, false, targetName);
+                await imagingVM.CaptureImageWithoutHistoryAndThumbnail(sequence, ct, progress, true, false, targetName);
 
                 sequence.ProgressExposureCount++;
 
@@ -451,7 +452,7 @@ namespace NINA.ViewModel.FlatWizard {
 
         private void UpdateFilterWheelsSettings(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             var selectedFilter = SelectedFilter;
-            var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings, cameraMediator)).ToList();
+            var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings)).ToList();
             FlatWizardFilterSettingsWrapper[] tempList = new FlatWizardFilterSettingsWrapper[Filters.Count];
             Filters.CopyTo(tempList, 0);
             foreach (var item in tempList) {
@@ -497,6 +498,10 @@ namespace NINA.ViewModel.FlatWizard {
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
             cameraInfo = deviceInfo;
             CameraConnected = cameraInfo.Connected;
+            foreach(var filter in Filters) {
+                filter.CameraInfo = cameraInfo;
+            }
+            SingleFlatWizardFilterSettings.CameraInfo = cameraInfo;
         }
     }
 }
