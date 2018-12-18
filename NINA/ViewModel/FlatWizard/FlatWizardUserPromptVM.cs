@@ -77,7 +77,7 @@ namespace NINA.ViewModel.FlatWizard {
             get {
                 return continueWizard;
             }
-            private set {
+            set {
                 continueWizard = value;
             }
         }

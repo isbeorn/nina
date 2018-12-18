@@ -107,7 +107,7 @@ namespace NINA.Utility.WindowService {
         }
     }
 
-    internal interface IWindowService {
+    public interface IWindowService {
 
         void Show(object content, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None);
 

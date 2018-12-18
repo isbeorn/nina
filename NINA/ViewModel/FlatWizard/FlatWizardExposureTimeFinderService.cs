@@ -21,7 +21,6 @@
 
 #endregion "copyright"
 
-
 using System;
 using System.Collections.Generic;
 using NINA.Locale;
@@ -30,19 +29,22 @@ using NINA.Utility.WindowService;
 using OxyPlot;
 
 namespace NINA.ViewModel.FlatWizard {
-    internal class FlatWizardExposureTimeFinderService : IFlatWizardExposureTimeFinderService {
+
+    public class FlatWizardExposureTimeFinderService : IFlatWizardExposureTimeFinderService {
         private List<DataPoint> dataPoints = new List<DataPoint>();
 
-        private IWindowService WindowService { get; set; } = new WindowService();
+        public IWindowService WindowService { get; set; } = new WindowService();
+
+        public ILoc Locale { get; set; } = Loc.Instance;
 
         public void ClearDataPoints() {
             dataPoints = new List<DataPoint>();
         }
 
-        public FlatWizardUserPromptVMResponse EvaluateUserPromptResult(ImageArray imageArray, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper) {
+        public async System.Threading.Tasks.Task<FlatWizardUserPromptVMResponse> EvaluateUserPromptResultAsync(IImageArray imageArray, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper) {
             var flatsWizardUserPrompt = new FlatWizardUserPromptVM(message,
                                                     imageArray.Statistics.Mean, CameraBitDepthToAdu(wrapper.CameraInfo.BitDepth), wrapper, exposureTime);
-            WindowService.ShowDialog(flatsWizardUserPrompt, Loc.Instance["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow).Wait();
+            await WindowService.ShowDialog(flatsWizardUserPrompt, Locale["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
 
             if (flatsWizardUserPrompt.Reset) {
                 ClearDataPoints();
@@ -60,18 +62,15 @@ namespace NINA.ViewModel.FlatWizard {
             return (wrapper.Settings.HistogramMeanTarget * CameraBitDepthToAdu(wrapper.CameraInfo.BitDepth) - trendLine.Offset) / trendLine.Slope;
         }
 
-        public FlatWizardExposureAduState GetFlatExposureState(ImageArray imageArray, double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
-            var histogramMeanAdu = wrapper.Settings.HistogramMeanTarget * CameraBitDepthToAdu(wrapper.CameraInfo.BitDepth);
-            var histogramMeanAduTolerance = histogramMeanAdu * wrapper.Settings.HistogramTolerance;
-            var histogramToleranceUpperBound = histogramMeanAdu + histogramMeanAduTolerance;
-            var histogramToleranceLowerBound = histogramMeanAdu - histogramMeanAduTolerance;
+        public FlatWizardExposureAduState GetFlatExposureState(IImageArray imageArray, double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
+            var histogramMeanAdu = HistogramMeanAndCameraBitDepthToAdu(wrapper.Settings.HistogramMeanTarget, wrapper.CameraInfo.BitDepth);
+            var histogramToleranceUpperBound = GetUpperToleranceAduFromAdu(histogramMeanAdu, wrapper.Settings.HistogramTolerance);
+            var histogramToleranceLowerBound = GetLowerToleranceAduFromAdu(histogramMeanAdu, wrapper.Settings.HistogramTolerance);
             var currentMean = imageArray.Statistics.Mean;
-
-            dataPoints.Add(new DataPoint(exposureTime, imageArray.Statistics.Mean));
 
             if (histogramToleranceLowerBound <= currentMean && histogramToleranceUpperBound >= currentMean) {
                 return FlatWizardExposureAduState.ExposureFinished;
-            } else if (currentMean > histogramMeanAdu + histogramMeanAduTolerance) {
+            } else if (currentMean > histogramToleranceUpperBound) {
                 return FlatWizardExposureAduState.ExposureAduAboveMean;
             } else {
                 return FlatWizardExposureAduState.ExposureAduBelowMean;
@@ -96,12 +95,36 @@ namespace NINA.ViewModel.FlatWizard {
             }
         }
 
-        private static double CameraBitDepthToAdu(double cameraBitDepth) {
+        public static double CameraBitDepthToAdu(double cameraBitDepth) {
             return Math.Pow(2, cameraBitDepth);
+        }
+
+        public static double HistogramMeanAndCameraBitDepthToAdu(double histogramMean, double cameraBitDepth) {
+            return histogramMean * CameraBitDepthToAdu(cameraBitDepth);
+        }
+
+        public static double GetLowerToleranceAduFromAdu(double histogramMeanAdu, double tolerance) {
+            return histogramMeanAdu - histogramMeanAdu * tolerance;
+        }
+
+        public static double GetUpperToleranceAduFromAdu(double histogramMeanAdu, double tolerance) {
+            return histogramMeanAdu + histogramMeanAdu * tolerance;
+        }
+
+        public static double GetLowerToleranceBoundInAdu(double histogramMean, double cameraBitDepth, double tolerance) {
+            return GetLowerToleranceAduFromAdu(HistogramMeanAndCameraBitDepthToAdu(histogramMean, cameraBitDepth), tolerance);
+        }
+
+        public static double GetUpperToleranceBoundInAdu(double histogramMean, double cameraBitDepth, double tolerance) {
+            return GetUpperToleranceAduFromAdu(HistogramMeanAndCameraBitDepthToAdu(histogramMean, cameraBitDepth), tolerance);
+        }
+
+        public void AddDataPoint(double exposureTime, double mean) {
+            dataPoints.Add(new DataPoint(exposureTime, mean));
         }
     }
 
-    internal struct FlatWizardUserPromptVMResponse {
+    public struct FlatWizardUserPromptVMResponse {
         public bool Continue;
         public double NextExposureTime;
     }

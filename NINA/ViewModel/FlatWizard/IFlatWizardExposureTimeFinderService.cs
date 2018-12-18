@@ -2,26 +2,31 @@
 using System.Threading;
 
 namespace NINA.ViewModel.FlatWizard {
-    internal interface IFlatWizardExposureTimeFinderService {
-        FlatWizardExposureAduState GetFlatExposureState(ImageArray imageArray, double exposureTime, FlatWizardFilterSettingsWrapper wrapper);
+
+    public interface IFlatWizardExposureTimeFinderService {
+
+        FlatWizardExposureAduState GetFlatExposureState(IImageArray imageArray, double exposureTime, FlatWizardFilterSettingsWrapper wrapper);
 
         FlatWizardExposureTimeState GetNextFlatExposureState(double exposureTime, FlatWizardFilterSettingsWrapper wrapper);
 
-        FlatWizardUserPromptVMResponse EvaluateUserPromptResult(ImageArray imageArray, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper);
+        System.Threading.Tasks.Task<FlatWizardUserPromptVMResponse> EvaluateUserPromptResultAsync(IImageArray imageArray, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper);
 
         double GetExpectedExposureTime(FlatWizardFilterSettingsWrapper wrapper);
 
         double GetNextExposureTime(double exposureTime, FlatWizardFilterSettingsWrapper wrapper);
+
+        void AddDataPoint(double exposureTime, double mean);
+
         void ClearDataPoints();
     }
 
-    enum FlatWizardExposureAduState {
+    public enum FlatWizardExposureAduState {
         ExposureFinished,
         ExposureAduAboveMean,
         ExposureAduBelowMean
     }
 
-    enum FlatWizardExposureTimeState {
+    public enum FlatWizardExposureTimeState {
         ExposureTimeWithinBounds,
         ExposureTimeAboveMaxTime,
         ExposureTimeBelowMinTime

@@ -25,7 +25,7 @@ using NINA.Utility;
 
 namespace NINA.Model.MyCamera {
 
-    internal class CameraInfo : DeviceInfo {
+    public class CameraInfo : DeviceInfo {
         private bool hasShutter;
 
         public bool HasShutter {

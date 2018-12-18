@@ -29,7 +29,7 @@ using System;
 
 namespace NINA.ViewModel.FlatWizard {
 
-    internal class FlatWizardFilterSettingsWrapper : BaseINPC {
+    public class FlatWizardFilterSettingsWrapper : BaseINPC {
         private FilterInfo filterInfo;
 
         private bool isChecked = false;
@@ -56,14 +56,14 @@ namespace NINA.ViewModel.FlatWizard {
 
         public string HistogramMeanTargetADU {
             get {
-                return (settings.HistogramMeanTarget * Math.Pow(2, CameraInfo.BitDepth)).ToString("0");
+                return FlatWizardExposureTimeFinderService.HistogramMeanAndCameraBitDepthToAdu(settings.HistogramMeanTarget, CameraInfo.BitDepth).ToString("0");
             }
         }
 
         public string HistogramToleranceADU {
             get {
-                double histogrammean = settings.HistogramMeanTarget * Math.Pow(2, CameraInfo.BitDepth);
-                return (histogrammean - histogrammean * settings.HistogramTolerance).ToString("0") + " - " + (histogrammean + histogrammean * settings.HistogramTolerance).ToString("0");
+                return FlatWizardExposureTimeFinderService.GetLowerToleranceBoundInAdu(settings.HistogramMeanTarget, CameraInfo.BitDepth, settings.HistogramTolerance).ToString("0")
+                    + " - " + FlatWizardExposureTimeFinderService.GetUpperToleranceBoundInAdu(settings.HistogramMeanTarget, CameraInfo.BitDepth, settings.HistogramTolerance).ToString("0");
             }
         }
 

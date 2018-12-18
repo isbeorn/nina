@@ -291,7 +291,7 @@ namespace NINA.ViewModel.FlatWizard {
                     case FlatWizardExposureTimeState.ExposureTimeBelowMinTime:
                         exposureTime = flatWizardExposureTimeService.GetNextExposureTime(exposureTime, wrapper);
 
-                        var result = flatWizardExposureTimeService.EvaluateUserPromptResult(imageArray, exposureTime, Loc.Instance["LblFlatUserPromptFlatTooDim"], wrapper);
+                        var result = await flatWizardExposureTimeService.EvaluateUserPromptResultAsync(imageArray, exposureTime, Loc.Instance["LblFlatUserPromptFlatTooDim"], wrapper);
 
                         if (!result.Continue) {
                             flatSequenceCts.Cancel();
@@ -300,6 +300,7 @@ namespace NINA.ViewModel.FlatWizard {
                             progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFlatExposureCalcContinue"], imageArray.Statistics.Mean, exposureTime), Source = Title });
                         }
                         break;
+
                     default:
                         break;
                 }
@@ -316,6 +317,7 @@ namespace NINA.ViewModel.FlatWizard {
 
                 // check for exposure ADU state
                 exposureState = flatWizardExposureTimeService.GetFlatExposureState(imageArray, exposureTime, wrapper);
+                flatWizardExposureTimeService.AddDataPoint(exposureTime, imageArray.Statistics.Mean);
 
                 switch (exposureState) {
                     case FlatWizardExposureAduState.ExposureFinished:
@@ -323,14 +325,16 @@ namespace NINA.ViewModel.FlatWizard {
                         CalculatedExposureTime = exposureTime;
                         progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFlatExposureCalcFinished"], CalculatedHistogramMean, CalculatedExposureTime), Source = Title });
                         break;
+
                     case FlatWizardExposureAduState.ExposureAduBelowMean:
                         exposureTime = flatWizardExposureTimeService.GetNextExposureTime(exposureTime, wrapper);
                         progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFlatExposureCalcContinue"], imageArray.Statistics.Mean, exposureTime), Source = Title });
                         break;
+
                     case FlatWizardExposureAduState.ExposureAduAboveMean:
                         exposureTime = flatWizardExposureTimeService.GetNextExposureTime(exposureTime, wrapper);
 
-                        var result = flatWizardExposureTimeService.EvaluateUserPromptResult(imageArray, exposureTime, Loc.Instance["LblFlatUserPromptFlatTooBright"], wrapper);
+                        var result = await flatWizardExposureTimeService.EvaluateUserPromptResultAsync(imageArray, exposureTime, Loc.Instance["LblFlatUserPromptFlatTooBright"], wrapper);
 
                         if (!result.Continue) {
                             flatSequenceCts.Cancel();
@@ -384,7 +388,6 @@ namespace NINA.ViewModel.FlatWizard {
             } catch (OperationCanceledException) {
                 Utility.Notification.Notification.ShowWarning(Loc.Instance["LblFlatSequenceCancelled"]);
                 progress.Report(new ApplicationStatus { Status = Loc.Instance["LblFlatSequenceCancelled"], Source = Title });
-
             } finally {
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;

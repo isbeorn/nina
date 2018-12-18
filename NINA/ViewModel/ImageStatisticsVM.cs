@@ -36,7 +36,7 @@ namespace NINA.ViewModel {
 
         private double _recommendedExposureTime;
 
-        private ImageStatistics _statistics;
+        private IImageStatistics _statistics;
 
         public ImageStatisticsVM(IProfileService profileService) : base(profileService) {
             Title = "LblStatistics";
@@ -95,7 +95,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public ImageStatistics Statistics {
+        public IImageStatistics Statistics {
             get {
                 return _statistics;
             }
@@ -134,7 +134,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public void Add(ImageStatistics stats) {
+        public void Add(IImageStatistics stats) {
             Statistics = stats;
 
             if (stats.ExposureTime > 0) {
