@@ -88,9 +88,11 @@ namespace NINA.ViewModel.FlatWizard {
             }
         }
 
-        internal CameraInfo CameraInfo {
-            get => cameraInfo;
-            set => {
+        public CameraInfo CameraInfo {
+            get {
+                return cameraInfo;
+            }
+            set {
                 cameraInfo = value;
                 RaisePropertyChanged(nameof(HistogramMeanTargetADU));
                 RaisePropertyChanged(nameof(HistogramToleranceADU));
