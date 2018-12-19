@@ -9,6 +9,8 @@
     ### Camera Control
         - Altair native driver support
         - ToupTek native driver support
+	### Flat Wizard
+		- Supports you taking flats
 
 ## Bugfixes
 

@@ -34,13 +34,13 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface ICameraMediator : IDeviceMediator<ICameraVM, ICameraConsumer, CameraInfo> {
+    public interface ICameraMediator : IDeviceMediator<ICameraVM, ICameraConsumer, CameraInfo> {
 
         Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress);
 
         IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);
 
-        Task<ImageArray> Download(CancellationToken token);
+        Task<ImageArray> Download(CancellationToken token, bool calculateStatistics);
 
         void AbortExposure();
 

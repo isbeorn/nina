@@ -26,6 +26,7 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.ViewModel.FlatWizard;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -358,6 +359,25 @@ namespace NINA.ViewModel {
             }
             set {
                 _weatherDataVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private FlatWizardVM _flatWizardVM;
+
+        public FlatWizardVM FlatWizardVM {
+            get {
+                if (_flatWizardVM == null) {
+                    _flatWizardVM = new FlatWizardVM(profileService,
+                        new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, guiderMediator, applicationStatusMediator),
+                        cameraMediator,
+                        new ResourceUtil(),
+                        applicationStatusMediator);
+                }
+                return _flatWizardVM;
+            }
+            set {
+                _flatWizardVM = value;
                 RaisePropertyChanged();
             }
         }

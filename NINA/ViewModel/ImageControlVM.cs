@@ -362,7 +362,7 @@ namespace NINA.ViewModel {
             get {
                 return _imgArr;
             }
-            private set {
+            set {
                 _imgArr = value;
                 RaisePropertyChanged();
             }
@@ -404,7 +404,7 @@ namespace NINA.ViewModel {
             get {
                 return _image;
             }
-            private set {
+            set {
                 _image = value;
                 if (_image != null) {
                     ResizeRectangleToImageSize(_image, BahtinovRectangle);
@@ -539,8 +539,10 @@ namespace NINA.ViewModel {
         public async Task<BitmapSource> PrepareImage(
                 ImageArray iarr,
                 CancellationToken token,
-                bool bSave = false,
-                ImageParameters parameters = null) {
+                bool saveImage = false,
+                ImageParameters parameters = null,
+                bool addToStatistics = true,
+                bool addToHistory = true) {
             BitmapSource source = null;
             try {
                 await ss.WaitAsync(token);
@@ -584,13 +586,15 @@ namespace NINA.ViewModel {
                         GC.WaitForPendingFinalizers();
                         ImgArr = iarr;
                         Image = source;
-                        ImgStatisticsVM.Add(iarr.Statistics);
-                        ImgHistoryVM.Add(iarr.Statistics);
+                        if (addToStatistics)
+                            ImgStatisticsVM.Add(ImgArr.Statistics);
+                        if (addToHistory)
+                            ImgHistoryVM.Add(iarr.Statistics);
                     }));
 
                     AnalyzeBahtinov();
 
-                    if (bSave) {
+                    if (saveImage) {
                         await SaveToDisk(parameters, token);
                     }
                 }

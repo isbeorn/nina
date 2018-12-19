@@ -49,7 +49,10 @@ namespace NINA.Utility.Profile {
     [KnownType(typeof(SequenceSettings))]
     [KnownType(typeof(TelescopeSettings))]
     [KnownType(typeof(WeatherDataSettings))]
+    [KnownType(typeof(FlatWizardSettings))]
     public class Profile : BaseINPC, IProfile {
+
+        private const int PROFILESAVE_DELAY = 1000;
 
         public Profile() {
             Initialize();
@@ -77,6 +80,10 @@ namespace NINA.Utility.Profile {
             SequenceSettings.PropertyChanged += SettingsChanged;
             TelescopeSettings.PropertyChanged += SettingsChanged;
             WeatherDataSettings.PropertyChanged += SettingsChanged;
+            if (FlatWizardSettings == null) {
+                FlatWizardSettings = new FlatWizardSettings();
+            }
+            FlatWizardSettings.PropertyChanged += SettingsChanged;
         }
 
         [OnDeserialized]
@@ -85,7 +92,7 @@ namespace NINA.Utility.Profile {
         }
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            RaisePropertyChanged("Settings");
+            DelayedPropertyChanged("Settings", TimeSpan.FromMilliseconds(PROFILESAVE_DELAY));
         }
 
         public Profile(string name) : this() {
@@ -192,5 +199,8 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public IWeatherDataSettings WeatherDataSettings { get; set; } = new WeatherDataSettings();
+
+        [DataMember]
+        public IFlatWizardSettings FlatWizardSettings { get; set; }
     }
 }

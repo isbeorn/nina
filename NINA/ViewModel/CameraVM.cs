@@ -304,7 +304,8 @@ namespace NINA.ViewModel {
                                 TemperatureSetPoint = Cam.TemperatureSetPoint,
                                 XSize = Cam.CameraXSize,
                                 YSize = Cam.CameraYSize,
-                                Battery = Cam.BatteryLevel
+                                Battery = Cam.BatteryLevel,
+                                BitDepth = Cam.BitDepth
                             };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
@@ -475,6 +476,7 @@ namespace NINA.ViewModel {
             });
         }
 
+
         public async Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (CameraInfo.Connected == true) {
                 Cam.StartExposure(exposureTime, isLightFrame);
@@ -489,6 +491,7 @@ namespace NINA.ViewModel {
                     ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
                 });
                 /* Wait for Capture */
+
                 if (exposureTime >= 1) {
                     await Task.Run(async () => {
                         do {
@@ -539,9 +542,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Task<ImageArray> Download(CancellationToken token) {
+        public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
             if (CameraInfo.Connected == true) {
-                return Cam.DownloadExposure(token);
+                var output = Cam.DownloadExposure(token, calculateStatistics);
+                return output;
             } else {
                 return null;
             }

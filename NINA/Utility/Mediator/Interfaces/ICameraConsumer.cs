@@ -30,6 +30,6 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface ICameraConsumer : IDeviceConsumer<CameraInfo> {
+    public interface ICameraConsumer : IDeviceConsumer<CameraInfo> {
     }
 }
