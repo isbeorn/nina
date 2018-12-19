@@ -7,6 +7,10 @@ using NINA.Utility.Profile;
 using NINA.Locale;
 using FluentAssertions;
 using NINA.Utility;
+using NINA.Model.MyCamera;
+using System.Linq;
+using NINA.Model.MyFilterWheel;
+using System.Collections.Generic;
 
 namespace NINATest {
 
@@ -28,19 +32,40 @@ namespace NINATest {
 
         [OneTimeSetUp]
         public void Init() {
-        }
-
-        [Test]
-        public void TestConstructor() {
-            // setup
             profileServiceMock.SetupGet(m => m.ActiveProfile).Returns(profileMock.Object);
             profileMock.SetupGet(m => m.FlatWizardSettings).Returns(flatWizardSettingsMock.Object);
             profileMock.SetupGet(m => m.CameraSettings).Returns(cameraSettingsMock.Object);
             profileMock.SetupGet(m => m.FilterWheelSettings).Returns(filterWheelSettingsMock.Object);
             filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
-                .Returns(new ObserveAllCollection<NINA.Model.MyFilterWheel.FilterInfo>());
+                .Returns(new ObserveAllCollection<FilterInfo>());
+        }
+
+        [Test]
+        public void Constructor_WhenInitialized_DoAllNecessaryCallsAndVerifyData() {
+            // setup (reinit all mocks due to checks for multiple usages)
+            profileServiceMock = new Mock<IProfileService>();
+            imagingVMMock = new Mock<IImagingVM>();
+            cameraMediatorMock = new Mock<ICameraMediator>();
+            applicationStatusMediatorMock = new Mock<IApplicationStatusMediator>();
+            exposureServiceMock = new Mock<IFlatWizardExposureTimeFinderService>();
+            localeMock = new Mock<ILoc>();
+            resourceUtilMock = new Mock<IResourceUtil>();
+            profileMock = new Mock<IProfile>();
+            flatWizardSettingsMock = new Mock<IFlatWizardSettings>();
+            cameraSettingsMock = new Mock<ICameraSettings>();
+            filterWheelSettingsMock = new Mock<IFilterWheelSettings>();
+            profileServiceMock.SetupGet(m => m.ActiveProfile).Returns(profileMock.Object);
+            profileMock.SetupGet(m => m.FlatWizardSettings).Returns(flatWizardSettingsMock.Object);
+            profileMock.SetupGet(m => m.CameraSettings).Returns(cameraSettingsMock.Object);
+            profileMock.SetupGet(m => m.FilterWheelSettings).Returns(filterWheelSettingsMock.Object);
+            List<FilterInfo> filters = new List<FilterInfo>() {
+                new FilterInfo("Filter", 0, 0), new FilterInfo("FIlter2", 0, 0)
+            };
+            filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
+                .Returns(new ObserveAllCollection<FilterInfo>(filters));
 
             // act
+
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
                 cameraMediatorMock.Object, resourceUtilMock.Object,
                 applicationStatusMediatorMock.Object) {
@@ -73,6 +98,37 @@ namespace NINATest {
             filterWheelSettingsMock.Verify(m => m.FilterWheelFilters, Times.Once);
 
             cameraMediatorMock.Verify(m => m.RegisterConsumer(sut), Times.Once);
+
+            sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
+        }
+
+        [Test]
+        public void UpdateDeviceInfo_WhenCalled_SetVariablesAndCameraInfoInAllFilters() {
+            filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
+                .Returns(new ObserveAllCollection<FilterInfo>() {
+                    new FilterInfo("Filter", 0, 0), new FilterInfo("FIlter2", 0, 0)
+                });
+            // setup
+            sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
+                cameraMediatorMock.Object, resourceUtilMock.Object,
+                applicationStatusMediatorMock.Object) {
+                FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
+                Locale = localeMock.Object,
+            };
+
+            CameraInfo cameraInfo = new CameraInfo {
+                Connected = true,
+                BitDepth = 16
+            };
+
+            // act
+            sut.UpdateDeviceInfo(cameraInfo);
+
+            // assert
+
+            sut.CameraConnected.Should().BeTrue();
+            sut.SingleFlatWizardFilterSettings.CameraInfo.Should().BeEquivalentTo(cameraInfo);
+            sut.Filters.Select(m => m.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
         }
     }
 }
