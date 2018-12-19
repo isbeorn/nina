@@ -21,12 +21,12 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections.Generic;
 using NINA.Locale;
 using NINA.Model.MyCamera;
 using NINA.Utility.WindowService;
 using OxyPlot;
+using System;
+using System.Collections.Generic;
 
 namespace NINA.ViewModel.FlatWizard {
 
@@ -57,7 +57,7 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         public double GetExpectedExposureTime(FlatWizardFilterSettingsWrapper wrapper) {
-            TrendLine trendLine = new TrendLine(dataPoints);
+            var trendLine = new TrendLine(dataPoints);
 
             return (wrapper.Settings.HistogramMeanTarget * CameraBitDepthToAdu(wrapper.CameraInfo.BitDepth) - trendLine.Offset) / trendLine.Slope;
         }
@@ -70,29 +70,33 @@ namespace NINA.ViewModel.FlatWizard {
 
             if (histogramToleranceLowerBound <= currentMean && histogramToleranceUpperBound >= currentMean) {
                 return FlatWizardExposureAduState.ExposureFinished;
-            } else if (currentMean > histogramToleranceUpperBound) {
-                return FlatWizardExposureAduState.ExposureAduAboveMean;
-            } else {
-                return FlatWizardExposureAduState.ExposureAduBelowMean;
             }
+
+            if (currentMean > histogramToleranceUpperBound) {
+                return FlatWizardExposureAduState.ExposureAduAboveMean;
+            }
+
+            return FlatWizardExposureAduState.ExposureAduBelowMean;
         }
 
         public FlatWizardExposureTimeState GetNextFlatExposureState(double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
             if (exposureTime > wrapper.Settings.MaxFlatExposureTime) {
                 return FlatWizardExposureTimeState.ExposureTimeAboveMaxTime;
-            } else if (exposureTime < wrapper.Settings.MinFlatExposureTime) {
-                return FlatWizardExposureTimeState.ExposureTimeBelowMinTime;
-            } else {
-                return FlatWizardExposureTimeState.ExposureTimeWithinBounds;
             }
+
+            if (exposureTime < wrapper.Settings.MinFlatExposureTime) {
+                return FlatWizardExposureTimeState.ExposureTimeBelowMinTime;
+            }
+
+            return FlatWizardExposureTimeState.ExposureTimeWithinBounds;
         }
 
         public double GetNextExposureTime(double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
             if (dataPoints.Count >= 3) {
                 return GetExpectedExposureTime(wrapper);
-            } else {
-                return exposureTime += wrapper.Settings.StepSize;
             }
+
+            return exposureTime + wrapper.Settings.StepSize;
         }
 
         public static double CameraBitDepthToAdu(double cameraBitDepth) {
