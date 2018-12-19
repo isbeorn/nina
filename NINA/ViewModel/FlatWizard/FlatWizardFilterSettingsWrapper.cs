@@ -24,8 +24,6 @@
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
-using NINA.Utility.Mediator.Interfaces;
-using System;
 
 namespace NINA.ViewModel.FlatWizard {
 

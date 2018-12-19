@@ -659,6 +659,9 @@
     <Compile Include="View\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\FlatWizardFilterSettingsWrapperView.xaml.cs">
+      <DependentUpon>FlatWizardFilterSettingsWrapperView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\FlatWizardUserPrompt.xaml.cs">
       <DependentUpon>FlatWizardUserPrompt.xaml</DependentUpon>
     </Compile>
@@ -999,6 +1002,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FilterWheelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FlatWizardFilterSettingsWrapperView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

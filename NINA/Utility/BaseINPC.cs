@@ -31,8 +31,9 @@ namespace NINA.Utility {
 
     [System.Serializable()]
     public abstract class BaseINPC : INotifyPropertyChanged {
+
         [field: System.NonSerialized]
-        ConcurrentDictionary<string, Timer> delayedTimers = new ConcurrentDictionary<string, Timer>();
+        private ConcurrentDictionary<string, Timer> delayedTimers = new ConcurrentDictionary<string, Timer>();
 
         protected void DelayedPropertyChanged([CallerMemberName] string propertyName = null, TimeSpan delay = default(TimeSpan)) {
             if (delay == default(TimeSpan)) {
@@ -46,17 +47,14 @@ namespace NINA.Utility {
                 var timer = new Timer(new TimerCallback((x) => TimedPropertyChanged(propertyName)), new object(), delay.Milliseconds, Timeout.Infinite);
                 delayedTimers.TryAdd(propertyName, timer);
             }
-
         }
 
         private void TimedPropertyChanged([CallerMemberName] string propertyName = null) {
-            lock (delayedTimers) {
-                if (delayedTimers.ContainsKey(propertyName)) {
-                    delayedTimers[propertyName].Change(Timeout.Infinite, Timeout.Infinite);
-                    Timer t;
-                    delayedTimers.TryRemove(propertyName, out t);
-                    RaisePropertyChanged(propertyName);
-                }
+            if (delayedTimers.ContainsKey(propertyName)) {
+                delayedTimers[propertyName].Change(Timeout.Infinite, Timeout.Infinite);
+                Timer t;
+                delayedTimers.TryRemove(propertyName, out t);
+                RaisePropertyChanged(propertyName);
             }
         }
 
@@ -74,14 +72,16 @@ namespace NINA.Utility {
         protected void Items_CollectionChanged(object sender,
                System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
             if (e.OldItems != null) {
-                foreach (INotifyPropertyChanged item in e.OldItems)
+                foreach (INotifyPropertyChanged item in e.OldItems) {
                     item.PropertyChanged -= new
                                            PropertyChangedEventHandler(Item_PropertyChanged);
+                }
             }
             if (e.NewItems != null) {
-                foreach (INotifyPropertyChanged item in e.NewItems)
+                foreach (INotifyPropertyChanged item in e.NewItems) {
                     item.PropertyChanged +=
                                        new PropertyChangedEventHandler(Item_PropertyChanged);
+                }
             }
         }
 
