@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IMediator<THandler> {
+    public interface IMediator<THandler> {
 
         void RegisterHandler(THandler handler);
     }

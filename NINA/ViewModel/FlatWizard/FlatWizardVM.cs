@@ -39,10 +39,10 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.FlatWizard {
 
-    internal class FlatWizardVM : DockableVM, ICameraConsumer {
+    public class FlatWizardVM : DockableVM, IFlatWizardVM {
         private readonly IApplicationStatusMediator applicationStatusMediator;
         private readonly ICameraMediator cameraMediator;
-        private ApplicationStatus _status;
+        private ApplicationStatus status;
         private BinningMode binningMode;
         private double calculatedExposureTime;
         private double calculatedHistogramMean;
@@ -57,16 +57,18 @@ namespace NINA.ViewModel.FlatWizard {
         private PauseTokenSource pauseTokenSource;
         private FlatWizardFilterSettingsWrapper singleFlatWizardFilterSettings;
         private CameraInfo cameraInfo;
-        private readonly IImagingVM imagingVM;
+        private IResourceUtil resourceUtil;
 
         public FlatWizardVM(IProfileService profileService,
                             IImagingVM imagingVM,
                             ICameraMediator cameraMediator,
+                            IResourceUtil resourceUtil,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFlatWizard";
-            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["FlatWizardSVG"];
+            this.resourceUtil = resourceUtil;
+            ImageGeometry = (System.Windows.Media.GeometryGroup)resourceUtil["FlatWizardSVG"];
 
-            this.imagingVM = imagingVM;
+            ImagingVM = imagingVM;
 
             imagingVM.SetAutoStretch(false);
             imagingVM.SetDetectStars(false);
@@ -115,6 +117,10 @@ namespace NINA.ViewModel.FlatWizard {
             SINGLE = 0,
             MULTI = 1
         }
+
+        public IImagingVM ImagingVM { get; private set; }
+
+        public ILoc Locale { get; set; } = Loc.Instance;
 
         public IFlatWizardExposureTimeFinderService FlatWizardExposureTimeFinderService { get; set; } = new FlatWizardExposureTimeFinderService();
 
@@ -257,15 +263,15 @@ namespace NINA.ViewModel.FlatWizard {
 
         public ApplicationStatus Status {
             get {
-                return _status;
+                return status;
             }
             set {
-                _status = value;
-                if (_status.Source == null)
-                    _status.Source = Loc.Instance["LblFlatWizardCapture"];
+                status = value;
+                if (status.Source == null)
+                    status.Source = Locale["LblFlatWizardCapture"];
                 RaisePropertyChanged();
 
-                applicationStatusMediator.StatusUpdate(_status);
+                applicationStatusMediator.StatusUpdate(status);
             }
         }
 
@@ -277,7 +283,7 @@ namespace NINA.ViewModel.FlatWizard {
             double exposureTime = wrapper.Settings.MinFlatExposureTime;
             ImageArray imageArray = null;
 
-            progress.Report(new ApplicationStatus { Status = string.Format(Loc.Instance["LblFlatExposureCalcStart"], wrapper.Settings.MinFlatExposureTime), Source = Title });
+            progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcStart"], wrapper.Settings.MinFlatExposureTime), Source = Title });
 
             FlatWizardExposureAduState exposureState = FlatWizardExposureAduState.ExposureAduBelowMean;
 
@@ -290,13 +296,13 @@ namespace NINA.ViewModel.FlatWizard {
                     case FlatWizardExposureTimeState.ExposureTimeBelowMinTime:
                         exposureTime = FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
 
-                        var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(imageArray, exposureTime, Loc.Instance["LblFlatUserPromptFlatTooDim"], wrapper);
+                        var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(imageArray, exposureTime, Locale["LblFlatUserPromptFlatTooDim"], wrapper);
 
                         if (!result.Continue) {
                             flatSequenceCts.Cancel();
                         } else {
                             exposureTime = result.NextExposureTime;
-                            progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFlatExposureCalcContinue"], imageArray.Statistics.Mean, exposureTime), Source = Title });
+                            progress.Report(new ApplicationStatus() { Status = string.Format(Locale["LblFlatExposureCalcContinue"], imageArray.Statistics.Mean, exposureTime), Source = Title });
                         }
                         break;
 
@@ -308,7 +314,7 @@ namespace NINA.ViewModel.FlatWizard {
                 var sequence = new CaptureSequence(exposureTime, "FLAT", wrapper.Filter, BinningMode, 1);
                 sequence.Gain = Gain;
 
-                imageArray = await imagingVM.CaptureImageWithoutHistoryAndThumbnail(sequence, ct, progress, true);
+                imageArray = await ImagingVM.CaptureImageWithoutHistoryAndThumbnail(sequence, ct, progress, true);
                 Image = await ImageControlVM.StretchAsync(
                     imageArray.Statistics.Mean,
                     ImageAnalysis.CreateSourceFromArray(imageArray, System.Windows.Media.PixelFormats.Gray16),
@@ -322,18 +328,18 @@ namespace NINA.ViewModel.FlatWizard {
                     case FlatWizardExposureAduState.ExposureFinished:
                         CalculatedHistogramMean = imageArray.Statistics.Mean;
                         CalculatedExposureTime = exposureTime;
-                        progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFlatExposureCalcFinished"], CalculatedHistogramMean, CalculatedExposureTime), Source = Title });
+                        progress.Report(new ApplicationStatus() { Status = string.Format(Locale["LblFlatExposureCalcFinished"], CalculatedHistogramMean, CalculatedExposureTime), Source = Title });
                         break;
 
                     case FlatWizardExposureAduState.ExposureAduBelowMean:
                         exposureTime = FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
-                        progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFlatExposureCalcContinue"], imageArray.Statistics.Mean, exposureTime), Source = Title });
+                        progress.Report(new ApplicationStatus() { Status = string.Format(Locale["LblFlatExposureCalcContinue"], imageArray.Statistics.Mean, exposureTime), Source = Title });
                         break;
 
                     case FlatWizardExposureAduState.ExposureAduAboveMean:
                         exposureTime = FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
 
-                        var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(imageArray, exposureTime, Loc.Instance["LblFlatUserPromptFlatTooBright"], wrapper);
+                        var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(imageArray, exposureTime, Locale["LblFlatUserPromptFlatTooBright"], wrapper);
 
                         if (!result.Continue) {
                             flatSequenceCts.Cancel();
@@ -359,7 +365,7 @@ namespace NINA.ViewModel.FlatWizard {
             if (pt.IsPaused) {
                 // if paused we'll wait until user unpaused here
                 IsPaused = true;
-                progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblPaused"], Source = Title });
+                progress.Report(new ApplicationStatus() { Status = Locale["LblPaused"], Source = Title });
                 await pt.WaitWhilePausedAsync(ct);
                 IsPaused = false;
             }
@@ -385,15 +391,15 @@ namespace NINA.ViewModel.FlatWizard {
                     }
                 }
             } catch (OperationCanceledException) {
-                Utility.Notification.Notification.ShowWarning(Loc.Instance["LblFlatSequenceCancelled"]);
-                progress.Report(new ApplicationStatus { Status = Loc.Instance["LblFlatSequenceCancelled"], Source = Title });
+                Utility.Notification.Notification.ShowWarning(Locale["LblFlatSequenceCancelled"]);
+                progress.Report(new ApplicationStatus { Status = Locale["LblFlatSequenceCancelled"], Source = Title });
             } finally {
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;
                 FlatWizardExposureTimeFinderService.ClearDataPoints();
             }
 
-            imagingVM.DestroyImage();
+            ImagingVM.DestroyImage();
             Image = null;
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -409,16 +415,16 @@ namespace NINA.ViewModel.FlatWizard {
             sequence.Gain = Gain;
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
                 if (sequence.ProgressExposureCount != sequence.TotalExposureCount) {
-                    await imagingVM.CaptureImageWithoutProcessingAndSaveAsync(sequence, ct, progress);
+                    await ImagingVM.CaptureImageWithoutProcessingAndSaveAsync(sequence, ct, progress);
                 } else {
-                    await imagingVM.CaptureImageWithoutProcessingAndSaveSync(sequence, ct, progress);
+                    await ImagingVM.CaptureImageWithoutProcessingAndSaveSync(sequence, ct, progress);
                 }
 
                 sequence.ProgressExposureCount++;
 
                 if (pt.IsPaused) {
                     IsPaused = true;
-                    progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblPaused"], Source = Title });
+                    progress.Report(new ApplicationStatus() { Status = Locale["LblPaused"], Source = Title });
                     await pt.WaitWhilePausedAsync(ct);
                     IsPaused = false;
                 }

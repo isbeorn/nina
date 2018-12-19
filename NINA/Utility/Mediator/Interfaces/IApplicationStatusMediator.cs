@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IApplicationStatusMediator : IMediator<IApplicationStatusVM> {
+    public interface IApplicationStatusMediator : IMediator<IApplicationStatusVM> {
 
         void StatusUpdate(ApplicationStatus status);
     }

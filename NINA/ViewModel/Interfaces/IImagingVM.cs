@@ -30,7 +30,7 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.Interfaces {
 
-    internal interface IImagingVM {
+    public interface IImagingVM {
 
         bool SetDetectStars(bool value);
 

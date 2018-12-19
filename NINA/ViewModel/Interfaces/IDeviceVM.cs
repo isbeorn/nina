@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Interfaces {
 
-    internal interface IDeviceVM<TInfo> {
+    public interface IDeviceVM<TInfo> {
 
         Task<bool> Connect();
 
