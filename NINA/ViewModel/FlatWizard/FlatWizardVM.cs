@@ -447,6 +447,7 @@ namespace NINA.ViewModel.FlatWizard {
             }
 
             foreach (var item in newList) {
+                item.CameraInfo = cameraInfo;
                 Filters.Add(item);
             }
 

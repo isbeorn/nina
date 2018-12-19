@@ -11,6 +11,7 @@ using NINA.Model.MyCamera;
 using System.Linq;
 using NINA.Model.MyFilterWheel;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace NINATest {
 
@@ -129,6 +130,54 @@ namespace NINATest {
             sut.CameraConnected.Should().BeTrue();
             sut.SingleFlatWizardFilterSettings.CameraInfo.Should().BeEquivalentTo(cameraInfo);
             sut.Filters.Select(m => m.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
+        }
+
+        [Test]
+        public void UpdateFilterWheelSettings_WhenCalled_UpdateFiltersList() {
+            // setup
+            var filters = new List<FilterInfo>() { new FilterInfo("Filter", 0, 0), new FilterInfo("Filter2", 0, 0) };
+            filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
+                .Returns(new ObserveAllCollection<FilterInfo>(filters));
+
+            sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
+                cameraMediatorMock.Object, resourceUtilMock.Object,
+                applicationStatusMediatorMock.Object) {
+                FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
+                Locale = localeMock.Object,
+            };
+
+            CameraInfo cameraInfo = new CameraInfo {
+                Connected = true,
+                BitDepth = 16
+            };
+
+            // pre-assert
+            sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
+
+            // remove one filter
+            filters = new List<FilterInfo>() { new FilterInfo("Filter2", 0, 0) };
+            filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
+                .Returns(new ObserveAllCollection<FilterInfo>(filters));
+
+            // act by firing the propertychanged event and also update the camera info on existing filters
+            filterWheelSettingsMock.Raise(f => f.PropertyChanged += null, new PropertyChangedEventArgs(""));
+            sut.UpdateDeviceInfo(cameraInfo);
+
+            // assert cameraInfo on all filters and unused filters are removed
+            sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
+            sut.Filters.Select(f => f.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
+
+            // add another filter
+            filters = new List<FilterInfo>() { new FilterInfo("Filter2", 0, 0), new FilterInfo("Filter3", 0, 0) };
+            filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
+                .Returns(new ObserveAllCollection<FilterInfo>(filters));
+
+            // act by firing propertychanged again
+            filterWheelSettingsMock.Raise(f => f.PropertyChanged += null, new PropertyChangedEventArgs(""));
+
+            // assert cameraInfo still on all filters even on the ones that were added
+            sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
+            sut.Filters.Select(f => f.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
         }
     }
 }
