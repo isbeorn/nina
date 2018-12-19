@@ -78,7 +78,7 @@ namespace NINA.Utility.Astrometry {
                     // fit the three reference positions into a quadratic equation
                     var a = 0.5 * (altitude2 + altitude0) - altitude1;
                     var b = 0.5 * (altitude2 - altitude0);
-                    var c = altitude0;
+                    var c = altitude1;
 
                     // x = -b +- Sqrt(b² - 4ac) / 2a   --- https://de.khanacademy.org/math/algebra/quadratics/solving-quadratics-using-the-quadratic-formula/a/discriminant-review
 
