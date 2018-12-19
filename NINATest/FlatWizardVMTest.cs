@@ -133,7 +133,7 @@ namespace NINATest {
         }
 
         [Test]
-        public void UpdateFilterWheelSettings_WhenCalled_UpdateFiltersList() {
+        public void UpdateFilterWheelSettings_WhenCalled_UpdateFiltersListAndKeepSelectedFilter() {
             // setup
             var filters = new List<FilterInfo>() { new FilterInfo("Filter", 0, 0), new FilterInfo("Filter2", 0, 0) };
             filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
@@ -146,6 +146,9 @@ namespace NINATest {
                 Locale = localeMock.Object,
             };
 
+            var selectedFilter = filters[1];
+            sut.SelectedFilter = selectedFilter;
+
             CameraInfo cameraInfo = new CameraInfo {
                 Connected = true,
                 BitDepth = 16
@@ -153,6 +156,7 @@ namespace NINATest {
 
             // pre-assert
             sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
+            sut.SelectedFilter.Should().BeEquivalentTo(selectedFilter);
 
             // remove one filter
             filters = new List<FilterInfo>() { new FilterInfo("Filter2", 0, 0) };
@@ -166,6 +170,7 @@ namespace NINATest {
             // assert cameraInfo on all filters and unused filters are removed
             sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
             sut.Filters.Select(f => f.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
+            sut.SelectedFilter.Should().BeEquivalentTo(selectedFilter);
 
             // add another filter
             filters = new List<FilterInfo>() { new FilterInfo("Filter2", 0, 0), new FilterInfo("Filter3", 0, 0) };
@@ -178,6 +183,7 @@ namespace NINATest {
             // assert cameraInfo still on all filters even on the ones that were added
             sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
             sut.Filters.Select(f => f.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
+            sut.SelectedFilter.Should().BeEquivalentTo(selectedFilter);
         }
     }
 }
