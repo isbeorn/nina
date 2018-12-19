@@ -29,7 +29,7 @@ using System.Windows.Data;
 
 namespace NINA.Locale {
 
-    internal class Loc : BaseINPC {
+    public class Loc : BaseINPC, ILoc {
 
         private Loc() {
         }

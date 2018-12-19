@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IDeviceConsumer<TInfo> {
+    public interface IDeviceConsumer<TInfo> {
 
         void UpdateDeviceInfo(TInfo deviceInfo);
     }

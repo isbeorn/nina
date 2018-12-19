@@ -25,7 +25,7 @@ using NINA.Utility;
 
 namespace NINA.Model.MyCamera {
 
-    internal class CameraInfo : DeviceInfo {
+    public class CameraInfo : DeviceInfo {
         private bool hasShutter;
 
         public bool HasShutter {
@@ -52,6 +52,18 @@ namespace NINA.Model.MyCamera {
         public short BinX {
             get { return binxX; }
             set { binxX = value; RaisePropertyChanged(); }
+        }
+
+        private int bitDepth;
+
+        public int BitDepth {
+            get {
+                return bitDepth;
+            }
+            set {
+                bitDepth = value;
+                RaisePropertyChanged();
+            }
         }
 
         private short binY;

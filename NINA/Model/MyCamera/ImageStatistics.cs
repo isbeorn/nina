@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
 
-    public class ImageStatistics : BaseINPC {
+    public class ImageStatistics : BaseINPC, IImageStatistics {
 
         /// <summary>
         /// Create new instance of ImageStatistics

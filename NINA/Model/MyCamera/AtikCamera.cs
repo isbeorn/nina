@@ -408,7 +408,7 @@ namespace NINA.Model.MyCamera {
             RaisePropertyChanged(nameof(Connected));
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
             using (MyStopWatch.Measure("ATIK Download")) {
                 return await Task.Run<ImageArray>(async () => {
                     try {
@@ -416,7 +416,7 @@ namespace NINA.Model.MyCamera {
                             await Task.Delay(100, token);
                         } while (!AtikCameraDll.ImageReady(_cameraP));
 
-                        return await AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                        return await AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
                         Logger.Error(ex);

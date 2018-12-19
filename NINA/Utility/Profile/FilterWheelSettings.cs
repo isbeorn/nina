@@ -24,6 +24,7 @@
 using NINA.Model.MyFilterWheel;
 using NINA.Utility.Mediator;
 using System;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
@@ -41,6 +42,14 @@ namespace NINA.Utility.Profile {
             set {
                 id = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        [OnDeserialized]
+        public void Deserializing(StreamingContext context) {
+            // set default flatwizardsettings
+            foreach (FilterInfo filter in filterWheelFilters.Where(f => f.FlatWizardFilterSettings == null)) {
+                filter.FlatWizardFilterSettings = new FlatWizardFilterSettings();
             }
         }
 

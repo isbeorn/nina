@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Model {
 
-    internal class DeviceInfo : BaseINPC {
+    public class DeviceInfo : BaseINPC {
         private bool connected;
         public bool Connected { get { return connected; } set { connected = value; RaisePropertyChanged(); } }
         private string name;

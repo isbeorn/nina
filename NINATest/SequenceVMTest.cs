@@ -539,6 +539,7 @@ namespace NINATest {
         }
 
         public IRotatorSettings RotatorSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IFlatWizardSettings FlatWizardSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -604,6 +605,10 @@ namespace NINATest {
         }
 
         public void SetSubSampleArea(int x, int y, int width, int height) {
+            throw new NotImplementedException();
+        }
+
+        public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
             throw new NotImplementedException();
         }
     }
@@ -850,6 +855,14 @@ namespace NINATest {
         }
 
         public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
+            throw new NotImplementedException();
+        }
+
+        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool bCalculateStatistics = true, string targetname = "") {
+            throw new NotImplementedException();
+        }
+
+        public void DestroyImage() {
             throw new NotImplementedException();
         }
 

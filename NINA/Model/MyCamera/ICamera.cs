@@ -89,6 +89,6 @@ namespace NINA.Model.MyCamera {
 
         void AbortExposure();
 
-        Task<ImageArray> DownloadExposure(CancellationToken token);
+        Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics);
     }
 }

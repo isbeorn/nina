@@ -132,33 +132,47 @@
       <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Astrometry, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Astrometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Attributes, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Attributes.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ASCOM.Cache, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Cache.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Controls, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Controls.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.DeviceInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.DeviceInterfaces.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.DriverAccess.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Exceptions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Exceptions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Internal.Extensions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Internal.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.SettingsProvider, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.SettingsProvider.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Utilities.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Utilities.Video, Version=6.1.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Utilities.Video.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AsyncEnumerable, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0426b068161bd1d1, processorArchitecture=MSIL">
@@ -278,6 +292,7 @@
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Locale\ILoc.cs" />
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
@@ -291,12 +306,23 @@
     <Compile Include="Model\MyCamera\CameraDataToManaged.cs" />
     <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
+    <Compile Include="Model\MyCamera\IImageArray.cs" />
+    <Compile Include="Model\MyCamera\IImageStatistics.cs" />
     <Compile Include="Model\MyCamera\ImageArray.cs" />
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
+    <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
     <Compile Include="Model\MyCamera\SensorType.cs" />
     <Compile Include="Model\MyCamera\ToupTekCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
+    <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
+    <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
+    <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
+    <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
+    <Compile Include="Utility\IResourceUtil.cs" />
+    <Compile Include="Utility\ResourceUtil.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardExposureTimeFinderService.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardFilterSettingsWrapper.cs" />
     <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\FocuserInfo.cs" />
@@ -405,12 +431,14 @@
     <Compile Include="Utility\Mediator\Interfaces\ITelescopeMediator.cs" />
     <Compile Include="Utility\Mediator\RotatorMediator.cs" />
     <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
+    <Compile Include="Utility\Profile\FlatWizardSettings.cs" />
     <Compile Include="Utility\NOVAS.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
     <Compile Include="Utility\Profile\ICameraSettings.cs" />
     <Compile Include="Utility\Profile\IColorSchemaSettings.cs" />
     <Compile Include="Utility\Profile\IFilterWheelSettings.cs" />
+    <Compile Include="Utility\Profile\IFlatWizardSettings.cs" />
     <Compile Include="Utility\Profile\IFocuserSettings.cs" />
     <Compile Include="Utility\Profile\IFramingAssistantSettings.cs" />
     <Compile Include="Utility\Profile\IGuiderSettings.cs" />
@@ -502,6 +530,10 @@
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardUserPromptVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\IFlatWizardExposureTimeFinderService.cs" />
+    <Compile Include="ViewModel\FlatWizard\IFlatWizardVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
     <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />
@@ -626,6 +658,15 @@
     </Compile>
     <Compile Include="View\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FlatWizardFilterSettingsWrapperView.xaml.cs">
+      <DependentUpon>FlatWizardFilterSettingsWrapperView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FlatWizardUserPrompt.xaml.cs">
+      <DependentUpon>FlatWizardUserPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FlatWizardView.xaml.cs">
+      <DependentUpon>FlatWizardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FocuserView.xaml.cs">
       <DependentUpon>FocuserView.xaml</DependentUpon>
@@ -753,7 +794,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\DataTemplates.xaml">
+    <Page Include="Resources\StaticResources\DataTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -781,7 +822,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\SVGDictionary.xaml">
+    <Page Include="Resources\StaticResources\SVGDictionary.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\StaticResources\ViewModels.xaml">
@@ -961,6 +1002,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FilterWheelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FlatWizardFilterSettingsWrapperView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FlatWizardUserPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FlatWizardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1645,6 +1698,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="ReadMe.md" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />
     <EmbeddedResource Include="Properties\Resources.resx">

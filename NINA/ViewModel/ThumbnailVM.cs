@@ -169,7 +169,7 @@ namespace NINA.ViewModel {
                     fs.Position = 0;
                     fs.CopyTo(ms);
                     ms.Position = 0;
-                    var iarr = await converter.ConvertToImageArray(ms, 16, profileService.ActiveProfile.ImageSettings.HistogramResolution, new System.Threading.CancellationToken());
+                    var iarr = await converter.ConvertToImageArray(ms, 16, profileService.ActiveProfile.ImageSettings.HistogramResolution, true, new System.Threading.CancellationToken());
                     return iarr;
                 }
             }

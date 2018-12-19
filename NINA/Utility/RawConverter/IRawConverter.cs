@@ -51,6 +51,6 @@ namespace NINA.Utility.RawConverter {
 
     internal interface IRawConverter {
 
-        Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, int histogramResolution, CancellationToken token);
+        Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, int histogramResolution, bool calculateStatistics, CancellationToken token);
     }
 }
