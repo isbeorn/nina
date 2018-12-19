@@ -50,10 +50,6 @@ namespace NINA.ViewModel {
             imagingMediator = new ImagingMediator();
             applicationStatusMediator = new ApplicationStatusMediator();
 
-            ImagingMediator flatWizardImagingMediator = new ImagingMediator();
-
-            flatsImagingVM = new ImagingVM(profileService, flatWizardImagingMediator, cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, guiderMediator, applicationStatusMediator);
-
             ExitCommand = new RelayCommand(ExitApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
@@ -95,7 +91,6 @@ namespace NINA.ViewModel {
         private IGuiderMediator guiderMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
-        private ImagingVM flatsImagingVM;
 
         private void LoadProfile(object obj) {
             if (profileService.Profiles.ProfileList.Count > 1) {
@@ -373,7 +368,9 @@ namespace NINA.ViewModel {
         public FlatWizardVM FlatWizardVM {
             get {
                 if (_flatWizardVM == null) {
-                    _flatWizardVM = new FlatWizardVM(profileService, flatsImagingVM, cameraMediator, new FlatWizardExposureTimeFinderService(), applicationStatusMediator);
+                    _flatWizardVM = new FlatWizardVM(profileService,
+                        new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, guiderMediator, applicationStatusMediator),
+                        cameraMediator, applicationStatusMediator);
                 }
                 return _flatWizardVM;
             }
