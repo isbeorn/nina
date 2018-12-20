@@ -70,6 +70,10 @@ namespace NINA.ViewModel {
                 profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
             );
 
+            ReadoutModeForNormalImages = profileService.ActiveProfile.CameraSettings.ReadoutModeForNormalImages;
+            ReadoutModeForSnapImages = profileService.ActiveProfile.CameraSettings.ReadoutModeForSnapImages;
+            UseFastReadoutOnly = profileService.ActiveProfile.CameraSettings.FastReadoutOnly;
+
             profileService.ProfileChanged += (object sender, EventArgs e) => {
                 RefreshCameraList(null);
             };
@@ -168,6 +172,36 @@ namespace NINA.ViewModel {
             }
             set {
                 _coolingRunning = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool UseFastReadoutOnly {
+            get { return profileService.ActiveProfile.CameraSettings.FastReadoutOnly; }
+            set {
+                profileService.ActiveProfile.CameraSettings.FastReadoutOnly = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public short ReadoutModeForNormalImages {
+            get { return profileService.ActiveProfile.CameraSettings.ReadoutModeForNormalImages; }
+            set {
+                if (profileService.ActiveProfile.CameraSettings.ReadoutModeForNormalImages != value) {
+                    profileService.ActiveProfile.CameraSettings.ReadoutModeForNormalImages = value;
+                }
+
+                RaisePropertyChanged();
+            }
+        }
+
+        public short ReadoutModeForSnapImages {
+            get { return profileService.ActiveProfile.CameraSettings.ReadoutModeForSnapImages; }
+            set {
+                if (profileService.ActiveProfile.CameraSettings.ReadoutModeForSnapImages != value) {
+                    profileService.ActiveProfile.CameraSettings.ReadoutModeForSnapImages = value;
+                }
+
                 RaisePropertyChanged();
             }
         }

@@ -400,6 +400,48 @@
                             TickPlacement="BottomRight"
                             Value="{Binding Cam.USBLimit}" />
                     </DockPanel>
+                    <DockPanel Margin="0,5,0,0"  Visibility="{Binding Cam.CanFastReadout, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblUseFastReadoutOnly}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblUseFastReadoutOnlyToolTip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <CheckBox Width="200"
+                                  HorizontalAlignment="Right"
+                                  IsChecked="{Binding UseFastReadoutOnly}" />
+                    </DockPanel>
+                    <DockPanel Visibility="{Binding Cam.CanFastReadout, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Collapsed}">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblReadoutForSnapImages}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblReadoutForSnapImagesToolTip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            Width="200"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            ItemsSource="{Binding Cam.ReadoutModes}"
+                            SelectedIndex="{Binding ReadoutModeForSnapImages}" />
+                    </DockPanel>
+                    <DockPanel Visibility="{Binding Cam.CanFastReadout, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Collapsed}">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblReadoutForNormalImages}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblReadoutForNormalImagesToolTip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            Width="200"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            ItemsSource="{Binding Cam.ReadoutModes}"
+                            SelectedIndex="{Binding ReadoutModeForNormalImages}" />
+                    </DockPanel>
                 </StackPanel>
             </GroupBox>
         </Grid>

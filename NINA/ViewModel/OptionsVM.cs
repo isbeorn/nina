@@ -1273,14 +1273,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public bool UseFastReadoutAlways {
-            get { return profileService.ActiveProfile.CameraSettings.FastReadoutAlways; }
-            set {
-                profileService.ActiveProfile.CameraSettings.FastReadoutAlways = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public string CameraSerialPort {
             get {
                 return profileService.ActiveProfile.CameraSettings.SerialPort;

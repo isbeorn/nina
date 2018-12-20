@@ -55,6 +55,8 @@ namespace NINA.Utility.Profile {
             minFlatExposureTime = 0.2;
             maxFlatExposureTime = 20;
             fastReadoutAlways = true;
+            ReadoutModeForNormalImages = 0;
+            ReadoutModeForSnapImages = 0;
         }
 
         [DataMember]
@@ -200,6 +202,8 @@ namespace NINA.Utility.Profile {
 
         private double maxFlatExposureTime;
         private bool fastReadoutAlways;
+        private short readoutModeForNormalImages;
+        private short readoutModeForSnapImages;
 
         [DataMember]
         public double MaxFlatExposureTime {
@@ -212,10 +216,29 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        public bool FastReadoutAlways {
+        [DataMember]
+        public bool FastReadoutOnly {
             get { return fastReadoutAlways; }
             set {
                 fastReadoutAlways = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [DataMember]
+        public short ReadoutModeForNormalImages {
+            get { return readoutModeForNormalImages; }
+            set {
+                readoutModeForNormalImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [DataMember]
+        public short ReadoutModeForSnapImages {
+            get { return readoutModeForSnapImages; }
+            set {
+                readoutModeForSnapImages = value;
                 RaisePropertyChanged();
             }
         }

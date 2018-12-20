@@ -1013,8 +1013,15 @@ namespace NINA.Model.MyCamera {
                 NumY = CameraYSize / BinY;
             }
 
-            if (!profileService.ActiveProfile.CameraSettings.FastReadoutAlways && CanFastReadout) {
-                _camera.FastReadout = sequence.ImageType == CaptureSequence.ImageTypes.SNAP;
+            bool isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAP;
+
+            if (!profileService.ActiveProfile.CameraSettings.FastReadoutOnly && CanFastReadout) {
+                _camera.FastReadout = isSnap;
+            } else if (!CanFastReadout) {
+                _camera.ReadoutMode =
+                    isSnap
+                        ? profileService.ActiveProfile.CameraSettings.ReadoutModeForSnapImages
+                        : profileService.ActiveProfile.CameraSettings.ReadoutModeForNormalImages;
             }
 
             _camera.StartExposure(sequence.ExposureTime, isLightFrame);

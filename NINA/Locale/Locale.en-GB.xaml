@@ -764,6 +764,10 @@ Calculated HFR: {2}
     <s:String x:Key="LblFlatUserPromptCancel">Cancel Flat Wizard</s:String>
     <s:String x:Key="LblFlatUserCurrentExposureCalculation">Current Exposure Calculations</s:String>
     <s:String x:Key="LblFlatUserFlatSettings">Flat Wizard Settings</s:String>
-    <s:String x:Key="LblUseFastReadoutOnly">Use FastReadout always (if available)</s:String>
+    <s:String x:Key="LblUseFastReadoutOnly">Use fast Readout always</s:String>
     <s:String x:Key="LblUseFastReadoutOnlyToolTip">When enabled, it will use the cameras fast readout mode if available. When disabled it the camera won't use fast readout for LIGHT, BIAS, DARK, FLAT and DARKFLAT frames.</s:String>
+    <s:String x:Key="LblReadoutForSnapImages">Readout mode for SNAP</s:String>
+    <s:String x:Key="LblReadoutForSnapImagesToolTip">This readout mode of your camera will be used for plate solving, framing and autofocus</s:String>
+    <s:String x:Key="LblReadoutForNormalImages">Readout mode for Sequence</s:String>
+    <s:String x:Key="LblReadoutForNormalImagesToolTip">This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT and DARKFLAT frames in sequences.</s:String>
 </ResourceDictionary>

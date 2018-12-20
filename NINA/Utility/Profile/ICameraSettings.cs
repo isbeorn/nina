@@ -38,6 +38,8 @@ namespace NINA.Utility.Profile {
         string SerialPort { get; set; }
         double MinFlatExposureTime { get; set; }
         double MaxFlatExposureTime { get; set; }
-        bool FastReadoutAlways { get; set; }
+        bool FastReadoutOnly { get; set; }
+        short ReadoutModeForNormalImages { get; set; }
+        short ReadoutModeForSnapImages { get; set; }
     }
 }
