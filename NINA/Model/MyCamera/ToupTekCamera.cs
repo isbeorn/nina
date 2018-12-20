@@ -469,6 +469,7 @@ namespace NINA.Model.MyCamera {
                     if ((this.flags & ToupCam.eFLAG.FLAG_TEC_ONOFF) != 0) {
                         /* Can set Target Temp */
                         CanSetTemperature = true;
+                        TemperatureSetPoint = 20;
                     }
 
                     if ((this.flags & ToupCam.eFLAG.FLAG_GETTEMPERATURE) != 0) {
