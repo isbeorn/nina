@@ -47,6 +47,8 @@
     <s:String x:Key="LblCoolerPower">Cooler Power</s:String>
     <s:String x:Key="LblChipTemp">Chip Temperature</s:String>
     <s:String x:Key="LblTargetTemp">Target Temperature</s:String>
+    <s:String x:Key="LblDewHeater">Dew Heater</s:String>
+    <s:String x:Key="LblDewHeaterShort">Dew Heater</s:String>
     <s:String x:Key="LblDuration">Duration</s:String>
     <s:String x:Key="LblExposureTime">Exposure Time</s:String>
     <s:String x:Key="LblFilter">Filter</s:String>

@@ -9,6 +9,7 @@
     ### Camera Control
         - Altair native driver support
         - ToupTek native driver support
+        - Added support for anti-dew heaters in ZWO cameras
 
 ## Bugfixes
 
