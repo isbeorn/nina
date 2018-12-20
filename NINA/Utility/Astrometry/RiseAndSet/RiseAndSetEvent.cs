@@ -76,14 +76,41 @@ namespace NINA.Utility.Astrometry {
                     var altitude2 = AdjustAltitude(bodyAt2);
 
                     // fit the three reference positions into a quadratic equation
+
+                    //P1 (offsetDate | altitude0) => (0 | altitude0)
+                    //P2 (offsetDate + 1 | altitude1) => (1 | altitude1)
+                    //P3 (offsetDate + 2 | altitude2) => (2 | altitude2)
+
+                    // ax² + bx + c
+
+                    // Solve for c
+                    // => altitude0 = 0 * x² + 0 * x + c => altitude0 = c
+
+                    // Solve for b using c
+                    // altitude1 = a * 1² + b * 1 + altitude0
+                    //    => altitude1 = a + b + altitude0
+                    //    => b = altitude1 - a - altitude0
+
+                    // Solve for a using b and c
+                    // altitude2 = a * 2² + b * 2 + altitude0
+                    //   => altitude2 = 4a + 2(altitude1 - a - altitude0) + altitude0
+                    //   => altitude2 = 4a + 2*altitude1 - 2a - 2*altitude0 + altitude0
+                    //   => altitude2 = 2a + 2*altitude1 - altitude0
+                    //   => 2a = altitude2 - 2*altitude1 + altitude0
+                    //   => a = 0.5 * altitude2  - altitude1 + 0.5 * altitude0
+                    //   => a = 0.5 * (altitude2 + altitude0) - altitude1
+
+                    // Solve for b using a and c
+                    //   => b = altitude1 - (0.5 * (altitude2 + altitude0) - altitude1) - altitude0
+                    //   => b = altitude1 - 0.5 * altitude2 - 0.5 * altitude0 + altitude1 - altitude0
+                    //   => b = 2 * altitude1 - 0.5 * altitude2 - 1.5 * altitude0
+
                     var a = 0.5 * (altitude2 + altitude0) - altitude1;
-                    var b = 0.5 * (altitude2 - altitude0);
+                    var b = 2 * altitude1 - 0.5 * altitude2 - 1.5 * altitude0;
                     var c = altitude0;
 
-                    // x = -b +- Sqrt(b² - 4ac) / 2a   --- https://de.khanacademy.org/math/algebra/quadratics/solving-quadratics-using-the-quadratic-formula/a/discriminant-review
-
-                    // Symmetry formula: x = -b / 2a
-                    var axisSymmetry = -b / (2.0 * a);
+                    // a-b-c formula
+                    // x = -b +- Sqrt(b² - 4ac) / 2a
 
                     // Discriminant definition: b² - 4ac
                     var discriminant = (Math.Pow(b, 2)) - (4.0 * a * c);
@@ -92,19 +119,23 @@ namespace NINA.Utility.Astrometry {
                     var zeroPoint2 = double.NaN;
                     var events = 0;
 
-                    if (discriminant > 0) {
-                        // Zero points detected when discriminant > 0
-                        var delta = 0.5 * Math.Sqrt(discriminant) / Math.Abs(a);
-                        zeroPoint1 = axisSymmetry - delta;
-                        zeroPoint2 = axisSymmetry + delta;
+                    if (discriminant == 1) {
+                        zeroPoint1 = (-b + Math.Sqrt(discriminant)) / (2 * a);
+                        if (zeroPoint1 >= 0 && zeroPoint1 <= 2) {
+                            events++;
+                        }
+                    } else if (discriminant > 1) {
+                        zeroPoint1 = (-b + Math.Sqrt(discriminant)) / (2 * a);
+                        zeroPoint2 = (-b - Math.Sqrt(discriminant)) / (2 * a);
 
-                        if (Math.Abs(zeroPoint1) <= 1) {
+                        // Check if zero point is inside the span of 0 to 2 (to be inside the checked timeframe)
+                        if (zeroPoint1 >= 0 && zeroPoint1 <= 2) {
                             events++;
                         }
-                        if (Math.Abs(zeroPoint2) <= 1) {
+                        if (zeroPoint2 >= 0 && zeroPoint2 <= 2) {
                             events++;
                         }
-                        if (zeroPoint1 < -1.0) {
+                        if (zeroPoint1 < 0 || zeroPoint1 > 2) {
                             zeroPoint1 = zeroPoint2;
                         }
                     }

@@ -56,11 +56,15 @@ namespace NINA.Utility {
         public BahtinovImage GrabBahtinov() {
             var bahtinovImage = new BahtinovImage();
 
-            if (originalSource.Format != System.Windows.Media.PixelFormats.Gray16) {
-                var imgToConvert = ImageAnalysis.BitmapFromSource(originalSource, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                convertedSource = new Grayscale(0.2125, 0.7154, 0.0721).Apply(imgToConvert);
+            if (originalSource.Format != System.Windows.Media.PixelFormats.Gray8) {
+                if (originalSource.Format != System.Windows.Media.PixelFormats.Gray16) {
+                    var imgToConvert = ImageAnalysis.BitmapFromSource(originalSource, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                    convertedSource = new Grayscale(0.2125, 0.7154, 0.0721).Apply(imgToConvert);
+                } else {
+                    convertedSource = ImageAnalysis.Convert16BppTo8Bpp(originalSource);
+                }
             } else {
-                convertedSource = ImageAnalysis.Convert16BppTo8Bpp(originalSource);
+                convertedSource = ImageAnalysis.BitmapFromSource(originalSource, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
             }
 
             Bitmap bahtinovedBitmap = new Bitmap(convertedSource.Width, convertedSource.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);

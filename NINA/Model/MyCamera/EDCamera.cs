@@ -30,6 +30,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -675,31 +676,31 @@ namespace NINA.Model.MyCamera {
             return err;
         }
 
-        private bool CheckError(uint code) {
+        private bool CheckError(uint code, [CallerMemberName] string memberName = "") {
             var err = GetError(code);
-            return CheckError(err);
+            return CheckError(err, memberName);
         }
 
-        private bool CheckError(EDSDK.EDS_ERR err) {
+        private bool CheckError(EDSDK.EDS_ERR err, [CallerMemberName] string memberName = "") {
             if (err == EDSDK.EDS_ERR.OK) {
                 return false;
             } else {
-                Logger.Error(new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], err)));
+                Logger.Error(new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], err)), memberName);
                 return true;
             }
         }
 
-        private void CheckAndThrowError(EDSDK.EDS_ERR err) {
+        private void CheckAndThrowError(EDSDK.EDS_ERR err, [CallerMemberName] string memberName = "") {
             if (err != EDSDK.EDS_ERR.OK) {
                 var ex = new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], err));
-                Logger.Error(ex);
+                Logger.Error(ex, memberName);
                 throw ex;
             }
         }
 
-        private void CheckAndThrowError(uint code) {
+        private void CheckAndThrowError(uint code, [CallerMemberName] string memberName = "") {
             var err = GetError(code);
-            CheckAndThrowError(err);
+            CheckAndThrowError(err, memberName);
         }
 
         private EDSDK.EDS_ERR GetError(uint code) {
