@@ -44,7 +44,7 @@
     <s:String x:Key="LblOffset">Offset</s:String>
     <s:String x:Key="LblUSBLimit">USB Limit</s:String>
     <s:String x:Key="LblTempControl">Temperaturkontrolle</s:String>
-    <s:String x:Key="LblCoolerOn">Kühler an</s:String>
+    <s:String x:Key="LblCoolerOn">Kühler</s:String>
     <s:String x:Key="LblCoolerPower">Kühlerleistung</s:String>
     <s:String x:Key="LblChipTemp">Chip Temperatur</s:String>
     <s:String x:Key="LblTargetTemp">Zieltemperatur</s:String>
