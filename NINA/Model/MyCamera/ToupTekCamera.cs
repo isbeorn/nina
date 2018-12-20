@@ -183,13 +183,43 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private double coolerPower = 0.0;
+
         public double CoolerPower {
             get {
-                /* There is no interface for a cooler percentage.
-                 * It's possible to readout voltage, but SDK says this should not be done more often than 2 seconds.
-                 * Until a different solution is there, this will not be displayed*/
-                return 0.0;
+                return coolerPower;
             }
+            private set {
+                coolerPower = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private CancellationTokenSource coolerPowerReadoutCts;
+
+        /// <summary>
+        /// This task will update cooler power based on TEC Volatage readout every three seconds
+        /// Due to the fact that this value must not be updated more than every two seconds according to the documentation
+        /// a helper method is required in case the device polling interval is faster than that.
+        /// </summary>
+        private void CoolerPowerUpdateTask() {
+            Task.Run(async () => {
+                coolerPowerReadoutCts = new CancellationTokenSource();
+                try {
+                    camera.get_Option(ToupCam.eOPTION.OPTION_TEC_VOLTAGE_MAX, out var maxVoltage);
+                    while (true) {
+                        coolerPowerReadoutCts.Token.ThrowIfCancellationRequested();
+
+                        camera.get_Option(ToupCam.eOPTION.OPTION_TEC_VOLTAGE, out var voltage);
+
+                        CoolerPower = 100 * voltage / (double)maxVoltage;
+
+                        //Recommendation to not readout CoolerPower in less than two seconds.
+                        await Task.Delay(TimeSpan.FromSeconds(3), coolerPowerReadoutCts.Token);
+                    }
+                } catch (OperationCanceledException) {
+                }
+            });
         }
 
         public string CameraState {
@@ -394,6 +424,7 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 _connected = value;
+                if (!_connected) coolerPowerReadoutCts?.Cancel();
                 RaisePropertyChanged();
             }
         }
@@ -470,6 +501,7 @@ namespace NINA.Model.MyCamera {
                         /* Can set Target Temp */
                         CanSetTemperature = true;
                         TemperatureSetPoint = 20;
+                        CoolerPowerUpdateTask();
                     }
 
                     if ((this.flags & ToupCam.eFLAG.FLAG_GETTEMPERATURE) != 0) {
@@ -517,6 +549,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void Disconnect() {
+            coolerPowerReadoutCts?.Cancel();
             Connected = false;
             camera.Close();
             camera = null;
