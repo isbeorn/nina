@@ -468,7 +468,7 @@ namespace NINA.Model.MyCamera {
                     this.CameraYSize = height;
 
                     /* Readout flags */
-                    if ((this.flags & AltairCam.eFLAG.FLAG_PUTTEMPERATURE) != 0) {
+                    if ((this.flags & AltairCam.eFLAG.FLAG_TEC_ONOFF) != 0) {
                         /* Can set Target Temp */
                         CanSetTemperature = true;
                     }
