@@ -306,19 +306,13 @@ namespace NINA.Model.MyCamera {
 
         public bool HasDewHeater {
             get {
-                bool rv;
-
-                if ((rv = GetControlIsWritable(ASICameraDll.ASI_CONTROL_TYPE.ASI_ANTI_DEW_HEATER)) == true) {
-                    return true;
-                }
-                return false;
+                return GetControlIsWritable(ASICameraDll.ASI_CONTROL_TYPE.ASI_ANTI_DEW_HEATER) == true ? true : false;
             }
         }
 
         public bool DewHeaterOn {
             get {
-                int val = GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_ANTI_DEW_HEATER);
-                return val == 0 ? false : true;
+                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_ANTI_DEW_HEATER) == 0 ? false : true;
             }
             set {
                 if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_ANTI_DEW_HEATER, value ? 1 : 0)) {
