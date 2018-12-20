@@ -390,6 +390,11 @@ namespace NINA.Model.MyCamera {
                 try {
                     _cameraP = AtikCameraDll.Connect(_cameraId);
                     _info = AtikCameraDll.GetCameraProperties(_cameraP);
+
+                    if (CanSetTemperature) {
+                        TemperatureSetPoint = 20;
+                    }
+
                     RaisePropertyChanged(nameof(BinningModes));
                     RaisePropertyChanged(nameof(Connected));
                     success = true;
