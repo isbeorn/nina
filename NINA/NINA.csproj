@@ -329,6 +329,7 @@
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
     <Compile Include="Model\MyCamera\SimulatorCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
+    <Compile Include="Model\MyCamera\QHYCamera.cs" />
     <Compile Include="Model\MyCamera\SensorType.cs" />
     <Compile Include="Model\MyCamera\ToupTekCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
@@ -401,6 +402,8 @@
     <Compile Include="Utility\Behaviors\DragCommandBehavior.cs" />
     <Compile Include="Utility\BindingProxy.cs" />
     <Compile Include="Utility\ButtonHelper.cs" />
+    <Compile Include="Utility\CameraSDKs\QHYSDK\QHYCameras.cs" />
+    <Compile Include="Utility\CameraSDKs\QHYSDK\QHYCameraSDK.cs" />
     <Compile Include="Utility\CameraSDKs\ToupTekSDK\toupcam.cs" />
     <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
     <Compile Include="Utility\Converters\ArcsecToLabelConverter.cs" />
@@ -1516,6 +1519,7 @@
     <Folder Include="External\x64\Nikon\Type0020\" />
     <Folder Include="External\x64\Nikon\Type0021\" />
     <Folder Include="External\x64\Nikon\Type0022\" />
+    <Folder Include="External\x64\QHYCCD\" />
     <Folder Include="External\x64\ToupTek\" />
     <Folder Include="External\x86\Altair\" />
     <Folder Include="External\x86\ASI\" />
@@ -1543,6 +1547,7 @@
     <Folder Include="External\x86\Nikon\Type0020\" />
     <Folder Include="External\x86\Nikon\Type0021\" />
     <Folder Include="External\x86\Nikon\Type0022\" />
+    <Folder Include="External\x86\QHYCCD\" />
     <Folder Include="External\x86\ToupTek\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -1569,7 +1574,11 @@ xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c
 
 echo "Copy ToupTek DLLs"
 xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y</PostBuildEvent>
+xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
+
+echo "Copy QHYCCD DLLs"
+xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

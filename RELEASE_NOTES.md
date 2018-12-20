@@ -11,6 +11,7 @@
 ### Camera Control
 - Altair native driver support
 - ToupTek native driver support
+- QHYCCD native driver support
 - Added support for anti-dew heaters in ZWO cameras
 - On ASCOM drivers support for setting readout modes
 
@@ -77,6 +78,9 @@
 - Framing Assistant now can annotate DSO
 - Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running
 - Adaptive Cooling: Duration for cool/warm camera is now a minimum duration. In case the cooler cannot keep up with the set duration, the application will wait for the camera to reach the checkpoints instead of just continuing setting new targets without the camera having any chance to reach those in the timeframe.
+
+## Special Thanks
+- The N.I.N.A. team would like to thank the staff at QHYCCD dealer [Cloud Break Optics](https://cloudbreakoptics.com/) for graciously lending a QHY183C to assist in the development and testing of N.I.N.A.'s QHYCCD SDK integration. Thank you for your support!
 
 ___
 

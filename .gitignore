@@ -5,6 +5,7 @@ NINA/External/*/Atik
 NINA/External/*/Canon
 NINA/External/*/Nikon
 NINA/External/*/ToupTek
+NINA/External/*/QHYCCD
 
 # User-specific files
 *.rsuser
