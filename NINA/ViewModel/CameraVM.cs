@@ -26,7 +26,6 @@ using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -34,7 +33,6 @@ using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Async;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -476,10 +474,11 @@ namespace NINA.ViewModel {
             });
         }
 
-
-        public async Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public async Task Capture(CaptureSequence sequence, bool isLightFrame, CancellationToken token,
+            IProgress<ApplicationStatus> progress) {
+            double exposureTime = sequence.ExposureTime;
             if (CameraInfo.Connected == true) {
-                Cam.StartExposure(exposureTime, isLightFrame);
+                Cam.StartExposure(sequence, isLightFrame);
 
                 var start = DateTime.Now;
                 var elapsed = 0.0d;

@@ -29,7 +29,6 @@ using NINA.Utility.RawConverter;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -592,9 +591,9 @@ namespace NINA.Model.MyCamera {
             };
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
             downloadExposure = new TaskCompletionSource<object>();
-
+            var exposureTime = sequence.ExposureTime;
             ValidateModeForExposure(exposureTime);
 
             /* Start exposure */

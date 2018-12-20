@@ -28,7 +28,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -435,8 +434,8 @@ namespace NINA.Model.MyCamera {
             BinY = y;
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
-            int exposureMs = (int)(exposureTime * 1000000);
+        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
+            int exposureMs = (int)(sequence.ExposureTime * 1000000);
             var exposureSettings = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE);
             exposureSettings.Value = exposureMs;
             exposureSettings.IsAuto = false;

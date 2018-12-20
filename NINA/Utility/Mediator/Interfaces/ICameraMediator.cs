@@ -26,9 +26,6 @@ using NINA.Model.MyCamera;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Async;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,7 +33,8 @@ namespace NINA.Utility.Mediator.Interfaces {
 
     public interface ICameraMediator : IDeviceMediator<ICameraVM, ICameraConsumer, CameraInfo> {
 
-        Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress);
+        Task Capture(CaptureSequence sequence, bool isLightFrame, CancellationToken token,
+            IProgress<ApplicationStatus> progress);
 
         IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);
 

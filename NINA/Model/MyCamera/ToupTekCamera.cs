@@ -26,10 +26,6 @@ using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ToupTek;
@@ -563,10 +559,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
             downloadExposure = new TaskCompletionSource<object>();
 
-            SetExposureTime(exposureTime);
+            SetExposureTime(sequence.ExposureTime);
 
             if (!camera.Trigger(1)) {
                 throw new Exception("ToupTekCamera - Failed to trigger camera");

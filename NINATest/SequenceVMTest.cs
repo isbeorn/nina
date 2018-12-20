@@ -28,10 +28,8 @@ using NINA.Model.MyFocuser;
 using NINA.Model.MyGuider;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
-using NINA.PlateSolving;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using NINA.ViewModel;
@@ -41,8 +39,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -558,7 +554,8 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public Task Capture(CaptureSequence sequence, bool isLightFrame, CancellationToken token,
+            IProgress<ApplicationStatus> progress) {
             throw new NotImplementedException();
         }
 

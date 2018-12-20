@@ -23,12 +23,10 @@
 
 using NINA.Utility;
 using System.Collections;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
-
     internal interface ICamera : IDevice {
         bool HasShutter { get; }
         double Temperature { get; }
@@ -77,7 +75,7 @@ namespace NINA.Model.MyCamera {
 
         void SetBinning(short x, short y);
 
-        void StartExposure(double exposureTime, bool isLightFrame);
+        void StartExposure(CaptureSequence sequence, bool isLightFrame);
 
         void StopExposure();
 

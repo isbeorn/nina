@@ -21,19 +21,15 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using System;
+using System.Collections;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
 
@@ -434,7 +430,7 @@ namespace NINA.Model.MyCamera {
         public void SetupDialog() {
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
             do {
                 System.Threading.Thread.Sleep(100);
             } while (AtikCameraDll.CameraState(_cameraP) != AtikCameraDll.ArtemisCameraStateEnum.CAMERA_IDLE);
@@ -443,7 +439,7 @@ namespace NINA.Model.MyCamera {
             } else {
                 AtikCameraDll.SetSubFrame(_cameraP, 0, 0, CameraXSize, CameraYSize);
             }
-            AtikCameraDll.StartExposure(_cameraP, exposureTime);
+            AtikCameraDll.StartExposure(_cameraP, sequence.ExposureTime);
         }
 
         public void StopExposure() {

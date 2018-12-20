@@ -1026,6 +1026,28 @@
                                     Text="{Binding TelescopeSnapPortStop}" />
                             </UniformGrid>
                         </UniformGrid>
+
+                        <UniformGrid Columns="2">
+                            <UniformGrid
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="2">
+                                <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblFastReadoutAlways}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{ns:Loc LblUseFastReadoutOnlyToolTip}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <CheckBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding UseFastReadoutAlways}" />
+                            </UniformGrid>
+                        </UniformGrid>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox

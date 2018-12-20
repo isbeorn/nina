@@ -27,12 +27,6 @@ using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -563,10 +557,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
             downloadExposure = new TaskCompletionSource<object>();
 
-            SetExposureTime(exposureTime);
+            SetExposureTime(sequence.ExposureTime);
 
             if (!camera.Trigger(1)) {
                 throw new Exception("AltairCamera - Failed to trigger camera");

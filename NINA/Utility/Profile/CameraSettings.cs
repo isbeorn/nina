@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using System;
 using System.Runtime.Serialization;
 
@@ -55,6 +54,7 @@ namespace NINA.Utility.Profile {
             rawConverter = RawConverterEnum.DCRAW;
             minFlatExposureTime = 0.2;
             maxFlatExposureTime = 20;
+            fastReadoutAlways = true;
         }
 
         [DataMember]
@@ -199,6 +199,7 @@ namespace NINA.Utility.Profile {
         }
 
         private double maxFlatExposureTime;
+        private bool fastReadoutAlways;
 
         [DataMember]
         public double MaxFlatExposureTime {
@@ -207,6 +208,14 @@ namespace NINA.Utility.Profile {
             }
             set {
                 maxFlatExposureTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool FastReadoutAlways {
+            get { return fastReadoutAlways; }
+            set {
+                fastReadoutAlways = value;
                 RaisePropertyChanged();
             }
         }

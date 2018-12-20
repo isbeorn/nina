@@ -30,7 +30,6 @@ using NINA.Utility.Profile;
 using System;
 using System.Collections;
 using System.Globalization;
-using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1001,7 +1000,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
             if (EnableSubSample) {
                 StartX = SubSampleX;
                 StartY = SubSampleY;
@@ -1013,7 +1012,12 @@ namespace NINA.Model.MyCamera {
                 NumX = CameraXSize / BinX;
                 NumY = CameraYSize / BinY;
             }
-            _camera.StartExposure(exposureTime, isLightFrame);
+
+            if (!profileService.ActiveProfile.CameraSettings.FastReadoutAlways && CanFastReadout) {
+                _camera.FastReadout = sequence.ImageType == CaptureSequence.ImageTypes.SNAP;
+            }
+
+            _camera.StartExposure(sequence.ExposureTime, isLightFrame);
         }
 
         public void StopExposure() {

@@ -22,12 +22,10 @@
 #endregion "copyright"
 
 using NINA.Model;
-using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using System;
@@ -1271,6 +1269,14 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.CameraSettings.BulbMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool UseFastReadoutAlways {
+            get { return profileService.ActiveProfile.CameraSettings.FastReadoutAlways; }
+            set {
+                profileService.ActiveProfile.CameraSettings.FastReadoutAlways = value;
                 RaisePropertyChanged();
             }
         }

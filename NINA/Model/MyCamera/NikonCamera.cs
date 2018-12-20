@@ -24,7 +24,6 @@
 using Nikon;
 using NINA.Utility;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -627,9 +626,10 @@ namespace NINA.Model.MyCamera {
         private Dictionary<int, double> _shutterSpeeds = new Dictionary<int, double>();
         private int _bulbShutterSpeedIndex;
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
             if (Connected) {
-                Logger.Debug("Prepare start of exposure: " + exposureTime);
+                double exposureTime = sequence.ExposureTime;
+                Logger.Debug("Prepare start of exposure: " + sequence);
                 _downloadExposure = new TaskCompletionSource<object>();
 
                 if (exposureTime <= 30.0) {
