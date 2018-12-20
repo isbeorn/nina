@@ -488,7 +488,7 @@
                             </Border>
                             <Border
                                 BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1"
+                                BorderThickness="0"
                                 Visibility="{Binding Cam.HasDewHeater, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                                 <UniformGrid Columns="2">
                                     <UniformGrid
