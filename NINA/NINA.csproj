@@ -1275,10 +1275,10 @@
     <Content Include="External\x64\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\NOVAS\NOVAS31.dll">
+    <Content Include="External\x64\NOVAS\NOVAS31lib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\SOFA\SOFA.dll">
+    <Content Include="External\x64\SOFA\SOFAlib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\SQLite\SQLite.Interop.dll">
@@ -1287,10 +1287,10 @@
     <Content Include="External\x86\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\NOVAS\NOVAS31.dll">
+    <Content Include="External\x86\NOVAS\NOVAS31lib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\SOFA\SOFA.dll">
+    <Content Include="External\x86\SOFA\SOFAlib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\SQLite\SQLite.Interop.dll">
