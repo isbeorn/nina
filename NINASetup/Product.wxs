@@ -1232,8 +1232,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="External_x64_NOVAS_files" Directory="External_x64_NOVAS">
-      <Component Win64="$(var.Win64)" Id="External_x64_NOVAS_NOVAS31.dll" Guid="399f4ac2-9791-4e32-89cf-40279554a426">
-        <File Id="External_x64_NOVAS_NOVAS31.dll" Name="NOVAS31.dll" Source="$(var.NINA_TargetDir)External\x64\NOVAS\NOVAS31.dll" />
+      <Component Win64="$(var.Win64)" Id="External_x64_NOVAS_NOVAS31lib.dll" Guid="399f4ac2-9791-4e32-89cf-40279554a426">
+        <File Id="External_x64_NOVAS_NOVAS31lib.dll" Name="NOVAS31lib.dll" Source="$(var.NINA_TargetDir)External\x64\NOVAS\NOVAS31lib.dll" />
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x64_NOVAS_cio_ra.bin" Guid="d18f333b-074e-4c33-9e5e-18d5c9770dd0">
         <File Id="External_x64_NOVAS_cio_ra.bin" Name="cio_ra.bin" Source="$(var.NINA_TargetDir)External\x64\NOVAS\cio_ra.bin" />
@@ -1242,8 +1242,8 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="External_x86_NOVAS_files" Directory="External_x86_NOVAS">
-      <Component Win64="$(var.Win64)" Id="External_x86_NOVAS_NOVAS31.dll" Guid="0d940503-3770-4d11-ab73-a1f7e834f41a">
-        <File Id="External_x86_NOVAS_NOVAS31.dll" Name="NOVAS31.dll" Source="$(var.NINA_TargetDir)External\x86\NOVAS\NOVAS31.dll" />
+      <Component Win64="$(var.Win64)" Id="External_x86_NOVAS_NOVAS31lib.dll" Guid="0d940503-3770-4d11-ab73-a1f7e834f41a">
+        <File Id="External_x86_NOVAS_NOVAS31lib.dll" Name="NOVAS31lib.dll" Source="$(var.NINA_TargetDir)External\x86\NOVAS\NOVAS31lib.dll" />
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_NOVAS_cio_ra.bin" Guid="e1c12df7-978a-4f9a-8047-3a214036cf6d">
         <File Id="External_x86_NOVAS_cio_ra.bin" Name="cio_ra.bin" Source="$(var.NINA_TargetDir)External\x86\NOVAS\cio_ra.bin" />
@@ -1252,15 +1252,15 @@
   </Fragment>
   <Fragment>
     <ComponentGroup Id="External_x86_SOFA_files" Directory="External_x86_SOFA">
-      <Component Win64="$(var.Win64)" Id="External_x86_SOFA_SOFA.dll" Guid="1b6b705a-c95d-465b-8e06-ab5c4a5ed7c9">
-        <File Id="External_x86_SOFA_SOFA.dll" Name="SOFA.dll" Source="$(var.NINA_TargetDir)External\x86\SOFA\SOFA.dll" />
+      <Component Win64="$(var.Win64)" Id="External_x86_SOFA_SOFAlib.dll" Guid="1b6b705a-c95d-465b-8e06-ab5c4a5ed7c9">
+        <File Id="External_x86_SOFA_SOFAlib.dll" Name="SOFAlib.dll" Source="$(var.NINA_TargetDir)External\x86\SOFA\SOFAlib.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
   <Fragment>
     <ComponentGroup Id="External_x64_SOFA_files" Directory="External_x64_SOFA">
-      <Component Win64="$(var.Win64)" Id="External_x64_SOFA_SOFA.dll" Guid="7e84f09e-ef65-4075-93f9-34a61f47a2af">
-        <File Id="External_x64_SOFA_SOFA.dll" Name="SOFA.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFA.dll" />
+      <Component Win64="$(var.Win64)" Id="External_x64_SOFA_SOFAlib.dll" Guid="7e84f09e-ef65-4075-93f9-34a61f47a2af">
+        <File Id="External_x64_SOFA_SOFAlib.dll" Name="SOFAlib.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFAlib.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
