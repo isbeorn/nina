@@ -84,7 +84,7 @@ namespace NINA.ViewModel {
             SubSampleDragStartCommand = new RelayCommand(SubSampleDragStart);
             SubSampleDragStopCommand = new RelayCommand(SubSampleDragStop);
             SubSampleDragMoveCommand = new RelayCommand(SubSampleDragMove);
-            InspectAberrationCommand = new RelayCommand(InspectAberration, (object o) => Image != null);
+            InspectAberrationCommand = new AsyncCommand<bool>(() => InspectAberration(), (object o) => Image != null);
 
             BahtinovRectangle = new ObservableRectangle(-1, -1, 200, 200);
             SubSampleRectangle = new ObservableRectangle(-1, -1, 600, 600);
@@ -92,14 +92,17 @@ namespace NINA.ViewModel {
             SubSampleRectangle.PropertyChanged += SubSampleRectangle_PropertyChanged;
         }
 
-        private void InspectAberration(object obj) {
+        private async Task<bool> InspectAberration() {
             try {
-                var vm = new AberrationInspectorVM(profileService, Image);
+                var vm = new AberrationInspectorVM(profileService);
+                await vm.Initialize(Image);
                 var service = WindowServiceFactory.Create();
                 service.Show(vm, Locale.Loc.Instance["LblAberrationInspector"], ResizeMode.CanResize, WindowStyle.ToolWindow);
+                return true;
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);
+                return false;
             }
         }
 
@@ -306,7 +309,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public ICommand InspectAberrationCommand { get; private set; }
+        public IAsyncCommand InspectAberrationCommand { get; private set; }
         public ICommand DragStartCommand { get; private set; }
         public ICommand DragStopCommand { get; private set; }
         public ICommand DragMoveCommand { get; private set; }
