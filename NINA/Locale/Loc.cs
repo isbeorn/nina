@@ -26,6 +26,7 @@ using NINA.Utility.Mediator;
 using System;
 using System.Windows;
 using System.Windows.Data;
+using ResourceDictionary = System.Windows.ResourceDictionary;
 
 namespace NINA.Locale {
 

@@ -26,7 +26,7 @@ namespace NINATest {
         private Mock<IApplicationStatusMediator> applicationStatusMediatorMock = new Mock<IApplicationStatusMediator>();
         private Mock<IFlatWizardExposureTimeFinderService> exposureServiceMock = new Mock<IFlatWizardExposureTimeFinderService>();
         private Mock<ILoc> localeMock = new Mock<ILoc>();
-        private Mock<IResourceUtil> resourceUtilMock = new Mock<IResourceUtil>();
+        private Mock<IResourceDictionary> resourceDictionaryMock = new Mock<IResourceDictionary>();
         private Mock<IProfile> profileMock = new Mock<IProfile>();
         private Mock<IFlatWizardSettings> flatWizardSettingsMock = new Mock<IFlatWizardSettings>();
         private Mock<ICameraSettings> cameraSettingsMock = new Mock<ICameraSettings>();
@@ -51,7 +51,7 @@ namespace NINATest {
             applicationStatusMediatorMock = new Mock<IApplicationStatusMediator>();
             exposureServiceMock = new Mock<IFlatWizardExposureTimeFinderService>();
             localeMock = new Mock<ILoc>();
-            resourceUtilMock = new Mock<IResourceUtil>();
+            resourceDictionaryMock = new Mock<IResourceDictionary>();
             profileMock = new Mock<IProfile>();
             flatWizardSettingsMock = new Mock<IFlatWizardSettings>();
             cameraSettingsMock = new Mock<ICameraSettings>();
@@ -69,7 +69,7 @@ namespace NINATest {
             // act
 
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
-                cameraMediatorMock.Object, resourceUtilMock.Object,
+                cameraMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
@@ -112,7 +112,7 @@ namespace NINATest {
                 });
             // setup
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
-                cameraMediatorMock.Object, resourceUtilMock.Object,
+                cameraMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
@@ -141,7 +141,7 @@ namespace NINATest {
                 .Returns(new ObserveAllCollection<FilterInfo>(filters));
 
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
-                cameraMediatorMock.Object, resourceUtilMock.Object,
+                cameraMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
@@ -199,7 +199,7 @@ namespace NINATest {
             double newHistMeanTarget, double newHistTolerance, double newMaxFlatExposureTime, double newMinFlatExposureTime, double newStepSize,
             int histMeanCallCount, int histTolCallCount, int maxFlatCallCount, int minFlatCallCount, int stepCallCount) {
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
-                cameraMediatorMock.Object, resourceUtilMock.Object,
+                cameraMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
