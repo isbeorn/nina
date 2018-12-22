@@ -15,8 +15,11 @@ namespace NINA.Utility.AtikSDK {
         private const string DLLNAME = "ArtemisHSC.dll";
 
         static AtikCameraDll() {
+            if (DllLoader.IsX86()) {
+                DllLoader.LoadDll("Atik/" + "libusb-1.0.dll");
+            }
             DllLoader.LoadDll("Atik/" + "Atik.Core.dll");
-            DllLoader.LoadDll("Atik/" + "ArtemisHscDefvn.dll");
+            DllLoader.LoadDll("Atik/" + "ArtemisHscDefn.dll");
             DllLoader.LoadDll("Atik/" + DLLNAME);
         }
 

@@ -264,6 +264,21 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public bool HasDewHeater {
+            get {
+                return false;
+            }
+        }
+
+        public bool DewHeaterOn {
+            get {
+                return false;
+            }
+            set {
+
+            }
+        }
+
         public string CameraState {
             get {
                 return AtikCameraDll.CameraState(_cameraP).ToString();
@@ -390,6 +405,11 @@ namespace NINA.Model.MyCamera {
                 try {
                     _cameraP = AtikCameraDll.Connect(_cameraId);
                     _info = AtikCameraDll.GetCameraProperties(_cameraP);
+
+                    if (CanSetTemperature) {
+                        TemperatureSetPoint = 20;
+                    }
+
                     RaisePropertyChanged(nameof(BinningModes));
                     RaisePropertyChanged(nameof(Connected));
                     success = true;
