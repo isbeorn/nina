@@ -572,7 +572,8 @@ namespace NINA.Model.MyCamera {
             camera = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+            calculateStatisticsOnDownload = calculateStatistics;
             await downloadExposure.Task;
             return await imageTask;
         }
@@ -629,7 +630,7 @@ namespace NINA.Model.MyCamera {
                 var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth);
                 var arr = cameraDataToManaged.GetData();
 
-                imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, calculateStatisticsOnDownload, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                 if (LiveViewEnabled) {
                     downloadLiveExposure?.TrySetResult(true);
                 } else {
@@ -642,6 +643,7 @@ namespace NINA.Model.MyCamera {
         private TaskCompletionSource<object> downloadLiveExposure;
         private Task<ImageArray> imageTask;
         private int bitDepth;
+        private bool calculateStatisticsOnDownload;
 
         public int BitDepth {
             get {

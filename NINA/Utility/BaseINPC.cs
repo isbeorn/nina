@@ -21,13 +21,42 @@
 
 #endregion "copyright"
 
+using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace NINA.Utility {
 
     [System.Serializable()]
     public abstract class BaseINPC : INotifyPropertyChanged {
+
+        [field: System.NonSerialized]
+        private ConcurrentDictionary<string, Timer> delayedTimers = new ConcurrentDictionary<string, Timer>();
+
+        protected void DelayedPropertyChanged([CallerMemberName] string propertyName = null, TimeSpan delay = default(TimeSpan)) {
+            if (delay == default(TimeSpan)) {
+                delay = TimeSpan.FromMilliseconds(500);
+            }
+            if (delayedTimers == null) {
+                delayedTimers = new ConcurrentDictionary<string, Timer>();
+            }
+
+            if (!delayedTimers.ContainsKey(propertyName)) {
+                var timer = new Timer(new TimerCallback((x) => TimedPropertyChanged(propertyName)), new object(), delay.Milliseconds, Timeout.Infinite);
+                delayedTimers.TryAdd(propertyName, timer);
+            }
+        }
+
+        private void TimedPropertyChanged([CallerMemberName] string propertyName = null) {
+            if (delayedTimers.ContainsKey(propertyName)) {
+                delayedTimers[propertyName].Change(Timeout.Infinite, Timeout.Infinite);
+                Timer t;
+                delayedTimers.TryRemove(propertyName, out t);
+                RaisePropertyChanged(propertyName);
+            }
+        }
 
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -43,14 +72,16 @@ namespace NINA.Utility {
         protected void Items_CollectionChanged(object sender,
                System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
             if (e.OldItems != null) {
-                foreach (INotifyPropertyChanged item in e.OldItems)
+                foreach (INotifyPropertyChanged item in e.OldItems) {
                     item.PropertyChanged -= new
                                            PropertyChangedEventHandler(Item_PropertyChanged);
+                }
             }
             if (e.NewItems != null) {
-                foreach (INotifyPropertyChanged item in e.NewItems)
+                foreach (INotifyPropertyChanged item in e.NewItems) {
                     item.PropertyChanged +=
                                        new PropertyChangedEventHandler(Item_PropertyChanged);
+                }
             }
         }
 

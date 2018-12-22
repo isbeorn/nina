@@ -26,10 +26,11 @@ using NINA.Utility.Mediator;
 using System;
 using System.Windows;
 using System.Windows.Data;
+using ResourceDictionary = System.Windows.ResourceDictionary;
 
 namespace NINA.Locale {
 
-    internal class Loc : BaseINPC {
+    public class Loc : BaseINPC, ILoc {
 
         private Loc() {
         }

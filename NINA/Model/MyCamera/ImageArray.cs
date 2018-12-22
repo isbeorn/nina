@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
 
-    public class ImageArray {
+    public class ImageArray : IImageArray {
         public ushort[] FlatArray;
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace NINA.Model.MyCamera {
         /// </summary>
         public string RAWType { get; set; }
 
-        public ImageStatistics Statistics { get; set; }
+        public IImageStatistics Statistics { get; set; }
 
         private ImageArray() {
         }

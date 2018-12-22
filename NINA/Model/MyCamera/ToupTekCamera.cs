@@ -472,6 +472,8 @@ namespace NINA.Model.MyCamera {
             StopExposure();
         }
 
+        private bool calculateStatisticsOnDownload;
+
         private void ReadOutBinning() {
             /* Found no way to readout available binning modes. Assume 4x4 for all cams for now */
             BinningModes.Clear();
@@ -570,7 +572,8 @@ namespace NINA.Model.MyCamera {
             camera = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+            calculateStatisticsOnDownload = calculateStatistics;
             await downloadExposure.Task;
             return await imageTask;
         }
@@ -627,7 +630,7 @@ namespace NINA.Model.MyCamera {
                 var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth);
                 var arr = cameraDataToManaged.GetData();
 
-                imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, calculateStatisticsOnDownload, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                 if (LiveViewEnabled) {
                     downloadLiveExposure?.TrySetResult(true);
                 } else {

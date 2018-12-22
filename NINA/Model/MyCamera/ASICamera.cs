@@ -407,7 +407,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
             return await Task.Run<ImageArray>(async () => {
                 try {
                     var status = ExposureStatus;
@@ -430,7 +430,7 @@ namespace NINA.Model.MyCamera {
                     var arr = cameraDataToManaged.GetData();
                     Marshal.FreeHGlobal(pointer);
 
-                    return await ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                    return await ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);

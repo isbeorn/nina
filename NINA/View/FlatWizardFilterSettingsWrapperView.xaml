@@ -1,0 +1,126 @@
+﻿<UserControl x:Class="NINA.View.FlatWizardFilterSettingsWrapperView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ns="clr-namespace:NINA.Locale"
+             xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel Orientation="Vertical">
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="15px" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatMinExposureTime}" TextWrapping="WrapWithOverflow" />
+                <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding Settings.MinFlatExposureTime, UpdateSourceTrigger=PropertyChanged, StringFormat=N5}" />
+                <ninactrl:TickSlider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                        ActualValue="{Binding Settings.MinFlatExposureTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        ActualValueMinimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.ExposureMin, FallbackValue=0.00025}"
+                        ActualValueMaximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.ExposureMax, FallbackValue=30}"
+                        InitialSpeedTickValue="0.5" SpeedTickPercentageChangePerTick="0.9" MaxActualValueIncreasePerTick="1" />
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="s" HorizontalAlignment="Right" />
+            </Grid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="15px" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatMaxExposureTime}" TextWrapping="WrapWithOverflow" />
+                <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding Settings.MaxFlatExposureTime, UpdateSourceTrigger=PropertyChanged, StringFormat=N5}" />
+                <ninactrl:TickSlider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                        ActualValue="{Binding Settings.MaxFlatExposureTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        ActualValueMinimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.ExposureMin, FallbackValue=0.00025}"
+                        ActualValueMaximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.ExposureMax, FallbackValue=30}"
+                        InitialSpeedTickValue="0.5" SpeedTickPercentageChangePerTick="0.9" MaxActualValueIncreasePerTick="1" />
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="s" HorizontalAlignment="Right" />
+            </Grid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="15px" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatStepSize}" TextWrapping="WrapWithOverflow" />
+                <TextBox Grid.Row="0" Grid.Column="1"
+                        Text="{Binding Settings.StepSize, UpdateSourceTrigger=PropertyChanged, StringFormat=N5}" />
+                <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                        Value="{Binding Settings.StepSize, UpdateSourceTrigger=PropertyChanged}" Minimum="0.00025" Maximum="3" />
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="s" HorizontalAlignment="Right" />
+            </Grid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="15px" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramMeanTarget}" TextWrapping="WrapWithOverflow" />
+                <TextBlock Grid.Row="0" Grid.Column="1"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Text="{Binding HistogramMeanTargetADU, Mode=OneWay}" />
+                <TextBox Grid.Row="0" Grid.Column="2"
+                        Text="{Binding Settings.HistogramMeanTarget, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}" />
+                <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4"
+                        Value="{Binding Settings.HistogramMeanTarget, UpdateSourceTrigger=PropertyChanged}" Minimum="0.1" Maximum="0.9" IsSnapToTickEnabled="True" TickFrequency="0.05" />
+                <TextBlock Grid.Row="0" Grid.Column="3" Text="%" HorizontalAlignment="Right" />
+            </Grid>
+        </Border>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="15px" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                               VerticalAlignment="Center" Text="{ns:Loc LblFlatHistogramTolerance}" TextWrapping="WrapWithOverflow" />
+                <TextBlock Grid.Row="0" Grid.Column="1"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Text="{Binding HistogramToleranceADU, Mode=OneWay}" />
+                <TextBox Grid.Row="0" Grid.Column="2"
+                        Text="{Binding Settings.HistogramTolerance, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}" />
+                <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4"
+                        Value="{Binding Settings.HistogramTolerance, UpdateSourceTrigger=PropertyChanged}" Minimum="0.1" Maximum="0.5" IsSnapToTickEnabled="True" TickFrequency="0.05" />
+                <TextBlock Grid.Row="0" Grid.Column="3" Text="%" HorizontalAlignment="Right" />
+            </Grid>
+        </Border>
+    </StackPanel>
+</UserControl>

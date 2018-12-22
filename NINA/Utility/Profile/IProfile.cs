@@ -34,6 +34,7 @@ namespace NINA.Utility.Profile {
         IFilterWheelSettings FilterWheelSettings { get; set; }
         IFocuserSettings FocuserSettings { get; set; }
         IFramingAssistantSettings FramingAssistantSettings { get; set; }
+        IFlatWizardSettings FlatWizardSettings { get; set; }
         IGuiderSettings GuiderSettings { get; set; }
         Guid Id { get; set; }
         IImageFileSettings ImageFileSettings { get; set; }

@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Interfaces {
 
-    internal interface IApplicationStatusVM {
+    public interface IApplicationStatusVM {
 
         void StatusUpdate(ApplicationStatus status);
     }
