@@ -375,7 +375,7 @@ namespace NINA.ViewModel.FlatWizard {
             var sequence =
                 new CaptureSequence(CalculatedExposureTime, "FLAT", filter, BinningMode, FlatCount) { Gain = Gain };
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
-                if (sequence.ProgressExposureCount != sequence.TotalExposureCount) {
+                if (sequence.ProgressExposureCount != sequence.TotalExposureCount - 1) {
                     await ImagingVM.CaptureImageWithoutProcessingAndSaveAsync(sequence, ct, progress);
                 } else {
                     await ImagingVM.CaptureImageWithoutProcessingAndSaveSync(sequence, ct, progress);

@@ -92,7 +92,7 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         public double GetNextExposureTime(double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
-            if (dataPoints.Count >= 3) {
+            if (dataPoints.Count >= 2) {
                 return GetExpectedExposureTime(wrapper);
             }
 
