@@ -400,7 +400,7 @@
                             TickPlacement="BottomRight"
                             Value="{Binding Cam.USBLimit}" />
                     </DockPanel>
-                    <DockPanel>
+                    <DockPanel Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
                         <TextBlock
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblReadoutForSnapImages}">
@@ -415,7 +415,7 @@
                             ItemsSource="{Binding Cam.ReadoutModes}"
                             SelectedIndex="{Binding Cam.ReadoutModeForSnapImages}" />
                     </DockPanel>
-                    <DockPanel>
+                    <DockPanel Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
                         <TextBlock
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblReadoutForNormalImages}">

@@ -31,7 +31,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -560,10 +559,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public IEnumerable<string> ReadoutModes {
+        public ICollection ReadoutModes {
             get {
                 if (!CanFastReadout) {
-                    return ReadoutModesArrayList.ToArray().Select(o => o.ToString());
+                    return ReadoutModesArrayList;
                 }
 
                 return new List<string>() { "Default", "Fast Readout" };

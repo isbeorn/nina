@@ -48,4 +48,5 @@
     <converters:DoubleToHalfValueConverter x:Key="DoubleToHalfConverter" />
     <converters:WidthAndValueToWidthConverter x:Key="WidthAndValueToWidthConverter" />
     <converters:OneValueGreaterThanAnotherToVisiblityConverter x:Key="GreaterThanToVisiblityConverter" />
+    <converters:CollectionContainsMoreThanOneItemToVisibilityConverter x:Key="CollectionContainsMoreThanOneItemToVisibilityConverter" />
 </ResourceDictionary>
