@@ -754,7 +754,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblFlatUserPromptFailure">Fehlschlag die Flat Belichtungszeit zu errechnen</s:String>
     <s:String x:Key="LblFlatUserPromptFlatTooDim">Ihre Flats sind zu dunkel, hellen Sie das Licht auf, adjustieren Sie die Toleranz, das Histogrammdurchschnittsziel oder die maximale Belichtungszeit</s:String>
     <s:String x:Key="LblFlatUserPromptFlatTooBright">Ihre Flats sind zu hell, dunkeln Sie das Licht ab, adjustieren Sie die Toleranz, das Histogrammdurchschnittsziel oder die minimale Belichtungszeit</s:String>
-    <s:String x:Key="LblFlatSequenceCancelled">Flats Sequenz abgebrochen</s:String>
+    <s:String x:Key="LblFlatSequenceCancelled">Flats Sequenz abgebrochen, konnte keine Belichtungszeit finden</s:String>
     <s:String x:Key="LblContinue">Fortfahren</s:String>
     <s:String x:Key="LblResetAndContinue">Zurücksetzen und Fortfahren</s:String>
     <s:String x:Key="LblFlatUserPromptCancel">Flat Wizard Abbrechen</s:String>

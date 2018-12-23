@@ -48,7 +48,7 @@
                         Text="{Binding Settings.MaxFlatExposureTime, UpdateSourceTrigger=PropertyChanged, StringFormat=N5}" />
                 <ninactrl:TickSlider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                         ActualValue="{Binding Settings.MaxFlatExposureTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        ActualValueMinimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.ExposureMin, FallbackValue=0.00025}"
+                        ActualValueMinimum="{Binding Settings.MinFlatExposureTime, FallbackValue=0.00025}"
                         ActualValueMaximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.ExposureMax, FallbackValue=30}"
                         InitialSpeedTickValue="0.5" SpeedTickPercentageChangePerTick="0.9" MaxActualValueIncreasePerTick="1" />
                 <TextBlock Grid.Row="0" Grid.Column="2" Text="s" HorizontalAlignment="Right" />
