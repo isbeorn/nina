@@ -24,7 +24,6 @@
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
 using NINA.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -32,7 +31,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace NINA.Model {
@@ -399,6 +397,11 @@ namespace NINA.Model {
         public CaptureSequence ActiveSequence {
             get {
                 lock (lockobj) {
+                    if (_activeSequence != null && !_activeSequence.Enabled) {
+                        _activeSequence = Items.FirstOrDefault(i => i.Enabled);
+                        RaisePropertyChanged(nameof(ActiveSequence));
+                        RaisePropertyChanged(nameof(ActiveSequenceIndex));
+                    }
                     return _activeSequence;
                 }
             }
