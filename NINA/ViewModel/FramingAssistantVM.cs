@@ -27,7 +27,6 @@ using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Behaviors;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -39,11 +38,9 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml.Linq;
 
@@ -63,6 +60,8 @@ namespace NINA.ViewModel {
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
 
+            FramingAssistantSource = profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource;
+
             CameraPixelSize = profileService.ActiveProfile.CameraSettings.PixelSize;
             FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength;
 
@@ -76,6 +75,7 @@ namespace NINA.ViewModel {
             DragStopCommand = new RelayCommand(DragStop);
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache);
+
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async () => {
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
                 vm.ChangeTab(ApplicationTab.SEQUENCE);
@@ -344,6 +344,10 @@ namespace NINA.ViewModel {
             }
             set {
                 _framingAssistantSource = value;
+                if (profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource != value) {
+                    profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource = _framingAssistantSource;
+                }
+
                 RaisePropertyChanged();
             }
         }
@@ -553,7 +557,8 @@ namespace NINA.ViewModel {
 
         public XElement ImageCacheInfo {
             get {
-                return Cache.Cache; ;
+                return Cache.Cache;
+                ;
             }
         }
 

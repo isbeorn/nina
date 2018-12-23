@@ -21,7 +21,7 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Mediator;
+using NINA.Utility.SkySurvey;
 using System;
 using System.Runtime.Serialization;
 
@@ -30,6 +30,30 @@ namespace NINA.Utility.Profile {
     [Serializable()]
     [DataContract]
     public class FramingAssistantSettings : Settings, IFramingAssistantSettings {
+
+        [OnDeserializing]
+        public void OnDeserialization(StreamingContext context) {
+            SetDefaultValues();
+        }
+
+        private void SetDefaultValues() {
+            cameraHeight = 3500;
+            cameraWidth = 4500;
+            fieldOfView = 3;
+            lastSelectedImageSource = 0;
+        }
+
+        private SkySurveySource lastSelectedImageSource;
+
+        [DataMember]
+        public SkySurveySource LastSelectedImageSource {
+            get => lastSelectedImageSource;
+            set {
+                lastSelectedImageSource = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private int cameraHeight = 3500;
 
         [DataMember]
