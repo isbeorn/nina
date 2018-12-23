@@ -276,21 +276,6 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Text="{Binding ETA, Mode=OneWay}" />
-                                        <Button
-                                            Grid.Column="1"
-                                            Width="20"
-                                            Height="20"
-                                            Margin="5"
-                                            Command="{Binding UpdateETACommand}"
-                                            IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
-                                            <Grid>
-                                                <Path
-                                                    Margin="5"
-                                                    Data="{StaticResource LoopSVG}"
-                                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                                    Stretch="Uniform" />
-                                            </Grid>
-                                        </Button>
                                     </Grid>
                                 </UniformGrid>
                             </UniformGrid>
