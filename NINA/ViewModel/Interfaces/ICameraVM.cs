@@ -45,7 +45,7 @@ namespace NINA.ViewModel.Interfaces {
 
         void AbortExposure();
 
-        Task Capture(CaptureSequence sequence, bool isLightFrame, CancellationToken token,
+        Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress);
 
         IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);

@@ -247,12 +247,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            bool isLight = false;
-            if (CameraInfo.HasShutter) {
-                isLight = true;
-            }
-
-            await cameraMediator.Capture(seq, isLight, token, progress);
+            await cameraMediator.Capture(seq, token, progress);
         }
 
         private Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress, bool calculateStatistics) {

@@ -661,7 +661,7 @@ namespace NINA.Model.MyCamera {
         private Dictionary<int, double> _shutterSpeeds = new Dictionary<int, double>();
         private int _bulbShutterSpeedIndex;
 
-        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             if (Connected) {
                 double exposureTime = sequence.ExposureTime;
                 Logger.Debug("Prepare start of exposure: " + sequence);

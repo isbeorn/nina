@@ -554,7 +554,7 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public Task Capture(CaptureSequence sequence, bool isLightFrame, CancellationToken token,
+        public Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress) {
             throw new NotImplementedException();
         }

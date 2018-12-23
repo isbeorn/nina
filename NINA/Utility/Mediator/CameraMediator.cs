@@ -34,9 +34,9 @@ namespace NINA.Utility.Mediator {
 
     internal class CameraMediator : DeviceMediator<ICameraVM, ICameraConsumer, CameraInfo>, ICameraMediator {
 
-        public Task Capture(CaptureSequence sequence, bool isLightFrame, CancellationToken token,
+        public Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress) {
-            return handler.Capture(sequence, isLightFrame, token, progress);
+            return handler.Capture(sequence, token, progress);
         }
 
         public IAsyncEnumerable<ImageArray> LiveView(CancellationToken token) {

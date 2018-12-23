@@ -1045,7 +1045,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             if (EnableSubSample) {
                 StartX = SubSampleX;
                 StartY = SubSampleY;
@@ -1068,6 +1068,10 @@ namespace NINA.Model.MyCamera {
                         ? readoutModeForSnapImages
                         : readoutModeForNormalImages;
             }
+
+            var isLightFrame = !(sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
+                              sequence.ImageType == CaptureSequence.ImageTypes.BIAS ||
+                              sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT);
 
             _camera.StartExposure(sequence.ExposureTime, isLightFrame);
         }

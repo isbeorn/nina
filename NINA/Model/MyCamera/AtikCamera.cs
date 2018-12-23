@@ -472,7 +472,7 @@ namespace NINA.Model.MyCamera {
         public void SetupDialog() {
         }
 
-        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             do {
                 System.Threading.Thread.Sleep(100);
             } while (AtikCameraDll.CameraState(_cameraP) != AtikCameraDll.ArtemisCameraStateEnum.CAMERA_IDLE);

@@ -33,7 +33,7 @@ namespace NINA.Utility.Mediator.Interfaces {
 
     public interface ICameraMediator : IDeviceMediator<ICameraVM, ICameraConsumer, CameraInfo> {
 
-        Task Capture(CaptureSequence sequence, bool isLightFrame, CancellationToken token,
+        Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress);
 
         IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);

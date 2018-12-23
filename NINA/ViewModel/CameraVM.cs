@@ -486,11 +486,11 @@ namespace NINA.ViewModel {
             });
         }
 
-        public async Task Capture(CaptureSequence sequence, bool isLightFrame, CancellationToken token,
+        public async Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress) {
             double exposureTime = sequence.ExposureTime;
             if (CameraInfo.Connected == true) {
-                Cam.StartExposure(sequence, isLightFrame);
+                Cam.StartExposure(sequence);
 
                 var start = DateTime.Now;
                 var elapsed = 0.0d;

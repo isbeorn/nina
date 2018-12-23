@@ -451,11 +451,15 @@ namespace NINA.Model.MyCamera {
             BinY = y;
         }
 
-        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             int exposureMs = (int)(sequence.ExposureTime * 1000000);
             var exposureSettings = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE);
             exposureSettings.Value = exposureMs;
             exposureSettings.IsAuto = false;
+
+            var isDarkFrame = sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
+                               sequence.ImageType == CaptureSequence.ImageTypes.BIAS ||
+                               sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT;
 
             if (EnableSubSample) {
                 this.CaptureAreaInfo = new CaptureAreaInfo(new Point(SubSampleX, SubSampleY), new Size(SubSampleWidth / BinX, SubSampleHeight / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
@@ -463,7 +467,7 @@ namespace NINA.Model.MyCamera {
                 this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), new Size(this.Resolution.Width / BinX, this.Resolution.Height / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
             }
 
-            ASICameraDll.StartExposure(_cameraId, !isLightFrame);
+            ASICameraDll.StartExposure(_cameraId, isDarkFrame);
         }
 
         public void StopExposure() {

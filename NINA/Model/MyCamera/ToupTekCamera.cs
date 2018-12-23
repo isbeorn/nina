@@ -633,7 +633,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void StartExposure(CaptureSequence sequence, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             downloadExposure = new TaskCompletionSource<object>();
 
             SetExposureTime(sequence.ExposureTime);
