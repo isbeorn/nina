@@ -555,12 +555,7 @@ namespace NINA.ViewModel {
             return skySurveyImage;
         }
 
-        public XElement ImageCacheInfo {
-            get {
-                return Cache.Cache;
-                ;
-            }
-        }
+        public XElement ImageCacheInfo => Cache.Cache;
 
         private CacheSkySurvey Cache { get; set; }
 
