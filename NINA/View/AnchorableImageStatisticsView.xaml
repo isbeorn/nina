@@ -86,6 +86,31 @@
                                 Text="{Binding StDev, StringFormat=\{0:0.00\}}" />
                         </StackPanel>
                     </UniformGrid>
+
+                    <UniformGrid Columns="2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="55"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblMedian}" />
+                            <TextBlock
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding Median, StringFormat=\{0:0.00\}}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="55"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblMAD}" />
+                            <TextBlock
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding MedianAbsoluteDeviation, StringFormat=\{0:0.00\}}" />
+                        </StackPanel>
+                    </UniformGrid>
                     <UniformGrid Columns="2">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock

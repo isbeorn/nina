@@ -55,6 +55,8 @@ namespace NINA.Model.MyCamera {
         public int BitDepth { get; private set; }
         public double StDev { get; private set; }
         public double Mean { get; private set; }
+        public double Median { get; private set; }
+        public double MedianAbsoluteDeviation { get; private set; }
         public int Max { get; private set; }
         public long MaxOccurrences { get; private set; }
         public int Min { get; private set; }
@@ -111,18 +113,15 @@ namespace NINA.Model.MyCamera {
                 ushort oldmin = min;
                 long minOccurrences = 0;
 
-                Dictionary<double, int> histogram = new Dictionary<double, int>();
                 ushort maxHistogramValue = (ushort)((1 << BitDepth) - 1);
-
+                int[] histogram = new int[maxHistogramValue + 1];
                 for (var i = 0; i < array.Length; i++) {
                     ushort val = array[i];
-                    double histogramVal = Math.Floor(val * ((double)resolution / maxHistogramValue));
 
                     sum += val;
                     squareSum += (long)val * val;
 
-                    histogram.TryGetValue(histogramVal, out var curCount);
-                    histogram[histogramVal] = curCount + 1;
+                    histogram[val]++;
 
                     min = Math.Min(min, val);
                     if (min != oldmin) {
@@ -148,13 +147,60 @@ namespace NINA.Model.MyCamera {
                 double variance = (squareSum - count * mean * mean) / (count);
                 double stdev = Math.Sqrt(variance);
 
+                var occurrences = 0;
+                double median = 0d, median1 = 0d, median2 = 0d;
+                var medianlength = array.Length / 2.0;
+
+                for (ushort i = 0; i < ushort.MaxValue; i++) {
+                    occurrences += histogram[i];
+                    if (occurrences > medianlength) {
+                        median1 = i;
+                        median2 = i;
+                        break;
+                    } else if (occurrences == medianlength) {
+                        median1 = i;
+                        for (int j = i + 1; j <= ushort.MaxValue; j++) {
+                            if (histogram[j] > 0) {
+                                median2 = j;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                median = (median1 + median2) / 2.0;
+
+                var MADValues = new SortedDictionary<double, int>();
+                for (ushort i = 0; i < ushort.MaxValue; i++) {
+                    var key = Math.Abs(i - median);
+                    MADValues.TryGetValue(key, out var sumCount);
+                    MADValues[key] = sumCount + histogram[i];
+                }
+
+                var medianAbsoluteDeviation = 0.0d;
+                occurrences = 0;
+                foreach (KeyValuePair<double, int> pair in MADValues) {
+                    occurrences += pair.Value;
+                    if (occurrences >= medianlength) {
+                        medianAbsoluteDeviation = pair.Key;
+                        break;
+                    }
+                }
+
                 this.Max = max;
                 this.MaxOccurrences = maxOccurrences;
                 this.Min = min;
                 this.MinOccurrences = minOccurrences;
                 this.StDev = stdev;
                 this.Mean = mean;
-                this.Histogram = histogram.Select(g => new OxyPlot.DataPoint(g.Key, g.Value))
+                this.Median = median;
+                this.MedianAbsoluteDeviation = medianAbsoluteDeviation;
+                this.Histogram = histogram
+                    .Select((value, index) => new { Index = index, Value = value })
+                    .GroupBy(
+                        x => Math.Floor((double)x.Index * ((double)resolution / ushort.MaxValue)),
+                        x => x.Value)
+                    .Select(g => new OxyPlot.DataPoint(g.Key, g.Sum()))
                     .OrderBy(item => item.X).ToList();
             }
         }

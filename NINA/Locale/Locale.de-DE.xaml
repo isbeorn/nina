@@ -771,6 +771,8 @@ Berechneter HFR: {2}
     <s:String x:Key="LblTools">Werkzeuge</s:String>
     <s:String x:Key="LblSecondaryBackground">Sekundärer Hintergrund</s:String>
     <s:String x:Key="LblTertiaryBackground">Tertiärer Hintergrund</s:String>
+    <s:String x:Key="LblMedian">Median</s:String>
+    <s:String x:Key="LblMAD">MAD</s:String>
     <s:String x:Key="LblUseFastReadoutOnly">Immer schnellen Auslesemodus verwenden</s:String>
     <s:String x:Key="LblUseFastReadoutOnlyToolTip">Wenn aktiviert wird immer der schnelle Auslesemodus der Kamera verwendet. Wenn deaktiviert verwendet die Kamera nicht den schnellen Auslesemodus für LIGHT, BIAS, DARK, FLAT und DARKFLAT Bilder</s:String>
     <s:String x:Key="LblReadoutForSnapImages">Auslesemodus für SNAP</s:String>
