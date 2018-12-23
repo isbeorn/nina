@@ -766,4 +766,6 @@ Calculated HFR: {2}
     <s:String x:Key="LblFlatUserPromptCancel">Cancel Flat Wizard</s:String>
     <s:String x:Key="LblFlatUserCurrentExposureCalculation">Current Exposure Calculations</s:String>
     <s:String x:Key="LblFlatUserFlatSettings">Flat Wizard Settings</s:String>
+    <s:String x:Key="LblMedian">Median</s:String>
+    <s:String x:Key="LblMAD">MAD</s:String>
 </ResourceDictionary>

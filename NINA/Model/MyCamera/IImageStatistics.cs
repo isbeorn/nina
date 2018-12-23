@@ -16,6 +16,8 @@ namespace NINA.Model.MyCamera {
         int Max { get; }
         long MaxOccurrences { get; }
         double Mean { get; }
+        double Median { get; }
+        double MedianAbsoluteDeviation { get; }
         int Min { get; }
         long MinOccurrences { get; }
         double StDev { get; }

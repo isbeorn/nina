@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.ImageStatisticsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -92,6 +91,29 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Text="{Binding StDev, StringFormat=\{0:0.00\}}" />
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="70"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblMedian}" />
+                                    <TextBlock
+                                        Width="70"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding Median, StringFormat=\{0:0.00\}}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="70"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblMAD}" />
+                                    <TextBlock
+                                        Width="70"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding MedianAbsoluteDeviation, StringFormat=\{0:0.00\}}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock

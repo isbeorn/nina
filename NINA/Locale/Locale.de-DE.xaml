@@ -771,4 +771,6 @@ Berechneter HFR: {2}
     <s:String x:Key="LblTools">Werkzeuge</s:String>
     <s:String x:Key="LblSecondaryBackground">Sekundärer Hintergrund</s:String>
     <s:String x:Key="LblTertiaryBackground">Tertiärer Hintergrund</s:String>
+    <s:String x:Key="LblMedian">Median</s:String>
+    <s:String x:Key="LblMAD">MAD</s:String>
 </ResourceDictionary>
