@@ -25,7 +25,6 @@ using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Exceptions;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -248,13 +247,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            double duration = seq.ExposureTime;
-            bool isLight = false;
-            if (CameraInfo.HasShutter) {
-                isLight = true;
-            }
-
-            await cameraMediator.Capture(duration, isLight, token, progress);
+            await cameraMediator.Capture(seq, token, progress);
         }
 
         private Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress, bool calculateStatistics) {

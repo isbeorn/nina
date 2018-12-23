@@ -27,9 +27,6 @@ using NINA.Utility.Profile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ToupTek;
@@ -233,7 +230,6 @@ namespace NINA.Model.MyCamera {
                 return false;
             }
             set {
-
             }
         }
 
@@ -380,6 +376,28 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public ICollection ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public ArrayList Gains {
             get {
                 return new ArrayList();
@@ -439,7 +457,10 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 _connected = value;
-                if (!_connected) coolerPowerReadoutCts?.Cancel();
+                if (!_connected) {
+                    coolerPowerReadoutCts?.Cancel();
+                }
+
                 RaisePropertyChanged();
             }
         }
@@ -612,10 +633,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             downloadExposure = new TaskCompletionSource<object>();
 
-            SetExposureTime(exposureTime);
+            SetExposureTime(sequence.ExposureTime);
 
             if (!camera.Trigger(1)) {
                 throw new Exception("ToupTekCamera - Failed to trigger camera");

@@ -21,7 +21,7 @@
 
 #endregion "copyright"
 
-using NINA.Utility;
+using System.Collections.Generic;
 
 namespace NINA.Model.MyCamera {
 
@@ -170,6 +170,36 @@ namespace NINA.Model.MyCamera {
         public double TemperatureSetPoint {
             get { return temperatureSetPoint; }
             set { temperatureSetPoint = value; RaisePropertyChanged(); }
+        }
+
+        private IEnumerable<string> readoutModes;
+
+        public IEnumerable<string> ReadoutModes {
+            get => readoutModes;
+            set {
+                readoutModes = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short snapReadoutMode;
+
+        public short ReadoutModeForSnapImages {
+            get => snapReadoutMode;
+            set {
+                snapReadoutMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short normalReadoutMode;
+
+        public short ReadoutModeForNormalImages {
+            get => normalReadoutMode;
+            set {
+                normalReadoutMode = value;
+                RaisePropertyChanged();
+            }
         }
     }
 }

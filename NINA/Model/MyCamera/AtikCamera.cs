@@ -21,19 +21,16 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
 
@@ -275,7 +272,6 @@ namespace NINA.Model.MyCamera {
                 return false;
             }
             set {
-
             }
         }
 
@@ -349,6 +345,28 @@ namespace NINA.Model.MyCamera {
         public ArrayList Gains {
             get {
                 return new ArrayList();
+            }
+        }
+
+        public ICollection ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -454,7 +472,7 @@ namespace NINA.Model.MyCamera {
         public void SetupDialog() {
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             do {
                 System.Threading.Thread.Sleep(100);
             } while (AtikCameraDll.CameraState(_cameraP) != AtikCameraDll.ArtemisCameraStateEnum.CAMERA_IDLE);
@@ -463,7 +481,7 @@ namespace NINA.Model.MyCamera {
             } else {
                 AtikCameraDll.SetSubFrame(_cameraP, 0, 0, CameraXSize, CameraYSize);
             }
-            AtikCameraDll.StartExposure(_cameraP, exposureTime);
+            AtikCameraDll.StartExposure(_cameraP, sequence.ExposureTime);
         }
 
         public void StopExposure() {

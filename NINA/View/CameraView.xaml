@@ -400,6 +400,36 @@
                             TickPlacement="BottomRight"
                             Value="{Binding Cam.USBLimit}" />
                     </DockPanel>
+                    <DockPanel Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblReadoutForSnapImages}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblReadoutForSnapImagesToolTip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            Width="200"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            ItemsSource="{Binding Cam.ReadoutModes}"
+                            SelectedIndex="{Binding Cam.ReadoutModeForSnapImages}" />
+                    </DockPanel>
+                    <DockPanel Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblReadoutForNormalImages}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblReadoutForNormalImagesToolTip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            Width="200"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            ItemsSource="{Binding Cam.ReadoutModes}"
+                            SelectedIndex="{Binding Cam.ReadoutModeForNormalImages}" />
+                    </DockPanel>
                 </StackPanel>
             </GroupBox>
         </Grid>

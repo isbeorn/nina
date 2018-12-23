@@ -28,7 +28,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -452,11 +451,15 @@ namespace NINA.Model.MyCamera {
             BinY = y;
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
-            int exposureMs = (int)(exposureTime * 1000000);
+        public void StartExposure(CaptureSequence sequence) {
+            int exposureMs = (int)(sequence.ExposureTime * 1000000);
             var exposureSettings = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_EXPOSURE);
             exposureSettings.Value = exposureMs;
             exposureSettings.IsAuto = false;
+
+            var isDarkFrame = sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
+                               sequence.ImageType == CaptureSequence.ImageTypes.BIAS ||
+                               sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT;
 
             if (EnableSubSample) {
                 this.CaptureAreaInfo = new CaptureAreaInfo(new Point(SubSampleX, SubSampleY), new Size(SubSampleWidth / BinX, SubSampleHeight / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
@@ -464,7 +467,7 @@ namespace NINA.Model.MyCamera {
                 this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), new Size(this.Resolution.Width / BinX, this.Resolution.Height / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
             }
 
-            ASICameraDll.StartExposure(_cameraId, !isLightFrame);
+            ASICameraDll.StartExposure(_cameraId, isDarkFrame);
         }
 
         public void StopExposure() {
@@ -596,6 +599,28 @@ namespace NINA.Model.MyCamera {
             } else {
                 Logger.Warning(string.Format("Failed to set ASI Control Value {0} with value {1}", type, value));
                 return false;
+            }
+        }
+
+        public ICollection ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
             }
         }
 

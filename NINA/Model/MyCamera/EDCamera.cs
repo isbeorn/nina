@@ -29,7 +29,6 @@ using NINA.Utility.RawConverter;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -240,7 +239,6 @@ namespace NINA.Model.MyCamera {
                 return false;
             }
             set {
-
             }
         }
 
@@ -319,6 +317,28 @@ namespace NINA.Model.MyCamera {
                     _gains = new ArrayList();
                 }
                 return _gains;
+            }
+        }
+
+        public ICollection ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -608,9 +628,9 @@ namespace NINA.Model.MyCamera {
             };
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             downloadExposure = new TaskCompletionSource<object>();
-
+            var exposureTime = sequence.ExposureTime;
             ValidateModeForExposure(exposureTime);
 
             /* Start exposure */

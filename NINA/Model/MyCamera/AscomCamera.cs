@@ -29,8 +29,8 @@ using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -383,7 +383,6 @@ namespace NINA.Model.MyCamera {
                 return false;
             }
             set {
-
             }
         }
 
@@ -557,6 +556,36 @@ namespace NINA.Model.MyCamera {
                     }
                     RaisePropertyChanged();
                 }
+            }
+        }
+
+        public ICollection ReadoutModes {
+            get {
+                if (!CanFastReadout) {
+                    return ReadoutModesArrayList;
+                }
+
+                return new List<string>() { "Default", "Fast Readout" };
+            }
+        }
+
+        private short readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => readoutModeForSnapImages;
+            set {
+                readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => readoutModeForNormalImages;
+            set {
+                readoutModeForNormalImages = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -838,7 +867,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ArrayList ReadoutModes {
+        public ArrayList ReadoutModesArrayList {
             get {
                 ArrayList val = new ArrayList();
                 if (Connected && !CanFastReadout) {
@@ -1016,7 +1045,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             if (EnableSubSample) {
                 StartX = SubSampleX;
                 StartY = SubSampleY;
@@ -1028,7 +1057,23 @@ namespace NINA.Model.MyCamera {
                 NumX = CameraXSize / BinX;
                 NumY = CameraYSize / BinY;
             }
-            _camera.StartExposure(exposureTime, isLightFrame);
+
+            bool isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAP;
+
+            if (CanFastReadout) {
+                _camera.FastReadout = isSnap ? readoutModeForSnapImages != 0 : readoutModeForNormalImages != 0;
+            } else {
+                _camera.ReadoutMode =
+                    isSnap
+                        ? readoutModeForSnapImages
+                        : readoutModeForNormalImages;
+            }
+
+            var isLightFrame = !(sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
+                              sequence.ImageType == CaptureSequence.ImageTypes.BIAS ||
+                              sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT);
+
+            _camera.StartExposure(sequence.ExposureTime, isLightFrame);
         }
 
         public void StopExposure() {
