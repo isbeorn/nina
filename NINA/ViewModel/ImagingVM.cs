@@ -282,22 +282,29 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress,
-            bool bSave = false, string targetname = "", bool calculateStatistics = true, bool addtoStatistics = true, bool addToHistory = true) {
-            //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
-            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
-            await semaphoreSlim.WaitAsync(token);
-
-            if (CameraInfo.Connected != true) {
-                Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
-                semaphoreSlim.Release();
-                return null;
-            }
-
-            return await Task.Run<ImageArray>(async () => {
+        public Task<ImageArray> CaptureImage(
+                CaptureSequence sequence,
+                CancellationToken token,
+                IProgress<ApplicationStatus> progress,
+                bool bSave = false,
+                string targetname = "",
+                bool calculateStatistics = true,
+                bool addtoStatistics = true,
+                bool addToHistory = true) {
+            return Task.Run<ImageArray>(async () => {
                 ImageArray arr = null;
 
                 try {
+                    //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
+                    await semaphoreSlim.WaitAsync(token);
+
+                    if (CameraInfo.Connected != true) {
+                        Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
+                        semaphoreSlim.Release();
+                        return null;
+                    }
+
                     if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
