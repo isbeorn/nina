@@ -61,9 +61,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public string Id {
-            get {
-                return id;
-            }
+            get => id;
             set {
                 id = value;
                 RaisePropertyChanged();
@@ -74,9 +72,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public double PixelSize {
-            get {
-                return pixelSize;
-            }
+            get => pixelSize;
             set {
                 pixelSize = value;
                 RaisePropertyChanged();
@@ -87,9 +83,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public CameraBulbModeEnum BulbMode {
-            get {
-                return bulbMode;
-            }
+            get => bulbMode;
             set {
                 bulbMode = value;
                 RaisePropertyChanged();
@@ -100,9 +94,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public string SerialPort {
-            get {
-                return serialPort;
-            }
+            get => serialPort;
             set {
                 serialPort = value;
                 RaisePropertyChanged();
@@ -113,9 +105,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public double ReadNoise {
-            get {
-                return readNoise;
-            }
+            get => readNoise;
             set {
                 readNoise = value;
                 RaisePropertyChanged();
@@ -126,9 +116,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public double BitDepth {
-            get {
-                return bitDepth;
-            }
+            get => bitDepth;
             set {
                 bitDepth = value;
                 RaisePropertyChanged();
@@ -139,9 +127,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public double Offset {
-            get {
-                return offset;
-            }
+            get => offset;
             set {
                 offset = value;
                 RaisePropertyChanged();
@@ -152,9 +138,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public double FullWellCapacity {
-            get {
-                return fullWellCapacity;
-            }
+            get => fullWellCapacity;
             set {
                 fullWellCapacity = value;
                 RaisePropertyChanged();
@@ -165,9 +149,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public double DownloadToDataRatio {
-            get {
-                return downloadToDataRatio;
-            }
+            get => downloadToDataRatio;
             set {
                 downloadToDataRatio = value;
                 RaisePropertyChanged();
@@ -178,9 +160,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public RawConverterEnum RawConverter {
-            get {
-                return rawConverter;
-            }
+            get => rawConverter;
             set {
                 rawConverter = value;
                 RaisePropertyChanged();
@@ -191,11 +171,13 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public double MinFlatExposureTime {
-            get {
-                return minFlatExposureTime;
-            }
+            get => minFlatExposureTime;
             set {
                 minFlatExposureTime = value;
+                if (MaxFlatExposureTime < minFlatExposureTime) {
+                    MaxFlatExposureTime = minFlatExposureTime;
+                }
+
                 RaisePropertyChanged();
             }
         }
@@ -207,9 +189,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public double MaxFlatExposureTime {
-            get {
-                return maxFlatExposureTime;
-            }
+            get => maxFlatExposureTime;
             set {
                 maxFlatExposureTime = value;
                 RaisePropertyChanged();

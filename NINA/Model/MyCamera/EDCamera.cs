@@ -228,6 +228,21 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public bool HasDewHeater {
+            get {
+                return false;
+            }
+        }
+
+        public bool DewHeaterOn {
+            get {
+                return false;
+            }
+            set {
+
+            }
+        }
+
         private string _cameraState;
 
         public string CameraState {
