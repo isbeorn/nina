@@ -26,6 +26,7 @@ using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ToupTek;
@@ -229,7 +230,6 @@ namespace NINA.Model.MyCamera {
                 return false;
             }
             set {
-
             }
         }
 
@@ -376,6 +376,28 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public IEnumerable<string> ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public ArrayList Gains {
             get {
                 return new ArrayList();
@@ -435,7 +457,10 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 _connected = value;
-                if (!_connected) coolerPowerReadoutCts?.Cancel();
+                if (!_connected) {
+                    coolerPowerReadoutCts?.Cancel();
+                }
+
                 RaisePropertyChanged();
             }
         }

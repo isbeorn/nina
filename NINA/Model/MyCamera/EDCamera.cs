@@ -239,7 +239,6 @@ namespace NINA.Model.MyCamera {
                 return false;
             }
             set {
-
             }
         }
 
@@ -318,6 +317,28 @@ namespace NINA.Model.MyCamera {
                     _gains = new ArrayList();
                 }
                 return _gains;
+            }
+        }
+
+        public IEnumerable<string> ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
             }
         }
 

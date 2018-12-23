@@ -564,6 +564,28 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public IEnumerable<string> ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private AsyncObservableCollection<BinningMode> _binningModes;
 
         public AsyncObservableCollection<BinningMode> BinningModes {

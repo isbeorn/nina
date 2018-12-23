@@ -23,10 +23,12 @@
 
 using NINA.Utility;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
+
     internal interface ICamera : IDevice {
         bool HasShutter { get; }
         double Temperature { get; }
@@ -70,6 +72,9 @@ namespace NINA.Model.MyCamera {
         short GainMax { get; }
         short GainMin { get; }
         short Gain { get; set; }
+        IEnumerable<string> ReadoutModes { get; }
+        short ReadoutModeForSnapImages { get; set; }
+        short ReadoutModeForNormalImages { get; set; }
 
         ArrayList Gains { get; }
 
