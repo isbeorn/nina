@@ -509,29 +509,60 @@ namespace NINA.Utility {
             }
         }
 
-        public static ColorRemapping16bpp GetColorRemappingFilter(double mean, double targetHistogramMeanPct) {
-            ushort[] map = GetStretchMap(mean, targetHistogramMeanPct);
+        public static ColorRemapping16bpp GetColorRemappingFilter(IImageStatistics statistics, double targetHistogramMeanPct) {
+            ushort[] map = GetStretchMap(statistics, targetHistogramMeanPct);
 
             var filter = new ColorRemapping16bpp(map);
 
             return filter;
         }
 
-        private static ushort[] GetStretchMap(double mean, double targetHistogramMeanPct) {
-            double power;
-            if (mean <= 1) {
-                power = Math.Log(ushort.MaxValue * targetHistogramMeanPct, 2);
-            } else {
-                power = Math.Log(ushort.MaxValue * targetHistogramMeanPct, mean);
+        /// <summary>
+        /// Adjusts x for a given midToneBalance
+        /// </summary>
+        /// <param name="midToneBalance"></param>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        private static double MidtonesTransferFunction(double midToneBalance, double x) {
+            if (x > 0) {
+                if (x < 1) {
+                    return (midToneBalance - 1) * x / ((2 * midToneBalance - 1) * x - midToneBalance);
+                }
+                return 1;
             }
+            return 0;
+        }
 
+        /// <summary>
+        /// Converts a value from range [0;65535] to [0;1]
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        private static double NormalizeUShort(double val) {
+            return val / (double)ushort.MaxValue;
+        }
+
+        /// <summary>
+        /// Converts a value from range [0;1] to [0;65535]
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        private static ushort DenormalizeUShort(double val) {
+            return (ushort)(val * ushort.MaxValue);
+        }
+
+        private static ushort[] GetStretchMap(IImageStatistics statistics, double targetHistogramMedianPercent) {
             ushort[] map = new ushort[ushort.MaxValue + 1];
 
-            for (int i = 2; i < map.Length; i++) {
-                map[i] = (ushort)Math.Min(ushort.MaxValue, Math.Pow(i, power));
+            var normalizedMedian = NormalizeUShort(statistics.Median);
+            var mtf = MidtonesTransferFunction(targetHistogramMedianPercent, normalizedMedian);
+
+            for (int i = 0; i < map.Length; i++) {
+                double value = NormalizeUShort(i);
+                var target = targetHistogramMedianPercent / normalizedMedian;
+
+                map[i] = DenormalizeUShort(MidtonesTransferFunction(mtf, value));
             }
-            map[0] = 0;
-            map[1] = (ushort)(map[2] / 2);
 
             return map;
         }

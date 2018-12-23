@@ -609,30 +609,30 @@ namespace NINA.ViewModel {
         }
 
         public static async Task<BitmapSource> StretchAsync(ImageArray iarr, BitmapSource source, double factor) {
-            return await Task<BitmapSource>.Run(() => Stretch(iarr.Statistics.Mean, source, System.Windows.Media.PixelFormats.Gray16, factor));
+            return await Task<BitmapSource>.Run(() => Stretch(iarr.Statistics, source, System.Windows.Media.PixelFormats.Gray16, factor));
         }
 
-        public static async Task<BitmapSource> StretchAsync(double mean, BitmapSource source, double factor) {
-            return await Task<BitmapSource>.Run(() => Stretch(mean, source, System.Windows.Media.PixelFormats.Gray16, factor));
+        public static async Task<BitmapSource> StretchAsync(IImageStatistics statistics, BitmapSource source, double factor) {
+            return await Task<BitmapSource>.Run(() => Stretch(statistics, source, System.Windows.Media.PixelFormats.Gray16, factor));
         }
 
-        public static async Task<BitmapSource> StretchAsync(double mean, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor) {
-            return await Task<BitmapSource>.Run(() => Stretch(mean, source, pf, factor));
+        public static async Task<BitmapSource> StretchAsync(IImageStatistics statistics, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor) {
+            return await Task<BitmapSource>.Run(() => Stretch(statistics, source, pf, factor));
         }
 
-        public static BitmapSource Stretch(double mean, BitmapSource source, double factor) {
-            return Stretch(mean, source, System.Windows.Media.PixelFormats.Gray16, factor);
+        public static BitmapSource Stretch(IImageStatistics statistics, BitmapSource source, double factor) {
+            return Stretch(statistics, source, System.Windows.Media.PixelFormats.Gray16, factor);
         }
 
-        public static BitmapSource Stretch(double mean, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor) {
+        public static BitmapSource Stretch(IImageStatistics statistics, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor) {
             using (var img = ImageAnalysis.BitmapFromSource(source)) {
-                return Stretch(mean, img, pf, factor);
+                return Stretch(statistics, img, pf, factor);
             }
         }
 
-        public static BitmapSource Stretch(double mean, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor) {
+        public static BitmapSource Stretch(IImageStatistics statistics, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor) {
             using (MyStopWatch.Measure()) {
-                var filter = ImageAnalysis.GetColorRemappingFilter(mean, factor);
+                var filter = ImageAnalysis.GetColorRemappingFilter(statistics, factor);
                 filter.ApplyInPlace(img);
 
                 var source = ImageAnalysis.ConvertBitmap(img, pf);

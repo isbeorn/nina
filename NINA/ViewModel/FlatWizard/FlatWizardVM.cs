@@ -289,7 +289,7 @@ namespace NINA.ViewModel.FlatWizard {
 
                 imageArray = await ImagingVM.CaptureImageWithoutHistoryAndThumbnail(sequence, ct, progress, true);
                 Image = await ImageControlVM.StretchAsync(
-                    imageArray.Statistics.Mean,
+                    imageArray.Statistics,
                     ImageAnalysis.CreateSourceFromArray(imageArray, System.Windows.Media.PixelFormats.Gray16),
                     profileService.ActiveProfile.ImageSettings.AutoStretchFactor);
 
