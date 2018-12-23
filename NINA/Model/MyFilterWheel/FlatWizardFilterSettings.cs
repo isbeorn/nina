@@ -50,9 +50,7 @@ namespace NINA.Model.MyFilterWheel {
 
         [DataMember]
         public double HistogramMeanTarget {
-            get {
-                return histogramMeanTarget;
-            }
+            get => histogramMeanTarget;
             set {
                 histogramMeanTarget = value;
                 DelayedPropertyChanged();
@@ -61,9 +59,7 @@ namespace NINA.Model.MyFilterWheel {
 
         [DataMember]
         public double HistogramTolerance {
-            get {
-                return histogramTolerance;
-            }
+            get => histogramTolerance;
             set {
                 histogramTolerance = value;
                 DelayedPropertyChanged();
@@ -72,9 +68,7 @@ namespace NINA.Model.MyFilterWheel {
 
         [DataMember]
         public double MaxFlatExposureTime {
-            get {
-                return maxFlatExposureTime;
-            }
+            get => maxFlatExposureTime;
             set {
                 maxFlatExposureTime = value;
                 DelayedPropertyChanged();
@@ -83,20 +77,20 @@ namespace NINA.Model.MyFilterWheel {
 
         [DataMember]
         public double MinFlatExposureTime {
-            get {
-                return minFlatExposureTime;
-            }
+            get => minFlatExposureTime;
             set {
                 minFlatExposureTime = value;
+                if (MaxFlatExposureTime < minFlatExposureTime) {
+                    MaxFlatExposureTime = minFlatExposureTime;
+                }
+
                 DelayedPropertyChanged();
             }
         }
 
         [DataMember]
         public double StepSize {
-            get {
-                return stepSize;
-            }
+            get => stepSize;
             set {
                 stepSize = value;
                 DelayedPropertyChanged();
