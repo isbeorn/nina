@@ -34,7 +34,7 @@ namespace NINA.Utility {
      */
 
     public static class NOVAS {
-        private const string DLLNAME = "NOVAS31.dll";
+        private const string DLLNAME = "NOVAS31lib.dll";
 
         private static double JPL_EPHEM_START_DATE = 2305424.5; // First date of data in the ephemeredes file
         private static double JPL_EPHEM_END_DATE = 2525008.5; // Last date of data in the ephemeredes file

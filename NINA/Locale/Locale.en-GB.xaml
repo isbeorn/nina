@@ -43,10 +43,12 @@
     <s:String x:Key="LblOffset">Offset</s:String>
     <s:String x:Key="LblUSBLimit">USB Limit</s:String>
     <s:String x:Key="LblTempControl">Temperature Control</s:String>
-    <s:String x:Key="LblCoolerOn">Cooler On</s:String>
+    <s:String x:Key="LblCoolerOn">Cooler</s:String>
     <s:String x:Key="LblCoolerPower">Cooler Power</s:String>
     <s:String x:Key="LblChipTemp">Chip Temperature</s:String>
     <s:String x:Key="LblTargetTemp">Target Temperature</s:String>
+    <s:String x:Key="LblDewHeater">Dew Heater</s:String>
+    <s:String x:Key="LblDewHeaterShort">Dew Heater</s:String>
     <s:String x:Key="LblDuration">Duration</s:String>
     <s:String x:Key="LblExposureTime">Exposure Time</s:String>
     <s:String x:Key="LblFilter">Filter</s:String>
@@ -758,7 +760,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblFlatUserPromptFailure">Failed to get proper Flat Exposure</s:String>
     <s:String x:Key="LblFlatUserPromptFlatTooDim">Your flats are too dim, brighten the light, adjust the tolerance, target mean or the maximum exposure time</s:String>
     <s:String x:Key="LblFlatUserPromptFlatTooBright">Your flats are too bright, dim the light, adjust the tolerance, target mean or the minimum exposure time</s:String>
-    <s:String x:Key="LblFlatSequenceCancelled">Flat Sequence Cancelled</s:String>
+    <s:String x:Key="LblFlatSequenceCancelled">Flat Sequence Cancelled, could not determine a flat exposure time</s:String>
     <s:String x:Key="LblContinue">Continue</s:String>
     <s:String x:Key="LblResetAndContinue">Reset and Continue</s:String>
     <s:String x:Key="LblFlatUserPromptCancel">Cancel Flat Wizard</s:String>

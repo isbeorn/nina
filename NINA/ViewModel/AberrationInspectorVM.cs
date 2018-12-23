@@ -35,14 +35,17 @@ namespace NINA.ViewModel {
 
     internal class AberrationInspectorVM : BaseVM {
 
-        public AberrationInspectorVM(IProfileService profileService, BitmapSource source) : base(profileService) {
+        public AberrationInspectorVM(IProfileService profileService) : base(profileService) {
             Columns = 3;
             SeparationSize = 4;
             CellSize = 256;
-            DetermineImage(source);
         }
 
-        private void DetermineImage(BitmapSource source) {
+        public Task Initialize(BitmapSource source) {
+            return Task.Run(() => RenderMosaicImage(source));
+        }
+
+        private void RenderMosaicImage(BitmapSource source) {
             var panelSize = CellSize * Columns + SeparationSize * Columns;
 
             if (source.Width < panelSize || source.Height < panelSize) {
@@ -123,7 +126,7 @@ namespace NINA.ViewModel {
             get {
                 return separationSize;
             }
-            set {
+            private set {
                 separationSize = value;
                 RaisePropertyChanged();
             }
@@ -135,7 +138,7 @@ namespace NINA.ViewModel {
             get {
                 return columns;
             }
-            set {
+            private set {
                 columns = value;
                 RaisePropertyChanged();
             }
@@ -147,7 +150,7 @@ namespace NINA.ViewModel {
             get {
                 return cellSize;
             }
-            set {
+            private set {
                 cellSize = value;
                 RaisePropertyChanged();
             }
@@ -159,7 +162,7 @@ namespace NINA.ViewModel {
             get {
                 return mosaicImage;
             }
-            set {
+            private set {
                 mosaicImage = value;
                 RaisePropertyChanged();
             }

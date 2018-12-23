@@ -146,6 +146,18 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private bool dewHeaterOn;
+
+        public bool DewHeaterOn {
+            get {
+                return dewHeaterOn;
+            }
+            set {
+                dewHeaterOn = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool canSubSample;
 
         public bool CanSubSample {

@@ -34,7 +34,7 @@ namespace NINA.Utility {
     /// http://www.iausofa.org/current_C.html#Downloads
     /// </summary>
     internal static class SOFA {
-        private const string DLLNAME = "SOFA.dll";
+        private const string DLLNAME = "SOFAlib.dll";
 
         static SOFA() {
             DllLoader.LoadDll("SOFA/" + DLLNAME);
