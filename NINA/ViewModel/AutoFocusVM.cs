@@ -200,7 +200,7 @@ namespace NINA.ViewModel {
         private async Task<double> EvaluateExposure(ImageArray iarr, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Evaluating Expsoure");
             var source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
-            source = await ImageControlVM.StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor);
+            source = await ImageControlVM.StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
             var analysis = new ImageAnalysis(source, iarr);
             await analysis.DetectStarsAsync(progress, token);
 

@@ -103,18 +103,18 @@ namespace NINA.Model.MyCamera {
 
         private void CalculateInternal(ushort[] array) {
             using (MyStopWatch.Measure()) {
+                ushort maxPossibleValue = (ushort)((1 << BitDepth) - 1);
                 long sum = 0;
                 long squareSum = 0;
                 int count = array.Count();
+                ushort min = maxPossibleValue;
+                ushort oldmin = min;
                 ushort max = 0;
                 ushort oldmax = max;
                 long maxOccurrences = 0;
-                ushort min = ushort.MaxValue;
-                ushort oldmin = min;
                 long minOccurrences = 0;
 
-                ushort maxHistogramValue = (ushort)((1 << BitDepth) - 1);
-                int[] histogram = new int[maxHistogramValue + 1];
+                int[] histogram = new int[maxPossibleValue + 1];
                 for (var i = 0; i < array.Length; i++) {
                     ushort val = array[i];
 
@@ -151,7 +151,7 @@ namespace NINA.Model.MyCamera {
                 double median = 0d, median1 = 0d, median2 = 0d;
                 var medianlength = array.Length / 2.0;
 
-                for (ushort i = 0; i < ushort.MaxValue; i++) {
+                for (ushort i = 0; i < maxPossibleValue; i++) {
                     occurrences += histogram[i];
                     if (occurrences > medianlength) {
                         median1 = i;
@@ -159,7 +159,7 @@ namespace NINA.Model.MyCamera {
                         break;
                     } else if (occurrences == medianlength) {
                         median1 = i;
-                        for (int j = i + 1; j <= ushort.MaxValue; j++) {
+                        for (int j = i + 1; j <= maxPossibleValue; j++) {
                             if (histogram[j] > 0) {
                                 median2 = j;
                                 break;
@@ -171,7 +171,7 @@ namespace NINA.Model.MyCamera {
                 median = (median1 + median2) / 2.0;
 
                 var MADValues = new SortedDictionary<double, int>();
-                for (ushort i = 0; i < ushort.MaxValue; i++) {
+                for (ushort i = 0; i < maxPossibleValue; i++) {
                     var key = Math.Abs(i - median);
                     MADValues.TryGetValue(key, out var sumCount);
                     MADValues[key] = sumCount + histogram[i];

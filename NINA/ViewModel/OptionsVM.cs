@@ -444,6 +444,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        public double BlackClipping {
+            get {
+                return profileService.ActiveProfile.ImageSettings.BlackClipping;
+            }
+            set {
+                profileService.ActiveProfile.ImageSettings.BlackClipping = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public bool AnnotateImage {
             get {
                 return profileService.ActiveProfile.ImageSettings.AnnotateImage;

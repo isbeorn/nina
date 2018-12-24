@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.OptionsImagingView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -260,6 +259,34 @@
                                 <Binding Path="AutoStretchFactor" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
                                         <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="200"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblBlackClipping}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblLblBlackClippingTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            MinWidth="75"
+                            MinHeight="20"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="BlackClipping" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:DoubleRangeRule>
+                                            <rules:DoubleRangeRule.ValidRange>
+                                                <rules:DoubleRangeChecker Maximum="0" Minimum="-10" />
+                                            </rules:DoubleRangeRule.ValidRange>
+                                        </rules:DoubleRangeRule>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>

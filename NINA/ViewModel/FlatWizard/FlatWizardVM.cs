@@ -291,7 +291,7 @@ namespace NINA.ViewModel.FlatWizard {
                 Image = await ImageControlVM.StretchAsync(
                     imageArray.Statistics,
                     ImageAnalysis.CreateSourceFromArray(imageArray, System.Windows.Media.PixelFormats.Gray16),
-                    profileService.ActiveProfile.ImageSettings.AutoStretchFactor);
+                    profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
 
                 // check for exposure ADU state
                 exposureAduState = FlatWizardExposureTimeFinderService.GetFlatExposureState(imageArray, exposureTime, wrapper);

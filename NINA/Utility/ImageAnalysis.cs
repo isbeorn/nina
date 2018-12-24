@@ -509,8 +509,8 @@ namespace NINA.Utility {
             }
         }
 
-        public static ColorRemapping16bpp GetColorRemappingFilter(IImageStatistics statistics, double targetHistogramMeanPct) {
-            ushort[] map = GetStretchMap(statistics, targetHistogramMeanPct);
+        public static ColorRemapping16bpp GetColorRemappingFilter(IImageStatistics statistics, double targetHistogramMeanPct, double shadowsClipping) {
+            ushort[] map = GetStretchMap(statistics, targetHistogramMeanPct, shadowsClipping);
 
             var filter = new ColorRemapping16bpp(map);
 
@@ -551,17 +551,21 @@ namespace NINA.Utility {
             return (ushort)(val * ushort.MaxValue);
         }
 
-        private static ushort[] GetStretchMap(IImageStatistics statistics, double targetHistogramMedianPercent) {
+        private static ushort[] GetStretchMap(IImageStatistics statistics, double targetHistogramMedianPercent, double shadowsClipping) {
             ushort[] map = new ushort[ushort.MaxValue + 1];
 
             var normalizedMedian = NormalizeUShort(statistics.Median);
-            var mtf = MidtonesTransferFunction(targetHistogramMedianPercent, normalizedMedian);
+            var normalizedMAD = NormalizeUShort(statistics.MedianAbsoluteDeviation);
+
+            var scaleFactor = 1.4826; // see https://en.wikipedia.org/wiki/Median_absolute_deviation
+            var zero = normalizedMedian + shadowsClipping * normalizedMAD * scaleFactor;
+
+            var mtf = MidtonesTransferFunction(targetHistogramMedianPercent, normalizedMedian - zero);
 
             for (int i = 0; i < map.Length; i++) {
                 double value = NormalizeUShort(i);
-                var target = targetHistogramMedianPercent / normalizedMedian;
 
-                map[i] = DenormalizeUShort(MidtonesTransferFunction(mtf, value));
+                map[i] = DenormalizeUShort(MidtonesTransferFunction(mtf, value - zero));
             }
 
             return map;

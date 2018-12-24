@@ -38,6 +38,8 @@
         - Reworked Imaging tab to have a common style.
         - Imaging tab tools pane (to hide/show panels) moved to the top and split into two separate categories
     - Profiles don't get overriden when using multiple instances of N.I.N.A. with each one having a separate profile active
+    - Autostretch replaced by a better midpoint transformation function
+    - Autostretch now has black point clipping options
 
 ___
 

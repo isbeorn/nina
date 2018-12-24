@@ -777,4 +777,6 @@ Berechneter HFR: {2}
     <s:String x:Key="LblReadoutForSnapImagesToolTip">Dieser Auslesemodus wird für Plate Solving, zur Ausrichtung und Autofokus verwendet</s:String>
     <s:String x:Key="LblReadoutForNormalImages">Auslesemodus für Sequenzen</s:String>
     <s:String x:Key="LblReadoutForNormalImagesToolTip">Dieser Auslesemodus wird für LIGHT, BIAS, DARK, FLAT und DARKFLAT Bilder in Sequenzen verwendet</s:String>
+    <s:String x:Key="LblBlackClipping">Schwarzpunktfaktor</s:String>
+    <s:String x:Key="LblLblBlackClippingTooltip">Schwarzpunktfaktor in Sigma Einheiten vom Median</s:String>
 </ResourceDictionary>

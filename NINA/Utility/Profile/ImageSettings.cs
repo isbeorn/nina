@@ -30,7 +30,25 @@ namespace NINA.Utility.Profile {
     [Serializable()]
     [DataContract]
     public class ImageSettings : Settings, IImageSettings {
-        private double autoStretchFactor = 0.2;
+
+        public ImageSettings() {
+            SetDefaultValues();
+        }
+
+        [OnDeserializing]
+        public void OnDesiralization(StreamingContext context) {
+            SetDefaultValues();
+        }
+
+        private void SetDefaultValues() {
+            autoStretchFactor = 0.2;
+            blackClipping = -2.8;
+            histogramResolution = 300;
+            annotateImage = false;
+            debayerImage = false;
+        }
+
+        private double autoStretchFactor;
 
         [DataMember]
         public double AutoStretchFactor {
@@ -43,7 +61,20 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private int histogramResolution = 300;
+        private double blackClipping;
+
+        [DataMember]
+        public double BlackClipping {
+            get {
+                return blackClipping;
+            }
+            set {
+                blackClipping = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int histogramResolution;
 
         [DataMember]
         public int HistogramResolution {
@@ -56,7 +87,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private bool annotateImage = false;
+        private bool annotateImage;
 
         [DataMember]
         public bool AnnotateImage {
@@ -69,7 +100,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private bool debayerImage = false;
+        private bool debayerImage;
 
         [DataMember]
         public bool DebayerImage {
