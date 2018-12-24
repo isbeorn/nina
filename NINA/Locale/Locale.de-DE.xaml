@@ -375,8 +375,8 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblReconnectAll">Alle Geräte neu verbinden?</s:String>
     <s:String x:Key="LblDisconnectAll">Alle Geräte trennen?</s:String>
     <s:String x:Key="LblStartGuidingFailed">Starten der Nachführung fehlgeschlagen</s:String>
-    <s:String x:Key="LblConnecting">Connecting</s:String>
-    <s:String x:Key="LblCooling">Cooling</s:String>
+    <s:String x:Key="LblConnecting">Verbinde</s:String>
+    <s:String x:Key="LblCooling">Kühle</s:String>
     <s:String x:Key="LblImageHistory">Bildhistorie</s:String>
     <s:String x:Key="LblReconnectCamera">Kamera bitte neu verbinden!</s:String>
     <s:String x:Key="LblUnableToConnectCamera">Verbindung zur Kamera konnte nicht hergestellt werden</s:String>
