@@ -547,9 +547,10 @@ namespace NINA.ViewModel {
                 bool addToStatistics = true,
                 bool addToHistory = true) {
             BitmapSource source = null;
-            try {
-                await ss.WaitAsync(token);
 
+            await ss.WaitAsync(token);
+
+            try {
                 if (iarr != null) {
                     _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPrepareImage"] });
                     source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
