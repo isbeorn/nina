@@ -90,6 +90,7 @@ namespace NINA.ViewModel.FlatWizard {
             SingleFlatWizardFilterSettings.CameraInfo = cameraInfo;
 
             FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
+            DarkFlatCount = profileService.ActiveProfile.FlatWizardSettings.DarkFlatCount;
             BinningMode = profileService.ActiveProfile.FlatWizardSettings.BinningMode;
 
             Filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
@@ -168,6 +169,19 @@ namespace NINA.ViewModel.FlatWizard {
                     profileService.ActiveProfile.FlatWizardSettings.FlatCount = flatCount;
                 }
 
+                RaisePropertyChanged();
+            }
+        }
+
+        private int darkFlatCount;
+
+        public int DarkFlatCount {
+            get => darkFlatCount;
+            set {
+                darkFlatCount = value;
+                if (darkFlatCount != profileService.ActiveProfile.FlatWizardSettings.DarkFlatCount) {
+                    profileService.ActiveProfile.FlatWizardSettings.DarkFlatCount = darkFlatCount;
+                }
                 RaisePropertyChanged();
             }
         }

@@ -21,9 +21,9 @@
 
 #endregion "copyright"
 
+using NINA.Model.MyCamera;
 using System;
 using System.Runtime.Serialization;
-using NINA.Model.MyCamera;
 
 namespace NINA.Utility.Profile {
 
@@ -46,6 +46,7 @@ namespace NINA.Utility.Profile {
             histogramMeanTarget = 0.5;
             stepSize = 0.5;
             binningMode = new BinningMode(1, 1);
+            darkFlatCount = 30;
         }
 
         private int flatCount;
@@ -109,6 +110,17 @@ namespace NINA.Utility.Profile {
             }
             set {
                 binningMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int darkFlatCount;
+
+        [DataMember]
+        public int DarkFlatCount {
+            get => darkFlatCount;
+            set {
+                darkFlatCount = value;
                 RaisePropertyChanged();
             }
         }

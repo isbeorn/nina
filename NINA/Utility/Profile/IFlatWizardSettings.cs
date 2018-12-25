@@ -31,5 +31,6 @@ namespace NINA.Utility.Profile {
         double HistogramTolerance { get; set; }
         double StepSize { get; set; }
         BinningMode BinningMode { get; set; }
+        int DarkFlatCount { get; set; }
     }
 }
