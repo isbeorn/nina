@@ -42,6 +42,7 @@ namespace NINA.ViewModel {
         }
 
         public ApplicationVM(IProfileService profileService) : base(profileService) {
+            Logger.SetLogLevel(profileService.ActiveProfile.ApplicationSettings.LogLevel);
             cameraMediator = new CameraMediator();
             telescopeMediator = new TelescopeMediator();
             focuserMediator = new FocuserMediator();

@@ -22,6 +22,7 @@
     - Canon: Fixed bulb mode for exposure times <30s
     - Canon: All shutter speeds now correctly added when step set custom function is set to 1/3
     - Meridian Flip window does not get stuck anymore when clicking on cancel
+    - Log Level will now be set on application start based on profile settings.
 
 ## Improvements
 
@@ -40,6 +41,7 @@
     - Profiles don't get overriden when using multiple instances of N.I.N.A. with each one having a separate profile active
     - Autostretch replaced by a better midpoint transformation function
     - Autostretch now has black point clipping options
+    - Vastly improved Image Statistics calculation.
 
 ___
 
