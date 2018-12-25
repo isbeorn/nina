@@ -385,7 +385,7 @@ namespace NINA.ViewModel.FlatWizard {
                     progress.Report(new ApplicationStatus() { Status = Locale["LblPreparingDarkFlatSequence"], Source = Title });
                     var dialogResult = MyMessageBox.MyMessageBox.Show(
                         Locale["LblCoverScopeMsgBox"],
-                        Locale["LblCoverScopeMsgBoxTitle"]);
+                        Locale["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
                     if (dialogResult == MessageBoxResult.OK) {
                         foreach (var kvp in filterToExposureTime) {
                             await StartCaptureSequence(progress, flatSequenceCts.Token, pt, kvp.Key.Filter, kvp.Value,
