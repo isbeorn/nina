@@ -103,6 +103,7 @@ namespace NINA.ViewModel.FlatWizard {
                 UpdateFilterWheelsSettings(null, null);
             };
 
+            profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.CollectionChanged += UpdateFilterWheelsSettings;
             SingleFlatWizardFilterSettings.Settings.PropertyChanged += UpdateProfileValues;
 
             // first update filters
