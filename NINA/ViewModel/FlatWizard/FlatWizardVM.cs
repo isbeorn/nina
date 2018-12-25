@@ -407,9 +407,9 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private async Task<bool> StartCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FilterInfo filter, double exposureTime, string imageType, int flatCount) {
+        private async Task<bool> StartCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FilterInfo filter, double exposureTime, string imageType, int captureCount) {
             var sequence =
-                new CaptureSequence(exposureTime, imageType, filter, BinningMode, flatCount) { Gain = Gain };
+                new CaptureSequence(exposureTime, imageType, filter, BinningMode, captureCount) { Gain = Gain };
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
                 if (sequence.ProgressExposureCount != sequence.TotalExposureCount - 1) {
                     await ImagingVM.CaptureImageWithoutProcessingAndSaveAsync(sequence, ct, progress);
