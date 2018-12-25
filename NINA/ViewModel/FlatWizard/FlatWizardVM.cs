@@ -33,6 +33,7 @@ using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -97,7 +98,11 @@ namespace NINA.ViewModel.FlatWizard {
 
             Filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
 
-            profileService.ActiveProfile.FilterWheelSettings.PropertyChanged += UpdateFilterWheelsSettings;
+            profileService.ProfileChanged += (sender, args) => {
+                profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.CollectionChanged += UpdateFilterWheelsSettings;
+                UpdateFilterWheelsSettings(null, null);
+            };
+
             SingleFlatWizardFilterSettings.Settings.PropertyChanged += UpdateProfileValues;
 
             // first update filters
@@ -427,7 +432,7 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private void UpdateFilterWheelsSettings(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void UpdateFilterWheelsSettings(object sender, NotifyCollectionChangedEventArgs e) {
             var selectedFilter = SelectedFilter;
             var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings)).ToList();
             var tempList = new FlatWizardFilterSettingsWrapper[Filters.Count];
