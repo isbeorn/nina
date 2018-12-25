@@ -114,6 +114,7 @@ namespace NINA.Model.MyCamera {
                 long maxOccurrences = 0;
                 long minOccurrences = 0;
 
+                /* Array mapping: pixel value -> total number of occurrences of that pixel value */
                 int[] histogram = new int[maxPossibleValue + 1];
                 for (var i = 0; i < array.Length; i++) {
                     ushort val = array[i];
@@ -148,9 +149,11 @@ namespace NINA.Model.MyCamera {
                 double stdev = Math.Sqrt(variance);
 
                 var occurrences = 0;
-                double median = 0d, median1 = 0d, median2 = 0d;
+                double median = 0d;
+                int median1 = 0, median2 = 0;
                 var medianlength = array.Length / 2.0;
 
+                /* Determine median out of histogram array */
                 for (ushort i = 0; i < maxPossibleValue; i++) {
                     occurrences += histogram[i];
                     if (occurrences > medianlength) {
@@ -170,19 +173,32 @@ namespace NINA.Model.MyCamera {
                 }
                 median = (median1 + median2) / 2.0;
 
-                var MADValues = new SortedDictionary<double, int>();
-                for (ushort i = 0; i < maxPossibleValue; i++) {
-                    var key = Math.Abs(i - median);
-                    MADValues.TryGetValue(key, out var sumCount);
-                    MADValues[key] = sumCount + histogram[i];
-                }
+                /* Determine median Absolute Deviation out of histogram array and previously determined median
+                 * As the histogram already has the values sorted and we know the median,
+                 * we can determine the mad by beginning from the median and step up and down
+                 * By doing so we will gain a sorted list automatically, because MAD = DetermineMedian(|xn - median|)
+                 * So starting from the median will be 0 (as median - median = 0), going up and down will increment by the steps
+                 */
 
                 var medianAbsoluteDeviation = 0.0d;
                 occurrences = 0;
-                foreach (KeyValuePair<double, int> pair in MADValues) {
-                    occurrences += pair.Value;
-                    if (occurrences >= medianlength) {
-                        medianAbsoluteDeviation = pair.Key;
+                var idxDown = median1;
+                var idxUp = median2;
+                while (true) {
+                    if (idxDown >= 0 && idxDown != idxUp) {
+                        occurrences += histogram[idxDown] + histogram[idxUp];
+                    } else {
+                        occurrences += histogram[idxUp];
+                    }
+
+                    if (occurrences > medianlength) {
+                        medianAbsoluteDeviation = Math.Abs(idxUp - median);
+                        break;
+                    }
+
+                    idxUp++;
+                    idxDown--;
+                    if (idxUp > maxPossibleValue) {
                         break;
                     }
                 }
