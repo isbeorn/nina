@@ -127,6 +127,7 @@
                                             BorderBrush="Transparent"
                                             IsChecked="{Binding GuiderInfo.Connected, FallbackValue=False, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                             IsManipulationEnabled="False"
+                                            IsHitTestVisible="False"
                                             Style="{StaticResource CheckmarkCheckbox}" />
                                     </UniformGrid>
                                 </UniformGrid>

@@ -489,7 +489,8 @@ namespace NINA.Model.MyGuider {
                                 await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
                             }
                         }
-                    } catch (OperationCanceledException) { } catch (Exception ex) {
+                    } catch (OperationCanceledException) {
+                    } catch (Exception ex) {
                         Logger.Error(ex);
                         Notification.ShowError("PHD2 Error: " + ex.Message);
                     } finally {
