@@ -32,6 +32,18 @@
                         </Grid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0"
+                                       VerticalAlignment="Center" Text="{ns:Loc LblDarkFlatCount}" TextWrapping="WrapWithOverflow" />
+                            <ninactrl:IntStepperControl Grid.Row="0" Grid.Column="1"
+                                                        Value="{Binding DarkFlatCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MinValue="0" MaxValue="50" />
+                        </Grid>
+                    </Border>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,5">
                         <Grid VerticalAlignment="Center" Margin="0,0,0,5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*" />

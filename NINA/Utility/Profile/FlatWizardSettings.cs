@@ -46,7 +46,7 @@ namespace NINA.Utility.Profile {
             histogramMeanTarget = 0.5;
             stepSize = 0.5;
             binningMode = new BinningMode(1, 1);
-            darkFlatCount = 30;
+            darkFlatCount = 0;
         }
 
         private int flatCount;
