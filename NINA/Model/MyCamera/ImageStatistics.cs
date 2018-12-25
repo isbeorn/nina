@@ -214,7 +214,7 @@ namespace NINA.Model.MyCamera {
                 this.Histogram = histogram
                     .Select((value, index) => new { Index = index, Value = value })
                     .GroupBy(
-                        x => Math.Floor((double)x.Index * ((double)resolution / ushort.MaxValue)),
+                        x => Math.Floor((double)x.Index * ((double)resolution / maxPossibleValue)),
                         x => x.Value)
                     .Select(g => new OxyPlot.DataPoint(g.Key, g.Sum()))
                     .OrderBy(item => item.X).ToList();
