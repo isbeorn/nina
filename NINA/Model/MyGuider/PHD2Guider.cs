@@ -197,9 +197,9 @@ namespace NINA.Model.MyGuider {
             bool connected = false;
             try {
                 _tcs = new TaskCompletionSource<bool>();
-                await StartListener(token);
+                StartListener();
                 token.ThrowIfCancellationRequested();
-                connected = _tcs.Task.Result;
+                connected = await _tcs.Task;
 
                 var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
                 PixelScale = double.Parse(resp.result.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
@@ -448,58 +448,59 @@ namespace NINA.Model.MyGuider {
             return foo != null ? foo.State : TcpState.Unknown;
         }
 
-        private async Task<bool> StartListener(CancellationToken ct) {
-            JsonLoadSettings jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
-            // _clientCTS = new CancellationTokenSource();
-            using (var client = new TcpClient()) {
-                try {
-                    await client.ConnectAsync(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
-                    ct.ThrowIfCancellationRequested();
-                    Connected = true;
-                    _tcs.TrySetResult(false);
+        private void StartListener() {
+            Task.Run(async () => {
+                JsonLoadSettings jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
+                _clientCTS = new CancellationTokenSource();
+                using (var client = new TcpClient()) {
+                    try {
+                        await client.ConnectAsync(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl,
+                            profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                        Connected = true;
+                        _tcs.TrySetResult(true);
 
-                    using (NetworkStream s = client.GetStream()) {
-                        while (true) {
-                            var state = GetState(client);
-                            if (state == TcpState.CloseWait) {
-                                throw new Exception(Locale.Loc.Instance["LblPhd2ServerConnectionLost"]);
-                            }
-                            var message = string.Empty;
-                            while (s.DataAvailable) {
-                                byte[] response = new byte[1024];
-                                await s.ReadAsync(response, 0, response.Length, ct);
-                                message += System.Text.Encoding.ASCII.GetString(response);
-                            }
+                        using (NetworkStream s = client.GetStream()) {
+                            while (true) {
+                                var state = GetState(client);
+                                if (state == TcpState.CloseWait) {
+                                    throw new Exception(Locale.Loc.Instance["LblPhd2ServerConnectionLost"]);
+                                }
 
-                            foreach (string line in message.Split(new[] { Environment.NewLine }, StringSplitOptions.None)) {
-                                if (!string.IsNullOrEmpty(line) && !line.StartsWith("\0")) {
-                                    JObject o = JObject.Parse(line, jls);
-                                    JToken t = o.GetValue("Event");
-                                    string phdevent = "";
-                                    if (t != null) {
-                                        phdevent = t.ToString();
-                                        ProcessEvent(phdevent, o);
+                                var message = string.Empty;
+                                while (s.DataAvailable) {
+                                    byte[] response = new byte[1024];
+                                    await s.ReadAsync(response, 0, response.Length, _clientCTS.Token);
+                                    message += System.Text.Encoding.ASCII.GetString(response);
+                                }
+
+                                foreach (string line in message.Split(new[] { Environment.NewLine },
+                                    StringSplitOptions.None)) {
+                                    if (!string.IsNullOrEmpty(line) && !line.StartsWith("\0")) {
+                                        JObject o = JObject.Parse(line, jls);
+                                        JToken t = o.GetValue("Event");
+                                        string phdevent = "";
+                                        if (t != null) {
+                                            phdevent = t.ToString();
+                                            ProcessEvent(phdevent, o);
+                                        }
                                     }
                                 }
-                            }
-                            await Task.Delay(TimeSpan.FromMilliseconds(500), ct);
-                        }
-                    }
-                } catch (OperationCanceledException) {
-                } catch (Exception ex) {
-                    ct.ThrowIfCancellationRequested();
-                    Logger.Error(ex);
-                    Notification.ShowError("PHD2 Error: " + ex.Message);
-                } finally {
-                    _isDithering = false;
-                    AppState = new PhdEventAppState() { State = "" };
-                    PixelScale = 0.0d;
-                    Connected = false;
-                    _tcs.TrySetResult(false);
-                }
-            }
 
-            return Connected;
+                                await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
+                            }
+                        }
+                    } catch (OperationCanceledException) { } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.ShowError("PHD2 Error: " + ex.Message);
+                    } finally {
+                        _isDithering = false;
+                        AppState = new PhdEventAppState() { State = "" };
+                        PixelScale = 0.0d;
+                        Connected = false;
+                        _tcs.TrySetResult(false);
+                    }
+                }
+            });
         }
 
         public class PhdMethodResponse {

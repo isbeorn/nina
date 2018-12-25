@@ -1359,7 +1359,6 @@
     <Content Include="Utility\DCRaw\dcraw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Database\NINA.sqlite" />
     <None Include="Documentation\NINA.md" />
     <None Include="Documentation\table-of-contents.md" />
